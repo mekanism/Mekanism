@@ -13,7 +13,7 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismGases;
+import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
@@ -116,7 +116,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        return getReactor() != null && (fluid.isEmpty() || fluid.getFluid() == MekanismGases.STEAM.getFluid());
+        return getReactor() != null && (fluid.isEmpty() || MekanismFluids.STEAM.fluidMatches(fluid));
     }
 
     @Override

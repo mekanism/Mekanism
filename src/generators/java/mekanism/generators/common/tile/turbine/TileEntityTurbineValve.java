@@ -3,7 +3,7 @@ package mekanism.generators.common.tile.turbine;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.common.MekanismGases;
+import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
@@ -201,10 +201,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        if (fluid.getFluid() == MekanismGases.STEAM.getFluid()) {
-            return (!isRemote() && structure != null) || (isRemote() && clientHasStructure);
-        }
-        return false;
+        return MekanismFluids.STEAM.fluidMatches(fluid) && ((!isRemote() && structure != null) || (isRemote() && clientHasStructure));
     }
 
     @Override

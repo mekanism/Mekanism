@@ -16,7 +16,7 @@ import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismGases;
+import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -227,7 +227,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     private boolean shouldTake(@Nonnull FluidStack fluid, Coord4D coord) {
-        if (fluid.getFluid() == Fluids.WATER || fluid.getFluid() == MekanismGases.HEAVY_WATER) {
+        if (fluid.getFluid() == Fluids.WATER || fluid.getFluid() == MekanismFluids.HEAVY_WATER.getStillFluid()) {
             return MekanismConfig.general.pumpWaterSources.get();
         }
         return true;

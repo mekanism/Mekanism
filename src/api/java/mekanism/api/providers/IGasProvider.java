@@ -28,7 +28,9 @@ public interface IGasProvider extends IBaseProvider {
         return getGas().getTextComponent();
     }
 
+    //TODO: Remove this??
     @Nonnull
+    @Deprecated
     default Fluid getFluid() {
         Gas gas = getGas();
         return gas.hasFluid() ? gas.getFluid() : Fluids.EMPTY;

@@ -62,19 +62,18 @@ public abstract class Chemical<TYPE extends Chemical<TYPE>> extends ForgeRegistr
      * @return associated IIcon
      */
     public TextureAtlasSprite getSprite() {
-        AtlasTexture texMap = Minecraft.getInstance().getTextureMap();
         if (sprite == null) {
-            sprite = texMap.getAtlasSprite(getIcon().toString());
+            sprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(getIcon().toString());
         }
         return sprite;
     }
 
     public void registerIcon(TextureStitchEvent.Pre event) {
-        event.addSprite(iconLocation);
+        event.addSprite(getIcon());
     }
 
     public void updateIcon(AtlasTexture map) {
-        sprite = map.getSprite(iconLocation);
+        sprite = map.getSprite(getIcon());
     }
 
     /**

@@ -10,7 +10,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismGases;
+import mekanism.common.MekanismFluids;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
@@ -104,7 +104,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                         amountToBoil = Math.min(amountToBoil, (structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK) - steamAmount);
                         structure.waterStored.setAmount(structure.waterStored.getAmount() - amountToBoil);
                         if (structure.steamStored.isEmpty()) {
-                            structure.steamStored = new FluidStack(MekanismGases.STEAM.getFluid(), amountToBoil);
+                            structure.steamStored = MekanismFluids.STEAM.getFluidStack(amountToBoil);
                         } else {
                             structure.steamStored.setAmount(structure.steamStored.getAmount() + amountToBoil);
                         }

@@ -2,9 +2,13 @@ package mekanism.common.registration;
 
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
 public class WrappedRegistryObject<T extends IForgeRegistryEntry<? super T>> implements Supplier<T>, INamedEntry {
 
     private final RegistryObject<T> registryObject;
@@ -18,10 +22,6 @@ public class WrappedRegistryObject<T extends IForgeRegistryEntry<? super T>> imp
     @Override
     public T get() {
         return registryObject.get();
-    }
-
-    public RegistryObject<T> getInternal() {
-        return registryObject;
     }
 
     @Override

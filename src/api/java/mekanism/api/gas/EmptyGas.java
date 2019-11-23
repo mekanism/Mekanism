@@ -2,9 +2,7 @@ package mekanism.api.gas;
 
 import java.util.Collections;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 
@@ -17,16 +15,6 @@ public final class EmptyGas extends Gas {
 
     @Override
     public void setVisible(boolean v) {
-        //NO-OP
-    }
-
-    @Override
-    public void setFluid(@Nonnull Fluid fluid) {
-        //NO-OP
-    }
-
-    @Override
-    public void createFluid() {
         //NO-OP
     }
 

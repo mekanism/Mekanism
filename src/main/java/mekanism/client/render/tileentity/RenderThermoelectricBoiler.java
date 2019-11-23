@@ -10,7 +10,7 @@ import mekanism.client.render.FluidRenderer.ValveRenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.common.MekanismGases;
+import mekanism.common.MekanismFluids;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -24,7 +24,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {
 
     @Nonnull
-    private static final FluidStack STEAM = new FluidStack(MekanismGases.STEAM.getFluid(), 1);
+    private static FluidStack STEAM = FluidStack.EMPTY;
     @Nonnull
     private static final FluidStack WATER = new FluidStack(Fluids.WATER, 1);
 
@@ -70,6 +70,9 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
             }
 
             if (tileEntity.structure.steamStored.getAmount() > 0) {
+                if (STEAM.isEmpty()) {
+                    STEAM = MekanismFluids.STEAM.getFluidStack(1);
+                }
                 RenderData data = new RenderData();
                 data.location = tileEntity.structure.upperRenderLocation;
                 data.height = tileEntity.structure.renderLocation.y + tileEntity.structure.volHeight - 2 - tileEntity.structure.upperRenderLocation.y;

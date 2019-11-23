@@ -190,6 +190,7 @@ public class Mekanism {
 
         MekanismItem.ITEMS.register(modEventBus);
         MekanismBlock.BLOCKS.register(modEventBus);
+        MekanismFluids.FLUIDS.register(modEventBus);
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);

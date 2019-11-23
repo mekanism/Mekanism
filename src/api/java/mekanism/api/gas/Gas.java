@@ -14,15 +14,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 /**
  * Gas - a class used to set specific properties of gasses when used or seen in-game.
  *
  * @author aidancbrady
  */
-//TODO: Add tags to gas
 public class Gas extends Chemical<Gas> implements IGasProvider {
 
     private final ReverseTagWrapper<Gas> reverseTags = new ReverseTagWrapper<>(this, GasTags::getGeneration, GasTags::getCollection);
@@ -30,10 +27,14 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     //TODO: Make gas not be quite as "hard paired" with fluid as to directly know the reference fluid it is from
     // Instead use tags and giving the rotary condensentrator a recipe system. Instead make a helper that can create
     // a new gas or fluid given the other
+    //TODO: Ideally we would fully remove this and just make some way that we can "supply" a texture
+    // from the fluid at a later point in time, given it is not needed during registration
     @Nonnull
+    @Deprecated
     private Fluid fluid = Fluids.EMPTY;
 
     private boolean visible = true;
+    @Deprecated
     private boolean from_fluid = false;
 
     /**
@@ -60,6 +61,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     /**
      * Creates a new Gas object that corresponds to the given Fluid
      */
+    @Deprecated
     public Gas(@Nonnull Fluid fluid) {
         this(fluid.getRegistryName(), fluid.getAttributes().getStillTexture());
         this.fluid = fluid;
@@ -145,8 +147,9 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
      *
      * @return if this gas has a fluid
      */
+    @Deprecated
     public boolean hasFluid() {
-        return fluid != Fluids.EMPTY;
+        return getFluid() != Fluids.EMPTY;
     }
 
     /**
@@ -158,30 +161,6 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
     @Override
     public Fluid getFluid() {
         return fluid;
-    }
-
-    /**
-     * Registers a new fluid out of this Gas or gets one from the FluidRegistry. Uses same registry name as this.
-     */
-    public void setFluid(@Nonnull Fluid fluid) {
-        //TODO: Don't allow setting it once it is already set?
-        this.fluid = fluid;
-    }
-
-    public void createFluid() {
-        int tint = getTint();
-        //Fluids use ARGB so make sure that we are not using a fully transparent tint.
-        // This fixes issues with some mods rendering our fluids as invisible
-        if ((tint & 0xFF000000) == 0) {
-            tint = 0xFF000000 | tint;
-        }
-        //TODO: Light?
-        //TODO: Should we create both source and flowing?
-        ForgeFlowingFluid.Properties properties = new ForgeFlowingFluid.Properties(() -> fluid, () -> fluid,
-              FluidAttributes.builder(getIcon(), getIcon()).color(tint).gaseous());//.bucket(test_fluid_bucket).block(test_fluid_block);
-        ForgeFlowingFluid flowingFluid = new ForgeFlowingFluid.Source(properties);
-        flowingFluid.setRegistryName(getRegistryName());
-        setFluid(flowingFluid);
     }
 
     @Nonnull

@@ -16,7 +16,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismGases;
+import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
@@ -455,7 +455,7 @@ public final class MekanismUtils {
             if (!filter) {
                 return new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
             }
-            return new FluidStack(MekanismGases.HEAVY_WATER, 10);
+            return new FluidStack(MekanismFluids.HEAVY_WATER.getStillFluid(), 10);
         } else if (block == Blocks.LAVA && state.get(FlowingFluidBlock.LEVEL) == 0) {
             return new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME);
         } else if (block instanceof IFluidBlock) {

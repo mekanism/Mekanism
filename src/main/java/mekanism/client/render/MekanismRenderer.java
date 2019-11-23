@@ -349,8 +349,6 @@ public class MekanismRenderer {
         event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
         event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
 
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heavy_water"));
-
         //TODO: Figure out why this sometimes causes crashes during startup
         TransmitterModel.addIcons(event);
 

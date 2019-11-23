@@ -8,7 +8,7 @@ import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.common.MekanismGases;
+import mekanism.common.MekanismFluids;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
@@ -25,7 +25,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbineCasing> {
 
     @Nonnull
-    private static final FluidStack STEAM = new FluidStack(MekanismGases.STEAM.getFluid(), 1);
+    private static FluidStack STEAM = FluidStack.EMPTY;
 
     @Override
     public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
@@ -49,6 +49,9 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
             RenderTurbineRotor.internalRender = false;
 
             if (tileEntity.structure.fluidStored.getAmount() > 0 && tileEntity.structure.volLength > 0) {
+                if (STEAM.isEmpty()) {
+                    STEAM = MekanismFluids.STEAM.getFluidStack(1);
+                }
                 RenderData data = new RenderData();
 
                 data.location = tileEntity.structure.renderLocation;

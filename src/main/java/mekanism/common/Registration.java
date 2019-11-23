@@ -50,11 +50,6 @@ public class Registration {
     }
 
     @SubscribeEvent
-    public static void registerFluids(RegistryEvent.Register<Fluid> event) {
-        MekanismGases.registerFluids(event.getRegistry());
-    }
-
-    @SubscribeEvent
     public static void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         MekanismRecipeType.registerRecipeTypes(event.getRegistry());
         //TODO: Register a custom shaped crafting recipe serializer if needed

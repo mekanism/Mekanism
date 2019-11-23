@@ -1,40 +1,32 @@
 package mekanism.common.registration;
 
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
 public class DoubleWrappedRegistryObject<PRIMARY extends IForgeRegistryEntry<? super PRIMARY>, SECONDARY extends IForgeRegistryEntry<? super SECONDARY>> implements INamedEntry {
 
-    private final RegistryObject<PRIMARY> primaryRegistryObject;
-    private final RegistryObject<SECONDARY> secondaryRegistryObject;
+    private final RegistryObject<PRIMARY> primaryRO;
+    private final RegistryObject<SECONDARY> secondaryRO;
 
-    public DoubleWrappedRegistryObject(RegistryObject<PRIMARY> primaryRegistryObject, RegistryObject<SECONDARY> secondaryRegistryObject) {
-        this.primaryRegistryObject = primaryRegistryObject;
-        this.secondaryRegistryObject = secondaryRegistryObject;
+    public DoubleWrappedRegistryObject(RegistryObject<PRIMARY> primaryRO, RegistryObject<SECONDARY> secondaryRO) {
+        this.primaryRO = primaryRO;
+        this.secondaryRO = secondaryRO;
     }
 
-    //TODO: Should this be nullable?? the registryObject.get is. We should handle the fact that extenders of this previously thought it is nonnull
-    @Nullable
     public PRIMARY getPrimary() {
-        return primaryRegistryObject.get();
+        return primaryRO.get();
     }
 
-    @Nullable
     public SECONDARY getSecondary() {
-        return secondaryRegistryObject.get();
-    }
-
-    public RegistryObject<PRIMARY> getPrimaryInternal() {
-        return primaryRegistryObject;
-    }
-
-    public RegistryObject<SECONDARY> getSecondaryInternal() {
-        return secondaryRegistryObject;
+        return secondaryRO.get();
     }
 
     @Override
     public String getInternalRegistryName() {
-        return primaryRegistryObject.getId().getPath();
+        return primaryRO.getId().getPath();
     }
 }

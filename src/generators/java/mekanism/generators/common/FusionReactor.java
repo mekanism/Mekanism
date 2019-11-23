@@ -12,6 +12,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismGases;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tags.MekanismTags;
@@ -168,7 +169,7 @@ public class FusionReactor {
             waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
             if (waterToVaporize > 0) {
                 getWaterTank().drain(waterToVaporize, FluidAction.EXECUTE);
-                getSteamTank().fill(new FluidStack(MekanismGases.STEAM.getFluid(), waterToVaporize), FluidAction.EXECUTE);
+                getSteamTank().fill(MekanismFluids.STEAM.getFluidStack(waterToVaporize), FluidAction.EXECUTE);
             }
 
             caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
