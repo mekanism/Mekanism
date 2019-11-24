@@ -2,14 +2,12 @@ package mekanism.common.tile.factory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
@@ -26,7 +24,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
-    private IInventorySlot extraSlot;
+    private InfusionInventorySlot extraSlot;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -45,7 +43,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Nullable
     @Override
-    protected IInventorySlot getExtraSlot() {
+    protected InfusionInventorySlot getExtraSlot() {
         return extraSlot;
     }
 
@@ -101,27 +99,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Override
     protected void handleSecondaryFuel() {
-        //TODO: Move to logic in the slot
-        ItemStack extra = extraSlot.getStack();
-        if (!extra.isEmpty()) {
-            ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(world, recipe -> recipe.getInput().test(extra));
-            if (foundRecipe != null) {
-                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(extra);
-                if (!itemInput.isEmpty()) {
-                    InfusionStack pendingInfusionInput = foundRecipe.getOutput(itemInput);
-                    if (!pendingInfusionInput.isEmpty()) {
-                        if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
-                            //If we can accept it all, then add it and decrease our input
-                            infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
-                            int amountUsed = itemInput.getCount();
-                            if (extraSlot.shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
-                                //TODO: Print warning/error
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        extraSlot.fillTank();
     }
 
     @Override

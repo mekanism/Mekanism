@@ -29,18 +29,18 @@ public class InfusionInventorySlot extends BasicInventorySlot {
      * Gets the InfusionStack from ItemStack conversion, ignoring the size of the item stack.
      */
     @Nonnull
-    private static InfusionStack getPotentialConversion(World world, ItemStack itemStack) {
+    private static InfusionStack getPotentialConversion(@Nullable World world, ItemStack itemStack) {
         ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(world, recipe -> recipe.getInput().testType(itemStack));
         return foundRecipe == null ? InfusionStack.EMPTY : foundRecipe.getOutput(itemStack);
     }
 
-    //TODO: Rewrite this some once we make infusion tanks work as items
+    //TODO: Rewrite this some once we make infusion tanks work as items, so that it also supports handling
     public static InfusionInventorySlot input(InfusionTank infusionTank, Predicate<InfuseType> isValidInfusion, Supplier<World> worldSupplier,
           @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(isValidInfusion, "Infusion validity check cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
-        return new InfusionInventorySlot(infusionTank, stack -> {
+        return new InfusionInventorySlot(infusionTank, worldSupplier, stack -> {
             InfusionStack infusionStack = getPotentialConversion(worldSupplier.get(), stack);
             //Allow extraction IFF after a reload an item no longer has an infusion type
             return infusionStack.isEmpty() || !isValidInfusion.test(infusionStack.getType());
@@ -56,11 +56,13 @@ public class InfusionInventorySlot extends BasicInventorySlot {
 
     //TODO: Replace InfusionTank with an IInfusionHandler??
     private final InfusionTank infusionTank;
+    private final Supplier<World> worldSupplier;
 
-    private InfusionInventorySlot(InfusionTank infusionTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
+    private InfusionInventorySlot(InfusionTank infusionTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
+          Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
         this.infusionTank = infusionTank;
+        this.worldSupplier = worldSupplier;
     }
 
     @Override
@@ -68,5 +70,25 @@ public class InfusionInventorySlot extends BasicInventorySlot {
         return ContainerSlotType.EXTRA;
     }
 
-    //TODO: Make it so that the infusion tank fills
+    public void fillTank() {
+        if (!current.isEmpty()) {
+            ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
+            if (foundRecipe != null) {
+                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
+                if (!itemInput.isEmpty()) {
+                    InfusionStack pendingInfusionInput = foundRecipe.getOutput(itemInput);
+                    if (!pendingInfusionInput.isEmpty()) {
+                        if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
+                            //If we can accept it all, then add it and decrease our input
+                            infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
+                            int amountUsed = itemInput.getCount();
+                            if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
+                                //TODO: Print warning/error
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

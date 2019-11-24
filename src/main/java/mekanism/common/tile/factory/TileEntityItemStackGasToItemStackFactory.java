@@ -9,11 +9,9 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -44,7 +42,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
-    private IInventorySlot extraSlot;
+    private GasInventorySlot extraSlot;
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -74,7 +72,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Nullable
     @Override
-    protected IInventorySlot getExtraSlot() {
+    protected GasInventorySlot getExtraSlot() {
         return extraSlot;
     }
 
@@ -137,40 +135,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     protected void handleSecondaryFuel() {
-        //TODO: Move logic into the slot
-        ItemStack extra = extraSlot.getStack();
-        if (!extra.isEmpty() && gasTank.getNeeded() > 0) {
-            if (extra.getItem() instanceof IGasItem) {
-                IGasItem item = (IGasItem) extra.getItem();
-                GasStack gasInItem = item.getGas(extra);
-                //Check to make sure it can provide the gas it contains
-                if (!gasInItem.isEmpty()) {
-                    Gas gas = gasInItem.getType();
-                    if (item.canProvideGas(extra, gas) && gasTank.canReceiveType(gas)) {
-                        int amount = Math.min(gasTank.getNeeded(), Math.min(gasInItem.getAmount(), item.getRate(extra)));
-                        if (amount > 0 && isValidGas(gas)) {
-                            gasTank.fill(item.removeGas(extra, amount), Action.EXECUTE);
-                            return;
-                        }
-                    }
-                }
-            }
-            //Try doing it by conversion
-            ItemStackToGasRecipe foundRecipe = MekanismRecipeType.GAS_CONVERSION.findFirst(world, recipe -> recipe.getInput().test(extra));
-            if (foundRecipe != null) {
-                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(extra);
-                if (!itemInput.isEmpty()) {
-                    GasStack output = foundRecipe.getOutput(itemInput);
-                    if (!output.isEmpty() && gasTank.canReceive(output) && isValidGas(output.getType())) {
-                        gasTank.fill(output, Action.EXECUTE);
-                        int amountUsed = itemInput.getCount();
-                        if (extraSlot.shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
-                            //TODO: Print warning/error
-                        }
-                    }
-                }
-            }
-        }
+        extraSlot.fillTankOrConvert();
     }
 
     @Nonnull

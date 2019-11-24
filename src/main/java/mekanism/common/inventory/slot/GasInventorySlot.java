@@ -38,13 +38,13 @@ public class GasInventorySlot extends BasicInventorySlot {
     /**
      * Fills/Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
-    public static GasInventorySlot rotary(GasTank gasTank, Predicate<@NonNull Gas> validInput, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory,
+    public static GasInventorySlot rotary(GasTank gasTank, Predicate<@NonNull Gas> isValidGas, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory,
           int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
-        Objects.requireNonNull(validInput, "Input validity check cannot be null");
+        Objects.requireNonNull(isValidGas, "Gas validity check cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         //Mode == true if gas to fluid
-        return new GasInventorySlot(gasTank, alwaysFalse, stack -> {
+        return new GasInventorySlot(gasTank, isValidGas, alwaysFalse, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
@@ -56,7 +56,7 @@ public class GasInventorySlot extends BasicInventorySlot {
                     return !mode;
                 }
                 //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
-                return mode && validInput.test(gasContained.getType()) && gasTank.fill(gasContained, Action.SIMULATE) > 0;
+                return mode && isValidGas.test(gasContained.getType()) && gasTank.fill(gasContained, Action.SIMULATE) > 0;
             }
             return false;
         }, stack -> {
@@ -69,7 +69,7 @@ public class GasInventorySlot extends BasicInventorySlot {
                     //TODO: Add a way to the capability to see if the item can ever output gas, as things like jetpacks cannot have the gas be drained from them
                     // Strictly speaking this currently could be done as gasItem.canProvideGas(stack, MekanismAPI.EMPTY_GAS), but is being ignored instead for clarity
                     GasStack containedGas = gasItem.getGas(stack);
-                    return !containedGas.isEmpty() && validInput.test(containedGas.getType());
+                    return !containedGas.isEmpty() && isValidGas.test(containedGas.getType());
                 }
                 //Output tank, so we want to drain
                 //Only accept items that are gas items and can accept some form of gas
@@ -87,7 +87,7 @@ public class GasInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(isValidGas, "Gas validity check cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
-        return new GasInventorySlot(gasTank, stack -> {
+        return new GasInventorySlot(gasTank, isValidGas, worldSupplier, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
@@ -133,7 +133,7 @@ public class GasInventorySlot extends BasicInventorySlot {
     public static GasInventorySlot fill(GasTank gasTank, Predicate<@NonNull Gas> isValidGas, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(isValidGas, "Gas validity check cannot be null");
-        return new GasInventorySlot(gasTank, stack -> {
+        return new GasInventorySlot(gasTank, isValidGas, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
@@ -209,18 +209,73 @@ public class GasInventorySlot extends BasicInventorySlot {
         }, inventory, x, y);
     }
 
+    private final Predicate<@NonNull Gas> isValidGas;
+    //TODO: Do we want to make other things than just the conversion one have a world supplier?
+    // Currently it is the only one that actually needs it
+    private final Supplier<World> worldSupplier;
     //TODO: Replace GasTank with an IGasHandler??
     private final GasTank gasTank;
 
     private GasInventorySlot(GasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
           @Nullable IMekanismInventory inventory, int x, int y) {
+        //TODO: Decide if this should be always true or always false for being a valid gas. This is current only used by the draining method
+        this(gasTank, gas -> false, canExtract, canInsert, validator, inventory, x, y);
+    }
+
+    private GasInventorySlot(GasTank gasTank, Predicate<@NonNull Gas> isValidGas, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
+        this(gasTank, isValidGas, () -> null, canExtract, canInsert, validator, inventory, x, y);
+    }
+
+    private GasInventorySlot(GasTank gasTank, Predicate<@NonNull Gas> isValidGas, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
+          Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
         this.gasTank = gasTank;
+        this.isValidGas = isValidGas;
+        this.worldSupplier = worldSupplier;
     }
 
     @Override
     protected ContainerSlotType getSlotType() {
         return ContainerSlotType.EXTRA;
+    }
+
+    /**
+     * Fills tank from slot, allowing for the item to also be converted to gas if need be
+     */
+    public void fillTankOrConvert() {
+        if (!current.isEmpty() && gasTank.getNeeded() > 0) {
+            if (current.getItem() instanceof IGasItem) {
+                IGasItem item = (IGasItem) current.getItem();
+                GasStack gasInItem = item.getGas(current);
+                //Check to make sure it can provide the gas it contains
+                if (!gasInItem.isEmpty()) {
+                    Gas gas = gasInItem.getType();
+                    if (item.canProvideGas(current, gas) && gasTank.canReceiveType(gas)) {
+                        int amount = Math.min(gasTank.getNeeded(), Math.min(gasInItem.getAmount(), item.getRate(current)));
+                        if (amount > 0 && isValidGas.test(gas)) {
+                            gasTank.fill(item.removeGas(current, amount), Action.EXECUTE);
+                            return;
+                        }
+                    }
+                }
+            }
+            //Try doing it by conversion
+            ItemStackToGasRecipe foundRecipe = MekanismRecipeType.GAS_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
+            if (foundRecipe != null) {
+                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
+                if (!itemInput.isEmpty()) {
+                    GasStack output = foundRecipe.getOutput(itemInput);
+                    if (!output.isEmpty() && gasTank.canReceive(output) && isValidGas.test(output.getType())) {
+                        gasTank.fill(output, Action.EXECUTE);
+                        int amountUsed = itemInput.getCount();
+                        if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
+                            //TODO: Print warning/error
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //TODO: Make it so that the gas tank drains/fills
