@@ -12,9 +12,6 @@ import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
-import mekanism.api.infuse.InfuseRegistry;
-import mekanism.api.infuse.InfusionStack;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
@@ -36,14 +33,12 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.integration.OreDictManager;
 import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.particle.MekanismParticleType;
-import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.security.SecurityFrequency;
@@ -55,7 +50,6 @@ import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -64,7 +58,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -231,33 +224,6 @@ public class Mekanism {
         return recipeCacheManager;
     }
 
-    /**
-     * Adds all in-game crafting, smelting and machine recipes.
-     */
-    public static void addRecipes() {
-        //TODO: Make this be a proper recipe system
-        //Infuse objects
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.COAL), new InfusionStack(MekanismInfuseTypes.CARBON, 10));
-        //TODO: Figure out why charcoal is twice as good as coal, if we make it be the same we can instead use the coals tag
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Items.CHARCOAL), new InfusionStack(MekanismInfuseTypes.CARBON, 20));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.COAL_BLOCK), new InfusionStack(MekanismInfuseTypes.CARBON, 90));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismBlock.CHARCOAL_BLOCK), new InfusionStack(MekanismInfuseTypes.CARBON, 180));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_CARBON), new InfusionStack(MekanismInfuseTypes.CARBON, 80));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE), new InfusionStack(MekanismInfuseTypes.REDSTONE, 10));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Blocks.REDSTONE_BLOCK), new InfusionStack(MekanismInfuseTypes.REDSTONE, 90));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_REDSTONE), new InfusionStack(MekanismInfuseTypes.REDSTONE, 80));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_DIAMOND), new InfusionStack(MekanismInfuseTypes.DIAMOND, 10));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_DIAMOND), new InfusionStack(MekanismInfuseTypes.DIAMOND, 80));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_REFINED_OBSIDIAN), new InfusionStack(MekanismInfuseTypes.REFINED_OBSIDIAN, 10));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.ENRICHED_OBSIDIAN), new InfusionStack(MekanismInfuseTypes.REFINED_OBSIDIAN, 80));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismItem.BIO_FUEL), new InfusionStack(MekanismInfuseTypes.BIO, 5));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(Tags.Items.MUSHROOMS), new InfusionStack(MekanismInfuseTypes.FUNGI, 10));
-        InfuseRegistry.registerInfuseObject(ItemStackIngredient.from(MekanismTags.DUSTS_TIN), new InfusionStack(MekanismInfuseTypes.TIN, 10));
-
-        //Fuel Gases
-        FuelHandler.addGas(MekanismTags.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
-    }
-
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {
         IReloadableResourceManager resourceManager = event.getServer().getResourceManager();
         resourceManager.addReloadListener(getTagManager());
@@ -327,9 +293,8 @@ public class Mekanism {
         //TODO: Make recipes be done from JSON
         //TODO: Bin recipe
         //event.getRegistry().register(new BinRecipe());
-        addRecipes();
-        OreDictManager.init();
-        GasConversionHandler.addDefaultGasMappings();
+        //Fuel Gases
+        FuelHandler.addGas(MekanismTags.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
 
         //Register the mod's world generators
         GenHandler.setupWorldGeneration();

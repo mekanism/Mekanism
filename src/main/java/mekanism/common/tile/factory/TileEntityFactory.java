@@ -472,11 +472,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
      */
     public abstract boolean isValidInputItem(@Nonnull ItemStack stack);
 
-    /**
-     * Like isItemValidForSlot makes no assumptions about current stored types
-     */
-    public abstract boolean isValidExtraItem(@Nonnull ItemStack stack);
-
     public int getProgress(int cacheIndex) {
         if (isRemote()) {
             return progress[cacheIndex];

@@ -1,8 +1,8 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.api.gas.GasStack;
-import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.infuse.InfusionStack;
+import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.MekanismRecipeSerializers;
@@ -12,33 +12,33 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 
-public class ItemStackToGasIRecipe extends ItemStackToGasRecipe {
+public class InfusionConversionIRecipe extends ItemStackToInfuseTypeRecipe {
 
-    public ItemStackToGasIRecipe(ResourceLocation id, ItemStackIngredient input, GasStack output) {
+    public InfusionConversionIRecipe(ResourceLocation id, ItemStackIngredient input, InfusionStack output) {
         super(id, input, output);
     }
 
     @Nonnull
     @Override
-    public IRecipeType<ItemStackToGasRecipe> getType() {
-        return MekanismRecipeType.OXIDIZING;
+    public IRecipeType<ItemStackToInfuseTypeRecipe> getType() {
+        return MekanismRecipeType.INFUSION_CONVERSION;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ItemStackToGasRecipe> getSerializer() {
-        return MekanismRecipeSerializers.OXIDIZING.getRecipeSerializer();
+    public IRecipeSerializer<ItemStackToInfuseTypeRecipe> getSerializer() {
+        return MekanismRecipeSerializers.INFUSION_CONVERSION.getRecipeSerializer();
     }
 
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlock.CHEMICAL_OXIDIZER.getName();
+        return "infusion_conversion";
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlock.CHEMICAL_OXIDIZER.getItemStack();
+        return MekanismBlock.METALLURGIC_INFUSER.getItemStack();
     }
 }

@@ -6,6 +6,8 @@ import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.infuse.InfuseType;
+import mekanism.api.infuse.InfusionStack;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -47,7 +49,16 @@ public class SerializerHelper {
             throw new JsonSyntaxException("Expected '" + key + "' to be an object");
         }
         return deserializeFluid(JSONUtils.getJsonObject(json, key));
+    }
 
+    public static InfusionStack getInfusionStack(@Nonnull JsonObject json, @Nonnull String key) {
+        if (!json.has(key)) {
+            throw new JsonSyntaxException("Missing '" + key + "', expected to find an object");
+        }
+        if (!json.get(key).isJsonObject()) {
+            throw new JsonSyntaxException("Expected '" + key + "' to be an object");
+        }
+        return deserializeInfuseType(JSONUtils.getJsonObject(json, key));
     }
 
     public static GasStack deserializeGas(@Nonnull JsonObject json) {
@@ -90,5 +101,25 @@ public class SerializerHelper {
         //TODO: Add support for reading NBT of fluid
         CompoundNBT nbt = null;
         return new FluidStack(fluid, amount, nbt);
+    }
+
+    public static InfusionStack deserializeInfuseType(@Nonnull JsonObject json) {
+        if (!json.has("amount")) {
+            throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
+        }
+        JsonElement count = json.get("amount");
+        if (!JSONUtils.isNumber(count)) {
+            throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
+        }
+        int amount = count.getAsJsonPrimitive().getAsInt();
+        if (amount < 1) {
+            throw new JsonSyntaxException("Expected amount to be greater than zero.");
+        }
+        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, "infuse_type"));
+        InfuseType infuseType = InfuseType.getFromRegistry(resourceLocation);
+        if (infuseType.isEmptyType()) {
+            throw new JsonSyntaxException("Invalid infusion type '" + resourceLocation + "'");
+        }
+        return new InfusionStack(infuseType, amount);
     }
 }

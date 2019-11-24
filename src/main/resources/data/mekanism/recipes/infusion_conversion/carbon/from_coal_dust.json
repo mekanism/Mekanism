@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "output": {
+    "infuse_type": "mekanism:carbon",
+    "amount": 10
+  },
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/coal"
+    }
+  }
+}

@@ -208,7 +208,9 @@ public class GeneralConfig implements IMekanismConfig {
         energyUnit = builder.comment("Displayed energy type in Mekanism GUIs.").defineEnum("energyType", EnergyType.FE);
         tempUnit = builder.comment("Displayed temperature unit in Mekanism GUIs.").defineEnum("temperatureUnit", TempType.K);
 
-        voidInvalidGases = builder.comment("Should machines void the gas inside of them on load if there is no recipe using that gas.").define("voidInvalidGases", true);
+        //TODO: FIXME, currently is broken in 1.14 (at least in singleplayer) due to recipes not existing when it checks them for voiding the gas.
+        voidInvalidGases = builder.comment("Should machines void the gas inside of them on load if there is no recipe using that gas. Note: Currently broken in 1.14 and always voids the gas.")
+              .define("voidInvalidGases", false);
 
         builder.pop();
         configSpec = builder.build();

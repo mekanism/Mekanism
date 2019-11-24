@@ -59,11 +59,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
         return containsRecipe(recipe -> recipe.getInput().testType(stack));
     }
 
-    @Override
-    public boolean isValidExtraItem(@Nonnull ItemStack stack) {
-        return false;
-    }
-
     //TODO: Improve the logic for this so that it more accurately handles the secondary output slot type stacking
     @Override
     public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,

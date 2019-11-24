@@ -7,9 +7,9 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
+import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
@@ -102,7 +102,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(infusionSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this, 17, 35));
+        builder.addSlot(infusionSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this::getWorld, this, 17, 35));
         //TODO: Verify that it is properly querying the infusion tank's type if it changes
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             if (!infusionTank.isEmpty()) {
@@ -123,14 +123,20 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             //TODO: Move this logic into the slot
             ItemStack infuseInput = infusionSlot.getStack();
             if (!infuseInput.isEmpty()) {
-                InfusionStack pendingInfusionInput = InfuseRegistry.getObject(infuseInput);
-                if (!pendingInfusionInput.isEmpty()) {
-                    //TODO: Check this still works properly
-                    if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
-                        //If we can accept it all, then add it and decrease our input
-                        infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
-                        if (infusionSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                            //TODO: Print error/warning
+                ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(world, recipe -> recipe.getInput().test(infuseInput));
+                if (foundRecipe != null) {
+                    ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(infuseInput);
+                    if (!itemInput.isEmpty()) {
+                        InfusionStack pendingInfusionInput = foundRecipe.getOutput(itemInput);
+                        if (!pendingInfusionInput.isEmpty()) {
+                            if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
+                                //If we can accept it all, then add it and decrease our input
+                                infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
+                                int amountUsed = itemInput.getCount();
+                                if (infusionSlot.shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
+                                    //TODO: Print warning/error
+                                }
+                            }
                         }
                     }
                 }

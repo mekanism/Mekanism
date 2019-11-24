@@ -15,6 +15,7 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
+import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -30,7 +31,7 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.recipe.GasConversionHandler;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -132,7 +133,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 56, 17));
-        builder.addSlot(secondarySlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, this, 56, 53));
+        builder.addSlot(secondarySlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, this::getWorld, this, 56, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 31, 35));
         return builder.build();
@@ -153,18 +154,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         factoryInventory.set(5 + 3, inventory.get(2));
         factoryInventory.set(1, inventory.get(3));
         factoryInventory.set(0, inventory.get(4));*/
-    }
-
-    /**
-     * Gets the amount of ticks the declared itemstack can fuel this machine.
-     *
-     * @param itemStack - itemstack to check with
-     *
-     * @return fuel ticks
-     */
-    @Nonnull
-    public GasStack getItemGas(ItemStack itemStack) {
-        return GasConversionHandler.getItemGas(itemStack, gasTank, this::isValidGas);
     }
 
     public boolean isValidGas(@Nonnull Gas gas) {
@@ -189,17 +178,34 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     public void handleSecondaryFuel() {
         //TODO: Move this stuff into the slot itself because of getStack not supposed to being modified
         ItemStack itemStack = secondarySlot.getStack();
-        int needed = gasTank.getNeeded();
-        if (!itemStack.isEmpty() && needed > 0) {
-            GasStack gasStack = getItemGas(itemStack);
-            if (needed >= gasStack.getAmount()) {
-                if (itemStack.getItem() instanceof IGasItem) {
-                    IGasItem item = (IGasItem) itemStack.getItem();
-                    gasTank.fill(item.removeGas(itemStack, gasStack.getAmount()), Action.EXECUTE);
-                } else {
-                    gasTank.fill(gasStack, Action.EXECUTE);
-                    if (secondarySlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                        //TODO: Print error that something went wrong
+        if (!itemStack.isEmpty() && gasTank.getNeeded() > 0) {
+            if (itemStack.getItem() instanceof IGasItem) {
+                IGasItem item = (IGasItem) itemStack.getItem();
+                GasStack gasInItem = item.getGas(itemStack);
+                //Check to make sure it can provide the gas it contains
+                if (!gasInItem.isEmpty()) {
+                    Gas gas = gasInItem.getType();
+                    if (item.canProvideGas(itemStack, gas) && gasTank.canReceiveType(gas)) {
+                        int amount = Math.min(gasTank.getNeeded(), Math.min(gasInItem.getAmount(), item.getRate(itemStack)));
+                        if (amount > 0 && isValidGas(gas)) {
+                            gasTank.fill(item.removeGas(itemStack, amount), Action.EXECUTE);
+                            return;
+                        }
+                    }
+                }
+            }
+            //Try doing it by conversion
+            ItemStackToGasRecipe foundRecipe = MekanismRecipeType.GAS_CONVERSION.findFirst(world, recipe -> recipe.getInput().test(itemStack));
+            if (foundRecipe != null) {
+                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(itemStack);
+                if (!itemInput.isEmpty()) {
+                    GasStack output = foundRecipe.getOutput(itemInput);
+                    if (!output.isEmpty() && gasTank.canReceive(output) && isValidGas(output.getType())) {
+                        gasTank.fill(output, Action.EXECUTE);
+                        int amountUsed = itemInput.getCount();
+                        if (secondarySlot.shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
+                            //TODO: Print warning/error
+                        }
                     }
                 }
             }

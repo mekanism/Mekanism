@@ -105,6 +105,19 @@ public abstract class ChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     }
 
     /**
+     * If this ChemicalTank can receive the specified chemical stack. Will return false if there is not enough room for it
+     *
+     * @param chemicalStack - The chemical stack to check
+     *
+     * @return if this ChemicalTank can accept the defined chemical stack
+     */
+    //TODO: Rename to canFill
+    public boolean canReceive(@Nonnull STACK chemicalStack) {
+        //TODO: Make this simulate instead?
+        return canReceiveType(chemicalStack.getType()) && chemicalStack.getAmount() <= getNeeded();
+    }
+
+    /**
      * If this ChemicalTank can receive the specified type of chemical. Will return TRUE even if this tank is full.
      *
      * @param chemical - The chemical to check

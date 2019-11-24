@@ -10,6 +10,7 @@ import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
@@ -17,6 +18,7 @@ import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;
 import mekanism.common.recipe.impl.ChemicalInfuserIRecipe;
+import mekanism.common.recipe.impl.ChemicalOxidizerIRecipe;
 import mekanism.common.recipe.impl.CombinerIRecipe;
 import mekanism.common.recipe.impl.CompressingIRecipe;
 import mekanism.common.recipe.impl.CrushingIRecipe;
@@ -24,10 +26,11 @@ import mekanism.common.recipe.impl.ElectrolysisIRecipe;
 import mekanism.common.recipe.impl.EnrichingIRecipe;
 import mekanism.common.recipe.impl.FluidGasToGasIRecipe;
 import mekanism.common.recipe.impl.FluidToFluidIRecipe;
+import mekanism.common.recipe.impl.GasConversionIRecipe;
 import mekanism.common.recipe.impl.GasToGasIRecipe;
+import mekanism.common.recipe.impl.InfusionConversionIRecipe;
 import mekanism.common.recipe.impl.InjectingIRecipe;
 import mekanism.common.recipe.impl.ItemStackGasToGasIRecipe;
-import mekanism.common.recipe.impl.ItemStackToGasIRecipe;
 import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
 import mekanism.common.recipe.impl.PressurizedReactionIRecipe;
 import mekanism.common.recipe.impl.PurifyingIRecipe;
@@ -43,6 +46,7 @@ import mekanism.common.recipe.serializer.GasToItemStackRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackGasToGasRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackGasToItemStackRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToGasRecipeSerializer;
+import mekanism.common.recipe.serializer.ItemStackToInfuseTypeRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToItemStackRecipeSerializer;
 import mekanism.common.recipe.serializer.MetallurgicInfuserRecipeSerializer;
 import mekanism.common.recipe.serializer.PressurizedReactionRecipeSerializer;
@@ -82,7 +86,10 @@ public class MekanismRecipeSerializers {
     public static final IRecipeSerializerRegistryObject<ItemStackGasToItemStackRecipe> PURIFYING = RECIPE_SERIALIZERS.register("purifying", () -> new ItemStackGasToItemStackRecipeSerializer<>(PurifyingIRecipe::new));
     public static final IRecipeSerializerRegistryObject<ItemStackGasToItemStackRecipe> INJECTING = RECIPE_SERIALIZERS.register("injecting", () -> new ItemStackGasToItemStackRecipeSerializer<>(InjectingIRecipe::new));
 
-    public static final IRecipeSerializerRegistryObject<ItemStackToGasRecipe> OXIDIZING = RECIPE_SERIALIZERS.register("oxidizing", () -> new ItemStackToGasRecipeSerializer<>(ItemStackToGasIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackToGasRecipe> GAS_CONVERSION = RECIPE_SERIALIZERS.register("gas_conversion", () -> new ItemStackToGasRecipeSerializer<>(GasConversionIRecipe::new));
+    public static final IRecipeSerializerRegistryObject<ItemStackToGasRecipe> OXIDIZING = RECIPE_SERIALIZERS.register("oxidizing", () -> new ItemStackToGasRecipeSerializer<>(ChemicalOxidizerIRecipe::new));
+
+    public static final IRecipeSerializerRegistryObject<ItemStackToInfuseTypeRecipe> INFUSION_CONVERSION = RECIPE_SERIALIZERS.register("infusion_conversion", () -> new ItemStackToInfuseTypeRecipeSerializer<>(InfusionConversionIRecipe::new));
 
     public static final IRecipeSerializerRegistryObject<MetallurgicInfuserRecipe> METALLURGIC_INFUSING = RECIPE_SERIALIZERS.register("metallurgic_infusing", () -> new MetallurgicInfuserRecipeSerializer<>(MetallurgicInfuserIRecipe::new));
 

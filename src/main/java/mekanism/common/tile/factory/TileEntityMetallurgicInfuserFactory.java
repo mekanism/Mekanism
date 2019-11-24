@@ -4,12 +4,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
@@ -36,7 +36,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
-        builder.addSlot(extraSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this, 7, 57));
+        builder.addSlot(extraSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this::getWorld, this, 7, 57));
     }
 
     public InfusionTank getInfusionTank() {
@@ -52,12 +52,6 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
         return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
-    }
-
-    @Override
-    public boolean isValidExtraItem(@Nonnull ItemStack stack) {
-        InfusionStack infuse = InfuseRegistry.getObject(stack);
-        return !infuse.isEmpty() && containsRecipe(recipe -> recipe.getInfusionInput().testType(infuse.getType()));
     }
 
     @Override
@@ -110,14 +104,20 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         //TODO: Move to logic in the slot
         ItemStack extra = extraSlot.getStack();
         if (!extra.isEmpty()) {
-            InfusionStack pendingInfusionInput = InfuseRegistry.getObject(extra);
-            if (!pendingInfusionInput.isEmpty()) {
-                //TODO: Check this still works properly
-                if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
-                    //If we can accept it all, then add it and decrease our input
-                    infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
-                    if (extraSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                        //TODO: Print warning/error
+            ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(world, recipe -> recipe.getInput().test(extra));
+            if (foundRecipe != null) {
+                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(extra);
+                if (!itemInput.isEmpty()) {
+                    InfusionStack pendingInfusionInput = foundRecipe.getOutput(itemInput);
+                    if (!pendingInfusionInput.isEmpty()) {
+                        if (infusionTank.fill(pendingInfusionInput, Action.SIMULATE) == pendingInfusionInput.getAmount()) {
+                            //If we can accept it all, then add it and decrease our input
+                            infusionTank.fill(pendingInfusionInput, Action.EXECUTE);
+                            int amountUsed = itemInput.getCount();
+                            if (extraSlot.shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
+                                //TODO: Print warning/error
+                            }
+                        }
                     }
                 }
             }

@@ -9,10 +9,11 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
+import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
+import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -24,14 +25,17 @@ import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvid
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.MekanismBlock;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.text.TextComponentUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
 
@@ -42,24 +46,31 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         super(helper, "mekanism:gui/blank.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
     }
 
-    public static List<ItemStack> getInfuseStacks(InfuseType type) {
-        List<ItemStack> list = new ArrayList<>();
-        InfuseRegistry.getObjectMap().forEach((key, value) -> {
-            if (value.isTypeEqual(type)) {
-                list.addAll(key.getRepresentations());
-            }
-        });
-        return list;
-    }
-
-    public static List<ItemStack> getInfuseStacks(@NonNull List<InfusionStack> infuseObjects) {
+    /**
+     * Helper method for JEI to get the stacks to display for a specific infusion ingredient
+     */
+    private static List<ItemStack> getInfuseStacks(@NonNull InfusionIngredient infusionIngredient) {
+        World world = Minecraft.getInstance().world;
+        if (world == null) {
+            return Collections.emptyList();
+        }
+        List<InfusionStack> infuseObjects = infusionIngredient.getRepresentations();
+        if (infuseObjects.isEmpty()) {
+            return Collections.emptyList();
+        }
+        //TODO: See if this can be improved
+        List<ItemStackToInfuseTypeRecipe> recipes = MekanismRecipeType.INFUSION_CONVERSION.getRecipes(world);
         List<ItemStack> infuseStacks = new ArrayList<>();
         Set<InfuseType> checkedTypes = new HashSet<>();
         for (InfusionStack infusionStack : infuseObjects) {
             InfuseType type = infusionStack.getType();
             if (checkedTypes.add(type)) {
                 //If we haven't already seen the type add all the stacks that produce it
-                infuseStacks.addAll(getInfuseStacks(infusionStack.getType()));
+                for (ItemStackToInfuseTypeRecipe recipe : recipes) {
+                    if (recipe.getOutputDefinition().isTypeEqual(type)) {
+                        infuseStacks.addAll(recipe.getInput().getRepresentations());
+                    }
+                }
             }
         }
         return infuseStacks;
@@ -89,9 +100,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     @Override
     public void setIngredients(MetallurgicInfuserRecipe recipe, IIngredients ingredients) {
         List<ItemStack> inputStacks = recipe.getItemInput().getRepresentations();
-        List<ItemStack> infuseStacks = MetallurgicInfuserRecipeCategory.getInfuseStacks(recipe.getInfusionInput().getRepresentations());
-        //TODO: Check
-        //ingredients.setInput(VanillaTypes.ITEM, recipe.recipeInput.inputStack);
+        List<ItemStack> infuseStacks = getInfuseStacks(recipe.getInfusionInput());
         ingredients.setInputLists(VanillaTypes.ITEM, Arrays.asList(inputStacks, infuseStacks));
         ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
     }
@@ -104,7 +113,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         itemStacks.init(2, true, 11, 18);
         itemStacks.set(0, recipe.getItemInput().getRepresentations());
         itemStacks.set(1, recipe.getOutputDefinition());
-        itemStacks.set(2, getInfuseStacks(recipe.getInfusionInput().getRepresentations()));
+        itemStacks.set(2, getInfuseStacks(recipe.getInfusionInput()));
     }
 
     @Override

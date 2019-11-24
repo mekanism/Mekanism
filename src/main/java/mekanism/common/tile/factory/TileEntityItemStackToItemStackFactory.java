@@ -25,11 +25,6 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     }
 
     @Override
-    public boolean isValidExtraItem(@Nonnull ItemStack stack) {
-        return false;
-    }
-
-    @Override
     public boolean inputProducesOutput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           boolean updateCache) {
         if (outputSlot.isEmpty()) {

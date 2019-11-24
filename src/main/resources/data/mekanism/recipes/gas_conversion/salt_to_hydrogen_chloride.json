@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:gas_conversion",
+  "output": {
+    "gas": "mekanism:hydrogen_chloride",
+    "amount": 2
+  },
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/salt"
+    }
+  }
+}

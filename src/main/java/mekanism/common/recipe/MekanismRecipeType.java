@@ -20,6 +20,7 @@ import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
+import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
@@ -71,7 +72,10 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
     public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> PURIFYING = create("purifying");
     public static final MekanismRecipeType<ItemStackGasToItemStackRecipe> INJECTING = create("injecting");
 
+    public static final MekanismRecipeType<ItemStackToGasRecipe> GAS_CONVERSION = create("gas_conversion");
     public static final MekanismRecipeType<ItemStackToGasRecipe> OXIDIZING = create("oxidizing");
+
+    public static final MekanismRecipeType<ItemStackToInfuseTypeRecipe> INFUSION_CONVERSION = create("infusion_conversion");
 
     public static final MekanismRecipeType<MetallurgicInfuserRecipe> METALLURGIC_INFUSING = create("metallurgic_infusing");
 

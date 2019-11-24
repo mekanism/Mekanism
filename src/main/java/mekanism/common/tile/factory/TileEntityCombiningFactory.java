@@ -31,17 +31,12 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Override
     protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
-        builder.addSlot(extraSlot = InputInventorySlot.at(this::isValidExtraItem, this, 7, 57));
+        builder.addSlot(extraSlot = InputInventorySlot.at(stack -> containsRecipe(recipe -> recipe.getExtraInput().testType(stack)), this, 7, 57));
     }
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
         return containsRecipe(recipe -> recipe.getMainInput().testType(stack));
-    }
-
-    @Override
-    public boolean isValidExtraItem(@Nonnull ItemStack stack) {
-        return containsRecipe(recipe -> recipe.getExtraInput().testType(stack));
     }
 
     @Override

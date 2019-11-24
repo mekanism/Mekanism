@@ -1,24 +1,18 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.actions.IAction;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
 import mekanism.common.Mekanism;
-import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
-import mekanism.common.integration.crafttweaker.gas.IGasStack;
-import mekanism.common.integration.crafttweaker.helpers.GasHelper;
-import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
-import mekanism.common.recipe.GasConversionHandler;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name("mekanism.gas.conversion")
 public class GasConversion {
 
+    //Commit that still had things this references in case it will be useful to find stuff quicker
+    // https://github.com/mekanism/Mekanism/tree/a911d7d76c9b2b253664b1d21c75b157cdb4ee01
     public static final String NAME = Mekanism.MOD_NAME + " Gas Conversion";
 
-    @ZenCodeType.Method
+    /*@ZenCodeType.Method
     public static void register(IIngredient ingredient, IGasStack gas) {
         if (IngredientHelper.checkNotNull(NAME, ingredient, gas)) {
             CrafttweakerIntegration.LATE_ADDITIONS.add(new Add(ingredient, gas));
@@ -96,5 +90,5 @@ public class GasConversion {
         public String describe() {
             return "Removing all gas conversions.";
         }
-    }
+    }*/
 }

@@ -2,37 +2,54 @@ package mekanism.common.inventory.slot;
 
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.infuse.InfuseRegistry;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class InfusionInventorySlot extends BasicInventorySlot {
 
+    /**
+     * Gets the InfusionStack from ItemStack conversion, ignoring the size of the item stack.
+     */
+    @Nonnull
+    private static InfusionStack getPotentialConversion(World world, ItemStack itemStack) {
+        ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(world, recipe -> recipe.getInput().testType(itemStack));
+        return foundRecipe == null ? InfusionStack.EMPTY : foundRecipe.getOutput(itemStack);
+    }
+
     //TODO: Rewrite this some once we make infusion tanks work as items
-    public static InfusionInventorySlot input(InfusionTank infusionTank, Predicate<InfuseType> isValidInfusion, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static InfusionInventorySlot input(InfusionTank infusionTank, Predicate<InfuseType> isValidInfusion, Supplier<World> worldSupplier,
+          @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(isValidInfusion, "Infusion validity check cannot be null");
+        Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new InfusionInventorySlot(infusionTank, stack -> {
-            InfusionStack infusionStack = InfuseRegistry.getObject(stack);
+            InfusionStack infusionStack = getPotentialConversion(worldSupplier.get(), stack);
             //Allow extraction IFF after a reload an item no longer has an infusion type
             return infusionStack.isEmpty() || !isValidInfusion.test(infusionStack.getType());
         }, stack -> {
-            InfusionStack infusionStack = InfuseRegistry.getObject(stack);
-            return !infusionStack.isEmpty() && (infusionTank.isEmpty() || infusionStack.isTypeEqual(infusionTank.getType()));
+            InfusionStack infusionStack = getPotentialConversion(worldSupplier.get(), stack);
+            //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
+            return !infusionStack.isEmpty() && isValidInfusion.test(infusionStack.getType()) && infusionTank.fill(infusionStack, Action.SIMULATE) > 0;
         }, stack -> {
-            InfusionStack infusionStack = InfuseRegistry.getObject(stack);
+            InfusionStack infusionStack = getPotentialConversion(worldSupplier.get(), stack);
             return !infusionStack.isEmpty() && isValidInfusion.test(infusionStack.getType());
         }, inventory, x, y);
     }
