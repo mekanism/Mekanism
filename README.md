@@ -3,7 +3,7 @@
 
 # Mekanism for Minecraft 1.14 #
 
-A partial list of things that need to be done for 1.14 can be found [here](https://github.com/mekanism/Mekanism/projects/3).
+There will be no official release of Mekanism for Minecraft 1.14, as we plan to skip to Minecraft 1.15. A partial list of things that need to be done can be found [here](https://github.com/mekanism/Mekanism/projects/3). However, there is lots of internal code refactoring/rewriting that is not included there.
 
 Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
 armor, and weapons. You can find more detail on the features at the [**Official Website**](http://aidancbrady.com/mekanism/).
