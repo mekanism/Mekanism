@@ -52,12 +52,4 @@ public class ItemBlockPressurizedTube extends ItemBlockMultipartAble<BlockPressu
             tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, Translation.of("tooltip.mekanism.gasses"), " (Mekanism)"));
         }
     }
-
-    //TODO: Multipart
-    /*@Override
-    @Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
-    protected IMultipart getMultiPart() {
-        //TODO
-        return MultipartMekanism.TRANSMITTER_MP;
-    }*/
 }

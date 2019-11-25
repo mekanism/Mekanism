@@ -32,8 +32,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration, IComparatorSupport {
 
     private static final String[] methods = new String[]{"isFormed", "getSteam", "getFlowRate", "getMaxFlow", "getSteamInput"};
-    //TODO: IC2
-    //public boolean ic2Registered = false;
     public TurbineFluidTank fluidTank;
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
     private int currentRedstoneLevel;
@@ -46,11 +44,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     @Override
     public void onUpdate() {
         super.onUpdate();
-        //TODO: IC2
-        /*if (!ic2Registered && MekanismUtils.useIC2()) {
-            register();
-        }*/
-
         if (!isRemote()) {
             if (structure != null) {
                 CableUtils.emit(this);
@@ -80,85 +73,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     public double getMaxOutput() {
         return structure != null ? structure.getEnergyCapacity() : 0;
     }
-
-    //TODO: IC2
-    /*@Override
-    public void onAdded() {
-        super.onAdded();
-        if (MekanismUtils.useIC2()) {
-            register();
-        }
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        if (MekanismUtils.useIC2()) {
-            deregister();
-        }
-        super.onChunkUnloaded();
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-        if (MekanismUtils.useIC2()) {
-            deregister();
-        }
-    }
-
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void register() {
-        if (!isRemote()) {
-            IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
-            if (registered != this) {
-                if (registered != null && ic2Registered) {
-                    MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
-                    ic2Registered = false;
-                } else {
-                    MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-                    ic2Registered = true;
-                }
-            }
-        }
-    }
-
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void deregister() {
-        if (!isRemote()) {
-            IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
-            if (registered != null && ic2Registered) {
-                MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
-                ic2Registered = false;
-            }
-        }
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int addEnergy(int amount) {
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getDemandedEnergy() {
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double injectEnergy(Direction direction, double amount, double voltage) {
-        return amount;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void drawEnergy(double amount) {
-        if (structure != null) {
-            double toDraw = Math.min(IC2Integration.fromEU(amount), getMaxOutput());
-            setEnergy(Math.max(getEnergy() - toDraw, 0));
-        }
-    }*/
 
     @Override
     public double acceptEnergy(Direction side, double amount, boolean simulate) {

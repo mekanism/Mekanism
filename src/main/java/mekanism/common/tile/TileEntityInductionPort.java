@@ -34,8 +34,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 
 public class TileEntityInductionPort extends TileEntityInductionCasing implements IEnergyWrapper, IConfigurable, IActiveState, IComparatorSupport {
 
-    //TODO: IC2
-    //private boolean ic2Registered = false;
     private int currentRedstoneLevel;
 
     /**
@@ -51,10 +49,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public void onUpdate() {
         super.onUpdate();
-        //TODO: IC2
-        /*if (!ic2Registered && MekanismUtils.useIC2()) {
-            register();
-        }*/
         if (!isRemote()) {
             if (structure != null && mode) {
                 CableUtils.emit(this);
@@ -120,88 +114,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         nbtTags.putBoolean("mode", mode);
         return nbtTags;
     }
-
-    //TODO: IC2
-    /*@Override
-    public void onAdded() {
-        super.onAdded();
-        if (MekanismUtils.useIC2()) {
-            register();
-        }
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        if (MekanismUtils.useIC2()) {
-            deregister();
-        }
-        super.onChunkUnloaded();
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-        if (MekanismUtils.useIC2()) {
-            deregister();
-        }
-    }
-
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void register() {
-        if (!isRemote()) {
-            IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
-            if (registered != this) {
-                if (registered != null && ic2Registered) {
-                    MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
-                    ic2Registered = false;
-                } else {
-                    MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-                    ic2Registered = true;
-                }
-            }
-        }
-    }
-
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void deregister() {
-        if (!isRemote()) {
-            IEnergyTile registered = EnergyNet.instance.getTile(world, getPos());
-            if (registered != null && ic2Registered) {
-                MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(registered));
-                ic2Registered = false;
-            }
-        }
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int addEnergy(int amount) {
-        addEnergy(IC2Integration.fromEU(amount), false);
-        //IC2 returns the amount of energy inside after the value, instead of amount actually added/removed
-        return IC2Integration.toEUAsInt(getEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getDemandedEnergy() {
-        return IC2Integration.toEU(getMaxEnergy() - getEnergy());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double injectEnergy(Direction direction, double amount, double voltage) {
-        TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(direction));
-        if (tile == null || CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, direction.getOpposite()).isPresent()) {
-            return amount;
-        }
-        return amount - IC2Integration.toEU(acceptEnergy(direction, IC2Integration.fromEU(amount), false));
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void drawEnergy(double amount) {
-        removeEnergy(IC2Integration.fromEU(amount), false);
-    }*/
 
     @Override
     public double acceptEnergy(Direction side, double amount, boolean simulate) {

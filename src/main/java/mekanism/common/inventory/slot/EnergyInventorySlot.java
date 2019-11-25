@@ -21,7 +21,6 @@ import net.minecraft.item.Items;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-//TODO: IC2 add back in support to the different predicates
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

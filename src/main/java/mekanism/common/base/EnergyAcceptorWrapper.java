@@ -13,17 +13,6 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
-    //TODO: IC2
-    /*private static final Supplier<EnergyAcceptorWrapper> IC2_WRAPPER = () -> {
-        if (MekanismUtils.useIC2()) {
-            IEnergyTile tile = EnergyNet.instance.getSubTile(tileEntity.getWorld(), tileEntity.getPos());
-            if (tile instanceof IEnergySink) {
-                return new IC2Acceptor((IEnergySink) tile);
-            }
-        }
-        return null;
-    };*/
-
     public Coord4D coord;
 
     public static EnergyAcceptorWrapper get(TileEntity tileEntity, Direction side) {
@@ -37,16 +26,6 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
                       return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, side).getIfPresent(ForgeAcceptor::new);
                   }
                   return null;
-                  //TODO: IC2
-                  /*
-                  if (MekanismUtils.useForge()) {
-                      return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, side).getIfPresentElseDo(
-                            ForgeAcceptor::new,
-                            IC2_WRAPPER
-                      );
-                  }
-                  return IC2_WRAPPER.get();
-                   */
               }
         );
         if (wrapper != null) {

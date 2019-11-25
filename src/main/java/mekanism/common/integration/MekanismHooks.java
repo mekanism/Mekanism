@@ -63,9 +63,8 @@ public final class MekanismHooks {
         }
         if (AE2Loaded) {
             registerAE2P2P();
-        }*/
-        //TODO: IC2
-        /*if (IC2Loaded) {
+        }
+        if (IC2Loaded) {
             hookIC2Recipes();
             Mekanism.logger.info("Hooked into IC2 successfully.");
         }
@@ -95,52 +94,6 @@ public final class MekanismHooks {
         }
         Wrenches.initialise();
     }
-
-    //TODO: IC2
-    /*@Method(modid = MekanismHooks.IC2_MOD_ID)
-    private void hookIC2Recipes() {
-        //TODO: Make a compound ingredient/Ingredient based on the set of things in the collection
-        for (MachineRecipe<IRecipeInput, Collection<ItemStack>> entry : Recipes.macerator.getRecipes()) {
-            List<ItemStack> inputs = entry.getInput().getInputs();
-            if (!inputs.isEmpty()) {
-                if (!Recipe.CRUSHER.contains(recipe -> recipe.getInput().testType(inputs.get(0)))) {
-                    List<String> names = OreDictCache.getOreDictName(inputs.get(0));
-                    for (String name : names) {
-                        if (name.startsWith("ingot") || name.startsWith("crystal")) {
-                            RecipeHandler.addCrusherRecipe(ItemStackIngredient.from(inputs.get(0)), entry.getOutput().iterator().next());
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        try {
-            Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("oreOsmium"), null, false,
-                  MekanismItem.OSMIUM_DUST.getItemStack(2));
-        } catch (Exception ignored) {
-        }
-
-        try {
-            Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotOsmium"), null, false,
-                  MekanismItem.OSMIUM_DUST.getItemStack());
-            Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotRefinedObsidian"), null, false,
-                  MekanismItem.REFINED_OBSIDIAN_DUST.getItemStack());
-            Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotRefinedGlowstone"), null, false,
-                  new ItemStack(Items.GLOWSTONE_DUST));
-            Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("ingotSteel"), null, false,
-                  MekanismItem.STEEL_DUST.getItemStack());
-        } catch (Exception ignored) {
-        }
-
-        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpIron"), null, false, MekanismItem.DIRTY_IRON_DUST.getItemStack());
-        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpGold"), null, false, MekanismItem.DIRTY_GOLD_DUST.getItemStack());
-        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpOsmium"), null, false, MekanismItem.DIRTY_OSMIUM_DUST.getItemStack());
-        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpCopper"), null, false, MekanismItem.DIRTY_COPPER_DUST.getItemStack());
-        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpTin"), null, false, MekanismItem.DIRTY_TIN_DUST.getItemStack());
-        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpSilver"), null, false, MekanismItem.DIRTY_SILVER_DUST.getItemStack());
-        Recipes.macerator.addRecipe(Recipes.inputFactory.forOreDict("clumpLead"), null, false, MekanismItem.DIRTY_LEAD_DUST.getItemStack());
-    }*/
 
     //TODO: ComputerCraft
     /*@Method(modid = COMPUTERCRAFT_MOD_ID)

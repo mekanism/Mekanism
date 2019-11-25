@@ -259,11 +259,9 @@ public class Mekanism {
 
     public void preInit() {
         //TODO: Find proper stage for this
-        //MekanismConfig.registerConfigs(ModLoadingContext.get());
-        //MekanismConfig.loadFromFiles();
         //sanity check the api location if not deobf
         //TODO: Check API
-        /*if (!((Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))) {
+        /*if (!FMLLoader.getNameFunction("srg").isPresent()) {
             String apiLocation = MekanismAPI.class.getProtectionDomain().getCodeSource().getLocation().toString();
             if (apiLocation.toLowerCase(Locale.ROOT).contains("-api.jar")) {
                 proxy.throwApiPresentException();
@@ -274,14 +272,6 @@ public class Mekanism {
         //proxy.loadConfiguration();
         proxy.onConfigSync(false);
         hooks.hookPreInit();
-
-        //TODO: Multipart
-        /*if (hooks.MCMPLoaded) {
-            //Set up multiparts
-            new MultipartMekanism();
-        } else {
-            logger.info("Didn't detect MCMP, ignoring compatibility package");
-        }*/
 
         Capabilities.registerCapabilities();
     }

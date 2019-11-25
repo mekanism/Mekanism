@@ -55,12 +55,4 @@ public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble<Block
                   Translation.of("tooltip.mekanism.universal"), ")"));
         }
     }
-
-    //TODO: Multipart
-    /*@Override
-    @Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
-    protected IMultipart getMultiPart() {
-        //TODO
-        return MultipartMekanism.TRANSMITTER_MP;
-    }*/
 }

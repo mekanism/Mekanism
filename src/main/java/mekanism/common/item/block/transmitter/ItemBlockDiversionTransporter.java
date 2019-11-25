@@ -35,12 +35,4 @@ public class ItemBlockDiversionTransporter extends ItemBlockMultipartAble<BlockD
             tooltip.add(TextComponentUtil.build("- ", EnumColor.DARK_RED, Translation.of("tooltip.diversionDesc")));
         }
     }
-
-    //TODO: Multipart
-    /*@Override
-    @Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
-    protected IMultipart getMultiPart() {
-        //TODO
-        return MultipartMekanism.TRANSMITTER_MP;
-    }*/
 }

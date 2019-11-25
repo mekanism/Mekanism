@@ -15,10 +15,6 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-//TODO: IC2
-/*@InterfaceList({
-      @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID)
-})*/
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData {
 
     public TileEntityAdvancedBoundingBlock() {
@@ -42,44 +38,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         }
         return inv.canBoundReceiveEnergy(getPos(), side);
     }
-
-    //TODO: IC2
-    /*@Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, Direction direction) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return false;
-        }
-        return inv.acceptsEnergyFrom(emitter, direction);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getDemandedEnergy() {
-        IAdvancedBoundingBlock inv = getInv();
-        return inv == null ? 0 : inv.getDemandedEnergy();
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double injectEnergy(Direction directionFrom, double amount, double voltage) {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null || !canReceiveEnergy(directionFrom)) {
-            return amount;
-        }
-        return inv.injectEnergy(directionFrom, amount, voltage);
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int getSinkTier() {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return 0;
-        }
-        return inv.getSinkTier();
-    }*/
 
     public IAdvancedBoundingBlock getInv() {
         // Return the inventory/main tile; note that it's possible, esp. when chunks are

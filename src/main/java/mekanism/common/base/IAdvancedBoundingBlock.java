@@ -10,10 +10,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-//TODO: IC2
-/*@InterfaceList({
-      @Interface(iface = "ic2.api.energy.tile.IEnergySink", modid = MekanismHooks.IC2_MOD_ID),
-})*/
 public interface IAdvancedBoundingBlock extends ICapabilityProvider, IBoundingBlock, IStrictEnergyAcceptor, IStrictEnergyStorage, IComputerIntegration, ISecurityTile,
       ISpecialConfigData, IOffsetCapability {
 

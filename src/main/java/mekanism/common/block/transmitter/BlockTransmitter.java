@@ -36,17 +36,6 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateW
         super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));
     }
 
-    protected static TileEntitySidedPipe getTileEntitySidedPipe(IBlockReader world, BlockPos pos) {
-        //TODO: Multipart
-        /*else if (Mekanism.hooks.MCMPLoaded) {
-            TileEntity childEntity = MultipartMekanism.unwrapTileEntity(world);
-            if (childEntity instanceof TileEntitySidedPipe) {
-                sidedPipe = (TileEntitySidedPipe) childEntity;
-            }
-        }*/
-        return MekanismUtils.getTileEntity(TileEntitySidedPipe.class, world, pos);
-    }
-
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack stack = player.getHeldItem(hand);
@@ -67,7 +56,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateW
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
+        TileEntitySidedPipe tile = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, world, pos);
         if (tile != null) {
             tile.onAdded();
         }
@@ -76,7 +65,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateW
     @Override
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
-        TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
+        TileEntitySidedPipe tile = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, world, pos);
         if (tile != null) {
             Direction side = Direction.getFacingFromVector(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
             tile.onNeighborBlockChange(side);
@@ -85,7 +74,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateW
 
     @Override
     public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
-        TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
+        TileEntitySidedPipe tile = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, world, pos);
         if (tile != null) {
             Direction side = Direction.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
             tile.onNeighborTileChange(side);
@@ -109,7 +98,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateW
             //If we don't have an entity get the full VoxelShape
             return getRealShape(state, world, pos);
         }
-        TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
+        TileEntitySidedPipe tile = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, world, pos);
         if (tile == null) {
             //If we failed to get the tile, just give the center shape
             return getCenter();

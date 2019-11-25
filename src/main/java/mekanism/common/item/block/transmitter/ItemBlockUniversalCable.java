@@ -55,12 +55,4 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble<BlockUnivers
             tooltip.add(TextComponentUtil.build("- ", EnumColor.PURPLE, "Joules ", EnumColor.GRAY, "(Mekanism)"));
         }
     }
-
-    //TODO: Multipart
-    /*@Override
-    @Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
-    protected IMultipart getMultiPart() {
-        //TODO
-        return MultipartMekanism.TRANSMITTER_MP;
-    }*/
 }

@@ -273,10 +273,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 return false;
             }
         }
-        //TODO: Multipart
-        /*if (Mekanism.hooks.MCMPLoaded) {
-            return MultipartMekanism.hasConnectionWith(this, side);
-        }*/
         return true;
     }
 
@@ -297,10 +293,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        //TODO: Multipart
-        /*if (Mekanism.hooks.MCMPLoaded) {
-            MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
-        }*/
         data.add(currentTransmitterConnections);
         data.add(currentAcceptorConnections);
         for (int i = 0; i < 6; i++) {
@@ -496,15 +488,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         //TODO: Figure out why does this not check the side specific one
         refreshConnections();
     }
-
-    //TODO: Multipart
-    /*public void onPartChanged(IMultipart part) {
-        byte transmittersBefore = currentTransmitterConnections;
-        refreshConnections();
-        if (transmittersBefore != currentTransmitterConnections) {
-            markDirtyTransmitters();
-        }
-    }*/
 
     public ConnectionType getConnectionType(Direction side) {
         return getConnectionType(side, getAllCurrentConnections(), currentTransmitterConnections, connectionTypes);

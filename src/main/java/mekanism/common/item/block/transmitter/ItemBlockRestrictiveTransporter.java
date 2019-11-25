@@ -37,12 +37,4 @@ public class ItemBlockRestrictiveTransporter extends ItemBlockMultipartAble<Bloc
             tooltip.add(TextComponentUtil.build("- ", EnumColor.DARK_RED, Translation.of("tooltip.mekanism.restrictiveDesc")));
         }
     }
-
-    //TODO: Multipart
-    /*@Override
-    @Optional.Method(modid = MekanismHooks.MCMULTIPART_MOD_ID)
-    protected IMultipart getMultiPart() {
-        //TODO
-        return MultipartMekanism.TRANSMITTER_MP;
-    }*/
 }

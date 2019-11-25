@@ -161,9 +161,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
      */
     private double maxEnergy;
     private double energyPerTick;
-
-    //TODO: IC2
-    //private boolean ic2Registered;
     //End variables ITileElectric
 
     //Variables for handling ITileSecurity
@@ -354,20 +351,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isRemote()) {
             Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
-        //TODO: IC2
-        /*if (isElectric() && MekanismUtils.useIC2()) {
-            register();
-        }*/
     }
-
-    //TODO: IC2
-    /*@Override
-    public void onChunkUnloaded() {
-        if (isElectric() && MekanismUtils.useIC2()) {
-            deregister();
-        }
-        super.onChunkUnloaded();
-    }*/
 
     @Override
     public void tick() {
@@ -464,10 +448,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         for (ITileComponent component : components) {
             component.invalidate();
         }
-        //TODO: IC2
-        /*if (isElectric() && MekanismUtils.useIC2()) {
-            deregister();
-        }*/
         if (isRemote() && hasSound()) {
             updateSound();
         }
@@ -475,15 +455,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public void validate() {
-        boolean wasInvalid = this.isRemoved();//workaround for pending tile entity invalidate/revalidate cycle
         super.validate();
         if (isRemote()) {
             Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
-        //TODO: IC2
-        /*if (isElectric() && wasInvalid && MekanismUtils.useIC2()) {//re-register if we got invalidated and are an electric block
-            register();
-        }*/
     }
 
     /**
@@ -918,57 +893,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             this.maxEnergy = maxEnergy;
         }
     }
-
-    //IC2
-    //TODO: IC2
-    /*@Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void register() {
-        if (!isRemote() && !ic2Registered) {
-            MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-            ic2Registered = true;
-        }
-    }
-
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void deregister() {
-        if (!isRemote() && ic2Registered) {
-            MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-            ic2Registered = false;
-        }
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public int addEnergy(int amount) {
-        if (!MekanismConfig.current().general.blacklistIC2.val()) {
-            setEnergy(getEnergy() + IC2Integration.fromEU(amount));
-            return IC2Integration.toEUAsInt(getEnergy());
-        }
-        return 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double getDemandedEnergy() {
-        return !MekanismConfig.current().general.blacklistIC2.val() ? IC2Integration.toEU(getNeededEnergy()) : 0;
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public double injectEnergy(Direction pushDirection, double amount, double voltage) {
-        // nb: the facing param contains the side relative to the pushing block
-        TileEntity tile = MekanismUtils.getTileEntity(world, getPos().offset(pushDirection.getOpposite()));
-        if (MekanismConfig.current().general.blacklistIC2.val() || CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, pushDirection).isPresent()) {
-            return amount;
-        }
-        return amount - IC2Integration.toEU(acceptEnergy(pushDirection.getOpposite(), IC2Integration.fromEU(amount), false));
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.IC2_MOD_ID)
-    public void drawEnergy(double amount) {
-        setEnergy(Math.max(getEnergy() - IC2Integration.fromEU(amount), 0));
-    }*/
     //End methods ITileElectric
 
     //Methods for implementing ITileSecurity

@@ -75,12 +75,7 @@ public final class CableUtils {
         if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, opposite).matches(outputter -> outputter.canOutputEnergy(opposite))) {
             return true;
         }
-        if (MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canExtract)) {
-            return true;
-        }
-        //TODO: IC2
-        //return MekanismUtils.useIC2() && IC2Integration.isOutputter(tileEntity, side);
-        return false;
+        return MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canExtract);
     }
 
     public static boolean isAcceptor(TileEntity source, TileEntity tileEntity, Direction side) {
@@ -91,12 +86,7 @@ public final class CableUtils {
         if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, opposite).matches(acceptor -> acceptor.canReceiveEnergy(opposite))) {
             return true;
         }
-        if (MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canReceive)) {
-            return true;
-        }
-        //TODO: IC2
-        //return MekanismUtils.useIC2() && IC2Integration.isAcceptor(tileEntity, side);
-        return false;
+        return MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canReceive);
     }
 
     public static void emit(IEnergyWrapper emitter) {

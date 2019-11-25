@@ -223,10 +223,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     public TileNetworkList makeSyncPacket(int stackId, TransporterStack stack) {
         TileNetworkList data = new TileNetworkList();
-        //TODO: Multipart
-        /*if (Mekanism.hooks.MCMPLoaded) {
-            MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
-        }*/
         data.add(SYNC_PACKET);
         data.add(stackId);
         stack.write(getTransmitter(), data);
@@ -235,10 +231,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     public TileNetworkList makeBatchPacket(Map<Integer, TransporterStack> updates, Set<Integer> deletes) {
         TileNetworkList data = new TileNetworkList();
-        //TODO: Multipart
-        /*if (Mekanism.hooks.MCMPLoaded) {
-            MultipartTileNetworkJoiner.addMultipartHeader(this, data, null);
-        }*/
         data.add(BATCH_PACKET);
         data.add(updates.size());
         for (Entry<Integer, TransporterStack> entry : updates.entrySet()) {
@@ -289,8 +281,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         TransporterUtils.incrementColor(getTransmitter());
-        //TODO: Multipart
-        //onPartChanged(null);
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
         Mekanism.packetHandler.sendUpdatePacket(this);
         EnumColor color = getTransmitter().getColor();

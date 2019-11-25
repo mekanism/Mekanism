@@ -79,27 +79,12 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                                   double received = draw(Math.min(strictStorage.getEnergy(), maxDraw));
                                   strictStorage.setEnergy(strictStorage.getEnergy() - received);
                               },
-                              //Else
-                              //TODO: IC2
-                              //ifPresentElse
                               () -> CapabilityUtils.getCapabilityHelper(outputter, CapabilityEnergy.ENERGY, side.getOpposite()).ifPresent(
                                     //Forge Energy
                                     forgeStorage -> {
                                         double received = draw(ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(maxDraw), true)));
                                         forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(received), false);
                                     }
-                                    //TODO: IC2
-                                    /*,
-                                    //Else IC2
-                                    () -> {
-                                        if (MekanismUtils.useIC2()) {
-                                            IEnergyTile tile = EnergyNet.instance.getSubTile(outputter.getWorld(), outputter.getPos());
-                                            if (tile instanceof IEnergySource) {
-                                                double received = draw(Math.min(IC2Integration.fromEU(((IEnergySource) tile).getOfferedEnergy()), maxDraw));
-                                                ((IEnergySource) tile).drawEnergy(IC2Integration.toEU(received));
-                                            }
-                                        }
-                                    }*/
                               )
                         );
                     }

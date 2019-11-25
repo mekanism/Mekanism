@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -38,7 +39,7 @@ public abstract class BlockSmallTransmitter extends BlockTransmitter {
 
     @Override
     protected VoxelShape getRealShape(BlockState state, IBlockReader world, BlockPos pos) {
-        TileEntitySidedPipe tile = getTileEntitySidedPipe(world, pos);
+        TileEntitySidedPipe tile = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, world, pos);
         if (tile == null) {
             //If we failed to get the tile, just give the center shape
             return getCenter();
