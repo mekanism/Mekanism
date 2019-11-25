@@ -312,10 +312,6 @@ gas.cleanSilver=Polpa de Prata Pura
 gas.cleanObsidian=Polpa de Obsidiana Pura
 gas.cleanLead=Polpa de Chumbo Pura
 
-# BC Fuel Gases
-gas.fuel=Combustível Vaporizado
-gas.oil=Óleo Vaporizado
-
 # Fluids
 fluid.liquidhydrogen=Hidrogénio Líquido
 fluid.liquidoxygen=Oxigénio Líquido

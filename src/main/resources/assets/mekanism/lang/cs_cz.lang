@@ -312,10 +312,6 @@ gas.cleanSilver=Čistá Stříbrná Kaše
 gas.cleanObsidian=Čistá Obsidiánová Kaše
 gas.cleanLead=Čistá Olovnatá Kaše
 
-# BC Fuel Gases
-gas.fuel=Vypařené Palivo
-gas.oil=Vypařený Olej
-
 # Fluids
 fluid.liquidhydrogen=Tekutý Vodík
 fluid.liquidoxygen=Tekutý Kyslík

@@ -118,10 +118,6 @@ repositories {
         url 'https://tehnut.info/maven'
     }
     maven {
-        name 'buildcraft'
-        url 'https://mod-buildcraft.com/maven/'
-    }
-    maven {
         name 'tterrag'
         url 'https://maven.tterrag.com/'
     }
@@ -144,20 +140,12 @@ version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "
 archivesBaseName = "MekanismAll"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
-def explodedVersion = mod_version.split("\\.")
-
 minecraft {
     mappings channel: "snapshot", version: "${mappings_version}"
 
     accessTransformers(file('src/main/resources/META-INF/accesstransformer.cfg'),
             file('src/tools/resources/META-INF/accesstransformer.cfg'))
 
-    //TODO: Try to fix the version number not being replaced in the java files??
-    /*replace '${version}', project.version
-    replace 'new Version(999, 999, 999)', "new Version(${explodedVersion[0]}, ${explodedVersion[1]}, ${explodedVersion[2]})"
-    replaceIn "Mekanism.java"
-    replaceIn "MekanismGenerators.java"
-    replaceIn "MekanismTools.java"*/
     runs {
         client {
             workingDirectory project.file("run")
@@ -244,7 +232,6 @@ dependencies {
     /*deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
     compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
     compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
-    compileOnly "com.mod-buildcraft:buildcraft-api:${buildcraft_version}"
     compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
     runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"
     compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
@@ -254,9 +241,8 @@ dependencies {
     }*/
 }
 
-def version_properties = ["version": mod_version, "mc_version": minecraft_version]
+def version_properties = ["version": mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version]
 
-//TODO: Does this need to do all the sourcesets
 processResources {
     filesMatching('**/mods.toml') {
         expand version_properties
@@ -282,12 +268,14 @@ processGeneratorsResources {
 }
 
 jar {
-    //TODO: Make this be an "All" jar again
+    //TODO: Make this be an "All" jar again, needs to include all sourcesets and then use a merged mods.toml file
+    // Ideally we would have the mods.toml file get combined in processing rather than have to manually
+    // make sure that it stays up to date
     from sourceSets.main.output
     from sourceSets.api.output
 }
 
-//TODO: Sources Jar
+//TODO: Sources Jars?
 
 task coreJar(type: Jar) {
     archiveName = "Mekanism-${project.version}.jar"
@@ -323,8 +311,6 @@ artifacts {
     archives toolsJar
 }
 
-//TODO: TRY removing some of this now that https://github.com/MinecraftForge/ForgeGradle/issues/615 is merged.
-// Not doing so now as due to ongoing local changes it can't even compile fully right now anyways
 reobf {
     apiJar {
         classpath = sourceSets.api.compileClasspath
@@ -367,11 +353,11 @@ uploadArchives {
                         description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
                         url 'http://aidancbrady.com/mekanism/'
                         scm {
-                            url 'https://github.com/mekanism-mod/Mekanism.git'
+                            url 'https://github.com/mekanism/Mekanism.git'
                         }
                         issueManagement {
                             system 'github'
-                            url 'https://github.com/mekanism-mod/Mekanism/issues'
+                            url 'https://github.com/mekanism/Mekanism/issues'
                         }
                         licenses {
                             license {
@@ -415,6 +401,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             println "Changelog generated"
         }
 
+        //TODO: If the release type is alpha make it auto include a header stating that it is unstable etc
         def releaseNotesFile = project.file("docs/release_${mod_version}.html")
         if (releaseNotesFile.exists()) {
             def releaseNotes = releaseNotesFile.getText()
@@ -427,8 +414,9 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             changelogType = "html"
             changelog = generatedChangelog
             // A file can also be set using: changelog = file('changelog.txt')
-            releaseType = 'release'
+            releaseType = "${curse_release_type}"
             mainArtifact(coreJar) {
+                //TODO: Update this list, and also update it in the mods.toml file
                 relations {
                     optionalDependency "jei"
                     optionalDependency "crafttweaker"
@@ -446,7 +434,21 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }
             }
             addArtifact apiJar
-            addGameVersion '1.14.4'
+            addGameVersion "${minecraft_version}"
+        }
+
+        //Additions
+        project {
+            id = '345425'
+            changelogType = "html"
+            changelog = generatedChangelog
+            releaseType = "${curse_release_type}"
+            mainArtifact(additionsJar) {
+                relations {
+                    requiredDependency "mekanism"
+                }
+            }
+            addGameVersion "${minecraft_version}"
         }
 
         //Generators
@@ -454,13 +456,13 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             id = '268566'
             changelogType = "html"
             changelog = generatedChangelog
-            releaseType = 'release'
+            releaseType = "${curse_release_type}"
             mainArtifact(generatorsJar) {
                 relations {
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion '1.14.4'
+            addGameVersion "${minecraft_version}"
         }
 
         //Tools
@@ -468,13 +470,13 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             id = '268567'
             changelogType = "html"
             changelog = generatedChangelog
-            releaseType = 'release'
+            releaseType = "${curse_release_type}"
             mainArtifact(toolsJar) {
                 relations {
                     requiredDependency "mekanism"
                 }
             }
-            addGameVersion '1.14.4'
+            addGameVersion "${minecraft_version}"
         }
     }
 }

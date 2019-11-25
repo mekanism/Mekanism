@@ -347,10 +347,6 @@
   "gas.mekanism.clean_tin_slurry": "Clean Tin Slurry",
   "gas.mekanism.clean_obsidian_slurry": "Clean Obsidian Slurry",
 
-  "_comment": "BC Fuel Gases",
-  "gas.fuel": "Vaporized Fuel",
-  "gas.oil": "Vaporized Oil",
-
   "_comment": "Fluids",
   "fluid.mekanism.hydrogen": "Liquid Hydrogen",
   "fluid.mekanism.oxygen": "Liquid Oxygen",

@@ -264,10 +264,6 @@ gas.cleanSilver=純凈銀漿液
 gas.cleanObsidian=純凈黑曜石漿液
 gas.cleanLead=純凈鉛漿液
 
-# BC Fuel Gases
-gas.fuel=氣化燃油
-gas.oil=氣化石油
-
 # Fluids
 fluid.liquidhydrogen=液態氫
 fluid.liquidoxygen=液態氧

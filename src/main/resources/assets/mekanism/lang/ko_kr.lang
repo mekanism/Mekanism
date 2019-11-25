@@ -183,10 +183,6 @@ gas.cleanSilver=깨끗한 은 슬러리
 gas.cleanObsidian=깨끗한 옵시디언 슬러리
 gas.cleanLead=깨끗한 납 슬러리
 
-# BC Fuel Gases
-gas.fuel=증류 정제유
-gas.oil=증류 석유
-
 # Fluids
 fluid.liquidhydrogen=액화 수소
 fluid.liquidoxygen=액화 산소

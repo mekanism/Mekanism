@@ -308,12 +308,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = Wrenches.getHandler(stack);
             if (wrenchHandler != null) {
-                if (wrenchHandler.canUseWrench(player, hand, stack, rayTrace)) {
+                if (wrenchHandler.canUseWrench(stack, player, rayTrace.getPos())) {
                     if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                         SecurityUtils.displayNoAccess(player);
                         return WrenchResult.NO_SECURITY;
                     }
-                    wrenchHandler.wrenchUsed(player, hand, stack, rayTrace);
                     if (player.isSneaking()) {
                         MekanismUtils.dismantleBlock(state, getWorld(), pos, this);
                         return WrenchResult.DISMANTLED;

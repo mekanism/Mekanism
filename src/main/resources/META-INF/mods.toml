@@ -19,6 +19,6 @@ issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
 [[dependencies.mekanism]]
     modId="forge"
     mandatory=true
-    versionRange="[28.1.0,)"
+    versionRange="[${forge_version},)"
     side="BOTH"
 #TODO: Add the optional dependencies

@@ -826,10 +826,6 @@ public final class MekanismUtils {
         return theClass != null && theClass.isInstance(obj);
     }
 
-    public static boolean isBCWrench(Item tool) {
-        return existsAndInstance(tool, "buildcraft.api.tools.IToolWrench");
-    }
-
     public static boolean isCoFHHammer(Item tool) {
         return existsAndInstance(tool, "cofh.api.item.IToolHammer");
     }
@@ -854,9 +850,6 @@ public final class MekanismUtils {
             return true;
         }
         try {
-            if (isBCWrench(tool.getItem())) { //TODO too much hassle to check BC wrench-ability
-                return true;
-            }
             if (isCoFHHammer(tool.getItem())) { // TODO Implement CoFH Hammer && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
                 return true;
             }

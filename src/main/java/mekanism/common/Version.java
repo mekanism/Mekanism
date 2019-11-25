@@ -1,10 +1,13 @@
 package mekanism.common;
 
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+
 /**
  * Version v2.0.0. Simple version handling for Mekanism.
  *
  * @author AidanBrady
  */
+//TODO: Do we even want to use this or just switch to using ArtifactVersion
 public class Version {
 
     /**
@@ -33,6 +36,14 @@ public class Version {
         major = majorNum;
         minor = minorNum;
         build = buildNum;
+    }
+
+    /**
+     * Builds a Version object from an Artifact Version
+     * @implNote We don't currently include the artifact version's build number as we classify our version by major, minor, build
+     */
+    public Version(ArtifactVersion artifactVersion) {
+        this(artifactVersion.getMajorVersion(), artifactVersion.getMinorVersion(), artifactVersion.getIncrementalVersion());
     }
 
     /**

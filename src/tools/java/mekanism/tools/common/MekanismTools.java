@@ -27,7 +27,7 @@ public class MekanismTools implements IModule {
     /**
      * MekanismTools version number
      */
-    public static Version versionNumber = new Version(999, 999, 999);
+    public final Version versionNumber;
 
     public MekanismTools() {
         Mekanism.modulesLoaded.add(instance = this);
@@ -42,6 +42,9 @@ public class MekanismTools implements IModule {
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
         //TODO: Is the modEventBus stuff above used instead of this
         //MinecraftForge.EVENT_BUS.register(this);
+
+        //Set our version number to match the mods.toml file, which matches the one in our build.gradle
+        versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
 
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }

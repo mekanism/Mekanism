@@ -63,10 +63,16 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  */
 public class PacketHandler {
 
-    private static final String PROTOCOL_VERSION = "1";//TODO
     private static final SimpleChannel netHandler = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(Mekanism.MODID, Mekanism.MODID))
-          .clientAcceptedVersions(PROTOCOL_VERSION::equals).serverAcceptedVersions(PROTOCOL_VERSION::equals).networkProtocolVersion(() -> PROTOCOL_VERSION).simpleChannel();
+          .clientAcceptedVersions(getProtocolVersion()::equals)
+          .serverAcceptedVersions(getProtocolVersion()::equals)
+          .networkProtocolVersion(PacketHandler::getProtocolVersion)
+          .simpleChannel();
     private int index = 0;
+
+    private static String getProtocolVersion() {
+        return Mekanism.instance == null ? "999.999.999" : Mekanism.instance.versionNumber.toString();
+    }
 
     /**
      * Encodes an Object[] of data into a DataOutputStream.

@@ -23,6 +23,7 @@ public class AdditionsConfig implements IMekanismConfig {
 
         //TODO: Use this config
         spawnBabySkeletons = builder.comment("Enable the spawning of baby skeletons. Think baby zombies but skeletons.").define("spawnBabySkeletons", true);
+        //TODO: Check this, as the default for obsidian is 80
         obsidianTNTDelay = builder.comment("Fuse time for Obsidian TNT.").defineInRange("obsidianTNTDelay", 100, 0, Integer.MAX_VALUE);
         obsidianTNTBlastRadius = builder.comment("Radius of the explosion of Obsidian TNT.").define("obsidianTNTBlastRadius", 12);
 

@@ -31,7 +31,7 @@ public class MekanismGenerators implements IModule {
     /**
      * MekanismGenerators version number
      */
-    public static Version versionNumber = new Version(999, 999, 999);
+    public final Version versionNumber;
 
     public static MultiblockManager<SynchronizedTurbineData> turbineManager = new MultiblockManager<>("industrialTurbine");
 
@@ -47,6 +47,9 @@ public class MekanismGenerators implements IModule {
         GeneratorsBlock.BLOCKS.register(modEventBus);
         GeneratorsContainerTypes.CONTAINER_TYPES.register(modEventBus);
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+
+        //Set our version number to match the mods.toml file, which matches the one in our build.gradle
+        versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
@@ -68,20 +71,6 @@ public class MekanismGenerators implements IModule {
               PacketGeneratorsGuiButtonPress::handle);
     }
 
-    //TODO: BuildCraft
-    /*@EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        if (FuelHandler.BCPresent() && BuildcraftFuelRegistry.fuel != null) {
-            for (IFuel s : BuildcraftFuelRegistry.fuel.getFuels()) {
-                if (!s.getFluid().isEmpty() && !GasRegistry.containsGas(s.getFluid().getFluid().getName())) {
-                    GasRegistry.register(new Gas(s.getFluid().getFluid()));
-                }
-            }
-
-            BuildcraftFuelRegistry.fuel.addFuel(MekanismFluids.Ethene.getFluid(), (ForgeEnergyIntegration.toForgeAsLong(12 * MjAPI.MJ)), 40 * FluidAttributes.BUCKET_VOLUME);
-        }
-    }*/
-
     @Override
     public Version getVersion() {
         return versionNumber;
@@ -97,15 +86,11 @@ public class MekanismGenerators implements IModule {
         SynchronizedTurbineData.clientRotationMap.clear();
     }
 
-    //TODO
-    /*private void onConfigChanged(OnConfigChangedEvent event) {
-        if (event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID)) {
-            proxy.loadConfiguration();
-        }
-    }*/
-
     private void onConfigReload(ModConfig.ConfigReloading configEvent) {
         //TODO: Handle reloading
+        /*if (event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID)) {
+            proxy.loadConfiguration();
+        }*/
     }
 
     private void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event) {

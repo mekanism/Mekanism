@@ -14,10 +14,6 @@ tile.Transmitter.UltimatePressurizedTube.name=Ultimate Pressurised Tube
 # Gasses
 gas.water=Water Vapour
 
-# BC Fuel Gases
-gas.fuel=Vaporised Fuel
-gas.oil=Vaporised Oil
-
 # Item and block tooltip text
 tooltip.configurator.toggleDiverter=Diverter mode changed to
 tooltip.configurator.toggleColor=Colour bumped to

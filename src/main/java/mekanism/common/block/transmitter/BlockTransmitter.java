@@ -44,7 +44,7 @@ public abstract class BlockTransmitter extends BlockTileDrops implements IStateW
         }
         IMekWrench wrenchHandler = Wrenches.getHandler(stack);
         if (wrenchHandler != null) {
-            if (wrenchHandler.canUseWrench(player, hand, stack, hit) && player.isSneaking()) {
+            if (wrenchHandler.canUseWrench(stack, player, hit.getPos()) && player.isSneaking()) {
                 if (!world.isRemote) {
                     MekanismUtils.dismantleBlock(state, world, pos);
                 }

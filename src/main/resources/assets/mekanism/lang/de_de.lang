@@ -318,10 +318,6 @@ gas.cleanSilver=Sauberer Silberschlamm
 gas.cleanObsidian=Sauberer Obsidianschlamm
 gas.cleanLead=Sauberer Bleischlamm
 
-# BC Fuel Gases
-gas.fuel=Verdampftes Benzin
-gas.oil=Verdampftes Öl
-
 # Fluids
 fluid.liquidhydrogen=Flüssiger Wasserstoff
 fluid.liquidoxygen=Flüssiger Sauerstoff

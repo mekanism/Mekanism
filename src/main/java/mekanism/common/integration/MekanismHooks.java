@@ -11,6 +11,7 @@ import net.minecraftforge.fml.ModList;
  */
 public final class MekanismHooks {
 
+    //TODO: Fix these modids given they all have to be lowercase
     public static final String COFH_API_MOD_ID = "cofhapi";
     public static final String IC2_MOD_ID = "ic2";
     public static final String COMPUTERCRAFT_MOD_ID = "computercraft";
@@ -21,13 +22,11 @@ public final class MekanismHooks {
     public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
     public static final String WAILA_MOD_ID = "Waila";
     public static final String TOP_MOD_ID = "theoneprobe";
-    public static final String BUILDCRAFT_MOD_ID = "buildcraftcore";
     public static final String CYCLIC_MOD_ID = "cyclicmagic";
     public static final String MYSTICALAGRICULTURE_MOD_ID = "mysticalagriculture";
     public static final String CRAFTTWEAKER_MOD_ID = "crafttweaker";
 
     public boolean AE2Loaded = false;
-    public boolean BuildCraftLoaded = false;
     public boolean CCLoaded = false;
     public boolean CraftTweakerLoaded = false;
     public boolean CyclicLoaded = false;
@@ -40,7 +39,6 @@ public final class MekanismHooks {
     public void hookPreInit() {
         ModList modList = ModList.get();
         AE2Loaded = modList.isLoaded(APPLIED_ENERGISTICS_2_MOD_ID);
-        BuildCraftLoaded = modList.isLoaded(BUILDCRAFT_MOD_ID);
         CCLoaded = modList.isLoaded(COMPUTERCRAFT_MOD_ID);
         CraftTweakerLoaded = modList.isLoaded(CRAFTTWEAKER_MOD_ID);
         CyclicLoaded = modList.isLoaded(CYCLIC_MOD_ID);

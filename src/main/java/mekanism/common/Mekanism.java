@@ -51,7 +51,6 @@ import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
@@ -117,7 +116,7 @@ public class Mekanism {
     /**
      * Mekanism version number
      */
-    public static Version versionNumber = new Version(999, 999, 999);
+    public final Version versionNumber;
     /**
      * MultiblockManagers for various structrures
      */
@@ -182,6 +181,7 @@ public class Mekanism {
         //TODO: Register other listeners and various stuff that is needed
 
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
 
         MekanismItem.ITEMS.register(modEventBus);
         MekanismBlock.BLOCKS.register(modEventBus);
@@ -194,6 +194,8 @@ public class Mekanism {
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         //Delay adding the deferred registers for infuse types and gases until after their registries are actually assigned
         modEventBus.addListener(EventPriority.LOW, this::addCustomRegistryDeferredRegisters);
+        //Set our version number to match the mods.toml file, which matches the one in our build.gradle
+        versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
     }
 
     private void addCustomRegistryDeferredRegisters(RegistryEvent.NewRegistry event) {
@@ -225,10 +227,12 @@ public class Mekanism {
     }
 
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {
-        IReloadableResourceManager resourceManager = event.getServer().getResourceManager();
-        resourceManager.addReloadListener(getTagManager());
-        //TODO: Move this reload listener to LOWEST so that it happens after CrT?
-        resourceManager.addReloadListener(getRecipeCacheManager());
+        event.getServer().getResourceManager().addReloadListener(getTagManager());
+    }
+
+    private void serverAboutToStartLowest(FMLServerAboutToStartEvent event) {
+        //Note: We register reload listeners here which we want to make sure run after CraftTweaker or any other mods that may modify recipes
+        event.getServer().getResourceManager().addReloadListener(getRecipeCacheManager());
     }
 
     private void serverStarting(FMLServerStartingEvent event) {

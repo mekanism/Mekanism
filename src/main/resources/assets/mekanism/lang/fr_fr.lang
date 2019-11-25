@@ -309,10 +309,6 @@ gas.cleanSilver=Boue d'argent propre
 gas.cleanObsidian=Boue d'obsidienne propre
 gas.cleanLead=Boue de plomb propre
 
-# BC Fuel Gases
-gas.fuel=Carburant vaporisé
-gas.oil=Pétrole vaporisé
-
 # Fluids
 fluid.liquidhydrogen=Hydrogène liquide
 fluid.liquidoxygen=Oxygène liquide

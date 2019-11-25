@@ -331,10 +331,6 @@ gas.cleanSilver=Clean Silver Slurry
 gas.cleanObsidian=Clean Obsidian Slurry
 gas.cleanLead=Clean Lead Slurry
 
-# BC Fuel Gases
-gas.fuel=Vaporized Fuel
-gas.oil=Vaporized Oil
-
 # Fluids
 fluid.liquidhydrogen=Liquid Hydrogen
 fluid.liquidoxygen=Liquid Oxygen

@@ -331,10 +331,6 @@ gas.cleanSilver=Очищенная взвесь серебра
 gas.cleanObsidian=Очищенная взвесь обсидиана
 gas.cleanLead=Очищенная взвесь свинца
 
-# BC Fuel Gases
-gas.fuel=Парообразное топливо
-gas.oil=Парообразная нефть
-
 # Fluids
 fluid.liquidhydrogen=Жидкий водород
 fluid.liquidoxygen=Жидкий кислород

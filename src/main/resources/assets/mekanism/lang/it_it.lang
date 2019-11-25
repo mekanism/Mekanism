@@ -283,10 +283,6 @@ gas.cleanSilver=Fanghiglia pulita d'argento
 gas.cleanObsidian=Fanghiglia pulita di ossidiana
 gas.cleanLead=Fanghiglia pulita di piombo
 
-# BC Fuel Gases
-gas.fuel=Carburante vaporizato
-gas.oil=Petrolio vaporizato
-
 # Fluids
 fluid.liquidhydrogen=Idrogeno liquido
 fluid.liquidoxygen=Ossigeno liquido

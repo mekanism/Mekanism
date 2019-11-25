@@ -26,7 +26,7 @@ public class MekanismAdditions implements IModule {
     /**
      * MekanismTools version number
      */
-    public static Version versionNumber = new Version(999, 999, 999);
+    public final Version versionNumber;
 
     /**
      * The VoiceServer manager for walkie talkies
@@ -46,6 +46,9 @@ public class MekanismAdditions implements IModule {
         AdditionsItem.ITEMS.register(modEventBus);
         AdditionsBlock.BLOCKS.register(modEventBus);
         AdditionsEntityType.ENTITY_TYPES.register(modEventBus);
+
+        //Set our version number to match the mods.toml file, which matches the one in our build.gradle
+        versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
     }
 
     @Override

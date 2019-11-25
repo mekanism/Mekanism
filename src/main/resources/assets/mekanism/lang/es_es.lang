@@ -331,10 +331,6 @@ gas.cleanSilver=Plata lixiviada limpia
 gas.cleanObsidian=Obsidiana lixiviada limpia
 gas.cleanLead=Plomo lixiviado limpio
 
-# BC Fuel Gases / Combustibles gaseosos
-gas.fuel=Combustible vaporizado
-gas.oil=Aceite vaporizado
-
 # Fluids / Flidos
 fluid.liquidhydrogen=Hidrógeno líquido
 fluid.liquidoxygen=Oxígeno líquido

@@ -31,8 +31,8 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x, (float) y + 0.5F, (float) z);
 
-        if (entityobsidiantnt.fuse - partialTicks + 1.0F < 10.0F) {
-            float f = 1.0F - (entityobsidiantnt.fuse - partialTicks + 1.0F) / 10.0F;
+        if (entityobsidiantnt.getFuse() - partialTicks + 1.0F < 10.0F) {
+            float f = 1.0F - (entityobsidiantnt.getFuse() - partialTicks + 1.0F) / 10.0F;
             f = MathHelper.clamp(f, 0.0F, 1.0F);
             f = f * f;
             f = f * f;
@@ -40,13 +40,13 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
             GlStateManager.scalef(scale, scale, scale);
         }
 
-        float f3 = (1.0F - ((entityobsidiantnt.fuse - partialTicks) + 1.0F) / 100F) * 0.8F;
+        float f3 = (1.0F - ((entityobsidiantnt.getFuse() - partialTicks) + 1.0F) / 100F) * 0.8F;
         bindEntityTexture(entityobsidiantnt);
         GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
         renderer.renderBlockBrightness(AdditionsBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), entityobsidiantnt.getBrightness());
         GlStateManager.translatef(0, 0, 1.0F);
 
-        if (entityobsidiantnt.fuse / 5 % 2 == 0) {
+        if (entityobsidiantnt.getFuse() / 5 % 2 == 0) {
             GlStateManager.disableTexture();
             GlStateManager.disableLighting();
             GlStateManager.enableBlend();

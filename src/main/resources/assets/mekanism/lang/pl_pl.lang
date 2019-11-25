@@ -331,10 +331,6 @@ gas.cleanSilver=Oczyszczona zawiesina srebra
 gas.cleanObsidian=Oczyszczona zawiesina obsydianu
 gas.cleanLead=Oczyszczona zawiesina ołowiu
 
-# BC Fuel Gases
-gas.fuel=Odparowane paliwo
-gas.oil=Odparowany olej
-
 # Fluids
 fluid.liquidhydrogen=Ciekły wodór
 fluid.liquidoxygen=Ciekły tlen

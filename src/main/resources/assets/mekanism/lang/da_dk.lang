@@ -307,10 +307,6 @@ gas.cleanSilver=Ren Sølvslurry
 gas.cleanObsidian=Ren Obsidianslurry
 gas.cleanLead=Ren Blyslurry
 
-# BC Fuel Gases
-gas.fuel=Fordampet Brændsel
-gas.oil=Fordampet Olie
-
 # Fluids
 fluid.liquidhydrogen=Flydende Brint
 fluid.liquidoxygen=Flydende Ilt

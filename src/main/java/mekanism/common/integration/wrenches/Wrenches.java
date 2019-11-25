@@ -9,9 +9,8 @@ import net.minecraft.item.ItemStack;
  * Generic handler for wrenches, exposed as {@link IMekWrench}. Generally you don't want to use the enum directly, instead use {@link Wrenches#getHandler(ItemStack)}, and
  * check for nullability.
  */
-public enum Wrenches {
+public enum Wrenches {//TODO: Add some tag for what qualifies as a valid "wrench"?
     MEKANISM_PASSTHROUGH(IMekWrench.class.getName(), MekPassthrough::new),
-    //BUILDCRAFT(BuildCraftProxy.BUILDCRAFT_WRENCH_CLASS, BuildCraftProxy::new),
     //COFH(CofhProxy.COFH_HAMMER_CLASS, CofhProxy::new),
     IC2(IC2Proxy.IC2_WRENCH_CLASS, IC2Proxy::new);
 

@@ -48,11 +48,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-//TODO COFH IToolHammer, BuildCraft IToolWrench
-/*@InterfaceList({
-      @Interface(iface = "buildcraft.api.tools.IToolWrench", modid = MekanismHooks.BUILDCRAFT_MOD_ID),
-      @Interface(iface = "cofh.api.item.IToolHammer", modid = MekanismHooks.COFH_API_MOD_ID)
-})*/
+//TODO: COFH IToolHammer
+//@Interface(iface = "cofh.api.item.IToolHammer", modid = MekanismHooks.COFH_API_MOD_ID)
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItemNetwork {
 
     public final int ENERGY_PER_CONFIGURE = 400;
@@ -188,18 +185,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     public boolean canSend(ItemStack itemStack) {
         return false;
     }
-
-    //TODO: BuildCraft
-    /*@Override
-    @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
-    public boolean canWrench(PlayerEntity player, Hand hand, ItemStack wrench, BlockRayTraceResult rayTrace) {
-        return canUseWrench(wrench, player, rayTrace.getPos());
-    }
-
-    @Override
-    @Method(modid = MekanismHooks.BUILDCRAFT_MOD_ID)
-    public void wrenchUsed(PlayerEntity player, Hand hand, ItemStack wrench, BlockRayTraceResult rayTrace) {
-    }*/
 
     @Override
     public boolean canUseWrench(ItemStack stack, PlayerEntity player, BlockPos pos) {
