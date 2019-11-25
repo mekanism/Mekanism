@@ -97,9 +97,9 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
-            TileUtils.receiveGas(leftInputSlot.getStack(), leftTank);
-            TileUtils.receiveGas(rightInputSlot.getStack(), rightTank);
-            TileUtils.drawGas(outputSlot.getStack(), centerTank);
+            leftInputSlot.fillTank();
+            rightInputSlot.fillTank();
+            outputSlot.drainTank();
             double prev = getEnergy();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

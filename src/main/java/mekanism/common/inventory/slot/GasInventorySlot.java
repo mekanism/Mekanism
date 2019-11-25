@@ -27,6 +27,9 @@ import net.minecraft.world.World;
 @MethodsReturnNonnullByDefault
 public class GasInventorySlot extends BasicInventorySlot {
 
+    //TODO: Fix improper use of getStack() in TileEntityGasGenerator and TileEntityGasTank
+    // This issue also sort of exists in the rotary condensentrator due to implementing the gas slots differently then intended
+
     /**
      * Gets the GasStack from ItemStack conversion, ignoring the size of the item stack.
      */
@@ -245,32 +248,21 @@ public class GasInventorySlot extends BasicInventorySlot {
      */
     public void fillTankOrConvert() {
         if (!current.isEmpty() && gasTank.getNeeded() > 0) {
-            if (current.getItem() instanceof IGasItem) {
-                IGasItem item = (IGasItem) current.getItem();
-                GasStack gasInItem = item.getGas(current);
-                //Check to make sure it can provide the gas it contains
-                if (!gasInItem.isEmpty()) {
-                    Gas gas = gasInItem.getType();
-                    if (item.canProvideGas(current, gas) && gasTank.canReceiveType(gas)) {
-                        int amount = Math.min(gasTank.getNeeded(), Math.min(gasInItem.getAmount(), item.getRate(current)));
-                        if (amount > 0 && isValidGas.test(gas)) {
-                            gasTank.fill(item.removeGas(current, amount), Action.EXECUTE);
-                            return;
-                        }
-                    }
-                }
-            }
-            //Try doing it by conversion
-            ItemStackToGasRecipe foundRecipe = MekanismRecipeType.GAS_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
-            if (foundRecipe != null) {
-                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
-                if (!itemInput.isEmpty()) {
-                    GasStack output = foundRecipe.getOutput(itemInput);
-                    if (!output.isEmpty() && gasTank.canReceive(output) && isValidGas.test(output.getType())) {
-                        gasTank.fill(output, Action.EXECUTE);
-                        int amountUsed = itemInput.getCount();
-                        if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
-                            //TODO: Print warning/error
+            //Fill the tank from the item
+            if (!fillTankFromItem()) {
+                //If filling from item failed, try doing it by conversion
+                ItemStackToGasRecipe foundRecipe = MekanismRecipeType.GAS_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
+                if (foundRecipe != null) {
+                    ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
+                    if (!itemInput.isEmpty()) {
+                        GasStack output = foundRecipe.getOutput(itemInput);
+                        if (!output.isEmpty() && gasTank.canReceive(output) && isValidGas.test(output.getType())) {
+                            gasTank.fill(output, Action.EXECUTE);
+                            int amountUsed = itemInput.getCount();
+                            if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
+                                //TODO: Print warning/error
+                            }
+                            onContentsChanged();
                         }
                     }
                 }
@@ -278,28 +270,60 @@ public class GasInventorySlot extends BasicInventorySlot {
         }
     }
 
-    //TODO: Make it so that the gas tank drains/fills
+    /**
+     * Fills tank from slot, does not try converting the item via gas conversion
+     */
+    public void fillTank() {
+        if (!current.isEmpty() && gasTank.getNeeded() > 0) {
+            //Try filling from the tank's item
+            fillTankFromItem();
+        }
+    }
 
-    //TODO: Rename to the proper method either drain or fill
-    /*public void drawGas() {
+    /**
+     * @implNote Does not pre-check if the current stack is empty or that the gas tank needs gas
+     */
+    private boolean fillTankFromItem() {
+        if (current.getItem() instanceof IGasItem) {
+            IGasItem item = (IGasItem) current.getItem();
+            GasStack gasInItem = item.getGas(current);
+            //Check to make sure it can provide the gas it contains
+            if (!gasInItem.isEmpty()) {
+                Gas gas = gasInItem.getType();
+                if (item.canProvideGas(current, gas) && gasTank.canReceiveType(gas)) {
+                    int amount = Math.min(gasTank.getNeeded(), Math.min(gasInItem.getAmount(), item.getRate(current)));
+                    if (amount > 0 && isValidGas.test(gas)) {
+                        gasTank.fill(item.removeGas(current, amount), Action.EXECUTE);
+                        onContentsChanged();
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Drains tank into slot
+     */
+    public void drainTank() {
         if (!current.isEmpty() && !gasTank.isEmpty()) {
-            //TODO: Capability for gas item
+            //TODO: Capability for gas item, and then rewrite this so it simulates and things
             if (current.getItem() instanceof IGasItem) {
                 IGasItem gasItem = (IGasItem) current.getItem();
                 GasStack storedGas = gasTank.getStack();
                 if (gasItem.canReceiveGas(current, storedGas.getType())) {
-                    int drainedAmount = gasItem.addGas(current, storedGas.copy());
-                    gasTank.drain(drainedAmount, Action.EXECUTE);
-                    onContentsChanged();
+                    int amount = Math.min(gasItem.getNeeded(current), gasItem.getRate(current));
+                    if (amount > 0) {
+                        GasStack drained = gasTank.drain(amount, Action.SIMULATE);
+                        if (!drained.isEmpty()) {
+                            int amountAccepted = gasItem.addGas(current, drained);
+                            gasTank.drain(amountAccepted, Action.EXECUTE);
+                            onContentsChanged();
+                        }
+                    }
                 }
             }
         }
     }
-
-    public void emitGas(TileEntityMekanism tile, GasTank tank, int gasOutput, Direction facing) {
-        if (!tank.isEmpty()) {
-            GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), gasOutput));
-            tank.drain(GasUtils.emit(toSend, tile, EnumSet.of(facing)), Action.EXECUTE);
-        }
-    }*/
 }

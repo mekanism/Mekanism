@@ -62,7 +62,7 @@ public class TileUtils {
         return FluidStack.loadFluidStackFromNBT(dataStream.readCompoundTag());
     }
 
-
+    //TODO: when removing receiveGas and drawGas also remove the no longer used methods from GasUtils
     //Returns true if it entered the if statement, basically for use by TileEntityGasTank
     public static boolean receiveGas(ItemStack stack, GasTank tank) {
         if (!stack.isEmpty() && (tank.isEmpty() || tank.getStored() < tank.getCapacity())) {
@@ -72,14 +72,9 @@ public class TileUtils {
         return false;
     }
 
-    //TODO: look at other places that call these methods and see if saving is needed, see TileEntityElectrolyticSeparator for example
     /**
      * @return True if gas was removed
      */
-    public static boolean drawGas(ItemStack stack, GasTank tank) {
-        return drawGas(stack, tank, Action.EXECUTE);
-    }
-
     public static boolean drawGas(ItemStack stack, GasTank tank, Action action) {
         if (!stack.isEmpty() && !tank.isEmpty()) {
             return !tank.drain(GasUtils.addGas(stack, tank.getStack()), action).isEmpty();

@@ -151,11 +151,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
                 fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, fluidSlot), FluidAction.EXECUTE);
             }
 
-            boolean needsSaving = TileUtils.drawGas(leftOutputSlot.getStack(), leftTank);
-            needsSaving |= TileUtils.drawGas(rightOutputSlot.getStack(), rightTank);
-            if (needsSaving) {
-                MekanismUtils.saveChunk(this);
-            }
+            leftOutputSlot.drainTank();
+            rightOutputSlot.drainTank();
             double prev = getEnergy();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

@@ -85,6 +85,7 @@ public class InfusionInventorySlot extends BasicInventorySlot {
                             if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
                                 //TODO: Print warning/error
                             }
+                            onContentsChanged();
                         }
                     }
                 }

@@ -84,6 +84,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     protected IInventorySlotHolder getInitialInventory() {
         //TODO: Add in checks once we switch it to a recipe system for if the gas/fluid is ever valid
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        //TODO: Fix these, not only is the naming bad, but there is a dedicated drain and empty slot unlike how the fluid is
         builder.addSlot(gasInputSlot = GasInventorySlot.rotary(gasTank, gas -> true, () -> mode == 0, this, 5, 25), RelativeSide.LEFT);
         builder.addSlot(gasOutputSlot = OutputInventorySlot.at(this, 5, 56), RelativeSide.LEFT);
         builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, fluid -> true, () -> mode == 1, this, 155, 25), RelativeSide.RIGHT);
@@ -119,7 +120,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                     setActive(false);
                 }*/
             } else if (mode == 1) {
-                TileUtils.drawGas(gasInputSlot.getStack(), gasTank);
+                gasInputSlot.drainTank();
                 TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
 
                 if (FluidContainerUtils.isFluidContainer(fluidInputSlot.getStack())) {

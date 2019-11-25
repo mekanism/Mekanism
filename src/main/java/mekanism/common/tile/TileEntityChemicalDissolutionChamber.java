@@ -12,7 +12,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IGasItem;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToGasCachedRecipe;
@@ -98,20 +97,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
-            ItemStack itemStack = gasInputSlot.getStack();
-            if (!itemStack.isEmpty() && injectTank.getNeeded() > 0 && itemStack.getItem() instanceof IGasItem) {
-                //TODO: Maybe make this use GasUtils.getItemGas. This only currently accepts IGasItems here though
-                IGasItem item = (IGasItem) itemStack.getItem();
-                GasStack gasStack = item.getGas(itemStack);
-                //Check to make sure it can provide the gas it contains
-                if (!gasStack.isEmpty() && item.canProvideGas(itemStack, gasStack.getType())) {
-                    Gas gas = gasStack.getType();
-                    if (injectTank.canReceive(gas) && isValidGas(gas)) {
-                        injectTank.fill(GasUtils.removeGas(itemStack, gas, injectTank.getNeeded()), Action.EXECUTE);
-                    }
-                }
-            }
-            TileUtils.drawGas(outputSlot.getStack(), outputTank);
+            gasInputSlot.fillTankOrConvert();
+            outputSlot.drainTank();
             injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {

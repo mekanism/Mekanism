@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -73,5 +74,20 @@ public class LazyOptionalHelper<T> {
             return predicate.test(getValue());
         }
         return false;
+    }
+
+    public Optional<T> toOptional() {
+        return Optional.ofNullable(getValue());
+    }
+
+    /**
+     * Static version of toOptional to bypass even creating a LazyOptionalHelper object
+     */
+    public static <T> Optional<T> toOptional(LazyOptional<T> lazyOptional) {
+        //TODO: Transition some of the usages of LazyOptionalHelper to just using this method?
+        if (lazyOptional.isPresent()) {
+            return Optional.of(lazyOptional.orElseThrow(() -> new RuntimeException("Failed to retrieve value of lazy optional when it said it was present")));
+        }
+        return Optional.empty();
     }
 }

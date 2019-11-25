@@ -113,7 +113,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
-            TileUtils.receiveGas(inputSlot.getStack(), inputTank);
+            inputSlot.fillTank();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

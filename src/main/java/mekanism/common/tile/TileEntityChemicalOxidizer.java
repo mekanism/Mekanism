@@ -79,7 +79,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
-            TileUtils.drawGas(outputSlot.getStack(), gasTank);
+            outputSlot.drainTank();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

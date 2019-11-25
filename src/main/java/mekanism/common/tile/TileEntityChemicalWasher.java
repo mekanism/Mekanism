@@ -116,7 +116,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
                 //TODO: Do we need this check? It should be a fluid input item if it is in the slot??
                 fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, fluidSlot), FluidAction.EXECUTE);
             }
-            TileUtils.drawGas(gasOutputSlot.getStack(), outputTank);
+            gasOutputSlot.drainTank();
             double prev = getEnergy();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
