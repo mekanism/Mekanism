@@ -121,7 +121,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             } else if (mode == 1) {
                 gasInputSlot.drainTank();
                 TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
-                FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, fluidInputSlot, fluidOutputSlot);
+                fluidInputSlot.fillTank(fluidOutputSlot);
 
                 //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
                 if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) &&

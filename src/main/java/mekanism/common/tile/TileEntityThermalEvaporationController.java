@@ -30,12 +30,9 @@ import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -138,12 +135,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             if (structured) {
                 updateTemperature();
                 inputOutputSlot.drainTank(outputOutputSlot);
-                FluidContainerUtils.handleContainerItemEmpty(this, inputTank, inputInputSlot, outputInputSlot, new FluidChecker() {
-                    @Override
-                    public boolean isValid(@Nonnull Fluid f) {
-                        return hasRecipe(new FluidStack(f, 1));
-                    }
-                });
+                inputInputSlot.fillTank(outputInputSlot);
             }
             //Note: This is not in a structured check as we want to make sure it stops if we do not have a structure
             //TODO: Think through the logic, given we are calling the process so technically if it is not structured, then we

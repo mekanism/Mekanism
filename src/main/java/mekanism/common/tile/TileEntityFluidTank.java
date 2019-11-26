@@ -158,7 +158,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     private void manageInventory() {
         if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
-            FluidStack ret = FluidContainerUtils.handleContainerItem(this, editMode, fluidTank.getFluid(), getCurrentNeeded(), inputSlot, outputSlot, null);
+            FluidStack ret = FluidContainerUtils.handleContainerItem(this, editMode, fluidTank.getFluid(), getCurrentNeeded(), inputSlot, outputSlot);
 
             if (!ret.isEmpty()) {
                 fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.getAmount())));

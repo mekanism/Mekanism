@@ -99,8 +99,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         //TODO: No magic numbers??
         IInventorySlot inputSlot = inventorySlots.get(0);
         if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
-            structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.editMode, structure.fluidStored, needed, inputSlot,
-                  inventorySlots.get(1), null);
+            structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.editMode, structure.fluidStored, needed, inputSlot, inventorySlots.get(1));
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }

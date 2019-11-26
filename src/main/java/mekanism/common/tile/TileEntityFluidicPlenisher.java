@@ -27,15 +27,12 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -104,13 +101,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
-            FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, inputSlot, outputSlot, new FluidChecker() {
-                @Override
-                public boolean isValid(@Nonnull Fluid f) {
-                    //TODO: Is there a better position to use
-                    return f.getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, f.getDefaultState());
-                }
-            });
+            inputSlot.fillTank(outputSlot);
 
             if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.getFluid().isEmpty() &&
                 fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluidTank.getFluid())) {

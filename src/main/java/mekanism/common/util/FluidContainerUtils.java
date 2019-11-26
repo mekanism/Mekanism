@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -34,6 +33,7 @@ public final class FluidContainerUtils {
         return tankFluid.isEmpty() || tankFluid.isFluidEqual(fillFluid);
     }
 
+    //TODO: Evaluate usages of these extract methods
     public static FluidStack extractFluid(FluidTank tileTank, IInventorySlot slot) {
         return extractFluid(tileTank, slot, FluidChecker.check(tileTank.getFluid()));
     }
@@ -61,21 +61,14 @@ public final class FluidContainerUtils {
         return handler.drain(needed, FluidAction.EXECUTE);
     }
 
-    public static int insertFluid(@Nonnull FluidStack fluid, IFluidHandler handler) {
-        if (fluid.isEmpty() || handler == null) {
-            return 0;
-        }
-        return handler.fill(fluid, FluidAction.EXECUTE);
-    }
-
-    public static FluidStack handleContainerItemFill(TileEntity tileEntity, @Nonnull FluidStack stack, IInventorySlot inSlot, IInventorySlot outSlot) {
+    private static FluidStack handleContainerItemFill(TileEntity tileEntity, @Nonnull FluidStack stack, IInventorySlot inSlot, IInventorySlot outSlot) {
         if (!stack.isEmpty()) {
             ItemStack inputCopy = StackUtils.size(inSlot.getStack(), 1);
             Optional<IFluidHandlerItem> fluidHandlerItem = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(inputCopy));
             int drained = 0;
             if (fluidHandlerItem.isPresent()) {
                 IFluidHandlerItem handler = fluidHandlerItem.get();
-                drained = insertFluid(stack, handler);
+                drained = handler.fill(stack, FluidAction.EXECUTE);
                 inputCopy = handler.getContainer();
             }
             if (outSlot.isEmpty()) {
@@ -100,18 +93,7 @@ public final class FluidContainerUtils {
         return stack;
     }
 
-    public static void handleContainerItemEmpty(TileEntityMekanism tileEntity, FluidTank tank, IInventorySlot inSlot, IInventorySlot outSlot) {
-        handleContainerItemEmpty(tileEntity, tank, inSlot, outSlot, null);
-    }
-
-    public static void handleContainerItemEmpty(TileEntityMekanism tileEntity, FluidTank tank, IInventorySlot inSlot, IInventorySlot outSlot, FluidChecker checker) {
-        if (FluidContainerUtils.isFluidContainer(inSlot.getStack())) {
-            tank.setFluid(handleContainerItemEmpty(tileEntity, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
-        }
-    }
-
-    public static FluidStack handleContainerItemEmpty(TileEntity tileEntity, @Nonnull FluidStack stored, int needed, IInventorySlot inSlot, IInventorySlot outSlot,
-          final FluidChecker checker) {
+    private static FluidStack handleContainerItemEmpty(TileEntity tileEntity, @Nonnull FluidStack stored, int needed, IInventorySlot inSlot, IInventorySlot outSlot) {
         final Fluid storedFinal = stored.getFluid();
         final ItemStack input = StackUtils.size(inSlot.getStack(), 1);
         Optional<IFluidHandlerItem> fluidHandlerItem = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(input));
@@ -122,7 +104,7 @@ public final class FluidContainerUtils {
         FluidStack ret = extractFluid(needed, handler, new FluidChecker() {
             @Override
             public boolean isValid(Fluid f) {
-                return (checker == null || checker.isValid(f)) && (storedFinal == Fluids.EMPTY || storedFinal == f);
+                return storedFinal == Fluids.EMPTY || storedFinal == f;
             }
         });
 
@@ -166,7 +148,7 @@ public final class FluidContainerUtils {
     }
 
     public static FluidStack handleContainerItem(TileEntityMekanism tileEntity, ContainerEditMode editMode, @Nonnull FluidStack stack, int needed,
-          IInventorySlot inSlot, IInventorySlot outSlot, final FluidChecker checker) {
+          IInventorySlot inSlot, IInventorySlot outSlot) {
         //TODO: Can these two methods be cleaned up by offloading checks to the IInventorySlots
         if (editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH &&
                                                    !new LazyOptionalHelper<>(FluidUtil.getFluidContained(inSlot.getStack())).matches(fluidStack -> !fluidStack.isEmpty()))) {
@@ -174,7 +156,7 @@ public final class FluidContainerUtils {
             return handleContainerItemFill(tileEntity, stack, inSlot, outSlot);
         } else if (editMode == ContainerEditMode.EMPTY || editMode == ContainerEditMode.BOTH) {
             //Otherwise if our mode is to empty, or it is both and our container was not empty, then drain
-            return handleContainerItemEmpty(tileEntity, stack, needed, inSlot, outSlot, checker);
+            return handleContainerItemEmpty(tileEntity, stack, needed, inSlot, outSlot);
         }
         return stack;
     }
