@@ -9,20 +9,23 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -70,7 +73,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
             //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
             return mode && isValidFluid.test(fluidContained) && fluidHandler.fill(fluidContained, FluidAction.SIMULATE) > 0;
         }, stack -> {
-            LazyOptionalHelper<IFluidHandlerItem> capabilityHelper = new LazyOptionalHelper<>(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
+            LazyOptionalHelper<IFluidHandlerItem> capabilityHelper = new LazyOptionalHelper<>(FluidUtil.getFluidHandler(stack));
             if (capabilityHelper.isPresent()) {
                 if (modeSupplier.getAsBoolean()) {
                     //Input tank, so we want to fill it
@@ -113,7 +116,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         return new FluidInventorySlot(fluidTank, alwaysFalse, stack -> new LazyOptionalHelper<>(FluidUtil.getFluidHandler(stack))
               .matches(itemFluidHandler -> fluidTank.isEmpty() || itemFluidHandler.fill(fluidTank.getFluid(), FluidAction.SIMULATE) > 0),
-              stack -> isNonFullFluidContainer(new LazyOptionalHelper<>(stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY))), inventory, x, y);
+              stack -> isNonFullFluidContainer(new LazyOptionalHelper<>(FluidUtil.getFluidHandler(stack))), inventory, x, y);
     }
 
     //TODO: Should we make this also have the fluid type have to match a desired type???
@@ -163,7 +166,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
         int tanks = fluidHandler.getTanks();
         if (!isEmpty() && tanks > 0) {
             //Try filling from the tank's item
-            Optional<IFluidHandlerItem> capability = LazyOptionalHelper.toOptional(current.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
+            Optional<IFluidHandlerItem> capability = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(current));
             if (capability.isPresent()) {
                 IFluidHandlerItem itemFluidHandler = capability.get();
                 int itemTanks = itemFluidHandler.getTanks();
@@ -216,64 +219,102 @@ public class FluidInventorySlot extends BasicInventorySlot {
 
     /**
      * Drains tank into slot
+     *
+     * @param outputSlot The slot to move our container to after draining the tank.
      */
-    public void drainTank() {
+    public void drainTank(IInventorySlot outputSlot) {
         int tanks = fluidHandler.getTanks();
-        if (!isEmpty() && tanks > 0) {
-            LazyOptionalHelper<IFluidHandlerItem> lazyItemCap = new LazyOptionalHelper<>(current.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
-            //For now keep the item's fluid handler lazy as if we don't end up having any fluids in the tanks we don't need to access it
-            // We only are checking if it is present now because if for some reason our item is not a fluid handler then it won't be able
-            // to receive fluid anyways so there is no reason to check our fluid handler's tanks
-            if (lazyItemCap.isPresent()) {
-                if (tanks == 1) {
-                    //If we only have one tank just directly check against that fluid instead of performing extra calculations
-                    // that ensure we only execute drain once per fluid type
-                    FluidStack fluidInTank = fluidHandler.getFluidInTank(0);
+        //Verify we have an item, we have tanks that may need to be drained, and that our item is a fluid handler
+        if (!isEmpty() && tanks > 0 && FluidUtil.getFluidHandler(current).isPresent()) {
+            if (tanks == 1) {
+                //If we only have one tank just directly check against that fluid instead of performing extra calculations
+                // that ensure we only execute drain once per fluid type
+                FluidStack fluidInTank = fluidHandler.getFluidInTank(0);
+                if (!fluidInTank.isEmpty()) {
+                    //If we have a fluid attempt to drain it into our item
+                    fillItemAndMove(outputSlot, fluidInTank);
+                }
+            } else {
+                //Otherwise try handling draining out of all tanks
+                // We start by gathering all the fluids in the fluid handler that we are able to drain,
+                // combining same fluid types into a single fluid stack
+                Map<FluidInfo, FluidStack> knownFluids = new HashMap<>();
+                for (int tank = 0; tank < tanks; tank++) {
+                    FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
                     if (!fluidInTank.isEmpty()) {
-                        //If we have a fluid attempt to drain it into our item
-                        //Note: We already know we have it so we can just directly get it
-                        if (fillHandlerFromOther(lazyItemCap.getValue(), fluidHandler, fluidInTank)) {
-                            onContentsChanged();
+                        FluidInfo info = new FluidInfo(fluidInTank);
+                        FluidStack knownFluid = knownFluids.get(info);
+                        //If we have a fluid and it can be drained from the fluid handler then we add it to our known fluids
+                        // Note: We only bother checking if it can be drained if we do not already have it as a known fluid
+                        if (knownFluid == null) {
+                            if (!fluidHandler.drain(fluidInTank, FluidAction.SIMULATE).isEmpty()) {
+                                knownFluids.put(info, fluidInTank.copy());
+                            }
+                        } else {
+                            knownFluid.grow(fluidInTank.getAmount());
                         }
                     }
-                } else {
-                    //Otherwise try handling draining out of all tanks
-                    // We start by gathering all the fluids in the fluid handler that we are able to drain,
-                    // combining same fluid types into a single fluid stack
-                    Map<FluidInfo, FluidStack> knownFluids = new HashMap<>();
-                    for (int tank = 0; tank < tanks; tank++) {
-                        FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
-                        if (!fluidInTank.isEmpty()) {
-                            FluidInfo info = new FluidInfo(fluidInTank);
-                            FluidStack knownFluid = knownFluids.get(info);
-                            //If we have a fluid and it can be drained from the fluid handler then we add it to our known fluids
-                            // Note: We only bother checking if it can be drained if we do not already have it as a known fluid
-                            if (knownFluid == null) {
-                                if (!fluidHandler.drain(fluidInTank, FluidAction.SIMULATE).isEmpty()) {
-                                    knownFluids.put(info, fluidInTank.copy());
-                                }
-                            } else {
-                                knownFluid.grow(fluidInTank.getAmount());
-                            }
-                        }
-                    }
-                    if (!knownFluids.isEmpty()) {
-                        //If we found any fluids that we can drain, attempt to drain them into our item
-                        //Note: We already know we have it so we can just directly get it
-                        IFluidHandlerItem itemFluidHandler = lazyItemCap.getValue();
-                        boolean changed = false;
-                        for (FluidStack knownFluid : knownFluids.values()) {
-                            if (fillHandlerFromOther(itemFluidHandler, fluidHandler, knownFluid)) {
-                                changed = true;
-                            }
-                        }
-                        if (changed) {
-                            onContentsChanged();
-                        }
+                }
+                //If we found any fluids that we can drain, attempt to drain them into our item
+                for (FluidStack knownFluid : knownFluids.values()) {
+                    if (fillItemAndMove(outputSlot, knownFluid) && isEmpty()) {
+                        //If we moved the item after filling it and we now don't have an item to try and fill
+                        // then just exit instead of checking the other types of fluids
+                        //TODO: Eventually fix the case where the item we are filling can accept multiple different
+                        // types of fluids so we may not actually want to move it immediately
+                        break;
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Fills our item and moves it to the given output slot. If it won't be able to move to the output slot, then we do not move it or drain our tank into the item.
+     *
+     * @param outSlot The slot our item will be moved to afterwards
+     * @param fluid   The fluid we are filling the item with. This should be known to not be empty.
+     *
+     * @return True if we can drain the fluid from our fluid handler and the item after being filled can (and was) moved to the output slot, false otherwise
+     */
+    private boolean fillItemAndMove(IInventorySlot outSlot, FluidStack fluid) {
+        FluidStack simulatedDrain = fluidHandler.drain(fluid, FluidAction.SIMULATE);
+        if (simulatedDrain.isEmpty()) {
+            //If we cannot actually drain from our fluid handler then just exit early
+            return false;
+        }
+        FluidStack toDrain = FluidStack.EMPTY;
+        ItemStack inputCopy = StackUtils.size(current, 1);
+        Optional<IFluidHandlerItem> cap = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(inputCopy));
+        if (cap.isPresent()) {
+            IFluidHandlerItem fluidHandlerItem = cap.get();
+            //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item
+            // and it does not actually matter that we are directly executing on the item
+            toDrain = new FluidStack(fluid, fluidHandlerItem.fill(fluid, FluidAction.EXECUTE));
+            //Updates our item we are trying to move to be the one that is filled
+            inputCopy = fluidHandlerItem.getContainer();
+        }
+        if (outSlot.isEmpty()) {
+            outSlot.setStack(inputCopy);
+        } else {
+            ItemStack outputStack = outSlot.getStack();
+            if (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() >= outSlot.getLimit(outputStack)) {
+                //We won't be able to move our container to the output slot so exit
+                return false;
+            }
+            if (outSlot.growStack(1, Action.EXECUTE) != 1) {
+                //TODO: Print warning about failing to increase size of stack
+            }
+        }
+        //Note: We do not need to call onContentsChanged, because it will be done due to the stack changing from calling shrinkStack
+        if (shrinkStack(1, Action.EXECUTE) != 1) {
+            //TODO: Print warning about failing to shrink size of stack
+        }
+        if (!toDrain.isEmpty()) {
+            //Actually drain the fluid from our handler
+            fluidHandler.drain(toDrain, FluidAction.EXECUTE);
+        }
+        return true;
     }
 
     /**

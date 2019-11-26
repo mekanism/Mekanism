@@ -92,6 +92,8 @@ public class BasicInventorySlot implements IInventorySlot {
         //TODO: YES it will help expose bugs, and we need to make sure that we are not calling shrink/grow on anything we should not be
         // Though it would be "cleaner" to not have to especially in terms of for finding bugs when API is being mistreated.
         // Would be nice to extend ItemStack to have one that throws a warning/error on being modified
+        //TODO: If we do have a cached copy, then when this is called we may want to log a warning that something tried to modify the stack
+        // if the copy has different information/size than our actual stored stack?? Would need to make sure the cached version stays up to date
         return current;
     }
 

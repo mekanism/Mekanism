@@ -101,9 +101,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             if (mode == 0) {
                 //TODO: FIXME make this use logic via GasInventorySlot
                 TileUtils.receiveGas(gasOutputSlot.getStack(), gasTank);
-                if (FluidContainerUtils.isFluidContainer(fluidInputSlot.getStack())) {
-                    FluidContainerUtils.handleContainerItemFill(this, fluidTank, fluidInputSlot, fluidOutputSlot);
-                }
+                fluidInputSlot.drainTank(fluidOutputSlot);
 
                 //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
                 //TODO: FIXME
@@ -123,10 +121,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             } else if (mode == 1) {
                 gasInputSlot.drainTank();
                 TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
-
-                if (FluidContainerUtils.isFluidContainer(fluidInputSlot.getStack())) {
-                    FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, fluidInputSlot, fluidOutputSlot);
-                }
+                FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, fluidInputSlot, fluidOutputSlot);
 
                 //TODO: Promote this stuff to being a proper RECIPE (at the very least in 1.14)
                 if (getEnergy() >= getEnergyPerTick() && MekanismUtils.canFunction(this) && isValidFluid(fluidTank.getFluid()) &&

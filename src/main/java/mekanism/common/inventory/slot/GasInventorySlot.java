@@ -284,6 +284,8 @@ public class GasInventorySlot extends BasicInventorySlot {
      * @implNote Does not pre-check if the current stack is empty or that the gas tank needs gas
      */
     private boolean fillTankFromItem() {
+        //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
+        // Note: None of Mekanism's IGasItem's stack so at the moment it doesn't fully matter
         if (current.getItem() instanceof IGasItem) {
             IGasItem item = (IGasItem) current.getItem();
             GasStack gasInItem = item.getGas(current);
@@ -307,6 +309,8 @@ public class GasInventorySlot extends BasicInventorySlot {
      * Drains tank into slot
      */
     public void drainTank() {
+        //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
+        // Note: None of Mekanism's IGasItem's stack so at the moment it doesn't fully matter
         if (!isEmpty() && !gasTank.isEmpty()) {
             //TODO: Capability for gas item, and then rewrite this so it simulates and things
             if (current.getItem() instanceof IGasItem) {

@@ -137,7 +137,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             }
             if (structured) {
                 updateTemperature();
-                manageBuckets();
+                inputOutputSlot.drainTank(outputOutputSlot);
+                FluidContainerUtils.handleContainerItemEmpty(this, inputTank, inputInputSlot, outputInputSlot, new FluidChecker() {
+                    @Override
+                    public boolean isValid(@Nonnull Fluid f) {
+                        return hasRecipe(new FluidStack(f, 1));
+                    }
+                });
             }
             //Note: This is not in a structured check as we want to make sure it stops if we do not have a structure
             //TODO: Think through the logic, given we are calling the process so technically if it is not structured, then we
@@ -237,25 +243,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                   //Also set values like lastGain
                   return Math.min(MekanismUtils.clampToInt(currentMax * multiplier), currentMax);
               });
-    }
-
-    private void manageBuckets() {
-        if (!outputTank.getFluid().isEmpty()) {
-            if (FluidContainerUtils.isFluidContainer(inputOutputSlot.getStack())) {
-                FluidContainerUtils.handleContainerItemFill(this, outputTank, inputOutputSlot, outputOutputSlot);
-            }
-        }
-
-        if (structured) {
-            if (FluidContainerUtils.isFluidContainer(inputInputSlot.getStack())) {
-                FluidContainerUtils.handleContainerItemEmpty(this, inputTank, inputInputSlot, outputInputSlot, new FluidChecker() {
-                    @Override
-                    public boolean isValid(@Nonnull Fluid f) {
-                        return hasRecipe(new FluidStack(f, 1));
-                    }
-                });
-            }
-        }
     }
 
     private void updateTemperature() {

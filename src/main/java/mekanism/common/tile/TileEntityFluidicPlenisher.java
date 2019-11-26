@@ -104,15 +104,13 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
-            if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
-                FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, inputSlot, outputSlot, new FluidChecker() {
-                    @Override
-                    public boolean isValid(@Nonnull Fluid f) {
-                        //TODO: Is there a better position to use
-                        return f.getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, f.getDefaultState());
-                    }
-                });
-            }
+            FluidContainerUtils.handleContainerItemEmpty(this, fluidTank, inputSlot, outputSlot, new FluidChecker() {
+                @Override
+                public boolean isValid(@Nonnull Fluid f) {
+                    //TODO: Is there a better position to use
+                    return f.getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, f.getDefaultState());
+                }
+            });
 
             if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.getFluid().isEmpty() &&
                 fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluidTank.getFluid())) {

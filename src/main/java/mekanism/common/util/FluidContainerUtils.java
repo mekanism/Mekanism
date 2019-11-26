@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
@@ -13,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -23,7 +23,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public final class FluidContainerUtils {
 
     public static boolean isFluidContainer(ItemStack stack) {
-        return !stack.isEmpty() && stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
+        return !stack.isEmpty() && FluidUtil.getFluidHandler(stack).isPresent();
     }
 
     public static boolean canDrain(@Nonnull FluidStack tankFluid, @Nonnull FluidStack drainFluid) {
@@ -68,28 +68,26 @@ public final class FluidContainerUtils {
         return handler.fill(fluid, FluidAction.EXECUTE);
     }
 
-    public static void handleContainerItemFill(TileEntityMekanism tileEntity, FluidTank tank, IInventorySlot inSlot, IInventorySlot outSlot) {
-        tank.setFluid(handleContainerItemFill(tileEntity, tank.getFluid(), inSlot, outSlot));
-    }
-
     public static FluidStack handleContainerItemFill(TileEntity tileEntity, @Nonnull FluidStack stack, IInventorySlot inSlot, IInventorySlot outSlot) {
         if (!stack.isEmpty()) {
             ItemStack inputCopy = StackUtils.size(inSlot.getStack(), 1);
-            LazyOptionalHelper<IFluidHandlerItem> handlerHelper = new LazyOptionalHelper<>(FluidUtil.getFluidHandler(inputCopy));
+            Optional<IFluidHandlerItem> fluidHandlerItem = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(inputCopy));
             int drained = 0;
-            if (handlerHelper.isPresent()) {
-                IFluidHandlerItem handler = handlerHelper.getValue();
+            if (fluidHandlerItem.isPresent()) {
+                IFluidHandlerItem handler = fluidHandlerItem.get();
                 drained = insertFluid(stack, handler);
                 inputCopy = handler.getContainer();
             }
-            ItemStack outputStack = outSlot.getStack();
-            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getLimit(outputStack))) {
-                return stack;
-            }
-            stack.setAmount(stack.getAmount() - drained);
-            if (outputStack.isEmpty()) {
+            if (outSlot.isEmpty()) {
+                stack.setAmount(stack.getAmount() - drained);
                 outSlot.setStack(inputCopy);
-            } else if (ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy)) {
+            } else {
+                ItemStack outputStack = outSlot.getStack();
+                if (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() >= outSlot.getLimit(outputStack)) {
+                    //We won't be able to move our container to the output slot so exit
+                    return stack;
+                }
+                stack.setAmount(stack.getAmount() - drained);
                 if (outSlot.growStack(1, Action.EXECUTE) != 1) {
                     //TODO: Print warning about failing to increase size of stack
                 }
@@ -107,19 +105,20 @@ public final class FluidContainerUtils {
     }
 
     public static void handleContainerItemEmpty(TileEntityMekanism tileEntity, FluidTank tank, IInventorySlot inSlot, IInventorySlot outSlot, FluidChecker checker) {
-        tank.setFluid(handleContainerItemEmpty(tileEntity, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
+        if (FluidContainerUtils.isFluidContainer(inSlot.getStack())) {
+            tank.setFluid(handleContainerItemEmpty(tileEntity, tank.getFluid(), tank.getCapacity() - tank.getFluidAmount(), inSlot, outSlot, checker));
+        }
     }
 
     public static FluidStack handleContainerItemEmpty(TileEntity tileEntity, @Nonnull FluidStack stored, int needed, IInventorySlot inSlot, IInventorySlot outSlot,
           final FluidChecker checker) {
         final Fluid storedFinal = stored.getFluid();
         final ItemStack input = StackUtils.size(inSlot.getStack(), 1);
-        LazyOptionalHelper<IFluidHandlerItem> handlerHelper = new LazyOptionalHelper<>(FluidUtil.getFluidHandler(input));
-
-        if (!handlerHelper.isPresent()) {
+        Optional<IFluidHandlerItem> fluidHandlerItem = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(input));
+        if (!fluidHandlerItem.isPresent()) {
             return stored;
         }
-        IFluidHandlerItem handler = handlerHelper.getValue();
+        IFluidHandlerItem handler = fluidHandlerItem.get();
         FluidStack ret = extractFluid(needed, handler, new FluidChecker() {
             @Override
             public boolean isValid(Fluid f) {
@@ -171,8 +170,10 @@ public final class FluidContainerUtils {
         //TODO: Can these two methods be cleaned up by offloading checks to the IInventorySlots
         if (editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH &&
                                                    !new LazyOptionalHelper<>(FluidUtil.getFluidContained(inSlot.getStack())).matches(fluidStack -> !fluidStack.isEmpty()))) {
+            //If our mode is fill or we have an empty container and support either mode, then fill
             return handleContainerItemFill(tileEntity, stack, inSlot, outSlot);
         } else if (editMode == ContainerEditMode.EMPTY || editMode == ContainerEditMode.BOTH) {
+            //Otherwise if our mode is to empty, or it is both and our container was not empty, then drain
             return handleContainerItemEmpty(tileEntity, stack, needed, inSlot, outSlot, checker);
         }
         return stack;

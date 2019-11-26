@@ -117,11 +117,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
-            if (!fluidTank.getFluid().isEmpty()) {
-                if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
-                    FluidContainerUtils.handleContainerItemFill(this, fluidTank, inputSlot, outputSlot);
-                }
-            }
+            inputSlot.drainTank(outputSlot);
             if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
                 if (suckedLastOperation) {
                     setEnergy(getEnergy() - getEnergyPerTick());
