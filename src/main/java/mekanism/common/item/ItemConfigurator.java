@@ -132,13 +132,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                             //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
                             List<IInventorySlot> inventorySlots = inv.getInventorySlots(null);
                             for (IInventorySlot inventorySlot : inventorySlots) {
-                                ItemStack slotStack = inventorySlot.getStack();
-                                if (!slotStack.isEmpty()) {
+                                if (!inventorySlot.isEmpty()) {
                                     double configuratorEnergy = getEnergy(stack);
                                     if (configuratorEnergy < ENERGY_PER_ITEM_DUMP) {
                                         break;
                                     }
-                                    Block.spawnAsEntity(world, pos, slotStack.copy());
+                                    Block.spawnAsEntity(world, pos, inventorySlot.getStack().copy());
                                     inventorySlot.setStack(ItemStack.EMPTY);
                                     setEnergy(stack, configuratorEnergy - ENERGY_PER_ITEM_DUMP);
                                 }

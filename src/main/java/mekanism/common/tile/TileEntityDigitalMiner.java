@@ -393,8 +393,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         //TODO: Clean this up/cache it??
         NonNullList<ItemStack> toReturn = NonNullList.withSize(slots.size(), ItemStack.EMPTY);
         for (int i = 0; i < slots.size(); i++) {
-            ItemStack stack = slots.get(i).getStack();
-            toReturn.set(i, !stack.isEmpty() ? stack.copy() : ItemStack.EMPTY);
+            IInventorySlot slot = slots.get(i);
+            toReturn.set(i, !slot.isEmpty() ? slot.getStack().copy() : ItemStack.EMPTY);
         }
         return toReturn;
     }
@@ -402,10 +402,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     public TransitRequest getEjectItemMap() {
         TransitRequest request = new TransitRequest();
         for (int i = mainSlots.size() - 1; i >= 0; i--) {
-            ItemStack stack = mainSlots.get(i).getStack();
-            if (!stack.isEmpty() && !isReplaceStack(stack)) {
-                //TODO: Check if we need to place a copy in terms of mutability
-                request.addItem(stack, i);
+            IInventorySlot slot = mainSlots.get(i);
+            if (!slot.isEmpty()) {
+                ItemStack stack = slot.getStack();
+                if (!isReplaceStack(stack)) {
+                    //TODO: Check if we need to place a copy in terms of mutability
+                    request.addItem(stack, i);
+                }
             }
         }
         return request;

@@ -29,9 +29,9 @@ public class RecipeFormula {
     public RecipeFormula(World world, List<IInventorySlot> craftingGridSlots) {
         //Should always be 9 for the size
         for (int i = 0; i < craftingGridSlots.size(); i++) {
-            ItemStack stack = craftingGridSlots.get(i).getStack();
-            if (!stack.isEmpty()) {
-                input.set(i, StackUtils.size(stack, 1));
+            IInventorySlot craftingSlot = craftingGridSlots.get(i);
+            if (!craftingSlot.isEmpty()) {
+                input.set(i, StackUtils.size(craftingSlot.getStack(), 1));
             }
         }
         resetToRecipe();

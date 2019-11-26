@@ -127,15 +127,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                     if (formula == null) {
                         return true;
                     }
-                    //TODO: CLEAN THIS UP/FIX as some of this logic should probably be in
+                    //TODO: CLEAN THIS UP/FIX as some of this logic should probably be elsewhere
                     List<Integer> indices = formula.getIngredientIndices(world, stack);
                     if (indices.size() > 0) {
                         if (stockControl) {
                             int filled = 0;
                             for (IInventorySlot stockSlot : inputSlots) {
-                                ItemStack slotStack = stockSlot.getStack();
-                                if (!slotStack.isEmpty()) {
-                                    if (formula.isIngredientInPos(world, slotStack, indices.get(0))) {
+                                if (!stockSlot.isEmpty()) {
+                                    //TODO: Does this need to copy the stack?
+                                    if (formula.isIngredientInPos(world, stockSlot.getStack(), indices.get(0))) {
                                         filled++;
                                     }
                                 }
@@ -381,15 +381,17 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 for (int j = inputSlots.size() - 1; j >= 0; j--) {
                     //The stack stored in the stock inventory
                     IInventorySlot stockSlot = inputSlots.get(j);
-                    ItemStack stockStack = stockSlot.getStack();
-                    if (!stockStack.isEmpty() && formula.isIngredientInPos(world, stockStack, i)) {
-                        recipeSlot.setStack(StackUtils.size(stockStack, 1));
-                        if (stockSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                            //TODO: Print error that something went wrong
+                    if (!stockSlot.isEmpty()) {
+                        ItemStack stockStack = stockSlot.getStack();
+                        if (formula.isIngredientInPos(world, stockStack, i)) {
+                            recipeSlot.setStack(StackUtils.size(stockStack, 1));
+                            if (stockSlot.shrinkStack(1, Action.EXECUTE) != 1) {
+                                //TODO: Print error that something went wrong
+                            }
+                            markDirty();
+                            found = true;
+                            break;
                         }
-                        markDirty();
-                        found = true;
-                        break;
                     }
                 }
                 if (!found) {
@@ -443,8 +445,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             IInventorySlot compareSlot = inputSlots.get(j);
             for (int i = inputSlotCount - 1; i > j; i--) {
                 IInventorySlot stockSlot = inputSlots.get(i);
-                ItemStack stockStack = stockSlot.getStack();
-                if (!stockStack.isEmpty()) {
+                if (!stockSlot.isEmpty()) {
+                    ItemStack stockStack = stockSlot.getStack();
                     ItemStack compareStack = compareSlot.getStack();
                     if (compareStack.isEmpty()) {
                         compareSlot.setStack(stockStack);
@@ -499,14 +501,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void encodeFormula() {
-        ItemStack formulaStack = formulaSlot.getStack();
-        if (!formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula) {
-            ItemCraftingFormula item = (ItemCraftingFormula) formulaStack.getItem();
-            if (item.getInventory(formulaStack) == null) {
-                RecipeFormula formula = new RecipeFormula(world, craftingGridSlots);
-                if (formula.isValidFormula(world)) {
-                    item.setInventory(formulaStack, formula.input);
-                    markDirty();
+        if (!formulaSlot.isEmpty()) {
+            ItemStack formulaStack = formulaSlot.getStack();
+            if (formulaStack.getItem() instanceof ItemCraftingFormula) {
+                ItemCraftingFormula item = (ItemCraftingFormula) formulaStack.getItem();
+                if (item.getInventory(formulaStack) == null) {
+                    RecipeFormula formula = new RecipeFormula(world, craftingGridSlots);
+                    if (formula.isValidFormula(world)) {
+                        item.setInventory(formulaStack, formula.input);
+                        markDirty();
+                    }
                 }
             }
         }

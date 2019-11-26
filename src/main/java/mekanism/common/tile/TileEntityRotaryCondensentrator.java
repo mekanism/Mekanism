@@ -99,6 +99,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             energySlot.discharge(this);
 
             if (mode == 0) {
+                //TODO: FIXME make this use logic via GasInventorySlot
                 TileUtils.receiveGas(gasOutputSlot.getStack(), gasTank);
                 if (FluidContainerUtils.isFluidContainer(fluidInputSlot.getStack())) {
                     FluidContainerUtils.handleContainerItemFill(this, fluidTank, fluidInputSlot, fluidOutputSlot);

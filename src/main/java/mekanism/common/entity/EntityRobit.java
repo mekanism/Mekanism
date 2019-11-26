@@ -271,14 +271,14 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 }
                 for (int i = 0; i < 27; i++) {
                     IInventorySlot slot = inventorySlots.get(i);
-                    ItemStack itemStack = slot.getStack();
-                    if (itemStack.isEmpty()) {
+                    if (slot.isEmpty()) {
                         slot.setStack(item.getItem());
                         onItemPickup(item, item.getItem().getCount());
                         item.remove();
                         playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1.0F, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         break;
                     }
+                    ItemStack itemStack = slot.getStack();
                     int maxSize = slot.getLimit(itemStack);
                     if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
                         int needed = maxSize - itemStack.getCount();
@@ -312,13 +312,13 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     private boolean canSmelt() {
-        ItemStack input = smeltingInputSlot.getStack();
-        if (input.isEmpty()) {
+        if (smeltingInputSlot.isEmpty()) {
             return false;
         }
         //TODO: Should we make the robit go off of the energized smelter recipes instead?? It would allow for reducing a lot of this code
         // as then it could do it all via the CachedRecipe system
         // The decision is yes, so we need to kill a bunch of these methods and replace them with using the CachedRecipe stuff
+        ItemStack input = smeltingInputSlot.getStack();
         Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(input), world);
         if (!recipe.isPresent()) {
             return false;
@@ -327,10 +327,10 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         if (result.isEmpty()) {
             return false;
         }
-        ItemStack currentOutput = smeltingOutputSlot.getStack();
-        if (currentOutput.isEmpty()) {
+        if (smeltingOutputSlot.isEmpty()) {
             return true;
         }
+        ItemStack currentOutput = smeltingOutputSlot.getStack();
         if (!ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
             return false;
         }

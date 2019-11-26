@@ -292,10 +292,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
             handleSecondaryFuel();
             sortInventory();
-            ItemStack typeInputStack = typeInputSlot.getStack();
-            if (!typeInputStack.isEmpty() && typeOutputSlot.isEmpty()) {
+            if (!typeInputSlot.isEmpty() && typeOutputSlot.isEmpty()) {
+                ItemStack typeInputStack = typeInputSlot.getStack();
                 RecipeType toSet = null;
-
                 for (RecipeType type : RecipeType.values()) {
                     if (ItemHandlerHelper.canItemStacksStack(typeInputStack, type.getStack())) {
                         toSet = type;

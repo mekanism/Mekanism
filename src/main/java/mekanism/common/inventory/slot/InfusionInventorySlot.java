@@ -71,7 +71,7 @@ public class InfusionInventorySlot extends BasicInventorySlot {
     }
 
     public void fillTank() {
-        if (!current.isEmpty()) {
+        if (!isEmpty()) {
             ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
             if (foundRecipe != null) {
                 ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);

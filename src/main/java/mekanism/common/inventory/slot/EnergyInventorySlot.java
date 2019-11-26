@@ -135,7 +135,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     //TODO: Should we make this slot keep track of an IStrictEnergyStorage AND also then make some sort of "ITickableSlot" or something that lets us tick a bunch
     // of slots at once instead of having to manually call the relevant methods
     public void discharge(IStrictEnergyStorage storer) {
-        if (!current.isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
+        if (!isEmpty() && storer.getEnergy() < storer.getMaxEnergy()) {
             if (current.getItem() instanceof IEnergizedItem) {
                 IEnergizedItem energizedItem = (IEnergizedItem) current.getItem();
                 if (energizedItem.canSend(current)) {

@@ -56,20 +56,18 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
             if (burnTime > 0) {
                 burnTime--;
                 burning = true;
-            } else {
+            } else if (!fuelSlot.isEmpty()) {
                 ItemStack stack = fuelSlot.getStack();
-                if (!stack.isEmpty()) {
-                    maxBurnTime = burnTime = ForgeHooks.getBurnTime(stack) / 2;
-                    if (burnTime > 0) {
-                        ItemStack preShrunk = stack.copy();
-                        if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                            //TODO: Print error something went wrong
-                        }
-                        if (fuelSlot.isEmpty()) {
-                            fuelSlot.setStack(preShrunk.getItem().getContainerItem(preShrunk));
-                        }
-                        burning = true;
+                maxBurnTime = burnTime = ForgeHooks.getBurnTime(stack) / 2;
+                if (burnTime > 0) {
+                    ItemStack preShrunk = stack.copy();
+                    if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
+                        //TODO: Print error something went wrong
                     }
+                    if (fuelSlot.isEmpty()) {
+                        fuelSlot.setStack(preShrunk.getItem().getContainerItem(preShrunk));
+                    }
+                    burning = true;
                 }
             }
             if (burning) {

@@ -84,7 +84,7 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     }
 
     public int getItemCount() {
-        return binSlot.getStack().getCount();
+        return binSlot.getCount();
     }
 
     public ItemStack getItemType() {

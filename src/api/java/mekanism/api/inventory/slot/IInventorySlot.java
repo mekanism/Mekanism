@@ -148,16 +148,15 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * does get updated make sure to call {@link #onContentsChanged()}
      */
     default int setStackSize(int amount, Action action) {
-        ItemStack stack = getStack();
-        if (stack.isEmpty()) {
+        if (isEmpty()) {
             return 0;
-        }
-        if (amount <= 0) {
+        } else if (amount <= 0) {
             if (action.execute()) {
                 setStack(ItemStack.EMPTY);
             }
             return 0;
         }
+        ItemStack stack = getStack();
         int maxStackSize = getLimit(stack);
         if (amount > maxStackSize) {
             amount = maxStackSize;
@@ -187,7 +186,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
     default int growStack(int amount, Action action) {
-        int current = getStack().getCount();
+        int current = getCount();
         int newSize = setStackSize(current + amount, action);
         return newSize - current;
     }
@@ -214,8 +213,21 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * Convenience method for checking if this slot is empty.
      *
      * @return True if the slot is empty, false otherwise.
+     *
+     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
     default boolean isEmpty() {
         return getStack().isEmpty();
+    }
+
+    /**
+     * Convenience method for checking the size of the stack in this slot.
+     *
+     * @return The size of the stored stack, or zero is the stack is empty.
+     *
+     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
+     */
+    default int getCount() {
+        return getStack().getCount();
     }
 }

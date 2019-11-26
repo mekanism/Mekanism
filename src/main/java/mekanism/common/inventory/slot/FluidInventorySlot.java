@@ -161,7 +161,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
      */
     public void fillTank() {
         int tanks = fluidHandler.getTanks();
-        if (!current.isEmpty() && tanks > 0) {
+        if (!isEmpty() && tanks > 0) {
             //Try filling from the tank's item
             Optional<IFluidHandlerItem> capability = LazyOptionalHelper.toOptional(current.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
             if (capability.isPresent()) {
@@ -219,7 +219,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
      */
     public void drainTank() {
         int tanks = fluidHandler.getTanks();
-        if (!current.isEmpty() && tanks > 0) {
+        if (!isEmpty() && tanks > 0) {
             LazyOptionalHelper<IFluidHandlerItem> lazyItemCap = new LazyOptionalHelper<>(current.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY));
             //For now keep the item's fluid handler lazy as if we don't end up having any fluids in the tanks we don't need to access it
             // We only are checking if it is present now because if for some reason our item is not a fluid handler then it won't be able

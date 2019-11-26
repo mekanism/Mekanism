@@ -88,11 +88,10 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
             //TODO: Check to make sure it wasn't a miss?
             if (mop != null && mop.getFace() == bin.getDirection()) {
                 BinInventorySlot binSlot = bin.getBinSlot();
-                ItemStack storedStack = binSlot.getStack();
-                if (!storedStack.isEmpty()) {
+                if (!binSlot.isEmpty()) {
                     ItemStack stack;
                     if (player.isSneaking()) {
-                        stack = StackUtils.size(storedStack, 1);
+                        stack = StackUtils.size(binSlot.getStack(), 1);
                         if (binSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                             //TODO: Print error that something went wrong??
                         }
@@ -129,7 +128,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
         if (!world.isRemote) {
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getLimit(binSlot.getStack());
-            if (binSlot.getStack().getCount() < binMaxSize) {
+            if (binSlot.getCount() < binMaxSize) {
                 ItemStack stack = player.getHeldItem(hand);
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
@@ -140,7 +139,7 @@ public class BlockBin extends BlockTileDrops implements IHasModel, IStateFacing,
                 } else if (bin.addTicks > 0 && bin.getItemCount() > 0) {
                     NonNullList<ItemStack> inv = player.inventory.mainInventory;
                     for (int i = 0; i < inv.size(); i++) {
-                        if (binSlot.getStack().getCount() == binMaxSize) {
+                        if (binSlot.getCount() == binMaxSize) {
                             break;
                         }
                         ItemStack stackToAdd = inv.get(i);

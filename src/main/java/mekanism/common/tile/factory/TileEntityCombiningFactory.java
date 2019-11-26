@@ -48,8 +48,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
         CachedRecipe<CombinerRecipe> cached = getCachedRecipe(process);
         if (cached != null) {
             CombinerRecipe cachedRecipe = cached.getRecipe();
-            ItemStack extra = extraSlot.getStack();
-            if (cachedRecipe.getMainInput().testType(fallbackInput) && (extra.isEmpty() || cachedRecipe.getExtraInput().testType(extra))) {
+            if (cachedRecipe.getMainInput().testType(fallbackInput) && (extraSlot.isEmpty() || cachedRecipe.getExtraInput().testType(extraSlot.getStack()))) {
                 //Our input matches the recipe we have cached for this slot
                 return true;
             }

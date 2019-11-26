@@ -119,13 +119,13 @@ public class BasicInventorySlot implements IInventorySlot {
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return stack;
         }
-        int needed = getLimit(stack) - current.getCount();
+        int needed = getLimit(stack) - getCount();
         if (needed <= 0) {
             //Fail if we are a full slot
             return stack;
         }
         boolean sameType = false;
-        if (current.isEmpty() || (sameType = ItemHandlerHelper.canItemStacksStack(current, stack))) {
+        if (isEmpty() || (sameType = ItemHandlerHelper.canItemStacksStack(current, stack))) {
             int toAdd = Math.min(stack.getCount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item
@@ -146,13 +146,13 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        if (current.isEmpty() || amount < 1 || !canExtract.test(current, automationType)) {
+        if (isEmpty() || amount < 1 || !canExtract.test(current, automationType)) {
             //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
             return ItemStack.EMPTY;
         }
         //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
         // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(current.getCount(), current.getMaxStackSize());
+        int currentAmount = Math.min(getCount(), current.getMaxStackSize());
         if (currentAmount < amount) {
             //If we are trying to extract more than we have, just change it so that we are extracting it all
             amount = currentAmount;
@@ -161,7 +161,7 @@ public class BasicInventorySlot implements IInventorySlot {
         // especially for supporting the fact of limiting by the max stack size.
         ItemStack toReturn = StackUtils.size(current, amount);
         if (action.execute()) {
-            //If shrink gets the size to zero it will update the empty state so that current.isEmpty() returns true.
+            //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
             current.shrink(amount);
             onContentsChanged();
         }
@@ -208,10 +208,9 @@ public class BasicInventorySlot implements IInventorySlot {
      */
     @Override
     public int setStackSize(int amount, Action action) {
-        if (current.isEmpty()) {
+        if (isEmpty()) {
             return 0;
-        }
-        if (amount <= 0) {
+        } else if (amount <= 0) {
             if (action.execute()) {
                 setStack(ItemStack.EMPTY);
             }
@@ -221,7 +220,7 @@ public class BasicInventorySlot implements IInventorySlot {
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (current.getCount() == amount || action.simulate()) {
+        if (getCount() == amount || action.simulate()) {
             //If our size is not changing or we are only simulating the change, don't do anything
             return amount;
         }
@@ -230,35 +229,23 @@ public class BasicInventorySlot implements IInventorySlot {
         return amount;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
-     */
-    @Override
-    public int growStack(int amount, Action action) {
-        int currentCount = current.getCount();
-        int newSize = setStackSize(currentCount + amount, action);
-        return newSize - currentCount;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying.
-     */
     @Override
     public boolean isEmpty() {
         return current.isEmpty();
     }
 
     @Override
+    public int getCount() {
+        return current.getCount();
+    }
+
+    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
-        if (!current.isEmpty()) {
+        if (!isEmpty()) {
             nbt.put("Item", current.write(new CompoundNBT()));
-            if (current.getCount() > current.getMaxStackSize()) {
-                nbt.putInt("SizeOverride", current.getCount());
+            if (getCount() > current.getMaxStackSize()) {
+                nbt.putInt("SizeOverride", getCount());
             }
         }
         return nbt;

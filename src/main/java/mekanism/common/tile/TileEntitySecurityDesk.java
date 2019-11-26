@@ -60,29 +60,33 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (!isRemote()) {
             if (ownerUUID != null && frequency != null) {
                 //TODO: Move the locking unlocking logic into the SecurityInventorySlot
-                ItemStack itemStack = unlockSlot.getStack();
-                if (!itemStack.isEmpty() && itemStack.getItem() instanceof IOwnerItem) {
-                    IOwnerItem item = (IOwnerItem) itemStack.getItem();
-                    if (item.getOwnerUUID(itemStack) != null) {
-                        if (item.getOwnerUUID(itemStack).equals(ownerUUID)) {
-                            item.setOwnerUUID(itemStack, null);
-                            if (item instanceof ISecurityItem) {
-                                ((ISecurityItem) item).setSecurity(itemStack, SecurityMode.PUBLIC);
+                if (!unlockSlot.isEmpty()) {
+                    ItemStack itemStack = unlockSlot.getStack();
+                    if (itemStack.getItem() instanceof IOwnerItem) {
+                        IOwnerItem item = (IOwnerItem) itemStack.getItem();
+                        if (item.getOwnerUUID(itemStack) != null) {
+                            if (item.getOwnerUUID(itemStack).equals(ownerUUID)) {
+                                item.setOwnerUUID(itemStack, null);
+                                if (item instanceof ISecurityItem) {
+                                    ((ISecurityItem) item).setSecurity(itemStack, SecurityMode.PUBLIC);
+                                }
                             }
                         }
                     }
                 }
 
-                ItemStack stack = lockSlot.getStack();
-                if (!stack.isEmpty() && stack.getItem() instanceof IOwnerItem) {
-                    IOwnerItem item = (IOwnerItem) stack.getItem();
-                    UUID stackOwner = item.getOwnerUUID(stack);
-                    if (stackOwner == null) {
-                        item.setOwnerUUID(stack, stackOwner = this.ownerUUID);
-                    }
-                    if (stackOwner.equals(this.ownerUUID)) {
-                        if (item instanceof ISecurityItem) {
-                            ((ISecurityItem) item).setSecurity(stack, frequency.securityMode);
+                if (!lockSlot.isEmpty()) {
+                    ItemStack stack = lockSlot.getStack();
+                    if (stack.getItem() instanceof IOwnerItem) {
+                        IOwnerItem item = (IOwnerItem) stack.getItem();
+                        UUID stackOwner = item.getOwnerUUID(stack);
+                        if (stackOwner == null) {
+                            item.setOwnerUUID(stack, stackOwner = this.ownerUUID);
+                        }
+                        if (stackOwner.equals(this.ownerUUID)) {
+                            if (item instanceof ISecurityItem) {
+                                ((ISecurityItem) item).setSecurity(stack, frequency.securityMode);
+                            }
                         }
                     }
                 }

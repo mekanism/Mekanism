@@ -247,7 +247,7 @@ public class GasInventorySlot extends BasicInventorySlot {
      * Fills tank from slot, allowing for the item to also be converted to gas if need be
      */
     public void fillTankOrConvert() {
-        if (!current.isEmpty() && gasTank.getNeeded() > 0) {
+        if (!isEmpty() && gasTank.getNeeded() > 0) {
             //Fill the tank from the item
             if (!fillTankFromItem()) {
                 //If filling from item failed, try doing it by conversion
@@ -274,7 +274,7 @@ public class GasInventorySlot extends BasicInventorySlot {
      * Fills tank from slot, does not try converting the item via gas conversion
      */
     public void fillTank() {
-        if (!current.isEmpty() && gasTank.getNeeded() > 0) {
+        if (!isEmpty() && gasTank.getNeeded() > 0) {
             //Try filling from the tank's item
             fillTankFromItem();
         }
@@ -307,7 +307,7 @@ public class GasInventorySlot extends BasicInventorySlot {
      * Drains tank into slot
      */
     public void drainTank() {
-        if (!current.isEmpty() && !gasTank.isEmpty()) {
+        if (!isEmpty() && !gasTank.isEmpty()) {
             //TODO: Capability for gas item, and then rewrite this so it simulates and things
             if (current.getItem() instanceof IGasItem) {
                 IGasItem gasItem = (IGasItem) current.getItem();

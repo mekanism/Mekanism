@@ -119,6 +119,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public void onUpdate() {
         if (!isRemote()) {
+            //TODO: FIXME use logic via GasInventorySlot
             TileUtils.drawGas(drainSlot.getStack(), gasTank, Action.get(tier != GasTankTier.CREATIVE));
             if (TileUtils.receiveGas(fillSlot.getStack(), gasTank) && tier == GasTankTier.CREATIVE && !gasTank.isEmpty()) {
                 gasTank.setStack(new GasStack(gasTank.getStack(), Integer.MAX_VALUE));

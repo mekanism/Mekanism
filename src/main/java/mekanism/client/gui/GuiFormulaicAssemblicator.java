@@ -137,11 +137,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     private boolean canEncode() {
-        if (tileEntity.formula != null) {
+        if (tileEntity.formula != null || tileEntity.getFormulaSlot().isEmpty()) {
             return false;
         }
         ItemStack formulaStack = tileEntity.getFormulaSlot().getStack();
-        return !formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula && ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) == null;
+        return formulaStack.getItem() instanceof ItemCraftingFormula && ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) == null;
     }
 
     @Override

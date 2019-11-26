@@ -64,9 +64,9 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     //TODO: JavaDoc that the returned stack can be modified
     public ItemStack getBottomStack() {
-        if (current.isEmpty()) {
+        if (isEmpty()) {
             return ItemStack.EMPTY;
         }
-        return StackUtils.size(current, Math.min(current.getCount(), current.getMaxStackSize()));
+        return StackUtils.size(current, Math.min(getCount(), current.getMaxStackSize()));
     }
 }
