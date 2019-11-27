@@ -17,7 +17,6 @@ import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.FluidChecker;

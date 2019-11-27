@@ -222,7 +222,7 @@ public class GasInventorySlot extends BasicInventorySlot {
     private GasInventorySlot(GasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
           @Nullable IMekanismInventory inventory, int x, int y) {
         //TODO: Decide if this should be always true or always false for being a valid gas. This is current only used by the draining method
-        this(gasTank, gas -> false, canExtract, canInsert, validator, inventory, x, y);
+        this(gasTank, gas -> true, canExtract, canInsert, validator, inventory, x, y);
     }
 
     private GasInventorySlot(GasTank gasTank, Predicate<@NonNull Gas> isValidGas, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,

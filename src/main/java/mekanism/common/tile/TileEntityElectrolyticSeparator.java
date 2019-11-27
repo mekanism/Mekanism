@@ -38,7 +38,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -145,11 +144,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
-            ItemStack fluidInputStack = fluidSlot.getStack();
-            if (!fluidInputStack.isEmpty() && isFluidInputItem(fluidInputStack)) {
-                //TODO: Is this check even needed
-                fluidTank.fill(FluidContainerUtils.extractFluid(fluidTank, fluidSlot), FluidAction.EXECUTE);
-            }
+            fluidSlot.fillTank();
 
             leftOutputSlot.drainTank();
             rightOutputSlot.drainTank();

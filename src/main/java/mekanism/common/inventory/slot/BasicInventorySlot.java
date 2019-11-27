@@ -48,6 +48,10 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     private final Predicate<@NonNull ItemStack> validator;
+    /**
+     * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(ItemStack)} should be used
+     * instead.
+     */
     protected ItemStack current = ItemStack.EMPTY;
     private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract;
     private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert;
@@ -99,10 +103,18 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public void setStack(ItemStack stack) {
+        setStack(stack, true);
+    }
+
+    protected void setStackUnchecked(ItemStack stack) {
+        setStack(stack, false);
+    }
+
+    private void setStack(ItemStack stack, boolean validateStack) {
         //TODO: Decide if we want to limit this to the slots limit and maybe make a method for reading from file that lets it go past the limit??
         if (stack.isEmpty()) {
             current = ItemStack.EMPTY;
-        } else if (isItemValid(stack)) {
+        } else if (!validateStack || isItemValid(stack)) {
             //TODO: Should we allow forcefully setting invalid items? At least we need to go through them and check to make sure we allow setting an empty container??
             // This error of empty container not being valid may not even be an issue once we move logic for resources into the specific slots
             current = stack.copy();
@@ -136,7 +148,8 @@ public class BasicInventorySlot implements IInventorySlot {
                     current.grow(toAdd);
                 } else {
                     //If we are not the same type then we have to copy the stack and set it
-                    current = StackUtils.size(stack, toAdd);
+                    // Just set it unchecked as we have already validated it
+                    setStackUnchecked(StackUtils.size(stack, toAdd));
                 }
                 onContentsChanged();
             }
@@ -255,18 +268,14 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
+        ItemStack stack = ItemStack.EMPTY;
         if (nbt.contains("Item", NBT.TAG_COMPOUND)) {
-            ItemStack stack = ItemStack.read(nbt.getCompound("Item"));
+            stack = ItemStack.read(nbt.getCompound("Item"));
             if (nbt.contains("SizeOverride", NBT.TAG_INT)) {
                 stack.setCount(nbt.getInt("SizeOverride"));
             }
-            //Directly set the stack in case the item is no longer valid for the stack.
-            //TODO: Re-evaluate as this may cause issues but we really don't want to just void the stack and then throw an exception
-            // Should we at least log a warning that it is no longer valid if it isn't valid?
-            current = stack;
-        } else {
-            current = ItemStack.EMPTY;
         }
-        //TODO: Do we need to fire onContentsChanged??? Probably not given this is mainly used for when we just loaded from disk anyways
+        //Directly set the stack in case the item is no longer valid for the stack.
+        setStackUnchecked(stack);
     }
 }

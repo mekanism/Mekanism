@@ -34,10 +34,6 @@ public final class FluidContainerUtils {
     }
 
     //TODO: Evaluate usages of these extract methods
-    public static FluidStack extractFluid(FluidTank tileTank, IInventorySlot slot) {
-        return extractFluid(tileTank, slot, FluidChecker.check(tileTank.getFluid()));
-    }
-
     public static FluidStack extractFluid(FluidTank tileTank, IInventorySlot slot, FluidChecker checker) {
         return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(slot.getStack())).getIfPresent(handler -> {
             FluidStack ret = extractFluid(tileTank.getCapacity() - tileTank.getFluidAmount(), handler, checker);
