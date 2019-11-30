@@ -212,7 +212,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
         if (world != null && !world.isRemote) {
             if (formula == null) {
                 for (int i = 0; i < 9; i++) {
-                    dummyInv.setInventorySlotContents(i, inventory.get(SLOT_CRAFT_MATRIX_FIRST + i));
+                    dummyInv.setInventorySlotContents(i, StackUtils.size(inventory.get(SLOT_CRAFT_MATRIX_FIRST + i), 1));
                 }
 
                 lastRemainingItems = EMPTY_LIST;
@@ -242,7 +242,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityElectricBlock im
 
     private boolean doSingleCraft() {
         for (int i = 0; i < 9; i++) {
-            dummyInv.setInventorySlotContents(i, inventory.get(SLOT_CRAFT_MATRIX_FIRST + i));
+            dummyInv.setInventorySlotContents(i,  StackUtils.size(inventory.get(SLOT_CRAFT_MATRIX_FIRST + i), 1));
         }
         recalculateRecipe();
 
