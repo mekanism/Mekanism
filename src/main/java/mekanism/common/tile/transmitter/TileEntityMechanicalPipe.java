@@ -72,7 +72,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
             FluidStack last = getSaveShare();
             if ((last != null && !(lastWrite != null && lastWrite.amount == last.amount && lastWrite.getFluid() == last.getFluid())) || (last == null && lastWrite != null)) {
                 lastWrite = last;
-                markDirty();
+                //markDirty();
+                this.world.markChunkDirty(this.pos, this);
             }
         }
     }

@@ -130,7 +130,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             double last = getSaveShare();
             if (last != lastWrite) {
                 lastWrite = last;
-                markDirty();
+                //markDirty();
+                this.world.markChunkDirty(this.pos, this);
             }
         }
     }
