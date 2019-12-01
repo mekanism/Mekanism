@@ -59,6 +59,9 @@ public class RecipeInfoHelper {
     }
 
     public static String getItemName(ItemStack stack) {
+        if (stack == null || stack.isEmpty()){
+            return "nothing";
+        }
         return new MCItemStack(stack).toString();
     }
 }
