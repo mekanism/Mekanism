@@ -25,6 +25,10 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -37,6 +41,8 @@ import org.lwjgl.input.Keyboard;
 
 @SideOnly(Side.CLIENT)
 public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
+
+    private GuiButton infuserDumpButton = null;
 
     public GuiFactory(InventoryPlayer inventory, TileEntityFactory tile) {
         super(tile, new ContainerFactory(inventory, tile));
@@ -54,6 +60,24 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
             return Arrays.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t",
                   LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy() - tileEntity.getEnergy()));
         }, this, resource));
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+        this.buttonList.add(this.infuserDumpButton = new GuiButtonImage(1, this.guiLeft+6, this.guiTop+44, 21, 10, 147, 72, 0, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")){
+            @Override
+            public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+                if (GuiFactory.this.tileEntity.getRecipeType() == RecipeType.INFUSING) {
+                    super.drawButton(mc, mouseX, mouseY, partialTicks);
+                }
+            }
+
+            @Override
+            public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+                return GuiFactory.this.tileEntity.getRecipeType() == RecipeType.INFUSING && super.mousePressed(mc, mouseX, mouseY);
+            }
+        });
     }
 
     @Override
@@ -133,5 +157,15 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory> {
     @Override
     protected ResourceLocation getGuiLocation() {
         return tileEntity.tier.guiLocation;
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        super.actionPerformed(button);
+        if (button == this.infuserDumpButton) {
+            TileNetworkList data = TileNetworkList.withContents(1);
+            Mekanism.packetHandler.sendToServer(new TileEntityMessage(tileEntity, data));
+            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
+        }
     }
 }
