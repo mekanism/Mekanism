@@ -17,7 +17,6 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -131,7 +130,7 @@ public class ItemJetpack extends ArmorItem implements IGasItem {
         if (!storedGas.isTypeEqual(stack)) {
             return 0;
         }
-        if (!stack.getType().isIn(MekanismTags.HYDROGEN)) {
+        if (stack.getType() != MekanismGases.HYDROGEN.getGas()) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));
@@ -151,7 +150,7 @@ public class ItemJetpack extends ArmorItem implements IGasItem {
 
     @Override
     public boolean canReceiveGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
-        return type.isIn(MekanismTags.HYDROGEN);
+        return type == MekanismGases.HYDROGEN.getGas();
     }
 
     @Override

@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "tag": "forge:sulfur_dioxide",
+    "amount": 1
+  },
+  "gasOutput": {
+    "gas": "mekanism:sulfur_dioxide",
+    "amount": 1
+  },
+  "gasInput": {
+    "gas": "mekanism:sulfur_dioxide",
+    "amount": 1
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:sulfur_dioxide",
+    "amount": 1
+  }
+}

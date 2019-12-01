@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "tag": "forge:brine",
+    "amount": 1
+  },
+  "gasOutput": {
+    "gas": "mekanism:brine",
+    "amount": 1
+  },
+  "gasInput": {
+    "gas": "mekanism:brine",
+    "amount": 1
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:brine",
+    "amount": 1
+  }
+}

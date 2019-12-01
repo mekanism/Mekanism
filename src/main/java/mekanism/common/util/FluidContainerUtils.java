@@ -43,7 +43,7 @@ public final class FluidContainerUtils {
     }
 
     @Nonnull
-    public static FluidStack extractFluid(int needed, IFluidHandlerItem handler, FluidChecker checker) {
+    private static FluidStack extractFluid(int needed, IFluidHandlerItem handler, FluidChecker checker) {
         if (handler == null) {
             return FluidStack.EMPTY;
         }

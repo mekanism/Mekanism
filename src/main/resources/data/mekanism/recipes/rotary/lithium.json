@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "tag": "forge:lithium",
+    "amount": 1
+  },
+  "gasOutput": {
+    "gas": "mekanism:lithium",
+    "amount": 1
+  },
+  "gasInput": {
+    "gas": "mekanism:lithium",
+    "amount": 1
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:lithium",
+    "amount": 1
+  }
+}

@@ -90,7 +90,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this, 5, 56),
+        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this::isValidGas, this, 5, 56),
               RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.RIGHT, RelativeSide.LEFT, RelativeSide.BACK);
         builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.FRONT);
         return builder.build();
@@ -133,6 +133,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
                 }
             }
         }
+    }
+
+    private boolean isValidGas(@Nonnull Gas gas) {
+        return containsRecipe(recipe -> recipe.getInput().testType(gas));
     }
 
     @Nonnull
@@ -252,7 +256,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return side == Direction.DOWN && inputTank.canReceive(type);
+        return side == Direction.DOWN && inputTank.canReceive(type) && isValidGas(type);
     }
 
     @Override

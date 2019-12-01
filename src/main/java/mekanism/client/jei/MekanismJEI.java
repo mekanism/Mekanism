@@ -32,6 +32,7 @@ import mekanism.client.jei.machine.ItemStackToGasRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
 import mekanism.client.jei.machine.MetallurgicInfuserRecipeCategory;
 import mekanism.client.jei.machine.PressurizedReactionRecipeCategory;
+import mekanism.client.jei.machine.RotaryCondensentratorRecipeCategory;
 import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
@@ -83,9 +84,9 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new MetallurgicInfuserRecipeCategory(guiHelper));
         registry.addRecipeCategories(new PressurizedReactionRecipeCategory(guiHelper));
 
-        //TODO
-        //registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, true));
-        //registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
+        //Register both methods of rotary condensentrator recipes
+        registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, true));
+        registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper));
 

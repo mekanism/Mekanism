@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "mekanism:steam"
+    "mekanism:steam",
+    "mekanism:flowing_steam"
   ]
 }

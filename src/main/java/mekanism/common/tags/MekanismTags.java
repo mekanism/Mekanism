@@ -96,25 +96,6 @@ public class MekanismTags {
         return new ItemTags.Wrapper(new ResourceLocation(Mekanism.MODID, name));
     }
 
-    //TODO: We probably should remove the built in gas tags as there is no need for us to have 1:1 matchings for all the built in gases
-    // as any addon that depends on mekanism has no reason to add their own variant
-    public static final Tag<Gas> BRINE = makeGasTag("brine");
-    public static final Tag<Gas> CHLORINE = makeGasTag("chlorine");
-    public static final Tag<Gas> DEUTERIUM = makeGasTag("deuterium");
-    //TODO: Should this be called ethylene
-    public static final Tag<Gas> ETHENE = makeGasTag("ethene");
-    public static final Tag<Gas> FUSION_FUEL = makeGasTag("fusion_fuel");
-    public static final Tag<Gas> HYDROGEN = makeGasTag("hydrogen");
-    public static final Tag<Gas> HYDROGEN_CHLORIDE = makeGasTag("hydrogen_chloride");
-    public static final Tag<Gas> LITHIUM = makeGasTag("lithium");
-    public static final Tag<Gas> OXYGEN = makeGasTag("oxygen");
-    public static final Tag<Gas> SODIUM = makeGasTag("sodium");
-    public static final Tag<Gas> STEAM = makeGasTag("steam");
-    public static final Tag<Gas> SULFUR_DIOXIDE = makeGasTag("sulfur_dioxide");
-    public static final Tag<Gas> SULFUR_TRIOXIDE = makeGasTag("sulfur_trioxide");
-    public static final Tag<Gas> SULFURIC_ACID = makeGasTag("sulfuric_acid");
-    public static final Tag<Gas> TRITIUM = makeGasTag("tritium");
-
     public static final Tag<Gas> DIRTY_SLURRY = makeGasTag("dirty_slurry");
     public static final Tag<Gas> CLEAN_SLURRY = makeGasTag("clean_slurry");
 

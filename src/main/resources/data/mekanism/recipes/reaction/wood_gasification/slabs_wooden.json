@@ -1,20 +1,20 @@
 {
   "type": "mekanism:reaction",
-  "outputGas": {
+  "gasOutput": {
     "gas": "mekanism:hydrogen",
     "amount": 10
   },
   "duration": 15,
-  "inputSolid": {
+  "itemInput": {
     "ingredient": {
       "tag": "minecraft:wooden_slabs"
     }
   },
-  "inputFluid": {
+  "fluidInput": {
     "tag": "minecraft:water",
     "amount": 10
   },
-  "inputGas": {
+  "gasInput": {
     "gas": "mekanism:oxygen",
     "amount": 10
   }

@@ -1,20 +1,20 @@
 {
   "type": "mekanism:reaction",
-  "outputGas": {
+  "gasOutput": {
     "gas": "mekanism:hydrogen",
     "amount": 4
   },
   "duration": 6,
-  "inputSolid": {
+  "itemInput": {
     "ingredient": {
       "tag": "forge:rods/wooden"
     }
   },
-  "inputFluid": {
+  "fluidInput": {
     "tag": "minecraft:water",
     "amount": 4
   },
-  "inputGas": {
+  "gasInput": {
     "gas": "mekanism:oxygen",
     "amount": 4
   }

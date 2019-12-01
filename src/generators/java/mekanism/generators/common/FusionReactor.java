@@ -15,7 +15,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismGases;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -82,7 +81,7 @@ public class FusionReactor {
             ItemStack hohlraum = controller.getReactorSlot().getStack();
             if (hohlraum.getItem() instanceof ItemHohlraum) {
                 GasStack gasStack = ((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum);
-                return !gasStack.isEmpty() && gasStack.getType().isIn(MekanismTags.FUSION_FUEL) && gasStack.getAmount() == ItemHohlraum.MAX_GAS;
+                return !gasStack.isEmpty() && gasStack.getType() == MekanismGases.FUSION_FUEL.getGas() && gasStack.getAmount() == ItemHohlraum.MAX_GAS;
             }
         }
         return false;

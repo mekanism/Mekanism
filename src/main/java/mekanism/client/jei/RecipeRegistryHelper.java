@@ -1,7 +1,10 @@
 package mekanism.client.jei;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.recipes.RotaryRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
@@ -9,27 +12,26 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.ResourceLocation;
 
 public class RecipeRegistryHelper {
 
     public static void registerCondensentrator(IRecipeRegistration registry) {
-        //TODO
-        /*MekanismBlock mekanismBlock = MekanismBlock.ROTARY_CONDENSENTRATOR;
-        if (!mekanismBlock.isEnabled()) {
-            return;
-        }
-        List<RotaryCondensentratorRecipeWrapper> condensentratorRecipes = new ArrayList<>();
-        List<RotaryCondensentratorRecipeWrapper> decondensentratorRecipes = new ArrayList<>();
-        for (Gas gas : GasRegistry.getRegisteredGasses()) {
-            if (gas.hasFluid()) {
-                condensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, true));
-                decondensentratorRecipes.add(new RotaryCondensentratorRecipeWrapper(gas.getFluid(), gas, false));
+        List<RotaryRecipe> condensentratorRecipes = new ArrayList<>();
+        List<RotaryRecipe> decondensentratorRecipes = new ArrayList<>();
+        List<RotaryRecipe> recipes = MekanismRecipeType.ROTARY.getRecipes(getWorld());
+        for (RotaryRecipe recipe : recipes) {
+            if (recipe.hasGasToFluid()) {
+                condensentratorRecipes.add(recipe);
+            }
+            if (recipe.hasFluidToGas()) {
+                decondensentratorRecipes.add(recipe);
             }
         }
         ResourceLocation condensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_condensentrating");
         ResourceLocation decondensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_decondensentrating");
         registry.addRecipes(condensentratorRecipes, condensentrating);
-        registry.addRecipes(decondensentratorRecipes, decondensentrating);*/
+        registry.addRecipes(decondensentratorRecipes, decondensentrating);
     }
 
     public static void registerSmelter(IRecipeRegistration registry) {

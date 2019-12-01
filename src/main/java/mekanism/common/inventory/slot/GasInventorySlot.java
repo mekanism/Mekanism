@@ -46,7 +46,7 @@ public class GasInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(isValidGas, "Gas validity check cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
-        //Mode == true if gas to fluid
+        //Mode == true if fluid to gas
         return new GasInventorySlot(gasTank, isValidGas, alwaysFalse, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
@@ -56,10 +56,10 @@ public class GasInventorySlot extends BasicInventorySlot {
                 GasStack gasContained = ((IGasItem) item).getGas(stack);
                 if (gasContained.isEmpty()) {
                     //We want to try and drain the tank AND we are not the input tank
-                    return !mode;
+                    return mode;
                 }
                 //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
-                return mode && isValidGas.test(gasContained.getType()) && gasTank.fill(gasContained, Action.SIMULATE) > 0;
+                return !mode && isValidGas.test(gasContained.getType()) && gasTank.fill(gasContained, Action.SIMULATE) > 0;
             }
             return false;
         }, stack -> {
@@ -67,7 +67,7 @@ public class GasInventorySlot extends BasicInventorySlot {
             //TODO: Use a capability instead of instanceof
             if (item instanceof IGasItem) {
                 IGasItem gasItem = (IGasItem) item;
-                if (modeSupplier.getAsBoolean()) {
+                if (!modeSupplier.getAsBoolean()) {
                     //Input tank, so we want to fill it
                     //TODO: Add a way to the capability to see if the item can ever output gas, as things like jetpacks cannot have the gas be drained from them
                     // Strictly speaking this currently could be done as gasItem.canProvideGas(stack, MekanismAPI.EMPTY_GAS), but is being ignored instead for clarity

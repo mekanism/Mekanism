@@ -1,24 +1,24 @@
 {
   "type": "mekanism:reaction",
-  "outputItem": {
+  "itemOutput": {
     "item": "mekanism:hdpe_pellet"
   },
-  "outputGas": {
+  "gasOutput": {
     "gas": "mekanism:oxygen",
     "amount": 5
   },
   "energyRequired": 1000,
   "duration": 60,
-  "inputSolid": {
+  "itemInput": {
     "ingredient": {
       "item": "mekanism:substrate"
     }
   },
-  "inputFluid": {
+  "fluidInput": {
     "fluid": "mekanism:ethene",
     "amount": 50
   },
-  "inputGas": {
+  "gasInput": {
     "gas": "mekanism:oxygen",
     "amount": 10
   }

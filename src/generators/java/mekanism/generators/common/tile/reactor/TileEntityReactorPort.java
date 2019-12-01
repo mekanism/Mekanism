@@ -14,10 +14,10 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismGases;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
@@ -135,11 +135,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (getReactor() != null) {
-            if (stack.getType().isIn(MekanismTags.DEUTERIUM)) {
+            //TODO: Move this stuff to a recipe type
+            if (stack.getType() == MekanismGases.DEUTERIUM.getGas()) {
                 return getReactor().getDeuteriumTank().fill(stack, action);
-            } else if (stack.getType().isIn(MekanismTags.TRITIUM)) {
+            } else if (stack.getType() == MekanismGases.TRITIUM.getGas()) {
                 return getReactor().getTritiumTank().fill(stack, action);
-            } else if (stack.getType().isIn(MekanismTags.FUSION_FUEL)) {
+            } else if (stack.getType() == MekanismGases.FUSION_FUEL.getGas()) {
                 return getReactor().getFuelTank().fill(stack, action);
             }
         }
@@ -154,7 +155,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return type.isIn(MekanismTags.DEUTERIUM) || type.isIn(MekanismTags.TRITIUM) || type.isIn(MekanismTags.FUSION_FUEL);
+        //TODO: Move this stuff to a recipe type
+        return type == MekanismGases.DEUTERIUM.getGas() || type == MekanismGases.TRITIUM.getGas() || type == MekanismGases.FUSION_FUEL.getGas();
     }
 
     @Override

@@ -25,6 +25,7 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
@@ -80,6 +81,8 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
     public static final MekanismRecipeType<MetallurgicInfuserRecipe> METALLURGIC_INFUSING = create("metallurgic_infusing");
 
     public static final MekanismRecipeType<PressurizedReactionRecipe> REACTION = create("reaction");
+
+    public static final MekanismRecipeType<RotaryRecipe> ROTARY = create("rotary");
 
     public static final MekanismRecipeType<SawmillRecipe> SAWING = create("sawing");
 

@@ -164,7 +164,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         //TODO: Make sure it renders properly once we have multiple different types (might not have to deal with it until 1.14)
     }
 
-    @Deprecated
     protected void initGas(IGuiIngredientGroup<@NonNull GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull GasStack stack, boolean overlay) {
         if (stack.isEmpty()) {
             return;

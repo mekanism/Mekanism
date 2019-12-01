@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "tag": "forge:tritium",
+    "amount": 1
+  },
+  "gasOutput": {
+    "gas": "mekanism:tritium",
+    "amount": 1
+  },
+  "gasInput": {
+    "gas": "mekanism:tritium",
+    "amount": 1
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:tritium",
+    "amount": 1
+  }
+}

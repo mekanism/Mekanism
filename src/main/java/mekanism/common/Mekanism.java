@@ -288,7 +288,7 @@ public class Mekanism {
         //TODO: Bin recipe
         //event.getRegistry().register(new BinRecipe());
         //Fuel Gases
-        FuelHandler.addGas(MekanismTags.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
+        FuelHandler.addGas(MekanismGases.HYDROGEN, 1, MekanismConfig.general.FROM_H2.get());
 
         //Register the mod's world generators
         GenHandler.setupWorldGeneration();

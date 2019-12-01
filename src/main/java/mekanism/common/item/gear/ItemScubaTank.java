@@ -15,7 +15,6 @@ import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextComponentUtil;
@@ -133,7 +132,7 @@ public class ItemScubaTank extends ArmorItem implements IGasItem {
         if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
-        if (!stack.getType().isIn(MekanismTags.OXYGEN)) {
+        if (stack.getType() != MekanismGases.OXYGEN.getGas()) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));
@@ -169,7 +168,7 @@ public class ItemScubaTank extends ArmorItem implements IGasItem {
 
     @Override
     public boolean canReceiveGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
-        return type.isIn(MekanismTags.OXYGEN);
+        return type == MekanismGases.OXYGEN.getGas();
     }
 
     @Override

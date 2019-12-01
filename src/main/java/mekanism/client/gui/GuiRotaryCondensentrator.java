@@ -66,7 +66,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
 
             @Override
             public boolean isActive() {
-                return tileEntity.mode == 0;
+                return !tileEntity.mode;
             }
         }, ProgressBar.LARGE_RIGHT, this, resource, 62, 38));
         addButton(new GuiProgress(new IProgressInfoHandler() {
@@ -77,10 +77,9 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
 
             @Override
             public boolean isActive() {
-                return tileEntity.mode == 1;
+                return tileEntity.mode;
             }
         }, ProgressBar.LARGE_LEFT, this, resource, 62, 38));
-
         addButton(new MekanismImageButton(this, guiLeft + 4, guiTop + 4, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
               getOnHover("gui.mekanism.rotaryCondensentrator.toggleOperation")));
@@ -89,10 +88,10 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        if (tileEntity.mode == 0) {
-            drawString(TextComponentUtil.translate("gui.mekanism.condensentrating"), 6, (ySize - 94) + 2, 0x404040);
-        } else {
+        if (tileEntity.mode) {
             drawString(TextComponentUtil.translate("gui.mekanism.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
+        } else {
+            drawString(TextComponentUtil.translate("gui.mekanism.condensentrating"), 6, (ySize - 94) + 2, 0x404040);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

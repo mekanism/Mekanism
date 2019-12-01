@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "tag": "forge:chlorine",
+    "amount": 1
+  },
+  "gasOutput": {
+    "gas": "mekanism:chlorine",
+    "amount": 1
+  },
+  "gasInput": {
+    "gas": "mekanism:chlorine",
+    "amount": 1
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:chlorine",
+    "amount": 1
+  }
+}

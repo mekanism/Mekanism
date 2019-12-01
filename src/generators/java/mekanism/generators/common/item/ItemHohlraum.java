@@ -8,7 +8,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismGases;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
@@ -66,7 +65,7 @@ public class ItemHohlraum extends Item implements IGasItem {
         if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
-        if (!stack.getType().isIn(MekanismTags.FUSION_FUEL)) {
+        if (stack.getType() != MekanismGases.FUSION_FUEL.getGas()) {
             return 0;
         }
         int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));
@@ -86,7 +85,7 @@ public class ItemHohlraum extends Item implements IGasItem {
 
     @Override
     public boolean canReceiveGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
-        return type.isIn(MekanismTags.FUSION_FUEL);
+        return type == MekanismGases.FUSION_FUEL.getGas();
     }
 
     @Override

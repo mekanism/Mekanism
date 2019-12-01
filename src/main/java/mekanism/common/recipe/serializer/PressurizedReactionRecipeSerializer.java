@@ -28,15 +28,15 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
     @Nonnull
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement inputSolid = JSONUtils.isJsonArray(json, "inputSolid") ? JSONUtils.getJsonArray(json, "inputSolid") :
-                                 JSONUtils.getJsonObject(json, "inputSolid");
-        ItemStackIngredient solidIngredient = ItemStackIngredient.deserialize(inputSolid);
-        JsonElement inputFluid = JSONUtils.isJsonArray(json, "inputFluid") ? JSONUtils.getJsonArray(json, "inputFluid") :
-                                 JSONUtils.getJsonObject(json, "inputFluid");
-        FluidStackIngredient fluidIngredient = FluidStackIngredient.deserialize(inputFluid);
-        JsonElement inputGas = JSONUtils.isJsonArray(json, "inputGas") ? JSONUtils.getJsonArray(json, "inputGas") :
-                               JSONUtils.getJsonObject(json, "inputGas");
-        GasStackIngredient gasIngredient = GasStackIngredient.deserialize(inputGas);
+        JsonElement itemInput = JSONUtils.isJsonArray(json, "itemInput") ? JSONUtils.getJsonArray(json, "itemInput") :
+                                 JSONUtils.getJsonObject(json, "itemInput");
+        ItemStackIngredient solidIngredient = ItemStackIngredient.deserialize(itemInput);
+        JsonElement fluidInput = JSONUtils.isJsonArray(json, "fluidInput") ? JSONUtils.getJsonArray(json, "fluidInput") :
+                                 JSONUtils.getJsonObject(json, "fluidInput");
+        FluidStackIngredient fluidIngredient = FluidStackIngredient.deserialize(fluidInput);
+        JsonElement gasInput = JSONUtils.isJsonArray(json, "gasInput") ? JSONUtils.getJsonArray(json, "gasInput") :
+                               JSONUtils.getJsonObject(json, "gasInput");
+        GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
         double energyRequired = 0;
         if (json.has("energyRequired")) {
             JsonElement energy = json.get("energyRequired");
@@ -58,19 +58,19 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
         if (duration <= 0) {
             throw new JsonSyntaxException("Expected duration to be a number greater than zero.");
         }
-        ItemStack outputItem = ItemStack.EMPTY;
-        GasStack outputGas = GasStack.EMPTY;
-        if (json.has("outputItem")) {
-            outputItem = SerializerHelper.getItemStack(json, "outputItem");
-            if (json.has("outputGas")) {
+        ItemStack itemOutput = ItemStack.EMPTY;
+        GasStack gasOutput = GasStack.EMPTY;
+        if (json.has("itemOutput")) {
+            itemOutput = SerializerHelper.getItemStack(json, "itemOutput");
+            if (json.has("gasOutput")) {
                 //The gas is optional given we have an output item
-                outputGas = SerializerHelper.getGasStack(json, "outputGas");
+                gasOutput = SerializerHelper.getGasStack(json, "gasOutput");
             }
         } else {
             //If we don't have an output item, we are required to have an output gas
-            outputGas = SerializerHelper.getGasStack(json, "outputGas");
+            gasOutput = SerializerHelper.getGasStack(json, "gasOutput");
         }
-        return this.factory.create(recipeId, solidIngredient, fluidIngredient, gasIngredient, energyRequired, duration, outputItem, outputGas);
+        return this.factory.create(recipeId, solidIngredient, fluidIngredient, gasIngredient, energyRequired, duration, itemOutput, gasOutput);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
 
     public interface IFactory<T extends PressurizedReactionRecipe> {
 
-        T create(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, double energyRequired, int duration,
+        T create(ResourceLocation id, ItemStackIngredient itemInput, FluidStackIngredient fluidInput, GasStackIngredient gasInput, double energyRequired, int duration,
               ItemStack outputItem, GasStack outputGas);
     }
 }
