@@ -5,6 +5,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
@@ -16,6 +17,7 @@ public class RenderWindGeneratorItem {
 
     private static ModelWindGenerator windGenerator = new ModelWindGenerator();
     private static int angle = 0;
+    private static float lastTicksUpdated = 0;
 
     public static void renderStack(@Nonnull ItemStack stack, TransformType transformType) {
         GlStateManager.pushMatrix();
@@ -45,7 +47,10 @@ public class RenderWindGeneratorItem {
         //The best way to do this would be to add an event listener for dimension change.
         //The event is server side only so we would need to send a packet to clients to tell them if they are
         //in a blacklisted dimension or not.
-        angle = (angle + 2) % 360;
+        if (lastTicksUpdated != Minecraft.getMinecraft().getRenderPartialTicks()) {
+            angle = (angle + 2) % 360;
+            lastTicksUpdated = Minecraft.getMinecraft().getRenderPartialTicks();
+        }
         windGenerator.render(0.016F, angle);
         GlStateManager.popMatrix();
     }
