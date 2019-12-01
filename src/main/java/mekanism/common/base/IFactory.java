@@ -112,6 +112,16 @@ public interface IFactory {
             return type;
         }
 
+        @Nullable
+        public static RecipeType getFromMachineType(MachineType machineType) {
+            for (RecipeType type : values()) {
+                if (type.type == machineType) {
+                    return type;
+                }
+            }
+            return null;
+        }
+
         public BasicMachineRecipe getRecipe(ItemStackInput input) {
             return (BasicMachineRecipe) RecipeHandler.getRecipe(input, recipe);
         }

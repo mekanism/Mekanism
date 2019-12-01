@@ -33,6 +33,7 @@ import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.states.BlockStateMachine.MachineType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.item.ItemBlockMachine;
 import mekanism.common.recipe.GasConversionHandler;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
@@ -235,37 +236,38 @@ public class TileEntityFactory extends TileEntityMachine implements IComputerInt
 
             handleSecondaryFuel();
             sortInventory();
-            if (!inventory.get(2).isEmpty() && inventory.get(3).isEmpty()) {
-                RecipeType toSet = null;
+            ItemStack machineSwapItem = inventory.get(2);
+            if (!machineSwapItem.isEmpty() && machineSwapItem.getItem() instanceof ItemBlockMachine && inventory.get(3).isEmpty()) {
 
-                for (RecipeType type : RecipeType.values()) {
-                    if (ItemHandlerHelper.canItemStacksStack(inventory.get(2), type.getStack())) {
-                        toSet = type;
-                        break;
-                    }
-                }
-                if (toSet != null && recipeType != toSet) {
-                    if (recipeTicks < RECIPE_TICKS_REQUIRED) {
-                        recipeTicks++;
+                MachineType swapType = MachineType.get(machineSwapItem);
+
+                if (swapType != null && !swapType.isFactory()) {
+
+                    RecipeType toSet = RecipeType.getFromMachineType(swapType);
+
+                    if (toSet != null && recipeType != toSet) {
+                        if (recipeTicks < RECIPE_TICKS_REQUIRED) {
+                            recipeTicks++;
+                        } else {
+                            recipeTicks = 0;
+                            ItemStack returnStack = getMachineStack();
+
+                            upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
+                            upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
+                            upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(machineSwapItem));
+
+                            inventory.set(2, ItemStack.EMPTY);
+                            inventory.set(3, returnStack);
+
+                            setRecipeType(toSet);
+                            gasTank.setGas(null);
+                            secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+                            world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
+                            MekanismUtils.saveChunk(this);
+                        }
                     } else {
                         recipeTicks = 0;
-                        ItemStack returnStack = getMachineStack();
-
-                        upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
-                        upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
-                        upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(inventory.get(2)));
-
-                        inventory.set(2, ItemStack.EMPTY);
-                        inventory.set(3, returnStack);
-
-                        setRecipeType(toSet);
-                        gasTank.setGas(null);
-                        secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-                        world.notifyNeighborsOfStateChange(getPos(), getBlockType(), true);
-                        MekanismUtils.saveChunk(this);
                     }
-                } else {
-                    recipeTicks = 0;
                 }
             } else {
                 recipeTicks = 0;
