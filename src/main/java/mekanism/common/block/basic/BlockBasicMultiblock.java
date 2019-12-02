@@ -2,7 +2,7 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
-public class BlockBasicMultiblock extends BlockTileDrops {
+public class BlockBasicMultiblock extends BlockMekanism {
 
     public BlockBasicMultiblock() {
         this(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));

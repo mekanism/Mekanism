@@ -17,7 +17,7 @@ import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -55,8 +55,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockChemicalInfuser extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityChemicalInfuser>, ISupportsUpgrades, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalInfuser>, IBlockSound, ISupportsRedstone, ISupportsComparator {
+public class BlockChemicalInfuser extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntityChemicalInfuser>, ISupportsUpgrades, IStateFacing,
+      IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalInfuser>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.cheminfuser"));
     //TODO: VoxelShapes

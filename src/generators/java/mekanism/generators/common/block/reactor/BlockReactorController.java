@@ -3,7 +3,7 @@ package mekanism.generators.common.block.reactor;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -24,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class BlockReactorController extends BlockTileDrops implements IHasGui<TileEntityReactorController>, IStateActive, IBlockElectric, IHasInventory, IHasTileEntity<TileEntityReactorController> {
+public class BlockReactorController extends BlockMekanism implements IHasGui<TileEntityReactorController>, IStateActive, IBlockElectric, IHasInventory, IHasTileEntity<TileEntityReactorController> {
 
     public BlockReactorController() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));

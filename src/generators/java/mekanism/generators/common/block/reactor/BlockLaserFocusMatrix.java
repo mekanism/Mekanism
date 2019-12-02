@@ -2,7 +2,7 @@ package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockLaserFocusMatrix extends BlockTileDrops implements IHasTileEntity<TileEntityReactorLaserFocusMatrix> {
+public class BlockLaserFocusMatrix extends BlockMekanism implements IHasTileEntity<TileEntityReactorLaserFocusMatrix> {
 
     public BlockLaserFocusMatrix() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));

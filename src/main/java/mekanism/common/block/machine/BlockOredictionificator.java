@@ -8,7 +8,7 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -44,8 +44,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockOredictionificator extends BlockMekanismContainer implements IHasGui<TileEntityOredictionificator>, IStateFacing, IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone,
-      IHasTileEntity<TileEntityOredictionificator> {
+public class BlockOredictionificator extends BlockMekanism implements IHasGui<TileEntityOredictionificator>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
+      ISupportsRedstone, IHasTileEntity<TileEntityOredictionificator> {
 
     public BlockOredictionificator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

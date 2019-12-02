@@ -4,7 +4,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -32,7 +32,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui<TileEntitySecurityDesk>, IHasInventory, IHasTileEntity<TileEntitySecurityDesk> {
+public class BlockSecurityDesk extends BlockMekanism implements IStateFacing, IHasGui<TileEntitySecurityDesk>, IHasInventory, IHasTileEntity<TileEntitySecurityDesk> {
 
     //TODO: VoxelShapes
 

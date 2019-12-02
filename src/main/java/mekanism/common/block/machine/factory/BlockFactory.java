@@ -19,7 +19,7 @@ import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.machine.BlockChemicalInjectionChamber;
@@ -70,8 +70,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockFactory extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFactory>, IStateFacing, IStateActive, IBlockSound,
-      ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory>, ISupportsRedstone, ISupportsComparator {
+public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFactory<?>>,
+      IStateFacing, IStateActive, IBlockSound, ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory<?>>,
+      ISupportsRedstone, ISupportsComparator {
 
     private final FactoryTier tier;
     private final FactoryType type;
@@ -98,7 +99,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
         if (tile instanceof TileEntityFactory) {
             RecipeType recipeType = ((ItemBlockFactory) stack.getItem()).getRecipeTypeOrNull(stack);
             if (recipeType != null) {
-                ((TileEntityFactory) tile).setRecipeType(recipeType);
+                ((TileEntityFactory<?>) tile).setRecipeType(recipeType);
             }
             world.notifyNeighborsOfStateChange(pos, tile.getBlockType());
             if (!world.isRemote) {
@@ -226,7 +227,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
-    public INamedContainerProvider getProvider(TileEntityFactory tile) {
+    public INamedContainerProvider getProvider(TileEntityFactory<?> tile) {
         return new ContainerProvider("mekanism.container.factory", (i, inv, player) -> new FactoryContainer(i, inv, tile));
     }
 
@@ -243,7 +244,7 @@ public class BlockFactory extends BlockMekanismContainer implements IBlockElectr
     }
 
     @Override
-    public TileEntityType<TileEntityFactory> getTileType() {
+    public TileEntityType<? extends TileEntityFactory<?>> getTileType() {
         switch (type) {
             case CRUSHING:
                 switch (tier) {

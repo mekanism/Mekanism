@@ -28,7 +28,7 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class BlockCardboardBox extends BlockMekanismContainer implements IHasModel, IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
+public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
     private static boolean testingPlace = false;
 

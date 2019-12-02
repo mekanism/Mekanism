@@ -2,7 +2,7 @@ package mekanism.generators.common.block.reactor;
 
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class BlockReactorPort extends BlockTileDrops implements IStateActive, IBlockElectric, IHasTileEntity<TileEntityReactorPort> {
+public class BlockReactorPort extends BlockMekanism implements IStateActive, IBlockElectric, IHasTileEntity<TileEntityReactorPort> {
 
     public BlockReactorPort() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));

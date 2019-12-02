@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockStructuralGlass extends BlockTileDrops implements IHasModel, IHasTileEntity<TileEntityStructuralGlass> {
+public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IHasTileEntity<TileEntityStructuralGlass> {
 
     public BlockStructuralGlass() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));

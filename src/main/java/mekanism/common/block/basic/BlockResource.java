@@ -2,7 +2,7 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasModel;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.PortalHelper.BlockPortalOverride;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
@@ -14,7 +14,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 //TODO: Should we even be extending BlockTileDrops for BlockResource (probably not), as it doesn't have a tile
-public class BlockResource extends BlockTileDrops implements IHasModel {
+public class BlockResource extends BlockMekanism implements IHasModel {
 
     @Nonnull
     private final BlockResourceInfo resource;

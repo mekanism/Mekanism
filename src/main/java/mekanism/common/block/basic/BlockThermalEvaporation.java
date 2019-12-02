@@ -3,7 +3,7 @@ package mekanism.common.block.basic;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.tile.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -18,7 +18,7 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporation extends BlockTileDrops implements IHasModel, IHasTileEntity<TileEntityThermalEvaporationBlock> {
+public class BlockThermalEvaporation extends BlockMekanism implements IHasModel, IHasTileEntity<TileEntityThermalEvaporationBlock> {
 
     public BlockThermalEvaporation() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));

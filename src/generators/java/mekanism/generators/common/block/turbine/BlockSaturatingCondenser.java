@@ -2,7 +2,7 @@ package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockSaturatingCondenser extends BlockMekanismContainer implements IHasTileEntity<TileEntitySaturatingCondenser> {
+public class BlockSaturatingCondenser extends BlockMekanism implements IHasTileEntity<TileEntitySaturatingCondenser> {
 
     public BlockSaturatingCondenser() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));

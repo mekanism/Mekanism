@@ -35,10 +35,11 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
+import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.INameable;
 import net.minecraft.util.Mirror;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -50,10 +51,9 @@ import net.minecraftforge.fluids.FluidStack;
 /**
  * Special handling for block drops that need TileEntity data
  */
-public abstract class BlockTileDrops extends Block {
-    //TODO: Block shape using VoxelShape
+public abstract class BlockMekanism extends Block {
 
-    protected BlockTileDrops(Block.Properties properties) {
+    protected BlockMekanism(Block.Properties properties) {
         super(properties);
         setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
     }
@@ -120,29 +120,19 @@ public abstract class BlockTileDrops extends Block {
      */
     @Override
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        super.harvestBlock(world, player, pos, state, te, stack);
+        //TODO: Replace the below stuff with allowing the drop to spawn from the loot table
+        player.addStat(Stats.BLOCK_MINED.get(this));
+        player.addExhaustion(0.005F);
+        if (!world.isRemote) {
+            ItemStack dropItem = getDropItem(state, world, pos);
+            if (te instanceof INameable) {
+                dropItem.setDisplayName(((INameable) te).getName());
+            }
+            Block.spawnAsEntity(world, pos, dropItem);
+        }
+        //Set it to air like the flower pot's harvestBlock method
         world.removeBlock(pos, false);
     }
-
-    /**
-     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(BlockState)} is not called, because only {@link
-     * Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
-     * silk touched by default anyway.
-     *
-     * @return false
-     */
-    //TODO: Silk touch/denial
-    /*@Override
-    @Deprecated
-    protected boolean canSilkHarvest() {
-        return false;
-    }
-
-    //TODO: Add drops to loot table??
-    @Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockReader world, BlockPos pos, @Nonnull BlockState state, int fortune) {
-        drops.add(getDropItem(state, world, pos));
-    }*/
 
     /**
      * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops}. Used together with {@link Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState,
@@ -174,8 +164,6 @@ public abstract class BlockTileDrops extends Block {
         }
         return null;
     }
-
-    //TODO: Try to merge BlockMekanismContainer and this class
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {

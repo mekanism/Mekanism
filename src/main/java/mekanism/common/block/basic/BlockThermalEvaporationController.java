@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -30,7 +30,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockThermalEvaporationController extends BlockTileDrops implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasGui<TileEntityThermalEvaporationController>,
+public class BlockThermalEvaporationController extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasGui<TileEntityThermalEvaporationController>,
       IHasTileEntity<TileEntityThermalEvaporationController> {
 
     public BlockThermalEvaporationController() {

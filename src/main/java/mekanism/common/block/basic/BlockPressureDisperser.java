@@ -1,7 +1,7 @@
 package mekanism.common.block.basic;
 
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockPressureDisperser extends BlockTileDrops implements IHasTileEntity<TileEntityPressureDisperser> {
+public class BlockPressureDisperser extends BlockMekanism implements IHasTileEntity<TileEntityPressureDisperser> {
 
     public BlockPressureDisperser() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));

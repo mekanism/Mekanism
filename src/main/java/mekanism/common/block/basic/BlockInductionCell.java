@@ -3,7 +3,7 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockInductionCell extends BlockTileDrops implements ITieredBlock<InductionCellTier>, IHasTileEntity<TileEntityInductionCell> {
+public class BlockInductionCell extends BlockMekanism implements ITieredBlock<InductionCellTier>, IHasTileEntity<TileEntityInductionCell> {
 
     private final InductionCellTier tier;
 

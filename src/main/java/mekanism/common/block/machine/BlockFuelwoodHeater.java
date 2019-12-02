@@ -7,7 +7,7 @@ import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -43,7 +43,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockFuelwoodHeater extends BlockMekanismContainer implements IHasGui<TileEntityFuelwoodHeater>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
+public class BlockFuelwoodHeater extends BlockMekanism implements IHasGui<TileEntityFuelwoodHeater>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityFuelwoodHeater> {
 
     public BlockFuelwoodHeater() {

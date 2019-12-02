@@ -1,7 +1,7 @@
 package mekanism.common.block.basic;
 
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.World;
 
-public class BlockSuperheatingElement extends BlockTileDrops implements IStateActive, IHasTileEntity<TileEntitySuperheatingElement> {
+public class BlockSuperheatingElement extends BlockMekanism implements IStateActive, IHasTileEntity<TileEntitySuperheatingElement> {
 
     public BlockSuperheatingElement() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));

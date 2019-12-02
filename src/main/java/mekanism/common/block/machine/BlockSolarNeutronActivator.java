@@ -14,7 +14,7 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -50,8 +50,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockSolarNeutronActivator extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntitySolarNeutronActivator>, ISupportsUpgrades, IStateFacing, IStateActive, IHasInventory,
-      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, ISupportsComparator {
+public class BlockSolarNeutronActivator extends BlockMekanism implements IHasModel, IHasGui<TileEntitySolarNeutronActivator>, ISupportsUpgrades, IStateFacing,
+      IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, ISupportsComparator {
 
     //TODO: VoxelShapes
 

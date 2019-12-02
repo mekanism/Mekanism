@@ -18,7 +18,7 @@ import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -56,8 +56,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockOsmiumCompressor extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityOsmiumCompressor>, IStateFacing, IStateActive, IHasFactoryType,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityOsmiumCompressor>, IBlockSound, ISupportsRedstone, ISupportsComparator {
+public class BlockOsmiumCompressor extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityOsmiumCompressor>, IStateFacing, IStateActive,
+      IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityOsmiumCompressor>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.compressor"));
 

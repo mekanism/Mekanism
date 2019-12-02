@@ -5,5 +5,5 @@ import net.minecraft.tileentity.TileEntityType;
 
 public interface IHasTileEntity<TILE extends TileEntity> {
 
-    TileEntityType<TILE> getTileType();
+    TileEntityType<? extends TILE> getTileType();
 }

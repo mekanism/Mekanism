@@ -9,7 +9,7 @@ import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -52,7 +52,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Why is the personal chest electric
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
-public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityPersonalChest>, IStateFacing, IHasInventory, IHasSecurity,
+public class BlockPersonalChest extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntityPersonalChest>, IStateFacing, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityPersonalChest>, IStateWaterLogged, IStateActive {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];

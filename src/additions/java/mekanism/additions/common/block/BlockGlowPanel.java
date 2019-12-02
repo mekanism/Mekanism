@@ -3,7 +3,7 @@ package mekanism.additions.common.block;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
-import mekanism.common.block.BlockTileDrops;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
@@ -22,7 +22,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, IColoredBlock, IStateWaterLogged {
+public class BlockGlowPanel extends BlockMekanism implements IStateFacing, IColoredBlock, IStateWaterLogged {
 
     private static VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 

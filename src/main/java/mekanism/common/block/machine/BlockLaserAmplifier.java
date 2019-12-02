@@ -9,7 +9,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.common.base.IActiveState;
-import mekanism.common.block.BlockMekanismContainer;
+import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -47,7 +47,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityLaserAmplifier>, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
+public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserAmplifier>, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
       IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator {
 
     //TODO: VoxelShapes, and try to fix the small gap in model
