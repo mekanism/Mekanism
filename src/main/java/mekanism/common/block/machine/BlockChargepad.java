@@ -56,14 +56,14 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     static {
         VoxelShape chargepad = MultipartUtils.combine(
-              Block.makeCuboidShape(10, 1, 11.99, 12, 8, 13.99),//pillar1
-              Block.makeCuboidShape(4, 1, 11.99, 6, 8, 13.99),//pillar2
-              Block.makeCuboidShape(0, 0, 0, 16, 1, 16),//base
-              Block.makeCuboidShape(5, 5, 14, 11, 11, 15),//connector
-              Block.makeCuboidShape(5, 1, 13, 11, 11, 14),//stand
-              Block.makeCuboidShape(7, 4, 11, 9, 5, 13),//plug
-              Block.makeCuboidShape(4, 4, 15, 12, 12, 16),//port
-              Block.makeCuboidShape(5, 5, 15.001, 11, 11, 16.001)//port_ring
+              makeCuboidShape(10, 1, 11.99, 12, 8, 13.99),//pillar1
+              makeCuboidShape(4, 1, 11.99, 6, 8, 13.99),//pillar2
+              makeCuboidShape(0, 0, 0, 16, 1, 16),//base
+              makeCuboidShape(5, 5, 14, 11, 11, 15),//connector
+              makeCuboidShape(5, 1, 13, 11, 11, 14),//stand
+              makeCuboidShape(7, 4, 11, 9, 5, 13),//plug
+              makeCuboidShape(4, 4, 15, 12, 12, 16),//port
+              makeCuboidShape(5, 5, 15.001, 11, 11, 16.001)//port_ring
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(chargepad, side);

@@ -58,7 +58,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>,
       IHasInventory, IHasTileEntity<TileEntityFluidTank>, ISupportsComparator, IHasSecurity, IStateWaterLogged {
 
-    private static final VoxelShape bounds = Block.makeCuboidShape(2, 0, 2, 14, 16, 14);
+    private static final VoxelShape bounds = makeCuboidShape(2, 0, 2, 14, 16, 14);
 
     private final FluidTankTier tier;
 

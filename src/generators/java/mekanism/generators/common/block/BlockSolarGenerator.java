@@ -43,14 +43,14 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
 
     private static final VoxelShape bounds = MultipartUtils.combine(
-          Block.makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel
-          Block.makeCuboidShape(1, 8, 1, 15, 9, 15),//solarPanelBottom
-          Block.makeCuboidShape(4, 0, 4, 12, 1, 12),//solarPanelPort
-          Block.makeCuboidShape(6, 7, 6, 10, 9, 10),//solarPanelConnector
-          Block.makeCuboidShape(6, 1, 6, 10, 2, 10),//solarPanelPipeBase
-          Block.makeCuboidShape(6.5, 3, 6.5, 9.5, 6, 9.5),//solarPanelPipeConnector
-          Block.makeCuboidShape(7, 5, 7, 9, 8, 9),//solarPanelRod1
-          Block.makeCuboidShape(7, 3, 7, 9, 5, 9)//solarPanelRod2
+          makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel
+          makeCuboidShape(1, 8, 1, 15, 9, 15),//solarPanelBottom
+          makeCuboidShape(4, 0, 4, 12, 1, 12),//solarPanelPort
+          makeCuboidShape(6, 7, 6, 10, 9, 10),//solarPanelConnector
+          makeCuboidShape(6, 1, 6, 10, 2, 10),//solarPanelPipeBase
+          makeCuboidShape(6.5, 3, 6.5, 9.5, 6, 9.5),//solarPanelPipeConnector
+          makeCuboidShape(7, 5, 7, 9, 8, 9),//solarPanelRod1
+          makeCuboidShape(7, 3, 7, 9, 5, 9)//solarPanelRod2
     );
 
     public BlockSolarGenerator() {

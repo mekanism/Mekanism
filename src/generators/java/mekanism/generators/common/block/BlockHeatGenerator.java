@@ -51,22 +51,22 @@ public class BlockHeatGenerator extends BlockMekanismContainer implements IHasGu
 
     static {
         VoxelShape generator = MultipartUtils.combine(
-              Block.makeCuboidShape(0.0, 6.5, 6.5, 16.0, 15.5, 15.5),//drum
-              Block.makeCuboidShape(0.0, 0.0, 0.0, 16.0, 6.0, 16.0),//base
-              Block.makeCuboidShape(0.0, 6.0, 2.0, 16.0, 16.0, 6.0),//back
-              Block.makeCuboidShape(4.0, 6.0, 0.0, 12.0, 12.0, 2.0),//plate
-              Block.makeCuboidShape(3.0, 6.0, 1.0, 5.0, 15.0, 2.0),//bar1
-              Block.makeCuboidShape(11.0, 6.0, 1.0, 13.0, 15.0, 2.0),//bar2
-              Block.makeCuboidShape(3.0, 6.0, 6.0, 5.0, 16.0, 16.0),//ring1
-              Block.makeCuboidShape(11.0, 6.0, 6.0, 13.0, 16.0, 16.0),//ring2
-              Block.makeCuboidShape(0.0, 11.0, 0.0, 4.0, 12.0, 2.0),//fin1
-              Block.makeCuboidShape(0.0, 9.0, 0.0, 4.0, 10.0, 2.0),//fin2
-              Block.makeCuboidShape(0.0, 7.0, 0.0, 4.0, 8.0, 2.0),//fin3
-              Block.makeCuboidShape(12.0, 11.0, 0.0, 16.0, 12.0, 2.0),//fin4
-              Block.makeCuboidShape(12.0, 9.0, 0.0, 16.0, 10.0, 2.0),//fin5
-              Block.makeCuboidShape(12.0, 7.0, 0.0, 16.0, 8.0, 2.0),//fin6
-              Block.makeCuboidShape(0.0, 13.0, 0.0, 16.0, 14.0, 2.0),//fin7
-              Block.makeCuboidShape(0.0, 15.0, 0.0, 16.0, 16.0, 2.0)//fin8
+              makeCuboidShape(0, 6.5, 6.5, 16, 15.5, 15.5),//drum
+              makeCuboidShape(0, 0, 0, 16, 6, 16),//base
+              makeCuboidShape(0, 6, 2, 16, 16, 6),//back
+              makeCuboidShape(4, 6, 0, 12, 12, 2),//plate
+              makeCuboidShape(3, 6, 1, 5, 15, 2),//bar1
+              makeCuboidShape(11, 6, 1, 13, 15, 2),//bar2
+              makeCuboidShape(3, 6, 6, 5, 16, 16),//ring1
+              makeCuboidShape(11, 6, 6, 13, 16, 16),//ring2
+              makeCuboidShape(0, 11, 0, 4, 12, 2),//fin1
+              makeCuboidShape(0, 9, 0, 4, 10, 2),//fin2
+              makeCuboidShape(0, 7, 0, 4, 8, 2),//fin3
+              makeCuboidShape(12, 11, 0, 16, 12, 2),//fin4
+              makeCuboidShape(12, 9, 0, 16, 10, 2),//fin5
+              makeCuboidShape(12, 7, 0, 16, 8, 2),//fin6
+              makeCuboidShape(0, 13, 0, 16, 14, 2),//fin7
+              makeCuboidShape(0, 15, 0, 16, 16, 2)//fin8
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(generator, side);

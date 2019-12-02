@@ -59,8 +59,8 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
 
     static {
         VoxelShape chest = MultipartUtils.combine(
-              Block.makeCuboidShape(1, 0, 1, 15, 14, 15),//Main chest
-              Block.makeCuboidShape(7, 7, 0, 9, 11, 1)//latch
+              makeCuboidShape(1, 0, 1, 15, 14, 15),//Main chest
+              makeCuboidShape(7, 7, 0, 9, 11, 1)//latch
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(chest, side);

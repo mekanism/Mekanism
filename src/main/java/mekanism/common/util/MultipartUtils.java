@@ -30,14 +30,14 @@ public final class MultipartUtils {
 
     //TODO: Remove at some point, but this method is helpful for calculating the transforms from model to voxel shape
     public static void printPieces(String name, double x1, double y1, double z1, double x2, double y2, double z2, double rotX, double rotY, double rotZ) {
-        //Transform from model: (8, 24, 8, 8, 24, 8) - (box + (rotationPoint, rotationPoint))
+        //Transform from mekanism model: (8, 24, 8, 8, 24, 8) - (box + (rotationPoint, rotationPoint))
         double nx1 = 8 - (x1 + rotX);
         double ny1 = 24 - (y1 + rotY);
         double nz1 = 8 - (z1 + rotZ);
         double nx2 = 8 - (x2 + rotX);
         double ny2 = 24 - (y2 + rotY);
         double nz2 = 8 - (z2 + rotZ);
-        System.out.println("Block.makeCuboidShape(" + Math.min(nx1, nx2) + ", " + Math.min(ny1, ny2) + ", " + Math.min(nz1, nz2) + ", " +
+        System.out.println("makeCuboidShape(" + Math.min(nx1, nx2) + ", " + Math.min(ny1, ny2) + ", " + Math.min(nz1, nz2) + ", " +
                            Math.max(nx1, nx2) + ", " + Math.max(ny1, ny2) + ", " + Math.max(nz1, nz2) + "),//" + name);
     }
 

@@ -45,16 +45,16 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     static {
         VoxelShape tank = MultipartUtils.combine(
-              Block.makeCuboidShape(3, 1.5, 3, 13, 13.5, 13),//tank
-              Block.makeCuboidShape(3.5, 0.5, 3.5, 12.5, 1.5, 12.5),//tankBase
-              Block.makeCuboidShape(6.5, 14.5, 6.5, 9.5, 15.5, 9.5),//valve
-              Block.makeCuboidShape(7, 13.5, 7, 9, 14.5, 9),//valveBase
-              Block.makeCuboidShape(6, 13, 4, 10, 14, 5),//rim0
-              Block.makeCuboidShape(10, 13, 4, 12, 16, 5),//rim1
-              Block.makeCuboidShape(11, 13, 5, 12, 16, 11),//rim2
-              Block.makeCuboidShape(4, 13, 11, 12, 16, 12),//rim3
-              Block.makeCuboidShape(4, 13, 5, 5, 16, 11),//rim4
-              Block.makeCuboidShape(4, 13, 4, 6, 16, 5)//rim5
+              makeCuboidShape(3, 1.5, 3, 13, 13.5, 13),//tank
+              makeCuboidShape(3.5, 0.5, 3.5, 12.5, 1.5, 12.5),//tankBase
+              makeCuboidShape(6.5, 14.5, 6.5, 9.5, 15.5, 9.5),//valve
+              makeCuboidShape(7, 13.5, 7, 9, 14.5, 9),//valveBase
+              makeCuboidShape(6, 13, 4, 10, 14, 5),//rim0
+              makeCuboidShape(10, 13, 4, 12, 16, 5),//rim1
+              makeCuboidShape(11, 13, 5, 12, 16, 11),//rim2
+              makeCuboidShape(4, 13, 11, 12, 16, 12),//rim3
+              makeCuboidShape(4, 13, 5, 5, 16, 11),//rim4
+              makeCuboidShape(4, 13, 4, 6, 16, 5)//rim5
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(tank, side);

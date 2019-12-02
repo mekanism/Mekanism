@@ -50,25 +50,25 @@ public class BlockGasBurningGenerator extends BlockMekanismContainer implements 
 
     static {
         VoxelShape generator = MultipartUtils.combine(
-              Block.makeCuboidShape(0.0, 0.0, 0.0, 16.0, 4.0, 16.0),//base
-              Block.makeCuboidShape(1.5, 4.0, 1.5, 14.5, 5.0, 14.5),//baseStand
-              Block.makeCuboidShape(3.0, 4.0, 3.0, 13.0, 16.0, 13.0),//center
-              Block.makeCuboidShape(12.0, 5.0, 12.0, 15.0, 14.0, 15.0),//pillar1
-              Block.makeCuboidShape(1.0, 5.0, 12.0, 4.0, 14.0, 15.0),//pillar2
-              Block.makeCuboidShape(12.0, 5.0, 1.0, 15.0, 14.0, 4.0),//pillar3
-              Block.makeCuboidShape(1.0, 5.0, 1.0, 4.0, 14.0, 4.0),//pillar4
-              Block.makeCuboidShape(4.0, 4.0, 15.0, 12.0, 12.0, 16.0),//port1
-              Block.makeCuboidShape(15.0, 4.0, 4.0, 16.0, 12.0, 12.0),//port2
-              Block.makeCuboidShape(4.0, 4.0, 0.0, 12.0, 12.0, 1.0),//port3
-              Block.makeCuboidShape(0.0, 4.0, 4.0, 1.0, 12.0, 12.0),//port4
-              Block.makeCuboidShape(4.0, 10.0, 13.5, 12.0, 11.0, 15.5),//connector1
-              Block.makeCuboidShape(13.0, 12.0, 4.0, 14.0, 13.0, 12.0),//connector2
-              Block.makeCuboidShape(2.0, 12.0, 4.0, 3.0, 13.0, 12.0),//connector3
-              Block.makeCuboidShape(4.0, 12.0, 2.0, 12.0, 13.0, 3.0)//connector4
-              //Block.makeCuboidShape(4.0, 9.5, 12.0, 12.0, 10.5, 13.5),//connectorAngle1
-              //Block.makeCuboidShape(13.0, 11.0, 4.0, 14.0, 13.0, 12.0),//connectorAngle2
-              //Block.makeCuboidShape(1.0, 11.0, 4.0, 3.0, 13.0, 12.0),//connectorAngle3
-              //Block.makeCuboidShape(4.0, 11.0, 1.0, 12.0, 13.0, 3.0)//connectorAngle4
+              makeCuboidShape(0, 0, 0, 16, 4, 16),//base
+              makeCuboidShape(1.5, 4, 1.5, 14.5, 5, 14.5),//baseStand
+              makeCuboidShape(3, 4, 3, 13, 16, 13),//center
+              makeCuboidShape(12, 5, 12, 15, 14, 15),//pillar1
+              makeCuboidShape(1, 5, 12, 4, 14, 15),//pillar2
+              makeCuboidShape(12, 5, 1, 15, 14, 4),//pillar3
+              makeCuboidShape(1, 5, 1, 4, 14, 4),//pillar4
+              makeCuboidShape(4, 4, 15, 12, 12, 16),//port1
+              makeCuboidShape(15, 4, 4, 16, 12, 12),//port2
+              makeCuboidShape(4, 4, 0, 12, 12, 1),//port3
+              makeCuboidShape(0, 4, 4, 1, 12, 12),//port4
+              makeCuboidShape(4, 10, 13.5, 12, 11, 15.5),//connector1
+              makeCuboidShape(13, 12, 4, 14, 13, 12),//connector2
+              makeCuboidShape(2, 12, 4, 3, 13, 12),//connector3
+              makeCuboidShape(4, 12, 2, 12, 13, 3)//connector4
+              //makeCuboidShape(4, 9.5, 12, 12, 10.5, 13.5),//connectorAngle1
+              //makeCuboidShape(13, 11, 4, 14, 13, 12),//connectorAngle2
+              //makeCuboidShape(1, 11, 4, 3, 13, 12),//connectorAngle3
+              //makeCuboidShape(4, 11, 1, 12, 13, 3)//connectorAngle4
         );
         //TODO: VoxelShapes, Figure out best way of handling the "angled connector pieces"
         //setRotation(connectorAngle1, 0.986111F, 0F, 0F);

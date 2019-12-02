@@ -73,32 +73,32 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
     static {
         VoxelShape sorter = MultipartUtils.combine(
-              Block.makeCuboidShape(5, 5, 1, 11, 11, 15),//pipe
-              Block.makeCuboidShape(3, 3, 14, 13, 13, 15),//connectorBack
-              Block.makeCuboidShape(2, 2, 15, 14, 14, 16),//portBackLarge
-              Block.makeCuboidShape(4, 4, 16, 12, 12, 17),//portBack
-              Block.makeCuboidShape(3, 3, 0, 13, 13, 1),//portFront
-              Block.makeCuboidShape(11, 6.5, 3.5, 12, 9.5, 11.5),//panel1
-              Block.makeCuboidShape(4, 6.5, 3.5, 5, 9.5, 11.5),//panel2
-              Block.makeCuboidShape(7, 3, 4, 9, 5, 5),//pistonConnector1
-              Block.makeCuboidShape(7, 11, 4, 9, 13, 5),//pistonConnector2
-              Block.makeCuboidShape(7, 3.5, 1, 9, 5.5, 4),//pistonBrace1
-              Block.makeCuboidShape(7, 10.5, 1, 9, 12.5, 4),//pistonBrace2
-              Block.makeCuboidShape(7, 3, 9.01, 9, 5, 14.01),//pistonBase1
-              Block.makeCuboidShape(7, 11, 9.01, 9, 13, 14.01),//pistonBase2
-              Block.makeCuboidShape(7.5, 3.5, 5.01, 8.5, 4.5, 10.01),//pistonBar1
-              Block.makeCuboidShape(7.5, 11.5, 5.01, 8.5, 12.5, 10.01),//pistonBar2
-              Block.makeCuboidShape(4.5, 4.5, 1, 11.5, 11.5, 2),//ring1
-              Block.makeCuboidShape(4.5, 4.5, 3, 11.5, 11.5, 4),//ring2
-              Block.makeCuboidShape(4.5, 4.5, 5, 11.5, 11.5, 6),//ring3
-              Block.makeCuboidShape(4.5, 4.5, 7, 11.5, 11.5, 8),//ring4
-              Block.makeCuboidShape(4.5, 4.5, 9, 11.5, 11.5, 10),//ring5
-              Block.makeCuboidShape(4.5, 4.5, 11, 11.5, 11.5, 12),//ring6
-              Block.makeCuboidShape(4.5, 4.5, 13, 11.5, 11.5, 14),//ring7
-              Block.makeCuboidShape(11.5, 7.5, 6.5, 12.5, 8.5, 7.5),//led1
-              Block.makeCuboidShape(11.5, 7.5, 4.5, 12.5, 8.5, 5.5),//led2
-              Block.makeCuboidShape(3.5, 7.5, 4.5, 4.5, 8.5, 5.5),//led3
-              Block.makeCuboidShape(3.5, 7.5, 6.5, 4.5, 8.5, 7.5)//led4
+              makeCuboidShape(5, 5, 1, 11, 11, 15),//pipe
+              makeCuboidShape(3, 3, 14, 13, 13, 15),//connectorBack
+              makeCuboidShape(2, 2, 15, 14, 14, 16),//portBackLarge
+              makeCuboidShape(4, 4, 16, 12, 12, 17),//portBack
+              makeCuboidShape(3, 3, 0, 13, 13, 1),//portFront
+              makeCuboidShape(11, 6.5, 3.5, 12, 9.5, 11.5),//panel1
+              makeCuboidShape(4, 6.5, 3.5, 5, 9.5, 11.5),//panel2
+              makeCuboidShape(7, 3, 4, 9, 5, 5),//pistonConnector1
+              makeCuboidShape(7, 11, 4, 9, 13, 5),//pistonConnector2
+              makeCuboidShape(7, 3.5, 1, 9, 5.5, 4),//pistonBrace1
+              makeCuboidShape(7, 10.5, 1, 9, 12.5, 4),//pistonBrace2
+              makeCuboidShape(7, 3, 9.01, 9, 5, 14.01),//pistonBase1
+              makeCuboidShape(7, 11, 9.01, 9, 13, 14.01),//pistonBase2
+              makeCuboidShape(7.5, 3.5, 5.01, 8.5, 4.5, 10.01),//pistonBar1
+              makeCuboidShape(7.5, 11.5, 5.01, 8.5, 12.5, 10.01),//pistonBar2
+              makeCuboidShape(4.5, 4.5, 1, 11.5, 11.5, 2),//ring1
+              makeCuboidShape(4.5, 4.5, 3, 11.5, 11.5, 4),//ring2
+              makeCuboidShape(4.5, 4.5, 5, 11.5, 11.5, 6),//ring3
+              makeCuboidShape(4.5, 4.5, 7, 11.5, 11.5, 8),//ring4
+              makeCuboidShape(4.5, 4.5, 9, 11.5, 11.5, 10),//ring5
+              makeCuboidShape(4.5, 4.5, 11, 11.5, 11.5, 12),//ring6
+              makeCuboidShape(4.5, 4.5, 13, 11.5, 11.5, 14),//ring7
+              makeCuboidShape(11.5, 7.5, 6.5, 12.5, 8.5, 7.5),//led1
+              makeCuboidShape(11.5, 7.5, 4.5, 12.5, 8.5, 5.5),//led2
+              makeCuboidShape(3.5, 7.5, 4.5, 4.5, 8.5, 5.5),//led3
+              makeCuboidShape(3.5, 7.5, 6.5, 4.5, 8.5, 7.5)//led4
         );
         sorter = MultipartUtils.rotate(sorter, Direction.NORTH);
         for (Direction side : EnumUtils.DIRECTIONS) {

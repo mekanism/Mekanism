@@ -23,26 +23,26 @@ import net.minecraft.world.World;
 public class BlockObsidianTNT extends TNTBlock {
 
     private static final VoxelShape bounds = MultipartUtils.combine(
-          Block.makeCuboidShape(0, 0, 0, 16, 3, 16),//Wooden1
-          Block.makeCuboidShape(0, 8, 0, 16, 11, 16),//Wooden2
-          Block.makeCuboidShape(12.5, 11.8, 12.5, 13.5, 13.8, 13.5),//Wick1
-          Block.makeCuboidShape(12.5, 11.5, 7.5, 13.5, 13.5, 8.5),//Wick2
-          Block.makeCuboidShape(12.5, 11.8, 2.5, 13.5, 13.8, 3.5),//Wick3
-          Block.makeCuboidShape(2.5, 11.8, 12.5, 3.5, 13.8, 13.5),//Wick4
-          Block.makeCuboidShape(2.5, 11.5, 7.5, 3.5, 13.5, 8.5),//Wick5
-          Block.makeCuboidShape(2.5, 11.8, 2.5, 3.5, 13.8, 3.5),//Wick6
-          Block.makeCuboidShape(7.5, 11.5, 12.5, 8.5, 13.5, 13.5),//Wick7
-          Block.makeCuboidShape(7.5, 11.5, 2.5, 8.5, 13.5, 3.5),//Wick8
-          Block.makeCuboidShape(7.5, 11.8, 7.5, 8.5, 13.8, 8.5),//Wick9
-          Block.makeCuboidShape(11, -1, 11, 15, 12, 15),//Rod1
-          Block.makeCuboidShape(11, -1, 6, 15, 12, 10),//Rod2
-          Block.makeCuboidShape(11, -1, 1, 15, 12, 5),//Rod3
-          Block.makeCuboidShape(6, -1, 1, 10, 12, 5),//Rod4
-          Block.makeCuboidShape(6, -1, 6, 10, 12, 10),//Rod5
-          Block.makeCuboidShape(6, -1, 11, 10, 12, 15),//Rod6
-          Block.makeCuboidShape(1, -1, 6, 5, 12, 10),//Rod7
-          Block.makeCuboidShape(1, -1, 11, 5, 12, 15),//Rod8
-          Block.makeCuboidShape(1, -1, 1, 5, 12, 5)//Rod9
+          makeCuboidShape(0, 0, 0, 16, 3, 16),//Wooden1
+          makeCuboidShape(0, 8, 0, 16, 11, 16),//Wooden2
+          makeCuboidShape(12.5, 11.8, 12.5, 13.5, 13.8, 13.5),//Wick1
+          makeCuboidShape(12.5, 11.5, 7.5, 13.5, 13.5, 8.5),//Wick2
+          makeCuboidShape(12.5, 11.8, 2.5, 13.5, 13.8, 3.5),//Wick3
+          makeCuboidShape(2.5, 11.8, 12.5, 3.5, 13.8, 13.5),//Wick4
+          makeCuboidShape(2.5, 11.5, 7.5, 3.5, 13.5, 8.5),//Wick5
+          makeCuboidShape(2.5, 11.8, 2.5, 3.5, 13.8, 3.5),//Wick6
+          makeCuboidShape(7.5, 11.5, 12.5, 8.5, 13.5, 13.5),//Wick7
+          makeCuboidShape(7.5, 11.5, 2.5, 8.5, 13.5, 3.5),//Wick8
+          makeCuboidShape(7.5, 11.8, 7.5, 8.5, 13.8, 8.5),//Wick9
+          makeCuboidShape(11, -1, 11, 15, 12, 15),//Rod1
+          makeCuboidShape(11, -1, 6, 15, 12, 10),//Rod2
+          makeCuboidShape(11, -1, 1, 15, 12, 5),//Rod3
+          makeCuboidShape(6, -1, 1, 10, 12, 5),//Rod4
+          makeCuboidShape(6, -1, 6, 10, 12, 10),//Rod5
+          makeCuboidShape(6, -1, 11, 10, 12, 15),//Rod6
+          makeCuboidShape(1, -1, 6, 5, 12, 10),//Rod7
+          makeCuboidShape(1, -1, 11, 5, 12, 15),//Rod8
+          makeCuboidShape(1, -1, 1, 5, 12, 5)//Rod9
     );
 
     public BlockObsidianTNT() {

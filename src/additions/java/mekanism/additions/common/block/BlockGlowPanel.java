@@ -28,8 +28,8 @@ public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, ICol
 
     static {
         VoxelShape glowPanel = MultipartUtils.combine(
-              Block.makeCuboidShape(4, 14, 4, 12, 16, 12),
-              Block.makeCuboidShape(5, 13.5, 5, 11, 14, 11)
+              makeCuboidShape(4, 14, 4, 12, 16, 12),
+              makeCuboidShape(5, 13.5, 5, 11, 14, 11)
         );
         for (Direction side : EnumUtils.DIRECTIONS) {
             bounds[side.ordinal()] = MultipartUtils.rotate(glowPanel, side);
