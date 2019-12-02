@@ -26,7 +26,9 @@ import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -41,8 +43,11 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -54,6 +59,26 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockElectricPump extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityElectricPump>, ISupportsUpgrades, IStateFacing,
       IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityElectricPump>, ISupportsComparator, IStateActive {
+
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    static {
+        VoxelShape pump = MultipartUtils.combine(
+              Block.makeCuboidShape(4.5, 1, 4.5, 11.5, 13, 11.5),//pumpCasing
+              Block.makeCuboidShape(5, 0, 5, 11, 15, 11),//pumpBase
+              Block.makeCuboidShape(4, 13, 4, 12, 14, 12),//pumpRingTop
+              Block.makeCuboidShape(4, 15, 4, 12, 16, 12),//pumpPortTop
+              Block.makeCuboidShape(4, 4, 0, 12, 12, 1),//powerPort
+              Block.makeCuboidShape(5.5, 5.5, 1, 10.5, 10.5, 5),//powerConnector
+              Block.makeCuboidShape(10, 10, 1, 11, 11, 5),//powerConnectorFrame1
+              Block.makeCuboidShape(5, 10, 1, 6, 11, 5),//powerConnectorFrame2
+              Block.makeCuboidShape(10, 5, 1, 11, 6, 5),//powerConnectorFrame3
+              Block.makeCuboidShape(5, 5, 1, 6, 6, 5)//powerConnectorFrame4
+        );
+        pump = MultipartUtils.rotate(pump, Rotation.CLOCKWISE_180);
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(pump, side);
+        }
+    }
 
     public BlockElectricPump() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -148,6 +173,13 @@ public class BlockElectricPump extends BlockMekanismContainer implements IBlockE
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

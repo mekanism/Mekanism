@@ -40,6 +40,7 @@ public class BlockWindGenerator extends BlockMekanismContainer implements IHasGu
       IHasTileEntity<TileEntityWindGenerator>, IStateActive {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.wind"));
+    //TODO: VoxelShapes
 
     public BlockWindGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));

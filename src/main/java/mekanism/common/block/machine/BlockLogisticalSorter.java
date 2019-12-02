@@ -69,14 +69,14 @@ public class BlockLogisticalSorter extends BlockMekanismContainer implements IHa
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.logisticalsorter"));
 
-    private static final VoxelShape[] bounds = new VoxelShape[6];
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
-        VoxelShape sorter = MultipartUtils.combineAndSimplify(
+        VoxelShape sorter = MultipartUtils.combine(
               Block.makeCuboidShape(5, 5, 1, 11, 11, 15),//pipe
               Block.makeCuboidShape(3, 3, 14, 13, 13, 15),//connectorBack
               Block.makeCuboidShape(2, 2, 15, 14, 14, 16),//portBackLarge
-              Block.makeCuboidShape(4, 4.5, 16, 12, 12, 17),//portBack
+              Block.makeCuboidShape(4, 4, 16, 12, 12, 17),//portBack
               Block.makeCuboidShape(3, 3, 0, 13, 13, 1),//portFront
               Block.makeCuboidShape(11, 6.5, 3.5, 12, 9.5, 11.5),//panel1
               Block.makeCuboidShape(4, 6.5, 3.5, 5, 9.5, 11.5),//panel2

@@ -13,6 +13,7 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
@@ -31,7 +32,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,9 +40,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockSolarGenerator extends BlockMekanismContainer implements IHasGui<TileEntitySolarGenerator>, IBlockElectric, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntitySolarGenerator> {
 
-    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
-    private static final VoxelShape SOLAR_BOUNDS = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 0.7F, 1.0F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
+
+    private static final VoxelShape bounds = MultipartUtils.combine(
+          Block.makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel
+          Block.makeCuboidShape(1, 8, 1, 15, 9, 15),//solarPanelBottom
+          Block.makeCuboidShape(4, 0, 4, 12, 1, 12),//solarPanelPort
+          Block.makeCuboidShape(6, 7, 6, 10, 9, 10),//solarPanelConnector
+          Block.makeCuboidShape(6, 1, 6, 10, 2, 10),//solarPanelPipeBase
+          Block.makeCuboidShape(6.5, 3, 6.5, 9.5, 6, 9.5),//solarPanelPipeConnector
+          Block.makeCuboidShape(7, 5, 7, 9, 8, 9),//solarPanelRod1
+          Block.makeCuboidShape(7, 3, 7, 9, 5, 9)//solarPanelRod2
+    );
 
     public BlockSolarGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -91,7 +100,7 @@ public class BlockSolarGenerator extends BlockMekanismContainer implements IHasG
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return SOLAR_BOUNDS;
+        return bounds;
     }
 
     @Override

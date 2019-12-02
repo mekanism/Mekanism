@@ -215,4 +215,8 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         // state/world
         return true;
     }
+
+    //TODO: VoxelShapes, when we create a system to fix the voxel shape, it may make the most sense to just always include the full voxel shape,
+    // so that it can highlight the bounding box properly, and then just shift the voxelshape so that the bounding blocks give the
+    // correct part as intersecting itself.
 }

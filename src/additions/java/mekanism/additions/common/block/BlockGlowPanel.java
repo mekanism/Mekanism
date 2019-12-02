@@ -24,15 +24,15 @@ import net.minecraft.world.World;
 
 public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, IColoredBlock, IStateWaterLogged {
 
-    private static VoxelShape[] bounds = new VoxelShape[6];
+    private static VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
-        VoxelShape glowPanel = MultipartUtils.combineAndSimplify(
-              Block.makeCuboidShape(4, 0, 4, 12, 2, 12),
-              Block.makeCuboidShape(5, 2, 5, 11, 2.5, 11)
+        VoxelShape glowPanel = MultipartUtils.combine(
+              Block.makeCuboidShape(4, 14, 4, 12, 16, 12),
+              Block.makeCuboidShape(5, 13.5, 5, 11, 14, 11)
         );
         for (Direction side : EnumUtils.DIRECTIONS) {
-            bounds[side.ordinal()] = MultipartUtils.rotate(glowPanel, side.getOpposite());
+            bounds[side.ordinal()] = MultipartUtils.rotate(glowPanel, side);
         }
     }
 
@@ -78,6 +78,9 @@ public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, ICol
     public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos) {
         Direction side = getDirection(state);
         BlockPos positionOn = pos.offset(side.getOpposite());
+        //TODO: Maybe improve this so it matches the shape of the glow panel for what it checks
+        // This commented out thing is more or less how the torch checks it
+        //return !VoxelShapes.compare(state.getCollisionShape(world, pos).project(side), field_220084_c, IBooleanFunction.ONLY_SECOND);
         return Block.hasSolidSide(world.getBlockState(positionOn), world, positionOn, side);
     }
 

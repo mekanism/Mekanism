@@ -4,84 +4,139 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import org.apache.commons.lang3.tuple.Pair;
 
 //TODO: Split this into multiple classes making a VoxelShapeUtils?
+// Also document the different methods
+//TODO: Search for instances of this comment "//TODO: VoxelShapes"
 public final class MultipartUtils {
 
     private static final Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
 
-    public static AxisAlignedBB rotate(AxisAlignedBB aabb, Direction side) {
-        Vec3d v1 = rotate(new Vec3d(aabb.minX, aabb.minY, aabb.minZ), side);
-        Vec3d v2 = rotate(new Vec3d(aabb.maxX, aabb.maxY, aabb.maxZ), side);
-        return new AxisAlignedBB(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
+    //TODO: Remove at some point, but this method is helpful for calculating the transforms from model to voxel shape
+    public static void printPieces(String name, double x1, double y1, double z1, double x2, double y2, double z2, double rotX, double rotY, double rotZ) {
+        //Transform from model: (8, 24, 8, 8, 24, 8) - (box + (rotationPoint, rotationPoint))
+        double nx1 = 8 - (x1 + rotX);
+        double ny1 = 24 - (y1 + rotY);
+        double nz1 = 8 - (z1 + rotZ);
+        double nx2 = 8 - (x2 + rotX);
+        double ny2 = 24 - (y2 + rotY);
+        double nz2 = 8 - (z2 + rotZ);
+        System.out.println("Block.makeCuboidShape(" + Math.min(nx1, nx2) + ", " + Math.min(ny1, ny2) + ", " + Math.min(nz1, nz2) + ", " +
+                           Math.max(nx1, nx2) + ", " + Math.max(ny1, ny2) + ", " + Math.max(nz1, nz2) + "),//" + name);
     }
 
-    public static Vec3d rotate(Vec3d vec, Direction side) {
+    public static AxisAlignedBB rotate(AxisAlignedBB box, Direction side) {
         switch (side) {
             case DOWN:
-                return new Vec3d(vec.x, vec.y, vec.z);
+                return box;
             case UP:
-                return new Vec3d(vec.x, -vec.y, -vec.z);
+                return new AxisAlignedBB(box.minX, -box.minY, -box.minZ, box.maxX, -box.maxY, -box.maxZ);
             case NORTH:
-                return new Vec3d(vec.x, -vec.z, vec.y);
+                return new AxisAlignedBB(box.minX, -box.minZ, box.minY, box.maxX, -box.maxZ, box.maxY);
             case SOUTH:
-                return new Vec3d(vec.x, vec.z, -vec.y);
+                return new AxisAlignedBB(box.minX, box.minZ, -box.minY, box.maxX, box.maxZ, -box.maxY);
             case WEST:
-                //TODO: Re-evaluate, this fixes it so that it rotates to match how rotation works in BlockState files, though it isn't as "simple" a rotation
-                return new Vec3d(vec.y, -vec.z, vec.x);
-                //return new Vec3d(vec.y, -vec.x, vec.z);
+                return new AxisAlignedBB(box.minY, -box.minZ, box.minX, box.maxY, -box.maxZ, box.maxX);
             case EAST:
-                //TODO: Re-evaluate, this fixes it so that it rotates to match how rotation works in BlockState files, though it isn't as "simple" a rotation
-                return new Vec3d(-vec.y, vec.z, vec.x);
-                //return new Vec3d(-vec.y, vec.x, vec.z);
+                return new AxisAlignedBB(-box.minY, box.minZ, box.minX, -box.maxY, box.maxZ, box.maxX);
         }
-        return null;
+        return box;
+    }
+
+    public static AxisAlignedBB rotate(AxisAlignedBB box, Rotation rotation) {
+        switch (rotation) {
+            case NONE:
+                return box;
+            case CLOCKWISE_90:
+                return new AxisAlignedBB(-box.minZ, box.minY, box.minX, -box.maxZ, box.maxY, box.maxX);
+            case CLOCKWISE_180:
+                return new AxisAlignedBB(-box.minX, box.minY, -box.minZ, -box.maxX, box.maxY, -box.maxZ);
+            case COUNTERCLOCKWISE_90:
+                return new AxisAlignedBB(box.minZ, box.minY, box.minX, box.maxZ, box.maxY, box.maxX);
+        }
+        return box;
+    }
+
+    public static AxisAlignedBB rotateHorizontal(AxisAlignedBB box, Direction side) {
+        //TODO: If this is the common rotational orientation, maybe just replace the rotate by rotation with this, or re-inline the math so it isn't a "double switch"
+        switch (side) {
+            case NORTH:
+                return rotate(box, Rotation.NONE);
+            case SOUTH:
+                return rotate(box, Rotation.CLOCKWISE_180);
+            case WEST:
+                return rotate(box, Rotation.COUNTERCLOCKWISE_90);
+            case EAST:
+                return rotate(box, Rotation.CLOCKWISE_90);
+        }
+        return box;
     }
 
     public static VoxelShape rotate(VoxelShape shape, Direction side) {
+        return rotate(shape, box -> rotate(box, side));
+    }
+
+    public static VoxelShape rotateHorizontal(VoxelShape shape, Direction side) {
+        return rotate(shape, box -> rotateHorizontal(box, side));
+    }
+
+    public static VoxelShape rotate(VoxelShape shape, Rotation rotation) {
+        return rotate(shape, box -> rotate(box, rotation));
+    }
+
+    public static VoxelShape rotate(VoxelShape shape, Function<AxisAlignedBB, AxisAlignedBB> rotateFunction) {
         List<VoxelShape> rotatedPieces = new ArrayList<>();
         //Explode the voxel shape into bounding boxes
         List<AxisAlignedBB> sourceBoundingBoxes = shape.toBoundingBoxList();
         //Rotate them and convert them each back into a voxel shape
         for (AxisAlignedBB sourceBoundingBox : sourceBoundingBoxes) {
             //Make the bounding box be centered around the middle, and then move it back after rotating
-            rotatedPieces.add(VoxelShapes.create(rotate(sourceBoundingBox.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side)
+            rotatedPieces.add(VoxelShapes.create(rotateFunction.apply(sourceBoundingBox.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z))
                   .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z)));
         }
         //return the recombined rotated voxel shape
-        return combineAndSimplify(rotatedPieces);
+        return combine(rotatedPieces);
     }
 
-    public static VoxelShape combineAndSimplify(VoxelShape... shapes) {
+    public static VoxelShape combine(VoxelShape... shapes) {
+        return batchCombine(VoxelShapes.empty(), IBooleanFunction.OR, shapes);
+    }
+
+    public static VoxelShape combine(Collection<VoxelShape> shapes) {
         VoxelShape combinedShape = VoxelShapes.empty();
         //Combine the different partial rotated voxel shapes into a full voxel shape
+        // Note: VoxelShapes.or simplifies as it goes
         for (VoxelShape shape : shapes) {
             combinedShape = VoxelShapes.or(combinedShape, shape);
         }
-        combinedShape = combinedShape.simplify();
         return combinedShape;
     }
 
-    public static VoxelShape combineAndSimplify(Collection<VoxelShape> shapes) {
-        VoxelShape combinedShape = VoxelShapes.empty();
-        //Combine the different partial rotated voxel shapes into a full voxel shape
+    public static VoxelShape exclude(VoxelShape... shapes) {
+        return batchCombine(VoxelShapes.fullCube(), IBooleanFunction.ONLY_FIRST, shapes);
+    }
+
+    public static VoxelShape batchCombine(VoxelShape initial, IBooleanFunction function, VoxelShape... shapes) {
+        VoxelShape combinedShape = initial;
         for (VoxelShape shape : shapes) {
-            combinedShape = VoxelShapes.or(combinedShape, shape);
+            combinedShape = VoxelShapes.combineAndSimplify(combinedShape, shape, function);
         }
-        combinedShape = combinedShape.simplify();
         return combinedShape;
     }
 

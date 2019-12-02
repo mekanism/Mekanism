@@ -17,7 +17,9 @@ import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -37,7 +39,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -50,10 +51,24 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockChargepad extends BlockMekanismContainer implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityChargepad>, IBlockSound,
       IStateActive {
 
-    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
-    // It does not contain the back pane currently
-    private static final VoxelShape CHARGEPAD_BOUNDS = VoxelShapes.create(0.0F, 0.0F, 0.0F, 1.0F, 0.06F, 1.0F);
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.chargepad"));
+
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    static {
+        VoxelShape chargepad = MultipartUtils.combine(
+              Block.makeCuboidShape(10, 1, 11.99, 12, 8, 13.99),//pillar1
+              Block.makeCuboidShape(4, 1, 11.99, 6, 8, 13.99),//pillar2
+              Block.makeCuboidShape(0, 0, 0, 16, 1, 16),//base
+              Block.makeCuboidShape(5, 5, 14, 11, 11, 15),//connector
+              Block.makeCuboidShape(5, 1, 13, 11, 11, 14),//stand
+              Block.makeCuboidShape(7, 4, 11, 9, 5, 13),//plug
+              Block.makeCuboidShape(4, 4, 15, 12, 12, 16),//port
+              Block.makeCuboidShape(5, 5, 15.001, 11, 11, 16.001)//port_ring
+        );
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(chargepad, side);
+        }
+    }
 
     public BlockChargepad() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -151,7 +166,7 @@ public class BlockChargepad extends BlockMekanismContainer implements IBlockElec
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return CHARGEPAD_BOUNDS;
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

@@ -54,10 +54,10 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.laser"));
 
-    private static final VoxelShape[] bounds = new VoxelShape[6];
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
-        VoxelShape laser = MultipartUtils.combineAndSimplify(
+        VoxelShape laser = MultipartUtils.combine(
               Block.makeCuboidShape(5, 2, 4, 11, 9, 12),//body
               Block.makeCuboidShape(8.5, 8, 7.5, 9.49, 13.99, 8.5),//wire
               Block.makeCuboidShape(6.5, 9, 6.5, 9.5, 11, 9.5),//shaft

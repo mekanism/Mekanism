@@ -35,11 +35,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-//TODO: Maybe make this extend BlockSolarGenerator
 public class BlockAdvancedSolarGenerator extends BlockMekanismContainer implements IHasGui<TileEntityAdvancedSolarGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntityAdvancedSolarGenerator> {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
+    //TODO: VoxelShapes
 
     public BlockAdvancedSolarGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));

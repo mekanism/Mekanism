@@ -15,7 +15,9 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.inventory.container.BioGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
@@ -34,15 +36,40 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui<TileEntityBioGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
-      IHasTileEntity<TileEntityBioGenerator>, ISupportsComparator {
+public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui<TileEntityBioGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity,
+      IBlockSound, IHasTileEntity<TileEntityBioGenerator>, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.bio"));
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    static {
+        VoxelShape generator = MultipartUtils.combine(
+              Block.makeCuboidShape(0, 0, 0, 16, 7, 16),//base
+              Block.makeCuboidShape(2, 7, 8, 14, 15, 15),//glass
+              Block.makeCuboidShape(0, 7, 0, 16, 16, 8),//back
+              Block.makeCuboidShape(3, 14.5, 14.5, 13, 15.5, 15.5),//bar
+              Block.makeCuboidShape(13, 7, 8, 16, 16, 16),//sideLeft
+              Block.makeCuboidShape(0, 7, 8, 3, 16, 16)//sideRight
+        );
+        //TODO: VoxelShapes, decide if we want to use the below method instead, it produces the same overall VoxelShape
+        /*VoxelShape generator = MultipartUtils.combine(
+              MultipartUtils.exclude(
+                    Block.makeCuboidShape(3, 15, 8, 13, 16, 16),
+                    Block.makeCuboidShape(3, 7, 15, 13, 16, 16)
+              ),
+              Block.makeCuboidShape(3, 14.5, 14.5, 13, 15.5, 15.5)
+        );*/
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(generator, side);
+        }
+    }
 
     public BlockBioGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -102,6 +129,13 @@ public class BlockBioGenerator extends BlockMekanismContainer implements IHasGui
     @Override
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

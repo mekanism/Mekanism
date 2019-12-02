@@ -80,8 +80,8 @@ public class BlockStateHelper {
         BlockPos pos = context.getPos();
         if (block instanceof IStateFacing) {
             IStateFacing blockFacing = (IStateFacing) block;
+            //TODO: Somehow weight this stuff towards context.getFace(), so that it has a higher likelihood of going with the face that was clicked on
             Direction newDirection = Direction.SOUTH;
-            //TODO: Will context.getNearestLookingDirection() do what we need
             if (blockFacing.supportsDirection(Direction.DOWN) && blockFacing.supportsDirection(Direction.UP)) {
                 PlayerEntity player = context.getPlayer();
                 float rotationPitch = player == null ? 0 : player.rotationPitch;
