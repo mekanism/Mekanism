@@ -50,6 +50,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockLaserAmplifier extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityLaserAmplifier>, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
       IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator {
 
+    //TODO: VoxelShapes, and try to fix the small gap in model
+
     public BlockLaserAmplifier() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
     }

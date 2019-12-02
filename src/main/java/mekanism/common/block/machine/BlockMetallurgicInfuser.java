@@ -63,6 +63,7 @@ public class BlockMetallurgicInfuser extends BlockMekanismContainer implements I
       ISupportsComparator, IStateActive {
 
     public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.metalinfuser"));
+    //TODO: VoxelShapes
 
     public BlockMetallurgicInfuser() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

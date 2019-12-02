@@ -59,6 +59,7 @@ public class BlockChemicalInfuser extends BlockMekanismContainer implements IBlo
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalInfuser>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.cheminfuser"));
+    //TODO: VoxelShapes
 
     public BlockChemicalInfuser() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

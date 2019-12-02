@@ -49,6 +49,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockSeismicVibrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntitySeismicVibrator>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
       ISupportsRedstone, IHasTileEntity<TileEntitySeismicVibrator> {
 
+    //TODO: VoxelShapes
+
     public BlockSeismicVibrator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
     }

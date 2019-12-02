@@ -53,6 +53,7 @@ public class BlockResistiveHeater extends BlockMekanismContainer implements IBlo
       IHasTileEntity<TileEntityResistiveHeater>, IBlockSound, ISupportsRedstone {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.resistiveheater"));
+    //TODO: VoxelShapes
 
     public BlockResistiveHeater() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

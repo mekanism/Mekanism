@@ -21,7 +21,9 @@ import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -38,6 +40,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -50,6 +54,18 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockPersonalChest extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityPersonalChest>, IStateFacing, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityPersonalChest>, IStateWaterLogged, IStateActive {
+
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    static {
+        VoxelShape chest = MultipartUtils.combine(
+              Block.makeCuboidShape(1, 0, 1, 15, 14, 15),//Main chest
+              Block.makeCuboidShape(7, 7, 0, 9, 11, 1)//latch
+        );
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(chest, side);
+        }
+    }
 
     public BlockPersonalChest() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -121,6 +137,13 @@ public class BlockPersonalChest extends BlockMekanismContainer implements IBlock
     @Override
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

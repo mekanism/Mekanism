@@ -59,6 +59,7 @@ public class BlockChemicalCrystallizer extends BlockMekanismContainer implements
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalCrystallizer>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.crystallizer"));
+    //TODO: VoxelShapes
 
     public BlockChemicalCrystallizer() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

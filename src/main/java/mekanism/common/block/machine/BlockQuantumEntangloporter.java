@@ -59,6 +59,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockQuantumEntangloporter extends BlockMekanismContainer implements IBlockElectric, IHasGui<TileEntityQuantumEntangloporter>, ISupportsUpgrades,
       IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateActive {
 
+    //TODO: VoxelShapes
+
     public BlockQuantumEntangloporter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
     }

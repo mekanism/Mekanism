@@ -53,6 +53,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockSolarNeutronActivator extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntitySolarNeutronActivator>, ISupportsUpgrades, IStateFacing, IStateActive, IHasInventory,
       IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, ISupportsComparator {
 
+    //TODO: VoxelShapes
+
     public BlockSolarNeutronActivator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
     }

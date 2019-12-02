@@ -44,7 +44,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -59,7 +58,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 public class BlockFluidTank extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>,
       IHasInventory, IHasTileEntity<TileEntityFluidTank>, ISupportsComparator, IHasSecurity, IStateWaterLogged {
 
-    private static final VoxelShape TANK_BOUNDS = VoxelShapes.create(0.125F, 0.0F, 0.125F, 0.875F, 1.0F, 0.875F);
+    private static final VoxelShape bounds = Block.makeCuboidShape(2, 0, 2, 14, 16, 14);
 
     private final FluidTankTier tier;
 
@@ -221,7 +220,7 @@ public class BlockFluidTank extends BlockMekanismContainer implements IHasModel,
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return TANK_BOUNDS;
+        return bounds;
     }
 
     @Override

@@ -50,6 +50,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockLaserTractorBeam extends BlockMekanismContainer implements IHasModel, IHasGui<TileEntityLaserTractorBeam>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityLaserTractorBeam>, ISupportsComparator {
 
+    //TODO: VoxelShapes, and try to fix the small gap in model
+
     public BlockLaserTractorBeam() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
     }

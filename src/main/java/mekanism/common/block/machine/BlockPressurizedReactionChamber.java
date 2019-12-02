@@ -59,6 +59,7 @@ public class BlockPressurizedReactionChamber extends BlockMekanismContainer impl
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPressurizedReactionChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.prc"));
+    //TODO: VoxelShapes
 
     public BlockPressurizedReactionChamber() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

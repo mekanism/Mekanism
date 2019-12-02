@@ -29,7 +29,7 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.translate("block.personal_chest"), 8, 6, 0x404040);
+        drawString(TextComponentUtil.translate("block.mekanism.personal_chest"), 8, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

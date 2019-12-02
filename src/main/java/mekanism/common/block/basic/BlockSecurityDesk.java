@@ -34,6 +34,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BlockSecurityDesk extends BlockTileDrops implements IStateFacing, IHasGui<TileEntitySecurityDesk>, IHasInventory, IHasTileEntity<TileEntitySecurityDesk> {
 
+    //TODO: VoxelShapes
+
     public BlockSecurityDesk() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
     }

@@ -53,6 +53,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockDigitalMiner extends BlockMekanismContainer implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityDigitalMiner>, IStateFacing, IStateActive, IHasInventory,
       IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityDigitalMiner> {
 
+    //TODO: VoxelShapes
+
     public BlockDigitalMiner() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
     }

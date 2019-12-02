@@ -53,6 +53,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockEnergyCube extends BlockMekanismContainer implements IHasGui<TileEntityEnergyCube>, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory, IHasSecurity,
       ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator {
 
+    //TODO: VoxelShapes
+
     private final EnergyCubeTier tier;
 
     public BlockEnergyCube(EnergyCubeTier tier) {

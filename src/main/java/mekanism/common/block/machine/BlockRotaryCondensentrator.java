@@ -58,10 +58,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockRotaryCondensentrator extends BlockMekanismContainer implements IBlockElectric, IHasModel, IHasGui<TileEntityRotaryCondensentrator>, ISupportsUpgrades,
-      IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityRotaryCondensentrator>, IBlockSound, ISupportsRedstone, ISupportsComparator,
-      IStateActive {
+      IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityRotaryCondensentrator>, IBlockSound, ISupportsRedstone, ISupportsComparator, IStateActive {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.rotarycondensentrator"));
+    //TODO: VoxelShapes
 
     public BlockRotaryCondensentrator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

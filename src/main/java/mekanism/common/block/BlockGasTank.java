@@ -18,7 +18,9 @@ import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,19 +30,36 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockGasTank extends BlockMekanismContainer implements IHasGui<TileEntityGasTank>, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity,
       ISupportsRedstone, IHasTileEntity<TileEntityGasTank>, ISupportsComparator, IStateWaterLogged {
 
-    private static final VoxelShape TANK_BOUNDS = VoxelShapes.create(0.1875F, 0.0F, 0.1875F, 0.8125F, 1.0F, 0.8125F);
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    static {
+        VoxelShape tank = MultipartUtils.combine(
+              Block.makeCuboidShape(3, 1.5, 3, 13, 13.5, 13),//tank
+              Block.makeCuboidShape(3.5, 0.5, 3.5, 12.5, 1.5, 12.5),//tankBase
+              Block.makeCuboidShape(6.5, 14.5, 6.5, 9.5, 15.5, 9.5),//valve
+              Block.makeCuboidShape(7, 13.5, 7, 9, 14.5, 9),//valveBase
+              Block.makeCuboidShape(6, 13, 4, 10, 14, 5),//rim0
+              Block.makeCuboidShape(10, 13, 4, 12, 16, 5),//rim1
+              Block.makeCuboidShape(11, 13, 5, 12, 16, 11),//rim2
+              Block.makeCuboidShape(4, 13, 11, 12, 16, 12),//rim3
+              Block.makeCuboidShape(4, 13, 5, 5, 16, 11),//rim4
+              Block.makeCuboidShape(4, 13, 4, 6, 16, 5)//rim5
+        );
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(tank, side);
+        }
+    }
 
     private final GasTankTier tier;
 
@@ -99,7 +118,7 @@ public class BlockGasTank extends BlockMekanismContainer implements IHasGui<Tile
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return TANK_BOUNDS;
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

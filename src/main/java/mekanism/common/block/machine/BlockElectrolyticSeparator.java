@@ -59,6 +59,7 @@ public class BlockElectrolyticSeparator extends BlockMekanismContainer implement
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityElectrolyticSeparator>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.electrolyticseparator"));
+    //TODO: VoxelShapes
 
     public BlockElectrolyticSeparator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

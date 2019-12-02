@@ -59,6 +59,7 @@ public class BlockChemicalOxidizer extends BlockMekanismContainer implements IBl
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalOxidizer>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.oxidizer"));
+    //TODO: VoxelShapes
 
     public BlockChemicalOxidizer() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

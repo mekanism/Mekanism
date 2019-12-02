@@ -59,6 +59,7 @@ public class BlockChemicalDissolutionChamber extends BlockMekanismContainer impl
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalDissolutionChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.dissolution"));
+    //TODO: VoxelShapes
 
     public BlockChemicalDissolutionChamber() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
