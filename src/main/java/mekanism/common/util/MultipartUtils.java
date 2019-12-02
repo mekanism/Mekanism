@@ -1,7 +1,9 @@
 package mekanism.common.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -12,9 +14,14 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import org.apache.commons.lang3.tuple.Pair;
 
+//TODO: Split this into multiple classes making a VoxelShapeUtils?
 public final class MultipartUtils {
+
+    private static final Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
 
     public static AxisAlignedBB rotate(AxisAlignedBB aabb, Direction side) {
         Vec3d v1 = rotate(new Vec3d(aabb.minX, aabb.minY, aabb.minZ), side);
@@ -33,11 +40,49 @@ public final class MultipartUtils {
             case SOUTH:
                 return new Vec3d(vec.x, vec.z, -vec.y);
             case WEST:
-                return new Vec3d(vec.y, -vec.x, vec.z);
+                //TODO: Re-evaluate, this fixes it so that it rotates to match how rotation works in BlockState files, though it isn't as "simple" a rotation
+                return new Vec3d(vec.y, -vec.z, vec.x);
+                //return new Vec3d(vec.y, -vec.x, vec.z);
             case EAST:
-                return new Vec3d(-vec.y, vec.x, vec.z);
+                //TODO: Re-evaluate, this fixes it so that it rotates to match how rotation works in BlockState files, though it isn't as "simple" a rotation
+                return new Vec3d(-vec.y, vec.z, vec.x);
+                //return new Vec3d(-vec.y, vec.x, vec.z);
         }
         return null;
+    }
+
+    public static VoxelShape rotate(VoxelShape shape, Direction side) {
+        List<VoxelShape> rotatedPieces = new ArrayList<>();
+        //Explode the voxel shape into bounding boxes
+        List<AxisAlignedBB> sourceBoundingBoxes = shape.toBoundingBoxList();
+        //Rotate them and convert them each back into a voxel shape
+        for (AxisAlignedBB sourceBoundingBox : sourceBoundingBoxes) {
+            //Make the bounding box be centered around the middle, and then move it back after rotating
+            rotatedPieces.add(VoxelShapes.create(rotate(sourceBoundingBox.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side)
+                  .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z)));
+        }
+        //return the recombined rotated voxel shape
+        return combineAndSimplify(rotatedPieces);
+    }
+
+    public static VoxelShape combineAndSimplify(VoxelShape... shapes) {
+        VoxelShape combinedShape = VoxelShapes.empty();
+        //Combine the different partial rotated voxel shapes into a full voxel shape
+        for (VoxelShape shape : shapes) {
+            combinedShape = VoxelShapes.or(combinedShape, shape);
+        }
+        combinedShape = combinedShape.simplify();
+        return combinedShape;
+    }
+
+    public static VoxelShape combineAndSimplify(Collection<VoxelShape> shapes) {
+        VoxelShape combinedShape = VoxelShapes.empty();
+        //Combine the different partial rotated voxel shapes into a full voxel shape
+        for (VoxelShape shape : shapes) {
+            combinedShape = VoxelShapes.or(combinedShape, shape);
+        }
+        combinedShape = combinedShape.simplify();
+        return combinedShape;
     }
 
     /* taken from MCMP */

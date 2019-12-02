@@ -15,12 +15,9 @@ import net.minecraft.block.material.Material;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -30,11 +27,12 @@ public class BlockGlowPanel extends BlockTileDrops implements IStateFacing, ICol
     private static VoxelShape[] bounds = new VoxelShape[6];
 
     static {
-        AxisAlignedBB cuboid = new AxisAlignedBB(0.25, 0, 0.25, 0.75, 0.125, 0.75);
-        Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
+        VoxelShape glowPanel = MultipartUtils.combineAndSimplify(
+              Block.makeCuboidShape(4, 0, 4, 12, 2, 12),
+              Block.makeCuboidShape(5, 2, 5, 11, 2.5, 11)
+        );
         for (Direction side : EnumUtils.DIRECTIONS) {
-            bounds[side.ordinal()] = VoxelShapes.create(MultipartUtils.rotate(cuboid.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side.getOpposite())
-                  .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z));
+            bounds[side.ordinal()] = MultipartUtils.rotate(glowPanel, side.getOpposite());
         }
     }
 

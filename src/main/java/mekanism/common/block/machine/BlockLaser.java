@@ -37,13 +37,10 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -57,15 +54,33 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.laser"));
 
-    //TODO: Make the bounds more accurate by using a VoxelShape and combining multiple AxisAlignedBBs
     private static final VoxelShape[] bounds = new VoxelShape[6];
 
     static {
-        AxisAlignedBB laser = new AxisAlignedBB(0.25F, 0.0F, 0.25F, 0.75F, 1.0F, 0.75F);
-        Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
+        VoxelShape laser = MultipartUtils.combineAndSimplify(
+              Block.makeCuboidShape(5, 2, 4, 11, 9, 12),//body
+              Block.makeCuboidShape(8.5, 8, 7.5, 9.49, 13.99, 8.5),//wire
+              Block.makeCuboidShape(6.5, 9, 6.5, 9.5, 11, 9.5),//shaft
+              Block.makeCuboidShape(7, 1, 7, 9, 16, 9),//center
+              Block.makeCuboidShape(4, 0, 4, 12, 1, 12),//port
+              Block.makeCuboidShape(5, 1, 5, 11, 2, 11),//connector
+              Block.makeCuboidShape(6, 13, 6, 10, 14, 10),//ring1
+              Block.makeCuboidShape(6, 11, 6, 10, 12, 10),//ring2
+              Block.makeCuboidShape(4.2, 3, 9, 5.2, 8, 10),//rod1
+              Block.makeCuboidShape(4.2, 3, 6, 5.2, 8, 7),//rod2
+              Block.makeCuboidShape(10.8, 3, 9, 11.8, 8, 10),//rod3
+              Block.makeCuboidShape(10.8, 3, 6, 11.8, 8, 7),//rod4
+              Block.makeCuboidShape(4, 2, 4, 5, 3, 12),//fin1
+              Block.makeCuboidShape(4, 4, 4, 5, 5, 12),//fin2
+              Block.makeCuboidShape(4, 6, 4, 5, 7, 12),//fin3
+              Block.makeCuboidShape(4, 8, 4, 5, 9, 12),//fin4
+              Block.makeCuboidShape(11, 8, 4, 12, 9, 12),//fin5
+              Block.makeCuboidShape(11, 6, 4, 12, 7, 12),//fin6
+              Block.makeCuboidShape(11, 4, 4, 12, 5, 12),//fin7
+              Block.makeCuboidShape(11, 2, 4, 12, 3, 12)//fin8
+        );
         for (Direction side : EnumUtils.DIRECTIONS) {
-            bounds[side.ordinal()] = VoxelShapes.create(MultipartUtils.rotate(laser.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z), side.getOpposite())
-                  .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z));
+            bounds[side.ordinal()] = MultipartUtils.rotate(laser, side.getOpposite());
         }
     }
 
@@ -171,7 +186,7 @@ public class BlockLaser extends BlockMekanismContainer implements IBlockElectric
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return bounds[getDirection(state).ordinal()];//VoxelShapes.create(MultipartUtils.rotate(LASER_BOUNDS.offset(-0.5, -0.5, -0.5), getDirection(state)).offset(0.5, 0.5, 0.5));
+        return bounds[getDirection(state).ordinal()];
     }
 
     @Override

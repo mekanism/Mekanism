@@ -998,8 +998,8 @@ public final class MekanismUtils {
         GUI_ELEMENT("gui/elements"),
         SOUND("sound"),
         RENDER("render"),
-        TEXTURE_BLOCKS("textures/blocks"),
-        TEXTURE_ITEMS("textures/items"),
+        TEXTURE_BLOCKS("textures/block"),
+        TEXTURE_ITEMS("textures/item"),
         MODEL("models"),
         INFUSE("infuse");
 

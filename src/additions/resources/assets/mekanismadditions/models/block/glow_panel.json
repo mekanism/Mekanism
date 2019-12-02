@@ -5,7 +5,7 @@
 	},
 	"elements": [
 		{
-			"name": "center_glow",
+			"name": "center glow",
 			"from": [5, 0, 5],
 			"to": [11, 2.5, 11],
 			"faces": {
