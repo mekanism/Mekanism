@@ -28,7 +28,9 @@ import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -44,9 +46,12 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -59,7 +64,33 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
       IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityElectrolyticSeparator>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.electrolyticseparator"));
-    //TODO: VoxelShapes
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    static {
+        VoxelShape separator = MultipartUtils.combine(
+              makeCuboidShape(0, 0, 0, 16, 4, 16),//base
+              makeCuboidShape(15.01, 3, 3, 16.01, 13, 13),//portToggle1
+              makeCuboidShape(-0.00999999999999979, 4, 4, 0.99, 12, 12),//portToggle2a
+              makeCuboidShape(4, 4, -0.00999999999999979, 12, 12, 0.99),//portToggle3a
+              makeCuboidShape(4, 4, 15.01, 12, 12, 16.01),//portToggle4a
+              makeCuboidShape(1, 4, 7, 3, 11, 9),//portToggle2b
+              makeCuboidShape(7, 4, 1, 8, 11, 3),//portToggle3b
+              makeCuboidShape(7, 4, 13, 8, 11, 15),//portToggle4b
+              makeCuboidShape(8, 4, 0, 16, 16, 16),//tank1
+              makeCuboidShape(0, 4, 9, 7, 14, 16),//tank2
+              makeCuboidShape(0, 4, 0, 7, 14, 7),//tank3
+              makeCuboidShape(6.5, 10, 7.5, 9.5, 11, 8.5),//tube1
+              makeCuboidShape(3, 12, 7.5, 7, 13, 8.5),//tube2
+              makeCuboidShape(3, 12, 7.5, 4, 15, 8.5),//tube3
+              makeCuboidShape(3, 15, 3, 4, 16, 13),//tube4
+              makeCuboidShape(3, 14, 3, 4, 15, 4),//tube5
+              makeCuboidShape(3, 14, 12, 4, 15, 13)//tube6
+        );
+        separator = MultipartUtils.rotate(separator, Rotation.CLOCKWISE_90);
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(separator, side);
+        }
+    }
 
     public BlockElectrolyticSeparator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -154,6 +185,13 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

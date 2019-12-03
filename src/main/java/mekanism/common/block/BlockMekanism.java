@@ -120,7 +120,7 @@ public abstract class BlockMekanism extends Block {
      */
     @Override
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        //TODO: Replace the below stuff with allowing the drop to spawn from the loot table
+        //TODO: Replace the below stuff with allowing the drop to spawn from the loot table, or at least for now fall back to the loot table if there is no TE
         player.addStat(Stats.BLOCK_MINED.get(this));
         player.addExhaustion(0.005F);
         if (!world.isRemote) {
@@ -128,7 +128,7 @@ public abstract class BlockMekanism extends Block {
             if (te instanceof INameable) {
                 dropItem.setDisplayName(((INameable) te).getName());
             }
-            Block.spawnAsEntity(world, pos, dropItem);
+            spawnAsEntity(world, pos, dropItem);
         }
         //Set it to air like the flower pot's harvestBlock method
         world.removeBlock(pos, false);

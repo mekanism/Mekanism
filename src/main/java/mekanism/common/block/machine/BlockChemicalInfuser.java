@@ -28,7 +28,9 @@ import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -47,6 +49,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -59,7 +63,44 @@ public class BlockChemicalInfuser extends BlockMekanism implements IBlockElectri
       IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalInfuser>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.cheminfuser"));
-    //TODO: VoxelShapes
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    static {
+        VoxelShape infuser = MultipartUtils.combine(
+              makeCuboidShape(0, 0, 0, 16, 5, 16),//base
+              makeCuboidShape(5, 12.5, 5.5, 11, 15.5, 8.5),//compressor
+              makeCuboidShape(7, 5, 13, 9, 11, 15),//connector
+              makeCuboidShape(7, 3, 13, 9, 11, 15),//connectorAngle
+              makeCuboidShape(4, 4, 0, 12, 12, 1),//portFront
+              makeCuboidShape(4, 4, 15.01, 12, 12, 16.01),//portBack
+              makeCuboidShape(15.01, 4, 4, 16.01, 12, 12),//portLeft
+              makeCuboidShape(0, 4, 4, 1, 12, 12),//portRight
+              makeCuboidShape(14, 5, 5, 15, 11, 9),//pipe1
+              makeCuboidShape(1, 5, 5, 2, 11, 9),//pipe2
+              makeCuboidShape(8, 5, 6, 13, 11, 9),//pipeAngle1
+              makeCuboidShape(3, 5, 6, 8, 11, 9),//pipeAngle2
+              makeCuboidShape(9, 5, 9, 15, 16, 15),//tank1
+              makeCuboidShape(1, 5, 9, 7, 16, 15),//tank2
+              makeCuboidShape(2, 5, 1, 14, 12, 8),//tank3
+              makeCuboidShape(6.67, 11.5, 1.8, 7.67, 12.5, 2.8),//exhaust1
+              makeCuboidShape(5, 11.5, 1.8, 6, 12.5, 2.8),//exhaust2
+              makeCuboidShape(10, 11.5, 1.8, 11, 12.5, 2.8),//exhaust3
+              makeCuboidShape(8.33, 11.5, 1.8, 9.33, 12.5, 2.8),//exhaust4
+              makeCuboidShape(12, 13.5, 7.5, 13, 14.5, 9.5),//tube1
+              makeCuboidShape(11, 13.5, 6.5, 13, 14.5, 7.5),//tube2
+              makeCuboidShape(9, 11.5, 4, 10, 13.5, 5),//tube3
+              makeCuboidShape(9, 13.5, 4, 10, 14.5, 6),//tube4
+              makeCuboidShape(6, 13.5, 4, 7, 14.5, 6),//tube5
+              makeCuboidShape(6, 11.5, 4, 7, 13.5, 5),//tube6
+              makeCuboidShape(3, 13.5, 6.5, 5, 14.5, 7.5),//tube7
+              makeCuboidShape(3, 13.5, 7.5, 4, 14.5, 9.5),//tube8
+              makeCuboidShape(7, 14, 10, 9, 15, 11),//tube9
+              makeCuboidShape(7, 14, 13, 9, 15, 14)//tube10
+        );
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(infuser, side);
+        }
+    }
 
     public BlockChemicalInfuser() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -154,6 +195,13 @@ public class BlockChemicalInfuser extends BlockMekanism implements IBlockElectri
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

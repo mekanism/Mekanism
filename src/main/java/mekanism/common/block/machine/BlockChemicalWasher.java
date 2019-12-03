@@ -28,7 +28,9 @@ import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -47,6 +49,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -59,7 +63,38 @@ public class BlockChemicalWasher extends BlockMekanism implements IBlockElectric
       IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalWasher>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.washer"));
-    //TODO: VoxelShapes
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    static {
+        VoxelShape washer = MultipartUtils.combine(
+              makeCuboidShape(0, 0, 0, 16, 4, 16),//base
+              makeCuboidShape(7, 3.5, 3, 9, 4.5, 5),//conduit
+              makeCuboidShape(10.49, 2, 4.5, 11.49, 10, 8.5),//pipe2b
+              makeCuboidShape(13, 5, 8, 15, 11, 10),//connectorLeft
+              makeCuboidShape(1, 5, 8, 3, 11, 10),//connectorRight
+              makeCuboidShape(3, 15, 3, 13, 16, 13),//portTop
+              makeCuboidShape(-0.00999999999999979, 4, 4, 0.99, 12, 12),//portRight
+              makeCuboidShape(15.01, 4, 4, 16.01, 12, 12),//portLeft
+              makeCuboidShape(0, 4, 10, 16, 14, 16),//tankBack
+              makeCuboidShape(9, 4, 0, 16, 14, 8),//tankLeft
+              makeCuboidShape(0, 4, 0, 7, 14, 8),//tankRight
+              makeCuboidShape(13, 13.5, 11, 14, 15.5, 12),//tubeLeft1
+              makeCuboidShape(13, 14.5, 4, 14, 15.5, 12),//tubeLeft2
+              makeCuboidShape(13, 12.5, 4, 14, 14.5, 5),//tubeLeft3
+              makeCuboidShape(1, 13, 1.5, 2, 15, 2.5),//tubeRight1
+              makeCuboidShape(1, 13, 3.5, 2, 15, 4.5),//tubeRight2
+              makeCuboidShape(1, 13, 5.5, 2, 15, 6.5),//tubeRight3
+              makeCuboidShape(4.5, 10, 4.5, 11.5, 15, 11.5),//pipe1
+              makeCuboidShape(4.51, 2, 4.5, 10.51, 10, 8.5),//pipe2
+              makeCuboidShape(7, 12, 1, 9, 13, 2),//bridge1
+              makeCuboidShape(7, 10, 1, 9, 11, 2),//bridge2
+              makeCuboidShape(7, 8, 1, 9, 9, 2),//bridge3
+              makeCuboidShape(7, 6, 1, 9, 7, 2)//bridge4
+        );
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(washer, side);
+        }
+    }
 
     public BlockChemicalWasher() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -154,6 +189,13 @@ public class BlockChemicalWasher extends BlockMekanism implements IBlockElectric
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

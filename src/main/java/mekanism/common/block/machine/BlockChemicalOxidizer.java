@@ -28,7 +28,9 @@ import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -47,6 +49,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -59,7 +63,25 @@ public class BlockChemicalOxidizer extends BlockMekanism implements IBlockElectr
       IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalOxidizer>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.oxidizer"));
-    //TODO: VoxelShapes
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    static {
+        VoxelShape oxidizer = MultipartUtils.combine(
+              makeCuboidShape(0, 0, 0, 16, 4, 16),//base
+              makeCuboidShape(8.5, 4, 1.5, 13.5, 5, 14.5),//stand
+              makeCuboidShape(15, 3, 3, 16, 13, 13),//connector
+              makeCuboidShape(8.5, 5.5, 6, 13.5, 15.5, 7),//bridge
+              makeCuboidShape(0, 4, 0, 7, 16, 16),//tank
+              makeCuboidShape(-0.00999999999999979, 4, 4, 0.99, 12, 12),//connectorToggle
+              makeCuboidShape(8, 5, 1, 14, 16, 6),//tower1
+              makeCuboidShape(8, 5, 7, 14, 16, 15),//tower2
+              makeCuboidShape(7, 7, 9, 8, 10, 12),//pipe1
+              makeCuboidShape(13, 5, 5, 15, 11, 11)//pipe2
+        );
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(oxidizer, side);
+        }
+    }
 
     public BlockChemicalOxidizer() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -154,6 +176,13 @@ public class BlockChemicalOxidizer extends BlockMekanism implements IBlockElectr
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override
