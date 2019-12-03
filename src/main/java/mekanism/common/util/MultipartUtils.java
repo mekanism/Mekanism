@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -100,7 +100,7 @@ public final class MultipartUtils {
         return rotate(shape, box -> rotate(box, rotation));
     }
 
-    public static VoxelShape rotate(VoxelShape shape, Function<AxisAlignedBB, AxisAlignedBB> rotateFunction) {
+    public static VoxelShape rotate(VoxelShape shape, UnaryOperator<AxisAlignedBB> rotateFunction) {
         List<VoxelShape> rotatedPieces = new ArrayList<>();
         //Explode the voxel shape into bounding boxes
         List<AxisAlignedBB> sourceBoundingBoxes = shape.toBoundingBoxList();

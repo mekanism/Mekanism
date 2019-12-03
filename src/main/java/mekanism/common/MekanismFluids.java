@@ -1,12 +1,13 @@
 package mekanism.common;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.item.BucketItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
@@ -52,8 +53,7 @@ public class MekanismFluids {
         return registerLiquidChemical(constants.getName(), fluidAttributes -> fluidAttributes.color(color).temperature(temperature).density(density).viscosity(density));
     }
 
-    private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(String name,
-          Function<FluidAttributes.Builder, FluidAttributes.Builder> fluidAttributes) {
+    private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(String name, UnaryOperator<Builder> fluidAttributes) {
         return FLUIDS.register(name, fluidAttributes.apply(FluidAttributes.builder(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid"),
               new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_flow"))));
     }

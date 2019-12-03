@@ -1,13 +1,13 @@
 package mekanism.api.recipes.cache;
 
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
+import java.util.function.IntUnaryOperator;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.function.BooleanConsumer;
-import mekanism.api.function.IntToIntFunction;
 import mekanism.api.recipes.MekanismRecipe;
 
 @FieldsAreNonnullByDefault
@@ -36,7 +36,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     };
 
     //Applies a function to post process getOperationsThisTick (Defaults to capping at one operation per tick)
-    private IntToIntFunction postProcessOperations = currentMax -> Math.min(1, currentMax);
+    private IntUnaryOperator postProcessOperations = currentMax -> Math.min(1, currentMax);
 
     //TODO: Once "build" is called, then we allow process to be called
     // or only allow this stuff to be set before the first call to process
@@ -83,7 +83,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         return this;
     }
 
-    public CachedRecipe<RECIPE> setPostProcessOperations(IntToIntFunction postProcessOperations) {
+    public CachedRecipe<RECIPE> setPostProcessOperations(IntUnaryOperator postProcessOperations) {
         this.postProcessOperations = postProcessOperations;
         return this;
     }
@@ -94,7 +94,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         // want some way to check things so that by default it doesn't do the max operations and instead does a single
         // run for the majority of recipes
         //TODO: Should this be passing Integer.MAX_VALUE or get the value from somewhere else. Some sort of thing the tile passes as a supplier
-        int operations = canHolderFunction() ? postProcessOperations.apply(getOperationsThisTick(Integer.MAX_VALUE)) : 0;
+        int operations = canHolderFunction() ? postProcessOperations.applyAsInt(getOperationsThisTick(Integer.MAX_VALUE)) : 0;
         if (operations > 0) {
             setActive.accept(true);
             useResources(operations);
@@ -166,7 +166,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         //TODO: Decide if we should be passing 1 as the current max or Integer.MAX_VALUE
         // Currently is passing 1, as if anything has something that is based off current operations
         // and short circuits because of it then going to a fractional amount
-        return canHolderFunction() && postProcessOperations.apply(getOperationsThisTick(1)) > 0;
+        return canHolderFunction() && postProcessOperations.applyAsInt(getOperationsThisTick(1)) > 0;
     }
 
     //TODO: Is there some alternative for how we can check the validity of the input for cached recipe refresh purposes
