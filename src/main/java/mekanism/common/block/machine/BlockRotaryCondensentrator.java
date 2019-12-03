@@ -29,7 +29,9 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -48,6 +50,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -61,7 +65,37 @@ public class BlockRotaryCondensentrator extends BlockMekanism implements IBlockE
       IStateFacing, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityRotaryCondensentrator>, IBlockSound, ISupportsRedstone, ISupportsComparator, IStateActive {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.rotarycondensentrator"));
-    //TODO: VoxelShapes
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    static {
+        VoxelShape chargepad = MultipartUtils.combine(
+              makeCuboidShape(0, 0, 0, 16, 5, 16),//base
+              makeCuboidShape(0, 15, 0, 16, 16, 16),//top
+              makeCuboidShape(0, 13, 0, 16, 14, 16),//middle
+              makeCuboidShape(7.5, 11, 7.5, 8.5, 13, 8.5),//shaft
+              makeCuboidShape(4, 14, 4, 12, 15, 12),//bridge
+              makeCuboidShape(7.01, 5, 5, 9.01, 11, 11),//pipe
+              makeCuboidShape(9, 5, 1, 15, 13, 15),//tankLeft
+              makeCuboidShape(1, 5, 1, 7, 13, 15),//tankRight
+              makeCuboidShape(15.01, 4, 4, 16.01, 12, 12),//portLeft
+              makeCuboidShape(-0.00999999999999979, 3, 3, 0.99, 13, 13),//portRight
+              makeCuboidShape(14, 14, 14, 15, 15, 15),//support1
+              makeCuboidShape(14, 14, 1, 15, 15, 2),//support2
+              makeCuboidShape(1, 14, 1, 2, 15, 2),//support3
+              makeCuboidShape(1, 14, 14, 2, 15, 15),//support4
+              makeCuboidShape(7, 11, 2, 9, 12, 3),//tube1
+              makeCuboidShape(7, 9, 2, 9, 10, 3),//tube2
+              makeCuboidShape(7, 7, 2, 9, 8, 3),//tube3
+              makeCuboidShape(7, 5, 2, 9, 6, 3),//tube4
+              makeCuboidShape(7, 7, 13, 9, 8, 14),//tube5
+              makeCuboidShape(7, 9, 13, 9, 10, 14),//tube6
+              makeCuboidShape(7, 11, 13, 9, 12, 14),//tube7
+              makeCuboidShape(7, 5, 13, 9, 6, 14)//tube8
+        );
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(chargepad, side);
+        }
+    }
 
     public BlockRotaryCondensentrator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -159,6 +193,13 @@ public class BlockRotaryCondensentrator extends BlockMekanism implements IBlockE
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

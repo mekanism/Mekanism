@@ -51,8 +51,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockChargepad extends BlockMekanism implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityChargepad>, IBlockSound, IStateActive {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.chargepad"));
-
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
     static {
         VoxelShape chargepad = MultipartUtils.combine(
               makeCuboidShape(10, 1, 11.99, 12, 8, 13.99),//pillar1

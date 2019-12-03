@@ -51,21 +51,12 @@ public class BlockBioGenerator extends BlockMekanism implements IHasGui<TileEnti
 
     static {
         VoxelShape generator = MultipartUtils.combine(
-              makeCuboidShape(0, 0, 0, 16, 7, 16),//base
-              makeCuboidShape(2, 7, 8, 14, 15, 15),//glass
-              makeCuboidShape(0, 7, 0, 16, 16, 8),//back
-              makeCuboidShape(3, 14.5, 14.5, 13, 15.5, 15.5),//bar
-              makeCuboidShape(13, 7, 8, 16, 16, 16),//sideLeft
-              makeCuboidShape(0, 7, 8, 3, 16, 16)//sideRight
-        );
-        //TODO: VoxelShapes, decide if we want to use the below method instead, it produces the same overall VoxelShape
-        /*VoxelShape generator = MultipartUtils.combine(
               MultipartUtils.exclude(
                     makeCuboidShape(3, 15, 8, 13, 16, 16),
                     makeCuboidShape(3, 7, 15, 13, 16, 16)
               ),
               makeCuboidShape(3, 14.5, 14.5, 13, 15.5, 15.5)
-        );*/
+        );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(generator, side);
         }
