@@ -22,6 +22,7 @@ import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -39,6 +40,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -50,7 +53,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockLaserTractorBeam extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserTractorBeam>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityLaserTractorBeam>, ISupportsComparator {
 
-    //TODO: VoxelShapes, and try to fix the small gap in model
+    private static final VoxelShape bounds = MultipartUtils.combine(
+          makeCuboidShape(1, 1, 1, 15, 15, 15),//Base
+          makeCuboidShape(0, 3, 3, 1, 13, 13),//S1
+          makeCuboidShape(3, 3, 15, 13, 13, 16),//S2
+          makeCuboidShape(15, 3, 3, 16, 13, 13),//S3
+          makeCuboidShape(3, 0, 3, 13, 1, 13),//S4
+          makeCuboidShape(3, 3, 0, 13, 13, 1),//S5
+          makeCuboidShape(3, 15, 3, 13, 16, 13)//S6
+    );
 
     public BlockLaserTractorBeam() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -151,6 +162,13 @@ public class BlockLaserTractorBeam extends BlockMekanism implements IHasModel, I
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds;
     }
 
     @Override

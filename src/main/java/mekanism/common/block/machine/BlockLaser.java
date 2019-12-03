@@ -53,7 +53,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound, IStateActive {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.laser"));
-
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {

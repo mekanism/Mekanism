@@ -18,8 +18,73 @@
 			}
 		},
 		{
-			"name": "Base",
+			"name": "Base1",
 			"from": [1, 1, 1],
+			"to": [1, 15, 15],
+			"faces": {
+				"north": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"east": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"south": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"west": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"down": {"uv": [1, 1, 15, 15], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "Base2",
+			"from": [1, 1, 1],
+			"to": [15, 1, 15],
+			"faces": {
+				"north": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"east": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"south": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"west": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"down": {"uv": [1, 1, 15, 15], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "Base3",
+			"from": [1, 1, 1],
+			"to": [15, 15, 1],
+			"faces": {
+				"north": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"east": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"south": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"west": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"down": {"uv": [1, 1, 15, 15], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "Base4",
+			"from": [1, 1, 15],
+			"to": [15, 15, 15],
+			"faces": {
+				"north": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"east": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"south": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"west": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"down": {"uv": [1, 1, 15, 15], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "Base5",
+			"from": [15, 1, 1],
+			"to": [15, 15, 15],
+			"faces": {
+				"north": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"east": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"south": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"west": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#frame"},
+				"down": {"uv": [1, 1, 15, 15], "texture": "#frame"}
+			}
+		},
+		{
+			"name": "Base6",
+			"from": [1, 15, 1],
 			"to": [15, 15, 15],
 			"faces": {
 				"north": {"uv": [1, 1, 15, 15], "texture": "#frame"},
