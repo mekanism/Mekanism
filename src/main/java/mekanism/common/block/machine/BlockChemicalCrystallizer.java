@@ -28,7 +28,9 @@ import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -47,6 +49,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -59,7 +63,29 @@ public class BlockChemicalCrystallizer extends BlockMekanism implements IBlockEl
       IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalCrystallizer>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.crystallizer"));
-    //TODO: VoxelShapes
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    static {
+        VoxelShape crystallizer = MultipartUtils.combine(
+              makeCuboidShape(0, 0, 0, 16, 5, 16),//base
+              makeCuboidShape(0, 11, 0, 16, 16, 16),//tank
+              makeCuboidShape(3, 4.5, 3, 13, 5.5, 13),//tray
+              makeCuboidShape(1, 7, 1, 15, 11, 15),//Shape1
+              makeCuboidShape(0, 3, 3, 1, 13, 13),//portRight
+              makeCuboidShape(15, 4, 4, 16, 12, 12),//portLeft
+              makeCuboidShape(0, 5, 0, 16, 7, 2),//rimBack
+              makeCuboidShape(0, 5, 2, 2, 7, 14),//rimRight
+              makeCuboidShape(14, 5, 2, 16, 7, 14),//rimLeft
+              makeCuboidShape(0, 5, 14, 16, 7, 16),//rimFront
+              makeCuboidShape(14.5, 6, 14.5, 15.5, 11, 15.5),//support1
+              makeCuboidShape(0.5, 6, 14.5, 1.5, 11, 15.5),//support2
+              makeCuboidShape(14.5, 6, 0.5, 15.5, 11, 1.5),//support3
+              makeCuboidShape(0.5, 6, 0.5, 1.5, 11, 1.5)//support4
+        );
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(crystallizer, side);
+        }
+    }
 
     public BlockChemicalCrystallizer() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -154,6 +180,13 @@ public class BlockChemicalCrystallizer extends BlockMekanism implements IBlockEl
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

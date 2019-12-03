@@ -73,8 +73,8 @@ public class BlockChemicalWasher extends BlockMekanism implements IBlockElectric
               makeCuboidShape(13, 5, 8, 15, 11, 10),//connectorLeft
               makeCuboidShape(1, 5, 8, 3, 11, 10),//connectorRight
               makeCuboidShape(3, 15, 3, 13, 16, 13),//portTop
-              makeCuboidShape(-0.00999999999999979, 4, 4, 0.99, 12, 12),//portRight
-              makeCuboidShape(15.01, 4, 4, 16.01, 12, 12),//portLeft
+              makeCuboidShape(0, 4, 4, 1, 12, 12),//portRight
+              makeCuboidShape(15, 4, 4, 16, 12, 12),//portLeft
               makeCuboidShape(0, 4, 10, 16, 14, 16),//tankBack
               makeCuboidShape(9, 4, 0, 16, 14, 8),//tankLeft
               makeCuboidShape(0, 4, 0, 7, 14, 8),//tankRight

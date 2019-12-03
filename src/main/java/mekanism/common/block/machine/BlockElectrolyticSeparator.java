@@ -69,10 +69,10 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
     static {
         VoxelShape separator = MultipartUtils.combine(
               makeCuboidShape(0, 0, 0, 16, 4, 16),//base
-              makeCuboidShape(15.01, 3, 3, 16.01, 13, 13),//portToggle1
-              makeCuboidShape(-0.00999999999999979, 4, 4, 0.99, 12, 12),//portToggle2a
-              makeCuboidShape(4, 4, -0.00999999999999979, 12, 12, 0.99),//portToggle3a
-              makeCuboidShape(4, 4, 15.01, 12, 12, 16.01),//portToggle4a
+              makeCuboidShape(15, 3, 3, 16, 13, 13),//portToggle1
+              makeCuboidShape(0, 4, 4, 1, 12, 12),//portToggle2a
+              makeCuboidShape(4, 4, 0, 12, 12, 1),//portToggle3a
+              makeCuboidShape(4, 4, 15, 12, 12, 16),//portToggle4a
               makeCuboidShape(1, 4, 7, 3, 11, 9),//portToggle2b
               makeCuboidShape(7, 4, 1, 8, 11, 3),//portToggle3b
               makeCuboidShape(7, 4, 13, 8, 11, 15),//portToggle4b

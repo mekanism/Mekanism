@@ -68,13 +68,12 @@ public final class MultipartUtils {
             case CLOCKWISE_180:
                 return new AxisAlignedBB(-box.minX, box.minY, -box.minZ, -box.maxX, box.maxY, -box.maxZ);
             case COUNTERCLOCKWISE_90:
-                return new AxisAlignedBB(box.minZ, box.minY, box.minX, box.maxZ, box.maxY, box.maxX);
+                return new AxisAlignedBB(box.minZ, box.minY, -box.minX, box.maxZ, box.maxY, -box.maxX);
         }
         return box;
     }
 
     public static AxisAlignedBB rotateHorizontal(AxisAlignedBB box, Direction side) {
-        //TODO: If this is the common rotational orientation, maybe just replace the rotate by rotation with this, or re-inline the math so it isn't a "double switch"
         switch (side) {
             case NORTH:
                 return rotate(box, Rotation.NONE);

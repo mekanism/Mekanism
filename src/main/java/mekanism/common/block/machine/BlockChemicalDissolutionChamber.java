@@ -28,7 +28,9 @@ import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -44,9 +46,12 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -59,7 +64,29 @@ public class BlockChemicalDissolutionChamber extends BlockMekanism implements IB
       IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalDissolutionChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.dissolution"));
-    //TODO: VoxelShapes
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    static {
+        VoxelShape dissolution = MultipartUtils.combine(
+              makeCuboidShape(0, 0, 0, 16, 7, 16),//base
+              makeCuboidShape(1, 7, 0, 15, 15, 2),//back
+              makeCuboidShape(1, 7, 2, 15, 12, 15),//glass
+              makeCuboidShape(4, 13, 2, 12, 15, 12),//vents
+              makeCuboidShape(0, 15, 0, 16, 16, 16),//top
+              makeCuboidShape(0, 12, 1, 16, 13, 16),//top2
+              makeCuboidShape(15, 7, 0, 16, 15, 1),//backEdge1
+              makeCuboidShape(0, 7, 0, 1, 15, 1),//backEdge2
+              makeCuboidShape(14, 13, 14, 15, 15, 15),//support1
+              makeCuboidShape(1, 13, 14, 2, 15, 15),//support2
+              makeCuboidShape(0, 3, 3, 1, 13, 13),//portToggle1
+              makeCuboidShape(15, 4, 4, 16, 12, 12)//portToggle2
+        );
+        dissolution = MultipartUtils.rotate(dissolution, Rotation.CLOCKWISE_180);
+        dissolution.toBoundingBoxList().forEach(System.out::println);
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(dissolution, side);
+        }
+    }
 
     public BlockChemicalDissolutionChamber() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -154,6 +181,13 @@ public class BlockChemicalDissolutionChamber extends BlockMekanism implements IB
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

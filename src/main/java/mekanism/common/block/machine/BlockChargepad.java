@@ -62,7 +62,7 @@ public class BlockChargepad extends BlockMekanism implements IBlockElectric, IHa
               makeCuboidShape(5, 1, 13, 11, 11, 14),//stand
               makeCuboidShape(7, 4, 11, 9, 5, 13),//plug
               makeCuboidShape(4, 4, 15, 12, 12, 16),//port
-              makeCuboidShape(5, 5, 15.001, 11, 11, 16.001)//port_ring
+              makeCuboidShape(5, 5, 15, 11, 11, 16)//port_ring
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(chargepad, side);

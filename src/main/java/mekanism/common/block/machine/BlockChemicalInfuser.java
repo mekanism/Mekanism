@@ -72,8 +72,8 @@ public class BlockChemicalInfuser extends BlockMekanism implements IBlockElectri
               makeCuboidShape(7, 5, 13, 9, 11, 15),//connector
               makeCuboidShape(7, 3, 13, 9, 11, 15),//connectorAngle
               makeCuboidShape(4, 4, 0, 12, 12, 1),//portFront
-              makeCuboidShape(4, 4, 15.01, 12, 12, 16.01),//portBack
-              makeCuboidShape(15.01, 4, 4, 16.01, 12, 12),//portLeft
+              makeCuboidShape(4, 4, 15, 12, 12, 16),//portBack
+              makeCuboidShape(15, 4, 4, 16, 12, 12),//portLeft
               makeCuboidShape(0, 4, 4, 1, 12, 12),//portRight
               makeCuboidShape(14, 5, 5, 15, 11, 9),//pipe1
               makeCuboidShape(1, 5, 5, 2, 11, 9),//pipe2

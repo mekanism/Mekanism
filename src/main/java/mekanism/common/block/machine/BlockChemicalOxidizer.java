@@ -72,7 +72,7 @@ public class BlockChemicalOxidizer extends BlockMekanism implements IBlockElectr
               makeCuboidShape(15, 3, 3, 16, 13, 13),//connector
               makeCuboidShape(8.5, 5.5, 6, 13.5, 15.5, 7),//bridge
               makeCuboidShape(0, 4, 0, 7, 16, 16),//tank
-              makeCuboidShape(-0.00999999999999979, 4, 4, 0.99, 12, 12),//connectorToggle
+              makeCuboidShape(0, 4, 4, 1, 12, 12),//connectorToggle
               makeCuboidShape(8, 5, 1, 14, 16, 6),//tower1
               makeCuboidShape(8, 5, 7, 14, 16, 15),//tower2
               makeCuboidShape(7, 7, 9, 8, 10, 12),//pipe1

@@ -74,11 +74,11 @@ public class BlockRotaryCondensentrator extends BlockMekanism implements IBlockE
               makeCuboidShape(0, 13, 0, 16, 14, 16),//middle
               makeCuboidShape(7.5, 11, 7.5, 8.5, 13, 8.5),//shaft
               makeCuboidShape(4, 14, 4, 12, 15, 12),//bridge
-              makeCuboidShape(7.01, 5, 5, 9.01, 11, 11),//pipe
+              makeCuboidShape(7, 5, 5, 9, 11, 11),//pipe
               makeCuboidShape(9, 5, 1, 15, 13, 15),//tankLeft
               makeCuboidShape(1, 5, 1, 7, 13, 15),//tankRight
-              makeCuboidShape(15.01, 4, 4, 16.01, 12, 12),//portLeft
-              makeCuboidShape(-0.00999999999999979, 3, 3, 0.99, 13, 13),//portRight
+              makeCuboidShape(15, 4, 4, 16, 12, 12),//portLeft
+              makeCuboidShape(0, 3, 3, 1, 13, 13),//portRight
               makeCuboidShape(14, 14, 14, 15, 15, 15),//support1
               makeCuboidShape(14, 14, 1, 15, 15, 2),//support2
               makeCuboidShape(1, 14, 1, 2, 15, 2),//support3

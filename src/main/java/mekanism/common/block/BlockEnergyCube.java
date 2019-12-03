@@ -77,18 +77,18 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
               makeCuboidShape(13, 3, 0, 16, 13, 3),
               makeCuboidShape(13, 3, 13, 16, 13, 16),
               makeCuboidShape(13, 13, 3, 16, 16, 13),
-              makeCuboidShape(12.5, 14.899999618530273, 7.5, 13.5, 15.899999618530273, 8.5),//ledTop1
-              makeCuboidShape(2.5, 14.899999618530273, 7.5, 3.5, 15.899999618530273, 8.5),//ledTop2
-              makeCuboidShape(12.5, 7.5, 0.09999990463256836, 13.5, 8.5, 1.0999999046325684),//ledBack1
-              makeCuboidShape(2.5, 7.5, 0.09999990463256836, 3.5, 8.5, 1.0999999046325684),//ledBack2
-              makeCuboidShape(2.5, 0.10000038146972656, 7.5, 3.5, 1.1000003814697266, 8.5),//ledBottom2
-              makeCuboidShape(12.5, 0.10000038146972656, 7.5, 13.5, 1.1000003814697266, 8.5),//ledBottom1
-              makeCuboidShape(12.5, 7.5, 14.900000095367432, 13.5, 8.5, 15.900000095367432),//ledFront1
-              makeCuboidShape(2.5, 7.5, 14.900000095367432, 3.5, 8.5, 15.900000095367432),//ledFront2
-              makeCuboidShape(0.09999990463256836, 7.5, 2.5, 1.0999999046325684, 8.5, 3.5),//ledRight2
-              makeCuboidShape(0.09999990463256836, 7.5, 12.5, 1.0999999046325684, 8.5, 13.5),//ledRight1
-              makeCuboidShape(14.900000095367432, 7.5, 2.5, 15.900000095367432, 8.5, 3.5),//ledLeft1
-              makeCuboidShape(14.900000095367432, 7.5, 12.5, 15.900000095367432, 8.5, 13.5)//ledLeft2
+              makeCuboidShape(12.5, 14.9, 7.5, 13.5, 15.9, 8.5),//ledTop1
+              makeCuboidShape(2.5, 14.9, 7.5, 3.5, 15.9, 8.5),//ledTop2
+              makeCuboidShape(12.5, 7.5, 0.1, 13.5, 8.5, 1.1),//ledBack1
+              makeCuboidShape(2.5, 7.5, 0.1, 3.5, 8.5, 1.1),//ledBack2
+              makeCuboidShape(2.5, 0.1, 7.5, 3.5, 1.1, 8.5),//ledBottom2
+              makeCuboidShape(12.5, 0.1, 7.5, 13.5, 1.1, 8.5),//ledBottom1
+              makeCuboidShape(12.5, 7.5, 14.9, 13.5, 8.5, 15.9),//ledFront1
+              makeCuboidShape(2.5, 7.5, 14.9, 3.5, 8.5, 15.9),//ledFront2
+              makeCuboidShape(0.1, 7.5, 2.5, 1.1, 8.5, 3.5),//ledRight2
+              makeCuboidShape(0.1, 7.5, 12.5, 1.1, 8.5, 13.5),//ledRight1
+              makeCuboidShape(14.9, 7.5, 2.5, 15.9, 8.5, 3.5),//ledLeft1
+              makeCuboidShape(14.9, 7.5, 12.5, 15.9, 8.5, 13.5)//ledLeft2
         );
         VoxelShape frontPanel = MultipartUtils.combine(
               makeCuboidShape(3, 5, 14, 13, 11, 15),//connectorFrontToggle
