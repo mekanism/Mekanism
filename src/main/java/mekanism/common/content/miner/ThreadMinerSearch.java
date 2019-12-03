@@ -14,7 +14,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.Region;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread {
@@ -26,11 +26,16 @@ public class ThreadMinerSearch extends Thread {
     private Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     private Map<Integer, MinerFilter> replaceMap = new HashMap<>();
     private Map<Block, MinerFilter> acceptedItems = new HashMap<>();
+    private Region chunkCache = null;
 
     public int found = 0;
 
     public ThreadMinerSearch(TileEntityDigitalMiner tile) {
         tileEntity = tile;
+    }
+
+    public void setChunkCache(Region cache) {
+        this.chunkCache = cache;
     }
 
     @Override
@@ -46,7 +51,6 @@ public class ThreadMinerSearch extends Thread {
         int size = tileEntity.getTotalSize();
         Block info;
         BlockPos minerPos = tileEntity.getPos();
-        World world = tileEntity.getWorld();
 
         for (int i = 0; i < size; i++) {
             if (tileEntity.isRemoved()) {
@@ -62,20 +66,20 @@ public class ThreadMinerSearch extends Thread {
             }
 
             BlockPos testPos = new BlockPos(x, y, z);
-            if (!world.isBlockLoaded(testPos) || MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, testPos) != null) {
+            if (!chunkCache.isBlockLoaded(testPos) || MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
                 //If it is not loaded or it is a bounding block skip it
                 continue;
             }
 
-            BlockState state = world.getBlockState(testPos);
+            BlockState state = chunkCache.getBlockState(testPos);
             info = state.getBlock();
 
-            if (info instanceof FlowingFluidBlock || info instanceof IFluidBlock || info.isAir(state, world, testPos)) {
+            if (info instanceof FlowingFluidBlock || info instanceof IFluidBlock || info.isAir(state, chunkCache, testPos)) {
                 //Skip air and liquids
                 continue;
             }
 
-            if (state.getBlockHardness(world, testPos) >= 0) {
+            if (state.getBlockHardness(chunkCache, testPos) >= 0) {
                 MinerFilter filterFound = null;
                 if (acceptedItems.containsKey(info)) {
                     filterFound = acceptedItems.get(info);
@@ -93,7 +97,7 @@ public class ThreadMinerSearch extends Thread {
                     acceptedItems.put(info, filterFound);
                 }
                 if (tileEntity.inverse == (filterFound == null)) {
-                    set(i, new Coord4D(x, y, z, world.getDimension().getType()));
+                    set(i, new Coord4D(x, y, z, chunkCache.getDimension().getType()));
                     replaceMap.put(i, filterFound);
                     found++;
                 }
@@ -103,6 +107,7 @@ public class ThreadMinerSearch extends Thread {
         state = State.FINISHED;
         tileEntity.oresToMine = oresToMine;
         tileEntity.replaceMap = replaceMap;
+        chunkCache = null;
         MekanismUtils.saveChunk(tileEntity);
     }
 
@@ -114,6 +119,7 @@ public class ThreadMinerSearch extends Thread {
 
     public void reset() {
         state = State.IDLE;
+        chunkCache = null;
     }
 
     public enum State {
