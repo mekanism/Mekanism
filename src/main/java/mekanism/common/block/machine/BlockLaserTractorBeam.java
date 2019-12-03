@@ -22,7 +22,7 @@ import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -53,7 +53,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockLaserTractorBeam extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserTractorBeam>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
       IHasTileEntity<TileEntityLaserTractorBeam>, ISupportsComparator {
 
-    private static final VoxelShape bounds = MultipartUtils.combine(
+    private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(1, 1, 1, 15, 15, 15),//Base
           makeCuboidShape(0, 3, 3, 1, 13, 13),//S1
           makeCuboidShape(3, 3, 15, 13, 13, 16),//S2

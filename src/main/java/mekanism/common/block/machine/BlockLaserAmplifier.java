@@ -22,7 +22,7 @@ import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -54,7 +54,7 @@ public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHa
       IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator {
 
     //TODO: Mess with both the model and this so that it is technically hollow?
-    private static final VoxelShape bounds = MultipartUtils.combine(
+    private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(1, 1, 1, 15, 15, 15),//Base
           makeCuboidShape(0, 3, 3, 1, 13, 13),//S1
           makeCuboidShape(3, 3, 15, 13, 13, 16),//S2

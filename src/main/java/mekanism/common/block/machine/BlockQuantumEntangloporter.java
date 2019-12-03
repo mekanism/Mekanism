@@ -28,7 +28,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -63,7 +63,7 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateActive {
 
     //Note: Does not include the "core"
-    private static final VoxelShape bounds = MultipartUtils.combine(
+    private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(4, 4, 0, 12, 12, 1),//portFront
           makeCuboidShape(0, 4, 4, 1, 12, 12),//portRight
           makeCuboidShape(15, 4, 4, 16, 12, 12),//portLeft

@@ -30,7 +30,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -66,7 +66,7 @@ public class BlockChemicalInfuser extends BlockMekanism implements IBlockElectri
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape infuser = MultipartUtils.combine(
+        VoxelShape infuser = VoxelShapeUtils.combine(
               makeCuboidShape(0, 0, 0, 16, 5, 16),//base
               makeCuboidShape(5, 12.5, 5.5, 11, 15.5, 8.5),//compressor
               makeCuboidShape(7, 5, 13, 9, 11, 15),//connector
@@ -98,7 +98,7 @@ public class BlockChemicalInfuser extends BlockMekanism implements IBlockElectri
               makeCuboidShape(7, 14, 13, 9, 15, 14)//tube10
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(infuser, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(infuser, side);
         }
     }
 

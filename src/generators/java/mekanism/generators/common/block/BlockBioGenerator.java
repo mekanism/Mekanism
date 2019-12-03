@@ -17,7 +17,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.inventory.container.BioGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
@@ -50,15 +50,15 @@ public class BlockBioGenerator extends BlockMekanism implements IHasGui<TileEnti
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape generator = MultipartUtils.combine(
-              MultipartUtils.exclude(
+        VoxelShape generator = VoxelShapeUtils.combine(
+              VoxelShapeUtils.exclude(
                     makeCuboidShape(3, 15, 8, 13, 16, 16),
                     makeCuboidShape(3, 7, 15, 13, 16, 16)
               ),
               makeCuboidShape(3, 14.5, 14.5, 13, 15.5, 15.5)
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(generator, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(generator, side);
         }
     }
 

@@ -28,7 +28,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -62,7 +62,7 @@ public class BlockElectricPump extends BlockMekanism implements IBlockElectric, 
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     static {
-        VoxelShape pump = MultipartUtils.combine(
+        VoxelShape pump = VoxelShapeUtils.combine(
               makeCuboidShape(4.5, 1, 4.5, 11.5, 13, 11.5),//pumpCasing
               makeCuboidShape(5, 0, 5, 11, 15, 11),//pumpBase
               makeCuboidShape(4, 13, 4, 12, 14, 12),//pumpRingTop
@@ -74,9 +74,9 @@ public class BlockElectricPump extends BlockMekanism implements IBlockElectric, 
               makeCuboidShape(10, 5, 1, 11, 6, 5),//powerConnectorFrame3
               makeCuboidShape(5, 5, 1, 6, 6, 5)//powerConnectorFrame4
         );
-        pump = MultipartUtils.rotate(pump, Rotation.CLOCKWISE_180);
+        pump = VoxelShapeUtils.rotate(pump, Rotation.CLOCKWISE_180);
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(pump, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(pump, side);
         }
     }
 

@@ -19,7 +19,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -54,7 +54,7 @@ public class BlockChargepad extends BlockMekanism implements IBlockElectric, IHa
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape chargepad = MultipartUtils.combine(
+        VoxelShape chargepad = VoxelShapeUtils.combine(
               makeCuboidShape(10, 1, 11.99, 12, 8, 13.99),//pillar1
               makeCuboidShape(4, 1, 11.99, 6, 8, 13.99),//pillar2
               makeCuboidShape(0, 0, 0, 16, 1, 16),//base
@@ -65,7 +65,7 @@ public class BlockChargepad extends BlockMekanism implements IBlockElectric, IHa
               makeCuboidShape(5, 5, 15, 11, 11, 16)//port_ring
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(chargepad, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(chargepad, side);
         }
     }
 

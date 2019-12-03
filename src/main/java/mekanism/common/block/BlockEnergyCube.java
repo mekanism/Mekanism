@@ -25,7 +25,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -64,7 +64,7 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
     private static final VoxelShape[] bounds = new VoxelShape[128];
 
     static {
-        VoxelShape frame = MultipartUtils.combine(
+        VoxelShape frame = VoxelShapeUtils.combine(
               makeCuboidShape(0, 0, 0, 3, 3, 16),
               makeCuboidShape(0, 3, 0, 3, 16, 3),
               makeCuboidShape(0, 3, 13, 3, 16, 16),
@@ -90,33 +90,33 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
               makeCuboidShape(14.9, 7.5, 2.5, 15.9, 8.5, 3.5),//ledLeft1
               makeCuboidShape(14.9, 7.5, 12.5, 15.9, 8.5, 13.5)//ledLeft2
         );
-        VoxelShape frontPanel = MultipartUtils.combine(
+        VoxelShape frontPanel = VoxelShapeUtils.combine(
               makeCuboidShape(3, 5, 14, 13, 11, 15),//connectorFrontToggle
               makeCuboidShape(4, 4, 15, 12, 12, 16)//portFrontToggle
         );
-        VoxelShape rightPanel = MultipartUtils.combine(
+        VoxelShape rightPanel = VoxelShapeUtils.combine(
               makeCuboidShape(1, 5, 3, 2, 11, 13),//connectorRightToggle
               makeCuboidShape(0, 4, 4, 1, 12, 12)//portRightToggle
         );
-        VoxelShape leftPanel = MultipartUtils.combine(
+        VoxelShape leftPanel = VoxelShapeUtils.combine(
               makeCuboidShape(14, 5, 3, 15, 11, 13),//connectorLeftToggle
               makeCuboidShape(15, 4, 4, 16, 12, 12)//portLeftToggle
         );
-        VoxelShape backPanel = MultipartUtils.combine(
+        VoxelShape backPanel = VoxelShapeUtils.combine(
               makeCuboidShape(3, 5, 1, 13, 11, 2),//connectorBackToggle
               makeCuboidShape(4, 4, 0, 12, 12, 1)//portBackToggle
         );
-        VoxelShape topPanel = MultipartUtils.combine(
+        VoxelShape topPanel = VoxelShapeUtils.combine(
               makeCuboidShape(3, 14, 5, 13, 15, 11),//connectorTopToggle
               makeCuboidShape(4, 15, 4, 12, 16, 12)//portTopToggle
         );
-        VoxelShape bottomPanel = MultipartUtils.combine(
+        VoxelShape bottomPanel = VoxelShapeUtils.combine(
               makeCuboidShape(3, 1, 5, 13, 2, 11),//connectorBottomToggle
               makeCuboidShape(4, 0, 4, 12, 1, 12)//portBottomToggle
         );
-        VoxelShape frameRotated = MultipartUtils.rotate(frame, Rotation.CLOCKWISE_90);
-        VoxelShape topRotated = MultipartUtils.rotate(topPanel, Rotation.CLOCKWISE_90);
-        VoxelShape bottomRotated = MultipartUtils.rotate(bottomPanel, Rotation.CLOCKWISE_90);
+        VoxelShape frameRotated = VoxelShapeUtils.rotate(frame, Rotation.CLOCKWISE_90);
+        VoxelShape topRotated = VoxelShapeUtils.rotate(topPanel, Rotation.CLOCKWISE_90);
+        VoxelShape bottomRotated = VoxelShapeUtils.rotate(bottomPanel, Rotation.CLOCKWISE_90);
         for (int rotated = 0; rotated < 2; rotated++) {
             //If we need to rotate the top and bottom frames
             boolean rotate = rotated == 1;

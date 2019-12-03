@@ -31,7 +31,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -68,7 +68,7 @@ public class BlockRotaryCondensentrator extends BlockMekanism implements IBlockE
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape chargepad = MultipartUtils.combine(
+        VoxelShape chargepad = VoxelShapeUtils.combine(
               makeCuboidShape(0, 0, 0, 16, 5, 16),//base
               makeCuboidShape(0, 15, 0, 16, 16, 16),//top
               makeCuboidShape(0, 13, 0, 16, 14, 16),//middle
@@ -93,7 +93,7 @@ public class BlockRotaryCondensentrator extends BlockMekanism implements IBlockE
               makeCuboidShape(7, 5, 13, 9, 6, 14)//tube8
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(chargepad, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(chargepad, side);
         }
     }
 

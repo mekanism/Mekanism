@@ -13,7 +13,7 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
@@ -42,7 +42,7 @@ public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEn
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
 
-    private static final VoxelShape bounds = MultipartUtils.combine(
+    private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel
           makeCuboidShape(1, 8, 1, 15, 9, 15),//solarPanelBottom
           makeCuboidShape(4, 0, 4, 12, 1, 12),//solarPanelPort

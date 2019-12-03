@@ -30,7 +30,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -67,7 +67,7 @@ public class BlockChemicalDissolutionChamber extends BlockMekanism implements IB
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape dissolution = MultipartUtils.combine(
+        VoxelShape dissolution = VoxelShapeUtils.combine(
               makeCuboidShape(0, 0, 0, 16, 7, 16),//base
               makeCuboidShape(1, 7, 0, 15, 15, 2),//back
               makeCuboidShape(1, 7, 2, 15, 12, 15),//glass
@@ -81,9 +81,9 @@ public class BlockChemicalDissolutionChamber extends BlockMekanism implements IB
               makeCuboidShape(0, 3, 3, 1, 13, 13),//portToggle1
               makeCuboidShape(15, 4, 4, 16, 12, 12)//portToggle2
         );
-        dissolution = MultipartUtils.rotate(dissolution, Rotation.CLOCKWISE_180);
+        dissolution = VoxelShapeUtils.rotate(dissolution, Rotation.CLOCKWISE_180);
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(dissolution, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(dissolution, side);
         }
     }
 

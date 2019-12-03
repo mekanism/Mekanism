@@ -30,7 +30,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -66,7 +66,7 @@ public class BlockChemicalCrystallizer extends BlockMekanism implements IBlockEl
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape crystallizer = MultipartUtils.combine(
+        VoxelShape crystallizer = VoxelShapeUtils.combine(
               makeCuboidShape(0, 0, 0, 16, 5, 16),//base
               makeCuboidShape(0, 11, 0, 16, 16, 16),//tank
               makeCuboidShape(3, 4.5, 3, 13, 5.5, 13),//tray
@@ -83,7 +83,7 @@ public class BlockChemicalCrystallizer extends BlockMekanism implements IBlockEl
               makeCuboidShape(0.5, 6, 0.5, 1.5, 11, 1.5)//support4
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(crystallizer, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(crystallizer, side);
         }
     }
 

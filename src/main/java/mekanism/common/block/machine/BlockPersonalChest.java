@@ -23,7 +23,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -58,12 +58,12 @@ public class BlockPersonalChest extends BlockMekanism implements IBlockElectric,
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape chest = MultipartUtils.combine(
+        VoxelShape chest = VoxelShapeUtils.combine(
               makeCuboidShape(1, 0, 1, 15, 14, 15),//Main chest
               makeCuboidShape(7, 7, 0, 9, 11, 1)//latch
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(chest, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(chest, side);
         }
     }
 

@@ -20,7 +20,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -56,7 +56,7 @@ public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasMod
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
-        VoxelShape laser = MultipartUtils.combine(
+        VoxelShape laser = VoxelShapeUtils.combine(
               makeCuboidShape(5, 2, 4, 11, 9, 12),//body
               makeCuboidShape(8.5, 8, 7.5, 9.49, 13.99, 8.5),//wire
               makeCuboidShape(6.5, 9, 6.5, 9.5, 11, 9.5),//shaft
@@ -79,7 +79,7 @@ public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasMod
               makeCuboidShape(11, 2, 4, 12, 3, 12)//fin8
         );
         for (Direction side : EnumUtils.DIRECTIONS) {
-            bounds[side.ordinal()] = MultipartUtils.rotate(laser, side.getOpposite());
+            bounds[side.ordinal()] = VoxelShapeUtils.rotate(laser, side.getOpposite());
         }
     }
 

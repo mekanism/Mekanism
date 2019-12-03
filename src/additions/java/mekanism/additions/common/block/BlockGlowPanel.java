@@ -8,7 +8,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -27,12 +27,12 @@ public class BlockGlowPanel extends BlockMekanism implements IStateFacing, IColo
     private static VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
-        VoxelShape glowPanel = MultipartUtils.combine(
+        VoxelShape glowPanel = VoxelShapeUtils.combine(
               makeCuboidShape(4, 14, 4, 12, 16, 12),
               makeCuboidShape(5, 13.5, 5, 11, 14, 11)
         );
         for (Direction side : EnumUtils.DIRECTIONS) {
-            bounds[side.ordinal()] = MultipartUtils.rotate(glowPanel, side);
+            bounds[side.ordinal()] = VoxelShapeUtils.rotate(glowPanel, side);
         }
     }
 

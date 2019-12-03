@@ -20,7 +20,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -44,7 +44,7 @@ public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGas
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     static {
-        VoxelShape tank = MultipartUtils.combine(
+        VoxelShape tank = VoxelShapeUtils.combine(
               makeCuboidShape(3, 1.5, 3, 13, 13.5, 13),//tank
               makeCuboidShape(3.5, 0.5, 3.5, 12.5, 1.5, 12.5),//tankBase
               makeCuboidShape(6.5, 14.5, 6.5, 9.5, 15.5, 9.5),//valve
@@ -57,7 +57,7 @@ public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGas
               makeCuboidShape(4, 13, 4, 6, 16, 5)//rim5
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(tank, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(tank, side);
         }
     }
 

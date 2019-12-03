@@ -30,7 +30,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -67,7 +67,7 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape separator = MultipartUtils.combine(
+        VoxelShape separator = VoxelShapeUtils.combine(
               makeCuboidShape(0, 0, 0, 16, 4, 16),//base
               makeCuboidShape(15, 3, 3, 16, 13, 13),//portToggle1
               makeCuboidShape(0, 4, 4, 1, 12, 12),//portToggle2a
@@ -86,9 +86,9 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
               makeCuboidShape(3, 14, 3, 4, 15, 4),//tube5
               makeCuboidShape(3, 14, 12, 4, 15, 13)//tube6
         );
-        separator = MultipartUtils.rotate(separator, Rotation.CLOCKWISE_90);
+        separator = VoxelShapeUtils.rotate(separator, Rotation.CLOCKWISE_90);
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(separator, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(separator, side);
         }
     }
 

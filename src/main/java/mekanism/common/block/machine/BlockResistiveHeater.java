@@ -23,7 +23,7 @@ import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -58,7 +58,7 @@ public class BlockResistiveHeater extends BlockMekanism implements IBlockElectri
       IHasSecurity, IHasTileEntity<TileEntityResistiveHeater>, IBlockSound, ISupportsRedstone {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.resistiveheater"));
-    private static final VoxelShape boundsZAxis = MultipartUtils.combine(
+    private static final VoxelShape boundsZAxis = VoxelShapeUtils.combine(
           makeCuboidShape(0, 0, 0, 16, 7, 16),//base
           makeCuboidShape(5, 6.5, 7.5, 11, 12.5, 8.5),//center
           makeCuboidShape(15, 4, 4, 16, 12, 12),//portRight
@@ -80,7 +80,7 @@ public class BlockResistiveHeater extends BlockMekanism implements IBlockElectri
           makeCuboidShape(3, 6.5, 2, 13, 15.5, 3),//fin9
           makeCuboidShape(3, 6.5, 0.5, 13, 15.5, 1.5)//fin10
     );
-    private static final VoxelShape boundsXAxis = MultipartUtils.rotate(boundsZAxis, Rotation.CLOCKWISE_90);
+    private static final VoxelShape boundsXAxis = VoxelShapeUtils.rotate(boundsZAxis, Rotation.CLOCKWISE_90);
 
     public BlockResistiveHeater() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

@@ -30,7 +30,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -66,7 +66,7 @@ public class BlockPressurizedReactionChamber extends BlockMekanism implements IB
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape prc = MultipartUtils.combine(
+        VoxelShape prc = VoxelShapeUtils.combine(
               makeCuboidShape(0, 0, 0, 16, 4, 16),//base
               makeCuboidShape(1, 4, 1, 10, 15, 6),//front
               makeCuboidShape(0, 4, 6, 16, 16, 16),//body
@@ -79,7 +79,7 @@ public class BlockPressurizedReactionChamber extends BlockMekanism implements IB
               makeCuboidShape(12, 13, 1, 13, 14, 6)//bar5
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(prc, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(prc, side);
         }
     }
 

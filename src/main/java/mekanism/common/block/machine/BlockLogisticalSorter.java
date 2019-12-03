@@ -32,7 +32,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -72,7 +72,7 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
-        VoxelShape sorter = MultipartUtils.combine(
+        VoxelShape sorter = VoxelShapeUtils.combine(
               makeCuboidShape(5, 5, 1, 11, 11, 15),//pipe
               makeCuboidShape(3, 3, 14, 13, 13, 15),//connectorBack
               makeCuboidShape(2, 2, 15, 14, 14, 16),//portBackLarge
@@ -100,9 +100,9 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
               makeCuboidShape(3.5, 7.5, 4.5, 4.5, 8.5, 5.5),//led3
               makeCuboidShape(3.5, 7.5, 6.5, 4.5, 8.5, 7.5)//led4
         );
-        sorter = MultipartUtils.rotate(sorter, Direction.NORTH);
+        sorter = VoxelShapeUtils.rotate(sorter, Direction.NORTH);
         for (Direction side : EnumUtils.DIRECTIONS) {
-            bounds[side.ordinal()] = MultipartUtils.rotate(sorter, side.getOpposite());
+            bounds[side.ordinal()] = VoxelShapeUtils.rotate(sorter, side.getOpposite());
         }
     }
 

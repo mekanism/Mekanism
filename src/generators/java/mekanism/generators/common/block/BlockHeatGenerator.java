@@ -17,7 +17,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.inventory.container.HeatGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
@@ -50,7 +50,7 @@ public class BlockHeatGenerator extends BlockMekanism implements IHasGui<TileEnt
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
-        VoxelShape generator = MultipartUtils.combine(
+        VoxelShape generator = VoxelShapeUtils.combine(
               makeCuboidShape(0, 6.5, 6.5, 16, 15.5, 15.5),//drum
               makeCuboidShape(0, 0, 0, 16, 6, 16),//base
               makeCuboidShape(0, 6, 2, 16, 16, 6),//back
@@ -69,7 +69,7 @@ public class BlockHeatGenerator extends BlockMekanism implements IHasGui<TileEnt
               makeCuboidShape(0, 15, 0, 16, 16, 2)//fin8
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(generator, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(generator, side);
         }
     }
 

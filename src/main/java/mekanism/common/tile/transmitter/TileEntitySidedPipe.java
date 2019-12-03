@@ -43,9 +43,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.LogicalSide;
@@ -506,11 +504,12 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
-            RayTraceResult hit = reTrace(getWorld(), getPos(), player);
-            if (hit == null) {
+            Pair<Vec3d, Vec3d> vecs = MultipartUtils.getRayTraceVectors(player);
+            AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
+            if (result == null) {
                 return ActionResultType.PASS;
             } else {
-                Direction hitSide = sideHit(hit.subHit + 1);
+                Direction hitSide = sideHit(result.hit.subHit + 1);
                 if (hitSide == null) {
                     if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == ActionResultType.SUCCESS) {
                         return ActionResultType.SUCCESS;
@@ -528,12 +527,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             }
         }
         return ActionResultType.SUCCESS;
-    }
-
-    private RayTraceResult reTrace(World world, BlockPos pos, PlayerEntity player) {
-        Pair<Vec3d, Vec3d> vecs = MultipartUtils.getRayTraceVectors(player);
-        AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
-        return result == null ? null : result.hit;
     }
 
     protected Direction sideHit(int boxIndex) {

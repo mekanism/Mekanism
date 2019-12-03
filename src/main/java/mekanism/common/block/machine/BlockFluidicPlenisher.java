@@ -28,7 +28,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -60,7 +60,7 @@ public class BlockFluidicPlenisher extends BlockMekanism implements IBlockElectr
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     static {
-        VoxelShape plenisher = MultipartUtils.combine(
+        VoxelShape plenisher = VoxelShapeUtils.combine(
               makeCuboidShape(3, 15, 3, 13, 16, 13),//portTop
               makeCuboidShape(4, 4, 15, 12, 12, 16),//portBack
               makeCuboidShape(3.5, 1, 3.5, 12.5, 13, 12.5),//tank
@@ -77,7 +77,7 @@ public class BlockFluidicPlenisher extends BlockMekanism implements IBlockElectr
               makeCuboidShape(5, 5, 12, 6, 6, 15)//rod4
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(plenisher, side);
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(plenisher, side);
         }
     }
 

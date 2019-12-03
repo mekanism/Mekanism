@@ -3,7 +3,7 @@ package mekanism.additions.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.additions.common.entity.EntityObsidianTNT;
-import mekanism.common.util.MultipartUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.TNTBlock;
@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 
 public class BlockObsidianTNT extends TNTBlock {
 
-    private static final VoxelShape bounds = MultipartUtils.combine(
+    private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(0, 0, 0, 16, 3, 16),//Wooden1
           makeCuboidShape(0, 8, 0, 16, 11, 16),//Wooden2
           makeCuboidShape(12.5, 11.8, 12.5, 13.5, 13.8, 13.5),//Wick1
