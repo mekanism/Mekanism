@@ -61,20 +61,16 @@ public class BlockGasBurningGenerator extends BlockMekanism implements IHasGui<T
               makeCuboidShape(15, 4, 4, 16, 12, 12),//port2
               makeCuboidShape(4, 4, 0, 12, 12, 1),//port3
               makeCuboidShape(0, 4, 4, 1, 12, 12),//port4
-              makeCuboidShape(4, 10, 13.5, 12, 11, 15.5),//connector1
-              makeCuboidShape(13, 12, 4, 14, 13, 12),//connector2
-              makeCuboidShape(2, 12, 4, 3, 13, 12),//connector3
-              makeCuboidShape(4, 12, 2, 12, 13, 3)//connector4
-              //makeCuboidShape(4, 9.5, 12, 12, 10.5, 13.5),//connectorAngle1
-              //makeCuboidShape(13, 11, 4, 14, 13, 12),//connectorAngle2
-              //makeCuboidShape(1, 11, 4, 3, 13, 12),//connectorAngle3
-              //makeCuboidShape(4, 11, 1, 12, 13, 3)//connectorAngle4
+              makeCuboidShape(4, 12.5, 12.5, 12, 13, 14.5),//connector1a
+              makeCuboidShape(4, 12, 12, 12, 12.5, 12.5),//connector1b
+              makeCuboidShape(13, 12.5, 4, 14.5, 13, 12),//connector2a
+              makeCuboidShape(14.5, 12, 4, 15, 12.5, 12),//connector2b
+              makeCuboidShape(1.5, 12.5, 4, 3, 13, 12),//connector3a
+              makeCuboidShape(1, 12, 4, 1.5, 12.5, 12),//connector3b
+              makeCuboidShape(4, 11.75, 2.75, 12, 12, 3),//connector4a
+              makeCuboidShape(4, 11.25, 2.5, 12, 11.75, 2.75),//connector4b
+              makeCuboidShape(4, 11, 2.25, 12, 11.25, 2.5)//connector4c
         );
-        //TODO: VoxelShapes, Figure out best way of handling the "angled connector pieces"
-        //setRotation(connectorAngle1, 0.986111F, 0F, 0F);
-        //setRotation(connectorAngle2, 0F, 0F, 0.7941248F);
-        //setRotation(connectorAngle3, 0F, 0F, -0.7941248F);
-        //setRotation(connectorAngle4, 0.7941248F, 0F, 0F);
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(generator, side);
         }

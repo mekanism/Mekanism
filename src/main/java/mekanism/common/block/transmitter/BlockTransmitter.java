@@ -106,6 +106,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateWa
         Pair<Vec3d, Vec3d> vecs = MultipartUtils.getRayTraceVectors(context.getEntity());
         AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(pos, vecs.getLeft(), vecs.getRight(), tile.getCollisionBoxes());
         if (result != null && result.valid()) {
+            //TODO: Should/does this need to be cached
             return VoxelShapes.create(result.bounds);
         }
         //If we failed to figure it out somehow, just fall back to the center. This should never happen

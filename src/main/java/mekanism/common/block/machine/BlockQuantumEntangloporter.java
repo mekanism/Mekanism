@@ -28,6 +28,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -47,6 +48,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -59,7 +62,47 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockElectric, IHasGui<TileEntityQuantumEntangloporter>, ISupportsUpgrades, IStateFacing,
       IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateActive {
 
-    //TODO: VoxelShapes
+    //Note: Does not include the "core"
+    private static final VoxelShape bounds = MultipartUtils.combine(
+          makeCuboidShape(4, 4, 0, 12, 12, 1),//portFront
+          makeCuboidShape(0, 4, 4, 1, 12, 12),//portRight
+          makeCuboidShape(15, 4, 4, 16, 12, 12),//portLeft
+          makeCuboidShape(4, 15, 4, 12, 16, 12),//portTop
+          makeCuboidShape(4, 0, 4, 12, 1, 12),//portBottom
+          makeCuboidShape(4, 4, 15, 12, 12, 16),//portBack
+          makeCuboidShape(13, 13, 0, 16, 16, 3),//corner1
+          makeCuboidShape(0, 13, 0, 3, 16, 3),//corner2
+          makeCuboidShape(13, 13, 13, 16, 16, 16),//corner3
+          makeCuboidShape(0, 13, 13, 3, 16, 16),//corner4
+          makeCuboidShape(13, 0, 0, 16, 3, 3),//corner5
+          makeCuboidShape(0, 0, 0, 3, 3, 3),//corner6
+          makeCuboidShape(13, 0, 13, 16, 3, 16),//corner7
+          makeCuboidShape(0, 0, 13, 3, 3, 16),//corner8
+          makeCuboidShape(13, 3, 1, 15, 13, 3),//frame1
+          makeCuboidShape(1, 3, 1, 3, 13, 3),//frame2
+          makeCuboidShape(13, 3, 13, 15, 13, 15),//frame3
+          makeCuboidShape(1, 3, 13, 3, 13, 15),//frame4
+          makeCuboidShape(3, 1, 1, 13, 3, 3),//frame5
+          makeCuboidShape(13, 1, 3, 15, 3, 13),//frame6
+          makeCuboidShape(1, 1, 3, 3, 3, 13),//frame7
+          makeCuboidShape(3, 1, 13, 13, 3, 15),//frame8
+          makeCuboidShape(3, 13, 1, 13, 15, 3),//frame9
+          makeCuboidShape(13, 13, 3, 15, 15, 13),//frame10
+          makeCuboidShape(1, 13, 3, 3, 15, 13),//frame11
+          makeCuboidShape(3, 13, 13, 13, 15, 15),//frame12
+          makeCuboidShape(14.5, 3, 0.5, 15.5, 13, 1.5),//frameEdge1
+          makeCuboidShape(0.5, 3, 0.5, 1.5, 13, 1.5),//frameEdge2
+          makeCuboidShape(14.5, 3, 14.5, 15.5, 13, 15.5),//frameEdge3
+          makeCuboidShape(0.5, 3, 14.5, 1.5, 13, 15.5),//frameEdge4
+          makeCuboidShape(3, 0.5, 0.5, 13, 1.5, 1.5),//frameEdge5
+          makeCuboidShape(14.5, 0.5, 3, 15.5, 1.5, 13),//frameEdge6
+          makeCuboidShape(0.5, 0.5, 3, 1.5, 1.5, 13),//frameEdge7
+          makeCuboidShape(3, 0.5, 14.5, 13, 1.5, 15.5),//frameEdge8
+          makeCuboidShape(3, 14.5, 0.5, 13, 15.5, 1.5),//frameEdge9
+          makeCuboidShape(14.5, 14.5, 3, 15.5, 15.5, 13),//frameEdge10
+          makeCuboidShape(0.5, 14.5, 3, 1.5, 15.5, 13),//frameEdge11
+          makeCuboidShape(3, 14.5, 14.5, 13, 15.5, 15.5)//frameEdge12
+    );
 
     public BlockQuantumEntangloporter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -172,6 +215,13 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds;
     }
 
     @Nonnull

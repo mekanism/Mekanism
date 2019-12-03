@@ -23,6 +23,7 @@ import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -36,11 +37,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -53,7 +58,29 @@ public class BlockResistiveHeater extends BlockMekanism implements IBlockElectri
       IHasSecurity, IHasTileEntity<TileEntityResistiveHeater>, IBlockSound, ISupportsRedstone {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.resistiveheater"));
-    //TODO: VoxelShapes
+    private static final VoxelShape boundsZAxis = MultipartUtils.combine(
+          makeCuboidShape(0, 0, 0, 16, 7, 16),//base
+          makeCuboidShape(5, 6.5, 7.5, 11, 12.5, 8.5),//center
+          makeCuboidShape(15, 4, 4, 16, 12, 12),//portRight
+          makeCuboidShape(0, 4, 4, 1, 12, 12),//portLeft
+          makeCuboidShape(13, 7, 0, 16, 16, 16),//wallRight
+          makeCuboidShape(0, 7, 0, 3, 16, 16),//wallLeft
+          makeCuboidShape(11, 13.5, 1.5, 12, 14.5, 14.5),//bar1
+          makeCuboidShape(9, 13.5, 1.5, 10, 14.5, 14.5),//bar2
+          makeCuboidShape(6, 13.5, 1.5, 7, 14.5, 14.5),//bar3
+          makeCuboidShape(4, 13.5, 1.5, 5, 14.5, 14.5),//bar4
+          makeCuboidShape(3, 6.5, 14.5, 13, 15.5, 15.5),//fin1
+          makeCuboidShape(3, 6.5, 13, 13, 15.5, 14),//fin2
+          makeCuboidShape(3, 6.5, 11.5, 13, 15.5, 12.5),//fin3
+          makeCuboidShape(3, 6.5, 10, 13, 15.5, 11),//fin4
+          makeCuboidShape(3, 6.5, 8.5, 13, 15.5, 9.5),//fin5
+          makeCuboidShape(3, 6.5, 6.5, 13, 15.5, 7.5),//fin6
+          makeCuboidShape(3, 6.5, 5, 13, 15.5, 6),//fin7
+          makeCuboidShape(3, 6.5, 3.5, 13, 15.5, 4.5),//fin8
+          makeCuboidShape(3, 6.5, 2, 13, 15.5, 3),//fin9
+          makeCuboidShape(3, 6.5, 0.5, 13, 15.5, 1.5)//fin10
+    );
+    private static final VoxelShape boundsXAxis = MultipartUtils.rotate(boundsZAxis, Rotation.CLOCKWISE_90);
 
     public BlockResistiveHeater() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -148,6 +175,13 @@ public class BlockResistiveHeater extends BlockMekanism implements IBlockElectri
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return getDirection(state).getAxis() == Axis.X ? boundsXAxis : boundsZAxis;
     }
 
     @Override

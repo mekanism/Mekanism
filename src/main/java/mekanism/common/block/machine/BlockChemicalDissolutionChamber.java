@@ -82,7 +82,6 @@ public class BlockChemicalDissolutionChamber extends BlockMekanism implements IB
               makeCuboidShape(15, 4, 4, 16, 12, 12)//portToggle2
         );
         dissolution = MultipartUtils.rotate(dissolution, Rotation.CLOCKWISE_180);
-        dissolution.toBoundingBoxList().forEach(System.out::println);
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = MultipartUtils.rotateHorizontal(dissolution, side);
         }

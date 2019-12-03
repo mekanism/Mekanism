@@ -23,7 +23,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<TileEntityTurbineRotor> {
 
-    private static final VoxelShape ROTOR_BOUNDS = VoxelShapes.create(0.375F, 0.0F, 0.375F, 0.625F, 1.0F, 0.625F);
+    private static final VoxelShape bounds = makeCuboidShape(6, 0, 6, 10, 16, 10);
 
     public BlockTurbineRotor() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -127,7 +126,7 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        return ROTOR_BOUNDS;
+        return bounds;
     }
 
     @Override

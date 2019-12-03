@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import mekanism.common.Mekanism;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -28,7 +29,9 @@ public final class MultipartUtils {
 
     private static final Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
 
-    //TODO: Remove at some point, but this method is helpful for calculating the transforms from model to voxel shape
+    /**
+     * Prints out a set of strings that make copy pasting easier, for converting a Model to a voxel shape
+     */
     public static void printPieces(String name, double x1, double y1, double z1, double x2, double y2, double z2, double rotX, double rotY, double rotZ) {
         //Transform from mekanism model: (8, 24, 8, 8, 24, 8) - (box + (rotationPoint, rotationPoint))
         double nx1 = 8 - (x1 + rotX);
@@ -37,8 +40,25 @@ public final class MultipartUtils {
         double nx2 = 8 - (x2 + rotX);
         double ny2 = 24 - (y2 + rotY);
         double nz2 = 8 - (z2 + rotZ);
-        System.out.println("makeCuboidShape(" + Math.min(nx1, nx2) + ", " + Math.min(ny1, ny2) + ", " + Math.min(nz1, nz2) + ", " +
+        Mekanism.logger.info("makeCuboidShape(" + Math.min(nx1, nx2) + ", " + Math.min(ny1, ny2) + ", " + Math.min(nz1, nz2) + ", " +
                            Math.max(nx1, nx2) + ", " + Math.max(ny1, ny2) + ", " + Math.max(nz1, nz2) + "),//" + name);
+    }
+
+    /**
+     * Prints out a set of strings that make copy pasting easier, for simplifying a voxel shape
+     */
+    public static void printSimplified(String name, VoxelShape shape) {
+        Mekanism.logger.info("Simplified: " + name);
+        shape.toBoundingBoxList().forEach(box -> {
+            double nx1 = box.minX * 16;
+            double ny1 = box.minY * 16;
+            double nz1 = box.minZ * 16;
+            double nx2 = box.maxX * 16;
+            double ny2 = box.maxY * 16;
+            double nz2 = box.maxZ * 16;
+            Mekanism.logger.info("makeCuboidShape(" + Math.min(nx1, nx2) + ", " + Math.min(ny1, ny2) + ", " + Math.min(nz1, nz2) + ", " +
+                               Math.max(nx1, nx2) + ", " + Math.max(ny1, ny2) + ", " + Math.max(nz1, nz2) + "),");
+        });
     }
 
     public static AxisAlignedBB rotate(AxisAlignedBB box, Direction side) {
@@ -118,17 +138,19 @@ public final class MultipartUtils {
     }
 
     public static VoxelShape combine(Collection<VoxelShape> shapes) {
-        VoxelShape combinedShape = VoxelShapes.empty();
-        //Combine the different partial rotated voxel shapes into a full voxel shape
-        // Note: VoxelShapes.or simplifies as it goes
-        for (VoxelShape shape : shapes) {
-            combinedShape = VoxelShapes.or(combinedShape, shape);
-        }
-        return combinedShape;
+        return batchCombine(VoxelShapes.empty(), IBooleanFunction.OR, shapes);
     }
 
     public static VoxelShape exclude(VoxelShape... shapes) {
         return batchCombine(VoxelShapes.fullCube(), IBooleanFunction.ONLY_FIRST, shapes);
+    }
+
+    public static VoxelShape batchCombine(VoxelShape initial, IBooleanFunction function, Collection<VoxelShape> shapes) {
+        VoxelShape combinedShape = initial;
+        for (VoxelShape shape : shapes) {
+            combinedShape = VoxelShapes.combineAndSimplify(combinedShape, shape, function);
+        }
+        return combinedShape;
     }
 
     public static VoxelShape batchCombine(VoxelShape initial, IBooleanFunction function, VoxelShape... shapes) {
