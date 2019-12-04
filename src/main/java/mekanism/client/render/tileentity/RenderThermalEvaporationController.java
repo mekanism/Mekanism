@@ -55,6 +55,6 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
 
     @Override
     public boolean isGlobalRenderer(TileEntityThermalEvaporationController tile) {
-        return true;
+        return tile.structured && tile.height - 2 >= 1 && tile.inputTank.getFluidAmount() > 0;
     }
 }

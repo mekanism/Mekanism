@@ -66,6 +66,6 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
 
     @Override
     public boolean isGlobalRenderer(TileEntityReactorController tile) {
-        return true;
+        return tile.isBurning();
     }
 }

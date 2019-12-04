@@ -85,6 +85,6 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
 
     @Override
     public boolean isGlobalRenderer(TileEntityTurbineCasing tile) {
-        return true;
+        return tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null;
     }
 }

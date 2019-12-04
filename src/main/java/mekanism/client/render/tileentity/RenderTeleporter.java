@@ -102,6 +102,6 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
 
     @Override
     public boolean isGlobalRenderer(TileEntityTeleporter tile) {
-        return true;
+        return tile.shouldRender;
     }
 }

@@ -69,6 +69,6 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
 
     @Override
     public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
-        return true;
+        return tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.fluidStored.getAmount() > 0;
     }
 }

@@ -64,6 +64,6 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
 
     @Override
     public boolean isGlobalRenderer(TileEntityTurbineRotor tile) {
-        return true;
+        return tile.getMultiblock() != null && !internalRender;
     }
 }
