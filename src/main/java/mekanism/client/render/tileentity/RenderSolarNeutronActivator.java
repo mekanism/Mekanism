@@ -27,4 +27,9 @@ public class RenderSolarNeutronActivator extends TileEntityRenderer<TileEntitySo
         setLightmapDisabled(false);
         GlStateManager.popMatrix();
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntitySolarNeutronActivator tile) {
+        return true;
+    }
 }

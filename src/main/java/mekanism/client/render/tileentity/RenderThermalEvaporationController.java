@@ -52,4 +52,9 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
             GlStateManager.popMatrix();
         }
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntityThermalEvaporationController tile) {
+        return true;
+    }
 }

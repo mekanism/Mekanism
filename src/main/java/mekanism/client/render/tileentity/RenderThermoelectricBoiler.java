@@ -114,4 +114,9 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
         }
         return true;
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntityBoilerCasing tile) {
+        return true;
+    }
 }

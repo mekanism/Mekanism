@@ -35,4 +35,9 @@ public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMine
         }
         setLightmapDisabled(false);
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntityDigitalMiner tile) {
+        return true;
+    }
 }

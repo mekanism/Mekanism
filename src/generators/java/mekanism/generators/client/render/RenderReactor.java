@@ -63,4 +63,9 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
         MekanismRenderer.resetColor();
         GlStateManager.popMatrix();
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntityReactorController tile) {
+        return true;
+    }
 }

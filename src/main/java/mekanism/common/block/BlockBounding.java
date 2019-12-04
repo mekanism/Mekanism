@@ -22,6 +22,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
@@ -137,19 +140,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         world.removeBlock(pos, false);
     }
 
-    /**
-     * Returns that this "cannot" be silk touched. This is so that {@link Block#getSilkTouchDrop(BlockState)} is not called, because only {@link
-     * Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)} supports tile entities. Our blocks keep their inventory and other behave like they are being
-     * silk touched by default anyway.
-     *
-     * @return false
-     */
-    //TODO: Silk touch/denial
-    /*@Override
-    @Deprecated
-    protected boolean canSilkHarvest() {
-        return false;
-    }*/
     @Override
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
@@ -207,16 +197,18 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return BlockRenderLayer.CUTOUT;
     }
 
+    @Nonnull
     @Override
-    public boolean propagatesSkylightDown(BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
-        //TODO: FIX THIS/DON'T EVEN OVERWRITE THIS
-        // We need to overwrite this so that it is "opaque" and canBlockSeeSky behaves properly
-        // The ideal way of doing this will be to properly override the VoxelShape for the bounding block based on the
-        // state/world
-        return true;
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos == null) {
+            return VoxelShapes.empty();//super.getShape(state, world, pos, context);
+        }
+        BlockState mainState = world.getBlockState(mainPos);
+        VoxelShape shape = mainState.getBlock().getShape(mainState, world, mainPos, context);
+        BlockPos offset = pos.subtract(mainPos);
+        //TODO: Can we somehow cache the withOffset? It potentially would have to then be moved into the Tile, but that is probably fine
+        return shape.withOffset(-offset.getX(), -offset.getY(), -offset.getZ());
     }
-
-    //TODO: VoxelShapes, when we create a system to fix the voxel shape, it may make the most sense to just always include the full voxel shape,
-    // so that it can highlight the bounding box properly, and then just shift the voxelshape so that the bounding blocks give the
-    // correct part as intersecting itself.
 }

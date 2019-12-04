@@ -66,4 +66,9 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
             }
         }
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
+        return true;
+    }
 }

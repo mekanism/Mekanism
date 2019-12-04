@@ -27,4 +27,9 @@ public class RenderSecurityDesk extends TileEntityRenderer<TileEntitySecurityDes
         setLightmapDisabled(false);
         GlStateManager.popMatrix();
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntitySecurityDesk tile) {
+        return true;
+    }
 }

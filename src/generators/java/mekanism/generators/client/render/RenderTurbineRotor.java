@@ -61,4 +61,9 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
 
         GlStateManager.popMatrix();
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntityTurbineRotor tile) {
+        return true;
+    }
 }

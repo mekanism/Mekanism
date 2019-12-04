@@ -26,4 +26,9 @@ public class RenderSeismicVibrator extends TileEntityRenderer<TileEntitySeismicV
         model.renderWithPiston(Math.max(0, actualRate), 0.0625F);
         GlStateManager.popMatrix();
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntitySeismicVibrator tile) {
+        return true;
+    }
 }

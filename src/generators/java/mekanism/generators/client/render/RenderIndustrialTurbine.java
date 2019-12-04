@@ -82,4 +82,9 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
             }
         }
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntityTurbineCasing tile) {
+        return true;
+    }
 }

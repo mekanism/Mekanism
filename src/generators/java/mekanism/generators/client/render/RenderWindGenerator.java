@@ -26,4 +26,9 @@ public class RenderWindGenerator extends TileEntityRenderer<TileEntityWindGenera
         model.render(0.0625F, angle);
         GlStateManager.popMatrix();
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntityWindGenerator tile) {
+        return true;
+    }
 }

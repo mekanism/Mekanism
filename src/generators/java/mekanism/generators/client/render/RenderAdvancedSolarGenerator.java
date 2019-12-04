@@ -25,4 +25,9 @@ public class RenderAdvancedSolarGenerator extends TileEntityRenderer<TileEntityA
         model.render(0.0625F);
         GlStateManager.popMatrix();
     }
+
+    @Override
+    public boolean isGlobalRenderer(TileEntityAdvancedSolarGenerator tile) {
+        return true;
+    }
 }

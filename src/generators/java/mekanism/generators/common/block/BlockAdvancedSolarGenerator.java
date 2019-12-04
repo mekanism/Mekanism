@@ -13,8 +13,10 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
@@ -25,11 +27,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -39,7 +45,33 @@ public class BlockAdvancedSolarGenerator extends BlockMekanism implements IHasGu
       IHasSecurity, IBlockSound, IHasTileEntity<TileEntityAdvancedSolarGenerator> {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
-    //TODO: VoxelShapes
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    //TODO: VoxelShapes: FIXME, everything except the "wings" of the top layer is fine (other than collision being a bit screwy)
+    static {
+        VoxelShape generator = VoxelShapeUtils.combine(
+              makeCuboidShape(4.0, 4.0, 15.0, 12.0, 12.0, 16.0),//port
+              makeCuboidShape(5.0, 5.0, 5.0, 11.0, 11.0, 15.0),//portBase
+              makeCuboidShape(4.0, 38.0, 5.0, 12.0, 44.0, 11.0),//jointBox
+              makeCuboidShape(6.0, 0.0, 6.0, 10.0, 40.0, 10.0),//verticalBar
+              makeCuboidShape(-12.0, 40.0, 7.0, 28.0, 42.0, 9.0),//crossBar
+              makeCuboidShape(5.0, 36.0, 2.0, 7.0, 38.0, 14.0),//sideBar1
+              makeCuboidShape(9.0, 36.0, 2.0, 11.0, 38.0, 14.0),//sideBar2
+              makeCuboidShape(5.5, 37.5, 4.5, 6.5, 44.5, 11.5),//wire1
+              makeCuboidShape(9.5, 37.5, 4.5, 10.5, 44.5, 11.5),//wire2
+              makeCuboidShape(-16.0, 42.0, -16, 2.0, 43.0, 32.0),//panel1Top
+              makeCuboidShape(14.0, 42.0, -16, 32.0, 43.0, 32.0),//panel2Top
+              makeCuboidShape(-15.0, 41.0, -14, 1.0, 42.0, 31.0),//panel1Bottom
+              makeCuboidShape(15.0, 41.0, -14, 31.0, 42.0, 31.0),//panel2Bottom
+              makeCuboidShape(0.0, 0.0, 0.0, 16.0, 2.0, 16.0),//base1
+              makeCuboidShape(3.0, 1.0, 3.0, 13.0, 3.0, 13.0),//base2
+              makeCuboidShape(4.0, 2.0, 4.0, 12.0, 10.0, 12.0)//base3
+        );
+        generator = VoxelShapeUtils.rotate(generator, Rotation.CLOCKWISE_180);
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(generator, side);
+        }
+    }
 
     public BlockAdvancedSolarGenerator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -82,6 +114,13 @@ public class BlockAdvancedSolarGenerator extends BlockMekanism implements IHasGu
     @Override
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override
