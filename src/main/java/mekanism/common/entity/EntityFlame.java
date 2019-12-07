@@ -65,8 +65,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     public void setHeading(Pos3D motion) {
         float d = MathHelper.sqrt((motion.x * motion.x) + (motion.z * motion.z));
-        prevRotationYaw = rotationYaw = (float) (Math.atan2(motion.x, motion.z) * 180.0D / Math.PI);
-        prevRotationPitch = rotationPitch = (float) (Math.atan2(motion.y, d) * 180.0D / Math.PI);
+        prevRotationYaw = rotationYaw = (float) Math.toDegrees(Math.atan2(motion.x, motion.z));
+        prevRotationPitch = rotationPitch = (float) Math.toDegrees(Math.atan2(motion.y, d));
     }
 
     @Override

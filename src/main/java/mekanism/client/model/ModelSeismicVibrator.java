@@ -331,7 +331,7 @@ public class ModelSeismicVibrator extends Model {
     }
 
     public void render(float size) {
-        plate3.render(size);
+        /*plate3.render(size);
         baseBack.render(size);
         motor.render(size);
         port.render(size);
@@ -375,7 +375,15 @@ public class ModelSeismicVibrator extends Model {
         rivet3.render(size);
         rivet8.render(size);
         rivet4.render(size);
-        rivet9.render(size);
+        rivet9.render(size);*/
+
+        frameBack1.render(size);
+        frameBack2.render(size);
+        frameBack3.render(size);
+        frameBack4.render(size);
+        frameBack5.render(size);
+        //frameLeft5.render(size);
+        //frameRight5.render(size);
     }
 
     public void renderWithPiston(float piston, float size) {

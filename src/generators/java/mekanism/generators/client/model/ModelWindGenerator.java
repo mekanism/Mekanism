@@ -198,7 +198,7 @@ public class ModelWindGenerator extends Model {
     }
 
     public float getRotation(double angle) {
-        return ((float) angle / (float) 180) * (float) Math.PI;
+        return (float) Math.toRadians(angle);
     }
 
     public double getAbsoluteAngle(double angle) {

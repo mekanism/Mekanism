@@ -1,12 +1,5 @@
 package mekanism.common.util;
 
-import static java.lang.Math.E;
-import static java.lang.Math.PI;
-import static java.lang.Math.ceil;
-import static java.lang.Math.exp;
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-
 import java.util.Random;
 
 public class StatUtils {
@@ -14,14 +7,14 @@ public class StatUtils {
     public static Random rand = new Random();
 
     public static int inversePoisson(double mean) {
-        double r = rand.nextDouble() * exp(mean);
+        double r = rand.nextDouble() * Math.exp(mean);
         int m = 0;
         double p = 1;
-        double stirlingValue = mean * E;
-        double stirlingCoeff = 1 / sqrt(2 * PI);
-        while ((p < r) && (m < 3 * ceil(mean))) {
+        double stirlingValue = mean * Math.E;
+        double stirlingCoeff = 1 / Math.sqrt(2 * Math.PI);
+        while ((p < r) && (m < 3 * Math.ceil(mean))) {
             m++;
-            p += stirlingCoeff / sqrt(m) * pow(stirlingValue / m, m);
+            p += stirlingCoeff / Math.sqrt(m) * Math.pow(stirlingValue / m, m);
         }
         return m;
     }

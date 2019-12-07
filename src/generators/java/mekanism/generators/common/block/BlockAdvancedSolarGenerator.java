@@ -47,25 +47,24 @@ public class BlockAdvancedSolarGenerator extends BlockMekanism implements IHasGu
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
-    //TODO: VoxelShapes: FIXME, everything except the "wings" of the top layer is fine (other than collision being a bit screwy)
     static {
         VoxelShape generator = VoxelShapeUtils.combine(
-              makeCuboidShape(4.0, 4.0, 15.0, 12.0, 12.0, 16.0),//port
-              makeCuboidShape(5.0, 5.0, 5.0, 11.0, 11.0, 15.0),//portBase
-              makeCuboidShape(4.0, 38.0, 5.0, 12.0, 44.0, 11.0),//jointBox
-              makeCuboidShape(6.0, 0.0, 6.0, 10.0, 40.0, 10.0),//verticalBar
-              makeCuboidShape(-12.0, 40.0, 7.0, 28.0, 42.0, 9.0),//crossBar
-              makeCuboidShape(5.0, 36.0, 2.0, 7.0, 38.0, 14.0),//sideBar1
-              makeCuboidShape(9.0, 36.0, 2.0, 11.0, 38.0, 14.0),//sideBar2
+              makeCuboidShape(4, 4, 15, 12, 12, 16),//port
+              makeCuboidShape(5, 5, 5, 11, 11, 15),//portBase
+              makeCuboidShape(4, 38, 5, 12, 44, 11),//jointBox
+              makeCuboidShape(6, 0, 6, 10, 40, 10),//verticalBar
+              makeCuboidShape(-12, 40, 7, 28, 42, 9),//crossBar
+              makeCuboidShape(5, 36, 2, 7, 38, 14),//sideBar1
+              makeCuboidShape(9, 36, 2, 11, 38, 14),//sideBar2
               makeCuboidShape(5.5, 37.5, 4.5, 6.5, 44.5, 11.5),//wire1
               makeCuboidShape(9.5, 37.5, 4.5, 10.5, 44.5, 11.5),//wire2
-              makeCuboidShape(-16.0, 42.0, -16, 2.0, 43.0, 32.0),//panel1Top
-              makeCuboidShape(14.0, 42.0, -16, 32.0, 43.0, 32.0),//panel2Top
-              makeCuboidShape(-15.0, 41.0, -14, 1.0, 42.0, 31.0),//panel1Bottom
-              makeCuboidShape(15.0, 41.0, -14, 31.0, 42.0, 31.0),//panel2Bottom
-              makeCuboidShape(0.0, 0.0, 0.0, 16.0, 2.0, 16.0),//base1
-              makeCuboidShape(3.0, 1.0, 3.0, 13.0, 3.0, 13.0),//base2
-              makeCuboidShape(4.0, 2.0, 4.0, 12.0, 10.0, 12.0)//base3
+              makeCuboidShape(-16, 42, -16, 2, 43, 32),//panel1Top
+              makeCuboidShape(14, 42, -16, 32, 43, 32),//panel2Top
+              makeCuboidShape(-15, 41, -14, 1, 42, 31),//panel1Bottom
+              makeCuboidShape(15, 41, -14, 31, 42, 31),//panel2Bottom
+              makeCuboidShape(0, 0, 0, 16, 2, 16),//base1
+              makeCuboidShape(3, 1, 3, 13, 3, 13),//base2
+              makeCuboidShape(4, 2, 4, 12, 10, 12)//base3
         );
         generator = VoxelShapeUtils.rotate(generator, Rotation.CLOCKWISE_180);
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
