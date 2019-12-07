@@ -546,7 +546,7 @@ public abstract class BlockGenerator extends BlockMekanismContainer {
             case 10: // Turbine Casing
             case 11: // Turbine Valve
             case 12: // Turbine Vent
-                TileEntityMultiblock<?> tileEntity = (TileEntityMultiblock<?>) MekanismUtils.getTileEntitySafe(world, pos);
+                TileEntityMultiblock<?> tileEntity = MekanismUtils.getTileEntitySafe(world, pos, TileEntityMultiblock.class);
                 if (tileEntity != null) {
                     if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) {
                         if (tileEntity.structure != null) {

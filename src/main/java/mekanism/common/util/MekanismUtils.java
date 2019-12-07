@@ -1071,6 +1071,14 @@ public final class MekanismUtils {
         return worldIn instanceof ChunkCache ? ((ChunkCache) worldIn).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK) : worldIn.getTileEntity(pos);
     }
 
+    public static <T extends TileEntity> T getTileEntitySafe(IBlockAccess worldIn, BlockPos pos, Class<T> expectedClass) {
+        TileEntity te = getTileEntitySafe(worldIn, pos);
+        if (expectedClass.isInstance(te)){
+            return expectedClass.cast(te);
+        }
+        return null;
+    }
+
     /**
      * Gets a tile entity if the location is loaded
      *
