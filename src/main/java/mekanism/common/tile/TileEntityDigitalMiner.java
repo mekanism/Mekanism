@@ -70,6 +70,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.ChunkCache;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -361,6 +362,11 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     private boolean canMine(Coord4D coord) {
         IBlockState state = coord.getBlockState(world);
+        //Check if the block is breakable, to avoid blocks like bedrock being being mined.
+        if(state.getBlockHardness(world, coord.getPos()) < 0) {
+            return false;
+        }
+
         EntityPlayer dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((WorldServer) world, pos).get());
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
@@ -473,6 +479,7 @@ public class TileEntityDigitalMiner extends TileEntityElectricBlock implements I
 
     public void start() {
         if (searcher.state == State.IDLE) {
+            searcher.setChunkCache(new ChunkCache(getWorld(), getStartingCoord().getPos(), getStartingCoord().getPos().add(radius, maxY - minY, radius), 0));
             searcher.start();
         }
         running = true;

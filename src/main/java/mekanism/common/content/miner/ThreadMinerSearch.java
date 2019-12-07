@@ -13,7 +13,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.ChunkCache;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread {
@@ -25,11 +25,16 @@ public class ThreadMinerSearch extends Thread {
     private Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     private Map<Integer, MinerFilter> replaceMap = new HashMap<>();
     private Map<BlockInfo, MinerFilter> acceptedItems = new HashMap<>();
+    private ChunkCache chunkCache;
 
     public int found = 0;
 
     public ThreadMinerSearch(TileEntityDigitalMiner tile) {
         tileEntity = tile;
+    }
+
+    public void setChunkCache(ChunkCache chunkCache) {
+        this.chunkCache = chunkCache;
     }
 
     @Override
@@ -44,7 +49,6 @@ public class ThreadMinerSearch extends Thread {
         int size = tileEntity.getTotalSize();
         BlockInfo info = new BlockInfo(null, 0);
         BlockPos minerPos = tileEntity.getPos();
-        World world = tileEntity.getWorld();
 
         for (int i = 0; i < size; i++) {
             if (tileEntity.isInvalid()) {
@@ -60,48 +64,48 @@ public class ThreadMinerSearch extends Thread {
             }
 
             BlockPos testPos = new BlockPos(x, y, z);
-            if (!world.isBlockLoaded(testPos) || world.getTileEntity(testPos) instanceof TileEntityBoundingBlock) {
+            if (chunkCache.getTileEntity(testPos) instanceof TileEntityBoundingBlock) {
                 //If it is not loaded or it is a bounding block skip it
                 continue;
             }
 
-            IBlockState state = world.getBlockState(testPos);
+            IBlockState state = chunkCache.getBlockState(testPos);
             info.block = state.getBlock();
             info.meta = state.getBlock().getMetaFromState(state);
 
-            if (info.block == null || info.block instanceof BlockLiquid || info.block instanceof IFluidBlock || info.block.isAir(state, world, testPos)) {
+            if (info.block == null || info.block instanceof BlockLiquid || info.block instanceof IFluidBlock || info.block.isAir(state, chunkCache, testPos)) {
                 //Skip air and liquids
                 continue;
             }
 
-            if (state.getBlockHardness(world, testPos) >= 0) {
-                MinerFilter filterFound = null;
-                if (acceptedItems.containsKey(info)) {
-                    filterFound = acceptedItems.get(info);
-                } else {
-                    ItemStack stack = new ItemStack(info.block, 1, info.meta);
-                    if (tileEntity.isReplaceStack(stack)) {
-                        continue;
-                    }
-                    for (MinerFilter filter : tileEntity.filters) {
-                        if (filter.canFilter(stack)) {
-                            filterFound = filter;
-                            break;
-                        }
-                    }
-                    acceptedItems.put(info, filterFound);
+            MinerFilter filterFound = null;
+            if (acceptedItems.containsKey(info)) {
+                filterFound = acceptedItems.get(info);
+            } else {
+                ItemStack stack = new ItemStack(info.block, 1, info.meta);
+                if (tileEntity.isReplaceStack(stack)) {
+                    continue;
                 }
-                if (tileEntity.inverse == (filterFound == null)) {
-                    set(i, new Coord4D(x, y, z, world.provider.getDimension()));
-                    replaceMap.put(i, filterFound);
-                    found++;
+                for (MinerFilter filter : tileEntity.filters) {
+                    if (filter.canFilter(stack)) {
+                        filterFound = filter;
+                        break;
+                    }
                 }
+                acceptedItems.put(info, filterFound);
+            }
+            if (tileEntity.inverse == (filterFound == null)) {
+                set(i, new Coord4D(x, y, z, tileEntity.getWorld().provider.getDimension()));//I Really hope this is threadsafe..
+                replaceMap.put(i, filterFound);
+                found++;
             }
         }
+
 
         state = State.FINISHED;
         tileEntity.oresToMine = oresToMine;
         tileEntity.replaceMap = replaceMap;
+        chunkCache = null;
         MekanismUtils.saveChunk(tileEntity);
     }
 
@@ -113,6 +117,7 @@ public class ThreadMinerSearch extends Thread {
 
     public void reset() {
         state = State.IDLE;
+        chunkCache = null;
     }
 
     public enum State {
