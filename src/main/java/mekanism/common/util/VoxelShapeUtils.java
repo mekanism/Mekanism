@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -250,78 +253,53 @@ public final class VoxelShapeUtils {
 
     public static VoxelShape getSeismicSlope() {
         //TODO: Move this stuff into the SeismicVibrator thing, this is just for making viewing potential inputs easier
-        //TODO: Also make a new util method to fully convert a model over
-        /*VoxelShape frameBack1 = getSlope(-1, 0, 0, 1, 19, 1, 7.5, -6, 6.49,
-              0, 0, 0.837758, 0.0625, true);
-        VoxelShape frameBack2 = getSlope(0, 0, 0, 1, 19, 1, -7.5, -6, 6.49,
-              0, 0, -0.837758, 0.0625, true);//*/
-        //While it isn't as efficient to do it for a easy transform lets do so just to make it simpler for now in debugging what is going on
-        VoxelShape frameBack3 = getSlope(0, 0, 0, 13, 1, 1, -6.5, 6, 6.5,
-              0, 0, 0, 0.0625, true);
-        /*VoxelShape frameBack4 = getSlope(0, 0, 0, 1, 19, 1, -7.5, 7, 6.49,
-              0, 0, -0.837758, 0.0625, true);
-        VoxelShape frameBack5 = getSlope(-1, 0, 0, 1, 19, 1, 7.5, 7, 6.49,
-              0, 0, 0.837758, 0.0625, true);//*/
-        //return combine(frameBack1, frameBack2, frameBack4, frameBack5);
-
-        /*VoxelShape frameLeft5 = getSlope(0, 0, 0, 1, 19, 1, -7.485, 7, -7.5,
-              0.837758, 0, 0, 0.0625, true);
-
-        VoxelShape frameRight5 = getSlope(0, 0, 0, 1, 19, 1, 6.485, 7, -7.5,
-              0.837758, 0, 0, 0.0625, true);//*/
-
-
-        //makeCuboidShape(1.5, 17, 0.5, 14.5, 18, 1.5)
-        //0.09375, 1.0625, 0.03125, 0.90625‬, 1.125, 0.09375
-        //return frameBack5;
-        //return combine(frameBack1, frameBack2, frameBack3, frameBack4, frameBack5);
-        //return combine(frameBack1, frameBack2, frameBack3, frameBack4, frameBack5, frameLeft5, frameRight5);
-        return frameBack3;
         //TODO: Full frame causes lag when looking at it, probably has to do with the corners not quite lining up
         //TODO: Should we round them all to 3 digits of precision before adding them
+        ModelSeismicVibrator model = new ModelSeismicVibrator();
+        /*return getShapeFromModel(model.frameBack1, model.frameBack2, model.frameBack3, model.frameBack4, model.frameBack5,
+              model.frameLeft1, model.frameLeft2, model.frameLeft3, model.frameLeft4, model.frameLeft5,
+              model.frameRight1, model.frameRight2, model.frameRight3, model.frameRight4, model.frameRight5);//*/
+        return getShapeFromModel(model.frameBack3, model.frameBack5, model.frameLeft5);
+    }
+
+    public static VoxelShape getShapeFromModel(RendererModel... models) {
+        List<VoxelShape> shapes = new ArrayList<>();
+        for (RendererModel model : models) {
+            shapes.add(getShapeFromModel(model));
+        }
+        return combine(shapes);
+    }
+
+    //TODO: In JavaDoc note to only call this from the client? Do we also have to do clientSide only so that it doesn't crash the server??
+    //TODO: Maybe move it to a client side model util
+    public static VoxelShape getShapeFromModel(RendererModel model) {
+        List<VoxelShape> shapes = new ArrayList<>();
+        for (ModelBox box : model.cubeList) {
+            shapes.add(getSlope(box.posX1, box.posY1, box.posZ1, box.posX2, box.posY2, box.posZ2,
+                  model.rotationPointX, model.rotationPointY, model.rotationPointZ, model.rotateAngleX, model.rotateAngleY, model.rotateAngleZ));
+        }
+        if (model.childModels != null) {
+            for (RendererModel childModel : model.childModels) {
+                shapes.add(getShapeFromModel(childModel));
+            }
+        }
+        return combine(shapes);
     }
 
     //TODO: When we make this more of a util method, make it so that we are printing the createSlope thing instead of the params to this
-    public static VoxelShape getSlope(double offX, double offY, double offZ, int width, int height, int depth, double rotationPointX, double rotationPointY,
-          double rotationPointZ, double rotateAngleX, double rotateAngleY, double rotateAngleZ, double scale, boolean mirror) {
+    public static VoxelShape getSlope(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, double rotationPointX, double rotationPointY,
+          double rotationPointZ, double rotateAngleX, double rotateAngleY, double rotateAngleZ) {
         Mekanism.logger.info("STARTING HERE");
-        //Vec3d rot = calculateTransform(rotationPointX, rotationPointY, rotationPointZ, 0, 0, Math.PI, mirror);
         //Note: This is a manual rotation to not have to deal with numbers getting not rounding properly due to double precision
-        double rotX = -rotationPointX;//rot.x;
-        double rotY = -rotationPointY;//rot.y;
-        double rotZ = rotationPointZ;//rot.z;
+        double rotX = -rotationPointX;
+        double rotY = -rotationPointY;
+        double rotZ = rotationPointZ;
 
         double shiftX = 16 * 0.5 + rotX;
         double shiftY = 16 * 1.5 + rotY;
         double shiftZ = 16 * 0.5 + rotZ;
 
-        double minX = offX;
-        double minY = offY;
-        double minZ = offZ;
-        double maxX = minX + width;
-        double maxY = minY + height;
-        double maxZ = minZ + depth;
-
-        //translate it by the amount we want to shift it and then subtract (our position translated to our rotation point)
-        double xMin = -minX;
-        double yMin = -minY;
-        double zMin = -minZ;
-        double xMax = -maxX;
-        double yMax = -maxY;
-        double zMax = -maxZ;
-
-        //TODO: Note these are "backwards" in terms of the min and max being passed
-        //Vec3d start = calculateTransform(xMax, yMax, zMax, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d end = calculateTransform(xMin, yMin, zMin, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-
-        Mekanism.logger.info("Corners: {}, {}, {}, {}, {}, {}", xMin, yMin, zMin, xMax, yMax, zMax);
-        double xCenter = (xMin + xMax) / 2.0;
-        double yCenter = (yMin + yMax) / 2.0;
-        double zCenter = (zMin + zMax) / 2.0;
-        //double xCenter = width / 2.0;
-        //double yCenter = height / 2.0;
-        //double zCenter = depth / 2.0;
-        //TODO: Using the center fixes the angle, won't work for if we are rotating around y though
+        Mekanism.logger.info("Corners: {}, {}, {}, {}, {}, {}", minX, minY, minZ, maxX, maxY, maxZ);
         //TODO: Do we need to do center in each one to figure out the proper pieces
         //TODO: Do we want to use these vector's for figuring out either:
         // a. The VoxelShape to create
@@ -329,112 +307,35 @@ public final class VoxelShapeUtils {
         //x angle -> y, z get changed
         //y angle -> x, z get changed
         //z angle -> x, y get changed
-        //Vec3d xStartVec = calculateTransform(xMax, yCenter, zCenter, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d xEndVec = calculateTransform(xMin, yCenter, zCenter, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d yStartVec = calculateTransform(xCenter, yMax, zCenter, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d yEndVec = calculateTransform(xCenter, yMin, zCenter, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d zStartVec = calculateTransform(xCenter, yCenter, zMax, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d zEndVec = calculateTransform(xCenter, yCenter, zMin, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d center = calculateTransform(xCenter, yCenter, zCenter, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d max = calculateTransform(xMax, yMax, zMax, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d min = calculateTransform(xMin, yMin, zMin, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d start = yStartVec;//new Vec3d(max.x, yStartVec.y, max.z);
-        //Vec3d end = yEndVec;//new Vec3d(min.x, yEndVec.y, min.z);
-
-        //Vec3d one = calculateTransform(1, 1, 1, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //(-0.07401416127557825, 1.4122754348676723, 1.0)
-        //Vec3d oneX = calculateTransform(1, 0, 0, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //(0.669130636796047, 0.7431447980716253, 0.0)
-        //Vec3d oneY = calculateTransform(0, 1, 0, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //(-0.7431447980716253, 0.669130636796047, 0.0)
-        //Vec3d oneZ = calculateTransform(0, 0, 1, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //(0.0, 0.0, 1.0)
-        //For width, height, depth
-        //endCorner: (-13.450620526564833, 13.456626897196518, 1.0)
-
-        /*
-        Vec3d start1 = calculateTransform(minX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d start2 = calculateTransform(maxX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d start3 = calculateTransform(minX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d start4 = calculateTransform(maxX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
+        //TODO: I believe this is how we calculate for rotating around x or z
+        Vec3d start1 = calculateTransform(minX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3d start2 = calculateTransform(maxX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3d start3 = calculateTransform(minX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3d start4 = calculateTransform(maxX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
         Vec3d startSum = start1.add(start2).add(start3).add(start4);
         Vec3d startAvg = startSum.mul(0.25, 0.25, 0.25);
 
-        Vec3d end1 = calculateTransform(minX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d end2 = calculateTransform(maxX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d end3 = calculateTransform(minX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d end4 = calculateTransform(maxX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
+        Vec3d end1 = calculateTransform(minX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3d end2 = calculateTransform(maxX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3d end3 = calculateTransform(minX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3d end4 = calculateTransform(maxX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
         Vec3d endSum = end1.add(end2).add(end3).add(end4);
         Vec3d endAvg = endSum.mul(0.25, 0.25, 0.25);
-
-        end = startAvg.mul(-1, -1, 1);
-        start = endAvg.mul(-1, -1, 1);
-         */
-        Vec3d start1 = calculateTransform(minX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d start2 = calculateTransform(maxX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d start3 = calculateTransform(minX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d start4 = calculateTransform(maxX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d startSum = start1.add(start2).add(start3).add(start4);
-        Vec3d startAvg = startSum.mul(0.25, 0.25, 0.25);
-
-        Vec3d end1 = calculateTransform(minX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d end2 = calculateTransform(maxX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d end3 = calculateTransform(minX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d end4 = calculateTransform(maxX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        Vec3d endSum = end1.add(end2).add(end3).add(end4);
-        Vec3d endAvg = endSum.mul(0.25, 0.25, 0.25);
-
-        //TODO: Figure out why back3 doesn't work because until we have straight working also our logic is broken
+        //TODO: Explain the swap of start and end
         //Manually do the 180 rotation around z
         Vec3d end = startAvg.mul(-1, -1, 1);
         Vec3d start = endAvg.mul(-1, -1, 1);
-        //[14:03:03] [Client thread/INFO] [Mekanism/]: Transformation: (0.0, 0.0, 0.0)
-        //[14:03:03] [Client thread/INFO] [Mekanism/]: Transformation: (13.0, 0.0, 0.0)
-        //[14:03:03] [Client thread/INFO] [Mekanism/]: Transformation: (0.0, 0.0, 1.0)
-        //[14:03:03] [Client thread/INFO] [Mekanism/]: Transformation: (13.0, 0.0, 1.0)
-        //[14:03:03] [Client thread/INFO] [Mekanism/]: Transformation: (0.0, 1.0, 0.0)
-        //[14:03:03] [Client thread/INFO] [Mekanism/]: Transformation: (13.0, 1.0, 0.0)
-        //[14:03:03] [Client thread/INFO] [Mekanism/]: Transformation: (0.0, 1.0, 1.0)
-        //[14:03:03] [Client thread/INFO] [Mekanism/]: Transformation: (13.0, 1.0, 1.0)
+
+        //TODO: Figure out why back3 doesn't work because until we have straight working also our logic is broken
 
         //TODO - correct position for back 5, when going from "center":
         //Positions: 14.954316481758903, 4.658090299910921, 14.99, 0.8345653183980235, 17.371572399035813, 14.99
         //TODO: TRY THIS, do the thing I initially tried with subtracting center then rotating then adding center back???
 
-        //Corners: 1.0, -0.0, -0.0, -0.0, -19.0, -1.0
-        //xStartVec: (7.05987558168044, -6.356741049562446, -0.5)
-        //xEndVec: (7.729006218476487, -5.61359625149082, -0.5)
-        //yStartVec: (14.454316481758903, -12.34190970008908, -0.5)
-        //yEndVec: (0.3345653183980235, 0.37157239903581263, -0.5)
-        //zStartVec: (7.394440900078463, -5.985168650526633, -1.0)
-        //zEndVec: (7.394440900078463, -5.985168650526633, -0.0)
-        //TODO: I think this point is important
-        //center: (7.394440900078463, -5.985168650526633, -0.5)
-        //max: (14.11975116336088, -12.713482099124892, -1.0)
-        //min: (0.669130636796047, 0.7431447980716253, -0.0)
-        //start: (14.454316481758903, -12.34190970008908, -0.5) end: (0.3345653183980235, 0.37157239903581263, -0.5) xCenter: 0.5 zCenter: -0.5
-        //Positions: 14.954316481758903, 4.658090299910921, 13.99, 0.8345653183980235, 17.371572399035813, 13.99
-
-        //using half size instead of half position:
-        //[12:06:24] [Client thread/INFO] [Mekanism/]: Transformation: (-7.05987558168044, 6.356741049562446, 0.5)
-        //[12:06:24] [Client thread/INFO] [Mekanism/]: Transformation: (-6.390744944884393, 7.099885847634072, 0.5)
-        //[12:06:24] [Client thread/INFO] [Mekanism/]: Transformation: (14.454316481758903, -12.34190970008908, 0.5)
-        //[12:06:24] [Client thread/INFO] [Mekanism/]: Transformation: (0.3345653183980235, 0.37157239903581263, 0.5)
-        //[12:06:24] [Client thread/INFO] [Mekanism/]: Transformation: (-6.725310263282417, 6.728313448598259, -1.0)
-        //[12:06:24] [Client thread/INFO] [Mekanism/]: Transformation: (-6.725310263282417, 6.728313448598259, -0.0)
-        //[12:06:24] [Client thread/INFO] [Mekanism/]: Transformation: (-6.725310263282417, 6.728313448598259, 0.5)
-        //[12:06:24] [Client thread/INFO] [Mekanism/]: start: (14.454316481758903, -12.34190970008908, 0.5) end: (0.3345653183980235, 0.37157239903581263, 0.5) xCenter: 0.5 zCenter: 0.5
-        //[12:06:24] [Client thread/INFO] [Mekanism/]: Positions: 14.954316481758903, 4.658090299910921, 14.99, 0.8345653183980235, 17.371572399035813, 14.99
-
         //TODO: Try shifting x and z results by the amount it took to get to the center
         //TODO: Figure out the proper transforms?? z is incorrect currently it is off by one
         //TODO: I think we need to somehow merge all the different shifts
-        Mekanism.logger.info("start: " + start + " end: " + end + " xCenter: " + xCenter + " zCenter: " + zCenter);
-        //TODO: This is how it is done to get the correct angle
-        //Vec3d start = calculateTransform(xCenter, yMax, zCenter, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Vec3d end = calculateTransform(xCenter, yMin, zCenter, rotateAngleX, rotateAngleY, rotateAngleZ, mirror);
-        //Transformation: (14.11975116336088, -12.713482099124892, -1.0)
-        //Transformation: (0.669130636796047, 0.7431447980716253, -0.0)
+        Mekanism.logger.info("start: " + start + " end: " + end);
 
         //TODO: Create the shape creator automatically from information about width, height, depth? Or at least for the x and y differences
         // or maybe from the change in height etc
@@ -455,20 +356,13 @@ public final class VoxelShapeUtils {
         //This is the proper one now - when going from the center:
         //Positions: 14.954316481758903, 4.658090299910921, 14.99, 0.8345653183980235, 17.371572399035813, 14.99
 
-        //TODO: FIXME I am 90% sure that the issue is that it is starting the cube that it draws from the wrong corner at times
-        // This can be seen by changing z to be z + 2?
-        //return createSlope(startX, startY, endZ, endX - 1, endY - 1, startZ + 1, (x, y, z) -> Block.makeCuboidShape(x, y, z, x + 1, y + 1, z + 1));
-        //return createSlope(startX, startY, startZ, endX, endY, endZ, (x, y, z) -> Block.makeCuboidShape(x, y, z, x + 1, y + 1, z + 1));
-        //return createSlope(startX, startY, endZ, endX, endY, endZ, (x, y, z) -> Block.makeCuboidShape(x, y, z, x + 1, y + 1, z + 1));
-        return createSlope(startX, startY, startZ, endX, endY, endZ, (x, y, z) -> Block.makeCuboidShape(x - 0.5, y - 0.5, z - 0.5, x + 0.5, y + 0.5, z + 0.5));
+        ShapeCreator shapeCreator = (x, y, z) -> Block.makeCuboidShape(x - 0.5, y - 0.5, z - 0.5, x + 0.5, y + 0.5, z + 0.5);
+        double xHalf = (minX + maxX) / 2.0;
+        double yHalf = (minY + maxY) / 2.0;
+        double zHalf = (minZ + maxZ) / 2.0;
+        //ShapeCreator shapeCreator = (x, y, z) -> Block.makeCuboidShape(x - xHalf, y - yHalf, z - zHalf, x + xHalf, y + yHalf, z + zHalf);
 
-        //return createSlope(startX, startY, startZ, endX - 1, endY - 1, endZ - 1, (x, y, z) -> Block.makeCuboidShape(x, y, z, x + 1, y + 1, z + 1));
-    }
-
-    private static Vec3d calculateTransform(double x, double y, double z, double rotateAngleX, double rotateAngleY, double rotateAngleZ, boolean mirror) {
-        Vec3d transformed = calculateTransform(x, y, z, rotateAngleX, rotateAngleY, rotateAngleZ);
-        Mekanism.logger.info("Transformation: " + transformed);
-        return transformed;
+        return createSlope(startX, startY, startZ, endX, endY, endZ, shapeCreator);
     }
 
     private static Vec3d calculateTransform(double x, double y, double z, double rotateAngleX, double rotateAngleY, double rotateAngleZ) {
