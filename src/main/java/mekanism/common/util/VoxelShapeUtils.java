@@ -256,10 +256,17 @@ public final class VoxelShapeUtils {
         //TODO: Full frame causes lag when looking at it, probably has to do with the corners not quite lining up
         //TODO: Should we round them all to 3 digits of precision before adding them
         ModelSeismicVibrator model = new ModelSeismicVibrator();
-        /*return getShapeFromModel(model.frameBack1, model.frameBack2, model.frameBack3, model.frameBack4, model.frameBack5,
-              model.frameLeft1, model.frameLeft2, model.frameLeft3, model.frameLeft4, model.frameLeft5,
-              model.frameRight1, model.frameRight2, model.frameRight3, model.frameRight4, model.frameRight5);//*/
-        return getShapeFromModel(model.frameBack3, model.frameBack5);
+        return getShapeFromModel(model.frameBack3, model.frameBack5);//*/
+        //return VoxelShapes.empty();
+        /*return getShapeFromModel(model.plate3, model.baseBack, model.motor, model.port,
+              model.pole4, model.shaft2, model.shaft1, model.arm3, model.plate2, model.arm2,
+              model.arm1, model.top, model.frameBack5, model.pole3, model.frameRight5,
+              model.baseRight, model.baseFront, model.baseLeft, model.frameRight3, model.pole1,
+              model.frameRight4, model.frameRight1, model.frameRight2, model.frameLeft5, model.frameLeft4,
+              model.frameBack3, model.frameLeft2, model.frameLeft1, model.pole2, model.frameBack1,
+              model.frameBack2, model.frameBack4, model.frameLeft3, model.conduit, model.plate1,
+              model.rivet10, model.rivet5, model.rivet1, model.rivet6, model.rivet2, model.rivet7,
+              model.rivet3, model.rivet8, model.rivet4, model.rivet9);//*/
     }
 
     public static VoxelShape getShapeFromModel(RendererModel... models) {
@@ -289,16 +296,25 @@ public final class VoxelShapeUtils {
     //TODO: When we make this more of a util method, make it so that we are printing the createSlope thing instead of the params to this
     public static VoxelShape getSlope(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float rotationPointX, float rotationPointY,
           float rotationPointZ, float rotateAngleX, float rotateAngleY, float rotateAngleZ) {
-        Mekanism.logger.info("STARTING HERE");
-        Mekanism.logger.info("Inputs: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}", minX, minY, minZ, maxX, maxY, maxZ, rotationPointX, rotationPointY, rotationPointZ, rotateAngleX, rotateAngleY, rotateAngleZ);
         //Note: This is a manual rotation to not have to deal with numbers getting not rounding properly due to double precision
-        float rotX = -rotationPointX;
-        float rotY = -rotationPointY;
-        float rotZ = rotationPointZ;
+        float shiftX = 16 * 0.5F - rotationPointX;
+        float shiftY = 16 * 1.5F - rotationPointY;
+        float shiftZ = 16 * 0.5F + rotationPointZ;
 
-        float shiftX = 16 * 0.5F + rotX;
-        float shiftY = 16 * 1.5F + rotY;
-        float shiftZ = 16 * 0.5F + rotZ;
+        /*
+        rearPlate1.addBox(-2.5F, -6F, 0F, 5, 6, 3);
+        rearPlate1.setRotationPoint(0F, -44.5F, 4F);
+        setRotation(rearPlate1, 0.122173F, 0F, 0F);
+        rearPlate2.addBox(-1.5F, -5F, -1F, 3, 5, 2);
+        rearPlate2.setRotationPoint(0F, -45F, 7F);
+        setRotation(rearPlate2, 0.2094395F, 0F, 0F);
+         */
+
+        if (rotateAngleX == 0 && rotateAngleY == 0 && rotateAngleZ == 0) {
+            //TODO: This is a shortcut but we may want to make below stuff properly be able to handle angles of zero?
+            // My guess is they just don't handle rotating around the y axis at all
+            return Block.makeCuboidShape(-maxX + shiftX, -maxY + shiftY, maxZ + shiftZ, -minX + shiftX, -minY + shiftY, minZ + shiftZ);
+        }
         //TODO: Check other spots for converting from double to float because of loss of precision (for the numbers we use)
 
         //TODO: Do we need to do center in each one to figure out the proper pieces
@@ -361,16 +377,17 @@ public final class VoxelShapeUtils {
         //Positions: 14.954316481758903, 4.658090299910921, 14.99, 0.8345653183980235, 17.371572399035813, 14.99
 
         ShapeCreator shapeCreator = (x, y, z) -> Block.makeCuboidShape(x - 0.5F, y - 0.5F, z - 0.5F, x + 0.5F, y + 0.5F, z + 0.5F);
-        float xHalf = (minX + maxX) / 2F;
-        float yHalf = (minY + maxY) / 2F;
+        float xHalf = -(minX + maxX) / 2F;
+        float yHalf = -(minY + maxY) / 2F;
         float zHalf = (minZ + maxZ) / 2F;
         Mekanism.logger.info("Half: {}, {}, {}, {}", xHalf, yHalf, zHalf, calculateTransform(xHalf, yHalf, zHalf, rotateAngleX, rotateAngleY, rotateAngleZ));
-        //ShapeCreator shapeCreator = (x, y, z) -> Block.makeCuboidShape(x - xHalf, y - yHalf, z - zHalf, x + xHalf, y + yHalf, z + zHalf);
-
+        Vec3f dif = end.add(start).scale(0.5F);
+        Mekanism.logger.info("dif: " + dif);
+        //shapeCreator = (x, y, z) -> Block.makeCuboidShape(x - dif.x, y - 0.5, z - dif.z, x + dif.x, y + 0.5, z + dif.z);
         return createSlope(startX, startY, startZ, endX, endY, endZ, shapeCreator);
     }
 
-    //TODO: Replace Vec3d with our own Vec3f
+    //TODO: It does not seem that multi angle rotations work properly
     private static Vec3f calculateTransform(float x, float y, float z, float rotateAngleX, float rotateAngleY, float rotateAngleZ) {
         float xReturn = x;
         float yReturn = y;
@@ -416,36 +433,24 @@ public final class VoxelShapeUtils {
         //Mekanism.logger.info("Differences: " + xDif + ", " + yDif + ", " + zDif + " steps: " + steps);
         //Differences: 14.11975116336088, 12.713482099124892, 0.0
         double tPartial = 1.0 / steps;
-        Mekanism.logger.info("x = {} + {} * t", xStart, xDif);
-        Mekanism.logger.info("y = {} + {} * t", yStart, yDif);
-        Mekanism.logger.info("z = {} + {} * t", zStart, zDif);
+        //Mekanism.logger.info("x = {} + {} * t", xStart, xDif);
+        //Mekanism.logger.info("y = {} + {} * t", yStart, yDif);
+        //Mekanism.logger.info("z = {} + {} * t", zStart, zDif);
         //TODO: Make them each have their own values of t, or at least number of steps?
-        //x = 14.61975116336088 + -14.450620526564833 * t
-        //y = 4.286517900875108 + 12.456626897196518 * t
-        //z = 13.49 + 0.0 * t
-
-        //x = 14.61975116336088 + -13.450620526564833 * t
-        //y = 4.286517900875108 + 13.456626897196518 * t
-        //z = 13.49 + 1.0 * t
 
         List<VoxelShape> shapes = new ArrayList<>();
         //TODO: Have some max number of steps it is willing to do?
-        float x = xStart;
-        float y = yStart;
-        float z = zStart;
-        //TODO: Instead of adding one do we want to start at 1 and then have it be offset towards the inside
-        //TODO: Fix when fixing where this assumption is from
-        // Note: We add 1 to adjust for the shift for calculating based on shape
-        for (int step = 0; step <= steps + 1; step++) {
+        //TODO: Decide which to use
+        for (int step = 0; step <= steps; step++) {
+        //for (int step = 1; step < steps; step++) {
             //TODO: I think the lag has to do with how accurate it gets with the x y and z calculations
             // especially with calculating t dynamically
-            shapes.add(shapeCreator.createShape(x, y, z));
             float t = (float) (tPartial * step);
-            x = xStart + xDif * t;
-            y = yStart + yDif * t;
-            z = zStart + zDif * t;
+            float x = xStart + xDif * t;
+            float y = yStart + yDif * t;
+            float z = zStart + zDif * t;
+            shapes.add(shapeCreator.createShape(x, y, z));
         }
-        //TODO: Implement a slightly more advanced version of this method that gets used, which allows for custom equations
         return combine(shapes);
     }
 
@@ -470,6 +475,14 @@ public final class VoxelShapeUtils {
 
         public Vec3f scale(float factor) {
             return mul(factor, factor, factor);
+        }
+
+        public Vec3f subtract(Vec3f vec) {
+            return subtract(vec.x, vec.y, vec.z);
+        }
+
+        public Vec3f subtract(float x, float y, float z) {
+            return add(-x, -y, -z);
         }
 
         public Vec3f add(Vec3f vec) {

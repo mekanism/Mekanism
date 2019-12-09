@@ -18,6 +18,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.inventory.container.WindGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
@@ -75,6 +76,10 @@ public class BlockWindGenerator extends BlockMekanism implements IHasGui<TileEnt
         setRotation(post1c, 0.0347321F, 0F, 0.0347321F);
         setRotation(post1d, -0.0347321F, 0F, -0.0347321F);*/
         generator = VoxelShapeUtils.rotate(generator, Rotation.CLOCKWISE_180);
+        ModelWindGenerator model = new ModelWindGenerator();
+        /*generator = VoxelShapeUtils.getShapeFromModel(model.head, model.plateConnector2, model.plateConnector, model.plate,
+              model.baseRim, model.base, model.rearPlate1, model.rearPlate2, model.wire, model.post1a, model.post1b, model.post1c, model.post1d);//*/
+        generator = VoxelShapeUtils.getShapeFromModel(model.rearPlate1);//, model.rearPlate2);
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(generator, side);
         }
