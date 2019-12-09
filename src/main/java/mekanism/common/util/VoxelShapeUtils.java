@@ -259,7 +259,7 @@ public final class VoxelShapeUtils {
         /*return getShapeFromModel(model.frameBack1, model.frameBack2, model.frameBack3, model.frameBack4, model.frameBack5,
               model.frameLeft1, model.frameLeft2, model.frameLeft3, model.frameLeft4, model.frameLeft5,
               model.frameRight1, model.frameRight2, model.frameRight3, model.frameRight4, model.frameRight5);//*/
-        return getShapeFromModel(model.frameBack3, model.frameBack5, model.frameLeft5);
+        return getShapeFromModel(model.frameBack3, model.frameBack5);
     }
 
     public static VoxelShape getShapeFromModel(RendererModel... models) {
@@ -287,19 +287,20 @@ public final class VoxelShapeUtils {
     }
 
     //TODO: When we make this more of a util method, make it so that we are printing the createSlope thing instead of the params to this
-    public static VoxelShape getSlope(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, double rotationPointX, double rotationPointY,
-          double rotationPointZ, double rotateAngleX, double rotateAngleY, double rotateAngleZ) {
+    public static VoxelShape getSlope(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float rotationPointX, float rotationPointY,
+          float rotationPointZ, float rotateAngleX, float rotateAngleY, float rotateAngleZ) {
         Mekanism.logger.info("STARTING HERE");
+        Mekanism.logger.info("Inputs: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}", minX, minY, minZ, maxX, maxY, maxZ, rotationPointX, rotationPointY, rotationPointZ, rotateAngleX, rotateAngleY, rotateAngleZ);
         //Note: This is a manual rotation to not have to deal with numbers getting not rounding properly due to double precision
-        double rotX = -rotationPointX;
-        double rotY = -rotationPointY;
-        double rotZ = rotationPointZ;
+        float rotX = -rotationPointX;
+        float rotY = -rotationPointY;
+        float rotZ = rotationPointZ;
 
-        double shiftX = 16 * 0.5 + rotX;
-        double shiftY = 16 * 1.5 + rotY;
-        double shiftZ = 16 * 0.5 + rotZ;
+        float shiftX = 16 * 0.5F + rotX;
+        float shiftY = 16 * 1.5F + rotY;
+        float shiftZ = 16 * 0.5F + rotZ;
+        //TODO: Check other spots for converting from double to float because of loss of precision (for the numbers we use)
 
-        Mekanism.logger.info("Corners: {}, {}, {}, {}, {}, {}", minX, minY, minZ, maxX, maxY, maxZ);
         //TODO: Do we need to do center in each one to figure out the proper pieces
         //TODO: Do we want to use these vector's for figuring out either:
         // a. The VoxelShape to create
@@ -308,23 +309,26 @@ public final class VoxelShapeUtils {
         //y angle -> x, z get changed
         //z angle -> x, y get changed
         //TODO: I believe this is how we calculate for rotating around x or z
-        Vec3d start1 = calculateTransform(minX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
-        Vec3d start2 = calculateTransform(maxX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
-        Vec3d start3 = calculateTransform(minX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
-        Vec3d start4 = calculateTransform(maxX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
-        Vec3d startSum = start1.add(start2).add(start3).add(start4);
-        Vec3d startAvg = startSum.mul(0.25, 0.25, 0.25);
+        Vec3f start1 = calculateTransform(minX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3f start2 = calculateTransform(maxX, minY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3f start3 = calculateTransform(minX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3f start4 = calculateTransform(maxX, minY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3f startSum = start1.add(start2).add(start3).add(start4);
+        Vec3f startAvg = startSum.scale(0.25F);
 
-        Vec3d end1 = calculateTransform(minX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
-        Vec3d end2 = calculateTransform(maxX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
-        Vec3d end3 = calculateTransform(minX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
-        Vec3d end4 = calculateTransform(maxX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
-        Vec3d endSum = end1.add(end2).add(end3).add(end4);
-        Vec3d endAvg = endSum.mul(0.25, 0.25, 0.25);
+        Vec3f end1 = calculateTransform(minX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3f end2 = calculateTransform(maxX, maxY, minZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3f end3 = calculateTransform(minX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3f end4 = calculateTransform(maxX, maxY, maxZ, rotateAngleX, rotateAngleY, rotateAngleZ);
+        Vec3f endSum = end1.add(end2).add(end3).add(end4);
+        Vec3f endAvg = endSum.scale(0.25F);
         //TODO: Explain the swap of start and end
         //Manually do the 180 rotation around z
-        Vec3d end = startAvg.mul(-1, -1, 1);
-        Vec3d start = endAvg.mul(-1, -1, 1);
+        Vec3f end = startAvg.mul(-1, -1, 1);
+        Vec3f start = endAvg.mul(-1, -1, 1);
+        //TODO: This is a decent way of calculating the true center point
+        // We need to come up with a good way of doing things that have dimensions of things more than 1x1x1
+        // And then create a custom shape for them
 
         //TODO: Figure out why back3 doesn't work because until we have straight working also our logic is broken
 
@@ -342,12 +346,12 @@ public final class VoxelShapeUtils {
 
         //TODO: Check if we are even doing the mirror calculations correctly, because if not that could be a big part of why everything is screwed up
         //TODO: Calculate 1 unit, and then see about how things get shifted?
-        double startX = start.x + shiftX;
-        double startY = start.y + shiftY;
-        double startZ = start.z + shiftZ;
-        double endX = end.x + shiftX;
-        double endY = end.y + shiftY;
-        double endZ = end.z + shiftZ;
+        float startX = start.x + shiftX;
+        float startY = start.y + shiftY;
+        float startZ = start.z + shiftZ;
+        float endX = end.x + shiftX;
+        float endY = end.y + shiftY;
+        float endZ = end.z + shiftZ;
 
         Mekanism.logger.info("Shift: {}, {}, {}", shiftX, shiftY, shiftZ);
         //Shift: 0.5, 17.0, 14.49
@@ -356,44 +360,50 @@ public final class VoxelShapeUtils {
         //This is the proper one now - when going from the center:
         //Positions: 14.954316481758903, 4.658090299910921, 14.99, 0.8345653183980235, 17.371572399035813, 14.99
 
-        ShapeCreator shapeCreator = (x, y, z) -> Block.makeCuboidShape(x - 0.5, y - 0.5, z - 0.5, x + 0.5, y + 0.5, z + 0.5);
-        double xHalf = (minX + maxX) / 2.0;
-        double yHalf = (minY + maxY) / 2.0;
-        double zHalf = (minZ + maxZ) / 2.0;
+        ShapeCreator shapeCreator = (x, y, z) -> Block.makeCuboidShape(x - 0.5F, y - 0.5F, z - 0.5F, x + 0.5F, y + 0.5F, z + 0.5F);
+        float xHalf = (minX + maxX) / 2F;
+        float yHalf = (minY + maxY) / 2F;
+        float zHalf = (minZ + maxZ) / 2F;
+        Mekanism.logger.info("Half: {}, {}, {}, {}", xHalf, yHalf, zHalf, calculateTransform(xHalf, yHalf, zHalf, rotateAngleX, rotateAngleY, rotateAngleZ));
         //ShapeCreator shapeCreator = (x, y, z) -> Block.makeCuboidShape(x - xHalf, y - yHalf, z - zHalf, x + xHalf, y + yHalf, z + zHalf);
 
         return createSlope(startX, startY, startZ, endX, endY, endZ, shapeCreator);
     }
 
-    private static Vec3d calculateTransform(double x, double y, double z, double rotateAngleX, double rotateAngleY, double rotateAngleZ) {
-        double xReturn = x;
-        double yReturn = y;
-        double zReturn = z;
+    //TODO: Replace Vec3d with our own Vec3f
+    private static Vec3f calculateTransform(float x, float y, float z, float rotateAngleX, float rotateAngleY, float rotateAngleZ) {
+        float xReturn = x;
+        float yReturn = y;
+        float zReturn = z;
         if (rotateAngleZ != 0) {
-            double sinZ = Math.sin(rotateAngleZ);
-            double cosZ = Math.cos(rotateAngleZ);
+            float sinZ = (float) Math.sin(rotateAngleZ);
+            float cosZ = (float) Math.cos(rotateAngleZ);
             xReturn = x * cosZ - y * sinZ;
             yReturn = x * sinZ + y * cosZ;
+            x = xReturn;
+            y = yReturn;
         }
         if (rotateAngleY != 0) {
-            double sinY = Math.sin(rotateAngleY);
-            double cosY = Math.cos(rotateAngleY);
+            float sinY = (float) Math.sin(rotateAngleY);
+            float cosY = (float) Math.cos(rotateAngleY);
             xReturn = x * cosY + z * sinY;
             zReturn = z * cosY - x * sinY;
+            x = xReturn;
+            z = zReturn;
         }
         if (rotateAngleX != 0) {
-            double sinX = Math.sin(rotateAngleX);
-            double cosX = Math.cos(rotateAngleX);
+            float sinX = (float) Math.sin(rotateAngleX);
+            float cosX = (float) Math.cos(rotateAngleX);
             yReturn = y * cosX - z * sinX;
             zReturn = y * sinX + z * cosX;
         }
-        return new Vec3d(xReturn, yReturn, zReturn);
+        return new Vec3f(xReturn, yReturn, zReturn);
     }
 
-    public static VoxelShape createSlope(double xStart, double yStart, double zStart, double xEnd, double yEnd, double zEnd, ShapeCreator shapeCreator) {
-        double xDif = xEnd - xStart;
-        double yDif = yEnd - yStart;
-        double zDif = zEnd - zStart;
+    public static VoxelShape createSlope(float xStart, float yStart, float zStart, float xEnd, float yEnd, float zEnd, ShapeCreator shapeCreator) {
+        float xDif = xEnd - xStart;
+        float yDif = yEnd - yStart;
+        float zDif = zEnd - zStart;
         if (xDif == 0 && yDif == 0 && zDif == 0) {
             //If start and end are the same, return an empty voxel shape
             return VoxelShapes.empty();
@@ -420,15 +430,17 @@ public final class VoxelShapeUtils {
 
         List<VoxelShape> shapes = new ArrayList<>();
         //TODO: Have some max number of steps it is willing to do?
-        double x = xStart;
-        double y = yStart;
-        double z = zStart;
+        float x = xStart;
+        float y = yStart;
+        float z = zStart;
         //TODO: Instead of adding one do we want to start at 1 and then have it be offset towards the inside
         //TODO: Fix when fixing where this assumption is from
         // Note: We add 1 to adjust for the shift for calculating based on shape
         for (int step = 0; step <= steps + 1; step++) {
+            //TODO: I think the lag has to do with how accurate it gets with the x y and z calculations
+            // especially with calculating t dynamically
             shapes.add(shapeCreator.createShape(x, y, z));
-            double t = tPartial * step;
+            float t = (float) (tPartial * step);
             x = xStart + xDif * t;
             y = yStart + yDif * t;
             z = zStart + zDif * t;
@@ -440,6 +452,40 @@ public final class VoxelShapeUtils {
     @FunctionalInterface
     public interface ShapeCreator {
 
-        VoxelShape createShape(double x, double y, double z);
+        VoxelShape createShape(float x, float y, float z);
+    }
+
+    //Float version of Vec3d
+    private static class Vec3f {
+
+        public final float x;
+        public final float y;
+        public final float z;
+
+        public Vec3f(float xIn, float yIn, float zIn) {
+            this.x = xIn;
+            this.y = yIn;
+            this.z = zIn;
+        }
+
+        public Vec3f scale(float factor) {
+            return mul(factor, factor, factor);
+        }
+
+        public Vec3f add(Vec3f vec) {
+            return add(vec.x, vec.y, vec.z);
+        }
+
+        public Vec3f add(float x, float y, float z) {
+            return new Vec3f(this.x + x, this.y + y, this.z + z);
+        }
+
+        public Vec3f mul(float factorX, float factorY, float factorZ) {
+            return new Vec3f(this.x * factorX, this.y * factorY, this.z * factorZ);
+        }
+
+        public String toString() {
+            return "(" + this.x + ", " + this.y + ", " + this.z + ")";
+        }
     }
 }
