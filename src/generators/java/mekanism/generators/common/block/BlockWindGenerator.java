@@ -18,7 +18,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
-import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.inventory.container.WindGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
@@ -32,7 +31,6 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -49,37 +47,30 @@ public class BlockWindGenerator extends BlockMekanism implements IHasGui<TileEnt
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.wind"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
-    //TODO: VoxelShapes: FIXME
     static {
         VoxelShape generator = VoxelShapeUtils.combine(
-              makeCuboidShape(1, 65, 3, 11.5, 75.5, 12),//head
-              makeCuboidShape(4, 4, 15, 12, 12, 16),//plate
-              //makeCuboidShape(6, 70, 7, 9, 73, 16),//bladeCap
-              //makeCuboidShape(4, 68, 5, 10, 74, 15),//bladeCenter
-              makeCuboidShape(2, 1, 2, 14, 3, 14),//baseRim
-              makeCuboidShape(0, 0, 0, 16, 2, 16),//base
-              makeCuboidShape(6, 5, 7.5, 9, 70, 10.6),//wire
-              makeCuboidShape(6, 3, 11.5, 10, 5, 13.5),//plateConnector
-              makeCuboidShape(5, 5, 5, 11, 11, 15),//plateConnector2
-              makeCuboidShape(3, 62.5, 1, 10.5, 74.5, 4),//rearPlate1
-              makeCuboidShape(5, 64, -1, 9.5, 74, 2),//rearPlate2
-              makeCuboidShape(3, 2, 3, 10.5, 70, 10.5),//post1a
-              makeCuboidShape(3, 2, 3, 10.5, 70, 10.5),//post1b
-              makeCuboidShape(3, 2, 3, 10.5, 70, 10.5),//post1c
-              makeCuboidShape(3, 2, 3, 10.5, 70, 10.5)//post1d
+              makeCuboidShape(4.5, 68.5, 4, 11.5, 75.5, 13),
+              makeCuboidShape(5, 5, 1, 11, 11, 11),
+              makeCuboidShape(6, 3, 2.5, 10, 5, 4.5),
+              makeCuboidShape(4, 4, 0, 12, 12, 1),
+              makeCuboidShape(2, 1, 2, 14, 3, 14),
+              makeCuboidShape(0, 0, 0, 16, 2, 16),
+              makeCuboidShape(5.5, 68.5, 13, 10.5, 74.82, 14.3),
+              makeCuboidShape(5.5, 68.75, 14.3, 10.5, 74.1, 14.9),
+              makeCuboidShape(6.5, 68.8, 14.9, 9.5, 73.8, 15.3),
+              makeCuboidShape(6.5, 69, 15.3, 9.5, 72, 15.6),
+              makeCuboidShape(6.5, 69, 15.6, 9.5, 70.3, 16),
+              makeCuboidShape(5.25, 67, 5.25, 10.75, 70, 10.75),
+              makeCuboidShape(5, 59, 5, 11, 67, 11),
+              makeCuboidShape(4.75, 51, 4.75, 11.25, 59, 11.25),
+              makeCuboidShape(4.5, 43, 4.5, 11.5, 51, 11.5),
+              makeCuboidShape(4.25, 35, 4.25, 11.75, 43, 11.75),
+              makeCuboidShape(4, 27, 4, 12, 35, 12),
+              makeCuboidShape(3.75, 19, 3.75, 12.25, 27, 12.25),
+              makeCuboidShape(3.5, 11, 3.5, 12.5, 19, 12.5),
+              makeCuboidShape(3.25, 15, 3.25, 12.75, 19, 12.75),
+              makeCuboidShape(3, 3, 3, 13, 15, 13)
         );
-        /*setRotation(wire, -0.0349066F, 0F, 0F);
-        setRotation(rearPlate1, 0.122173F, 0F, 0F);
-        setRotation(rearPlate2, 0.2094395F, 0F, 0F);
-        setRotation(post1a, -0.0349066F, 0F, 0.0349066F);
-        setRotation(post1b, 0.0349066F, 0F, -0.0349066F);
-        setRotation(post1c, 0.0347321F, 0F, 0.0347321F);
-        setRotation(post1d, -0.0347321F, 0F, -0.0347321F);*/
-        generator = VoxelShapeUtils.rotate(generator, Rotation.CLOCKWISE_180);
-        ModelWindGenerator model = new ModelWindGenerator();
-        /*generator = VoxelShapeUtils.getShapeFromModel(model.head, model.plateConnector2, model.plateConnector, model.plate,
-              model.baseRim, model.base, model.rearPlate1, model.rearPlate2, model.wire, model.post1a, model.post1b, model.post1c, model.post1d);//*/
-        generator = VoxelShapeUtils.getShapeFromModel(model.rearPlate1);//, model.rearPlate2);
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(generator, side);
         }

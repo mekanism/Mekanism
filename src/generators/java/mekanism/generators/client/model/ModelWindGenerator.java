@@ -5,28 +5,27 @@ import net.minecraft.client.renderer.model.Model;
 
 public class ModelWindGenerator extends Model {
 
-    //TODO: Make private
-    public final RendererModel head;
-    public final RendererModel plateConnector2;
-    public final RendererModel plateConnector;
-    public final RendererModel plate;
-    public final RendererModel bladeCap;
-    public final RendererModel bladeCenter;
-    public final RendererModel baseRim;
-    public final RendererModel base;
-    public final RendererModel wire;
-    public final RendererModel rearPlate1;
-    public final RendererModel rearPlate2;
-    public final RendererModel blade1a;
-    public final RendererModel blade2a;
-    public final RendererModel blade3a;
-    public final RendererModel blade1b;
-    public final RendererModel blade2b;
-    public final RendererModel blade3b;
-    public final RendererModel post1a;
-    public final RendererModel post1b;
-    public final RendererModel post1c;
-    public final RendererModel post1d;
+    private final RendererModel head;
+    private final RendererModel plateConnector2;
+    private final RendererModel plateConnector;
+    private final RendererModel plate;
+    private final RendererModel bladeCap;
+    private final RendererModel bladeCenter;
+    private final RendererModel baseRim;
+    private final RendererModel base;
+    private final RendererModel wire;
+    private final RendererModel rearPlate1;
+    private final RendererModel rearPlate2;
+    private final RendererModel blade1a;
+    private final RendererModel blade2a;
+    private final RendererModel blade3a;
+    private final RendererModel blade1b;
+    private final RendererModel blade2b;
+    private final RendererModel blade3b;
+    private final RendererModel post1a;
+    private final RendererModel post1b;
+    private final RendererModel post1c;
+    private final RendererModel post1d;
 
     public ModelWindGenerator() {
         textureWidth = 128;
@@ -161,7 +160,7 @@ public class ModelWindGenerator extends Model {
     }
 
     public void render(float size, double angle) {
-        /*head.render(size);
+        head.render(size);
         plateConnector2.render(size);
         plateConnector.render(size);
         plate.render(size);
@@ -195,10 +194,7 @@ public class ModelWindGenerator extends Model {
         blade3b.render(size);
 
         bladeCap.render(size);
-        bladeCenter.render(size);*/
-
-        rearPlate1.render(size);
-        //rearPlate2.render(size);
+        bladeCenter.render(size);
     }
 
     public float getRotation(double angle) {

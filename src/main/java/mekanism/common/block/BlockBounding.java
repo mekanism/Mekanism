@@ -197,10 +197,15 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return BlockRenderLayer.CUTOUT;
     }
 
+    //TODO: If need be override: getCollisionShape, getRenderShape, getRaytraceShape to allow for
+    // the blocks to properly proxy that stuff, if they have overridden implementations of the methods
+    // rather than have them basically have the defaults which is just based off of getShape
     @Nonnull
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        //TODO: VoxelShapes: Fix snow not being able to be placed on top if the top is solid - see seismic vibrator
+        // That part is due to not returning a full VoxelShape from getShape, can we somehow get the default a different way?
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return VoxelShapes.empty();//super.getShape(state, world, pos, context);

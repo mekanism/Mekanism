@@ -56,71 +56,46 @@ public class BlockSeismicVibrator extends BlockMekanism implements IBlockElectri
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
+        //Note: We don't include arm3 and have the walls be overly simplified
         VoxelShape vibrator = VoxelShapeUtils.combine(
-              makeCuboidShape(0, 30, 0, 16, 32, 16),//top
-              makeCuboidShape(5, 25, 1, 11, 29, 11),//motor
-              makeCuboidShape(4, 4, 0, 12, 12, 1),//port
-              makeCuboidShape(6, 5, 0, 10, 30, 2),//conduit
-              makeCuboidShape(0, 0, 13, 16, 5, 16),//baseFront
-              makeCuboidShape(0, 0, 3, 3, 5, 13),//baseRight
-              makeCuboidShape(13, 0, 3, 16, 5, 13),//baseLeft
-              makeCuboidShape(0, 0, 0, 16, 5, 3),//baseBack
-              makeCuboidShape(7, 3, 7, 9, 18, 9),//shaft1
-              makeCuboidShape(6.5, 18, 6.5, 9.5, 29, 9.5),//shaft2
-              makeCuboidShape(3, 29, 1, 13, 30, 13),//plate1
-              makeCuboidShape(6, 1, 6, 10, 3, 10),//plate2
-              makeCuboidShape(4, 0, 4, 12, 2, 12),//plate3
-              makeCuboidShape(6.5, 15, 2, 9.5, 17, 6),//arm1
-              makeCuboidShape(6, 15, 6, 10, 17, 10),//arm2
-              makeCuboidShape(7, 15, 1, 9, 17, 5),//arm3
-              makeCuboidShape(14.5, 5, 14.5, 15.5, 30, 15.5),//pole1
-              makeCuboidShape(14.5, 5, 0.5, 15.5, 30, 1.5),//pole2
-              makeCuboidShape(0.5, 5, 14.5, 1.5, 30, 15.5),//pole3
-              makeCuboidShape(0, 5, 0.5, 1.5, 30, 1.5),//pole4
-              makeCuboidShape(0.51, 11, 14.5, 1.51, 30, 15.5),//frameRight1
-              makeCuboidShape(0.51, 11, -0.5, 1.51, 30, 1.5),//frameRight2
-              makeCuboidShape(0.5, 17, 1.5, 1.5, 18, 14.5),//frameRight3
-              makeCuboidShape(0.51, -2, -0.5, 1.51, 17, 1.5),//frameRight4
-              makeCuboidShape(0.51, -2, 14.5, 1.51, 17, 15.5),//frameRight5
-              makeCuboidShape(14.49, 11, -0.5, 15.49, 30, 1.5),//frameLeft1
-              makeCuboidShape(14.49, 11, 14.5, 15.49, 30, 15.5),//frameLeft2
-              makeCuboidShape(14.5, 17, 1.5, 15.5, 18, 14.5),//frameLeft3
-              makeCuboidShape(14.49, -2, -0.5, 15.49, 17, 1.5),//frameLeft4
-              makeCuboidShape(14.49, -2, 14.5, 15.49, 17, 15.5),//frameLeft5
-              makeCuboidShape(-0.5, 11, 0.51, 1.5, 30, 1.51),//frameBack1
-              makeCuboidShape(14.5, 11, 0.51, 15.5, 30, 1.51),//frameBack2
-              makeCuboidShape(1.5, 17, 0.5, 14.5, 18, 1.5),//frameBack3
-              makeCuboidShape(14.5, -2, 0.51, 15.5, 17, 1.51),//frameBack4
-              makeCuboidShape(-0.5, -2, 0.51, 1.5, 17, 1.51),//frameBack5
-              makeCuboidShape(11.5, 28.5, 11.5, 12.5, 29.5, 12.5),//rivet1
-              makeCuboidShape(11.5, 28.5, 9.5, 12.5, 29.5, 10.5),//rivet2
-              makeCuboidShape(11.5, 28.5, 7.5, 12.5, 29.5, 8.5),//rivet3
-              makeCuboidShape(11.5, 28.5, 5.5, 12.5, 29.5, 6.5),//rivet4
-              makeCuboidShape(11.5, 28.5, 3.5, 12.5, 29.5, 4.5),//rivet5
-              makeCuboidShape(3.5, 28.5, 11.5, 4.5, 29.5, 12.5),//rivet6
-              makeCuboidShape(3.5, 28.5, 9.5, 4.5, 29.5, 10.5),//rivet7
-              makeCuboidShape(3.5, 28.5, 7.5, 4.5, 29.5, 8.5),//rivet8
-              makeCuboidShape(3.5, 28.5, 5.5, 4.5, 29.5, 6.5),//rivet9
-              makeCuboidShape(3.5, 28.5, 3.5, 4.5, 29.5, 4.5)//rivet10
+              makeCuboidShape(4, 0, 4, 12, 2, 12),
+              makeCuboidShape(0, 0, 13, 16, 5, 16),
+              makeCuboidShape(5, 25, 5, 11, 29, 15),
+              makeCuboidShape(4, 4, 15, 12, 12, 16),
+              makeCuboidShape(0.5, 5, 14.5, 1.5, 30, 15.5),
+              makeCuboidShape(6.5, 18, 6.5, 9.5, 29, 9.5),
+              makeCuboidShape(7, 3, 7, 9, 18, 9),
+              makeCuboidShape(6, 1, 6, 10, 3, 10),
+              makeCuboidShape(6, 15, 6, 10, 17, 10),
+              makeCuboidShape(6.5, 15, 10, 9.5, 17, 14),
+              makeCuboidShape(0, 30, 0, 16, 32, 16),
+              makeCuboidShape(0.5, 5, 0.5, 1.5, 30, 1.5),
+              makeCuboidShape(0, 0, 3, 3, 5, 13),
+              makeCuboidShape(0, 0, 0, 16, 5, 3),
+              makeCuboidShape(13, 0, 3, 16, 5, 13),
+              makeCuboidShape(0.5, 17, 1.5, 1.5, 18, 14.5),
+              makeCuboidShape(14.5, 5, 0.5, 15.5, 30, 1.5),
+              makeCuboidShape(1.5, 17, 14.5, 14.5, 18, 15.5),
+              makeCuboidShape(14.5, 5, 14.5, 15.5, 30, 15.5),
+              makeCuboidShape(14.5, 17, 1.5, 15.5, 18, 14.5),
+              makeCuboidShape(6, 5, 14, 10, 30, 16),
+              makeCuboidShape(3, 29, 3, 13, 30, 15),
+              makeCuboidShape(3.5, 28.5, 11.5, 4.5, 29.5, 12.5),
+              makeCuboidShape(11.5, 28.5, 11.5, 12.5, 29.5, 12.5),
+              makeCuboidShape(11.5, 28.5, 3.5, 12.5, 29.5, 4.5),
+              makeCuboidShape(3.5, 28.5, 3.5, 4.5, 29.5, 4.5),
+              makeCuboidShape(11.5, 28.5, 5.5, 12.5, 29.5, 6.5),
+              makeCuboidShape(3.5, 28.5, 5.5, 4.5, 29.5, 6.5),
+              makeCuboidShape(11.5, 28.5, 7.5, 12.5, 29.5, 8.5),
+              makeCuboidShape(3.5, 28.5, 7.5, 4.5, 29.5, 8.5),
+              makeCuboidShape(11.5, 28.5, 9.5, 12.5, 29.5, 10.5),
+              makeCuboidShape(3.5, 28.5, 9.5, 4.5, 29.5, 10.5),
+              //Walls uses full walls instead of angles because even though we have code to calculate the proper angles
+              // it causes lag when looking at the overly complicated bounding box
+              makeCuboidShape(0.5, 0, 14.5, 15.5, 32, 15.5),
+              makeCuboidShape(14.5, 0, 0.5, 15.5, 32, 15.5),
+              makeCuboidShape(0.5, 0, 0.5, 1.5, 32, 15.5)
         );
-        vibrator = VoxelShapeUtils.getSeismicSlope();
-        //TODO: VoxelShapes: Fix the angled bars, and also fix snow not being able to be placed on top.
-        // That part is due to not returning a full VoxelShape from getShape, can we somehow get the default a different way?
-        //TODO: Do we want to have 8 instead of 4, so that when it is active the center bar is different? (Probably not worth the effort)
-        /*setRotation(arm3, -0.3665191F, 0F, 0F);
-        setRotation(frameRight1, 0.837758F, 0F, 0F);
-        setRotation(frameRight2, -0.837758F, 0F, 0F);
-        setRotation(frameRight4, -0.837758F, 0F, 0F);
-        setRotation(frameRight5, 0.837758F, 0F, 0F);
-        setRotation(frameLeft1, -0.837758F, 0F, 0F);
-        setRotation(frameLeft2, 0.837758F, 0F, 0F);
-        setRotation(frameLeft4, -0.837758F, 0F, 0F);
-        setRotation(frameLeft5, 0.837758F, 0F, 0F);
-        setRotation(frameBack1, 0F, 0F, 0.837758F);
-        setRotation(frameBack2, 0F, 0F, -0.837758F);
-        setRotation(frameBack4, 0F, 0F, -0.837758F);
-        setRotation(frameBack5, 0F, 0F, 0.837758F);*/
-        //vibrator = VoxelShapeUtils.rotate(vibrator, Rotation.CLOCKWISE_180);
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(vibrator, side);
         }

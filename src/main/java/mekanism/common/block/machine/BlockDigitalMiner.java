@@ -13,6 +13,7 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
+import mekanism.client.model.ModelDigitalMiner;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
@@ -25,8 +26,10 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -42,6 +45,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -53,7 +59,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class BlockDigitalMiner extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityDigitalMiner>, IStateFacing, IStateActive,
       IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityDigitalMiner> {
 
-    //TODO: VoxelShapes
+    private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
+    //TODO: VoxelShapes: FIXME
+    static {
+        ModelDigitalMiner model = new ModelDigitalMiner();
+        VoxelShape miner = VoxelShapes.fullCube();/*VoxelShapeUtils.getShapeFromModel(model.keyboard, model.keyboardBottom, model.keyboardSupportExt1, model.keyboardSupportExt2,
+              model.keyboardSupport1, model.keyboardSupport2, model.monitor1back, model.monitor2back, model.monitor3back, model.monitorBar1, model.monitorBar2,
+              model.led1, model.led2, model.led3, model.monitorMount1, model.monitorMount2, model.frame1, model.frame3, model.plate5, model.bracket1, model.bracket2,
+              model.bracket3, model.bracket4, model.bracket5, model.bracket6, model.bracket7, model.bracket8, model.bracketPlate1, model.bracketPlate2, model.bracketPlate3,
+              model.bracketPlate4, model.supportBeam1, model.supportBeam2, model.supportBeam3, model.supportBeam4, model.foot1, model.foot2, model.foot3, model.foot4,
+              model.core, model.powerCable1a, model.powerCable1b, model.powerCable2, model.powerCable3, model.powerConnector1, model.powerConnector2a,
+              model.powerConnector2b, model.powerCpnnector3a, model.powerConnector3b, model.frame2a, model.frame2b, model.frame2c, model.frame2d, model.monitor1,
+              model.monitor2, model.monitor3);*/
+        for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
+            bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(miner, side);
+        }
+    }
 
     public BlockDigitalMiner() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -148,6 +170,13 @@ public class BlockDigitalMiner extends BlockMekanism implements IBlockElectric, 
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return bounds[getDirection(state).ordinal() - 2];
     }
 
     @Override

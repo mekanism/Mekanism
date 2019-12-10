@@ -8,52 +8,51 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelSeismicVibrator extends Model {
 
-    //TODO: Make these all private
-    public final RendererModel plate3;
-    public final RendererModel baseBack;
-    public final RendererModel motor;
-    public final RendererModel port;
-    public final RendererModel pole4;
-    public final RendererModel shaft2;
-    public final RendererModel shaft1;
-    public final RendererModel arm3;
-    public final RendererModel plate2;
-    public final RendererModel arm2;
-    public final RendererModel arm1;
-    public final RendererModel top;
-    public final RendererModel frameBack5;
-    public final RendererModel pole3;
-    public final RendererModel frameRight5;
-    public final RendererModel baseRight;
-    public final RendererModel baseFront;
-    public final RendererModel baseLeft;
-    public final RendererModel frameRight3;
-    public final RendererModel pole1;
-    public final RendererModel frameRight4;
-    public final RendererModel frameRight1;
-    public final RendererModel frameRight2;
-    public final RendererModel frameLeft5;
-    public final RendererModel frameLeft4;
-    public final RendererModel frameBack3;
-    public final RendererModel frameLeft2;
-    public final RendererModel frameLeft1;
-    public final RendererModel pole2;
-    public final RendererModel frameBack1;
-    public final RendererModel frameBack2;
-    public final RendererModel frameBack4;
-    public final RendererModel frameLeft3;
-    public final RendererModel conduit;
-    public final RendererModel plate1;
-    public final RendererModel rivet10;
-    public final RendererModel rivet5;
-    public final RendererModel rivet1;
-    public final RendererModel rivet6;
-    public final RendererModel rivet2;
-    public final RendererModel rivet7;
-    public final RendererModel rivet3;
-    public final RendererModel rivet8;
-    public final RendererModel rivet4;
-    public final RendererModel rivet9;
+    private final RendererModel plate3;
+    private final RendererModel baseBack;
+    private final RendererModel motor;
+    private final RendererModel port;
+    private final RendererModel pole4;
+    private final RendererModel shaft2;
+    private final RendererModel shaft1;
+    private final RendererModel arm3;
+    private final RendererModel plate2;
+    private final RendererModel arm2;
+    private final RendererModel arm1;
+    private final RendererModel top;
+    private final RendererModel frameBack5;
+    private final RendererModel pole3;
+    private final RendererModel frameRight5;
+    private final RendererModel baseRight;
+    private final RendererModel baseFront;
+    private final RendererModel baseLeft;
+    private final RendererModel frameRight3;
+    private final RendererModel pole1;
+    private final RendererModel frameRight4;
+    private final RendererModel frameRight1;
+    private final RendererModel frameRight2;
+    private final RendererModel frameLeft5;
+    private final RendererModel frameLeft4;
+    private final RendererModel frameBack3;
+    private final RendererModel frameLeft2;
+    private final RendererModel frameLeft1;
+    private final RendererModel pole2;
+    private final RendererModel frameBack1;
+    private final RendererModel frameBack2;
+    private final RendererModel frameBack4;
+    private final RendererModel frameLeft3;
+    private final RendererModel conduit;
+    private final RendererModel plate1;
+    private final RendererModel rivet10;
+    private final RendererModel rivet5;
+    private final RendererModel rivet1;
+    private final RendererModel rivet6;
+    private final RendererModel rivet2;
+    private final RendererModel rivet7;
+    private final RendererModel rivet3;
+    private final RendererModel rivet8;
+    private final RendererModel rivet4;
+    private final RendererModel rivet9;
 
     public ModelSeismicVibrator() {
         textureWidth = 128;
@@ -376,13 +375,7 @@ public class ModelSeismicVibrator extends Model {
         rivet3.render(size);
         rivet8.render(size);
         rivet4.render(size);
-        rivet9.render(size);//*/
-
-        /*frameBack1.render(size);
-        frameBack2.render(size);
-        frameBack3.render(size);
-        frameBack4.render(size);//*/
-        //frameBack5.render(size);
+        rivet9.render(size);
     }
 
     public void renderWithPiston(float piston, float size) {
