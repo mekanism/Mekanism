@@ -57,12 +57,11 @@ public class ColourTemperature extends ColourRGBA {
         if (effectiveTemp <= 66) {
             tmpCalc = effectiveTemp;
             tmpCalc = 99.4708025861 * Math.log(tmpCalc) - 161.1195681661;
-            green = tmpCalc / 255D;
         } else {
             tmpCalc = effectiveTemp - 60;
             tmpCalc = 288.1221695283 * Math.pow(tmpCalc, -0.0755148492);
-            green = tmpCalc / 255D;
         }
+        green = tmpCalc / 255D;
 
         if (effectiveTemp >= 66) {
             blue = 1;

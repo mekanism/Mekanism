@@ -18,7 +18,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -99,7 +98,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return state1.getBlock().getPickBlock(state1, target, world, mainPos, player);
     }
 
-    /**
+    /*
      * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}. Used together with {@link
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
      *
@@ -115,7 +114,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return super.removedByPlayer(state, world, pos, player, false, fluidState);
     }
 
-    /**
+    /*
      * {@inheritDoc} Delegate to main {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}.
      */
     //TODO: Loot table? Or how should the bounding block handle drops

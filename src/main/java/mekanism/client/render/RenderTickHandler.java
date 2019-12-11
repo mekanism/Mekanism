@@ -194,11 +194,7 @@ public class RenderTickHandler {
                                         flameYCoord -= 0.55F;
                                         flameZCoord -= 0.15F;
                                     }
-                                    if (player == p) {
-                                        flameYCoord -= 0.5F;
-                                    } else {
-                                        flameYCoord -= 0.5F;
-                                    }
+                                    flameYCoord -= 0.5F;
                                     flameZCoord += 1.05F;
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
                                 }

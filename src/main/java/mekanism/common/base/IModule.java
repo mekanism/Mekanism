@@ -24,7 +24,7 @@ public interface IModule {
      */
     String getName();
 
-    /**
+    /*
      * Writes this module's configuration to a ConfigSync packet.
      *
      * @param dataStream - the PacketBuffer of the sync packet
@@ -32,7 +32,7 @@ public interface IModule {
      */
     //void writeConfig(PacketBuffer dataStream, MekanismConfigOld config);
 
-    /**
+    /*
      * Reads this module's configuration from the original ConfigSync packet.
      *
      * @param dataStream - the incoming PacketBuffer of the sync packet

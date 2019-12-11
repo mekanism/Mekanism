@@ -1,6 +1,7 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
@@ -267,9 +268,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 }
                 redstoneSet = true;
             }
-            if (redstoneReactive && redstonePowered) {
-                return false;
-            }
+            return !redstoneReactive || !redstonePowered;
         }
         return true;
     }
@@ -293,9 +292,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         data.add(currentTransmitterConnections);
         data.add(currentAcceptorConnections);
-        for (int i = 0; i < 6; i++) {
-            data.add(connectionTypes[i]);
-        }
+        data.addAll(Arrays.asList(connectionTypes).subList(0, 6));
         return data;
     }
 

@@ -36,6 +36,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
@@ -86,7 +87,7 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
             }
             BlockRayTraceResult mop = MekanismUtils.rayTrace(world, player);
             //TODO: Check to make sure it wasn't a miss?
-            if (mop != null && mop.getFace() == bin.getDirection()) {
+            if (mop.getType() != Type.MISS && mop.getFace() == bin.getDirection()) {
                 BinInventorySlot binSlot = bin.getBinSlot();
                 if (!binSlot.isEmpty()) {
                     ItemStack stack;

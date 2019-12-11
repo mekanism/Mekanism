@@ -119,11 +119,9 @@ public final class ItemDataUtils {
     }
 
     private static void initStack(ItemStack stack) {
-        if (stack.getTag() == null) {
-            stack.setTag(new CompoundNBT());
-        }
-        if (!stack.getTag().contains(DATA_ID)) {
-            stack.getTag().put(DATA_ID, new CompoundNBT());
+        CompoundNBT tag = stack.getOrCreateTag();
+        if (!tag.contains(DATA_ID)) {
+            tag.put(DATA_ID, new CompoundNBT());
         }
     }
 }

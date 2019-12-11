@@ -331,10 +331,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     public enum Mode implements IDisableableEnum<Mode>, IHasTranslationKey {
         NORMAL("normal", 20, 3, () -> true),
-        SLOW("slow", 8, 1, () -> MekanismConfig.general.disassemblerSlowMode.get()),
-        FAST("fast", 128, 5, () -> MekanismConfig.general.disassemblerFastMode.get()),
-        VEIN("vein", 20, 3, () -> MekanismConfig.general.disassemblerVeinMining.get()),
-        EXTENDED_VEIN("extended_vein", 20, 3, () -> MekanismConfig.general.disassemblerExtendedMining.get()),
+        SLOW("slow", 8, 1, MekanismConfig.general.disassemblerSlowMode::get),
+        FAST("fast", 128, 5, MekanismConfig.general.disassemblerFastMode::get),
+        VEIN("vein", 20, 3, MekanismConfig.general.disassemblerVeinMining::get),
+        EXTENDED_VEIN("extended_vein", 20, 3, MekanismConfig.general.disassemblerExtendedMining::get),
         OFF("off", 0, 0, () -> true);
 
         private static Mode[] VALUES = values();
