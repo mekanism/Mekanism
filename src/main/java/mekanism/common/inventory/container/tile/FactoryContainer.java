@@ -7,9 +7,9 @@ import mekanism.common.tile.factory.TileEntitySawingFactory;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-public class FactoryContainer extends MekanismTileContainer<TileEntityFactory> {
+public class FactoryContainer extends MekanismTileContainer<TileEntityFactory<?>> {
 
-    public FactoryContainer(int id, PlayerInventory inv, TileEntityFactory tile) {
+    public FactoryContainer(int id, PlayerInventory inv, TileEntityFactory<?> tile) {
         super(MekanismContainerTypes.FACTORY, id, inv, tile);
     }
 

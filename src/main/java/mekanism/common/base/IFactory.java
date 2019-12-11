@@ -1,11 +1,12 @@
 package mekanism.common.base;
 
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.block.FactoryType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.MekanismBlock;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
 
@@ -74,16 +75,28 @@ public interface IFactory {
             fuelSpeed = speed;
         }
 
-        public static RecipeType getFromMachine(Block block, int meta) {
-            RecipeType type = null;
-            for (RecipeType iterType : RecipeType.values()) {
-                ItemStack machineStack = iterType.getStack();
-                if (Block.getBlockFromItem(machineStack.getItem()) == block && machineStack.getDamage() == meta) {
-                    type = iterType;
-                    break;
-                }
+        public static RecipeType getFromFactoryType(@Nonnull FactoryType factoryType) {
+            switch (factoryType) {
+                case SMELTING:
+                    return SMELTING;
+                case ENRICHING:
+                    return ENRICHING;
+                case CRUSHING:
+                    return CRUSHING;
+                case COMPRESSING:
+                    return COMPRESSING;
+                case COMBINING:
+                    return COMBINING;
+                case PURIFYING:
+                    return PURIFYING;
+                case INJECTING:
+                    return INJECTING;
+                case INFUSING:
+                    return INFUSING;
+                case SAWING:
+                    return SAWING;
             }
-            return type;
+            return null;
         }
 
         public int getSecondaryEnergyPerTick() {

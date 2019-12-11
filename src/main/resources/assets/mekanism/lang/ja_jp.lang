@@ -992,7 +992,7 @@ itemGroup.tabMekanism=Mekanism
 
 # Items
 item.SolarPanel.name=ソーラーパネル
-item.Hohlraum.name=ホーラム
+item.Hohlraum.name=ホールラウム
 item.TurbineBlade.name=タービンの羽
 
 # Generators

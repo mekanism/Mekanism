@@ -10,6 +10,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
+import mekanism.api.block.IHasFactoryType;
 import mekanism.api.gas.GasTank;
 import mekanism.api.infuse.InfusionTank;
 import mekanism.api.inventory.slot.IInventorySlot;
@@ -51,6 +52,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StatUtils;
 import mekanism.common.util.TileUtils;
+import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -198,8 +202,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected void addSlots(InventorySlotHelper builder) {
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 7, 13));
         //TODO: Make these two slots not show up on the auto generation of gui
-        //TODO: Make this input slot only accept other machines for factories
-        builder.addSlot(typeInputSlot = InputInventorySlot.at(this, tier == FactoryTier.ULTIMATE ? 214 : 180, 75));
+        //TODO: Currently it is commented out so the type switcher slot does not accept anything so that items
+        // do not get stuck as extracting from the slot does not work, uncommenting this piece of code will make it properly
+        // only accept other types of factories
+        builder.addSlot(typeInputSlot = InputInventorySlot.at(stack -> false,//stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof IHasFactoryType,
+              this, tier == FactoryTier.ULTIMATE ? 214 : 180, 75));
         builder.addSlot(typeOutputSlot = OutputInventorySlot.at(this, tier == FactoryTier.ULTIMATE ? 214 : 180, 112));
     }
 
@@ -294,35 +301,37 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             sortInventory();
             if (!typeInputSlot.isEmpty() && typeOutputSlot.isEmpty()) {
                 ItemStack typeInputStack = typeInputSlot.getStack();
-                RecipeType toSet = null;
-                for (RecipeType type : RecipeType.values()) {
-                    if (ItemHandlerHelper.canItemStacksStack(typeInputStack, type.getStack())) {
-                        toSet = type;
-                        break;
+                Item typeInputItem = typeInputStack.getItem();
+                if (typeInputItem instanceof BlockItem) {
+                    Block typeInputBlock = ((BlockItem) typeInputItem).getBlock();
+                    if (typeInputBlock instanceof IHasFactoryType) {
+                        FactoryType swapType = ((IHasFactoryType) typeInputBlock).getFactoryType();
+                        RecipeType toSet = RecipeType.getFromFactoryType(swapType);
+                        //TODO: Do this better don't have both recipe type and factory type
+                        if (toSet != null && recipeType != toSet) {
+                            if (recipeTicks < RECIPE_TICKS_REQUIRED) {
+                                recipeTicks++;
+                            } else {
+                                recipeTicks = 0;
+                                ItemStack returnStack = getMachineStack();
+
+                                upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
+                                upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
+                                upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(typeInputStack));
+
+                                typeInputSlot.setStack(ItemStack.EMPTY);
+                                typeOutputSlot.setStack(returnStack);
+
+                                setRecipeType(toSet);
+                                gasTank.setEmpty();
+                                secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+                                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+                                MekanismUtils.saveChunk(this);
+                            }
+                        } else {
+                            recipeTicks = 0;
+                        }
                     }
-                }
-                if (toSet != null && recipeType != toSet) {
-                    if (recipeTicks < RECIPE_TICKS_REQUIRED) {
-                        recipeTicks++;
-                    } else {
-                        recipeTicks = 0;
-                        ItemStack returnStack = getMachineStack();
-
-                        upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
-                        upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
-                        upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(typeInputStack));
-
-                        typeInputSlot.setStack(ItemStack.EMPTY);
-                        typeOutputSlot.setStack(returnStack);
-
-                        setRecipeType(toSet);
-                        gasTank.setEmpty();
-                        secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-                        world.notifyNeighborsOfStateChange(getPos(), getBlockType());
-                        MekanismUtils.saveChunk(this);
-                    }
-                } else {
-                    recipeTicks = 0;
                 }
             } else {
                 recipeTicks = 0;
@@ -726,5 +735,4 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public boolean lightUpdate() {
         return true;
     }
-
 }

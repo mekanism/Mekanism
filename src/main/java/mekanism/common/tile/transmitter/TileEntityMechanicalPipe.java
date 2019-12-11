@@ -82,7 +82,10 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
             if ((!last.isEmpty() && !(!lastWrite.isEmpty() && lastWrite.getAmount() == last.getAmount() && lastWrite.getFluid() == last.getFluid())) ||
                 (last.isEmpty() && !lastWrite.isEmpty())) {
                 lastWrite = last;
-                markDirty();
+                //markDirty();
+                //TODO: Revert this if chunk boundaries break again
+                //TODO: Evaluate instead overwriting markDirty to not fire neighbor updates given we don't have any comparator interaction anyways
+                world.markChunkDirty(pos, this);
             }
         }
     }

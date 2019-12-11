@@ -277,8 +277,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             if (formula == null) {
                 //Should always be 9 for the size
                 for (int i = 0; i <= craftingGridSlots.size(); i++) {
-                    //TODO: Do we really need to be copying it here
-                    dummyInv.setInventorySlotContents(i, craftingGridSlots.get(i).getStack().copy());
+                    dummyInv.setInventorySlotContents(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
                 }
 
                 lastRemainingItems = EMPTY_LIST;
@@ -310,8 +309,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private boolean doSingleCraft() {
         //Should always be 9 for the size
         for (int i = 0; i <= craftingGridSlots.size(); i++) {
-            //TODO: Do we really need to be copying it here
-            dummyInv.setInventorySlotContents(i, craftingGridSlots.get(i).getStack().copy());
+            dummyInv.setInventorySlotContents(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
         }
         recalculateRecipe();
 

@@ -19,14 +19,18 @@ public class GuiHorizontalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> exten
     private static final int texHeight = 5;
 
     public GuiHorizontalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, ResourceLocation def, int x, int y) {
-        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, def, x, y, texWidth + 2, texHeight + 2);
+        this(gui, infoProvider, def, x, y, texWidth + 2);
+    }
+
+    public GuiHorizontalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, ResourceLocation def, int x, int y, int width) {
+        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, def, x, y, width, texHeight + 2);
     }
 
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
         CHEMICAL type = getHandler().getType();
         if (!type.isEmptyType()) {
-            int displayInt = (int) (getHandler().getLevel() * texWidth);
+            int displayInt = (int) (getHandler().getLevel() * (width - 2));
             MekanismRenderer.color(type);
             guiObj.drawTexturedRectFromIcon(x + 1, y + 1, MekanismRenderer.getChemicalTexture(type), displayInt, texHeight);
             MekanismRenderer.resetColor();

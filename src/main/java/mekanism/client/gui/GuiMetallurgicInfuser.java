@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
+import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
@@ -16,7 +17,9 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.MetallurgicInfuserContainer;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -61,7 +64,8 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
             }
         }, ProgressBar.MEDIUM, this, resource, 70, 46));
         addButton(new GuiVerticalChemicalBar<>(this, GuiVerticalChemicalBar.getProvider(tileEntity.infusionTank), resource, 7, 15));
-        addButton(new GuiDumpButton(this, tileEntity, resource, 140, 65));
+        addButton(new GuiDumpButton<>(this, tileEntity, resource, 140, 65,
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
     }
 
     @Override

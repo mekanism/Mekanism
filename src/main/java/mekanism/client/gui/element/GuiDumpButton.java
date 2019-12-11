@@ -1,10 +1,7 @@
 package mekanism.client.gui.element;
 
-import mekanism.api.TileNetworkList;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.Mekanism;
-import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tile.TileEntityMetallurgicInfuser;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -12,11 +9,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDumpButton extends GuiTileEntityElement<TileEntityMetallurgicInfuser> {
+public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTileEntityElement<TILE> {
+
+    private final Runnable onPress;
 
     //TODO: Make it some tile that implements a dumping interface
-    public GuiDumpButton(IGuiWrapper gui, TileEntityMetallurgicInfuser tile, ResourceLocation def, int x, int y) {
+    public GuiDumpButton(IGuiWrapper gui, TILE tile, ResourceLocation def, int x, int y, Runnable onPress) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "dump.png"), gui, def, tile, x, y, 21, 10);
+        this.onPress = onPress;
     }
 
     @Override
@@ -29,6 +29,7 @@ public class GuiDumpButton extends GuiTileEntityElement<TileEntityMetallurgicInf
     @Override
     public void onClick(double mouseX, double mouseY) {
         //TODO: Change this to using PacketGuiButtonPress or something with a specific dump button
-        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)));
+        // That way we have even less trust of what the client is telling us and don't need the actions manually coded
+        onPress.run();
     }
 }

@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.Chemical;
+import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiRecipeType;
@@ -49,7 +50,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContainer> {
+public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryContainer> {
 
     public GuiFactory(FactoryContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -79,15 +80,18 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory, FactoryContai
         ), this, resource));
 
         if (tileEntity.hasSecondaryResourceBar()) {
-            ChemicalInfoProvider<? extends Chemical> provider = null;
+            ChemicalInfoProvider<? extends Chemical<?>> provider = null;
             if (tileEntity instanceof TileEntityMetallurgicInfuserFactory) {
                 provider = GuiVerticalChemicalBar.getProvider(((TileEntityMetallurgicInfuserFactory) tileEntity).getInfusionTank());
             } else if (tileEntity instanceof TileEntityItemStackGasToItemStackFactory) {
                 provider = GuiVerticalChemicalBar.getProvider(((TileEntityItemStackGasToItemStackFactory) tileEntity).getGasTank());
             }
             if (provider != null) {
-                addButton(new GuiHorizontalChemicalBar<>(this, provider, resource, tileEntity.tier == FactoryTier.ULTIMATE ? 25 : 7, 76));
+                int barX = tileEntity.tier == FactoryTier.ULTIMATE ? 25 : 7;
+                addButton(new GuiHorizontalChemicalBar<>(this, provider, resource, barX, 76, 140));
                 //TODO: Move left and make wider for ultimate factory??
+                addButton(new GuiDumpButton<>(this, tileEntity, resource, barX + 141, 76,
+                      () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1)))));
             }
         }
 
