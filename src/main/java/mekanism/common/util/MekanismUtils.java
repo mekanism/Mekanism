@@ -893,14 +893,6 @@ public final class MekanismUtils {
         return world.getTileEntity(pos);
     }
 
-    public static <T extends TileEntity> T getTileEntitySafe(IBlockAccess worldIn, BlockPos pos, Class<T> expectedClass) {
-        TileEntity te = getTileEntitySafe(worldIn, pos);
-        if (expectedClass.isInstance(te)){
-            return expectedClass.cast(te);
-        }
-        return null;
-    }
-
     /**
      * Gets a tile entity if the location is loaded
      *
