@@ -78,37 +78,32 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             // If we make GuiBar be able to stretch then we can use that as the bar background and do something similar to the InfuseBar
             // The other option which may make more sense is to make it be a GuiGauge
             //TODO: Figure out why it is going from right to left
-            //TODO: FIX this rendering as it is buggy
             int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
             TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(tileEntity.gasTank.getType());
+            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            MekanismRenderer.color(tileEntity.gasTank.getStack());
             drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, icon, scale, 10);
-            if (scale > 0) {
-                minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                MekanismRenderer.color(tileEntity.gasTank.getStack());
-                int start = 0;
-                int x = guiLeft + 65;
-                int y = guiTop + 17;
-                while (scale > 0) {
-                    int renderRemaining;
-                    if (scale > 16) {
-                        renderRemaining = 16;
-                        scale -= 16;
-                    } else {
-                        renderRemaining = scale;
-                        scale = 0;
-                    }
-                    drawTexturedRectFromIcon(x + 72 - renderRemaining - start, y, icon, renderRemaining, 10);
-                    //guiObj.drawTexturedRectFromIcon(x + 16 * i + 1, y + height - renderRemaining - start - 1, icon, 16, renderRemaining);
-                    start += 16;
-                    if (scale == 0) {
-                        break;
-                    }
+            int start = 0;
+            int x = guiLeft + 65;
+            int y = guiTop + 17;
+            while (scale > 0) {
+                int renderRemaining;
+                if (scale > 16) {
+                    renderRemaining = 16;
+                    scale -= 16;
+                } else {
+                    renderRemaining = scale;
+                    scale = 0;
                 }
-
-                MekanismRenderer.resetColor();
-                //Reset the texture location, even though it technically isn't needed
-                minecraft.textureManager.bindTexture(getGuiLocation());
+                drawTexturedRectFromIcon(x + 72 - renderRemaining - start, y, icon, renderRemaining, 10);
+                start += 16;
+                if (scale == 0) {
+                    break;
+                }
             }
+            MekanismRenderer.resetColor();
+            //Reset the texture location, even though it technically isn't needed
+            minecraft.textureManager.bindTexture(getGuiLocation());
         }
     }
 
