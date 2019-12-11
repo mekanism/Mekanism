@@ -36,7 +36,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nullable
     private static BlockPos getMainBlockPos(IBlockReader world, BlockPos thisPos) {
         TileEntityBoundingBlock te = MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, thisPos);
-        if (te != null && !thisPos.equals(te.getMainPos())) {
+        if (te != null && te.receivedCoords && !thisPos.equals(te.getMainPos())) {
             return te.getMainPos();
         }
         return null;
@@ -49,7 +49,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         BlockPos mainPos = getMainBlockPos(world, thisPos);
         if (mainPos != null) {
             BlockState state = world.getBlockState(mainPos);
-            if (!state.getBlock().isAir(state, world, mainPos)) {
+            if (!state.isAir(world, mainPos)) {
                 //Set the main block to air, which will invalidate the rest of the bounding blocks
                 world.removeBlock(mainPos, false);
             }
@@ -59,9 +59,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     private final boolean advanced;
 
     public BlockBounding(boolean advanced) {
-        //TODO: Replace meta with two blocks one normal and one advanced with a boolean param
-        // Or maybe use blockstate
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
+        //TODO: Should we have two blocks, one for advanced one for not advanced like it is now, or should it be a blockstate
+        // It probably should be a blockstate
+        //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).variableOpacity());
         this.advanced = advanced;
     }
 
@@ -149,8 +150,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         }
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
-            BlockState state1 = world.getBlockState(mainPos);
-            state1.getBlock().neighborChanged(state1, world, mainPos, neighborBlock, neighborPos, isMoving);
+            world.getBlockState(mainPos).neighborChanged(world, mainPos, neighborBlock, neighborPos, isMoving);
         }
     }
 
@@ -161,8 +161,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         if (mainPos == null) {
             return super.getPlayerRelativeBlockHardness(state, player, world, pos);
         }
-        BlockState state1 = world.getBlockState(mainPos);
-        return state1.getBlock().getPlayerRelativeBlockHardness(state1, player, world, mainPos);
+        return world.getBlockState(mainPos).getPlayerRelativeBlockHardness(player, world, mainPos);
     }
 
     @Nonnull
@@ -204,14 +203,14 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        //TODO: VoxelShapes: Fix snow not being able to be placed on top if the top is solid - see seismic vibrator
-        // That part is due to not returning a full VoxelShape from getShape, can we somehow get the default a different way?
+        //TODO: Fix not being able to place a torch on the back of the miner
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
-            return VoxelShapes.empty();//super.getShape(state, world, pos, context);
+            //If we don't have a main pos, then act as if the block is empty so that we can move into it properly
+            return VoxelShapes.empty();
         }
         BlockState mainState = world.getBlockState(mainPos);
-        VoxelShape shape = mainState.getBlock().getShape(mainState, world, mainPos, context);
+        VoxelShape shape = mainState.getShape(world, mainPos, context);
         BlockPos offset = pos.subtract(mainPos);
         //TODO: Can we somehow cache the withOffset? It potentially would have to then be moved into the Tile, but that is probably fine
         return shape.withOffset(-offset.getX(), -offset.getY(), -offset.getZ());
