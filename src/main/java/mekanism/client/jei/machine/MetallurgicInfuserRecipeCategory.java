@@ -40,7 +40,7 @@ import net.minecraft.world.World;
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
 
     private RecipeInfuseInfoProvider infoProvider;
-    private GuiVerticalChemicalBar infuseBar;
+    private GuiVerticalChemicalBar<InfuseType> infuseBar;
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
         super(helper, "mekanism:gui/blank.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);

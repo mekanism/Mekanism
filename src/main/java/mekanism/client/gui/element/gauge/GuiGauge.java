@@ -9,6 +9,7 @@ import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
@@ -17,7 +18,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -93,7 +93,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         ItemStack stack = minecraft.player.inventory.getItemStack();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
             if (guiObj instanceof GuiMekanismTile) {
-                TileEntity tile = ((GuiMekanismTile) guiObj).getTileEntity();
+                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) guiObj).getTileEntity();
                 if (tile instanceof ISideConfiguration && getTransmission() != null) {
                     DataType dataType = null;
                     ConfigInfo config = ((ISideConfiguration) tile).getConfig().getConfig(getTransmission());

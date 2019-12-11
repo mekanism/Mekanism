@@ -8,7 +8,7 @@ import net.minecraft.util.text.ITextComponent;
 public interface IEntityTypeProvider extends IBaseProvider {
 
     @Nonnull
-    EntityType getEntityType();
+    EntityType<?> getEntityType();
 
     @Override
     default ResourceLocation getRegistryName() {

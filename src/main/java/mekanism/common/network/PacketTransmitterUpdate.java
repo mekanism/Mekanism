@@ -41,7 +41,7 @@ public class PacketTransmitterUpdate {
     private boolean didFluidTransfer;
 
     private boolean newNetwork;
-    private Collection<IGridTransmitter> transmittersAdded;
+    private Collection<IGridTransmitter<?, ?, ?>> transmittersAdded;
     private Collection<Coord4D> transmitterCoords;
 
     public PacketTransmitterUpdate(PacketType type, Coord4D coord, Object... data) {
@@ -49,7 +49,7 @@ public class PacketTransmitterUpdate {
         switch (packetType) {
             case UPDATE:
                 newNetwork = (Boolean) data[0];
-                transmittersAdded = (Collection<IGridTransmitter>) data[1];
+                transmittersAdded = (Collection<IGridTransmitter<?, ?, ?>>) data[1];
                 break;
             case ENERGY:
                 power = (Double) data[0];
@@ -85,7 +85,7 @@ public class PacketTransmitterUpdate {
             LazyOptionalHelper<IGridTransmitter> capabilityHelper = CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
             capabilityHelper.ifPresent(transmitter -> {
                 if (message.packetType == PacketType.UPDATE) {
-                    DynamicNetwork network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
+                    DynamicNetwork<?, ?, ?> network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
                     network.register();
                     transmitter.setTransmitterNetwork(network);
                     for (Coord4D coord : message.transmitterCoords) {
@@ -131,7 +131,7 @@ public class PacketTransmitterUpdate {
             case UPDATE:
                 buf.writeBoolean(pkt.newNetwork);
                 buf.writeInt(pkt.transmittersAdded.size());
-                for (IGridTransmitter transmitter : pkt.transmittersAdded) {
+                for (IGridTransmitter<?, ?, ?> transmitter : pkt.transmittersAdded) {
                     transmitter.coord().write(buf);
                 }
                 break;

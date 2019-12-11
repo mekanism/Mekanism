@@ -56,13 +56,13 @@ public class MekanismRenderer {
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
-    private static RenderConfigurableMachine machineRenderer = new RenderConfigurableMachine();
+    private static RenderConfigurableMachine<?> machineRenderer = new RenderConfigurableMachine<>();
     public static TextureAtlasSprite missingIcon;
     private static AtlasTexture texMap = null;
 
     @SuppressWarnings("unchecked")
     public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {
-        return machineRenderer;
+        return (RenderConfigurableMachine<S>) machineRenderer;
     }
 
     public static void initFluidTextures(AtlasTexture map) {

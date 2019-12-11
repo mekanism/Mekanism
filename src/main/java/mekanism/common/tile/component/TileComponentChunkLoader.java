@@ -23,7 +23,7 @@ public class TileComponentChunkLoader implements ITileComponent {
      */
     public TileEntityMekanism tileEntity;
 
-    public Ticket chunkTicket;
+    public Ticket<?> chunkTicket;
 
     public Set<ChunkPos> chunkSet = new HashSet<>();
 
@@ -34,7 +34,7 @@ public class TileComponentChunkLoader implements ITileComponent {
         tile.addComponent(this);
     }
 
-    public void setTicket(Ticket t) {
+    public void setTicket(Ticket<?> t) {
         //TODO: Chunk Loading
         /*if (chunkTicket != t && chunkTicket != null && chunkTicket.world == tileEntity.getWorld()) {
             for (ChunkPos chunk : chunkTicket.getChunkList()) {

@@ -25,28 +25,28 @@ public interface IGuiWrapper {
 
     default int getLeft() {
         if (this instanceof ContainerScreen) {
-            return ((ContainerScreen) this).guiLeft;
+            return ((ContainerScreen<?>) this).guiLeft;
         }
         return 0;
     }
 
     default int getTop() {
         if (this instanceof ContainerScreen) {
-            return ((ContainerScreen) this).guiTop;
+            return ((ContainerScreen<?>) this).guiTop;
         }
         return 0;
     }
 
     default int getWidth() {
         if (this instanceof ContainerScreen) {
-            return ((ContainerScreen) this).xSize;
+            return ((ContainerScreen<?>) this).xSize;
         }
         return 0;
     }
 
     default int getHeight() {
         if (this instanceof ContainerScreen) {
-            return ((ContainerScreen) this).ySize;
+            return ((ContainerScreen<?>) this).ySize;
         }
         return 0;
     }

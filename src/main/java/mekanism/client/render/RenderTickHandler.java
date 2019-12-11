@@ -212,7 +212,7 @@ public class RenderTickHandler {
         }
     }
 
-    public void spawnAndSetParticle(ParticleType s, World world, double x, double y, double z, double velX, double velY, double velZ) {
+    public void spawnAndSetParticle(ParticleType<?> s, World world, double x, double y, double z, double velX, double velY, double velZ) {
         //TODO: Fix this
         /*Particle fx = null;
         if (s.equals(ParticleTypes.FLAME)) {

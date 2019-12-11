@@ -13,12 +13,12 @@ import mekanism.common.tile.factory.TileEntityFactory;
 @MethodsReturnNonnullByDefault
 public class FactoryInputInventorySlot<RECIPE extends MekanismRecipe> extends InputInventorySlot {
 
-    public static <RECIPE extends MekanismRecipe> FactoryInputInventorySlot create(TileEntityFactory<RECIPE> factory, int process, IInventorySlot outputSlot,
+    public static <RECIPE extends MekanismRecipe> FactoryInputInventorySlot<RECIPE> create(TileEntityFactory<RECIPE> factory, int process, IInventorySlot outputSlot,
           @Nullable IMekanismInventory inventory, int x, int y) {
         return create(factory, process, outputSlot, null, inventory, x, y);
     }
 
-    public static <RECIPE extends MekanismRecipe> FactoryInputInventorySlot create(TileEntityFactory<RECIPE> factory, int process, IInventorySlot outputSlot,
+    public static <RECIPE extends MekanismRecipe> FactoryInputInventorySlot<RECIPE> create(TileEntityFactory<RECIPE> factory, int process, IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(factory, "Factory cannot be null");
         Objects.requireNonNull(outputSlot, "Primary output slot cannot be null");

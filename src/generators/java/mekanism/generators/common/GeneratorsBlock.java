@@ -44,21 +44,21 @@ public class GeneratorsBlock {
     public static final BlockRegistryObject<BlockBioGenerator, ItemBlockBioGenerator> BIO_GENERATOR = BLOCKS.register("bio_generator", BlockBioGenerator::new, ItemBlockBioGenerator::new);
     public static final BlockRegistryObject<BlockAdvancedSolarGenerator, ItemBlockAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = BLOCKS.register("advanced_solar_generator", BlockAdvancedSolarGenerator::new, ItemBlockAdvancedSolarGenerator::new);
     public static final BlockRegistryObject<BlockWindGenerator, ItemBlockWindGenerator> WIND_GENERATOR = BLOCKS.register("wind_generator", BlockWindGenerator::new, ItemBlockWindGenerator::new);
-    public static final BlockRegistryObject<BlockTurbineRotor, ItemBlockTooltip> TURBINE_ROTOR = registerTooltipBlock("turbine_rotor", BlockTurbineRotor::new);
-    public static final BlockRegistryObject<BlockRotationalComplex, ItemBlockTooltip> ROTATIONAL_COMPLEX = registerTooltipBlock("rotational_complex", BlockRotationalComplex::new);
-    public static final BlockRegistryObject<BlockElectromagneticCoil, ItemBlockTooltip> ELECTROMAGNETIC_COIL = registerTooltipBlock("electromagnetic_coil", BlockElectromagneticCoil::new);
+    public static final BlockRegistryObject<BlockTurbineRotor, ItemBlockTooltip<BlockTurbineRotor>> TURBINE_ROTOR = registerTooltipBlock("turbine_rotor", BlockTurbineRotor::new);
+    public static final BlockRegistryObject<BlockRotationalComplex, ItemBlockTooltip<BlockRotationalComplex>> ROTATIONAL_COMPLEX = registerTooltipBlock("rotational_complex", BlockRotationalComplex::new);
+    public static final BlockRegistryObject<BlockElectromagneticCoil, ItemBlockTooltip<BlockElectromagneticCoil>> ELECTROMAGNETIC_COIL = registerTooltipBlock("electromagnetic_coil", BlockElectromagneticCoil::new);
     public static final BlockRegistryObject<BlockTurbineCasing, ItemBlockTurbineCasing> TURBINE_CASING = BLOCKS.register("turbine_casing", BlockTurbineCasing::new, ItemBlockTurbineCasing::new);
     public static final BlockRegistryObject<BlockTurbineValve, ItemBlockTurbineValve> TURBINE_VALVE = BLOCKS.register("turbine_valve", BlockTurbineValve::new, ItemBlockTurbineValve::new);
     public static final BlockRegistryObject<BlockTurbineVent, ItemBlockTurbineVent> TURBINE_VENT = BLOCKS.register("turbine_vent", BlockTurbineVent::new, ItemBlockTurbineVent::new);
-    public static final BlockRegistryObject<BlockSaturatingCondenser, ItemBlockTooltip> SATURATING_CONDENSER = registerTooltipBlock("saturating_condenser", BlockSaturatingCondenser::new);
-    public static final BlockRegistryObject<BlockReactorController, ItemBlockTooltip> REACTOR_CONTROLLER = registerTooltipBlock("reactor_controller", BlockReactorController::new);
-    public static final BlockRegistryObject<BlockReactorFrame, ItemBlockTooltip> REACTOR_FRAME = registerTooltipBlock("reactor_frame", BlockReactorFrame::new);
-    public static final BlockRegistryObject<BlockReactorPort, ItemBlockTooltip> REACTOR_PORT = registerTooltipBlock("reactor_port", BlockReactorPort::new);
-    public static final BlockRegistryObject<BlockReactorLogicAdapter, ItemBlockTooltip> REACTOR_LOGIC_ADAPTER = registerTooltipBlock("reactor_logic_adapter", BlockReactorLogicAdapter::new);
-    public static final BlockRegistryObject<BlockReactorGlass, ItemBlockTooltip> REACTOR_GLASS = registerTooltipBlock("reactor_glass", BlockReactorGlass::new);
-    public static final BlockRegistryObject<BlockLaserFocusMatrix, ItemBlockTooltip> LASER_FOCUS_MATRIX = registerTooltipBlock("laser_focus_matrix", BlockLaserFocusMatrix::new);
+    public static final BlockRegistryObject<BlockSaturatingCondenser, ItemBlockTooltip<BlockSaturatingCondenser>> SATURATING_CONDENSER = registerTooltipBlock("saturating_condenser", BlockSaturatingCondenser::new);
+    public static final BlockRegistryObject<BlockReactorController, ItemBlockTooltip<BlockReactorController>> REACTOR_CONTROLLER = registerTooltipBlock("reactor_controller", BlockReactorController::new);
+    public static final BlockRegistryObject<BlockReactorFrame, ItemBlockTooltip<BlockReactorFrame>> REACTOR_FRAME = registerTooltipBlock("reactor_frame", BlockReactorFrame::new);
+    public static final BlockRegistryObject<BlockReactorPort, ItemBlockTooltip<BlockReactorPort>> REACTOR_PORT = registerTooltipBlock("reactor_port", BlockReactorPort::new);
+    public static final BlockRegistryObject<BlockReactorLogicAdapter, ItemBlockTooltip<BlockReactorLogicAdapter>> REACTOR_LOGIC_ADAPTER = registerTooltipBlock("reactor_logic_adapter", BlockReactorLogicAdapter::new);
+    public static final BlockRegistryObject<BlockReactorGlass, ItemBlockTooltip<BlockReactorGlass>> REACTOR_GLASS = registerTooltipBlock("reactor_glass", BlockReactorGlass::new);
+    public static final BlockRegistryObject<BlockLaserFocusMatrix, ItemBlockTooltip<BlockLaserFocusMatrix>> LASER_FOCUS_MATRIX = registerTooltipBlock("laser_focus_matrix", BlockLaserFocusMatrix::new);
 
-    private static <BLOCK extends Block> BlockRegistryObject<BLOCK, ItemBlockTooltip> registerTooltipBlock(String name, Supplier<BLOCK> blockCreator) {
+    private static <BLOCK extends Block> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerTooltipBlock(String name, Supplier<BLOCK> blockCreator) {
         return BLOCKS.register(name, blockCreator, ItemBlockTooltip::new);
     }
 }

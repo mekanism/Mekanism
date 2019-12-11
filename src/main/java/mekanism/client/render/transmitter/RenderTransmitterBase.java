@@ -39,7 +39,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.opengl.GL11;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> extends TileEntityRenderer<T> {
+public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends TileEntityRenderer<T> {
 
     /* Credit to Eternal Energy */
     public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = location -> DummyAtlasTextureFlipV.instance;
@@ -149,7 +149,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter> ext
         }
     }
 
-    public IBakedModel getModelForSide(TileEntityTransmitter part, Direction side) {
+    public IBakedModel getModelForSide(TileEntityTransmitter<?, ?, ?> part, Direction side) {
         return contentsMap.get(side.getName() + part.getConnectionType(side).getName().toUpperCase());
     }
 

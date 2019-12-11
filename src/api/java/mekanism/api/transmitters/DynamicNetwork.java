@@ -208,7 +208,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         int maxY = initCoord.y;
         int maxZ = initCoord.z;
 
-        for (IGridTransmitter transmitter : transmitters) {
+        for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
             Coord4D coord = transmitter.coord();
             if (coord.x < minX) {
                 minX = coord.x;
@@ -383,9 +383,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
         public DynamicNetwork<?, ?, ?> network;
         public boolean newNetwork;
-        public Collection<IGridTransmitter> newTransmitters;
+        public Collection<IGridTransmitter<?, ?, ?>> newTransmitters;
 
-        public TransmittersAddedEvent(DynamicNetwork net, boolean newNet, Collection<IGridTransmitter> added) {
+        public TransmittersAddedEvent(DynamicNetwork<?, ?, ?> net, boolean newNet, Collection<IGridTransmitter<?, ?, ?>> added) {
             network = net;
             newNetwork = newNet;
             newTransmitters = added;
@@ -394,10 +394,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public static class ClientTickUpdate extends Event {
 
-        public DynamicNetwork network;
+        public DynamicNetwork<?, ?, ?> network;
         public byte operation; /*0 remove, 1 add*/
 
-        public ClientTickUpdate(DynamicNetwork net, byte b) {
+        public ClientTickUpdate(DynamicNetwork<?, ?, ?> net, byte b) {
             network = net;
             operation = b;
         }

@@ -20,7 +20,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -160,7 +159,7 @@ public class MekanismOBJLoader implements ICustomModelLoader {
     public IUnbakedModel loadModel(@Nonnull ResourceLocation loc) throws Exception {
         ResourceLocation file = new ResourceLocation(loc.getNamespace(), loc.getPath());
         if (!modelCache.containsKey(file)) {
-            IModel model = OBJLoader.INSTANCE.loadModel(file);
+            IUnbakedModel model = OBJLoader.INSTANCE.loadModel(file);
             if (model instanceof OBJModel) {
                 if (file.getPath().contains("transmitter")) {
                     MekanismOBJModel mekModel = new MekanismOBJModel(((OBJModel) model).getMatLib(), file);

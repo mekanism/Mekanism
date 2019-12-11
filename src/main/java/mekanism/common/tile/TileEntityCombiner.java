@@ -93,7 +93,7 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
     }
 
     @Override
-    protected void upgradeInventory(TileEntityFactory factory) {
+    protected void upgradeInventory(TileEntityFactory<?> factory) {
         //TODO: Upgrade
         /*NonNullList<ItemStack> factoryInventory = factory.getInventory();
         NonNullList<ItemStack> inventory = getInventory();

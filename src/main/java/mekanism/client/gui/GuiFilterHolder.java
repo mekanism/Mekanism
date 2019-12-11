@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiFilterHolder<FILTER extends IFilter, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends FilterEmptyContainer<TILE>>
+public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends FilterEmptyContainer<TILE>>
       extends GuiMekanismTile<TILE, CONTAINER> {
 
     // Filter dimensions
@@ -36,8 +36,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter, TILE extends TileE
     protected final int filterW = 96;
     protected final int filterH = 29;
 
-    protected Map<IOreDictFilter, StackData> oreDictStacks = new HashMap<>();
-    protected Map<IModIDFilter, StackData> modIDStacks = new HashMap<>();
+    protected Map<IOreDictFilter<?>, StackData> oreDictStacks = new HashMap<>();
+    protected Map<IModIDFilter<?>, StackData> modIDStacks = new HashMap<>();
     /**
      * True if the scrollbar is being dragged
      */
@@ -78,21 +78,21 @@ public abstract class GuiFilterHolder<FILTER extends IFilter, TILE extends TileE
 
         // Update displayed stacks
         if (stackSwitch == 0) {
-            for (Entry<IOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
+            for (Entry<IOreDictFilter<?>, StackData> entry : oreDictStacks.entrySet()) {
                 setNextRenderStack(entry.getValue());
             }
-            for (Entry<IModIDFilter, StackData> entry : modIDStacks.entrySet()) {
+            for (Entry<IModIDFilter<?>, StackData> entry : modIDStacks.entrySet()) {
                 setNextRenderStack(entry.getValue());
             }
             stackSwitch = 20;
         } else {
-            for (Entry<IOreDictFilter, StackData> entry : oreDictStacks.entrySet()) {
+            for (Entry<IOreDictFilter<?>, StackData> entry : oreDictStacks.entrySet()) {
                 StackData data = entry.getValue();
                 if (data.iterStacks != null && data.iterStacks.size() == 0) {
                     data.renderStack = ItemStack.EMPTY;
                 }
             }
-            for (Entry<IModIDFilter, StackData> entry : modIDStacks.entrySet()) {
+            for (Entry<IModIDFilter<?>, StackData> entry : modIDStacks.entrySet()) {
                 StackData data = entry.getValue();
                 if (data.iterStacks != null && data.iterStacks.size() == 0) {
                     data.renderStack = ItemStack.EMPTY;
@@ -100,21 +100,21 @@ public abstract class GuiFilterHolder<FILTER extends IFilter, TILE extends TileE
             }
         }
 
-        Set<IOreDictFilter> oreDictFilters = new HashSet<>();
-        Set<IModIDFilter> modIDFilters = new HashSet<>();
+        Set<IOreDictFilter<?>> oreDictFilters = new HashSet<>();
+        Set<IModIDFilter<?>> modIDFilters = new HashSet<>();
 
         HashList<FILTER> filters = tileEntity.getFilters();
 
         for (int i = 0; i < 4; i++) {
             FILTER filter = filters.get(getFilterIndex() + i);
             if (filter instanceof IOreDictFilter) {
-                oreDictFilters.add((IOreDictFilter) filter);
+                oreDictFilters.add((IOreDictFilter<?>) filter);
             } else if (filter instanceof IModIDFilter) {
-                modIDFilters.add((IModIDFilter) filter);
+                modIDFilters.add((IModIDFilter<?>) filter);
             }
         }
 
-        for (IFilter filter : filters) {
+        for (FILTER filter : filters) {
             if (filter instanceof IOreDictFilter && !oreDictFilters.contains(filter)) {
                 oreDictStacks.remove(filter);
             } else if (filter instanceof IModIDFilter && !modIDFilters.contains(filter)) {
@@ -132,7 +132,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter, TILE extends TileE
         HashList<FILTER> filters = tileEntity.getFilters();
         // Draw filter backgrounds
         for (int i = 0; i < 4; i++) {
-            IFilter filter = filters.get(getFilterIndex() + i);
+            FILTER filter = filters.get(getFilterIndex() + i);
             if (filter != null) {
                 // Change colour based on filter type
                 if (filter instanceof IItemStackFilter) {
@@ -210,7 +210,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter, TILE extends TileE
         return true;
     }
 
-    protected void updateStackList(IOreDictFilter filter) {
+    protected void updateStackList(IOreDictFilter<?> filter) {
         if (!oreDictStacks.containsKey(filter)) {
             oreDictStacks.put(filter, new StackData());
         }
@@ -220,7 +220,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter, TILE extends TileE
         oreDictStacks.get(filter).stackIndex = -1;
     }
 
-    protected void updateStackList(IModIDFilter filter) {
+    protected void updateStackList(IModIDFilter<?> filter) {
         if (!modIDStacks.containsKey(filter)) {
             modIDStacks.put(filter, new StackData());
         }

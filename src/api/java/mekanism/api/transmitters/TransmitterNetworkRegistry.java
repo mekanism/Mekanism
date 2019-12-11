@@ -27,11 +27,11 @@ public class TransmitterNetworkRegistry {
     private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
     private static boolean loaderRegistered = false;
     private static Logger logger = LogManager.getLogger("MekanismTransmitters");
-    private Set<DynamicNetwork> networks = new HashSet<>();
-    private Set<DynamicNetwork> networksToChange = new HashSet<>();
-    private Set<IGridTransmitter> invalidTransmitters = new HashSet<>();
-    private Map<Coord4D, IGridTransmitter> orphanTransmitters = new HashMap<>();
-    private Map<Coord4D, IGridTransmitter> newOrphanTransmitters = new HashMap<>();
+    private Set<DynamicNetwork<?, ?, ?>> networks = new HashSet<>();
+    private Set<DynamicNetwork<?, ?, ?>> networksToChange = new HashSet<>();
+    private Set<IGridTransmitter<?, ?, ?>> invalidTransmitters = new HashSet<>();
+    private Map<Coord4D, IGridTransmitter<?, ?, ?>> orphanTransmitters = new HashMap<>();
+    private Map<Coord4D, IGridTransmitter<?, ?, ?>> newOrphanTransmitters = new HashMap<>();
 
     public static void initiate() {
         if (!loaderRegistered) {
@@ -48,19 +48,19 @@ public class TransmitterNetworkRegistry {
         getInstance().newOrphanTransmitters.clear();
     }
 
-    public static void invalidateTransmitter(IGridTransmitter transmitter) {
+    public static void invalidateTransmitter(IGridTransmitter<?, ?, ?> transmitter) {
         getInstance().invalidTransmitters.add(transmitter);
     }
 
-    public static void registerOrphanTransmitter(IGridTransmitter transmitter) {
+    public static void registerOrphanTransmitter(IGridTransmitter<?, ?, ?> transmitter) {
         Coord4D coord = transmitter.coord();
-        IGridTransmitter previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
+        IGridTransmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
         if (previous != null && previous != transmitter) {
             logger.error("Different orphan transmitter was already registered at location! {}", coord.toString());
         }
     }
 
-    public static void registerChangedNetwork(DynamicNetwork network) {
+    public static void registerChangedNetwork(DynamicNetwork<?, ?, ?> network) {
         getInstance().networksToChange.add(network);
     }
 
@@ -68,11 +68,11 @@ public class TransmitterNetworkRegistry {
         return INSTANCE;
     }
 
-    public void registerNetwork(DynamicNetwork network) {
+    public void registerNetwork(DynamicNetwork<?, ?, ?> network) {
         networks.add(network);
     }
 
-    public void removeNetwork(DynamicNetwork network) {
+    public void removeNetwork(DynamicNetwork<?, ?, ?> network) {
         networks.remove(network);
         networksToChange.remove(network);
     }
@@ -88,7 +88,7 @@ public class TransmitterNetworkRegistry {
         removeInvalidTransmitters();
         assignOrphans();
         commitChanges();
-        for (DynamicNetwork net : networks) {
+        for (DynamicNetwork<?, ?, ?> net : networks) {
             net.tick();
         }
     }
@@ -98,9 +98,9 @@ public class TransmitterNetworkRegistry {
             logger.info("Dealing with " + invalidTransmitters.size() + " invalid Transmitters");
         }
 
-        for (IGridTransmitter invalid : invalidTransmitters) {
+        for (IGridTransmitter<?, ?, ?> invalid : invalidTransmitters) {
             if (!(invalid.isOrphan() && invalid.isValid())) {
-                DynamicNetwork n = invalid.getTransmitterNetwork();
+                DynamicNetwork<?, ?, ?> n = invalid.getTransmitterNetwork();
                 if (n != null) {
                     n.invalidate();
                 }
@@ -118,8 +118,8 @@ public class TransmitterNetworkRegistry {
             logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
         }
 
-        for (IGridTransmitter orphanTransmitter : new HashMap<>(orphanTransmitters).values()) {
-            DynamicNetwork network = getNetworkFromOrphan(orphanTransmitter);
+        for (IGridTransmitter<?, ?, ?> orphanTransmitter : new HashMap<>(orphanTransmitters).values()) {
+            DynamicNetwork<?, ?, ?> network = getNetworkFromOrphan(orphanTransmitter);
             if (network != null) {
                 networksToChange.add(network);
                 network.register();
@@ -169,7 +169,7 @@ public class TransmitterNetworkRegistry {
     }
 
     public void commitChanges() {
-        for (DynamicNetwork network : networksToChange) {
+        for (DynamicNetwork<?, ?, ?> network : networksToChange) {
             network.commit();
         }
         networksToChange.clear();
@@ -184,7 +184,7 @@ public class TransmitterNetworkRegistry {
         String[] strings = new String[networks.size()];
         int i = 0;
 
-        for (DynamicNetwork network : networks) {
+        for (DynamicNetwork<?, ?, ?> network : networks) {
             strings[i++] = network.toString();
         }
         return strings;
@@ -226,7 +226,7 @@ public class TransmitterNetworkRegistry {
             iterated.add(from);
 
             if (orphanTransmitters.containsKey(from)) {
-                IGridTransmitter<A, N, BUFFER> transmitter = orphanTransmitters.get(from);
+                IGridTransmitter<A, N, BUFFER> transmitter = (IGridTransmitter<A, N, BUFFER>) orphanTransmitters.get(from);
 
                 if (transmitter.isValid() && transmitter.isOrphan() &&
                     (connectedTransmitters.isEmpty() || connectedTransmitters.stream().anyMatch(existing -> existing.isCompatibleWith(transmitter)))) {

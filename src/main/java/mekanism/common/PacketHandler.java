@@ -109,7 +109,7 @@ public class PacketHandler {
             } else if (data instanceof ResourceLocation) {
                 output.writeResourceLocation((ResourceLocation) data);
             } else if (data instanceof Enum) {
-                output.writeEnumValue((Enum) data);
+                output.writeEnumValue((Enum<?>) data);
             } else if (data instanceof int[]) {
                 for (int i : (int[]) data) {
                     output.writeInt(i);
@@ -121,7 +121,7 @@ public class PacketHandler {
             } else if (data instanceof ArrayList) {
                 encode(((ArrayList<?>) data).toArray(), output);
             } else if (data instanceof NonNullList) {
-                encode(((NonNullList) data).toArray(), output);
+                encode(((NonNullList<?>) data).toArray(), output);
             } else {
                 throw new RuntimeException("Un-encodable data passed to encode(): " + data + ", full data: " + Arrays.toString(dataValues));
             }

@@ -94,7 +94,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
-            minerFilterClickCommon(mouseX - guiLeft, mouseY - guiTop, (MinerFilter) filter);
+            minerFilterClickCommon(mouseX - guiLeft, mouseY - guiTop, (MinerFilter<?>) filter);
         }
         return true;
     }

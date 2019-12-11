@@ -80,5 +80,5 @@ public abstract class TileEntityUpgradeableMachine<RECIPE extends MekanismRecipe
         return true;
     }
 
-    protected abstract void upgradeInventory(TileEntityFactory factory);
+    protected abstract void upgradeInventory(TileEntityFactory<?> factory);
 }

@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.Direction;
 
-public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter> extends RenderTransmitterBase<T> {
+public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter<?, ?, ?>> extends RenderTransmitterBase<T> {
 
     protected abstract void renderSide(BufferBuilder renderer, Direction side, T transmitter);
 

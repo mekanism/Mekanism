@@ -77,7 +77,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
         if (!isRemote()) {
             for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl) {
-                    LazyOptionalHelper<IHeatTransfer> capabilityHelper = CapabilityUtils.getCapabilityHelper(((TransmitterImpl) transmitter).getTileEntity(),
+                    LazyOptionalHelper<IHeatTransfer> capabilityHelper = CapabilityUtils.getCapabilityHelper(((TransmitterImpl<?, ?, ?>) transmitter).getTileEntity(),
                           Capabilities.HEAT_TRANSFER_CAPABILITY, null);
                     if (capabilityHelper.isPresent()) {
                         IHeatTransfer heatTransmitter = capabilityHelper.getValue();

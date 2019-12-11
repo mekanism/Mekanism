@@ -78,10 +78,11 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             // If we make GuiBar be able to stretch then we can use that as the bar background and do something similar to the InfuseBar
             // The other option which may make more sense is to make it be a GuiGauge
             //TODO: Figure out why it is going from right to left
+            //TODO: FIX this rendering as it is buggy
             int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
             TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(tileEntity.gasTank.getType());
             drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, icon, scale, 10);
-            if (scale > 0 && icon != null) {
+            if (scale > 0) {
                 minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                 MekanismRenderer.color(tileEntity.gasTank.getStack());
                 int start = 0;
@@ -97,6 +98,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
                         scale = 0;
                     }
                     drawTexturedRectFromIcon(x + 72 - renderRemaining - start, y, icon, renderRemaining, 10);
+                    //guiObj.drawTexturedRectFromIcon(x + 16 * i + 1, y + height - renderRemaining - start - 1, icon, 16, renderRemaining);
                     start += 16;
                     if (scale == 0) {
                         break;

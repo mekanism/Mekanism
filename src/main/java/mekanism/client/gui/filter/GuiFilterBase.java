@@ -50,14 +50,14 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
         }
     }
 
-    protected IHoverable getOnHoverReplace(MinerFilter filter) {
+    protected IHoverable getOnHoverReplace(MinerFilter<?> filter) {
         return getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.digitalMiner.requireReplace"), ": ",
               YesNo.of(filter.requireStack)));
     }
 
     protected void drawMinerForegroundLayer(ItemStack stack) {
         if (filter instanceof MinerFilter) {
-            MinerFilter mFilter = (MinerFilter) filter;
+            MinerFilter<?> mFilter = (MinerFilter<?>) filter;
             renderItem(stack, 12, 19);
             renderItem(mFilter.replaceStack, 149, 19);
         }
@@ -65,7 +65,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
 
     protected void drawTransporterForegroundLayer(@Nonnull ItemStack stack) {
         if (filter instanceof TransporterFilter) {
-            TransporterFilter tFilter = (TransporterFilter) filter;
+            TransporterFilter<?> tFilter = (TransporterFilter<?>) filter;
             drawString(OnOff.of(tFilter.allowDefault).getTextComponent(), 24, 66, 0x404040);
             renderItem(stack, 12, 19);
         }
@@ -75,7 +75,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
         return xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35;
     }
 
-    protected void minerFilterClickCommon(double xAxis, double yAxis, MinerFilter filter) {
+    protected void minerFilterClickCommon(double xAxis, double yAxis, MinerFilter<?> filter) {
         if (overReplaceOutput(xAxis, yAxis)) {
             boolean doNull = false;
             ItemStack stack = minecraft.player.inventory.getItemStack();

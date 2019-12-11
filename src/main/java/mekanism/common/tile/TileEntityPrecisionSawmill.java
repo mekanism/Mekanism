@@ -85,7 +85,7 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
     }
 
     @Override
-    protected void upgradeInventory(TileEntityFactory factory) {
+    protected void upgradeInventory(TileEntityFactory<?> factory) {
         //TODO: Upgrade
         //Chance Machine
         /*factory.configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[]{4, 8, 9, 10};

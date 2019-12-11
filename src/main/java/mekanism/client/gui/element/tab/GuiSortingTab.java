@@ -13,11 +13,11 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiSortingTab extends GuiInsetElement<TileEntityFactory> {
+public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
 
     private static final ResourceLocation HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "extended_holder_left.png");
 
-    public GuiSortingTab(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def) {
+    public GuiSortingTab(IGuiWrapper gui, TileEntityFactory<?> tile, ResourceLocation def) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "sorting.png"), gui, def, tile, -26, 62, 26, 35, 18);
     }
 

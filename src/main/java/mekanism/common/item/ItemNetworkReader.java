@@ -70,7 +70,7 @@ public class ItemNetworkReader extends ItemEnergized {
                                       EnumColor.GRAY, " -------------"));
                             },
                             () -> {
-                                Set<DynamicNetwork> iteratedNetworks = new HashSet<>();
+                                Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new HashSet<>();
                                 for (Direction iterSide : EnumUtils.DIRECTIONS) {
                                     Coord4D coord = tileCoord.offset(iterSide);
                                     TileEntity tile = MekanismUtils.getTileEntity(world, coord.getPos());

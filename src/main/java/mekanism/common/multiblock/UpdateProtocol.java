@@ -348,8 +348,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             List<String> idsFound = new ArrayList<>();
             for (Coord4D obj : structureFound.locations) {
                 TileEntity tileEntity = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
-                if (tileEntity instanceof TileEntityMultiblock && ((TileEntityMultiblock) tileEntity).cachedID != null) {
-                    idsFound.add(((TileEntityMultiblock) tileEntity).cachedID);
+                if (tileEntity instanceof TileEntityMultiblock && ((TileEntityMultiblock<?>) tileEntity).cachedID != null) {
+                    idsFound.add(((TileEntityMultiblock<?>) tileEntity).cachedID);
                 }
             }
 

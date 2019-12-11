@@ -795,7 +795,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End methods ITileContainer
 
     //Methods for implementing ITileElectric
-    protected boolean isStrictEnergy(@Nonnull Capability capability) {
+    protected boolean isStrictEnergy(@Nonnull Capability<?> capability) {
         return capability == Capabilities.ENERGY_STORAGE_CAPABILITY || capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY || capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY;
     }
 

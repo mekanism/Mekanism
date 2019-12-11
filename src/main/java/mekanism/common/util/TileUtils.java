@@ -25,7 +25,7 @@ public class TileUtils {
     // empty tag.
     private static final CompoundNBT EMPTY_TAG_COMPOUND = new CompoundNBT();
 
-    public static void addTankData(TileNetworkList data, ChemicalTank tank) {
+    public static void addTankData(TileNetworkList data, ChemicalTank<?, ?> tank) {
         if (tank.isEmpty()) {
             data.add(EMPTY_TAG_COMPOUND);
         } else {

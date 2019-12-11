@@ -52,7 +52,7 @@ public class BlockStateHelper {
     }
 
     public static void fillBlockStateContainer(Block block, StateContainer.Builder<Block, BlockState> builder) {
-        List<IProperty> properties = new ArrayList<>();
+        List<IProperty<?>> properties = new ArrayList<>();
         if (block instanceof IStateFacing) {
             properties.add(((IStateFacing) block).getFacingProperty());
         }

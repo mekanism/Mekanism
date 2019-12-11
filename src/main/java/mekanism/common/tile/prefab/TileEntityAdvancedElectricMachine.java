@@ -137,7 +137,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     }
 
     @Override
-    protected void upgradeInventory(TileEntityFactory factory) {
+    protected void upgradeInventory(TileEntityFactory<?> factory) {
         //TODO: Upgrade
         //Advanced Machine
         /*if (factory instanceof TileEntityItemStackGasToItemStackFactory) {

@@ -42,7 +42,7 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
 
     public static boolean areEqual(TileEntity tile1, TileEntity tile2) {
         if (tile1 instanceof TileEntityMultiblock && tile2 instanceof TileEntityMultiblock) {
-            return ((TileEntityMultiblock) tile1).getManager() == ((TileEntityMultiblock) tile2).getManager();
+            return ((TileEntityMultiblock<?>) tile1).getManager() == ((TileEntityMultiblock<?>) tile2).getManager();
         }
         return false;
     }
@@ -91,8 +91,8 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
             for (Coord4D obj : entry.getValue().locations) {
                 if (obj.dimension.equals(world.getDimension().getType()) && world.isBlockLoaded(obj.getPos())) {
                     TileEntity tileEntity = MekanismUtils.getTileEntity(world, obj.getPos());
-                    if (!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock) tileEntity).getManager() != this ||
-                        (getStructureId(((TileEntityMultiblock<?>) tileEntity)) != null && !Objects.equals(getStructureId(((TileEntityMultiblock) tileEntity)), inventoryID))) {
+                    if (!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock<?>) tileEntity).getManager() != this ||
+                        (getStructureId(((TileEntityMultiblock<?>) tileEntity)) != null && !Objects.equals(getStructureId(((TileEntityMultiblock<?>) tileEntity)), inventoryID))) {
                         if (!tilesToKill.containsKey(inventoryID)) {
                             tilesToKill.put(inventoryID, new HashSet<>());
                         }

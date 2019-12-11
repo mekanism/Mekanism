@@ -5,7 +5,7 @@ import mekanism.client.gui.element.GuiInsetElement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enum & TabType<TILE>> extends GuiInsetElement<TILE> {
+public abstract class GuiTabElementType<TILE extends TileEntity, TAB extends Enum<?> & TabType<TILE>> extends GuiInsetElement<TILE> {
 
     private final TAB tabType;
 
