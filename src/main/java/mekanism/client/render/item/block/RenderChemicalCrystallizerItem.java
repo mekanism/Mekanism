@@ -10,10 +10,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderChemicalCrystallizerItem extends MekanismItemStackRenderer {
 
     private static ModelChemicalCrystallizer chemicalCrystallizer = new ModelChemicalCrystallizer();

@@ -2,10 +2,8 @@ package mekanism.client.model;
 
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.Model;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+//TODO: Remove unused?
 public class ModelElectrolyticSeparator extends Model {
 
     private final RendererModel tank2;

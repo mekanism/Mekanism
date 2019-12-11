@@ -58,8 +58,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockMetallurgicInfuser extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityMetallurgicInfuser>,
@@ -104,8 +102,11 @@ public class BlockMetallurgicInfuser extends BlockMekanism implements IBlockElec
         return FactoryType.INFUSING;
     }
 
+    /**
+     * @inheritDoc
+     * @apiNote Only called on the client side
+     */
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
@@ -168,7 +169,6 @@ public class BlockMetallurgicInfuser extends BlockMekanism implements IBlockElec
         return tileEntity.openGui(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

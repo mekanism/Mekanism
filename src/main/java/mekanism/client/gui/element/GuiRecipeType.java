@@ -5,10 +5,7 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiRecipeType extends GuiTileEntityElement<TileEntityFactory> {
 
     public GuiRecipeType(IGuiWrapper gui, TileEntityFactory tile, ResourceLocation def) {

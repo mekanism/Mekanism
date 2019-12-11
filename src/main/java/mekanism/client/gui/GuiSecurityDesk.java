@@ -25,11 +25,8 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, SecurityDeskContainer> {
 
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');

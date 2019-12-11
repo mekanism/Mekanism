@@ -7,10 +7,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelGasGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderGasGenerator extends TileEntityRenderer<TileEntityGasGenerator> {
 
     private ModelGasGenerator model = new ModelGasGenerator();

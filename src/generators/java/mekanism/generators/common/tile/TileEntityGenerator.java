@@ -8,8 +8,6 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class TileEntityGenerator extends TileEntityMekanism implements IComputerIntegration {
 
@@ -59,7 +57,6 @@ public abstract class TileEntityGenerator extends TileEntityMekanism implements 
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
     }

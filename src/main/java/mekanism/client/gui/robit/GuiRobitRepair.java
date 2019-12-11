@@ -12,10 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CRenameItemPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IContainerListener {
 
     private TextFieldWidget itemNameField;

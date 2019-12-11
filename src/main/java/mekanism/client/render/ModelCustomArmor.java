@@ -16,10 +16,7 @@ import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class ModelCustomArmor extends BipedModel<LivingEntity> {
 
     public static ModelCustomArmor INSTANCE = new ModelCustomArmor();
@@ -51,8 +48,8 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
         return false;
     }
 
-    public static BipedModel getGlow(EquipmentSlotType index) {
-        BipedModel biped = index != EquipmentSlotType.LEGS ? GLOW_BIG : GLOW_SMALL;
+    public static BipedModel<LivingEntity> getGlow(EquipmentSlotType index) {
+        BipedModel<LivingEntity> biped = index != EquipmentSlotType.LEGS ? GLOW_BIG : GLOW_SMALL;
 
         biped.bipedHead.showModel = index == EquipmentSlotType.HEAD;
         biped.bipedHeadwear.showModel = index == EquipmentSlotType.HEAD;

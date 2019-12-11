@@ -11,10 +11,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiVerticalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiVerticalBar<ChemicalInfoProvider<CHEMICAL>> {
 
     private static final int texWidth = 4;

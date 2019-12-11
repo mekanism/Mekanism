@@ -8,10 +8,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiMFilterSelect extends GuiFilterSelect<TileEntityDigitalMiner, DMFilterSelectContainer> {
 
     public GuiMFilterSelect(DMFilterSelectContainer container, PlayerInventory inv, ITextComponent title) {

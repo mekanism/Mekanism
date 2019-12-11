@@ -28,10 +28,7 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, SideConfigurationContainer> {
 
     private List<GuiPos> slotPosList = new ArrayList<>();

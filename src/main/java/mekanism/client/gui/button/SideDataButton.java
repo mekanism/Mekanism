@@ -13,11 +13,8 @@ import mekanism.common.tile.component.config.DataType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
-@OnlyIn(Dist.CLIENT)
 public class SideDataButton extends MekanismButton {
 
     private final Supplier<DataType> dataTypeSupplier;

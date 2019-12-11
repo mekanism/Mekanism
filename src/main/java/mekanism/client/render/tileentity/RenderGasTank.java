@@ -3,10 +3,7 @@ package mekanism.client.render.tileentity;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityGasTank;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderGasTank extends TileEntityRenderer<TileEntityGasTank> {
 
     @Override

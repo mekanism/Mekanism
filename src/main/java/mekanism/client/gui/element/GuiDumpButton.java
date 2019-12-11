@@ -5,10 +5,8 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+//TODO: Should this extend MekanismImageButton
 public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTileEntityElement<TILE> {
 
     private final Runnable onPress;

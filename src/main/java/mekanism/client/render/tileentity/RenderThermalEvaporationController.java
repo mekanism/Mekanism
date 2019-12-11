@@ -10,10 +10,7 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderThermalEvaporationController extends TileEntityRenderer<TileEntityThermalEvaporationController> {
 
     @Override

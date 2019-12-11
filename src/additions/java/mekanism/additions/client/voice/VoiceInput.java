@@ -6,10 +6,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
 import mekanism.additions.client.AdditionsKeyHandler;
 import mekanism.common.Mekanism;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class VoiceInput extends Thread {
 
     private VoiceClient voiceClient;

@@ -8,10 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiHorizontalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiHorizontalBar<ChemicalInfoProvider<CHEMICAL>> {
 
     private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "large_horizontal_bar.png");

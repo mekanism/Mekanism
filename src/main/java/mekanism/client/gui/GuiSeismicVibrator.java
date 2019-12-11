@@ -18,10 +18,7 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrator, SeismicVibratorContainer> {
 
     public GuiSeismicVibrator(SeismicVibratorContainer container, PlayerInventory inv, ITextComponent title) {

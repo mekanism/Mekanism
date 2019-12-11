@@ -9,10 +9,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderRobit extends MobRenderer<EntityRobit, ModelRobit> {
 
     public RenderRobit(EntityRendererManager renderManager) {

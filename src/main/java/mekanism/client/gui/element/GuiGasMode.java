@@ -8,11 +8,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Should this extend MekanismImageButton
-@OnlyIn(Dist.CLIENT)
 public class GuiGasMode extends GuiTexturedElement {
 
     private static final ResourceLocation IDLE = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "gas_mode_idle.png");

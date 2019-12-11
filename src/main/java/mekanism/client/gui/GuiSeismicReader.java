@@ -20,11 +20,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: Test to see if this properly was converted to GuiMekanism
-@OnlyIn(Dist.CLIENT)
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private Coord4D pos;

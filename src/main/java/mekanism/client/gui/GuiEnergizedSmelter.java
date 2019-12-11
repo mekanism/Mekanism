@@ -5,10 +5,7 @@ import mekanism.common.inventory.container.tile.EnergizedSmelterContainer;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiEnergizedSmelter extends GuiElectricMachine<TileEntityEnergizedSmelter, EnergizedSmelterContainer> {
 
     public GuiEnergizedSmelter(EnergizedSmelterContainer container, PlayerInventory inv, ITextComponent title) {

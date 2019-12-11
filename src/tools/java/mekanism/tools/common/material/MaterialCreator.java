@@ -5,8 +5,6 @@ import mekanism.common.config.FloatValue;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
@@ -236,9 +234,11 @@ public class MaterialCreator extends BaseMekanismMaterial {
         return fallBack.getCommonRepairMaterial();
     }
 
+    /**
+     * Only used on the client in vanilla
+     */
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
     public String getName() {
         return fallBack.getName();
     }

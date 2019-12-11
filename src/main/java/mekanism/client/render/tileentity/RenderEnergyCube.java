@@ -17,12 +17,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
-//TODO: Fix being able to see through the energy cube into the void if standing on top of one that is on the ground
-@OnlyIn(Dist.CLIENT)
 public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
 
     public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube.png");

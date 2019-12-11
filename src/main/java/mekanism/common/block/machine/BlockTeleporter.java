@@ -42,8 +42,6 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockTeleporter extends BlockMekanism implements IBlockElectric, IHasGui<TileEntityTeleporter>, ISupportsUpgrades, IHasInventory, IHasSecurity,
       ISupportsRedstone, IHasTileEntity<TileEntityTeleporter>, ISupportsComparator {
@@ -52,8 +50,11 @@ public class BlockTeleporter extends BlockMekanism implements IBlockElectric, IH
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
     }
 
+    /**
+     * @inheritDoc
+     * @apiNote Only called on the client side
+     */
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {

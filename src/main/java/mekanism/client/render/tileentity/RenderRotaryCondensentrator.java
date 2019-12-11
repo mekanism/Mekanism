@@ -7,10 +7,8 @@ import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+//TODO: Remove unused?
 public class RenderRotaryCondensentrator extends TileEntityRenderer<TileEntityRotaryCondensentrator> {
 
     private ModelRotaryCondensentrator model = new ModelRotaryCondensentrator();

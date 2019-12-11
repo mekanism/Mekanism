@@ -16,11 +16,8 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.fluid.Fluids;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {
 
     @Nonnull

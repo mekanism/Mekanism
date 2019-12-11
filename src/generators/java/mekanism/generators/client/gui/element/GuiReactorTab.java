@@ -13,10 +13,7 @@ import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress.Clicked
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController, ReactorTab> {
 
     public GuiReactorTab(IGuiWrapper gui, TileEntityReactorController tile, ReactorTab type, ResourceLocation def) {

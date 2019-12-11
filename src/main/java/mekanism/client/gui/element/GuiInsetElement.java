@@ -6,11 +6,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-//TODO: Better name?
-@OnlyIn(Dist.CLIENT)
 public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiTileEntityElement<TILE> {
 
     public static final ResourceLocation INSET_HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "inset_holder_left.png");

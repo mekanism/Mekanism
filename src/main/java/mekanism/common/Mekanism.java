@@ -97,7 +97,6 @@ public class Mekanism {
     //Note: Do not replace with method reference: https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#gistcomment-2876130
     public static CommonProxy proxy = DistExecutor.runForDist(() -> getClientProxy(), () -> () -> new CommonProxy());
 
-    //TODO: Remove unneeded OnlyIn calls throughout everywhere
     @OnlyIn(Dist.CLIENT)
     private static Supplier<CommonProxy> getClientProxy() {
         //NOTE: This extra method is needed to avoid classloading issues on servers

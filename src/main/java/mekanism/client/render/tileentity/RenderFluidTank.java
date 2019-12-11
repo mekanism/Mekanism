@@ -15,12 +15,9 @@ import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
 
     public static final RenderFluidTank INSTANCE = new RenderFluidTank();

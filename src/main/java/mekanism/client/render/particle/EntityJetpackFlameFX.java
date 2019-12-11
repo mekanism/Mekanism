@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class EntityJetpackFlameFX extends FlameParticle {
 
     public EntityJetpackFlameFX(World world, double posX, double posY, double posZ, double velX, double velY, double velZ) {

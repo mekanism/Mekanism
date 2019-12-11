@@ -3,12 +3,9 @@ package mekanism.additions.client;
 import mekanism.additions.client.voice.VoiceClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.common.Mekanism;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.NetworkEvent.GatherLoginPayloadsEvent;
 
-@OnlyIn(Dist.CLIENT)
 public class ClientConnectionHandler {
 
     @SubscribeEvent

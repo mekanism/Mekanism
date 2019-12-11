@@ -14,8 +14,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TileEntitySeismicVibrator extends TileEntityMekanism implements IActiveState, IBoundingBlock {
 
@@ -89,7 +87,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         return INFINITE_EXTENT_AABB;
     }

@@ -9,10 +9,7 @@ import net.minecraft.client.audio.LocatableSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class PlayerSound extends LocatableSound implements ITickableSound {
 
     @Nonnull

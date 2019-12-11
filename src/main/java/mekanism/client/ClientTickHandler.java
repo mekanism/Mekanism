@@ -31,8 +31,6 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,7 +40,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  *
  * @author AidanBrady
  */
-@OnlyIn(Dist.CLIENT)
 public class ClientTickHandler {
 
     public static Minecraft minecraft = Minecraft.getInstance();

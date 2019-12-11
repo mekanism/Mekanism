@@ -22,10 +22,7 @@ import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiPrecisionSawmill extends GuiMekanismTile<TileEntityPrecisionSawmill, PrecisionSawmillContainer> {
 
     public GuiPrecisionSawmill(PrecisionSawmillContainer container, PlayerInventory inv, ITextComponent title) {

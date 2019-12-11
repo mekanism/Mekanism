@@ -5,10 +5,7 @@ import mekanism.common.inventory.container.tile.OsmiumCompressorContainer;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiOsmiumCompressor extends GuiAdvancedElectricMachine<TileEntityOsmiumCompressor, OsmiumCompressorContainer> {
 
     public GuiOsmiumCompressor(OsmiumCompressorContainer container, PlayerInventory inv, ITextComponent title) {

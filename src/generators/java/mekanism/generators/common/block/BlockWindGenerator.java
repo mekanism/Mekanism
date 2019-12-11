@@ -38,8 +38,6 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockWindGenerator extends BlockMekanism implements IHasGui<TileEntityWindGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntityWindGenerator>, IStateActive {
@@ -112,7 +110,6 @@ public class BlockWindGenerator extends BlockMekanism implements IHasGui<TileEnt
         return tileEntity.openGui(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

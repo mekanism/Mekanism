@@ -56,8 +56,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockPressurizedReactionChamber extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntityPressurizedReactionChamber>, ISupportsUpgrades,
       IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPressurizedReactionChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator {
@@ -87,8 +85,11 @@ public class BlockPressurizedReactionChamber extends BlockMekanism implements IB
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
     }
 
+    /**
+     * @inheritDoc
+     * @apiNote Only called on the client side
+     */
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
@@ -148,7 +149,6 @@ public class BlockPressurizedReactionChamber extends BlockMekanism implements IB
         return tileEntity.openGui(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

@@ -24,10 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContainer> {
 
     public GuiGasTank(GasTankContainer container, PlayerInventory inv, ITextComponent title) {

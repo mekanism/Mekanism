@@ -26,10 +26,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class GuiFilterHolder<FILTER extends IFilter, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends FilterEmptyContainer<TILE>>
       extends GuiMekanismTile<TILE, CONTAINER> {
 

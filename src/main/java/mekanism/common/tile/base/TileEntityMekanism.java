@@ -77,8 +77,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -180,7 +178,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nullable
     private final SoundEvent soundEvent;
 
-    @OnlyIn(Dist.CLIENT)
+    /**
+     * Only used on the client
+     */
     private ISound activeSound;
     private int playSoundCooldown = 0;
     protected int rapidChangeThreshold = 10;
@@ -959,7 +959,9 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return 1.0f;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    /**
+     * Only call this from the client
+     */
     private void updateSound() {
         // If machine sounds are disabled, noop
         if (!hasSound() || !MekanismConfig.client.enableMachineSounds.get() || soundEvent == null) {

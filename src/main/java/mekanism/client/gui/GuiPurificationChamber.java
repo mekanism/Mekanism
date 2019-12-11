@@ -5,10 +5,7 @@ import mekanism.common.inventory.container.tile.PurificationChamberContainer;
 import mekanism.common.tile.TileEntityPurificationChamber;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiPurificationChamber extends GuiAdvancedElectricMachine<TileEntityPurificationChamber, PurificationChamberContainer> {
 
     public GuiPurificationChamber(PurificationChamberContainer container, PlayerInventory inv, ITextComponent title) {

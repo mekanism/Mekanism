@@ -39,8 +39,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IComparatorSupport {
@@ -488,8 +486,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
+        //TODO: Do we need to override getRenderBoundingBox in all the places we do, or is overriding the TE renderer good enough with the isGlobal
         return INFINITE_EXTENT_AABB;
     }
 

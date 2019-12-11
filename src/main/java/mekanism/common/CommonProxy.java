@@ -24,8 +24,8 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
  *
  * @author AidanBrady
  */
-//TODO: I don't think IGuiProvider is needed with 1.14 and can be done through forge hooks instead
-public class CommonProxy/* implements IGuiProvider*/ {
+//TODO: Try to get rid of the need for using a proxy system
+public class CommonProxy {
 
     protected final String[] API_PRESENT_MESSAGE = {"Mekanism API jar detected (Mekanism-<version>-api.jar),",
                                                     "please delete it from your mods folder and restart the game."};

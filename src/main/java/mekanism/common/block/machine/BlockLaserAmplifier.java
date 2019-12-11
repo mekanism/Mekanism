@@ -47,8 +47,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserAmplifier>, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
       IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator {
@@ -74,8 +72,11 @@ public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHa
         return BlockStateHelper.facingProperty;
     }
 
+    /**
+     * @inheritDoc
+     * @apiNote Only called on the client side
+     */
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
@@ -137,7 +138,6 @@ public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHa
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
     public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
     }

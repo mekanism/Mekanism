@@ -27,8 +27,6 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -51,7 +49,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 // intercepts new repeating sounds from Mek and ensures that they periodically poll for any muting/manipulation so that
 // it the object can dynamically adjust to conditions.
 
-@OnlyIn(Dist.CLIENT)
+/**
+ * Only used by client
+ */
 public class SoundHandler {
 
     private static Set<UUID> jetpackSounds = new HashSet<>();

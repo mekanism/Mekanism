@@ -11,10 +11,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     private static final ResourceLocation OFF = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier_off.png");

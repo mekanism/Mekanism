@@ -13,10 +13,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
 
     private static final ResourceLocation DISABLED = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "gun_powder.png");

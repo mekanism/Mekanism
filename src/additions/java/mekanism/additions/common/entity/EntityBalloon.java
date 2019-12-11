@@ -22,8 +22,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -232,7 +230,6 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         remove();
     }
 
-    @OnlyIn(Dist.CLIENT)
     private void doParticle() {
         world.addParticle(new RedstoneParticleData(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F),
               posX + (rand.nextFloat() * 0.6 - 0.3), posY + (rand.nextFloat() * 0.6 - 0.3), posZ + (rand.nextFloat() * 0.6 - 0.3), 0, 0, 0);

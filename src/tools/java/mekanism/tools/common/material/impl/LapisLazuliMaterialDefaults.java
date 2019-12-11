@@ -7,8 +7,6 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
@@ -155,7 +153,6 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
     public String getName() {
         return getRegistryPrefix();
     }

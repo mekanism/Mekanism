@@ -12,10 +12,7 @@ import mekanism.generators.client.model.ModelHeatGenerator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderHeatGeneratorItem extends MekanismItemStackRenderer {
 
     private static ModelHeatGenerator heatGenerator = new ModelHeatGenerator();

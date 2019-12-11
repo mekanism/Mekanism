@@ -5,10 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.Model;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class ModelBalloon extends Model {
 
     private final RendererModel Balloon2;

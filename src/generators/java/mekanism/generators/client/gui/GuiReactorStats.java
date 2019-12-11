@@ -16,10 +16,7 @@ import mekanism.generators.common.inventory.container.reactor.info.ReactorStatsC
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiReactorStats extends GuiReactorInfo<ReactorStatsContainer> {
 
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();

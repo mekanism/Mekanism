@@ -10,10 +10,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelSolarGenerator;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class RenderSolarGeneratorItem extends MekanismItemStackRenderer {
 
     private static ModelSolarGenerator solarGenerator = new ModelSolarGenerator();

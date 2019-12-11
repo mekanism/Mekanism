@@ -4,10 +4,7 @@ import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
 
     public GuiRobitCrafting(CraftingRobitContainer container, PlayerInventory inv, ITextComponent title) {

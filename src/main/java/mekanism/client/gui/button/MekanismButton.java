@@ -3,11 +3,10 @@ package mekanism.client.gui.button;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-//Extends our "Widget" class (GuiElement) instead of Button so that we can easier utilize common code
-@OnlyIn(Dist.CLIENT)
+/**
+ * Extends our "Widget" class (GuiElement) instead of Button so that we can easier utilize common code
+ */
 public class MekanismButton extends GuiElement {
 
     private final IHoverable onHover;
@@ -81,7 +80,6 @@ public class MekanismButton extends GuiElement {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     @FunctionalInterface
     public interface IHoverable {
 

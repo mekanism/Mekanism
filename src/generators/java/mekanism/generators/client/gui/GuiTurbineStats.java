@@ -19,10 +19,7 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, TurbineStatsContainer> {
 
     public GuiTurbineStats(TurbineStatsContainer container, PlayerInventory inv, ITextComponent title) {

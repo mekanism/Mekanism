@@ -17,11 +17,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
-@OnlyIn(Dist.CLIENT)
 public class ParticleLaser extends SpriteTexturedParticle {
 
     private final Direction direction;
@@ -99,7 +96,6 @@ public class ParticleLaser extends SpriteTexturedParticle {
         return IParticleRenderType.CUSTOM;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class Factory implements IParticleFactory<LaserParticleData> {
 
         private final IAnimatedSprite spriteSet;

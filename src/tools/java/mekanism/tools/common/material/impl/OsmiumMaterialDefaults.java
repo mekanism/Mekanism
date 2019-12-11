@@ -7,8 +7,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
@@ -155,7 +153,6 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
     public String getName() {
         return getRegistryPrefix();
     }

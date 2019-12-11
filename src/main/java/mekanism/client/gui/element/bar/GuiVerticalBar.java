@@ -5,10 +5,7 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class GuiVerticalBar<INFO extends IBarInfoHandler> extends GuiBar<INFO> {
 
     private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "vertical_bar.png");

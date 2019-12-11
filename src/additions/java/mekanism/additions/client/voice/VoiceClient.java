@@ -9,10 +9,7 @@ import java.net.Socket;
 import javax.sound.sampled.AudioFormat;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.common.Mekanism;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class VoiceClient extends Thread {
 
     private AudioFormat format = new AudioFormat(16000F, 16, 1, true, true);

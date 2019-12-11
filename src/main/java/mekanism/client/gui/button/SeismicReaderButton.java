@@ -4,10 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class SeismicReaderButton extends MekanismButton {
 
     private final ResourceLocation resourceLocation;

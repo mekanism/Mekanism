@@ -12,15 +12,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.glfw.GLFW;
 
-@OnlyIn(Dist.CLIENT)
 public class AdditionsKeyHandler extends MekKeyHandler {
 
     public static KeyBinding voiceKey = new KeyBinding("mekanismadditions.key.voice", GLFW.GLFW_KEY_U, MekanismKeyHandler.keybindCategory);
@@ -31,11 +27,10 @@ public class AdditionsKeyHandler extends MekKeyHandler {
     public AdditionsKeyHandler() {
         super(BINDINGS);
         ClientRegistry.registerKeyBinding(voiceKey);
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(this::onTick);
     }
 
-    @SubscribeEvent
-    public void onTick(InputEvent.KeyInputEvent event) {
+    private void onTick(InputEvent.KeyInputEvent event) {
         keyTick();
     }
 
@@ -62,6 +57,5 @@ public class AdditionsKeyHandler extends MekKeyHandler {
 
     @Override
     public void keyUp(KeyBinding kb) {
-
     }
 }

@@ -39,8 +39,6 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockGasBurningGenerator extends BlockMekanism implements IHasGui<TileEntityGasGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity,
       IBlockSound, IHasTileEntity<TileEntityGasGenerator>, ISupportsComparator {
@@ -112,7 +110,6 @@ public class BlockGasBurningGenerator extends BlockMekanism implements IHasGui<T
         return tileEntity.openGui(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

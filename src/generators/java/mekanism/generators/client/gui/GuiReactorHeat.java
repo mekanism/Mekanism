@@ -26,10 +26,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
 
     public GuiReactorHeat(ReactorHeatContainer container, PlayerInventory inv, ITextComponent title) {

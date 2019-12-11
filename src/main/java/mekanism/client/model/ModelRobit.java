@@ -6,10 +6,7 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class ModelRobit extends EntityModel<EntityRobit> {
 
     private final RendererModel Body;

@@ -53,8 +53,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockChemicalInjectionChamber extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityChemicalInjectionChamber>, IStateFacing,
       IStateActive, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalInjectionChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator {
@@ -71,8 +69,11 @@ public class BlockChemicalInjectionChamber extends BlockMekanism implements IBlo
         return FactoryType.INJECTING;
     }
 
+    /**
+     * @inheritDoc
+     * @apiNote Only called on the client side
+     */
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tileEntity != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
@@ -132,7 +133,6 @@ public class BlockChemicalInjectionChamber extends BlockMekanism implements IBlo
         return tileEntity.openGui(player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {

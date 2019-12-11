@@ -12,10 +12,7 @@ import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class GuiReactorInfo<CONTAINER extends ReactorInfoContainer> extends GuiMekanismTile<TileEntityReactorController, CONTAINER> {
 
     protected GuiReactorInfo(CONTAINER container, PlayerInventory inv, ITextComponent title) {

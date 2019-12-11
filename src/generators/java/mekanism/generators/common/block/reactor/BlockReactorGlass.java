@@ -19,8 +19,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlockReactorGlass extends BlockMekanism implements IHasTileEntity<TileEntityReactorGlass> {
 
@@ -60,7 +58,6 @@ public class BlockReactorGlass extends BlockMekanism implements IHasTileEntity<T
 
     @Override
     @Deprecated
-    @OnlyIn(Dist.CLIENT)
     public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
         Block blockOffset = adjacentBlockState.getBlock();
         if (blockOffset instanceof BlockReactorGlass || blockOffset instanceof BlockLaserFocusMatrix) {

@@ -1,12 +1,9 @@
 package mekanism.client;
 
 import mekanism.common.Mekanism;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-@OnlyIn(Dist.CLIENT)
 public class ClientPlayerTracker {
 
     @SubscribeEvent

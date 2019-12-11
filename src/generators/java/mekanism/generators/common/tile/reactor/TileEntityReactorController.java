@@ -28,8 +28,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -53,7 +51,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public double clientTemp = 0;
     public boolean clientBurning = false;
     private SoundEvent soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.fusionreactor"));
-    @OnlyIn(Dist.CLIENT)
+    /**
+     * Only used by the client
+     */
     private ISound activeSound;
     private int playSoundCooldown = 0;
 
@@ -122,7 +122,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    /**
+     * Only used by the client
+     */
     private void updateSound() {
         // If machine sounds are disabled, noop
         if (!MekanismConfig.client.enableMachineSounds.get()) {
@@ -298,7 +300,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Nonnull
     @Override
-    @OnlyIn(Dist.CLIENT)
     public AxisAlignedBB getRenderBoundingBox() {
         if (box == null) {
             box = new AxisAlignedBB(getPos().getX() - 1, getPos().getY() - 3, getPos().getZ() - 1, getPos().getX() + 2, getPos().getY(), getPos().getZ() + 2);
