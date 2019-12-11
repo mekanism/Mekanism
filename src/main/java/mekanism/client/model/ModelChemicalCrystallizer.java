@@ -12,23 +12,23 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelChemicalCrystallizer extends Model {
 
-    RendererModel tray;
-    RendererModel support4;
-    RendererModel rimBack;
-    RendererModel portRight;
-    RendererModel rimRight;
-    RendererModel rimLeft;
-    RendererModel rimFront;
-    RendererModel portLeft;
-    RendererModel support3;
-    RendererModel support2;
-    RendererModel support1;
-    RendererModel tank;
-    RendererModel rod1;
-    RendererModel rod2;
-    RendererModel rod3;
-    RendererModel base;
-    RendererModel Shape1;
+    private final RendererModel tray;
+    private final RendererModel support4;
+    private final RendererModel rimBack;
+    private final RendererModel portRight;
+    private final RendererModel rimRight;
+    private final RendererModel rimLeft;
+    private final RendererModel rimFront;
+    private final RendererModel portLeft;
+    private final RendererModel support3;
+    private final RendererModel support2;
+    private final RendererModel support1;
+    private final RendererModel tank;
+    private final RendererModel rod1;
+    private final RendererModel rod2;
+    private final RendererModel rod3;
+    private final RendererModel base;
+    private final RendererModel Shape1;
 
     public ModelChemicalCrystallizer() {
         textureWidth = 128;

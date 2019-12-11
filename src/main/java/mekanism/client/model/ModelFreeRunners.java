@@ -5,12 +5,12 @@ import net.minecraft.client.renderer.model.Model;
 
 public class ModelFreeRunners extends Model {
 
-    RendererModel SpringL;
-    RendererModel SpringR;
-    RendererModel BraceL;
-    RendererModel BraceR;
-    RendererModel SupportL;
-    RendererModel SupportR;
+    private final RendererModel SpringL;
+    private final RendererModel SpringR;
+    private final RendererModel BraceL;
+    private final RendererModel BraceR;
+    private final RendererModel SupportL;
+    private final RendererModel SupportR;
 
     public ModelFreeRunners() {
         textureWidth = 64;

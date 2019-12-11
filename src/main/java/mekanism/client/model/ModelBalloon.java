@@ -11,11 +11,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelBalloon extends Model {
 
-    RendererModel Balloon2;
-    RendererModel Balloon1;
-    RendererModel Balloon3;
-    RendererModel Balloonnub;
-    RendererModel String;
+    private final RendererModel Balloon2;
+    private final RendererModel Balloon1;
+    private final RendererModel Balloon3;
+    private final RendererModel Balloonnub;
+    private final RendererModel String;
 
     public ModelBalloon() {
         textureWidth = 64;

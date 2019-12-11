@@ -14,7 +14,6 @@ import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 
-//TODO: Search for instances of this comment "//TODO: VoxelShapes"
 public final class VoxelShapeUtils {
 
     private static final Vec3d fromOrigin = new Vec3d(-0.5, -0.5, -0.5);
@@ -242,12 +241,9 @@ public final class VoxelShapeUtils {
     //TODO: Document, figures out the slope, currently has hardcoded shift and rotation based on our most common one we perform to models ahead of time
     public static VoxelShape getSlope(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float rotationPointX, float rotationPointY,
           float rotationPointZ, float rotateAngleX, float rotateAngleY, float rotateAngleZ, boolean print) {
-        //Note: This is a manual rotation to not have to deal with numbers getting not rounding properly due to double precision
         float shiftX = 16 * 0.5F - rotationPointX;
         float shiftY = 16 * 1.5F - rotationPointY;
         float shiftZ = 16 * 0.5F + rotationPointZ;
-        //TODO: Miner is - 16 * 1
-        //float shiftZ = -16 * 0.5F + rotationPointZ;
 
         if (rotateAngleX == 0 && rotateAngleY == 0 && rotateAngleZ == 0) {
             //TODO: This is a shortcut but we may want to make below stuff properly be able to handle angles of zero?

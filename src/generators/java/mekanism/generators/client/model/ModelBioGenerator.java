@@ -9,12 +9,12 @@ import org.lwjgl.opengl.GL11;
 
 public class ModelBioGenerator extends Model {
 
-    RendererModel base;
-    RendererModel sideRight;
-    RendererModel back;
-    RendererModel bar;
-    RendererModel glass;
-    RendererModel sideLeft;
+    private final RendererModel base;
+    private final RendererModel sideRight;
+    private final RendererModel back;
+    private final RendererModel bar;
+    private final RendererModel glass;
+    private final RendererModel sideLeft;
 
     public ModelBioGenerator() {
         textureWidth = 64;

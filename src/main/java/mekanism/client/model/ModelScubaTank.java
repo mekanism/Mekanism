@@ -8,15 +8,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelScubaTank extends Model {
 
-    RendererModel tankL;
-    RendererModel tankR;
-    RendererModel tankdock;
-    RendererModel capL;
-    RendererModel capR;
-    RendererModel tankbridge;
-    RendererModel tankpipelower;
-    RendererModel tankpipeupper;
-    RendererModel tankbackbrace;
+    private final RendererModel tankL;
+    private final RendererModel tankR;
+    private final RendererModel tankdock;
+    private final RendererModel capL;
+    private final RendererModel capR;
+    private final RendererModel tankbridge;
+    private final RendererModel tankpipelower;
+    private final RendererModel tankpipeupper;
+    private final RendererModel tankbackbrace;
 
     public ModelScubaTank() {
         textureWidth = 128;

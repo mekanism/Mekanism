@@ -8,22 +8,22 @@ import net.minecraft.client.renderer.model.Model;
 
 public class ModelAtomicDisassembler extends Model {
 
-    RendererModel Shape1;
-    RendererModel Shape2;
-    RendererModel Shape5;
-    RendererModel Shape6;
-    RendererModel Shape7;
-    RendererModel Shape9;
-    RendererModel Shape16;
-    RendererModel Shape10;
-    RendererModel Shape3;
-    RendererModel Shape11;
-    RendererModel Shape4;
-    RendererModel Shape12;
-    RendererModel Shape13;
-    RendererModel Shape14;
-    RendererModel Shape15;
-    RendererModel Shape8;
+    private final RendererModel Shape1;
+    private final RendererModel Shape2;
+    private final RendererModel Shape5;
+    private final RendererModel Shape6;
+    private final RendererModel Shape7;
+    private final RendererModel Shape9;
+    private final RendererModel Shape16;
+    private final RendererModel Shape10;
+    private final RendererModel Shape3;
+    private final RendererModel Shape11;
+    private final RendererModel Shape4;
+    private final RendererModel Shape12;
+    private final RendererModel Shape13;
+    private final RendererModel Shape14;
+    private final RendererModel Shape15;
+    private final RendererModel Shape8;
 
     public ModelAtomicDisassembler() {
         textureWidth = 64;

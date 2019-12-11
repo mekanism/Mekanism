@@ -18,18 +18,18 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelSecurityDesk extends Model {
 
-    public static ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "security_desk_overlay.png");
+    private static final ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "security_desk_overlay.png");
 
-    RendererModel deskTop;
-    RendererModel deskBase;
-    RendererModel led;
-    RendererModel monitorBack;
-    RendererModel keyboard;
-    RendererModel monitor;
-    RendererModel standNeck;
-    RendererModel standBase;
-    RendererModel deskMiddle;
-    RendererModel monitorScreen;
+    private final RendererModel deskTop;
+    private final RendererModel deskBase;
+    private final RendererModel led;
+    private final RendererModel monitorBack;
+    private final RendererModel keyboard;
+    private final RendererModel monitor;
+    private final RendererModel standNeck;
+    private final RendererModel standBase;
+    private final RendererModel deskMiddle;
+    private final RendererModel monitorScreen;
 
     public ModelSecurityDesk() {
         textureWidth = 128;

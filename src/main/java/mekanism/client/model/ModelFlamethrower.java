@@ -8,29 +8,29 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelFlamethrower extends Model {
 
-    RendererModel RingButtom;
-    RendererModel RingTop;
-    RendererModel Ring;
-    RendererModel Axle;
-    RendererModel AxleBLeft;
-    RendererModel AxleBRight;
-    RendererModel AxleTRight;
-    RendererModel AxleTLeft;
-    RendererModel Grasp;
-    RendererModel GraspRod;
-    RendererModel SupportCentre;
-    RendererModel SupportFront;
-    RendererModel SupportRear;
-    RendererModel LargeBarrel;
-    RendererModel LargeBarrelDecor;
-    RendererModel LargeBarrelDecor2;
-    RendererModel Barrel;
-    RendererModel BarrelRing;
-    RendererModel BarrelRing2;
-    RendererModel Flame;
-    RendererModel FlameStrut;
-    RendererModel HydrogenDecor;
-    RendererModel Hydrogen;
+    private final RendererModel RingButtom;
+    private final RendererModel RingTop;
+    private final RendererModel Ring;
+    private final RendererModel Axle;
+    private final RendererModel AxleBLeft;
+    private final RendererModel AxleBRight;
+    private final RendererModel AxleTRight;
+    private final RendererModel AxleTLeft;
+    private final RendererModel Grasp;
+    private final RendererModel GraspRod;
+    private final RendererModel SupportCentre;
+    private final RendererModel SupportFront;
+    private final RendererModel SupportRear;
+    private final RendererModel LargeBarrel;
+    private final RendererModel LargeBarrelDecor;
+    private final RendererModel LargeBarrelDecor2;
+    private final RendererModel Barrel;
+    private final RendererModel BarrelRing;
+    private final RendererModel BarrelRing2;
+    private final RendererModel Flame;
+    private final RendererModel FlameStrut;
+    private final RendererModel HydrogenDecor;
+    private final RendererModel Hydrogen;
 
     public ModelFlamethrower() {
         textureWidth = 64;

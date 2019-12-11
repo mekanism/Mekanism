@@ -18,25 +18,25 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelHeatGenerator extends Model {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_on.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_off.png");
+    private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_on.png");
+    private static final ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_off.png");
 
-    RendererModel drum;
-    RendererModel ring1;
-    RendererModel ring2;
-    RendererModel back;
-    RendererModel bar1;
-    RendererModel bar2;
-    RendererModel plate;
-    RendererModel fin8;
-    RendererModel fin7;
-    RendererModel fin1;
-    RendererModel fin2;
-    RendererModel fin3;
-    RendererModel fin4;
-    RendererModel fin5;
-    RendererModel fin6;
-    RendererModel base;
+    private final RendererModel drum;
+    private final RendererModel ring1;
+    private final RendererModel ring2;
+    private final RendererModel back;
+    private final RendererModel bar1;
+    private final RendererModel bar2;
+    private final RendererModel plate;
+    private final RendererModel fin8;
+    private final RendererModel fin7;
+    private final RendererModel fin1;
+    private final RendererModel fin2;
+    private final RendererModel fin3;
+    private final RendererModel fin4;
+    private final RendererModel fin5;
+    private final RendererModel fin6;
+    private final RendererModel base;
 
     public ModelHeatGenerator() {
         textureWidth = 128;

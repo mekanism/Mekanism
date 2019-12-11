@@ -5,14 +5,14 @@ import net.minecraft.client.renderer.model.Model;
 
 public class ModelSolarGenerator extends Model {
 
-    RendererModel solarPanel;
-    RendererModel solarPanelBottom;
-    RendererModel solarPanelConnector;
-    RendererModel solarPanelRod2;
-    RendererModel solarPanelPipeConnector;
-    RendererModel solarPanelPort;
-    RendererModel solarPanelRod1;
-    RendererModel solarPanelPipeBase;
+    private final RendererModel solarPanel;
+    private final RendererModel solarPanelBottom;
+    private final RendererModel solarPanelConnector;
+    private final RendererModel solarPanelRod2;
+    private final RendererModel solarPanelPipeConnector;
+    private final RendererModel solarPanelPort;
+    private final RendererModel solarPanelRod1;
+    private final RendererModel solarPanelPipeBase;
 
     public ModelSolarGenerator() {
         textureWidth = 64;

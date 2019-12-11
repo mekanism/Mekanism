@@ -12,21 +12,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelRobit extends EntityModel<EntityRobit> {
 
-    public RendererModel Body;
-    public RendererModel Bottom;
-    public RendererModel RightTrack;
-    public RendererModel LeftTrack;
-    public RendererModel Neck;
-    public RendererModel Head;
-    public RendererModel Backpack;
-    public RendererModel headback;
-    public RendererModel rightarn;
-    public RendererModel leftarm;
-    public RendererModel righthand;
-    public RendererModel lefthand;
-    public RendererModel backLight;
-    public RendererModel eyeRight;
-    public RendererModel eyeLeft;
+    private final RendererModel Body;
+    private final RendererModel Bottom;
+    private final RendererModel RightTrack;
+    private final RendererModel LeftTrack;
+    private final RendererModel Neck;
+    private final RendererModel Head;
+    private final RendererModel Backpack;
+    private final RendererModel headback;
+    private final RendererModel rightarn;
+    private final RendererModel leftarm;
+    private final RendererModel righthand;
+    private final RendererModel lefthand;
+    private final RendererModel backLight;
+    private final RendererModel eyeRight;
+    private final RendererModel eyeLeft;
 
     public ModelRobit() {
         textureWidth = 64;

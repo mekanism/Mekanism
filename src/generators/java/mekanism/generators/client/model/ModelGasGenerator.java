@@ -8,25 +8,25 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelGasGenerator extends Model {
 
-    RendererModel port4;
-    RendererModel baseStand;
-    RendererModel pillar4;
-    RendererModel port3;
-    RendererModel port2;
-    RendererModel connectorAngle1;
-    RendererModel pillar3;
-    RendererModel pillar2;
-    RendererModel pillar1;
-    RendererModel center;
-    RendererModel connector3;
-    RendererModel port1;
-    RendererModel connector4;
-    RendererModel connectorAngle4;
-    RendererModel base;
-    RendererModel connectorAngle3;
-    RendererModel connector2;
-    RendererModel connectorAngle2;
-    RendererModel connector1;
+    private final RendererModel port4;
+    private final RendererModel baseStand;
+    private final RendererModel pillar4;
+    private final RendererModel port3;
+    private final RendererModel port2;
+    private final RendererModel connectorAngle1;
+    private final RendererModel pillar3;
+    private final RendererModel pillar2;
+    private final RendererModel pillar1;
+    private final RendererModel center;
+    private final RendererModel connector3;
+    private final RendererModel port1;
+    private final RendererModel connector4;
+    private final RendererModel connectorAngle4;
+    private final RendererModel base;
+    private final RendererModel connectorAngle3;
+    private final RendererModel connector2;
+    private final RendererModel connectorAngle2;
+    private final RendererModel connector1;
 
     public ModelGasGenerator() {
         textureWidth = 128;

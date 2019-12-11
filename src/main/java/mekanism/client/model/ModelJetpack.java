@@ -14,27 +14,27 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelJetpack extends Model {
 
-    RendererModel Packtop;
-    RendererModel Packbottom;
-    RendererModel Thrusterleft;
-    RendererModel Thrusterright;
-    RendererModel Fueltuberight;
-    RendererModel Fueltubeleft;
-    RendererModel Packmid;
-    RendererModel Packcore;
-    RendererModel WingsupportL;
-    RendererModel WingsupportR;
-    RendererModel Packtoprear;
-    RendererModel ExtendosupportL;
-    RendererModel ExtendosupportR;
-    RendererModel WingbladeL;
-    RendererModel WingbladeR;
-    RendererModel Packdoodad2;
-    RendererModel Packdoodad3;
-    RendererModel Bottomthruster;
-    RendererModel light1;
-    RendererModel light2;
-    RendererModel light3;
+    private final RendererModel Packtop;
+    private final RendererModel Packbottom;
+    private final RendererModel Thrusterleft;
+    private final RendererModel Thrusterright;
+    private final RendererModel Fueltuberight;
+    private final RendererModel Fueltubeleft;
+    private final RendererModel Packmid;
+    private final RendererModel Packcore;
+    private final RendererModel WingsupportL;
+    private final RendererModel WingsupportR;
+    private final RendererModel Packtoprear;
+    private final RendererModel ExtendosupportL;
+    private final RendererModel ExtendosupportR;
+    private final RendererModel WingbladeL;
+    private final RendererModel WingbladeR;
+    private final RendererModel Packdoodad2;
+    private final RendererModel Packdoodad3;
+    private final RendererModel Bottomthruster;
+    private final RendererModel light1;
+    private final RendererModel light2;
+    private final RendererModel light3;
 
     public ModelJetpack() {
         textureWidth = 128;

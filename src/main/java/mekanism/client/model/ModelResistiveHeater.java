@@ -18,29 +18,29 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelResistiveHeater extends Model {
 
-    public static ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater_overlay_on.png");
-    public static ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater_overlay_off.png");
+    private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater_overlay_on.png");
+    private static final ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater_overlay_off.png");
 
-    RendererModel wallLeft;
-    RendererModel base;
-    RendererModel fin10;
-    RendererModel portRight;
-    RendererModel fin9;
-    RendererModel fin2;
-    RendererModel bar2;
-    RendererModel fin4;
-    RendererModel fin3;
-    RendererModel fin6;
-    RendererModel center;
-    RendererModel fin8;
-    RendererModel fin7;
-    RendererModel fin5;
-    RendererModel fin1;
-    RendererModel bar1;
-    RendererModel bar4;
-    RendererModel bar3;
-    RendererModel wallRight;
-    RendererModel portLeft;
+    private final RendererModel wallLeft;
+    private final RendererModel base;
+    private final RendererModel fin10;
+    private final RendererModel portRight;
+    private final RendererModel fin9;
+    private final RendererModel fin2;
+    private final RendererModel bar2;
+    private final RendererModel fin4;
+    private final RendererModel fin3;
+    private final RendererModel fin6;
+    private final RendererModel center;
+    private final RendererModel fin8;
+    private final RendererModel fin7;
+    private final RendererModel fin5;
+    private final RendererModel fin1;
+    private final RendererModel bar1;
+    private final RendererModel bar4;
+    private final RendererModel bar3;
+    private final RendererModel wallRight;
+    private final RendererModel portLeft;
 
     public ModelResistiveHeater() {
         textureWidth = 128;

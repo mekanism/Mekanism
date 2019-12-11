@@ -8,28 +8,28 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelRotaryCondensentrator extends Model {
 
-    RendererModel portRight;
-    RendererModel tankRight;
-    RendererModel base;
-    RendererModel pipe;
-    RendererModel middle;
-    RendererModel shaft;
-    RendererModel portLeft;
-    RendererModel tankLeft;
-    RendererModel support4;
-    RendererModel bridge;
-    RendererModel tube8;
-    RendererModel tube7;
-    RendererModel tube6;
-    RendererModel tube5;
-    RendererModel tube4;
-    RendererModel tube3;
-    RendererModel tube2;
-    RendererModel tube1;
-    RendererModel top;
-    RendererModel support3;
-    RendererModel support2;
-    RendererModel support1;
+    private final RendererModel portRight;
+    private final RendererModel tankRight;
+    private final RendererModel base;
+    private final RendererModel pipe;
+    private final RendererModel middle;
+    private final RendererModel shaft;
+    private final RendererModel portLeft;
+    private final RendererModel tankLeft;
+    private final RendererModel support4;
+    private final RendererModel bridge;
+    private final RendererModel tube8;
+    private final RendererModel tube7;
+    private final RendererModel tube6;
+    private final RendererModel tube5;
+    private final RendererModel tube4;
+    private final RendererModel tube3;
+    private final RendererModel tube2;
+    private final RendererModel tube1;
+    private final RendererModel top;
+    private final RendererModel support3;
+    private final RendererModel support2;
+    private final RendererModel support1;
 
     public ModelRotaryCondensentrator() {
         textureWidth = 128;

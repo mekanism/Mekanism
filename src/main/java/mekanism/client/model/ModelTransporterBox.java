@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelTransporterBox extends Model {
 
-    RendererModel box;
+    private final RendererModel box;
 
     public ModelTransporterBox() {
         textureWidth = 64;

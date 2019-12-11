@@ -13,7 +13,6 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
-import mekanism.client.model.ModelDigitalMiner;
 import mekanism.common.base.IActiveState;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
@@ -47,7 +46,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IEnviromentBlockReader;
@@ -61,17 +59,80 @@ public class BlockDigitalMiner extends BlockMekanism implements IBlockElectric, 
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
-    //TODO: VoxelShapes: FIXME
     static {
-        ModelDigitalMiner model = new ModelDigitalMiner();
-        VoxelShape miner = VoxelShapes.fullCube();/*VoxelShapeUtils.getShapeFromModel(model.keyboard, model.keyboardBottom, model.keyboardSupportExt1, model.keyboardSupportExt2,
-              model.keyboardSupport1, model.keyboardSupport2, model.monitor1back, model.monitor2back, model.monitor3back, model.monitorBar1, model.monitorBar2,
-              model.led1, model.led2, model.led3, model.monitorMount1, model.monitorMount2, model.frame1, model.frame3, model.plate5, model.bracket1, model.bracket2,
-              model.bracket3, model.bracket4, model.bracket5, model.bracket6, model.bracket7, model.bracket8, model.bracketPlate1, model.bracketPlate2, model.bracketPlate3,
-              model.bracketPlate4, model.supportBeam1, model.supportBeam2, model.supportBeam3, model.supportBeam4, model.foot1, model.foot2, model.foot3, model.foot4,
-              model.core, model.powerCable1a, model.powerCable1b, model.powerCable2, model.powerCable3, model.powerConnector1, model.powerConnector2a,
-              model.powerConnector2b, model.powerCpnnector3a, model.powerConnector3b, model.frame2a, model.frame2b, model.frame2c, model.frame2d, model.monitor1,
-              model.monitor2, model.monitor3);*/
+        VoxelShape miner = VoxelShapeUtils.combine(
+              makeCuboidShape(5, 9, -14, 6, 10, -13),
+              makeCuboidShape(10, 9, -14, 11, 10, -13),
+              makeCuboidShape(10, 9, -13, 11, 11, -9),
+              makeCuboidShape(5, 9, -13, 6, 11, -9),
+              makeCuboidShape(10, 20, -11, 12, 22, -9),
+              makeCuboidShape(4, 20, -11, 6, 22, -9),
+              makeCuboidShape(-8, 3, -9, 24, 32, 3),
+              makeCuboidShape(-8, 3, 20, 24, 32, 32),
+              makeCuboidShape(-8, 3, 4, 24, 8, 19),
+              makeCuboidShape(24, 24, -8, 29, 29, -6),
+              makeCuboidShape(24, 24, 0, 29, 29, 2),
+              makeCuboidShape(24, 24, 21, 29, 29, 23),
+              makeCuboidShape(24, 24, 29, 29, 29, 31),
+              makeCuboidShape(-13, 24, -8, -8, 29, -6),
+              makeCuboidShape(-13, 24, 0, -8, 29, 2),
+              makeCuboidShape(-13, 24, 21, -8, 29, 23),
+              makeCuboidShape(-13, 24, 29, -8, 29, 31),
+              makeCuboidShape(24, 24, -6, 25, 29, 0),
+              makeCuboidShape(24, 24, 23, 25, 29, 29),
+              makeCuboidShape(-9, 24, -6, -8, 29, 0),
+              makeCuboidShape(-9, 24, 23, -8, 29, 29),
+              makeCuboidShape(26, 2, -7, 30, 30, 1),
+              makeCuboidShape(26, 2, 22, 30, 30, 30),
+              makeCuboidShape(-14, 2, -7, -10, 30, 1),
+              makeCuboidShape(-14, 2, 22, -10, 30, 30),
+              makeCuboidShape(24, 0, -8, 31, 2, 2),
+              makeCuboidShape(24, 0, 21, 31, 2, 31),
+              makeCuboidShape(-15, 0, 21, -8, 2, 31),
+              makeCuboidShape(-15, 0, -8, -8, 2, 2),
+              makeCuboidShape(-7, 4, 3, 23, 31, 20),
+              makeCuboidShape(5, 2, -6, 11, 4, 5),
+              makeCuboidShape(5, 1, 5, 11, 4, 11),
+              makeCuboidShape(-15, 5, 5, -6, 11, 11),
+              makeCuboidShape(22, 5, 5, 31, 11, 11),
+              makeCuboidShape(4, 0, 4, 12, 1, 12),
+              makeCuboidShape(-16, 4, 4, -15, 12, 12),
+              makeCuboidShape(-9, 4, 4, -8, 12, 12),
+              makeCuboidShape(31, 4, 4, 32, 12, 12),
+              makeCuboidShape(24, 4, 4, 25, 12, 12),
+              makeCuboidShape(-8, 27, 4, 24, 32, 19),
+              makeCuboidShape(-8, 21, 4, 24, 26, 19),
+              makeCuboidShape(-8, 15, 4, 24, 20, 19),
+              makeCuboidShape(-8, 9, 4, 24, 14, 19),
+              //Keyboard
+              makeCuboidShape(3, 11, -10.5, 13, 12.5, -11.75),
+              makeCuboidShape(3, 10, -11.75, 13, 11.5, -13),
+              makeCuboidShape(3, 9.5, -13, 13, 11, -14.25),
+              makeCuboidShape(3, 9, -14.25, 13, 10.5, -15.25),
+              makeCuboidShape(4, 9.5, -12, 12, 10, -13),
+              makeCuboidShape(4, 8.5, -13, 12, 9.5, -14.25),
+              //Center monitor
+              makeCuboidShape(2, 18, -10.5, 14, 24, -11.5),
+              makeCuboidShape(1, 16, -11.5, 15, 26, -13.5),
+              //Left monitor
+              makeCuboidShape(17, 17.75, -10, 18.5, 24.25, -11.5),
+              makeCuboidShape(18.5, 17.75, -10.5, 22, 24.25, -12),
+              makeCuboidShape(22, 17.75, -11.5, 25.5, 24.25, -13),
+              makeCuboidShape(25.5, 17.75, -12.5, 29, 24.25, -14),
+              makeCuboidShape(15.5, 16, -11.5, 19.5, 26, -13.5),
+              makeCuboidShape(18.5, 16, -12, 23, 26, -14),
+              makeCuboidShape(22, 16, -13, 26.5, 26, -15),
+              makeCuboidShape(25.5, 16, -14, 30, 26, -16),
+              //Right Monitor
+              makeCuboidShape(-3+2.5, 17.75, -10, -6.5+2.5, 24.25, -11.5),
+              makeCuboidShape(-6.5+2.5, 17.75, -10.5, -10+2.5, 24.25, -12),
+              makeCuboidShape(-10+2.5, 17.75, -11.5, -13.5+2.5, 24.25, -13),
+              makeCuboidShape(-13.5+2.5, 17.75, -12.5, -15+2.5, 24.25, -14),
+              makeCuboidShape(-6.5+2.5, 16, -11.5, -2+2.5, 26, -13.5),
+              makeCuboidShape(-10+2.5, 16, -12, -5.5+2.5, 26, -14),
+              makeCuboidShape(-13.5+2.5, 16, -13, -9+2.5, 26, -15),
+              makeCuboidShape(-16.5+2.5, 16, -14, -12.5+2.5, 26, -16)
+        );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(miner, side);
         }

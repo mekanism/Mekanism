@@ -8,15 +8,15 @@ public class ModelTurbine extends Model {
 
     private static float BLADE_ROTATE = 0.418879F;
 
-    public RendererModel rod;
-    public RendererModel extension_north;
-    public RendererModel blade_north;
-    public RendererModel extension_south;
-    public RendererModel extension_west;
-    public RendererModel extension_east;
-    public RendererModel blade_south;
-    public RendererModel blade_east;
-    public RendererModel blade_west;
+    private final RendererModel rod;
+    private final RendererModel extension_north;
+    private final RendererModel blade_north;
+    private final RendererModel extension_south;
+    private final RendererModel extension_west;
+    private final RendererModel extension_east;
+    private final RendererModel blade_south;
+    private final RendererModel blade_east;
+    private final RendererModel blade_west;
 
     public ModelTurbine() {
         textureWidth = 64;

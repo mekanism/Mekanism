@@ -8,23 +8,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ModelElectrolyticSeparator extends Model {
 
-    RendererModel tank2;
-    RendererModel tank1;
-    RendererModel tank3;
-    RendererModel tube6;
-    RendererModel tube5;
-    RendererModel tube4;
-    RendererModel tube3;
-    RendererModel tube2;
-    RendererModel tube1;
-    RendererModel base;
-    RendererModel portToggle1;
-    RendererModel portToggle2a;
-    RendererModel portToggle2b;
-    RendererModel portToggle3a;
-    RendererModel portToggle3b;
-    RendererModel portToggle4a;
-    RendererModel portToggle4b;
+    private final RendererModel tank2;
+    private final RendererModel tank1;
+    private final RendererModel tank3;
+    private final RendererModel tube6;
+    private final RendererModel tube5;
+    private final RendererModel tube4;
+    private final RendererModel tube3;
+    private final RendererModel tube2;
+    private final RendererModel tube1;
+    private final RendererModel base;
+    private final RendererModel portToggle1;
+    private final RendererModel portToggle2a;
+    private final RendererModel portToggle2b;
+    private final RendererModel portToggle3a;
+    private final RendererModel portToggle3b;
+    private final RendererModel portToggle4a;
+    private final RendererModel portToggle4b;
 
     public ModelElectrolyticSeparator() {
         textureWidth = 128;

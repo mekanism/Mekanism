@@ -14,16 +14,16 @@ import org.lwjgl.opengl.GL11;
 @OnlyIn(Dist.CLIENT)
 public class ModelFluidTank extends Model {
 
-    RendererModel Base;
-    RendererModel PoleFL;
-    RendererModel PoleLB;
-    RendererModel PoleBR;
-    RendererModel PoleRF;
-    RendererModel Top;
-    RendererModel FrontGlass;
-    RendererModel BackGlass;
-    RendererModel RightGlass;
-    RendererModel LeftGlass;
+    private final RendererModel Base;
+    private final RendererModel PoleFL;
+    private final RendererModel PoleLB;
+    private final RendererModel PoleBR;
+    private final RendererModel PoleRF;
+    private final RendererModel Top;
+    private final RendererModel FrontGlass;
+    private final RendererModel BackGlass;
+    private final RendererModel RightGlass;
+    private final RendererModel LeftGlass;
 
     public ModelFluidTank() {
         textureWidth = 128;
