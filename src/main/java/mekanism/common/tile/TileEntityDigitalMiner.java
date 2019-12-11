@@ -75,6 +75,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.Region;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -467,7 +468,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     public void start() {
+        if(getWorld() == null) {
+            return;
+        }
         if (searcher.state == State.IDLE) {
+            searcher.setChunkCache(new Region(getWorld(), getStartingCoord().getPos(), getStartingCoord().getPos().add(radius, maxY - minY, radius)));
             searcher.start();
         }
         running = true;
