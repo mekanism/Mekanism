@@ -102,7 +102,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
         buffer.writeBoolean(hasGasToFluid);
         if (hasGasToFluid) {
             gasInput.write(buffer);
-            fluidInput.write(buffer);
+            fluidOutput.writeToPacket(buffer);
         }
     }
 }
