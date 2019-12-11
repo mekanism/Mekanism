@@ -24,8 +24,8 @@ public class ThreadMinerSearch extends Thread {
     public State state = State.IDLE;
 
     private Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
-    private Map<Integer, MinerFilter> replaceMap = new HashMap<>();
-    private Map<Block, MinerFilter> acceptedItems = new HashMap<>();
+    private Map<Integer, MinerFilter<?>> replaceMap = new HashMap<>();
+    private Map<Block, MinerFilter<?>> acceptedItems = new HashMap<>();
     private Region chunkCache = null;
 
     public int found = 0;
@@ -41,7 +41,7 @@ public class ThreadMinerSearch extends Thread {
     @Override
     public void run() {
         state = State.SEARCHING;
-        HashList<MinerFilter> filters = tileEntity.getFilters();
+        HashList<MinerFilter<?>> filters = tileEntity.getFilters();
         if (!tileEntity.inverse && filters.isEmpty()) {
             state = State.FINISHED;
             return;
@@ -80,7 +80,7 @@ public class ThreadMinerSearch extends Thread {
             }
 
             if (state.getBlockHardness(chunkCache, testPos) >= 0) {
-                MinerFilter filterFound = null;
+                MinerFilter<?> filterFound = null;
                 if (acceptedItems.containsKey(info)) {
                     filterFound = acceptedItems.get(info);
                 } else {
@@ -88,7 +88,7 @@ public class ThreadMinerSearch extends Thread {
                     if (tileEntity.isReplaceStack(stack)) {
                         continue;
                     }
-                    for (MinerFilter filter : filters) {
+                    for (MinerFilter<?> filter : filters) {
                         if (filter.canFilter(stack)) {
                             filterFound = filter;
                             break;

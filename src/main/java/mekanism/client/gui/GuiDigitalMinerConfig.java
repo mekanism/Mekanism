@@ -33,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEntityDigitalMiner, DigitalMinerConfigContainer> {
+public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, DigitalMinerConfigContainer> {
 
     private TextFieldWidget radiusField;
     private TextFieldWidget minField;
@@ -67,11 +67,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
                 }
             }
 
-            HashList<MinerFilter> filters = tileEntity.getFilters();
+            HashList<MinerFilter<?>> filters = tileEntity.getFilters();
             //Check for filter interaction
             for (int i = 0; i < 4; i++) {
                 int index = getFilterIndex() + i;
-                MinerFilter filter = filters.get(index);
+                MinerFilter<?> filter = filters.get(index);
                 if (filter != null) {
                     int yStart = i * filterH + filterY;
                     if (xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH) {
@@ -149,7 +149,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        HashList<MinerFilter> filters = tileEntity.getFilters();
+        HashList<MinerFilter<?>> filters = tileEntity.getFilters();
         //TODO: Lang Keys
         drawString(TextComponentUtil.translate("gui.mekanism.digitalMinerConfig"), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.filters"), ":"), 11, 19, 0x00CD00);
@@ -160,24 +160,24 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter, TileEnti
         drawString(TextComponentUtil.build("Max: " + tileEntity.maxY), 11, 108, 0x00CD00);
 
         for (int i = 0; i < 4; i++) {
-            MinerFilter filter = filters.get(getFilterIndex() + i);
+            MinerFilter<?> filter = filters.get(getFilterIndex() + i);
             if (filter != null) {
                 int yStart = i * filterH + filterY;
                 if (filter instanceof IItemStackFilter) {
-                    renderItem(((IItemStackFilter) filter).getItemStack(), 59, yStart + 3);
+                    renderItem(((IItemStackFilter<?>) filter).getItemStack(), 59, yStart + 3);
                     drawString(TextComponentUtil.translate("gui.mekanism.itemFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IOreDictFilter) {
-                    IOreDictFilter oreFilter = (IOreDictFilter) filter;
+                    IOreDictFilter<?> oreFilter = (IOreDictFilter<?>) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
                     renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
                     drawString(TextComponentUtil.translate("gui.mekanism.oredictFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IMaterialFilter) {
-                    renderItem(((IMaterialFilter) filter).getMaterialItem(), 59, yStart + 3);
+                    renderItem(((IMaterialFilter<?>) filter).getMaterialItem(), 59, yStart + 3);
                     drawString(TextComponentUtil.translate("gui.mekanism.materialFilter"), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IModIDFilter) {
-                    IModIDFilter modFilter = (IModIDFilter) filter;
+                    IModIDFilter<?> modFilter = (IModIDFilter<?>) filter;
                     if (!modIDStacks.containsKey(modFilter)) {
                         updateStackList(modFilter);
                     }

@@ -17,21 +17,21 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> implements
     @Override
     public abstract FILTER clone();
 
-    public static MinerFilter readFromNBT(CompoundNBT nbtTags) {
-        MinerFilter filter = getType(nbtTags.getInt("type"));
+    public static MinerFilter<?> readFromNBT(CompoundNBT nbtTags) {
+        MinerFilter<?> filter = getType(nbtTags.getInt("type"));
         filter.read(nbtTags);
         return filter;
     }
 
-    public static MinerFilter readFromPacket(PacketBuffer dataStream) {
-        MinerFilter filter = getType(dataStream.readInt());
+    public static MinerFilter<?> readFromPacket(PacketBuffer dataStream) {
+        MinerFilter<?> filter = getType(dataStream.readInt());
         filter.read(dataStream);
         return filter;
     }
 
     @Nullable
-    private static MinerFilter getType(int type) {
-        MinerFilter filter = null;
+    private static MinerFilter<?> getType(int type) {
+        MinerFilter<?> filter = null;
         if (type == 0) {
             filter = new MItemStackFilter();
         } else if (type == 1) {

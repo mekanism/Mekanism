@@ -35,7 +35,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, TileEntityLogisticalSorter, LogisticalSorterContainer> {
+public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, TileEntityLogisticalSorter, LogisticalSorterContainer> {
 
     public GuiLogisticalSorter(LogisticalSorterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -94,10 +94,10 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
             }
 
             //Check for filter interaction
-            HashList<TransporterFilter> filters = tileEntity.getFilters();
+            HashList<TransporterFilter<?>> filters = tileEntity.getFilters();
             for (int i = 0; i < 4; i++) {
                 int index = getFilterIndex() + i;
-                TransporterFilter filter = filters.get(index);
+                TransporterFilter<?> filter = filters.get(index);
                 if (filter != null) {
                     int yStart = i * filterH + filterY;
                     if (xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH) {
@@ -144,7 +144,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
 
-        HashList<TransporterFilter> filters = tileEntity.getFilters();
+        HashList<TransporterFilter<?>> filters = tileEntity.getFilters();
         // Write to info display
         drawString(tileEntity.getName(), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.filters"), ":"), 11, 19, 0x00CD00);
@@ -160,11 +160,11 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
         //TODO: Convert filters into "proper" buttons/widgets
         // Draw filters
         for (int i = 0; i < 4; i++) {
-            TransporterFilter filter = filters.get(getFilterIndex() + i);
+            TransporterFilter<?> filter = filters.get(getFilterIndex() + i);
             if (filter != null) {
                 int yStart = i * filterH + filterY;
                 if (filter instanceof IItemStackFilter) {
-                    IItemStackFilter itemFilter = (IItemStackFilter) filter;
+                    IItemStackFilter<?> itemFilter = (IItemStackFilter<?>) filter;
                     renderItem(itemFilter.getItemStack(), 59, yStart + 3);
                     drawString(TextComponentUtil.translate("gui.mekanism.itemFilter"), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
@@ -173,7 +173,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
                         drawString(TextComponentUtil.translate("gui.mekanism.none"), 78, yStart + 11, 0x404040);
                     }
                 } else if (filter instanceof IOreDictFilter) {
-                    IOreDictFilter oreFilter = (IOreDictFilter) filter;
+                    IOreDictFilter<?> oreFilter = (IOreDictFilter<?>) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
@@ -185,7 +185,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
                         drawString(TextComponentUtil.translate("gui.mekanism.none"), 78, yStart + 11, 0x404040);
                     }
                 } else if (filter instanceof IMaterialFilter) {
-                    IMaterialFilter itemFilter = (IMaterialFilter) filter;
+                    IMaterialFilter<?> itemFilter = (IMaterialFilter<?>) filter;
                     renderItem(itemFilter.getMaterialItem(), 59, yStart + 3);
                     drawString(TextComponentUtil.translate("gui.mekanism.materialFilter"), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
@@ -194,7 +194,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter, Tile
                         drawString(TextComponentUtil.translate("gui.mekanism.none"), 78, yStart + 11, 0x404040);
                     }
                 } else if (filter instanceof IModIDFilter) {
-                    IModIDFilter modFilter = (IModIDFilter) filter;
+                    IModIDFilter<?> modFilter = (IModIDFilter<?>) filter;
                     if (!modIDStacks.containsKey(modFilter)) {
                         updateStackList(modFilter);
                     }

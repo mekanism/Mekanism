@@ -25,21 +25,21 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
     @Override
     public abstract FILTER clone();
 
-    public static TransporterFilter readFromNBT(CompoundNBT nbtTags) {
-        TransporterFilter filter = getType(nbtTags.getInt("type"));
+    public static TransporterFilter<?> readFromNBT(CompoundNBT nbtTags) {
+        TransporterFilter<?> filter = getType(nbtTags.getInt("type"));
         filter.read(nbtTags);
         return filter;
     }
 
-    public static TransporterFilter readFromPacket(PacketBuffer dataStream) {
-        TransporterFilter filter = getType(dataStream.readInt());
+    public static TransporterFilter<?> readFromPacket(PacketBuffer dataStream) {
+        TransporterFilter<?> filter = getType(dataStream.readInt());
         filter.read(dataStream);
         return filter;
     }
 
     @Nullable
-    private static TransporterFilter getType(int type) {
-        TransporterFilter filter = null;
+    private static TransporterFilter<?> getType(int type) {
+        TransporterFilter<?> filter = null;
         if (type == 0) {
             filter = new TItemStackFilter();
         } else if (type == 1) {
@@ -104,6 +104,6 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof TransporterFilter && ((TransporterFilter) filter).color == color;
+        return filter instanceof TransporterFilter && ((TransporterFilter<?>) filter).color == color;
     }
 }

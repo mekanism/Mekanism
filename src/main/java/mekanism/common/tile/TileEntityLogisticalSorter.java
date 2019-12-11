@@ -49,9 +49,9 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration, IComparatorSupport,
-      ITileFilterHolder<TransporterFilter> {
+      ITileFilterHolder<TransporterFilter<?>> {
 
-    private HashList<TransporterFilter> filters = new HashList<>();
+    private HashList<TransporterFilter<?>> filters = new HashList<>();
     public EnumColor color;
     public boolean autoEject;
     public boolean roundRobin;
@@ -93,7 +93,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                     int min = 0;
 
                     outer:
-                    for (TransporterFilter filter : filters) {
+                    for (TransporterFilter<?> filter : filters) {
                         for (StackSearcher search = new StackSearcher(back, getOppositeDirection()); search.getSlotCount() >= 0; ) {
                             InvStack invStack = filter.getStackFromInventory(search, singleItem);
                             if (invStack == null) {
@@ -180,7 +180,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
         ListNBT filterTags = new ListNBT();
 
-        for (TransporterFilter filter : filters) {
+        for (TransporterFilter<?> filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
             filterTags.add(tagCompound);
@@ -314,7 +314,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         data.add(singleItem);
 
         data.add(filters.size());
-        for (TransporterFilter filter : filters) {
+        for (TransporterFilter<?> filter : filters) {
             filter.write(data);
         }
         return data;
@@ -340,7 +340,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         super.getNetworkedData(data);
         data.add(2);
         data.add(filters.size());
-        for (TransporterFilter filter : filters) {
+        for (TransporterFilter<?> filter : filters) {
             filter.write(data);
         }
         return data;
@@ -387,7 +387,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         nbtTags.putInt("rrIndex", rrIndex);
 
         ListNBT filterTags = new ListNBT();
-        for (TransporterFilter filter : filters) {
+        for (TransporterFilter<?> filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
             filterTags.add(tagCompound);
@@ -433,7 +433,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         ItemDataUtils.setBoolean(itemStack, "singleItem", singleItem);
 
         ListNBT filterTags = new ListNBT();
-        for (TransporterFilter filter : filters) {
+        for (TransporterFilter<?> filter : filters) {
             CompoundNBT tagCompound = new CompoundNBT();
             filter.write(tagCompound);
             filterTags.add(tagCompound);
@@ -508,9 +508,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                     return new Object[]{"Invalid parameters."};
                 }
                 ItemStack stack = new ItemStack(ItemRegistryUtils.getByName((String) arguments[0]));
-                Iterator<TransporterFilter> iter = filters.iterator();
+                Iterator<TransporterFilter<?>> iter = filters.iterator();
                 while (iter.hasNext()) {
-                    TransporterFilter filter = iter.next();
+                    TransporterFilter<?> filter = iter.next();
                     if (filter instanceof TItemStackFilter) {
                         if (StackUtils.equalsWildcard(((TItemStackFilter) filter).getItemStack(), stack)) {
                             iter.remove();
@@ -533,9 +533,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                     return new Object[]{"Invalid parameters."};
                 }
                 String ore = (String) arguments[0];
-                Iterator<TransporterFilter> iter = filters.iterator();
+                Iterator<TransporterFilter<?>> iter = filters.iterator();
                 while (iter.hasNext()) {
-                    TransporterFilter filter = iter.next();
+                    TransporterFilter<?> filter = iter.next();
                     if (filter instanceof TOreDictFilter) {
                         if (((TOreDictFilter) filter).getOreDictName().equals(ore)) {
                             iter.remove();
@@ -580,7 +580,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public HashList<TransporterFilter> getFilters() {
+    public HashList<TransporterFilter<?>> getFilters() {
         return filters;
     }
 
@@ -588,7 +588,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
         @Override
         public boolean modifies(ItemStack stack) {
-            for (TransporterFilter filter : filters) {
+            for (TransporterFilter<?> filter : filters) {
                 if (filter.canFilter(stack, false) && !filter.allowDefault) {
                     return false;
                 }

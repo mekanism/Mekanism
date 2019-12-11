@@ -90,13 +90,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock,
-      ITileFilterHolder<MinerFilter> {
+      ITileFilterHolder<MinerFilter<?>> {
 
     private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
 
     public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
-    public Map<Integer, MinerFilter> replaceMap = new HashMap<>();
-    private HashList<MinerFilter> filters = new HashList<>();
+    public Map<Integer, MinerFilter<?>> replaceMap = new HashMap<>();
+    private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
     private int radius;
@@ -233,7 +233,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                             boolean hasFilter = false;
                             BlockState state = world.getBlockState(coordPos);
                             ItemStack is = new ItemStack(state.getBlock());
-                            for (MinerFilter filter : filters) {
+                            for (MinerFilter<?> filter : filters) {
                                 if (filter.canFilter(is)) {
                                     hasFilter = true;
                                     break;
@@ -346,7 +346,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             }
             return true;
         } else {
-            MinerFilter filter = replaceMap.get(index);
+            MinerFilter<?> filter = replaceMap.get(index);
             if (filter == null || filter.replaceStack.isEmpty() || !filter.requireStack) {
                 world.removeBlock(pos, false);
                 return true;
@@ -365,7 +365,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     public ItemStack getReplace(int index) {
-        MinerFilter filter = replaceMap.get(index);
+        MinerFilter<?> filter = replaceMap.get(index);
         if (filter == null || filter.replaceStack.isEmpty()) {
             return ItemStack.EMPTY;
         }
@@ -472,7 +472,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             return;
         }
         if (searcher.state == State.IDLE) {
-            searcher.setChunkCache(new Region(getWorld(), getStartingCoord().getPos(), getStartingCoord().getPos().add(radius, maxY - minY, radius)));
+            BlockPos startingPos = getStartingCoord().getPos();
+            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(radius, maxY - minY, radius)));
             searcher.start();
         }
         running = true;
@@ -501,7 +502,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     public boolean isReplaceStack(ItemStack stack) {
-        for (MinerFilter filter : filters) {
+        for (MinerFilter<?> filter : filters) {
             if (!filter.replaceStack.isEmpty() && filter.replaceStack.isItemEqual(stack)) {
                 return true;
             }
@@ -679,7 +680,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         data.add(0);
         addBasicData(data);
         data.add(filters.size());
-        for (MinerFilter filter : filters) {
+        for (MinerFilter<?> filter : filters) {
             filter.write(data);
         }
         return data;
@@ -713,7 +714,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         super.getNetworkedData(data);
         data.add(2);
         data.add(filters.size());
-        for (MinerFilter filter : filters) {
+        for (MinerFilter<?> filter : filters) {
             filter.write(data);
         }
         return data;
@@ -829,9 +830,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 return new Object[]{"Invalid parameters."};
             }
             int id = ((Double) arguments[0]).intValue();
-            Iterator<MinerFilter> iter = filters.iterator();
+            Iterator<MinerFilter<?>> iter = filters.iterator();
             while (iter.hasNext()) {
-                MinerFilter filter = iter.next();
+                MinerFilter<?> filter = iter.next();
                 if (filter instanceof MItemStackFilter) {
                     if (MekanismUtils.getID(((MItemStackFilter) filter).getItemStack()) == id) {
                         iter.remove();
@@ -854,9 +855,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 return new Object[]{"Invalid parameters."};
             }
             String ore = (String) arguments[0];
-            Iterator<MinerFilter> iter = filters.iterator();
+            Iterator<MinerFilter<?>> iter = filters.iterator();
             while (iter.hasNext()) {
-                MinerFilter filter = iter.next();
+                MinerFilter<?> filter = iter.next();
                 if (filter instanceof MOreDictFilter) {
                     if (((MOreDictFilter) filter).getOreDictName().equals(ore)) {
                         iter.remove();
@@ -893,7 +894,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         nbtTags.putBoolean("silkTouch", silkTouch);
         nbtTags.putBoolean("inverse", inverse);
         ListNBT filterTags = new ListNBT();
-        for (MinerFilter filter : filters) {
+        for (MinerFilter<?> filter : filters) {
             filterTags.add(filter.write(new CompoundNBT()));
         }
         if (!filterTags.isEmpty()) {
@@ -938,7 +939,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
         ListNBT filterTags = new ListNBT();
 
-        for (MinerFilter filter : filters) {
+        for (MinerFilter<?> filter : filters) {
             filterTags.add(filter.write(new CompoundNBT()));
         }
 
@@ -1088,7 +1089,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     @Override
-    public HashList<MinerFilter> getFilters() {
+    public HashList<MinerFilter<?>> getFilters() {
         return filters;
     }
 }

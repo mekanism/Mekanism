@@ -24,13 +24,13 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketEditFilter {
 
-    private IFilter filter;
-    private IFilter edited;
+    private IFilter<?> filter;
+    private IFilter<?> edited;
     private Coord4D coord4D;
     private boolean delete;
     private byte type = -1;
 
-    public PacketEditFilter(Coord4D coord, boolean deletion, IFilter filter, IFilter edited) {
+    public PacketEditFilter(Coord4D coord, boolean deletion, IFilter<?> filter, IFilter<?> edited) {
         coord4D = coord;
         delete = deletion;
         this.filter = filter;
@@ -64,7 +64,7 @@ public class PacketEditFilter {
         context.get().setPacketHandled(true);
     }
 
-    private static <FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>> void handleFilter(TILE tile, PacketEditFilter message) {
+    private static <FILTER extends IFilter, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>> void handleFilter(TILE tile, PacketEditFilter message) {
         HashList<FILTER> filters = tile.getFilters();
         FILTER filter = (FILTER) message.filter;
         if (!filters.contains(filter)) {
@@ -90,14 +90,14 @@ public class PacketEditFilter {
         TileNetworkList data = new TileNetworkList();
 
         if (pkt.type == 0) {
-            ((TransporterFilter) pkt.filter).write(data);
+            ((TransporterFilter<?>) pkt.filter).write(data);
             if (!pkt.delete) {
-                ((TransporterFilter) pkt.edited).write(data);
+                ((TransporterFilter<?>) pkt.edited).write(data);
             }
         } else if (pkt.type == 1) {
-            ((MinerFilter) pkt.filter).write(data);
+            ((MinerFilter<?>) pkt.filter).write(data);
             if (!pkt.delete) {
-                ((MinerFilter) pkt.edited).write(data);
+                ((MinerFilter<?>) pkt.edited).write(data);
             }
         } else if (pkt.type == 2) {
             ((OredictionificatorFilter) pkt.filter).write(data);
@@ -110,8 +110,8 @@ public class PacketEditFilter {
 
     public static PacketEditFilter decode(PacketBuffer buf) {
         Coord4D coord4D = Coord4D.read(buf);
-        IFilter filter = null;
-        IFilter edited = null;
+        IFilter<?> filter = null;
+        IFilter<?> edited = null;
 
         byte type = buf.readByte();
         boolean delete = buf.readBoolean();

@@ -24,10 +24,10 @@ import net.minecraftforge.fml.network.NetworkEvent.Context;
 public class PacketNewFilter {
 
     private Coord4D coord4D;
-    private IFilter filter;
+    private IFilter<?> filter;
     private byte type = -1;
 
-    public PacketNewFilter(Coord4D coord, IFilter filter) {
+    public PacketNewFilter(Coord4D coord, IFilter<?> filter) {
         coord4D = coord;
         this.filter = filter;
         if (filter instanceof TransporterFilter) {
@@ -58,7 +58,7 @@ public class PacketNewFilter {
         context.get().setPacketHandled(true);
     }
 
-    private static <FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>> void handleFilter(TILE tile, PacketNewFilter message) {
+    private static <FILTER extends IFilter, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>> void handleFilter(TILE tile, PacketNewFilter message) {
         tile.getFilters().add((FILTER) message.filter);
         for (PlayerEntity iterPlayer : tile.playersUsing) {
             Mekanism.packetHandler.sendTo(new PacketTileEntity(tile, tile.getFilterPacket()), (ServerPlayerEntity) iterPlayer);
@@ -70,9 +70,9 @@ public class PacketNewFilter {
         buf.writeByte(pkt.type);
         TileNetworkList data = new TileNetworkList();
         if (pkt.type == 0) {
-            ((TransporterFilter) pkt.filter).write(data);
+            ((TransporterFilter<?>) pkt.filter).write(data);
         } else if (pkt.type == 1) {
-            ((MinerFilter) pkt.filter).write(data);
+            ((MinerFilter<?>) pkt.filter).write(data);
         } else if (pkt.type == 2) {
             ((OredictionificatorFilter) pkt.filter).write(data);
         }
@@ -82,7 +82,7 @@ public class PacketNewFilter {
     public static PacketNewFilter decode(PacketBuffer buf) {
         Coord4D coord4D = Coord4D.read(buf);
         byte type = buf.readByte();
-        IFilter filter = null;
+        IFilter<?> filter = null;
         if (type == 0) {
             filter = TransporterFilter.readFromPacket(buf);
         } else if (type == 1) {
