@@ -405,10 +405,10 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public static class NetworkClientRequest extends Event {
 
-        public TileEntity tileEntity;
+        public TileEntity tile;
 
         public NetworkClientRequest(TileEntity tile) {
-            tileEntity = tile;
+            this.tile = tile;
         }
     }
 

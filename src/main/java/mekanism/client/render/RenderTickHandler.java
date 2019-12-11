@@ -58,9 +58,9 @@ public class RenderTickHandler {
                         Block block = world.getBlockState(blockPos).getBlock();
                         if (block != null && MekanismAPI.debug && minecraft.currentScreen == null && !minecraft.gameSettings.showDebugInfo) {
                             String tileDisplay = "";
-                            TileEntity tileEntity = MekanismUtils.getTileEntity(world, blockPos);
-                            if (tileEntity != null && tileEntity.getClass() != null) {
-                                tileDisplay = tileEntity.getClass().getSimpleName();
+                            TileEntity tile = MekanismUtils.getTileEntity(world, blockPos);
+                            if (tile != null && tile.getClass() != null) {
+                                tileDisplay = tile.getClass().getSimpleName();
                             }
 
                             font.drawStringWithShadow("Block: " + block.getTranslationKey(), 1, 1, 0x404040);

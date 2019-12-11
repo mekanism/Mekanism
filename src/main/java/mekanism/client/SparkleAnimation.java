@@ -18,18 +18,16 @@ public class SparkleAnimation {
     private BlockPos corner2;
     private INodeChecker nodeChecker;
 
-    public SparkleAnimation(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
-        this.tile = tileEntity;
+    public SparkleAnimation(TileEntity tile, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
+        this.tile = tile;
         this.corner1 = corner1;
         this.corner2 = corner2;
         this.nodeChecker = checker;
     }
 
-    public SparkleAnimation(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
-        this.tile = tileEntity;
-        this.corner1 = new BlockPos(renderLoc.getX(), renderLoc.getY() - 1, renderLoc.getZ());
-        this.corner2 = new BlockPos(renderLoc.getX() + length, renderLoc.getY() + height - 2, renderLoc.getZ() + width - 1);
-        this.nodeChecker = checker;
+    public SparkleAnimation(TileEntity tile, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
+        this(tile, new BlockPos(renderLoc.getX(), renderLoc.getY() - 1, renderLoc.getZ()),
+              new BlockPos(renderLoc.getX() + length, renderLoc.getY() + height - 2, renderLoc.getZ() + width - 1), checker);
     }
 
 

@@ -13,11 +13,11 @@ public class RenderSecurityDesk extends TileEntityRenderer<TileEntitySecurityDes
     private ModelSecurityDesk model = new ModelSecurityDesk();
 
     @Override
-    public void render(TileEntitySecurityDesk tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+    public void render(TileEntitySecurityDesk tile, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "security_desk.png"));
-        MekanismRenderer.rotate(tileEntity.getDirection(), 0, 180, 90, 270);
+        MekanismRenderer.rotate(tile.getDirection(), 0, 180, 90, 270);
         GlStateManager.rotatef(180, 0, 0, 1);
         setLightmapDisabled(true);
         model.render(0.0625F, rendererDispatcher.textureManager);

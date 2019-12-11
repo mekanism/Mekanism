@@ -47,7 +47,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
             @Override
             public double getLevel() {
-                return tileEntity.collectedEnergy;
+                return tile.collectedEnergy;
             }
 
             @Override
@@ -57,12 +57,12 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
             @Override
             public ITextComponent getText(double level) {
-                return TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(level, tileEntity.getMaxEnergy()));
+                return TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(level, tile.getMaxEnergy()));
             }
         }, Type.STANDARD, this, resource, 6, 10));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiAmplifierTab(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiAmplifierTab(this, tile, resource));
 
         String prevTime = timerField != null ? timerField.getText() : "";
         addButton(timerField = new TextFieldWidget(font, guiLeft + 96, guiTop + 28, 36, 11, prevTime));
@@ -79,15 +79,15 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), 55, 6, 0x404040);
+        drawString(tile.getName(), 55, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        if (tileEntity.time > 0) {
-            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.delay"), ": " + tileEntity.time + "t"), 26, 30, 0x404040);
+        if (tile.time > 0) {
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.delay"), ": " + tile.time + "t"), 26, 30, 0x404040);
         } else {
             drawString(TextComponentUtil.translate("gui.mekanism.noDelay"), 26, 30, 0x404040);
         }
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.min"), ": ", EnergyDisplay.of(tileEntity.minThreshold)), 26, 45, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.max"), ": ", EnergyDisplay.of(tileEntity.maxThreshold)), 26, 60, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.min"), ": ", EnergyDisplay.of(tile.minThreshold)), 26, 45, 0x404040);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.max"), ": ", EnergyDisplay.of(tile.maxThreshold)), 26, 60, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -163,7 +163,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
                 return;
             }
             TileNetworkList data = TileNetworkList.withContents(0, toUse);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
             minField.setText("");
         }
     }
@@ -178,7 +178,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
                 return;
             }
             TileNetworkList data = TileNetworkList.withContents(1, toUse);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
             maxField.setText("");
         }
     }
@@ -187,7 +187,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         if (!timerField.getText().isEmpty()) {
             int toUse = Math.max(0, Integer.parseInt(timerField.getText()));
             TileNetworkList data = TileNetworkList.withContents(2, toUse);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
             timerField.setText("");
         }
     }

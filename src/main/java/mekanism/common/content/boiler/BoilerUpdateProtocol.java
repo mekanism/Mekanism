@@ -24,8 +24,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     public static final int WATER_PER_TANK = 16000;
     public static final int STEAM_PER_TANK = 160000;
 
-    public BoilerUpdateProtocol(TileEntityBoilerCasing tileEntity) {
-        super(tileEntity);
+    public BoilerUpdateProtocol(TileEntityBoilerCasing tile) {
+        super(tile);
     }
 
     @Override

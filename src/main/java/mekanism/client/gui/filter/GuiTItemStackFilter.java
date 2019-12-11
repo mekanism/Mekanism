@@ -51,9 +51,9 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                     filter.min = Integer.parseInt(minField.getText());
                     filter.max = Integer.parseInt(maxField.getText());
                     if (isNew) {
-                        Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
+                        Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tile), filter));
                     } else {
-                        Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
+                        Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), false, origFilter, filter));
                     }
                     sendPacketToServer(ClickedTileButton.BACK_BUTTON);
                 } else if (min > max) {
@@ -73,7 +73,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
             }
         }));
         addButton(deleteButton = new TranslationButton(this, guiLeft + 109, guiTop + 62, 60, 20, "gui.mekanism.delete", () -> {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
@@ -86,7 +86,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         addButton(new MekanismImageButton(this, guiLeft + 128, guiTop + 44, 11, 14, getButtonLocation("silk_touch"),
               () -> filter.sizeMode = !filter.sizeMode,
               (onHover, xAxis, yAxis) -> {
-                  if (tileEntity.singleItem && filter.sizeMode) {
+                  if (tile.singleItem && filter.sizeMode) {
                       displayTooltip(TextComponentUtil.build(Translation.of("gui.mekanism.sizeMode"), " - ", Translation.of("gui.mekanism.sizeModeConflict")), xAxis, yAxis);
                   } else {
                       displayTooltip(TextComponentUtil.translate("gui.mekanism.sizeMode"), xAxis, yAxis);
@@ -145,7 +145,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     protected void drawForegroundLayer(int mouseX, int mouseY) {
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.itemFilter.min"), ":"), 128, 20, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.itemFilter.max"), ":"), 128, 32, 0x404040);
-        if (tileEntity.singleItem && filter.sizeMode) {
+        if (tile.singleItem && filter.sizeMode) {
             drawString(TextComponentUtil.build(EnumColor.RED, OnOff.of(filter.sizeMode), "!"), 141, 46, 0x404040);
         } else {
             drawString(OnOff.of(filter.sizeMode).getTextComponent(), 141, 46, 0x404040);

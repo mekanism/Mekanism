@@ -148,8 +148,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     private void activeEmit() {
         if (!fluidTank.getFluid().isEmpty()) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), pos.down());
-            CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), pos.down());
+            CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
                 fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), tier == FluidTankTier.CREATIVE ? FluidAction.SIMULATE : FluidAction.EXECUTE);
             });
@@ -180,9 +180,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     public int pushUp(@Nonnull FluidStack fluid, FluidAction fluidAction) {
-        TileEntityFluidTank tileEntity = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
-        if (tileEntity != null) {
-            return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).getIfPresentElse(
+        TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
+        if (tile != null) {
+            return CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).getIfPresentElse(
                   handler -> PipeUtils.canFill(handler, fluid) ? handler.fill(fluid, fluidAction) : 0,
                   0
             );

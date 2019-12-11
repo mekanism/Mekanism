@@ -24,9 +24,9 @@ public interface ILogisticalTransporter extends IGridTransmitter<TileEntity, Inv
 
     void setColor(EnumColor c);
 
-    boolean canEmitTo(TileEntity tileEntity, Direction side);
+    boolean canEmitTo(TileEntity tile, Direction side);
 
-    boolean canReceiveFrom(TileEntity tileEntity, Direction side);
+    boolean canReceiveFrom(TileEntity tile, Direction side);
 
     double getCost();
 }

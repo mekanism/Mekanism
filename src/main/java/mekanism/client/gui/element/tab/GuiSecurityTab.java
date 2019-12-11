@@ -72,9 +72,9 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
         ITextComponent securityComponent = TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.security"), ": ",
-              isItem ? SecurityUtils.getSecurity(getItem(), Dist.CLIENT) : SecurityUtils.getSecurity(tileEntity, Dist.CLIENT));
+              isItem ? SecurityUtils.getSecurity(getItem(), Dist.CLIENT) : SecurityUtils.getSecurity(tile, Dist.CLIENT));
         ITextComponent ownerComponent = OwnerDisplay.of(minecraft.player, getOwner(), getOwnerUsername()).getTextComponent();
-        if (isItem ? SecurityUtils.isOverridden(getItem(), Dist.CLIENT) : SecurityUtils.isOverridden(tileEntity, Dist.CLIENT)) {
+        if (isItem ? SecurityUtils.isOverridden(getItem(), Dist.CLIENT) : SecurityUtils.isOverridden(tile, Dist.CLIENT)) {
             displayTooltips(Arrays.asList(securityComponent, ownerComponent,
                   TextComponentUtil.build(EnumColor.RED, "(", Translation.of("gui.mekanism.overridden"), ")")
             ), mouseX, mouseY);
@@ -96,7 +96,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
             }
             return ((ISecurityItem) stack.getItem()).getSecurity(stack);
         }
-        return tileEntity.getSecurity().getMode();
+        return tile.getSecurity().getMode();
     }
 
     private UUID getOwner() {
@@ -108,7 +108,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
             }
             return ((ISecurityItem) stack.getItem()).getOwnerUUID(stack);
         }
-        return tileEntity.getSecurity().getOwnerUUID();
+        return tile.getSecurity().getOwnerUUID();
     }
 
     private String getOwnerUsername() {
@@ -120,7 +120,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
             }
             return MekanismClient.clientUUIDMap.get(((ISecurityItem) stack.getItem()).getOwnerUUID(stack));
         }
-        return tileEntity.getSecurity().getClientOwner();
+        return tile.getSecurity().getClientOwner();
     }
 
     private ItemStack getItem() {
@@ -136,7 +136,7 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
                 if (isItem) {
                     Mekanism.packetHandler.sendToServer(new PacketSecurityMode(currentHand, mode));
                 } else {
-                    Mekanism.packetHandler.sendToServer(new PacketSecurityMode(Coord4D.get(tileEntity), mode));
+                    Mekanism.packetHandler.sendToServer(new PacketSecurityMode(Coord4D.get(tile), mode));
                 }
             }
         }

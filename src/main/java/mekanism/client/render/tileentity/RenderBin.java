@@ -14,10 +14,10 @@ import net.minecraft.util.Direction;
 public class RenderBin extends TileEntityRenderer<TileEntityBin> {
 
     @Override
-    public void render(TileEntityBin tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        Coord4D obj = Coord4D.get(tileEntity).offset(tileEntity.getDirection());
-        if (!Block.hasSolidSide(tileEntity.getWorld().getBlockState(obj.getPos()), tileEntity.getWorld(), obj.getPos(), tileEntity.getOppositeDirection())) {
-            render(tileEntity.getDirection(), tileEntity.clientStack, true, x, y, z);
+    public void render(TileEntityBin tile, double x, double y, double z, float partialTick, int destroyStage) {
+        Coord4D obj = Coord4D.get(tile).offset(tile.getDirection());
+        if (!Block.hasSolidSide(tile.getWorld().getBlockState(obj.getPos()), tile.getWorld(), obj.getPos(), tile.getOppositeDirection())) {
+            render(tile.getDirection(), tile.clientStack, true, x, y, z);
         }
     }
 

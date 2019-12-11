@@ -70,7 +70,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         //TODO: Figure out what the parameters do
         text.renderButton(0, 0, 0);
-        if (tileEntity instanceof TileEntityDigitalMiner) {
+        if (tile instanceof TileEntityDigitalMiner) {
             if (overReplaceOutput(xAxis, yAxis)) {
                 fill(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);
             }
@@ -81,9 +81,9 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        if (tileEntity instanceof TileEntityDigitalMiner) {
+        if (tile instanceof TileEntityDigitalMiner) {
             drawMinerForegroundLayer(renderStack);
-        } else if (tileEntity instanceof TileEntityLogisticalSorter) {
+        } else if (tile instanceof TileEntityLogisticalSorter) {
             drawTransporterForegroundLayer(renderStack);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -93,7 +93,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
-        if (button == 0 && tileEntity instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
+        if (button == 0 && tile instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
             minerFilterClickCommon(mouseX - guiLeft, mouseY - guiTop, (MinerFilter<?>) filter);
         }
         return true;

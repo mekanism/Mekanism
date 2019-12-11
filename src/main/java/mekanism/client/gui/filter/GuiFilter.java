@@ -22,7 +22,7 @@ public abstract class GuiFilter<TILE extends TileEntityMekanism, CONTAINER exten
     }
 
     protected void sendPacketToServer(ClickedTileButton button, int extra) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tileEntity.getPos(), extra));
+        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile.getPos(), extra));
     }
 
     @Override

@@ -52,8 +52,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
 
     public GuiTeleporter(TeleporterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        if (tileEntity.frequency != null) {
-            privateMode = !tileEntity.frequency.publicFreq;
+        if (tile.frequency != null) {
+            privateMode = !tile.frequency.publicFreq;
         }
         ySize += 64;
     }
@@ -62,9 +62,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiUpgradeTab(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiUpgradeTab(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
         addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -100,7 +100,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
                 TileNetworkList data = TileNetworkList.withContents(1, freq.name, freq.publicFreq);
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
                 scrollList.clearSelection();
             }
             updateButtons();
@@ -224,7 +224,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(getName(), (xSize / 2) - (getStringWidth(getName()) / 2), 4, 0x404040);
-        drawString(OwnerDisplay.of(getOwner(), tileEntity.getSecurity().getClientOwner()).getTextComponent(), 8, ySize - 92, 0x404040);
+        drawString(OwnerDisplay.of(getOwner(), tile.getSecurity().getClientOwner()).getTextComponent(), 8, ySize - 92, 0x404040);
         ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.mekanism.freq"), ": ");
         drawString(frequencyComponent, 32, 81, 0x404040);
         ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.mekanism.security"), ": ");
@@ -274,23 +274,23 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     }
 
     private UUID getOwner() {
-        return tileEntity.getSecurity().getOwnerUUID();
+        return tile.getSecurity().getOwnerUUID();
     }
 
     private byte getStatus() {
-        return tileEntity != null ? tileEntity.status : clientStatus;
+        return tile != null ? tile.status : clientStatus;
     }
 
     private List<Frequency> getPublicCache() {
-        return tileEntity != null ? tileEntity.publicCache : clientPublicCache;
+        return tile != null ? tile.publicCache : clientPublicCache;
     }
 
     private List<Frequency> getPrivateCache() {
-        return tileEntity != null ? tileEntity.privateCache : clientPrivateCache;
+        return tile != null ? tile.privateCache : clientPrivateCache;
     }
 
     private Frequency getFrequency() {
-        return tileEntity != null ? tileEntity.frequency : clientFreq;
+        return tile != null ? tile.frequency : clientFreq;
     }
 
     public void setFrequency(String freq) {
@@ -298,18 +298,18 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
             return;
         }
         TileNetworkList data = TileNetworkList.withContents(0, freq, !privateMode);
-        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
     }
 
     private ITextComponent getName() {
-        return tileEntity.getName();
+        return tile.getName();
     }
 
     private double getEnergy() {
-        return tileEntity.getEnergy();
+        return tile.getEnergy();
     }
 
     private double getMaxEnergy() {
-        return tileEntity.getMaxEnergy();
+        return tile.getMaxEnergy();
     }
 }

@@ -27,27 +27,27 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiMatrixTab(this, tileEntity, MatrixTab.STAT, resource));
+        addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("gui.mekanism.input"), ": ", EnergyDisplay.of(tileEntity.getLastInput()), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.output"), ": ", EnergyDisplay.of(tileEntity.getLastOutput()), "/t")
+              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+              TextComponentUtil.build(Translation.of("gui.mekanism.input"), ": ", EnergyDisplay.of(tile.getLastInput()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.output"), ": ", EnergyDisplay.of(tile.getLastOutput()), "/t")
         ), this, resource));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.input"), ":"), 53, 26, 0x00CD00);
-        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastInput()), "/t"), 53, 35, 0x00CD00);
+        drawString(TextComponentUtil.build(EnergyDisplay.of(tile.getLastInput()), "/t"), 53, 35, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.output"), ":"), 53, 44, 0x00CD00);
-        drawString(TextComponentUtil.build(EnergyDisplay.of(tileEntity.getLastOutput()), "/t"), 53, 53, 0x00CD00);
+        drawString(TextComponentUtil.build(EnergyDisplay.of(tile.getLastOutput()), "/t"), 53, 53, 0x00CD00);
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-            displayTooltip(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
+            displayTooltip(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -55,9 +55,9 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity.getScaledEnergyLevel(58) > 0) {
-            displayGauge(7, 14, tileEntity.getScaledEnergyLevel(58), 0);
-            displayGauge(23, 14, tileEntity.getScaledEnergyLevel(58), 1);
+        if (tile.getScaledEnergyLevel(58) > 0) {
+            displayGauge(7, 14, tile.getScaledEnergyLevel(58), 0);
+            displayGauge(23, 14, tile.getScaledEnergyLevel(58), 1);
         }
     }
 

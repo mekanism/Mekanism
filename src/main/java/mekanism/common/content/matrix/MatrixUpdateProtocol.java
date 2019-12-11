@@ -19,8 +19,8 @@ import net.minecraft.util.math.BlockPos;
 
 public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData> {
 
-    public MatrixUpdateProtocol(TileEntityInductionCasing tileEntity) {
-        super(tileEntity);
+    public MatrixUpdateProtocol(TileEntityInductionCasing tile) {
+        super(tile);
     }
 
     @Override

@@ -35,27 +35,27 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(
+              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
               TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
-                    EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
-        addButton(new GuiGasGauge(() -> tileEntity.deuteriumTank, Type.SMALL, this, resource, 25, 64));
-        addButton(new GuiGasGauge(() -> tileEntity.fuelTank, Type.STANDARD, this, resource, 79, 50));
-        addButton(new GuiGasGauge(() -> tileEntity.tritiumTank, Type.SMALL, this, resource, 133, 64));
+                    EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
+        addButton(new GuiGasGauge(() -> tile.deuteriumTank, Type.SMALL, this, resource, 25, 64));
+        addButton(new GuiGasGauge(() -> tile.fuelTank, Type.STANDARD, this, resource, 79, 50));
+        addButton(new GuiGasGauge(() -> tile.tritiumTank, Type.SMALL, this, resource, 133, 64));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getActive() ? 1 : 0;
+                return tile.getActive() ? 1 : 0;
             }
         }, ProgressBar.SMALL_RIGHT, this, resource, 45, 75));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getActive() ? 1 : 0;
+                return tile.getActive() ? 1 : 0;
             }
         }, ProgressBar.SMALL_LEFT, this, resource, 99, 75));
-        addButton(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
-        addButton(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
+        addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT, resource));
+        addButton(new GuiReactorTab(this, tile, ReactorTab.STAT, resource));
 
         String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
         addButton(injectionRateField = new TextFieldWidget(font, guiLeft + 98, guiTop + 115, 26, 11, ""));
@@ -66,10 +66,10 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        drawString(tileEntity.getName(), 46, 6, 0x404040);
+        drawString(tile.getName(), 46, 6, 0x404040);
         //TODO: Lang key for None
         drawCenteredText(TextComponentUtil.build(Translation.of("gui.mekanism.reactor.injectionRate"),
-              ": " + (tileEntity.getReactor() == null ? "None" : tileEntity.getReactor().getInjectionRate())), 0, xSize, 35, 0x404040);
+              ": " + (tile.getReactor() == null ? "None" : tile.getReactor().getInjectionRate())), 0, xSize, 35, 0x404040);
         drawString("Edit Rate" + ":", 50, 117, 0x404040);
     }
 
@@ -113,7 +113,7 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
             int toUse = Math.max(0, Integer.parseInt(injectionRateField.getText()));
             toUse -= toUse % 2;
             TileNetworkList data = TileNetworkList.withContents(0, toUse);
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
             injectionRateField.setText("");
         }
     }

@@ -57,9 +57,9 @@ public class RecipeUtils {
         if (toReturn.getItem() instanceof IEnergizedItem) {
             double energyFound = 0;
             for (int i = 0; i < invLength; i++) {
-                ItemStack itemstack = inv.getStackInSlot(i);
-                if (!itemstack.isEmpty() && itemstack.getItem() instanceof IEnergizedItem) {
-                    energyFound += ((IEnergizedItem) itemstack.getItem()).getEnergy(itemstack);
+                ItemStack stack = inv.getStackInSlot(i);
+                if (!stack.isEmpty() && stack.getItem() instanceof IEnergizedItem) {
+                    energyFound += ((IEnergizedItem) stack.getItem()).getEnergy(stack);
                 }
             }
             double energyToSet = Math.min(((IEnergizedItem) toReturn.getItem()).getMaxEnergy(toReturn), energyFound);
@@ -71,9 +71,9 @@ public class RecipeUtils {
         if (toReturn.getItem() instanceof IGasItem) {
             GasStack gasFound = GasStack.EMPTY;
             for (int i = 0; i < invLength; i++) {
-                ItemStack itemstack = inv.getStackInSlot(i);
-                if (!itemstack.isEmpty() && itemstack.getItem() instanceof IGasItem) {
-                    GasStack stored = ((IGasItem) itemstack.getItem()).getGas(itemstack);
+                ItemStack stack = inv.getStackInSlot(i);
+                if (!stack.isEmpty() && stack.getItem() instanceof IGasItem) {
+                    GasStack stored = ((IGasItem) stack.getItem()).getGas(stack);
                     if (!stored.isEmpty()) {
                         if (!((IGasItem) toReturn.getItem()).canReceiveGas(toReturn, stored.getType())) {
                             return ItemStack.EMPTY;
@@ -98,10 +98,10 @@ public class RecipeUtils {
 
         if (toReturn.getItem() instanceof ISecurityItem) {
             for (int i = 0; i < invLength; i++) {
-                ItemStack itemstack = inv.getStackInSlot(i);
-                if (!itemstack.isEmpty() && itemstack.getItem() instanceof ISecurityItem) {
-                    ((ISecurityItem) toReturn.getItem()).setOwnerUUID(toReturn, ((ISecurityItem) itemstack.getItem()).getOwnerUUID(itemstack));
-                    ((ISecurityItem) toReturn.getItem()).setSecurity(toReturn, ((ISecurityItem) itemstack.getItem()).getSecurity(itemstack));
+                ItemStack stack = inv.getStackInSlot(i);
+                if (!stack.isEmpty() && stack.getItem() instanceof ISecurityItem) {
+                    ((ISecurityItem) toReturn.getItem()).setOwnerUUID(toReturn, ((ISecurityItem) stack.getItem()).getOwnerUUID(stack));
+                    ((ISecurityItem) toReturn.getItem()).setSecurity(toReturn, ((ISecurityItem) stack.getItem()).getSecurity(stack));
                     break;
                 }
             }
@@ -110,11 +110,11 @@ public class RecipeUtils {
         if (FluidContainerUtils.isFluidContainer(toReturn)) {
             FluidStack fluidFound = FluidStack.EMPTY;
             for (int i = 0; i < invLength; i++) {
-                ItemStack itemstack = inv.getStackInSlot(i);
-                if (FluidContainerUtils.isFluidContainer(itemstack)) {
-                    FluidStack stored = FluidUtil.getFluidContained(itemstack).orElse(FluidStack.EMPTY);
+                ItemStack stack = inv.getStackInSlot(i);
+                if (FluidContainerUtils.isFluidContainer(stack)) {
+                    FluidStack stored = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
                     if (!stored.isEmpty()) {
-                        if (new LazyOptionalHelper<>(FluidUtil.getFluidHandler(itemstack)).matches(handler -> handler.fill(stored, FluidAction.SIMULATE) == 0)) {
+                        if (new LazyOptionalHelper<>(FluidUtil.getFluidHandler(stack)).matches(handler -> handler.fill(stored, FluidAction.SIMULATE) == 0)) {
                             return ItemStack.EMPTY;
                         }
                         if (fluidFound.isEmpty()) {
@@ -129,7 +129,7 @@ public class RecipeUtils {
                 }
             }
 
-            if (fluidFound != null) {
+            if (!fluidFound.isEmpty()) {
                 FluidStack finalFluidFound = fluidFound;
                 FluidUtil.getFluidHandler(toReturn).ifPresent(handler -> handler.fill(finalFluidFound, FluidAction.EXECUTE));
             }
@@ -139,9 +139,9 @@ public class RecipeUtils {
             int foundCount = 0;
             ItemStack foundType = ItemStack.EMPTY;
             for (int i = 0; i < invLength; i++) {
-                ItemStack itemstack = inv.getStackInSlot(i);
-                if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemBlockBin) {
-                    InventoryBin binInv = new InventoryBin(itemstack);
+                ItemStack stack = inv.getStackInSlot(i);
+                if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockBin) {
+                    InventoryBin binInv = new InventoryBin(stack);
                     foundCount = binInv.getItemCount();
                     foundType = binInv.getItemType();
                 }
@@ -157,9 +157,9 @@ public class RecipeUtils {
         if (supportsUpgrades(toReturn)) {
             Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
             for (int i = 0; i < invLength; i++) {
-                ItemStack itemstack = inv.getStackInSlot(i);
-                if (supportsUpgrades(itemstack)) {
-                    Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(itemstack));
+                ItemStack stack = inv.getStackInSlot(i);
+                if (supportsUpgrades(stack)) {
+                    Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(stack));
                     for (Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
                         if (entry != null && entry.getKey() != null && entry.getValue() != null) {
                             Integer val = upgrades.get(entry.getKey());

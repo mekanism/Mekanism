@@ -46,10 +46,10 @@ public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStat
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!world.isRemote && player.isSneaking()) {
-            TileEntityCardboardBox tileEntity = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
+            TileEntityCardboardBox tile = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
 
-            if (tileEntity != null && tileEntity.storedData != null) {
-                BlockData data = tileEntity.storedData;
+            if (tile != null && tile.storedData != null) {
+                BlockData data = tile.storedData;
                 //TODO: Test Place
                 /*testingPlace = true;
                 if (!data.block.canPlaceBlockAt(world, pos)) {
@@ -64,7 +64,7 @@ public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStat
                 }
                 if (data.tileTag != null) {
                     data.updateLocation(pos);
-                    tileEntity.read(data.tileTag);
+                    tile.read(data.tileTag);
                 }
                 if (data.block != null) {
                     data.block.onBlockPlacedBy(world, pos, data.block.getDefaultState(), player, new ItemStack(data.block));

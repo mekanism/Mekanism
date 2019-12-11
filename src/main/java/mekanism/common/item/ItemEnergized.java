@@ -56,9 +56,9 @@ public class ItemEnergized extends Item implements IItemEnergized {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.stored_energy"), ": ", EnumColor.GRAY,
-              EnergyDisplay.of(getEnergy(itemstack), getMaxEnergy(itemstack))));
+              EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
     }
 
     @Override

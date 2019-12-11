@@ -36,8 +36,8 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockInductionP
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        InductionProviderTier tier = getTier(itemstack);
+    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        InductionProviderTier tier = getTier(stack);
         if (tier != null) {
             tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("tooltip.mekanism.outputRate"), ": ", EnumColor.GRAY,
                   EnergyDisplay.of(tier.getOutput())));

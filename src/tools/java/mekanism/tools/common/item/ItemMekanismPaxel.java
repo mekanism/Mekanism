@@ -86,12 +86,12 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
         if (block == null) {
             return ActionResultType.PASS;
         }
-        PlayerEntity playerentity = context.getPlayer();
-        world.playSound(playerentity, blockpos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        PlayerEntity player = context.getPlayer();
+        world.playSound(player, blockpos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
         if (!world.isRemote) {
             world.setBlockState(blockpos, block.getDefaultState().with(RotatedPillarBlock.AXIS, blockstate.get(RotatedPillarBlock.AXIS)), 11);
-            if (playerentity != null) {
-                context.getItem().damageItem(1, playerentity, onBroken -> onBroken.sendBreakAnimation(context.getHand()));
+            if (player != null) {
+                context.getItem().damageItem(1, player, onBroken -> onBroken.sendBreakAnimation(context.getHand()));
             }
         }
         //TODO: Make it so that we can also turn grass -> grass paths

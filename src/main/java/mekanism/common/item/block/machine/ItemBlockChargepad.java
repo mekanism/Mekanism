@@ -32,9 +32,9 @@ public class ItemBlockChargepad extends ItemBlockAdvancedTooltip<BlockChargepad>
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("tooltip.mekanism.stored_energy"), ": ", EnumColor.GRAY,
-              EnergyDisplay.of(getEnergy(itemstack), getMaxEnergy(itemstack))));
+              EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
     }
 
     @Override

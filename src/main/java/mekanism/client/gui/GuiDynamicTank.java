@@ -22,16 +22,16 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiContainerEditMode(this, tileEntity, getGuiLocation()));
+        addButton(new GuiContainerEditMode(this, tile, getGuiLocation()));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.volume"), ": " + tileEntity.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK), 53, 26, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.volume"), ": " + tile.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK), 53, 26, 0x00CD00);
         //TODO: 1.14 Convert to GuiElement
-        FluidStack fluidStored = tileEntity.structure != null ? tileEntity.structure.fluidStored : FluidStack.EMPTY;
+        FluidStack fluidStored = tile.structure != null ? tile.structure.fluidStored : FluidStack.EMPTY;
         if (fluidStored.isEmpty()) {
             renderScaledText(TextComponentUtil.translate("gui.mekanism.noFluid"), 53, 44, 0x00CD00, 74);
         } else {
@@ -54,10 +54,10 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int scaledFluidLevel = tileEntity.getScaledFluidLevel(58);
+        int scaledFluidLevel = tile.getScaledFluidLevel(58);
         if (scaledFluidLevel > 0) {
-            displayGauge(7, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 0);
-            displayGauge(23, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 1);
+            displayGauge(7, 14, scaledFluidLevel, tile.structure.fluidStored, 0);
+            displayGauge(23, 14, scaledFluidLevel, tile.structure.fluidStored, 1);
         }
     }
 

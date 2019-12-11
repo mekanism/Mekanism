@@ -406,10 +406,10 @@ public final class VoxelShapeUtils {
         public final float y;
         public final float z;
 
-        public Vec3f(float xIn, float yIn, float zIn) {
-            this.x = xIn;
-            this.y = yIn;
-            this.z = zIn;
+        public Vec3f(float x, float y, float z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
         }
 
         public Vec3f scale(float factor) {

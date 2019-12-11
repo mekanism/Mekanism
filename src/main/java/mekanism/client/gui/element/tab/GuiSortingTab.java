@@ -30,7 +30,7 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         super.renderButton(mouseX, mouseY, partialTicks);
-        drawString(OnOff.of(tileEntity.sorting).getTextComponent(), x + 5, y + 24, 0x0404040);
+        drawString(OnOff.of(tile.sorting).getTextComponent(), x + 5, y + 24, 0x0404040);
         //TODO: Check if needed
         MekanismRenderer.resetColor();
     }
@@ -42,6 +42,6 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)));
+        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)));
     }
 }

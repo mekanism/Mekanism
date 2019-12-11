@@ -28,23 +28,23 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
     @Override
     public void init() {
         super.init();
-        if (tileEntity.isFormed()) {
+        if (tile.isFormed()) {
             ResourceLocation resource = getGuiLocation();
-            addButton(new GuiEnergyInfo(() -> tileEntity.isFormed() ? Arrays.asList(
-                  TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+            addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(
+                  TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
                   TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
-                        EnergyDisplay.of(tileEntity.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
+                        EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
             addButton(new GuiSlot(SlotType.NORMAL, this, resource, 79, 38));
-            addButton(new GuiReactorTab(this, tileEntity, ReactorTab.HEAT, resource));
-            addButton(new GuiReactorTab(this, tileEntity, ReactorTab.FUEL, resource));
-            addButton(new GuiReactorTab(this, tileEntity, ReactorTab.STAT, resource));
+            addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT, resource));
+            addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL, resource));
+            addButton(new GuiReactorTab(this, tile, ReactorTab.STAT, resource));
         }
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), 46, 6, 0x404040);
-        drawString(TextComponentUtil.translate(tileEntity.getActive() ? "gui.mekanism.formed" : "gui.mekanism.incomplete"), 8, 16, 0x404040);
+        drawString(tile.getName(), 46, 6, 0x404040);
+        drawString(TextComponentUtil.translate(tile.getActive() ? "gui.mekanism.formed" : "gui.mekanism.incomplete"), 8, 16, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

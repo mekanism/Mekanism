@@ -30,10 +30,10 @@ public class PacketDropperUse {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
-            if (tileEntity instanceof ITankManager) {
+            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
+            if (tile instanceof ITankManager) {
                 try {
-                    Object tank = ((ITankManager) tileEntity).getTanks()[message.tankId];
+                    Object tank = ((ITankManager) tile).getTanks()[message.tankId];
                     if (tank != null) {
                         DropperHandler.useDropper(player, tank, message.mouseButton);
                     }

@@ -30,29 +30,29 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
         super.init();
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 14, 28));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
-            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.lastEnvironmentLoss * unit.intervalSize, false, unit);
+            String environment = UnitDisplayUtils.getDisplayShort(tile.lastEnvironmentLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(TextComponentUtil.build(Translation.of("gui.mekanism.dissipated"), ": " + environment + "/t"));
         }, this, resource));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
         renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.temp"), ": ",
-              MekanismUtils.getTemperatureDisplay(tileEntity.temperature, TemperatureUnit.AMBIENT)), 50, 25, 0x00CD00, 76);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.fuel"), ": " + tileEntity.burnTime), 50, 41, 0x00CD00, 76);
+              MekanismUtils.getTemperatureDisplay(tile.temperature, TemperatureUnit.AMBIENT)), 50, 25, 0x00CD00, 76);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.fuel"), ": " + tile.burnTime), 50, 41, 0x00CD00, 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity.burnTime > 0) {
-            int displayInt = tileEntity.burnTime * 13 / tileEntity.maxBurnTime;
+        if (tile.burnTime > 0) {
+            int displayInt = tile.burnTime * 13 / tile.maxBurnTime;
             drawTexturedRect(guiLeft + 143, guiTop + 30 + 12 - displayInt, 176, 12 - displayInt, 14, displayInt + 1);
         }
     }

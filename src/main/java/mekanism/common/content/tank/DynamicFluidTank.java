@@ -9,8 +9,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class DynamicFluidTank extends MultiblockFluidTank<TileEntityDynamicTank> {
 
-    public DynamicFluidTank(TileEntityDynamicTank tileEntity) {
-        super(tileEntity);
+    public DynamicFluidTank(TileEntityDynamicTank tile) {
+        super(tile);
     }
 
     @Nonnull

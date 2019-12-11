@@ -73,8 +73,8 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
     @Override
     public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get()) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).wasActiveRecently()) {
                 return MekanismConfig.client.ambientLightingLevel.get();
             }
         }
@@ -86,18 +86,18 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tileEntity == null) {
+        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile == null) {
             return false;
         }
-        if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
         //Handle filling fluid tank
         if (!player.isSneaking()) {
-            if (SecurityUtils.canAccess(player, tileEntity)) {
+            if (SecurityUtils.canAccess(player, tile)) {
                 ItemStack stack = player.getHeldItem(hand);
-                if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack) && manageInventory(player, (TileEntityFluidTank) tileEntity, hand, stack)) {
+                if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack) && manageInventory(player, (TileEntityFluidTank) tile, hand, stack)) {
                     player.inventory.markDirty();
                     return true;
                 }
@@ -106,7 +106,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                 return true;
             }
         }
-        return tileEntity.openGui(player);
+        return tile.openGui(player);
     }
 
     @Nonnull
@@ -127,13 +127,13 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
         return blockResistance;
     }
 
-    private boolean manageInventory(PlayerEntity player, TileEntityFluidTank tileEntity, Hand hand, ItemStack itemStack) {
+    private boolean manageInventory(PlayerEntity player, TileEntityFluidTank tile, Hand hand, ItemStack itemStack) {
         ItemStack copyStack = StackUtils.size(itemStack.copy(), 1);
         return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(copyStack)).getIfPresentElse(
               handler -> new LazyOptionalHelper<>(FluidUtil.getFluidContained(copyStack)).getIfPresentElseDo(
                     itemFluid -> {
-                        int needed = tileEntity.getCurrentNeeded();
-                        if (!tileEntity.fluidTank.getFluid().isEmpty() && !tileEntity.fluidTank.getFluid().isFluidEqual(itemFluid)) {
+                        int needed = tile.getCurrentNeeded();
+                        if (!tile.fluidTank.getFluid().isEmpty() && !tile.fluidTank.getFluid().isFluidEqual(itemFluid)) {
                             return false;
                         }
                         boolean filled = false;
@@ -163,13 +163,13 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                             }
 
                             if (filled) {
-                                int toFill = tileEntity.fluidTank.getCapacity() - tileEntity.fluidTank.getFluidAmount();
-                                if (tileEntity.tier != FluidTankTier.CREATIVE) {
+                                int toFill = tile.fluidTank.getCapacity() - tile.fluidTank.getFluidAmount();
+                                if (tile.tier != FluidTankTier.CREATIVE) {
                                     toFill = Math.min(toFill, drained.getAmount());
                                 }
-                                tileEntity.fluidTank.fill(PipeUtils.copy(drained, toFill), FluidAction.EXECUTE);
+                                tile.fluidTank.fill(PipeUtils.copy(drained, toFill), FluidAction.EXECUTE);
                                 if (drained.getAmount() - toFill > 0) {
-                                    tileEntity.pushUp(PipeUtils.copy(itemFluid, drained.getAmount() - toFill), FluidAction.EXECUTE);
+                                    tile.pushUp(PipeUtils.copy(itemFluid, drained.getAmount() - toFill), FluidAction.EXECUTE);
                                 }
                                 return true;
                             }
@@ -177,8 +177,8 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                         return false;
                     },
                     () -> {
-                        if (!tileEntity.fluidTank.getFluid().isEmpty()) {
-                            int filled = handler.fill(tileEntity.fluidTank.getFluid(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+                        if (!tile.fluidTank.getFluid().isEmpty()) {
+                            int filled = handler.fill(tile.fluidTank.getFluid(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                             ItemStack container = handler.getContainer();
                             if (filled > 0) {
                                 if (itemStack.getCount() == 1) {
@@ -189,8 +189,8 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                                     player.dropItem(container, false, true);
                                     itemStack.shrink(1);
                                 }
-                                if (tileEntity.tier != FluidTankTier.CREATIVE) {
-                                    tileEntity.fluidTank.drain(filled, FluidAction.EXECUTE);
+                                if (tile.tier != FluidTankTier.CREATIVE) {
+                                    tile.fluidTank.drain(filled, FluidAction.EXECUTE);
                                 }
                                 return true;
                             }

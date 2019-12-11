@@ -38,8 +38,8 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredI
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        InventoryBin inv = new InventoryBin(itemstack);
+    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        InventoryBin inv = new InventoryBin(stack);
         if (inv.getItemCount() > 0) {
             tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, inv.getItemType().getDisplayName()));
             if (inv.getItemCount() == Integer.MAX_VALUE) {
@@ -50,7 +50,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredI
         } else {
             tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.empty")));
         }
-        BinTier tier = getTier(itemstack);
+        BinTier tier = getTier(stack);
         if (tier != null) {
             int cap = tier.getStorage();
             if (cap == Integer.MAX_VALUE) {

@@ -38,9 +38,9 @@ public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble<Bloc
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            ConductorTier tier = getTier(itemstack);
+            ConductorTier tier = getTier(stack);
             if (tier != null) {
                 tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.conduction"), ": ", EnumColor.GRAY, tier.getInverseConduction()));
                 tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.insulation"), ": ", EnumColor.GRAY, tier.getBaseConductionInsulation()));

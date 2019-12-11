@@ -16,42 +16,42 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
     private ModelTurbine model = new ModelTurbine();
 
     @Override
-    public void render(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        renderAModelAt(tileEntity, x, y, z, partialTick);
+    public void render(TileEntityTurbineRotor tile, double x, double y, double z, float partialTick, int destroyStage) {
+        renderAModelAt(tile, x, y, z, partialTick);
     }
 
-    private void renderAModelAt(TileEntityTurbineRotor tileEntity, double x, double y, double z, float partialTick) {
-        if (tileEntity.getMultiblock() != null && !internalRender) {
+    private void renderAModelAt(TileEntityTurbineRotor tile, double x, double y, double z, float partialTick) {
+        if (tile.getMultiblock() != null && !internalRender) {
             return;
         }
 
         GlStateManager.pushMatrix();
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "turbine.png"));
 
-        int baseIndex = tileEntity.getPosition() * 2;
+        int baseIndex = tile.getPosition() * 2;
         float rotateSpeed = 0.0F;
 
-        if (tileEntity.getMultiblock() != null && SynchronizedTurbineData.clientRotationMap.containsKey(tileEntity.getMultiblock())) {
-            rotateSpeed = SynchronizedTurbineData.clientRotationMap.get(tileEntity.getMultiblock());
+        if (tile.getMultiblock() != null && SynchronizedTurbineData.clientRotationMap.containsKey(tile.getMultiblock())) {
+            rotateSpeed = SynchronizedTurbineData.clientRotationMap.get(tile.getMultiblock());
         }
 
         if (!Mekanism.proxy.isPaused()) {
-            tileEntity.rotationLower = (tileEntity.rotationLower + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 1))) % 360;
-            tileEntity.rotationUpper = (tileEntity.rotationUpper + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 2))) % 360;
+            tile.rotationLower = (tile.rotationLower + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 1))) % 360;
+            tile.rotationUpper = (tile.rotationUpper + rotateSpeed * BASE_SPEED * (1F / (float) (baseIndex + 2))) % 360;
         }
 
-        if (tileEntity.getHousedBlades() > 0) {
+        if (tile.getHousedBlades() > 0) {
             GlStateManager.pushMatrix();
             GlStateManager.translatef((float) x + 0.5F, (float) y - 1F, (float) z + 0.5F);
-            GlStateManager.rotatef(tileEntity.rotationLower, 0, 1, 0);
+            GlStateManager.rotatef(tile.rotationLower, 0, 1, 0);
             model.render(0.0625F, baseIndex);
             GlStateManager.popMatrix();
         }
 
-        if (tileEntity.getHousedBlades() == 2) {
+        if (tile.getHousedBlades() == 2) {
             GlStateManager.pushMatrix();
             GlStateManager.translatef((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
-            GlStateManager.rotatef(tileEntity.rotationUpper, 0, 1, 0);
+            GlStateManager.rotatef(tile.rotationUpper, 0, 1, 0);
             model.render(0.0625F, baseIndex + 1);
             GlStateManager.popMatrix();
         }

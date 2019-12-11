@@ -98,9 +98,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public boolean isValidTransmitter(TileEntity tileEntity) {
-        return CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).matches(
-              transporter -> super.isValidTransmitter(tileEntity) && (getTransmitter().getColor() == null || transporter.getColor() == null ||
+    public boolean isValidTransmitter(TileEntity tile) {
+        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).matches(
+              transporter -> super.isValidTransmitter(tile) && (getTransmitter().getColor() == null || transporter.getColor() == null ||
                                                                       getTransmitter().getColor() == transporter.getColor()));
     }
 

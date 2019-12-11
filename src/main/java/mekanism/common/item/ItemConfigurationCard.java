@@ -40,8 +40,8 @@ public class ItemConfigurationCard extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.data"), ": ", EnumColor.INDIGO, Translation.of(getDataType(itemstack))));
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.data"), ": ", EnumColor.INDIGO, Translation.of(getDataType(stack))));
     }
 
     @Nonnull
@@ -52,18 +52,18 @@ public class ItemConfigurationCard extends Item {
         if (!world.isRemote && player != null) {
             BlockPos pos = context.getPos();
             Direction side = context.getFace();
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
-                if (SecurityUtils.canAccess(player, tileEntity)) {
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            if (CapabilityUtils.getCapabilityHelper(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
+                if (SecurityUtils.canAccess(player, tile)) {
                     ItemStack stack = player.getHeldItem(context.getHand());
                     if (player.isSneaking()) {
-                        CompoundNBT data = CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).getIfPresentElseDo(
-                              special -> special.getConfigurationData(getBaseData(tileEntity)),
-                              () -> getBaseData(tileEntity)
+                        CompoundNBT data = CapabilityUtils.getCapabilityHelper(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).getIfPresentElseDo(
+                              special -> special.getConfigurationData(getBaseData(tile)),
+                              () -> getBaseData(tile)
                         );
 
                         if (data != null) {
-                            data.putString("dataType", getNameFromTile(tileEntity, side));
+                            data.putString("dataType", getNameFromTile(tile, side));
                             setData(stack, data);
                             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                                   Translation.of("tooltip.configurationCard.got",
@@ -74,12 +74,12 @@ public class ItemConfigurationCard extends Item {
                     }
                     CompoundNBT data = getData(stack);
                     if (data != null) {
-                        if (getNameFromTile(tileEntity, side).equals(getDataType(stack))) {
-                            setBaseData(data, tileEntity);
-                            CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(
+                        if (getNameFromTile(tile, side).equals(getDataType(stack))) {
+                            setBaseData(data, tile);
+                            CapabilityUtils.getCapabilityHelper(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(
                                   special -> special.setConfigurationData(data)
                             );
-                            updateTile(tileEntity);
+                            updateTile(tile);
                             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.DARK_GREEN,
                                   Translation.of("tooltip.configurationCard.set", TextComponentUtil.build(EnumColor.INDIGO, Translation.of(getDataType(stack))))));
                         } else {
@@ -96,9 +96,9 @@ public class ItemConfigurationCard extends Item {
         return ActionResultType.PASS;
     }
 
-    private <TILE extends TileEntity & ITileNetwork> void updateTile(TileEntity tileEntity) {
+    private <TILE extends TileEntity & ITileNetwork> void updateTile(TileEntity tile) {
         //Check the capability in case for some reason the tile doesn't want to expose the fact it has it
-        CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
+        CapabilityUtils.getCapabilityHelper(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
             if (network instanceof TileEntity) {
                 //Ensure the implementation is still a tile entity
                 Mekanism.packetHandler.sendUpdatePacket((TILE) network);
@@ -139,24 +139,24 @@ public class ItemConfigurationCard extends Item {
         );
     }
 
-    public void setData(ItemStack itemstack, CompoundNBT data) {
+    public void setData(ItemStack stack, CompoundNBT data) {
         if (data != null) {
-            ItemDataUtils.setCompound(itemstack, "data", data);
+            ItemDataUtils.setCompound(stack, "data", data);
         } else {
-            ItemDataUtils.removeData(itemstack, "data");
+            ItemDataUtils.removeData(stack, "data");
         }
     }
 
-    public CompoundNBT getData(ItemStack itemstack) {
-        CompoundNBT data = ItemDataUtils.getCompound(itemstack, "data");
+    public CompoundNBT getData(ItemStack stack) {
+        CompoundNBT data = ItemDataUtils.getCompound(stack, "data");
         if (data.isEmpty()) {
             return null;
         }
-        return ItemDataUtils.getCompound(itemstack, "data");
+        return ItemDataUtils.getCompound(stack, "data");
     }
 
-    public String getDataType(ItemStack itemstack) {
-        CompoundNBT data = getData(itemstack);
+    public String getDataType(ItemStack stack) {
+        CompoundNBT data = getData(stack);
         if (data != null) {
             return data.getString("dataType");
         }

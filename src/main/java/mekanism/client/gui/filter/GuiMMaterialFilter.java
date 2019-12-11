@@ -33,9 +33,9 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
         addButton(saveButton = new TranslationButton(this, guiLeft + 27, guiTop + 62, 60, 20, "gui.mekanism.save", () -> {
             if (!filter.getMaterialItem().isEmpty()) {
                 if (isNew) {
-                    Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tileEntity), filter));
+                    Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tile), filter));
                 } else {
-                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), false, origFilter, filter));
+                    Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), false, origFilter, filter));
                 }
                 sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
             } else {
@@ -44,7 +44,7 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
             }
         }));
         addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 60, 20, "gui.mekanism.delete", () -> {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tileEntity), true, origFilter, null));
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
         }));
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),

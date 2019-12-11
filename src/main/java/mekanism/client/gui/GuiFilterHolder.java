@@ -61,7 +61,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     // Get index to displayed filters
     public int getFilterIndex() {
         if (needsScrollBars()) {
-            int scrollSize = tileEntity.getFilters().size() - 4;
+            int scrollSize = tile.getFilters().size() - 4;
             return (int) ((scrollSize + 0.5) * scroll);
         }
         return 0;
@@ -103,7 +103,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         Set<IOreDictFilter<?>> oreDictFilters = new HashSet<>();
         Set<IModIDFilter<?>> modIDFilters = new HashSet<>();
 
-        HashList<FILTER> filters = tileEntity.getFilters();
+        HashList<FILTER> filters = tile.getFilters();
 
         for (int i = 0; i < 4; i++) {
             FILTER filter = filters.get(getFilterIndex() + i);
@@ -129,7 +129,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         // Draw scrollbar
         drawTexturedRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
-        HashList<FILTER> filters = tileEntity.getFilters();
+        HashList<FILTER> filters = tile.getFilters();
         // Draw filter backgrounds
         for (int i = 0; i < 4; i++) {
             FILTER filter = filters.get(getFilterIndex() + i);
@@ -231,7 +231,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     protected void sendDataFromClick(TileNetworkList data) {
-        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
     }
 
@@ -250,7 +250,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
      * returns true if there are more filters than can fit in the gui
      */
     protected boolean needsScrollBars() {
-        return tileEntity.getFilters().size() > 4;
+        return tile.getFilters().size() > 4;
     }
 
     public static class StackData {

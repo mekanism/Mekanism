@@ -39,8 +39,8 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         World world = context.getWorld();
         BlockPos pos = context.getPos();
         Hand hand = context.getHand();
-        ItemStack itemstack = player.getHeldItem(hand);
-        if (itemstack.isEmpty()) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (stack.isEmpty()) {
             return ActionResultType.FAIL;//WTF
         }
         Direction side = context.getFace();
@@ -48,14 +48,14 @@ public abstract class ItemBlockMultipartAble<BLOCK extends Block> extends ItemBl
         if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
             pos = pos.offset(side);
         }
-        if (player.canPlayerEdit(pos, side, itemstack)) {
+        if (player.canPlayerEdit(pos, side, stack)) {
             BlockState iblockstate1 = this.getBlock().getStateForPlacement(blockItemUseContext);
             boolean flag = placeBlock(blockItemUseContext, iblockstate1);
             if (flag) {
                 iblockstate1 = world.getBlockState(pos);
                 SoundType soundtype = iblockstate1.getBlock().getSoundType(iblockstate1, world, pos, player);
                 world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                itemstack.shrink(1);
+                stack.shrink(1);
             }
             return ActionResultType.SUCCESS;
         }

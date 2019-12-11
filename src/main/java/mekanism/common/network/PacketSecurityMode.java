@@ -41,12 +41,12 @@ public class PacketSecurityMode {
         }
         context.get().enqueueWork(() -> {
             if (message.packetType == SecurityPacketType.BLOCK) {
-                TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
-                if (tileEntity instanceof ISecurityTile && ((ISecurityTile) tileEntity).hasSecurity()) {
-                    UUID owner = ((ISecurityTile) tileEntity).getSecurity().getOwnerUUID();
+                TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
+                if (tile instanceof ISecurityTile && ((ISecurityTile) tile).hasSecurity()) {
+                    UUID owner = ((ISecurityTile) tile).getSecurity().getOwnerUUID();
                     if (owner != null && player.getUniqueID().equals(owner)) {
-                        ((ISecurityTile) tileEntity).getSecurity().setMode(message.value);
-                        tileEntity.markDirty();
+                        ((ISecurityTile) tile).getSecurity().setMode(message.value);
+                        tile.markDirty();
                     }
                 }
             } else {

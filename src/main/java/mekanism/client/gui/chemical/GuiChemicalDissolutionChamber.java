@@ -36,16 +36,16 @@ public class GuiChemicalDissolutionChamber extends GuiMekanismTile<TileEntityChe
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiUpgradeTab(this, tileEntity, resource));
-        addButton(new GuiHorizontalPowerBar(this, tileEntity, resource, 115, 75));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiUpgradeTab(this, tile, resource));
+        addButton(new GuiHorizontalPowerBar(this, tile, resource, 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
         ), this, resource));
-        addButton(new GuiGasGauge(() -> tileEntity.injectTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
-        addButton(new GuiGasGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, resource, 133, 13));
+        addButton(new GuiGasGauge(() -> tile.injectTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
+        addButton(new GuiGasGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, resource, 133, 13));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 4).with(SlotOverlay.POWER));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 35));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 24).with(SlotOverlay.PLUS));
@@ -53,7 +53,7 @@ public class GuiChemicalDissolutionChamber extends GuiMekanismTile<TileEntityChe
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getScaledProgress();
+                return tile.getScaledProgress();
             }
         }, ProgressBar.LARGE_RIGHT, this, resource, 62, 39));
     }
@@ -66,7 +66,7 @@ public class GuiChemicalDissolutionChamber extends GuiMekanismTile<TileEntityChe
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 116, guiTop + 76, 176, 0, tileEntity.getScaledEnergyLevel(52), 4);
+        drawTexturedRect(guiLeft + 116, guiTop + 76, 176, 0, tile.getScaledEnergyLevel(52), 4);
     }
 
     @Override

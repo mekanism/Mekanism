@@ -31,21 +31,21 @@ public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, EnergyC
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
-        addButton(new GuiEnergyGauge(() -> tileEntity, GuiEnergyGauge.Type.WIDE, this, resource, 55, 18));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiSideConfigurationTab(this, tile, resource));
+        addButton(new GuiTransporterConfigTab(this, tile, resource));
+        addButton(new GuiEnergyGauge(() -> tile, GuiEnergyGauge.Type.WIDE, this, resource, 55, 18));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t")), this, resource));
+              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tile.getMaxOutput()), "/t")), this, resource));
         addButton(new GuiSlot(SlotType.INPUT, this, resource, 16, 34).with(SlotOverlay.MINUS));
         addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 142, 34).with(SlotOverlay.PLUS));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 96 + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

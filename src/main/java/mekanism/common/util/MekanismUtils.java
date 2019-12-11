@@ -111,9 +111,9 @@ public final class MekanismUtils {
      * @return if machine is active
      */
     public static boolean isActive(IBlockReader world, BlockPos pos) {
-        TileEntity tileEntity = getTileEntity(world, pos);
-        if (tileEntity instanceof IActiveState) {
-            return ((IActiveState) tileEntity).getActive();
+        TileEntity tile = getTileEntity(world, pos);
+        if (tile instanceof IActiveState) {
+            return ((IActiveState) tile).getActive();
         }
         return false;
     }
@@ -409,8 +409,8 @@ public final class MekanismUtils {
         BlockState blockState = world.getBlockState(pos);
         //TODO: Fix this as it is not ideal to just pretend the block was previously air to force it to update
         world.func_225319_b(pos, Blocks.AIR.getDefaultState(), blockState);
-        TileEntity tileEntity = getTileEntity(world, pos);
-        if (!(tileEntity instanceof IActiveState) || ((IActiveState) tileEntity).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
+        TileEntity tile = getTileEntity(world, pos);
+        if (!(tile instanceof IActiveState) || ((IActiveState) tile).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
             updateAllLightTypes(world, pos);
         }
     }
@@ -524,27 +524,27 @@ public final class MekanismUtils {
     /**
      * Marks the chunk this TileEntity is in as modified. Call this method to be sure NBT is written by the defined tile entity.
      *
-     * @param tileEntity - TileEntity to save
+     * @param tile - TileEntity to save
      */
-    public static void saveChunk(TileEntity tileEntity) {
-        if (tileEntity == null || tileEntity.isRemoved() || tileEntity.getWorld() == null) {
+    public static void saveChunk(TileEntity tile) {
+        if (tile == null || tile.isRemoved() || tile.getWorld() == null) {
             return;
         }
-        tileEntity.getWorld().markChunkDirty(tileEntity.getPos(), tileEntity);
+        tile.getWorld().markChunkDirty(tile.getPos(), tile);
     }
 
     /**
      * Whether or not a certain TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity implements IRedstoneControl.
      *
-     * @param tileEntity - TileEntity to check
+     * @param tile - TileEntity to check
      *
      * @return if the TileEntity can function with redstone logic
      */
-    public static boolean canFunction(TileEntity tileEntity) {
-        if (!(tileEntity instanceof IRedstoneControl)) {
+    public static boolean canFunction(TileEntity tile) {
+        if (!(tile instanceof IRedstoneControl)) {
             return true;
         }
-        IRedstoneControl control = (IRedstoneControl) tileEntity;
+        IRedstoneControl control = (IRedstoneControl) tile;
         switch (control.getControlType()) {
             case DISABLED:
                 return true;

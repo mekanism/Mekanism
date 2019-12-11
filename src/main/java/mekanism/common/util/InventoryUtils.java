@@ -106,12 +106,12 @@ public final class InventoryUtils {
         return null;
     }
 
-    public static boolean canInsert(TileEntity tileEntity, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
-        if (force && tileEntity instanceof TileEntityLogisticalSorter) {
-            return ((TileEntityLogisticalSorter) tileEntity).canSendHome(itemStack);
+    public static boolean canInsert(TileEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
+        if (force && tile instanceof TileEntityLogisticalSorter) {
+            return ((TileEntityLogisticalSorter) tile).canSendHome(itemStack);
         }
-        if (!force && tileEntity instanceof ISideConfiguration) {
-            ISideConfiguration config = (ISideConfiguration) tileEntity;
+        if (!force && tile instanceof ISideConfiguration) {
+            ISideConfiguration config = (ISideConfiguration) tile;
             if (config.getEjector().hasStrictInput()) {
                 Direction tileSide = config.getOrientation();
                 EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side.getOpposite()));
@@ -120,11 +120,11 @@ public final class InventoryUtils {
                 }
             }
         }
-        if (!isItemHandler(tileEntity, side.getOpposite())) {
+        if (!isItemHandler(tile, side.getOpposite())) {
             return false;
         }
 
-        IItemHandler inventory = getItemHandler(tileEntity, side.getOpposite());
+        IItemHandler inventory = getItemHandler(tile, side.getOpposite());
         for (int i = 0; i < inventory.getSlots(); i++) {
             // Check validation
             if (inventory.isItemValid(i, itemStack)) {
@@ -138,13 +138,13 @@ public final class InventoryUtils {
         return false;
     }
 
-    public static boolean assertItemHandler(String desc, TileEntity tileEntity, Direction side) {
-        if (!isItemHandler(tileEntity, side)) {
+    public static boolean assertItemHandler(String desc, TileEntity tile, Direction side) {
+        if (!isItemHandler(tile, side)) {
             Mekanism.logger.warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!", new Exception());
-            if (tileEntity == null) {
+            if (tile == null) {
                 Mekanism.logger.warn(" - null tile");
             } else {
-                Mekanism.logger.warn(" - details: " + tileEntity + " " + tileEntity.getPos());
+                Mekanism.logger.warn(" - details: " + tile + " " + tile.getPos());
             }
             return false;
         }

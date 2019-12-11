@@ -48,11 +48,11 @@ public class BlockRotationalComplex extends BlockMekanism implements IHasTileEnt
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tileEntity == null) {
+        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile == null) {
             return false;
         }
-        return tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS;
+        return tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS;
     }
 
     @Override

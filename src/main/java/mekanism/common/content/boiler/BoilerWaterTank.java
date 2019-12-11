@@ -7,8 +7,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class BoilerWaterTank extends BoilerTank {
 
-    public BoilerWaterTank(TileEntityBoilerCasing tileEntity) {
-        super(tileEntity);
+    public BoilerWaterTank(TileEntityBoilerCasing tile) {
+        super(tile);
     }
 
     @Nonnull

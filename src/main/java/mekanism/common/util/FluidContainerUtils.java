@@ -57,7 +57,7 @@ public final class FluidContainerUtils {
         return handler.drain(needed, FluidAction.EXECUTE);
     }
 
-    private static FluidStack handleContainerItemFill(TileEntity tileEntity, @Nonnull FluidStack stack, IInventorySlot inSlot, IInventorySlot outSlot) {
+    private static FluidStack handleContainerItemFill(TileEntity tile, @Nonnull FluidStack stack, IInventorySlot inSlot, IInventorySlot outSlot) {
         if (!stack.isEmpty()) {
             ItemStack inputCopy = StackUtils.size(inSlot.getStack(), 1);
             Optional<IFluidHandlerItem> fluidHandlerItem = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(inputCopy));
@@ -84,12 +84,12 @@ public final class FluidContainerUtils {
             if (inSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                 //TODO: Print warning about failing to shrink size of stack
             }
-            tileEntity.markDirty();
+            tile.markDirty();
         }
         return stack;
     }
 
-    private static FluidStack handleContainerItemEmpty(TileEntity tileEntity, @Nonnull FluidStack stored, int needed, IInventorySlot inSlot, IInventorySlot outSlot) {
+    private static FluidStack handleContainerItemEmpty(TileEntity tile, @Nonnull FluidStack stored, int needed, IInventorySlot inSlot, IInventorySlot outSlot) {
         final Fluid storedFinal = stored.getFluid();
         final ItemStack input = StackUtils.size(inSlot.getStack(), 1);
         Optional<IFluidHandlerItem> fluidHandlerItem = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(input));
@@ -120,7 +120,7 @@ public final class FluidContainerUtils {
                 stored.setAmount(stored.getAmount() + ret.getAmount());
             }
             needed -= ret.getAmount();
-            tileEntity.markDirty();
+            tile.markDirty();
         }
 
         if (!containerFluidHelper.matches(fluidStack -> !fluidStack.isEmpty()) || needed == 0) {
@@ -136,23 +136,23 @@ public final class FluidContainerUtils {
             if (inSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                 //TODO: Print warning about failing to shrink size of stack
             }
-            tileEntity.markDirty();
+            tile.markDirty();
         } else {
             inSlot.setStack(inputCopy);
         }
         return stored;
     }
 
-    public static FluidStack handleContainerItem(TileEntityMekanism tileEntity, ContainerEditMode editMode, @Nonnull FluidStack stack, int needed,
+    public static FluidStack handleContainerItem(TileEntityMekanism tile, ContainerEditMode editMode, @Nonnull FluidStack stack, int needed,
           IInventorySlot inSlot, IInventorySlot outSlot) {
         //TODO: Can these two methods be cleaned up by offloading checks to the IInventorySlots
         if (editMode == ContainerEditMode.FILL || (editMode == ContainerEditMode.BOTH &&
                                                    !new LazyOptionalHelper<>(FluidUtil.getFluidContained(inSlot.getStack())).matches(fluidStack -> !fluidStack.isEmpty()))) {
             //If our mode is fill or we have an empty container and support either mode, then fill
-            return handleContainerItemFill(tileEntity, stack, inSlot, outSlot);
+            return handleContainerItemFill(tile, stack, inSlot, outSlot);
         } else if (editMode == ContainerEditMode.EMPTY || editMode == ContainerEditMode.BOTH) {
             //Otherwise if our mode is to empty, or it is both and our container was not empty, then drain
-            return handleContainerItemEmpty(tileEntity, stack, needed, inSlot, outSlot);
+            return handleContainerItemEmpty(tile, stack, needed, inSlot, outSlot);
         }
         return stack;
     }

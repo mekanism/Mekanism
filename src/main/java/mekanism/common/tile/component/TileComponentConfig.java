@@ -27,13 +27,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileComponentConfig implements ITileComponent {
 
-    public TileEntityMekanism tileEntity;
+    public TileEntityMekanism tile;
     private Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
     //TODO: See if we can come up with a way of not needing this. The issue is we want this to be sorted, but getting the keyset of configInfo doesn't work for us
     private List<TransmissionType> transmissionTypes = new ArrayList<>();
 
     public TileComponentConfig(TileEntityMekanism tile, TransmissionType... types) {
-        tileEntity = tile;
+        this.tile = tile;
         for (TransmissionType type : types) {
             addSupported(type);
         }
@@ -42,7 +42,7 @@ public class TileComponentConfig implements ITileComponent {
 
     private RelativeSide getSide(Direction direction) {
         //TODO: Instead of getDirection this should use ISideConfiguration#getOrientation
-        return RelativeSide.fromDirections(tileEntity.getDirection(), direction);
+        return RelativeSide.fromDirections(tile.getDirection(), direction);
     }
 
     public void readFrom(TileComponentConfig config) {
@@ -56,7 +56,7 @@ public class TileComponentConfig implements ITileComponent {
     public void addSupported(TransmissionType type) {
         if (!configInfo.containsKey(type)) {
             //TODO: ISideConfiguration#getOrientation?
-            configInfo.put(type, new ConfigInfo(() -> tileEntity.getDirection()));
+            configInfo.put(type, new ConfigInfo(() -> tile.getDirection()));
             transmissionTypes.add(type);
         }
     }
@@ -144,7 +144,7 @@ public class TileComponentConfig implements ITileComponent {
             if (info == null) {
                 //TODO: log some error?
                 //TODO: ISideConfiguration#getOrientation?
-                info = new ConfigInfo(() -> tileEntity.getDirection());
+                info = new ConfigInfo(() -> tile.getDirection());
                 configInfo.put(type, info);
             }
             info.setEjecting(dataStream.readBoolean());

@@ -139,9 +139,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (canConnectMutual(side)) {
-                TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-                if (CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).matches(transmitter ->
-                      TransmissionType.checkTransmissionType(transmitter, getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity))) {
+                TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+                if (CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).matches(transmitter ->
+                      TransmissionType.checkTransmissionType(transmitter, getTransmitterType().getTransmission()) && isValidTransmitter(tile))) {
                     connections |= 1 << side.ordinal();
                 }
             }
@@ -154,10 +154,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return false;
         }
         if (canConnectMutual(side)) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            if (isValidAcceptor(tileEntity, side)) {
-                if (cachedAcceptors[side.ordinal()] != tileEntity) {
-                    cachedAcceptors[side.ordinal()] = tileEntity;
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+            if (isValidAcceptor(tile, side)) {
+                if (cachedAcceptors[side.ordinal()] != tile) {
+                    cachedAcceptors[side.ordinal()] = tile;
                     markDirtyAcceptor(side);
                 }
                 return true;
@@ -175,9 +175,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return false;
         }
         if (canConnectMutual(side)) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            return CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).matches(
-                  transmitter -> TransmissionType.checkTransmissionType(transmitter, getTransmitterType().getTransmission()) && isValidTransmitter(tileEntity)
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+            return CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).matches(
+                  transmitter -> TransmissionType.checkTransmissionType(transmitter, getTransmitterType().getTransmission()) && isValidTransmitter(tile)
             );
         }
         return false;
@@ -198,10 +198,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                     continue;
                 }
 
-                TileEntity tileEntity = MekanismUtils.getTileEntity(getWorld(), offset);
-                if (isValidAcceptor(tileEntity, side)) {
-                    if (cachedAcceptors[side.ordinal()] != tileEntity) {
-                        cachedAcceptors[side.ordinal()] = tileEntity;
+                TileEntity tile = MekanismUtils.getTileEntity(getWorld(), offset);
+                if (isValidAcceptor(tile, side)) {
+                    if (cachedAcceptors[side.ordinal()] != tile) {
+                        cachedAcceptors[side.ordinal()] = tile;
                         markDirtyAcceptor(side);
                     }
                     connections |= 1 << side.ordinal();
@@ -220,7 +220,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         return (byte) (currentTransmitterConnections | currentAcceptorConnections);
     }
 
-    public boolean isValidTransmitter(TileEntity tileEntity) {
+    public boolean isValidTransmitter(TileEntity tile) {
         return true;
     }
 
@@ -408,9 +408,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         //This fixes pipes not reconnecting cross chunk
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (connectionMapContainsSide(newlyEnabledTransmitters, side)) {
-                TileEntitySidedPipe tileEntity = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, getWorld(), getPos().offset(side));
-                if (tileEntity != null) {
-                    tileEntity.refreshConnections();
+                TileEntitySidedPipe tile = MekanismUtils.getTileEntity(TileEntitySidedPipe.class, getWorld(), getPos().offset(side));
+                if (tile != null) {
+                    tile.refreshConnections();
                 }
             }
         }

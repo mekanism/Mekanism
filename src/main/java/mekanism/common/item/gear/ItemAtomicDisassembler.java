@@ -88,8 +88,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     @Override
-    public boolean hitEntity(ItemStack itemstack, LivingEntity target, LivingEntity attacker) {
-        double energy = getEnergy(itemstack);
+    public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        double energy = getEnergy(stack);
         int energyCost = MekanismConfig.general.disassemblerEnergyUsageWeapon.get();
         int minDamage = MekanismConfig.general.disassemblerDamageMin.get();
         int damageDifference = MekanismConfig.general.disassemblerDamageMax.get() - minDamage;
@@ -105,19 +105,19 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             target.attackEntityFrom(DamageSource.causeMobDamage(attacker), damage);
         }
         if (energy > 0) {
-            setEnergy(itemstack, energy - energyCost);
+            setEnergy(stack, energy - energyCost);
         }
         return false;
     }
 
     @Override
-    public float getDestroySpeed(ItemStack itemstack, BlockState state) {
-        return getEnergy(itemstack) != 0 ? getMode(itemstack).getEfficiency() : 1F;
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
+        return getEnergy(stack) != 0 ? getMode(stack).getEfficiency() : 1F;
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack itemstack, World world, BlockState state, BlockPos pos, LivingEntity entityliving) {
-        setEnergy(itemstack, getEnergy(itemstack) - getDestroyEnergy(itemstack, state.getBlockHardness(world, pos)));
+    public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity entityliving) {
+        setEnergy(stack, getEnergy(stack) - getDestroyEnergy(stack, state.getBlockHardness(world, pos)));
         return true;
     }
 
@@ -134,10 +134,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player) {
-        super.onBlockStartBreak(itemstack, pos, player);
+    public boolean onBlockStartBreak(ItemStack itemStack, BlockPos pos, PlayerEntity player) {
+        super.onBlockStartBreak(itemStack, pos, player);
         if (!player.world.isRemote && !player.isCreative()) {
-            Mode mode = getMode(itemstack);
+            Mode mode = getMode(itemStack);
             boolean extended = mode == Mode.EXTENDED_VEIN;
             if (extended || mode == Mode.VEIN) {
                 BlockState state = player.world.getBlockState(pos);
@@ -161,8 +161,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                         }
                         BlockPos coordPos = coord.getPos();
                         BlockState coordState = player.world.getBlockState(coordPos);
-                        int destroyEnergy = getDestroyEnergy(itemstack, coordState.getBlockHardness(player.world, coordPos));
-                        if (getEnergy(itemstack) < destroyEnergy) {
+                        int destroyEnergy = getDestroyEnergy(itemStack, coordState.getBlockHardness(player.world, coordPos));
+                        if (getEnergy(itemStack) < destroyEnergy) {
                             continue;
                         }
                         Block block2 = coordState.getBlock();
@@ -173,7 +173,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                         //TODO: Check this
                         block2.onReplaced(state, player.world, coordPos, Blocks.AIR.getDefaultState(), false);
                         Block.spawnDrops(state, player.world, coordPos, MekanismUtils.getTileEntity(player.world, coordPos));
-                        setEnergy(itemstack, getEnergy(itemstack) - destroyEnergy);
+                        setEnergy(itemStack, getEnergy(itemStack) - destroyEnergy);
                     }
                 }
             }
@@ -183,18 +183,18 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
-        ItemStack itemstack = entityplayer.getHeldItem(hand);
-        if (entityplayer.isSneaking()) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (player.isSneaking()) {
             if (!world.isRemote) {
-                toggleMode(itemstack);
-                Mode mode = getMode(itemstack);
-                entityplayer.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
+                toggleMode(stack);
+                Mode mode = getMode(stack);
+                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                       Translation.of("tooltip.mekanism.modeToggle"), " ", EnumColor.INDIGO, mode, EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
             }
-            return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+            return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
-        return new ActionResult<>(ActionResultType.PASS, itemstack);
+        return new ActionResult<>(ActionResultType.PASS, stack);
     }
 
     @Nonnull
@@ -292,10 +292,10 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return ActionResultType.PASS;
     }
 
-    private void setBlock(ItemStack stack, PlayerEntity player, Hand hand, World worldIn, BlockPos pos, BlockState state) {
-        worldIn.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-        if (!worldIn.isRemote) {
-            worldIn.setBlockState(pos, state, 11);
+    private void setBlock(ItemStack stack, PlayerEntity player, Hand hand, World world, BlockPos pos, BlockState state) {
+        world.playSound(player, pos, SoundEvents.ITEM_HOE_TILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        if (!world.isRemote) {
+            world.setBlockState(pos, state, 11);
             stack.damageItem(1, player, entity -> entity.sendBreakAnimation(hand));
         }
     }

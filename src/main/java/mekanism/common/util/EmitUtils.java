@@ -89,9 +89,9 @@ public class EmitUtils {
             //Loop provided sides
             for (Direction side : sides) {
                 //Get tile and provide if not null and the block is loaded, prevents ghost chunk loading
-                TileEntity tileEntity = MekanismUtils.getTileEntity(world, center.offset(side));
-                if (tileEntity != null) {
-                    action.accept(tileEntity, side);
+                TileEntity tile = MekanismUtils.getTileEntity(world, center.offset(side));
+                if (tile != null) {
+                    action.accept(tile, side);
                 }
             }
         }

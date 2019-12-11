@@ -38,9 +38,9 @@ public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble<Block
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            TransporterTier tier = getTier(itemstack);
+            TransporterTier tier = getTier(stack);
             if (tier != null) {
                 tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.speed"), ": ", EnumColor.GRAY, (tier.getSpeed() / (100 / 20)) + " m/s"));
                 tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.pumpRate"), ": ", EnumColor.GRAY, tier.getPullAmount() * 2 + "/s"));

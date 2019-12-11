@@ -27,7 +27,7 @@ public class GuiContainerEditMode extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     protected ResourceLocation getResource() {
-        switch (((IFluidContainerManager) tileEntity).getContainerEditMode()) {
+        switch (((IFluidContainerManager) tile).getContainerEditMode()) {
             case FILL:
                 return FILL;
             case EMPTY:
@@ -38,13 +38,13 @@ public class GuiContainerEditMode extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.build(((IFluidContainerManager) tileEntity).getContainerEditMode()), mouseX, mouseY);
+        displayTooltip(TextComponentUtil.build(((IFluidContainerManager) tile).getContainerEditMode()), mouseX, mouseY);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        ContainerEditMode current = ((IFluidContainerManager) tileEntity).getContainerEditMode();
-        Mekanism.packetHandler.sendToServer(new PacketContainerEditMode(Coord4D.get(tileEntity), current.getNext()));
+        ContainerEditMode current = ((IFluidContainerManager) tile).getContainerEditMode();
+        Mekanism.packetHandler.sendToServer(new PacketContainerEditMode(Coord4D.get(tile), current.getNext()));
     }
 
     @Override

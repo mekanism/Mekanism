@@ -106,11 +106,11 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public void sendSlotContents(@Nonnull Container container, int slotID, @Nonnull ItemStack itemstack) {
+    public void sendSlotContents(@Nonnull Container container, int slotID, @Nonnull ItemStack stack) {
         if (slotID == 0) {
-            itemNameField.setText(itemstack.isEmpty() ? "" : itemstack.getDisplayName().getFormattedText());
-            itemNameField.setEnabled(!itemstack.isEmpty());
-            if (!itemstack.isEmpty()) {
+            itemNameField.setText(stack.isEmpty() ? "" : stack.getDisplayName().getFormattedText());
+            itemNameField.setEnabled(!stack.isEmpty());
+            if (!stack.isEmpty()) {
                 this.container.updateItemName(itemNameField.getText());
                 minecraft.player.connection.sendPacket(new CRenameItemPacket(itemNameField.getText()));
             }
@@ -118,6 +118,6 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public void sendWindowProperty(@Nonnull Container containerIn, int varToUpdate, int newValue) {
+    public void sendWindowProperty(@Nonnull Container container, int varToUpdate, int newValue) {
     }
 }

@@ -61,9 +61,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        super.addInformation(itemstack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("gui.mekanism.state"), ": ", getState(itemstack)));
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        super.addInformation(stack, world, tooltip, flag);
+        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("gui.mekanism.state"), ": ", getState(stack)));
     }
 
     @Nonnull
@@ -172,12 +172,12 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
         return mode.getColor();
     }
 
-    public void setState(ItemStack itemstack, ConfiguratorMode state) {
-        ItemDataUtils.setInt(itemstack, "state", state.ordinal());
+    public void setState(ItemStack stack, ConfiguratorMode state) {
+        ItemDataUtils.setInt(stack, "state", state.ordinal());
     }
 
-    public ConfiguratorMode getState(ItemStack itemstack) {
-        return ConfiguratorMode.byIndexStatic(ItemDataUtils.getInt(itemstack, "state"));
+    public ConfiguratorMode getState(ItemStack stack) {
+        return ConfiguratorMode.byIndexStatic(ItemDataUtils.getInt(stack, "state"));
     }
 
     @Override

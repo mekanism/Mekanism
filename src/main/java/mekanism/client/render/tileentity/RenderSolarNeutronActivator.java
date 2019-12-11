@@ -13,11 +13,11 @@ public class RenderSolarNeutronActivator extends TileEntityRenderer<TileEntitySo
     private ModelSolarNeutronActivator model = new ModelSolarNeutronActivator();
 
     @Override
-    public void render(TileEntitySolarNeutronActivator tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+    public void render(TileEntitySolarNeutronActivator tile, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "solar_neutron_activator.png"));
-        MekanismRenderer.rotate(tileEntity.getDirection(), 0, 180, 90, 270);
+        MekanismRenderer.rotate(tile.getDirection(), 0, 180, 90, 270);
         GlStateManager.rotatef(180, 0, 0, 1);
         setLightmapDisabled(true);
         model.render(0.0625F);

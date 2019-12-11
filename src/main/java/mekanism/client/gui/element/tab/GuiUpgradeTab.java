@@ -24,6 +24,6 @@ public class GuiUpgradeTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.UPGRADE_MANAGEMENT, tileEntity.getPos()));
+        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.UPGRADE_MANAGEMENT, tile.getPos()));
     }
 }

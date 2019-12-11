@@ -33,9 +33,9 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
     }
 
     @Override
-    public void render(TileEntityFluidTank tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        FluidStack fluid = tileEntity.fluidTank.getFluid();
-        render(tileEntity.tier, fluid, tileEntity.prevScale, tileEntity.valve > 0 ? tileEntity.valveFluid : FluidStack.EMPTY, x, y, z);
+    public void render(TileEntityFluidTank tile, double x, double y, double z, float partialTick, int destroyStage) {
+        FluidStack fluid = tile.fluidTank.getFluid();
+        render(tile.tier, fluid, tile.prevScale, tile.valve > 0 ? tile.valveFluid : FluidStack.EMPTY, x, y, z);
     }
 
     public void render(FluidTankTier tier, @Nonnull FluidStack fluid, float fluidScale, @Nonnull FluidStack valveFluid, double x, double y, double z) {

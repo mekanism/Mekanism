@@ -27,9 +27,9 @@ public class PacketRedstoneControl {
             return;
         }
         context.get().enqueueWork(() -> {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
-            if (tileEntity instanceof IRedstoneControl) {
-                ((IRedstoneControl) tileEntity).setControlType(message.value);
+            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
+            if (tile instanceof IRedstoneControl) {
+                ((IRedstoneControl) tile).setControlType(message.value);
             }
         });
         context.get().setPacketHandled(true);

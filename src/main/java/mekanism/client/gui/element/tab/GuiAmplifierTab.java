@@ -24,7 +24,7 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     protected ResourceLocation getResource() {
-        switch (tileEntity.outputMode) {
+        switch (tile.outputMode) {
             case ENTITY_DETECTION:
                 return ENTITY;
             case ENERGY_CONTENTS:
@@ -35,11 +35,11 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.build(Translation.of("gui.mekanism.redstoneOutput"), ": ", tileEntity.outputMode), mouseX, mouseY);
+        displayTooltip(TextComponentUtil.build(Translation.of("gui.mekanism.redstoneOutput"), ": ", tile.outputMode), mouseX, mouseY);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3)));
+        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3)));
     }
 }

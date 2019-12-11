@@ -35,31 +35,31 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiSideConfigurationTab(this, tile, resource));
+        addButton(new GuiTransporterConfigTab(this, tile, resource));
         addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 7, 7).with(SlotOverlay.PLUS));
         addButton(new GuiSlot(SlotType.INPUT, this, resource, 7, 39).with(SlotOverlay.MINUS));
-        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tileEntity.dumping,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
+        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tile.dumping,
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         //TODO: 1.14 Convert to GuiElement
         ITextComponent component;
-        if (tileEntity.gasTank.getStored() == Integer.MAX_VALUE) {
+        if (tile.gasTank.getStored() == Integer.MAX_VALUE) {
             component = TextComponentUtil.translate("gui.mekanism.infinite");
-        } else if (tileEntity.tier.getStorage() == Integer.MAX_VALUE) {
-            component = TextComponentUtil.build(tileEntity.gasTank.getStored(), "/", Translation.of("gui.mekanism.infinite"));
+        } else if (tile.tier.getStorage() == Integer.MAX_VALUE) {
+            component = TextComponentUtil.build(tile.gasTank.getStored(), "/", Translation.of("gui.mekanism.infinite"));
         } else {
-            component = TextComponentUtil.getString(tileEntity.gasTank.getStored() + "/" + tileEntity.tier.getStorage());
+            component = TextComponentUtil.getString(tile.gasTank.getStored() + "/" + tile.tier.getStorage());
         }
         drawString(component, 45, 40, 0x404040);
         //TODO: 1.14 Convert to GuiElement
-        GasStack gasStack = tileEntity.gasTank.getStack();
+        GasStack gasStack = tile.gasTank.getStack();
         if (!gasStack.isEmpty()) {
             renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.gas"), ": ", gasStack), 45, 49, 0x404040, 112);
         } else {
@@ -73,15 +73,15 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (!tileEntity.gasTank.isEmpty()) {
+        if (!tile.gasTank.isEmpty()) {
             //TODO: 1.14 Convert to GuiElement, and make it draw the gas texture instead of the bar (will make it easier at a glance to see what is going on)
             // If we make GuiBar be able to stretch then we can use that as the bar background and do something similar to the InfuseBar
             // The other option which may make more sense is to make it be a GuiGauge
             //TODO: Figure out why it is going from right to left
-            int scale = (int) (((double) tileEntity.gasTank.getStored() / tileEntity.tier.getStorage()) * 72);
-            TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(tileEntity.gasTank.getType());
+            int scale = (int) (((double) tile.gasTank.getStored() / tile.tier.getStorage()) * 72);
+            TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(tile.gasTank.getType());
             minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            MekanismRenderer.color(tileEntity.gasTank.getStack());
+            MekanismRenderer.color(tile.gasTank.getStack());
             drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, icon, scale, 10);
             int start = 0;
             int x = guiLeft + 65;

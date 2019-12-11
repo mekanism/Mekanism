@@ -50,6 +50,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -85,8 +86,8 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        FluidStack fluidStack = getFluidStack(itemstack);
+    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        FluidStack fluidStack = getFluidStack(stack);
         if (!fluidStack.isEmpty()) {
             int amount = fluidStack.getAmount();
             if (amount == Integer.MAX_VALUE) {
@@ -97,7 +98,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         } else {
             tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.empty"), "."));
         }
-        FluidTankTier tier = getTier(itemstack);
+        FluidTankTier tier = getTier(stack);
         if (tier != null) {
             int cap = tier.getStorage();
             if (cap == Integer.MAX_VALUE) {
@@ -111,14 +112,14 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack)).getTextComponent());
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
-        if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
+    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.security"), ": ", SecurityUtils.getSecurity(stack, Dist.CLIENT)));
+        if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
             tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("gui.mekanism.overridden"), ")"));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.portableTank.bucketMode", YesNo.of(getBucketMode(itemstack)).getTextComponent())));
-        ListNBT inventory = getInventory(itemstack);
+        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.portableTank.bucketMode", YesNo.of(getBucketMode(stack)).getTextComponent())));
+        ListNBT inventory = getInventory(stack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.inventory"), ": ", EnumColor.GRAY,
               YesNo.of(inventory != null && !inventory.isEmpty())));
     }
@@ -137,8 +138,8 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         return super.onItemUse(context);
     }
 
-    public boolean tryPlaceContainedLiquid(World world, ItemStack itemstack, BlockPos pos) {
-        FluidStack fluidStack = getFluidStack(itemstack);
+    public boolean tryPlaceContainedLiquid(World world, ItemStack stack, BlockPos pos) {
+        FluidStack fluidStack = getFluidStack(stack);
         if (fluidStack.isEmpty() || !fluidStack.getFluid().getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
             return false;
         }
@@ -165,65 +166,64 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
-        ItemStack itemstack = entityplayer.getHeldItem(hand);
-        if (getBucketMode(itemstack)) {
-            if (SecurityUtils.canAccess(entityplayer, itemstack)) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (getBucketMode(stack)) {
+            if (SecurityUtils.canAccess(player, stack)) {
                 //TODO: Handle picking up and putting down, for now just setting it as source only but this is almost certainly wrong
-                RayTraceResult rayTraceResult = rayTrace(world, entityplayer, FluidMode.SOURCE_ONLY);
+                RayTraceResult rayTraceResult = rayTrace(world, player, FluidMode.SOURCE_ONLY);
                 //It can be null if there is nothing in range
-                //TODO: Check if this still the case in 1.14 or if it now properly returns miss
-                if (rayTraceResult != null && rayTraceResult instanceof BlockRayTraceResult) {
+                if (rayTraceResult.getType() != Type.MISS && rayTraceResult instanceof BlockRayTraceResult) {
                     BlockRayTraceResult pos = (BlockRayTraceResult) rayTraceResult;
                     Coord4D coord = new Coord4D(pos.getPos(), world);
-                    if (!world.getDimension().canMineBlock(entityplayer, coord.getPos())) {
-                        return new ActionResult<>(ActionResultType.FAIL, itemstack);
+                    if (!world.getDimension().canMineBlock(player, coord.getPos())) {
+                        return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
-                    if (!entityplayer.isSneaking()) {
-                        if (!entityplayer.canPlayerEdit(coord.getPos(), pos.getFace(), itemstack)) {
-                            return new ActionResult<>(ActionResultType.FAIL, itemstack);
+                    if (!player.isSneaking()) {
+                        if (!player.canPlayerEdit(coord.getPos(), pos.getFace(), stack)) {
+                            return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
                         FluidStack fluid = MekanismUtils.getFluid(world, coord.getPos(), false);
                         if (!fluid.isEmpty()) {
-                            FluidStack stored = getFluidStack(itemstack);
-                            if (stored.isEmpty() || getFluidStack(itemstack).isFluidEqual(fluid)) {
-                                int needed = getCapacity(itemstack) - stored.getAmount();
+                            FluidStack stored = getFluidStack(stack);
+                            if (stored.isEmpty() || getFluidStack(stack).isFluidEqual(fluid)) {
+                                int needed = getCapacity(stack) - stored.getAmount();
                                 if (fluid.getAmount() > needed) {
-                                    return new ActionResult<>(ActionResultType.FAIL, itemstack);
+                                    return new ActionResult<>(ActionResultType.FAIL, stack);
                                 }
                                 if (stored.isEmpty()) {
-                                    setFluidStack(fluid, itemstack);
+                                    setFluidStack(fluid, stack);
                                 } else {
-                                    FluidStack newStack = getFluidStack(itemstack);
+                                    FluidStack newStack = getFluidStack(stack);
                                     newStack.setAmount(newStack.getAmount() + fluid.getAmount());
-                                    setFluidStack(newStack, itemstack);
+                                    setFluidStack(newStack, stack);
                                 }
                                 world.removeBlock(coord.getPos(), false);
                             }
                         }
                     } else {
-                        FluidStack stored = getFluidStack(itemstack);
+                        FluidStack stored = getFluidStack(stack);
                         if (stored.getAmount() < FluidAttributes.BUCKET_VOLUME) {
-                            return new ActionResult<>(ActionResultType.FAIL, itemstack);
+                            return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
                         Coord4D trans = coord.offset(pos.getFace());
-                        if (!entityplayer.canPlayerEdit(trans.getPos(), pos.getFace(), itemstack)) {
-                            return new ActionResult<>(ActionResultType.FAIL, itemstack);
+                        if (!player.canPlayerEdit(trans.getPos(), pos.getFace(), stack)) {
+                            return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        if (tryPlaceContainedLiquid(world, itemstack, trans.getPos())
-                            && !entityplayer.isCreative()) {
+                        if (tryPlaceContainedLiquid(world, stack, trans.getPos())
+                            && !player.isCreative()) {
                             FluidStack newStack = stored.copy();
                             newStack.setAmount(newStack.getAmount() - FluidAttributes.BUCKET_VOLUME);
-                            setFluidStack(newStack.getAmount() > 0 ? newStack : FluidStack.EMPTY, itemstack);
+                            setFluidStack(newStack.getAmount() > 0 ? newStack : FluidStack.EMPTY, stack);
                         }
                     }
                 }
-                return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+                return new ActionResult<>(ActionResultType.SUCCESS, stack);
             } else {
-                SecurityUtils.displayNoAccess(entityplayer);
+                SecurityUtils.displayNoAccess(player);
             }
         }
-        return new ActionResult<>(ActionResultType.PASS, itemstack);
+        return new ActionResult<>(ActionResultType.PASS, stack);
     }
 
     public void setBucketMode(ItemStack itemStack, boolean bucketMode) {

@@ -289,7 +289,7 @@ public class TransmitterModel extends OBJBakedModelBase {
 
         @Nonnull
         @Override
-        public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entityIn) {
+        public IBakedModel getModelWithOverrides(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
             if (itemCache == null) {
                 List<String> visible = new ArrayList<>();
                 for (Direction side : EnumUtils.DIRECTIONS) {

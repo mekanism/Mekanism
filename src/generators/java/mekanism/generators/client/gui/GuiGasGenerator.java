@@ -32,24 +32,24 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ", EnergyDisplay.of(tileEntity.generationRate * tileEntity.clientUsed), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t")),
+              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ", EnergyDisplay.of(tile.generationRate * tile.clientUsed), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tile.getMaxOutput()), "/t")),
               this, resource));
-        addButton(new GuiGasGauge(() -> tileEntity.fuelTank, Type.WIDE, this, resource, 55, 18));
-        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiGasGauge(() -> tile.fuelTank, Type.WIDE, this, resource, 55, 18));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 16, 34).with(SlotOverlay.MINUS));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         //TODO
-        ITextComponent component = TextComponentUtil.build(Translation.of("gui.mekanism.burn_rate"), ": " + tileEntity.clientUsed);
+        ITextComponent component = TextComponentUtil.build(Translation.of("gui.mekanism.burn_rate"), ": " + tile.clientUsed);
         drawString(component, xSize - 8 - getStringWidth(component), (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

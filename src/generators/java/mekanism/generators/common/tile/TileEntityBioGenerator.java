@@ -136,8 +136,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         return nbtTags;
     }
 
-    public int getFuel(ItemStack itemstack) {
-        return MekanismItem.BIO_FUEL.itemMatches(itemstack) ? 200 : 0;
+    public int getFuel(ItemStack stack) {
+        return MekanismItem.BIO_FUEL.itemMatches(stack) ? 200 : 0;
     }
 
     /**

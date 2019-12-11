@@ -27,19 +27,19 @@ public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.build(((IRedstoneControl) tileEntity).getControlType()), mouseX, mouseY);
+        displayTooltip(TextComponentUtil.build(((IRedstoneControl) tile).getControlType()), mouseX, mouseY);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        IRedstoneControl control = (IRedstoneControl) tileEntity;
+        IRedstoneControl control = (IRedstoneControl) tile;
         RedstoneControl next = control.getControlType().getNext(mode -> mode != RedstoneControl.PULSE || control.canPulse());
-        Mekanism.packetHandler.sendToServer(new PacketRedstoneControl(Coord4D.get(tileEntity), next));
+        Mekanism.packetHandler.sendToServer(new PacketRedstoneControl(Coord4D.get(tile), next));
     }
 
     @Override
     protected ResourceLocation getResource() {
-        switch (((IRedstoneControl) tileEntity).getControlType()) {
+        switch (((IRedstoneControl) tile).getControlType()) {
             case HIGH:
                 return HIGH;
             case LOW:

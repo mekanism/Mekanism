@@ -39,8 +39,8 @@ public class ItemCraftingFormula extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        NonNullList<ItemStack> inv = getInventory(itemstack);
+    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        NonNullList<ItemStack> inv = getInventory(itemStack);
         if (inv != null) {
             List<ItemStack> stacks = new ArrayList<>();
             for (ItemStack stack : inv) {

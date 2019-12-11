@@ -65,9 +65,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 }
             } else {
                 for (ValveData data : valveViewing) {
-                    TileEntityDynamicTank tileEntity = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
-                    if (tileEntity != null) {
-                        tileEntity.clientHasStructure = false;
+                    TileEntityDynamicTank tile = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
+                    if (tile != null) {
+                        tile.clientHasStructure = false;
                     }
                 }
                 valveViewing.clear();
@@ -180,9 +180,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                         data.location = Coord4D.read(dataStream);
                         data.side = Direction.byIndex(dataStream.readInt());
                         valveViewing.add(data);
-                        TileEntityDynamicTank tileEntity = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
-                        if (tileEntity != null) {
-                            tileEntity.clientHasStructure = true;
+                        TileEntityDynamicTank tile = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
+                        if (tile != null) {
+                            tile.clientHasStructure = true;
                         }
                     }
                 }

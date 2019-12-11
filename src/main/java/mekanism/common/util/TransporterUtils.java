@@ -54,32 +54,32 @@ public final class TransporterUtils {
         return colors.get(colors.indexOf(color) - 1);
     }
 
-    public static void drop(ILogisticalTransporter tileEntity, TransporterStack stack) {
+    public static void drop(ILogisticalTransporter tile, TransporterStack stack) {
         float[] pos;
         if (stack.hasPath()) {
-            pos = TransporterUtils.getStackPosition(tileEntity, stack, 0);
+            pos = TransporterUtils.getStackPosition(tile, stack, 0);
         } else {
             pos = new float[]{0, 0, 0};
         }
         TransporterManager.remove(stack);
-        BlockPos blockPos = new BlockPos(tileEntity.coord().x + pos[0], tileEntity.coord().y + pos[1], tileEntity.coord().z + pos[2]);
-        Block.spawnAsEntity(tileEntity.world(), blockPos, stack.itemStack);
+        BlockPos blockPos = new BlockPos(tile.coord().x + pos[0], tile.coord().y + pos[1], tile.coord().z + pos[2]);
+        Block.spawnAsEntity(tile.world(), blockPos, stack.itemStack);
     }
 
-    public static float[] getStackPosition(ILogisticalTransporter tileEntity, TransporterStack stack, float partial) {
-        Direction side = stack.getSide(tileEntity);
+    public static float[] getStackPosition(ILogisticalTransporter tile, TransporterStack stack, float partial) {
+        Direction side = stack.getSide(tile);
         float progress = (((float) stack.progress + partial) / 100F) - 0.5F;
         return new float[]{0.5F + side.getXOffset() * progress, 0.25F + side.getYOffset() * progress, 0.5F + side.getZOffset() * progress};
     }
 
-    public static void incrementColor(ILogisticalTransporter tileEntity) {
-        if (tileEntity.getColor() == null) {
-            tileEntity.setColor(colors.get(0));
-        } else if (colors.indexOf(tileEntity.getColor()) == colors.size() - 1) {
-            tileEntity.setColor(null);
+    public static void incrementColor(ILogisticalTransporter tile) {
+        if (tile.getColor() == null) {
+            tile.setColor(colors.get(0));
+        } else if (colors.indexOf(tile.getColor()) == colors.size() - 1) {
+            tile.setColor(null);
         } else {
-            int index = colors.indexOf(tileEntity.getColor());
-            tileEntity.setColor(colors.get(index + 1));
+            int index = colors.indexOf(tile.getColor());
+            tile.setColor(colors.get(index + 1));
         }
     }
 }

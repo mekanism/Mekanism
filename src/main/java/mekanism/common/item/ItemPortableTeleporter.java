@@ -56,14 +56,14 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack)).getTextComponent());
-        if (getFrequency(itemstack) != null) {
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("gui.mekanism.frequency"), ": ", EnumColor.GRAY, getFrequency(itemstack).name));
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
+        if (getFrequency(stack) != null) {
+            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("gui.mekanism.frequency"), ": ", EnumColor.GRAY, getFrequency(stack).name));
             tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("gui.mekanism.mode"), ": ", EnumColor.GRAY,
-                  Translation.of("gui." + (!getFrequency(itemstack).publicFreq ? "private" : "public"))));
+                  Translation.of("gui." + (!getFrequency(stack).publicFreq ? "private" : "public"))));
         }
-        super.addInformation(itemstack, world, tooltip, flag);
+        super.addInformation(stack, world, tooltip, flag);
     }
 
     @Nonnull

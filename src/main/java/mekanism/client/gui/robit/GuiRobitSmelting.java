@@ -18,7 +18,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
         /*addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getScaledProgress();
+                return tile.getScaledProgress();
             }
         }, ProgressBar.GREEN, this, getGuiLocation(), 77, 37));*/
     }

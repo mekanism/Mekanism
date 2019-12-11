@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerInventory;
 
 public abstract class ReactorInfoContainer extends MekanismTileContainer<TileEntityReactorController> implements IEmptyContainer {
 
-    protected ReactorInfoContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, TileEntityReactorController tileEntityReactorController) {
-        super(type, id, inv, tileEntityReactorController);
+    protected ReactorInfoContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, TileEntityReactorController tile) {
+        super(type, id, inv, tile);
     }
 }

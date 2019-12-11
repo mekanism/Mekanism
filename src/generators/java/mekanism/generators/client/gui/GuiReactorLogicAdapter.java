@@ -30,12 +30,12 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     public void init() {
         super.init();
         addButton(new MekanismImageButton(this, guiLeft + 23, guiTop + 19, 11, 18, getButtonLocation("toggle"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))),
               getOnHover("gui.mekanism.toggleCooling")));
         for (ReactorLogic type : ReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
-            addButton(new ReactorLogicButton(this, guiLeft + 24, guiTop + 32 + typeShift, type, tileEntity, getGuiLocation(),
-                  () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1, type))), getOnHover()));
+            addButton(new ReactorLogicButton(this, guiLeft + 24, guiTop + 32 + typeShift, type, tile, getGuiLocation(),
+                  () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, type))), getOnHover()));
         }
     }
 
@@ -53,13 +53,13 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.coolingMeasurements"), ": ", EnumColor.RED, OnOff.of(tileEntity.activeCooled)),
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.coolingMeasurements"), ": ", EnumColor.RED, OnOff.of(tile.activeCooled)),
               36, 20, 0x404040, 117);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.redstoneOutputMode"), ": ", EnumColor.RED, tileEntity.logicType),
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.redstoneOutputMode"), ": ", EnumColor.RED, tile.logicType),
               23, 123, 0x404040, 130);
         drawCenteredText(TextComponentUtil.build(Translation.of("gui.mekanism.status"), ": ", EnumColor.RED,
-              Translation.of("gui.mekanism." + (tileEntity.checkMode() ? "outputting" : "idle"))), 0, xSize, 136, 0x404040);
+              Translation.of("gui.mekanism." + (tile.checkMode() ? "outputting" : "idle"))), 0, xSize, 136, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

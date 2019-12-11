@@ -79,7 +79,6 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     public void onNeighborChange(Block block) {
         final TileEntity tile = getMainTile();
         if (tile instanceof TileEntityMekanism) {
-            TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
             int power = world.getRedstonePowerFromNeighbors(getPos());
             if (prevPower != power) {
                 if (power > 0) {
@@ -88,7 +87,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
                     onNoPower();
                 }
                 prevPower = power;
-                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(tileEntity), this);
+                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity((TileEntityMekanism) tile), this);
             }
         }
     }

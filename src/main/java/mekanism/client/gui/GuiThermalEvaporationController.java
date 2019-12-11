@@ -28,11 +28,11 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiFluidGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
-        addButton(new GuiFluidGauge(() -> tileEntity.outputTank, GuiGauge.Type.STANDARD, this, resource, 152, 13));
+        addButton(new GuiFluidGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
+        addButton(new GuiFluidGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, resource, 152, 13));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
-            String environment = UnitDisplayUtils.getDisplayShort(tileEntity.totalLoss * unit.intervalSize, false, unit);
+            String environment = UnitDisplayUtils.getDisplayShort(tile.totalLoss * unit.intervalSize, false, unit);
             return Collections.singletonList(TextComponentUtil.build(Translation.of("gui.mekanism.dissipated"), ": " + environment + "/t"));
         }, this, resource));
     }
@@ -40,26 +40,26 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
         drawString(getStruct(), 50, 21, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.height"), ": " + tileEntity.height), 50, 30, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.height"), ": " + tile.height), 50, 30, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.temp"), ": ",
-              MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.production"), ": " + Math.round(tileEntity.lastGain * 100D) / 100D + " mB/t"),
+              MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
+        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.production"), ": " + Math.round(tile.lastGain * 100D) / 100D + " mB/t"),
               50, 48, 0x00CD00, 76);
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
-            displayTooltip(MekanismUtils.getTemperatureDisplay(tileEntity.getTemperature(), TemperatureUnit.AMBIENT), xAxis, yAxis);
+            displayTooltip(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     private ITextComponent getStruct() {
-        if (tileEntity.structured) {
+        if (tile.structured) {
             return TextComponentUtil.translate("gui.mekanism.formed");
-        } else if (tileEntity.controllerConflict) {
+        } else if (tile.controllerConflict) {
             return TextComponentUtil.translate("gui.mekanism.conflict");
         }
         return TextComponentUtil.translate("gui.mekanism.incomplete");
@@ -68,7 +68,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 49, guiTop + 64, 176, 59, tileEntity.getScaledTempLevel(78), 8);
+        drawTexturedRect(guiLeft + 49, guiTop + 64, 176, 59, tile.getScaledTempLevel(78), 8);
     }
 
     @Override

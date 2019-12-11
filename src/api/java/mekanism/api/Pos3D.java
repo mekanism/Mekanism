@@ -56,10 +56,10 @@ public class Pos3D extends Vec3d {
     /**
      * Creates a Pos3D with a TileEntity's x, y and z values.
      *
-     * @param tileEntity - TileEntity to create the Pos3D from
+     * @param tile - TileEntity to create the Pos3D from
      */
-    public Pos3D(TileEntity tileEntity) {
-        this(tileEntity.getPos());
+    public Pos3D(TileEntity tile) {
+        this(tile.getPos());
     }
 
     /**

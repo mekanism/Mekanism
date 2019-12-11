@@ -42,25 +42,25 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiUpgradeTab(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiUpgradeTab(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
 
         addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tileEntity.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tile.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 58, 14, getButtonLocation("single"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(5))),
               getOnHover("gui.mekanism.logisticalSorter.singleItem.tooltip")));
         addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 84, 14, getButtonLocation("round_robin"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(2))),
               getOnHover("gui.mekanism.logisticalSorter.roundRobin.tooltip")));
         addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 110, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),
               getOnHover("gui.mekanism.logisticalSorter.autoEject.tooltip")));
-        addButton(new ColorButton(this, guiLeft + 13, guiTop + 137, 16, 16, () -> tileEntity.color,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
+        addButton(new ColorButton(this, guiLeft + 13, guiTop + 137, 16, 16, () -> tile.color,
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
                     GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0))),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0, 1)))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, 1)))));
     }
 
     private boolean overUpArrow(double xAxis, double yAxis, int arrowX, int yStart) {
@@ -91,7 +91,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
             }
 
             //Check for filter interaction
-            HashList<TransporterFilter<?>> filters = tileEntity.getFilters();
+            HashList<TransporterFilter<?>> filters = tile.getFilters();
             for (int i = 0; i < 4; i++) {
                 int index = getFilterIndex() + i;
                 TransporterFilter<?> filter = filters.get(index);
@@ -111,16 +111,16 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
                             return true;
                         }
                         if (filter instanceof IItemStackFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tileEntity.getPos(), index));
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IOreDictFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_TAG, tileEntity.getPos(), index));
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_TAG, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IMaterialFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MATERIAL, tileEntity.getPos(), index));
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MATERIAL, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IModIDFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MOD_ID, tileEntity.getPos(), index));
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MOD_ID, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         }
                     }
@@ -141,17 +141,17 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
 
-        HashList<TransporterFilter<?>> filters = tileEntity.getFilters();
+        HashList<TransporterFilter<?>> filters = tile.getFilters();
         // Write to info display
-        drawString(tileEntity.getName(), 43, 6, 0x404040);
+        drawString(tile.getName(), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.filters"), ":"), 11, 19, 0x00CD00);
         drawString("T: " + filters.size(), 11, 28, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.logisticalSorter.singleItem"), ":"), 12, 48, 0x00CD00);
-        drawString(OnOff.of(tileEntity.singleItem).getTextComponent(), 27, 60, 0x00CD00);
+        drawString(OnOff.of(tile.singleItem).getTextComponent(), 27, 60, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.logisticalSorter.roundRobin"), ":"), 12, 74, 0x00CD00);
-        drawString(OnOff.of(tileEntity.roundRobin).getTextComponent(), 27, 86, 0x00CD00);
+        drawString(OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.logisticalSorter.autoEject"), ":"), 12, 100, 0x00CD00);
-        drawString(OnOff.of(tileEntity.autoEject).getTextComponent(), 27, 112, 0x00CD00);
+        drawString(OnOff.of(tile.autoEject).getTextComponent(), 27, 112, 0x00CD00);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.logisticalSorter.default"), ":"), 12, 126, 0x00CD00);
 
         //TODO: Convert filters into "proper" buttons/widgets

@@ -50,36 +50,36 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiUpgradeTab(this, tileEntity, resource));
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
-        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 159, 15));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiUpgradeTab(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiSideConfigurationTab(this, tile, resource));
+        addButton(new GuiTransporterConfigTab(this, tile, resource));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, 159, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 151, 75).with(SlotOverlay.POWER));
 
         addButton(encodeFormulaButton = new MekanismImageButton(this, guiLeft + 7, guiTop + 45, 14, getButtonLocation("encode_formula"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(1))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),
               getOnHover("gui.mekanism.encodeFormula")));
         addButton(stockControlButton = new MekanismImageButton(this, guiLeft + 26, guiTop + 75, 16, getButtonLocation("stock_control"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(5))),
-              getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.stockControl"), ": ", OnOff.of(tileEntity.stockControl)))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(5))),
+              getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.stockControl"), ": ", OnOff.of(tile.stockControl)))));
         addButton(fillEmptyButton = new MekanismImageButton(this, guiLeft + 44, guiTop + 75, 16, getButtonLocation("fill_empty"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(4))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(4))),
               getOnHover("gui.mekanism.fillEmpty")));
         addButton(craftSingleButton = new MekanismImageButton(this, guiLeft + 71, guiTop + 75, 16, getButtonLocation("craft_single"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(2))),
               getOnHover("gui.mekanism.craftSingle")));
         addButton(craftAvailableButton = new MekanismImageButton(this, guiLeft + 89, guiTop + 75, 16, getButtonLocation("craft_available"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3))),
               getOnHover("gui.mekanism.craftAvailable")));
         addButton(autoModeButton = new MekanismImageButton(this, guiLeft + 107, guiTop + 75, 16, getButtonLocation("auto_toggle"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
-              getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.autoModeToggle"), ": ", OnOff.of(tileEntity.autoMode)))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))),
+              getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.autoModeToggle"), ": ", OnOff.of(tile.autoMode)))));
         updateEnabledButtons();
     }
 
@@ -90,17 +90,17 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     private void updateEnabledButtons() {
-        encodeFormulaButton.active = !tileEntity.autoMode && tileEntity.isRecipe && canEncode();
-        stockControlButton.active = tileEntity.formula != null;
-        fillEmptyButton.active = !tileEntity.autoMode;
-        craftSingleButton.active = !tileEntity.autoMode && tileEntity.isRecipe;
-        craftAvailableButton.active = !tileEntity.autoMode && tileEntity.isRecipe;
-        autoModeButton.active = tileEntity.formula != null;
+        encodeFormulaButton.active = !tile.autoMode && tile.isRecipe && canEncode();
+        stockControlButton.active = tile.formula != null;
+        fillEmptyButton.active = !tile.autoMode;
+        craftSingleButton.active = !tile.autoMode && tile.isRecipe;
+        craftAvailableButton.active = !tile.autoMode && tile.isRecipe;
+        autoModeButton.active = tile.formula != null;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -108,22 +108,22 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity.operatingTicks > 0) {
-            int display = (int) ((double) tileEntity.operatingTicks * 22 / (double) tileEntity.ticksRequired);
+        if (tile.operatingTicks > 0) {
+            int display = (int) ((double) tile.operatingTicks * 22 / (double) tile.ticksRequired);
             drawTexturedRect(guiLeft + 86, guiTop + 43, 176, 48, display, 16);
         }
 
         minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"));
-        drawTexturedRect(guiLeft + 90, guiTop + 25, tileEntity.isRecipe ? 2 : 20, 39, 14, 12);
+        drawTexturedRect(guiLeft + 90, guiTop + 25, tile.isRecipe ? 2 : 20, 39, 14, 12);
 
-        if (tileEntity.formula != null) {
+        if (tile.formula != null) {
             for (int i = 0; i < 9; i++) {
-                ItemStack stack = tileEntity.formula.input.get(i);
+                ItemStack stack = tile.formula.input.get(i);
                 if (!stack.isEmpty()) {
                     Slot slot = container.inventorySlots.get(i + 20);
                     int guiX = guiLeft + slot.xPos;
                     int guiY = guiTop + slot.yPos;
-                    if (slot.getStack().isEmpty() || !tileEntity.formula.isIngredientInPos(tileEntity.getWorld(), slot.getStack(), i)) {
+                    if (slot.getStack().isEmpty() || !tile.formula.isIngredientInPos(tile.getWorld(), slot.getStack(), i)) {
                         drawColorIcon(guiX, guiY, EnumColor.DARK_RED, 0.8F);
                         //Only render the "correct" item in the gui slot if we don't already have that item there
                         renderItem(stack, guiX, guiY);
@@ -134,10 +134,10 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     private boolean canEncode() {
-        if (tileEntity.formula != null || tileEntity.getFormulaSlot().isEmpty()) {
+        if (tile.formula != null || tile.getFormulaSlot().isEmpty()) {
             return false;
         }
-        ItemStack formulaStack = tileEntity.getFormulaSlot().getStack();
+        ItemStack formulaStack = tile.getFormulaSlot().getStack();
         return formulaStack.getItem() instanceof ItemCraftingFormula && ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) == null;
     }
 

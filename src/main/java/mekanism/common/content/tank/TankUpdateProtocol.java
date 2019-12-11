@@ -20,8 +20,8 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
 
     public static final int FLUID_PER_TANK = 64000;
 
-    public TankUpdateProtocol(TileEntityDynamicTank tileEntity) {
-        super(tileEntity);
+    public TankUpdateProtocol(TileEntityDynamicTank tile) {
+        super(tile);
     }
 
     @Override

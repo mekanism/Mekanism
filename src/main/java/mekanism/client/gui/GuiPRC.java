@@ -40,37 +40,37 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
-        addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiSideConfigurationTab(this, tile, resource));
+        addButton(new GuiTransporterConfigTab(this, tile, resource));
+        addButton(new GuiUpgradeTab(this, tile, resource));
         addButton(new GuiEnergyInfo(() -> {
             //TODO: Use a getter for the cached recipe
-            CachedRecipe<PressurizedReactionRecipe> recipe = tileEntity.getUpdatedCache(0);
+            CachedRecipe<PressurizedReactionRecipe> recipe = tile.getUpdatedCache(0);
             double extra = recipe == null ? 0 : recipe.getRecipe().getEnergyRequired();
-            double energyPerTick = MekanismUtils.getEnergyPerTick(tileEntity, tileEntity.getBaseStorage() + extra);
+            double energyPerTick = MekanismUtils.getEnergyPerTick(tile, tile.getBaseStorage() + extra);
             return Arrays.asList(TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(energyPerTick), "/t"),
-                  TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy())));
+                  TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy())));
         }, this, resource));
-        addButton(new GuiFluidGauge(() -> tileEntity.inputFluidTank, GuiGauge.Type.STANDARD_YELLOW, this, resource, 5, 10));
-        addButton(new GuiGasGauge(() -> tileEntity.inputGasTank, GuiGauge.Type.STANDARD_RED, this, resource, 28, 10));
-        addButton(new GuiGasGauge(() -> tileEntity.outputGasTank, GuiGauge.Type.SMALL_BLUE, this, resource, 140, 40));
-        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiFluidGauge(() -> tile.inputFluidTank, GuiGauge.Type.STANDARD_YELLOW, this, resource, 5, 10));
+        addButton(new GuiGasGauge(() -> tile.inputGasTank, GuiGauge.Type.STANDARD_RED, this, resource, 28, 10));
+        addButton(new GuiGasGauge(() -> tile.outputGasTank, GuiGauge.Type.SMALL_BLUE, this, resource, 140, 40));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
         addButton(new GuiSlot(SlotType.INPUT, this, resource, 53, 34));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 140, 18).with(SlotOverlay.POWER));
         addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 115, 34));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getScaledProgress();
+                return tile.getScaledProgress();
             }
         }, getProgressType(), this, resource, 75, 37));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

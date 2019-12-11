@@ -56,13 +56,13 @@ public class CommonProxy {
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
+    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
     }
 
     /**
      * Does the multiblock creation animation, starting from the rendering block.
      */
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
+    public void doMultiblockSparkle(TileEntity tile, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
     }
 
     public double getReach(PlayerEntity player) {

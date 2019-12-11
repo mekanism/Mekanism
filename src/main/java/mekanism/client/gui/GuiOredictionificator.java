@@ -47,19 +47,19 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.didProcess ? 1 : 0;
+                return tile.didProcess ? 1 : 0;
             }
         }, ProgressBar.LARGE_RIGHT, this, resource, 62, 118));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 114));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 133, 114));
 
         addButton(new TranslationButton(this, guiLeft + 10, guiTop + 86, 142, 20, "gui.mekanism.newFilter",
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), 0))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile.getPos(), 0))));
     }
 
     private boolean overFilter(double xAxis, double yAxis, int yStart) {
@@ -71,15 +71,15 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     }
 
     private int getFilterIndex() {
-        int size = tileEntity.getFilters().size();
+        int size = tile.getFilters().size();
         return size <= 3 ? 0 : (int) (size * scroll - (3F / (float) size) * scroll);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        HashList<OredictionificatorFilter> filters = tileEntity.getFilters();
+        HashList<OredictionificatorFilter> filters = tile.getFilters();
         for (int i = 0; i < 3; i++) {
             if (filters.get(getFilterIndex() + i) != null) {
                 OredictionificatorFilter filter = filters.get(getFilterIndex() + i);
@@ -99,7 +99,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         drawTexturedRect(guiLeft + 154, guiTop + 18 + getScroll(), 232, 0, 12, 15);
-        HashList<OredictionificatorFilter> filters = tileEntity.getFilters();
+        HashList<OredictionificatorFilter> filters = tile.getFilters();
         for (int i = 0; i < 3; i++) {
             if (filters.get(getFilterIndex() + i) != null) {
                 int yStart = i * 22 + 18;
@@ -121,7 +121,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         if (button == 0) {
             double xAxis = mouseX - guiLeft;
             double yAxis = mouseY - guiTop;
-            HashList<OredictionificatorFilter> filters = tileEntity.getFilters();
+            HashList<OredictionificatorFilter> filters = tile.getFilters();
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (filters.size() > 3) {
                     dragOffset = yAxis - (getScroll() + 18);
@@ -133,7 +133,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
             for (int i = 0; i < 3; i++) {
                 if (filters.get(getFilterIndex() + i) != null && overFilter(xAxis, yAxis, i * 22 + 18)) {
-                    Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tileEntity.getPos(), getFilterIndex() + i));
+                    Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile.getPos(), getFilterIndex() + i));
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                 }
             }
@@ -169,7 +169,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
     public void updateRenderStacks() {
         renderStacks.clear();
-        for (OredictionificatorFilter filter : tileEntity.getFilters()) {
+        for (OredictionificatorFilter filter : tile.getFilters()) {
             if (filter.hasFilter()) {
                 renderStacks.put(filter, ItemStack.EMPTY);
                 continue;

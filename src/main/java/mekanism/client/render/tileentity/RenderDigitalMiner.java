@@ -14,21 +14,21 @@ public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMine
     private ModelDigitalMiner model = new ModelDigitalMiner();
 
     @Override
-    public void render(TileEntityDigitalMiner tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+    public void render(TileEntityDigitalMiner tile, double x, double y, double z, float partialTick, int destroyStage) {
         setLightmapDisabled(true);
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "digital_miner.png"));
 
-        MekanismRenderer.rotate(tileEntity.getDirection(), 0, 180, 90, 270);
+        MekanismRenderer.rotate(tile.getDirection(), 0, 180, 90, 270);
         GlStateManager.translatef(0, 0, -1.0F);
 
         GlStateManager.rotatef(180, 0, 0, 1);
-        model.render(0.0625F, tileEntity.getActive(), rendererDispatcher.textureManager, true);
+        model.render(0.0625F, tile.getActive(), rendererDispatcher.textureManager, true);
         GlStateManager.popMatrix();
 
-        if (tileEntity.clientRendering) {
-            MinerVisualRenderer.render(tileEntity);
+        if (tile.clientRendering) {
+            MinerVisualRenderer.render(tile);
         }
         setLightmapDisabled(false);
     }

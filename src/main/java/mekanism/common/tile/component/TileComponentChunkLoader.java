@@ -21,7 +21,7 @@ public class TileComponentChunkLoader implements ITileComponent {
     /**
      * TileEntity implementing this component.
      */
-    public TileEntityMekanism tileEntity;
+    public TileEntityMekanism tile;
 
     public Ticket<?> chunkTicket;
 
@@ -30,15 +30,15 @@ public class TileComponentChunkLoader implements ITileComponent {
     public Coord4D prevCoord;
 
     public TileComponentChunkLoader(TileEntityMekanism tile) {
-        tileEntity = tile;
+        this.tile = tile;
         tile.addComponent(this);
     }
 
     public void setTicket(Ticket<?> t) {
         //TODO: Chunk Loading
-        /*if (chunkTicket != t && chunkTicket != null && chunkTicket.world == tileEntity.getWorld()) {
+        /*if (chunkTicket != t && chunkTicket != null && chunkTicket.world == tile.getWorld()) {
             for (ChunkPos chunk : chunkTicket.getChunkList()) {
-                if (ForgeChunkManager.getPersistentChunksFor(tileEntity.getWorld()).keys().contains(chunk)) {
+                if (ForgeChunkManager.getPersistentChunksFor(tile.getWorld()).keys().contains(chunk)) {
                     ForgeChunkManager.unforceChunk(chunkTicket, chunk);
                 }
             }
@@ -56,7 +56,7 @@ public class TileComponentChunkLoader implements ITileComponent {
         /*if (chunkTicket != null) {
             for (ChunkPos chunk : chunkTicket.getChunkList()) {
                 if (!chunkSet.contains(chunk)) {
-                    if (ForgeChunkManager.getPersistentChunksFor(tileEntity.getWorld()).keys().contains(chunk)) {
+                    if (ForgeChunkManager.getPersistentChunksFor(tile.getWorld()).keys().contains(chunk)) {
                         ForgeChunkManager.unforceChunk(chunkTicket, chunk);
                     }
                 }
@@ -70,7 +70,7 @@ public class TileComponentChunkLoader implements ITileComponent {
     }
 
     public void refreshChunkSet() {
-        IChunkLoader loader = (IChunkLoader) tileEntity;
+        IChunkLoader loader = (IChunkLoader) tile;
         if (!chunkSet.equals(loader.getChunkSet())) {
             chunkSet = loader.getChunkSet();
             sortChunks();
@@ -86,19 +86,19 @@ public class TileComponentChunkLoader implements ITileComponent {
     }*/
 
     public boolean canOperate() {
-        return MekanismConfig.general.allowChunkloading.get() && tileEntity.supportsUpgrades() && tileEntity.getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
+        return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
     }
 
     @Override
     public void tick() {
-        if (!tileEntity.isRemote()) {
-            if (prevCoord == null || !prevCoord.equals(Coord4D.get(tileEntity))) {
+        if (!tile.isRemote()) {
+            if (prevCoord == null || !prevCoord.equals(Coord4D.get(tile))) {
                 release();
-                prevCoord = Coord4D.get(tileEntity);
+                prevCoord = Coord4D.get(tile);
             }
 
             //TODO: Chunk Loading
-            /*if (chunkTicket != null && (!canOperate() || chunkTicket.world != tileEntity.getWorld())) {
+            /*if (chunkTicket != null && (!canOperate() || chunkTicket.world != tile.getWorld())) {
                 release();
             }*/
 
@@ -107,17 +107,17 @@ public class TileComponentChunkLoader implements ITileComponent {
             if (canOperate() && chunkTicket == null) {
                 //TODO: Chunk loading
                 /*Ticket ticket;
-                if (tileEntity.hasSecurity()) {
+                if (tile.hasSecurity()) {
                     ticket = ForgeChunkManager.requestPlayerTicket(Mekanism.instance,
-                          MekanismUtils.getLastKnownUsername(((ISecurityTile) tileEntity).getSecurity().getOwnerUUID()), tileEntity.getWorld(), Type.NORMAL);
+                          MekanismUtils.getLastKnownUsername(((ISecurityTile) tile).getSecurity().getOwnerUUID()), tile.getWorld(), Type.NORMAL);
                 } else {
-                    ticket = ForgeChunkManager.requestTicket(Mekanism.instance, tileEntity.getWorld(), Type.NORMAL);
+                    ticket = ForgeChunkManager.requestTicket(Mekanism.instance, tile.getWorld(), Type.NORMAL);
                 }
 
                 if (ticket != null) {
-                    ticket.getModData().putInt("x", tileEntity.getPos().getX());
-                    ticket.getModData().putInt("y", tileEntity.getPos().getY());
-                    ticket.getModData().putInt("z", tileEntity.getPos().getZ());
+                    ticket.getModData().putInt("x", tile.getPos().getX());
+                    ticket.getModData().putInt("y", tile.getPos().getY());
+                    ticket.getModData().putInt("z", tile.getPos().getZ());
                     forceChunks(ticket);
                 }*/
             }
@@ -161,7 +161,7 @@ public class TileComponentChunkLoader implements ITileComponent {
 
     @Override
     public void invalidate() {
-        if (!tileEntity.isRemote()) {
+        if (!tile.isRemote()) {
             release();
         }
     }

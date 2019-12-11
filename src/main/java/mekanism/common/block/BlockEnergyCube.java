@@ -209,14 +209,14 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tileEntity == null) {
+        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile == null) {
             return false;
         }
-        if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
-        return tileEntity.openGui(player);
+        return tile.openGui(player);
     }
 
     @Override

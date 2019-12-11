@@ -70,12 +70,12 @@ public class Coord4D {//TODO: Replace this with GlobalPos
     /**
      * Returns a new Coord4D from a defined TileEntity's x, y and z values.
      *
-     * @param tileEntity - TileEntity at the location that will represent this Coord4D
+     * @param tile - TileEntity at the location that will represent this Coord4D
      *
      * @return the Coord4D object from the TileEntity
      */
-    public static Coord4D get(TileEntity tileEntity) {
-        return new Coord4D(tileEntity.getPos(), tileEntity.getWorld());
+    public static Coord4D get(TileEntity tile) {
+        return new Coord4D(tile.getPos(), tile.getWorld());
     }
 
     /**

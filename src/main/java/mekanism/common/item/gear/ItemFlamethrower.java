@@ -63,46 +63,46 @@ public class ItemFlamethrower extends Item implements IGasItem {
     }
 
     @Override
-    public int getMaxGas(@Nonnull ItemStack itemstack) {
+    public int getMaxGas(@Nonnull ItemStack stack) {
         return MekanismConfig.general.maxFlamethrowerGas.get();
     }
 
     @Override
-    public int getRate(@Nonnull ItemStack itemstack) {
+    public int getRate(@Nonnull ItemStack stack) {
         return TRANSFER_RATE;
     }
 
     @Override
-    public int addGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
-        GasStack gasInItem = getGas(itemstack);
+    public int addGas(@Nonnull ItemStack itemStack, @Nonnull GasStack stack) {
+        GasStack gasInItem = getGas(itemStack);
         if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
             return 0;
         }
         if (stack.getType() != MekanismGases.HYDROGEN.getGas()) {
             return 0;
         }
-        int toUse = Math.min(getMaxGas(itemstack) - getStored(itemstack), Math.min(getRate(itemstack), stack.getAmount()));
-        setGas(itemstack, new GasStack(stack, getStored(itemstack) + toUse));
+        int toUse = Math.min(getMaxGas(itemStack) - getStored(itemStack), Math.min(getRate(itemStack), stack.getAmount()));
+        setGas(itemStack, new GasStack(stack, getStored(itemStack) + toUse));
         return toUse;
     }
 
     @Nonnull
     @Override
-    public GasStack removeGas(@Nonnull ItemStack itemstack, int amount) {
+    public GasStack removeGas(@Nonnull ItemStack stack, int amount) {
         return GasStack.EMPTY;
     }
 
-    public int getStored(ItemStack itemstack) {
-        return getGas(itemstack).getAmount();
+    public int getStored(ItemStack stack) {
+        return getGas(stack).getAmount();
     }
 
     @Override
-    public boolean canReceiveGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
+    public boolean canReceiveGas(@Nonnull ItemStack stack, @Nonnull Gas type) {
         return type == MekanismGases.HYDROGEN.getGas();
     }
 
     @Override
-    public boolean canProvideGas(@Nonnull ItemStack itemstack, @Nonnull Gas type) {
+    public boolean canProvideGas(@Nonnull ItemStack stack, @Nonnull Gas type) {
         return false;
     }
 
@@ -123,18 +123,18 @@ public class ItemFlamethrower extends Item implements IGasItem {
 
     @Nonnull
     @Override
-    public GasStack getGas(@Nonnull ItemStack itemstack) {
-        return GasStack.readFromNBT(ItemDataUtils.getCompound(itemstack, "stored"));
+    public GasStack getGas(@Nonnull ItemStack stack) {
+        return GasStack.readFromNBT(ItemDataUtils.getCompound(stack, "stored"));
     }
 
     @Override
-    public void setGas(@Nonnull ItemStack itemstack, @Nonnull GasStack stack) {
+    public void setGas(@Nonnull ItemStack itemStack, @Nonnull GasStack stack) {
         if (stack.isEmpty()) {
-            ItemDataUtils.removeData(itemstack, "stored");
+            ItemDataUtils.removeData(itemStack, "stored");
         } else {
-            int amount = Math.max(0, Math.min(stack.getAmount(), getMaxGas(itemstack)));
+            int amount = Math.max(0, Math.min(stack.getAmount(), getMaxGas(itemStack)));
             GasStack gasStack = new GasStack(stack, amount);
-            ItemDataUtils.setCompound(itemstack, "stored", gasStack.write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "stored", gasStack.write(new CompoundNBT()));
         }
     }
 

@@ -40,52 +40,52 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiUpgradeTab(this, tile, resource));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 4, 24).with(SlotOverlay.PLUS));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 4, 55).with(SlotOverlay.MINUS));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 24));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 55));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 4).with(SlotOverlay.POWER));
-        addButton(new GuiHorizontalPowerBar(this, tileEntity, resource, 115, 75));
+        addButton(new GuiHorizontalPowerBar(this, tile, resource, 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.clientEnergyUsed), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.clientEnergyUsed), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
         ), this, resource));
-        addButton(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, resource, 133, 13));
-        addButton(new GuiGasGauge(() -> tileEntity.gasTank, GuiGauge.Type.STANDARD, this, resource, 25, 13));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, resource, 133, 13));
+        addButton(new GuiGasGauge(() -> tile.gasTank, GuiGauge.Type.STANDARD, this, resource, 25, 13));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getActive() ? 1 : 0;
+                return tile.getActive() ? 1 : 0;
             }
 
             @Override
             public boolean isActive() {
-                return !tileEntity.mode;
+                return !tile.mode;
             }
         }, ProgressBar.LARGE_RIGHT, this, resource, 62, 38));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getActive() ? 1 : 0;
+                return tile.getActive() ? 1 : 0;
             }
 
             @Override
             public boolean isActive() {
-                return tileEntity.mode;
+                return tile.mode;
             }
         }, ProgressBar.LARGE_LEFT, this, resource, 62, 38));
         addButton(new MekanismImageButton(this, guiLeft + 4, guiTop + 4, 18, getButtonLocation("toggle"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))),
               getOnHover("gui.mekanism.rotaryCondensentrator.toggleOperation")));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        if (tileEntity.mode) {
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
+        if (tile.mode) {
             drawString(TextComponentUtil.translate("gui.mekanism.decondensentrating"), 6, (ySize - 94) + 2, 0x404040);
         } else {
             drawString(TextComponentUtil.translate("gui.mekanism.condensentrating"), 6, (ySize - 94) + 2, 0x404040);
@@ -96,7 +96,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int displayInt = tileEntity.getScaledEnergyLevel(52);
+        int displayInt = tile.getScaledEnergyLevel(52);
         drawTexturedRect(guiLeft + 116, guiTop + 76, 176, 36, displayInt, 4);
     }
 

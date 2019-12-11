@@ -45,9 +45,9 @@ public class ItemWalkieTalkie extends Item implements IItemNetwork {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(OnOff.of(getOn(itemstack), true).getTextComponent());
-        tooltip.add(TextComponentUtil.build(EnumColor.DARK_AQUA, Translation.of("tooltip.mekanismadditions.channel"), ": ", EnumColor.GRAY, getChannel(itemstack)));
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        tooltip.add(OnOff.of(getOn(stack), true).getTextComponent());
+        tooltip.add(TextComponentUtil.build(EnumColor.DARK_AQUA, Translation.of("tooltip.mekanismadditions.channel"), ": ", EnumColor.GRAY, getChannel(stack)));
         if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
             tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("tooltip.mekanismadditions.walkie_disabled")));
         }

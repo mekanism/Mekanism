@@ -232,10 +232,10 @@ public class TransporterStack {
         return side == null ? Direction.DOWN : side;
     }
 
-    public boolean canInsertToTransporter(TileEntity tileEntity, Direction from) {
+    public boolean canInsertToTransporter(TileEntity tile, Direction from) {
         Direction opposite = from.getOpposite();
-        return CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, opposite).matches(transporter ->
-              CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, opposite).matches(connection ->
+        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, opposite).matches(transporter ->
+              CapabilityUtils.getCapabilityHelper(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, opposite).matches(connection ->
                     connection.canConnectMutual(opposite) && (transporter.getColor() == color || transporter.getColor() == null)
               )
         );

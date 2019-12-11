@@ -13,12 +13,12 @@ public class RenderGasGenerator extends TileEntityRenderer<TileEntityGasGenerato
     private ModelGasGenerator model = new ModelGasGenerator();
 
     @Override
-    public void render(TileEntityGasGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+    public void render(TileEntityGasGenerator tile, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "gas_burning_generator.png"));
 
-        MekanismRenderer.rotate(tileEntity.getDirection(), 90, 270, 180, 0);
+        MekanismRenderer.rotate(tile.getDirection(), 90, 270, 180, 0);
 
         GlStateManager.rotatef(180, 0, 1, 1);
         GlStateManager.rotatef(90, -1, 0, 0);

@@ -134,8 +134,8 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
 
         if (mop != null && mop.entityHit instanceof PlayerEntity) {
-            PlayerEntity entityplayer = (PlayerEntity) mop.entityHit;
-            if (entityplayer.capabilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(entityplayer)) {
+            PlayerEntity player = (PlayerEntity) mop.entityHit;
+            if (player.capabilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
                 mop = null;
             }
         }

@@ -40,17 +40,17 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiUpgradeTab(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiUpgradeTab(this, tile, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.clientEnergyUsed), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.clientEnergyUsed), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
         ), this, resource));
-        addButton(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiGauge.Type.STANDARD, this, resource, 5, 10));
-        addButton(new GuiGasGauge(() -> tileEntity.leftTank, GuiGauge.Type.SMALL, this, resource, 58, 18));
-        addButton(new GuiGasGauge(() -> tileEntity.rightTank, GuiGauge.Type.SMALL, this, resource, 100, 18));
-        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, resource, 5, 10));
+        addButton(new GuiGasGauge(() -> tile.leftTank, GuiGauge.Type.SMALL, this, resource, 58, 18));
+        addButton(new GuiGasGauge(() -> tile.rightTank, GuiGauge.Type.SMALL, this, resource, 100, 18));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 34));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 58, 51));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 100, 51));
@@ -58,13 +58,13 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getActive() ? 1 : 0;
+                return tile.getActive() ? 1 : 0;
             }
         }, ProgressBar.BI, this, resource, 78, 29));
-        addButton(new GuiGasMode(this, resource, 7, 72, false, () -> tileEntity.dumpLeft,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents((byte) 0)))));
-        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tileEntity.dumpRight,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents((byte) 1)))));
+        addButton(new GuiGasMode(this, resource, 7, 72, false, () -> tile.dumpLeft,
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents((byte) 0)))));
+        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tile.dumpRight,
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents((byte) 1)))));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), 45, 6, 0x404040);
+        drawString(tile.getName(), 45, 6, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

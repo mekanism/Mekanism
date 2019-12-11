@@ -25,16 +25,16 @@ public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, FluidTank
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiContainerEditMode(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiFluidGauge(() -> tileEntity.fluidTank, GuiFluidGauge.Type.WIDE, this, resource, 48, 18));
+        addButton(new GuiContainerEditMode(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiFluidGauge.Type.WIDE, this, resource, 48, 18));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 145, 18).with(SlotOverlay.INPUT));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 145, 50).with(SlotOverlay.OUTPUT));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 96 + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

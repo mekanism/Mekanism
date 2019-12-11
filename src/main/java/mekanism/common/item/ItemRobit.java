@@ -32,10 +32,10 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        super.addInformation(itemstack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.name"), ": ", EnumColor.GRAY, getName(itemstack)));
-        ListNBT inventory = getInventory(itemstack);
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        super.addInformation(stack, world, tooltip, flag);
+        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.name"), ": ", EnumColor.GRAY, getName(stack)));
+        ListNBT inventory = getInventory(stack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.inventory"), ": ", EnumColor.GRAY, inventory != null && !inventory.isEmpty()));
     }
 
@@ -52,14 +52,14 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         if (chargepad != null) {
             if (!chargepad.getActive()) {
                 Hand hand = context.getHand();
-                ItemStack itemstack = player.getHeldItem(hand);
+                ItemStack stack = player.getHeldItem(hand);
                 if (!world.isRemote) {
                     EntityRobit robit = new EntityRobit(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                     robit.setHome(Coord4D.get(chargepad));
-                    robit.setEnergy(getEnergy(itemstack));
+                    robit.setEnergy(getEnergy(stack));
                     robit.setOwnerUUID(player.getUniqueID());
-                    robit.setInventory(getInventory(itemstack));
-                    robit.setCustomName(getName(itemstack));
+                    robit.setInventory(getInventory(stack));
+                    robit.setCustomName(getName(stack));
                     world.addEntity(robit);
                 }
                 player.setHeldItem(hand, ItemStack.EMPTY);
@@ -74,12 +74,12 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
         return false;
     }
 
-    public void setName(ItemStack itemstack, String name) {
-        ItemDataUtils.setString(itemstack, "name", name);
+    public void setName(ItemStack stack, String name) {
+        ItemDataUtils.setString(stack, "name", name);
     }
 
-    public ITextComponent getName(ItemStack itemstack) {
-        String name = ItemDataUtils.getString(itemstack, "name");
+    public ITextComponent getName(ItemStack stack) {
+        String name = ItemDataUtils.getString(stack, "name");
         return TextComponentUtil.getString(name.isEmpty() ? "Robit" : name);
     }
 }

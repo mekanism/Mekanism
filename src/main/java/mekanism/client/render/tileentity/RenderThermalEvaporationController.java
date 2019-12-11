@@ -14,15 +14,15 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 public class RenderThermalEvaporationController extends TileEntityRenderer<TileEntityThermalEvaporationController> {
 
     @Override
-    public void render(TileEntityThermalEvaporationController tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.structured && tileEntity.height - 2 >= 1 && tileEntity.inputTank.getFluidAmount() > 0) {
+    public void render(TileEntityThermalEvaporationController tile, double x, double y, double z, float partialTick, int destroyStage) {
+        if (tile.structured && tile.height - 2 >= 1 && tile.inputTank.getFluidAmount() > 0) {
             RenderData data = new RenderData();
-            data.location = tileEntity.getRenderLocation();
-            data.height = tileEntity.height - 2;
+            data.location = tile.getRenderLocation();
+            data.height = tile.height - 2;
             //TODO: If we ever allow different width for the evap controller then update this length and width
             data.length = 2;
             data.width = 2;
-            data.fluidType = tileEntity.inputTank.getFluid();
+            data.fluidType = tile.inputTank.getFluid();
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();
@@ -31,7 +31,7 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             setLightmapDisabled(true);
             FluidRenderer.translateToOrigin(data.location);
-            float fluidScale = (float) tileEntity.inputTank.getFluidAmount() / (float) tileEntity.getMaxFluid();
+            float fluidScale = (float) tile.inputTank.getFluidAmount() / (float) tile.getMaxFluid();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
             MekanismRenderer.color(data.fluidType, fluidScale);
             if (data.fluidType.getFluid().getAttributes().isGaseous(data.fluidType)) {

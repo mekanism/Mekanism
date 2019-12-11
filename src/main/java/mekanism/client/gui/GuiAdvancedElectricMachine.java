@@ -38,15 +38,15 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiUpgradeTab(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
-        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiUpgradeTab(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiSideConfigurationTab(this, tile, resource));
+        addButton(new GuiTransporterConfigTab(this, tile, resource));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiSlot(SlotType.INPUT, this, resource, 55, 16));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 30, 34).with(SlotOverlay.POWER));
@@ -55,7 +55,7 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getScaledProgress();
+                return tile.getScaledProgress();
             }
         }, getProgressType(), this, resource, 77, 37));
     }
@@ -66,17 +66,17 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 61 && xAxis <= 67 && yAxis >= 37 && yAxis <= 49) {
-            GasStack gasStack = tileEntity.gasTank.getStack();
+            GasStack gasStack = tile.gasTank.getStack();
             if (gasStack.isEmpty()) {
                 displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
             } else {
-                displayTooltip(TextComponentUtil.build(gasStack, ": " + tileEntity.gasTank.getStored()), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(gasStack, ": " + tile.gasTank.getStored()), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -85,15 +85,15 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity.getScaledGasLevel(12) > 0) {
-            int displayInt = tileEntity.getScaledGasLevel(12);
-            displayGauge(61, 37 + 12 - displayInt, 6, displayInt, tileEntity.gasTank.getStack());
+        if (tile.getScaledGasLevel(12) > 0) {
+            int displayInt = tile.getScaledGasLevel(12);
+            displayGauge(61, 37 + 12 - displayInt, 6, displayInt, tile.gasTank.getStack());
         }
     }
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return tileEntity.guiLocation;
+        return tile.guiLocation;
     }
 
     public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, @Nonnull GasStack gas) {

@@ -26,17 +26,17 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
     private static final FluidStack WATER = new FluidStack(Fluids.WATER, 1);
 
     @Override
-    public void render(TileEntityBoilerCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.renderLocation != null &&
-            tileEntity.structure.upperRenderLocation != null) {
-            FluidStack waterStored = tileEntity.structure.waterStored;
+    public void render(TileEntityBoilerCasing tile, double x, double y, double z, float partialTick, int destroyStage) {
+        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null &&
+            tile.structure.upperRenderLocation != null) {
+            FluidStack waterStored = tile.structure.waterStored;
             boolean glChanged = false;
             if (waterStored.getAmount() > 0) {
                 RenderData data = new RenderData();
-                data.location = tileEntity.structure.renderLocation;
-                data.height = tileEntity.structure.upperRenderLocation.y - 1 - tileEntity.structure.renderLocation.y;
-                data.length = tileEntity.structure.volLength;
-                data.width = tileEntity.structure.volWidth;
+                data.location = tile.structure.renderLocation;
+                data.height = tile.structure.upperRenderLocation.y - 1 - tile.structure.renderLocation.y;
+                data.length = tile.structure.volLength;
+                data.width = tile.structure.volWidth;
                 data.fluidType = WATER;
 
                 if (data.height >= 1 && waterStored.getFluid() != Fluids.EMPTY) {
@@ -45,17 +45,17 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                     glChanged = makeGLChanges(glChanged);
                     FluidRenderer.translateToOrigin(data.location);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
-                    MekanismRenderer.color(waterStored, (float) waterStored.getAmount() / (float) tileEntity.clientWaterCapacity);
+                    MekanismRenderer.color(waterStored, (float) waterStored.getAmount() / (float) tile.clientWaterCapacity);
                     if (waterStored.getFluid().getAttributes().isGaseous(waterStored)) {
                         FluidRenderer.getTankDisplay(data).render();
                     } else {
-                        FluidRenderer.getTankDisplay(data, tileEntity.prevWaterScale).render();
+                        FluidRenderer.getTankDisplay(data, tile.prevWaterScale).render();
                     }
                     MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);
                     GlStateManager.popMatrix();
 
-                    for (ValveData valveData : tileEntity.valveViewing) {
+                    for (ValveData valveData : tile.valveViewing) {
                         GlStateManager.pushMatrix();
                         FluidRenderer.translateToOrigin(valveData.location);
                         GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(waterStored);
@@ -66,26 +66,26 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 }
             }
 
-            if (tileEntity.structure.steamStored.getAmount() > 0) {
+            if (tile.structure.steamStored.getAmount() > 0) {
                 if (STEAM.isEmpty()) {
                     STEAM = MekanismFluids.STEAM.getFluidStack(1);
                 }
                 RenderData data = new RenderData();
-                data.location = tileEntity.structure.upperRenderLocation;
-                data.height = tileEntity.structure.renderLocation.y + tileEntity.structure.volHeight - 2 - tileEntity.structure.upperRenderLocation.y;
-                data.length = tileEntity.structure.volLength;
-                data.width = tileEntity.structure.volWidth;
+                data.location = tile.structure.upperRenderLocation;
+                data.height = tile.structure.renderLocation.y + tile.structure.volHeight - 2 - tile.structure.upperRenderLocation.y;
+                data.length = tile.structure.volLength;
+                data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
 
-                if (data.height >= 1 && tileEntity.structure.steamStored.getFluid() != Fluids.EMPTY) {
+                if (data.height >= 1 && tile.structure.steamStored.getFluid() != Fluids.EMPTY) {
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
                     GlStateManager.pushMatrix();
                     glChanged = makeGLChanges(glChanged);
                     FluidRenderer.translateToOrigin(data.location);
-                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tileEntity.structure.steamStored);
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.steamStored);
 
                     DisplayInteger display = FluidRenderer.getTankDisplay(data);
-                    MekanismRenderer.color(tileEntity.structure.steamStored, (float) tileEntity.structure.steamStored.getAmount() / (float) tileEntity.clientSteamCapacity);
+                    MekanismRenderer.color(tile.structure.steamStored, (float) tile.structure.steamStored.getAmount() / (float) tile.clientSteamCapacity);
                     display.render();
                     MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);

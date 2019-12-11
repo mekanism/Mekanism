@@ -25,8 +25,8 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
     private Map<Direction, DisplayInteger[]> energyDisplays = new EnumMap<>(Direction.class);
 
     @Override
-    public void render(TileEntityBioGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.bioFuelSlot.fluidStored > 0) {
+    public void render(TileEntityBioGenerator tile, double x, double y, double z, float partialTick, int destroyStage) {
+        if (tile.bioFuelSlot.fluidStored > 0) {
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();
             GlStateManager.enableBlend();
@@ -35,7 +35,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             GlStateManager.translatef((float) x, (float) y, (float) z);
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            getDisplayList(tileEntity.getDirection())[tileEntity.getScaledFuelLevel(stages - 1)].render();
+            getDisplayList(tile.getDirection())[tile.getScaledFuelLevel(stages - 1)].render();
             MekanismRenderer.disableGlow(glowInfo);
             GlStateManager.enableLighting();
             GlStateManager.disableBlend();
@@ -47,7 +47,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "bio_generator.png"));
 
-        MekanismRenderer.rotate(tileEntity.getDirection(), 180, 0, 270, 90);
+        MekanismRenderer.rotate(tile.getDirection(), 180, 0, 270, 90);
 
         GlStateManager.rotatef(180, 0, 0, 1);
         model.render(0.0625F);

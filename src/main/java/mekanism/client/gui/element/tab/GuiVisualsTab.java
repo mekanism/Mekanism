@@ -21,8 +21,8 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        ITextComponent visualsComponent = TextComponentUtil.build(Translation.of("gui.mekanism.visuals"), ": ", OnOff.of(tileEntity.clientRendering));
-        if (tileEntity.getRadius() <= 64) {
+        ITextComponent visualsComponent = TextComponentUtil.build(Translation.of("gui.mekanism.visuals"), ": ", OnOff.of(tile.clientRendering));
+        if (tile.getRadius() <= 64) {
             displayTooltip(visualsComponent, mouseX, mouseY);
         } else {
             displayTooltips(Arrays.asList(visualsComponent, TextComponentUtil.build(EnumColor.RED, Translation.of("gui.mekanism.visuals.toobig"))), mouseX, mouseY);
@@ -31,6 +31,6 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        tileEntity.clientRendering = !tileEntity.clientRendering;
+        tile.clientRendering = !tile.clientRendering;
     }
 }

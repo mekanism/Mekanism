@@ -80,13 +80,13 @@ public class PacketPortableTeleporter {
             return;
         }
         context.get().enqueueWork(() -> {
-            ItemStack itemstack = player.getHeldItem(message.currentHand);
+            ItemStack stack = player.getHeldItem(message.currentHand);
             World world = player.world;
-            if (!itemstack.isEmpty() && itemstack.getItem() instanceof ItemPortableTeleporter) {
-                ItemPortableTeleporter item = (ItemPortableTeleporter) itemstack.getItem();
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
+                ItemPortableTeleporter item = (ItemPortableTeleporter) stack.getItem();
                 switch (message.packetType) {
                     case DATA_REQUEST:
-                        sendDataResponse(message.frequency, world, player, item, itemstack, message.currentHand);
+                        sendDataResponse(message.frequency, world, player, item, stack, message.currentHand);
                         break;
                     case DATA_RESPONSE:
                         Mekanism.proxy.handleTeleporterUpdate(message);
@@ -104,13 +104,13 @@ public class PacketPortableTeleporter {
                             toUse = new Frequency(message.frequency.name, player.getUniqueID()).setPublic(message.frequency.isPublic());
                             manager1.addFrequency(toUse);
                         }
-                        item.setFrequency(itemstack, toUse);
-                        sendDataResponse(toUse, world, player, item, itemstack, message.currentHand);
+                        item.setFrequency(stack, toUse);
+                        sendDataResponse(toUse, world, player, item, stack, message.currentHand);
                         break;
                     case DEL_FREQ:
                         FrequencyManager manager = getManager(message.frequency.isPublic() ? null : player.getUniqueID(), world);
                         manager.remove(message.frequency.name, player.getUniqueID());
-                        item.setFrequency(itemstack, null);
+                        item.setFrequency(stack, null);
                         break;
                     case TELEPORT:
                         FrequencyManager manager2 = getManager(message.frequency.isPublic() ? null : player.getUniqueID(), world);
@@ -132,7 +132,7 @@ public class PacketPortableTeleporter {
                                 try {
                                     teleporter.didTeleport.add(player.getUniqueID());
                                     teleporter.teleDelay = 5;
-                                    item.setEnergy(itemstack, item.getEnergy(itemstack) - ItemPortableTeleporter.calculateEnergyCost(player, coords));
+                                    item.setEnergy(stack, item.getEnergy(stack) - ItemPortableTeleporter.calculateEnergyCost(player, coords));
                                     if (player instanceof ServerPlayerEntity) {
                                         ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
                                     }
@@ -237,7 +237,7 @@ public class PacketPortableTeleporter {
         return new PacketPortableTeleporter(currentHand, frequency, status, publicCache, privateCache);
     }
 
-    public static void sendDataResponse(Frequency given, World world, PlayerEntity player, ItemPortableTeleporter item, ItemStack itemstack, Hand hand) {
+    public static void sendDataResponse(Frequency given, World world, PlayerEntity player, ItemPortableTeleporter item, ItemStack stack, Hand hand) {
         List<Frequency> publicFreqs = new ArrayList<>(getManager(null, world).getFrequencies());
         List<Frequency> privateFreqs = new ArrayList<>(getManager(player.getUniqueID(), world).getFrequencies());
         byte status = 3;
@@ -262,7 +262,7 @@ public class PacketPortableTeleporter {
             } else {
                 Coord4D coords = given.getClosestCoords(new Coord4D(player));
                 double energyNeeded = ItemPortableTeleporter.calculateEnergyCost(player, coords);
-                if (energyNeeded > item.getEnergy(itemstack)) {
+                if (energyNeeded > item.getEnergy(stack)) {
                     status = 4;
                 } else {
                     status = 1;

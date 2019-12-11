@@ -43,19 +43,19 @@ public class ItemBlockEnergizedSmelter extends ItemBlockAdvancedTooltip<BlockEne
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(itemstack)).getTextComponent());
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.security"), ": ", SecurityUtils.getSecurity(itemstack, Dist.CLIENT)));
-        if (SecurityUtils.isOverridden(itemstack, Dist.CLIENT)) {
+    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
+        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.security"), ": ", SecurityUtils.getSecurity(stack, Dist.CLIENT)));
+        if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
             tooltip.add(TextComponentUtil.build(EnumColor.RED, "(", Translation.of("gui.mekanism.overridden"), ")"));
         }
         tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("tooltip.mekanism.stored_energy"), ": ", EnumColor.GRAY,
-              EnergyDisplay.of(getEnergy(itemstack), getMaxEnergy(itemstack))));
-        ListNBT inventory = getInventory(itemstack);
+              EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
+        ListNBT inventory = getInventory(stack);
         tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.inventory"), ": ", EnumColor.GRAY,
               YesNo.of(inventory != null && !inventory.isEmpty())));
-        if (ItemDataUtils.hasData(itemstack, "upgrades")) {
-            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(itemstack));
+        if (ItemDataUtils.hasData(stack, "upgrades")) {
+            Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(stack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                 tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
             }

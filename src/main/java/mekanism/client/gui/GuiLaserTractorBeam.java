@@ -19,12 +19,12 @@ public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorB
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSecurityTab<>(this, tileEntity, getGuiLocation()));
+        addButton(new GuiSecurityTab<>(this, tile, getGuiLocation()));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

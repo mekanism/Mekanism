@@ -38,25 +38,25 @@ public class BlockBasicMultiblock extends BlockMekanism {
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (tileEntity instanceof IMultiblock) {
-                ((IMultiblock<?>) tileEntity).doUpdate();
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            if (tile instanceof IMultiblock) {
+                ((IMultiblock<?>) tile).doUpdate();
             }
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            if (tile instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tile).onNeighborChange(neighborBlock);
             }
         }
     }
 
     @Override
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
-        TileEntityMultiblock<?> tileEntity = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
-        if (tileEntity != null) {
+        TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
+        if (tile != null) {
             if (world instanceof IWorldReader ? !((IWorldReader) world).isRemote() : EffectiveSide.get() == LogicalSide.SERVER) {
-                if (tileEntity.structure != null) {
+                if (tile.structure != null) {
                     return false;
                 }
-            } else if (tileEntity.clientHasStructure) {
+            } else if (tile.clientHasStructure) {
                 return false;
             }
         }
@@ -65,15 +65,15 @@ public class BlockBasicMultiblock extends BlockMekanism {
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntityMultiblock<?> tileEntity = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
-        if (tileEntity != null) {
+        TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
+        if (tile != null) {
             if (world.isRemote) {
                 return true;
             }
-            if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+            if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
                 return true;
             }
-            return tileEntity.onActivate(player, hand, player.getHeldItem(hand));
+            return tile.onActivate(player, hand, player.getHeldItem(hand));
         }
         return false;
     }

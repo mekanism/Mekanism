@@ -30,8 +30,8 @@ public class InfuseTypeTags {
         private int lastKnownGeneration = -1;
         private Tag<InfuseType> cachedTag;
 
-        public Wrapper(ResourceLocation resourceLocationIn) {
-            super(resourceLocationIn);
+        public Wrapper(ResourceLocation resourceLocation) {
+            super(resourceLocation);
         }
 
         @Override

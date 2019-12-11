@@ -29,22 +29,22 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
         ), this, resource));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), 45, 6, 0x404040);
+        drawString(tile.getName(), 45, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawString(TextComponentUtil.translate(tileEntity.getActive() ? "gui.mekanism.vibrating" : "gui.mekanism.idle"), 19, 26, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.chunk"), ": " + (tileEntity.getPos().getX() >> 4) + ", " + (tileEntity.getPos().getZ() >> 4)), 19, 35, 0x00CD00);
+        drawString(TextComponentUtil.translate(tile.getActive() ? "gui.mekanism.vibrating" : "gui.mekanism.idle"), 19, 26, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.chunk"), ": " + (tile.getPos().getX() >> 4) + ", " + (tile.getPos().getZ() >> 4)), 19, 35, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

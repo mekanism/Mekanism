@@ -21,9 +21,9 @@ public class MekanismIngredient extends Ingredient {
     @Nonnull
     public static Ingredient fromStacks(ItemStack... stacks) {
         if (stacks.length > 0) {
-            for (ItemStack itemstack : stacks) {
-                if (!itemstack.isEmpty()) {
-                    return new MekanismIngredient(itemstack);
+            for (ItemStack stack : stacks) {
+                if (!stack.isEmpty()) {
+                    return new MekanismIngredient(stack);
                 }
             }
         }

@@ -45,14 +45,14 @@ public class TileEntityChargepad extends TileEntityMekanism {
                     } else if (entity instanceof PlayerEntity) {
                         PlayerEntity player = (PlayerEntity) entity;
                         double prevEnergy = getEnergy();
-                        for (ItemStack itemstack : player.inventory.armorInventory) {
-                            ChargeUtils.charge(itemstack, this);
+                        for (ItemStack stack : player.inventory.armorInventory) {
+                            ChargeUtils.charge(stack, this);
                             if (prevEnergy != getEnergy()) {
                                 break;
                             }
                         }
-                        for (ItemStack itemstack : player.inventory.mainInventory) {
-                            ChargeUtils.charge(itemstack, this);
+                        for (ItemStack stack : player.inventory.mainInventory) {
+                            ChargeUtils.charge(stack, this);
                             if (prevEnergy != getEnergy()) {
                                 break;
                             }

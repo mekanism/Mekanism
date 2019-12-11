@@ -29,18 +29,18 @@ public class PacketDataRequest {
         }
         context.get().enqueueWork(() -> {
             //TODO: Verify this
-            TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
-            if (tileEntity instanceof TileEntityMultiblock) {
-                ((TileEntityMultiblock<?>) tileEntity).sendStructure = true;
+            TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
+            if (tile instanceof TileEntityMultiblock) {
+                ((TileEntityMultiblock<?>) tile).sendStructure = true;
             }
-            CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(transmitter -> {
+            CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(transmitter -> {
                 transmitter.setRequestsUpdate();
                 if (transmitter.hasTransmitterNetwork()) {
                     transmitter.getTransmitterNetwork().addUpdate(player);
                 }
             });
-            CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(
-                  network -> Mekanism.packetHandler.sendTo(new PacketTileEntity(tileEntity, network.getNetworkedData()), (ServerPlayerEntity) player)
+            CapabilityUtils.getCapabilityHelper(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(
+                  network -> Mekanism.packetHandler.sendTo(new PacketTileEntity(tile, network.getNetworkedData()), (ServerPlayerEntity) player)
             );
         });
         context.get().setPacketHandled(true);

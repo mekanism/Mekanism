@@ -29,22 +29,22 @@ public class ItemBlockTooltip<BLOCK extends Block> extends ItemBlockMekanism<BLO
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            addStats(itemstack, world, tooltip, flag);
+            addStats(stack, world, tooltip, flag);
             tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
                   EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.for_details"), "."));
         } else {
-            addDescription(itemstack, world, tooltip, flag);
+            addDescription(stack, world, tooltip, flag);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void addStats(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void addDescription(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addDescription(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         //TODO: Previously had a max width thing, is this needed or does vanilla handle it
         tooltip.add(TextComponentUtil.translate("tooltip.mekanism." + getRegistryName().getPath()));
     }

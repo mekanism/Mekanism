@@ -58,38 +58,38 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiUpgradeTab(this, tileEntity, resource));
-        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 160, 23));
-        addButton(new GuiSideConfigurationTab(this, tileEntity, resource));
-        addButton(new GuiTransporterConfigTab(this, tileEntity, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiUpgradeTab(this, tile, resource));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, 160, 23));
+        addButton(new GuiSideConfigurationTab(this, tile, resource));
+        addButton(new GuiTransporterConfigTab(this, tile, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tileEntity.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tileEntity.getNeededEnergy()))
+              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.getEnergyPerTick()), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
         ), this, resource));
-        addButton(new GuiGasGauge(() -> tileEntity.inputTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
+        addButton(new GuiGasGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
         addButton(new GuiSlot(SlotType.EXTRA, this, resource, 5, 64).with(SlotOverlay.PLUS));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 154, 4).with(SlotOverlay.POWER));
         addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 130, 56));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return tileEntity.getScaledProgress();
+                return tile.getScaledProgress();
             }
         }, ProgressBar.LARGE_RIGHT, this, resource, 51, 60));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), 37, 4, 0x404040);
-        GasStack gasStack = tileEntity.inputTank.getStack();
+        drawString(tile.getName(), 37, 4, 0x404040);
+        GasStack gasStack = tile.inputTank.getStack();
         if (!gasStack.isEmpty()) {
             drawString(TextComponentUtil.build(gasStack), 29, 15, 0x00CD00);
             if (gasStack.getType() instanceof Slurry && !renderStack.isEmpty()) {
                 drawString(TextComponentUtil.build("(", renderStack.getDisplayName(), ")"), 29, 24, 0x00CD00);
             } else {
-                CachedRecipe<GasToItemStackRecipe> recipe = tileEntity.getUpdatedCache(0);
+                CachedRecipe<GasToItemStackRecipe> recipe = tile.getUpdatedCache(0);
                 if (recipe == null) {
                     drawString(TextComponentUtil.build("(", Translation.of("gui.mekanism.noRecipe"), ")"), 29, 24, 0x00CD00);
                 } else {
@@ -108,7 +108,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
 
     @Nonnull
     private Gas getInputGas() {
-        return tileEntity.inputTank.getType();
+        return tile.inputTank.getType();
     }
 
     private void resetStacks() {

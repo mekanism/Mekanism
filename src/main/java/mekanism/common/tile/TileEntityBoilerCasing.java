@@ -63,9 +63,9 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             }
             if (!clientHasStructure || !isRendering) {
                 for (ValveData data : valveViewing) {
-                    TileEntityBoilerCasing tileEntity = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
-                    if (tileEntity != null) {
-                        tileEntity.clientHasStructure = false;
+                    TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
+                    if (tile != null) {
+                        tile.clientHasStructure = false;
                     }
                 }
                 valveViewing.clear();
@@ -252,9 +252,9 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
                         valveViewing.add(data);
 
-                        TileEntityBoilerCasing tileEntity = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
-                        if (tileEntity != null) {
-                            tileEntity.clientHasStructure = true;
+                        TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
+                        if (tile != null) {
+                            tile.clientHasStructure = true;
                         }
                     }
                 }

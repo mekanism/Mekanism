@@ -6,18 +6,17 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 public class ForgeEnergyCableIntegration implements IEnergyStorage {
 
-    public TileEntityUniversalCable tileEntity;
-
-    public Direction side;
+    private final TileEntityUniversalCable tile;
+    private final Direction side;
 
     public ForgeEnergyCableIntegration(TileEntityUniversalCable tile, Direction facing) {
-        tileEntity = tile;
+        this.tile = tile;
         side = facing;
     }
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        return ForgeEnergyIntegration.toForge(tileEntity.acceptEnergy(side, ForgeEnergyIntegration.fromForge(maxReceive), simulate));
+        return ForgeEnergyIntegration.toForge(tile.acceptEnergy(side, ForgeEnergyIntegration.fromForge(maxReceive), simulate));
     }
 
     @Override
@@ -27,12 +26,12 @@ public class ForgeEnergyCableIntegration implements IEnergyStorage {
 
     @Override
     public int getEnergyStored() {
-        return ForgeEnergyIntegration.toForge(tileEntity.getEnergy());
+        return ForgeEnergyIntegration.toForge(tile.getEnergy());
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return ForgeEnergyIntegration.toForge(tileEntity.getMaxEnergy());
+        return ForgeEnergyIntegration.toForge(tile.getMaxEnergy());
     }
 
     @Override
@@ -42,6 +41,6 @@ public class ForgeEnergyCableIntegration implements IEnergyStorage {
 
     @Override
     public boolean canReceive() {
-        return tileEntity.canReceiveEnergy(side);
+        return tile.canReceiveEnergy(side);
     }
 }

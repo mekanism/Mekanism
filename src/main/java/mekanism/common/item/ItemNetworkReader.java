@@ -109,7 +109,7 @@ public class ItemNetworkReader extends ItemEnergized {
     }
 
     @Override
-    public boolean canSend(ItemStack itemstack) {
+    public boolean canSend(ItemStack stack) {
         return false;
     }
 }

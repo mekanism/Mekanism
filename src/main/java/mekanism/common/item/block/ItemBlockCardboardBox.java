@@ -41,9 +41,9 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.blockData"), ": ", YesNo.of(getBlockData(itemstack) != null)));
-        BlockData data = getBlockData(itemstack);
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.blockData"), ": ", YesNo.of(getBlockData(stack) != null)));
+        BlockData data = getBlockData(stack);
         if (data != null) {
             try {
                 tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.block"), ": " + new ItemStack(data.block).getDisplayName()));
@@ -105,24 +105,24 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
             return true;
         }
         if (super.placeBlock(context, state)) {
-            TileEntityCardboardBox tileEntity = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, context.getPos());
-            if (tileEntity != null) {
-                tileEntity.storedData = getBlockData(context.getItem());
+            TileEntityCardboardBox tile = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, context.getPos());
+            if (tile != null) {
+                tile.storedData = getBlockData(context.getItem());
             }
             return true;
         }
         return false;
     }
 
-    public void setBlockData(ItemStack itemstack, BlockData data) {
-        ItemDataUtils.setCompound(itemstack, "blockData", data.write(new CompoundNBT()));
+    public void setBlockData(ItemStack stack, BlockData data) {
+        ItemDataUtils.setCompound(stack, "blockData", data.write(new CompoundNBT()));
     }
 
-    public BlockData getBlockData(ItemStack itemstack) {
-        if (!ItemDataUtils.hasData(itemstack, "blockData")) {
+    public BlockData getBlockData(ItemStack stack) {
+        if (!ItemDataUtils.hasData(stack, "blockData")) {
             return null;
         }
-        return BlockData.read(ItemDataUtils.getCompound(itemstack, "blockData"));
+        return BlockData.read(ItemDataUtils.getCompound(stack, "blockData"));
     }
 
     //TODO

@@ -25,49 +25,49 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
     private static FluidStack STEAM = FluidStack.EMPTY;
 
     @Override
-    public void render(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        renderAModelAt(tileEntity, x, y, z, partialTick, destroyStage);
+    public void render(TileEntityTurbineCasing tile, double x, double y, double z, float partialTick, int destroyStage) {
+        renderAModelAt(tile, x, y, z, partialTick, destroyStage);
     }
 
-    public void renderAModelAt(TileEntityTurbineCasing tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.complex != null) {
+    public void renderAModelAt(TileEntityTurbineCasing tile, double x, double y, double z, float partialTick, int destroyStage) {
+        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null) {
             RenderTurbineRotor.internalRender = true;
-            BlockPos complexPos = tileEntity.structure.complex.getPos();
+            BlockPos complexPos = tile.structure.complex.getPos();
 
             while (true) {
                 complexPos = complexPos.down();
-                TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, tileEntity.getWorld(), complexPos);
-                if (tile == null) {
+                TileEntityTurbineRotor rotor = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, tile.getWorld(), complexPos);
+                if (rotor == null) {
                     break;
                 }
-                TileEntityRendererDispatcher.instance.render(tile, partialTick, destroyStage);
+                TileEntityRendererDispatcher.instance.render(rotor, partialTick, destroyStage);
             }
 
             RenderTurbineRotor.internalRender = false;
 
-            if (tileEntity.structure.fluidStored.getAmount() > 0 && tileEntity.structure.volLength > 0) {
+            if (tile.structure.fluidStored.getAmount() > 0 && tile.structure.volLength > 0) {
                 if (STEAM.isEmpty()) {
                     STEAM = MekanismFluids.STEAM.getFluidStack(1);
                 }
                 RenderData data = new RenderData();
 
-                data.location = tileEntity.structure.renderLocation;
-                data.height = tileEntity.structure.lowerVolume / (tileEntity.structure.volLength * tileEntity.structure.volWidth);
-                data.length = tileEntity.structure.volLength;
-                data.width = tileEntity.structure.volWidth;
+                data.location = tile.structure.renderLocation;
+                data.height = tile.structure.lowerVolume / (tile.structure.volLength * tile.structure.volWidth);
+                data.length = tile.structure.volLength;
+                data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
 
                 bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
-                if (data.location != null && data.height >= 1 && tileEntity.structure.fluidStored.getFluid() != Fluids.EMPTY) {
+                if (data.location != null && data.height >= 1 && tile.structure.fluidStored.getFluid() != Fluids.EMPTY) {
                     GlStateManager.pushMatrix();
                     GlStateManager.enableCull();
                     GlStateManager.enableBlend();
                     GlStateManager.disableLighting();
                     GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
-                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tileEntity.structure.fluidStored);
-                    MekanismRenderer.color(tileEntity.structure.fluidStored, (float) tileEntity.structure.fluidStored.getAmount() / (float) tileEntity.structure.getFluidCapacity());
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.fluidStored);
+                    MekanismRenderer.color(tile.structure.fluidStored, (float) tile.structure.fluidStored.getAmount() / (float) tile.structure.getFluidCapacity());
                     FluidRenderer.getTankDisplay(data).render();
                     MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);

@@ -8,12 +8,11 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 public class ForgeEnergyIntegration implements IEnergyStorage {
 
-    public IEnergyWrapper tileEntity;
-
-    public Direction side;
+    private final IEnergyWrapper tile;
+    private final Direction side;
 
     public ForgeEnergyIntegration(IEnergyWrapper tile, Direction facing) {
-        tileEntity = tile;
+        this.tile = tile;
         side = facing;
     }
 
@@ -39,31 +38,31 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        return toForge(tileEntity.acceptEnergy(side, fromForge(maxReceive), simulate));
+        return toForge(tile.acceptEnergy(side, fromForge(maxReceive), simulate));
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
-        return toForge(tileEntity.pullEnergy(side, fromForge(maxExtract), simulate));
+        return toForge(tile.pullEnergy(side, fromForge(maxExtract), simulate));
     }
 
     @Override
     public int getEnergyStored() {
-        return toForge(tileEntity.getEnergy());
+        return toForge(tile.getEnergy());
     }
 
     @Override
     public int getMaxEnergyStored() {
-        return toForge(tileEntity.getMaxEnergy());
+        return toForge(tile.getMaxEnergy());
     }
 
     @Override
     public boolean canExtract() {
-        return tileEntity.canOutputEnergy(side);
+        return tile.canOutputEnergy(side);
     }
 
     @Override
     public boolean canReceive() {
-        return tileEntity.canReceiveEnergy(side);
+        return tile.canReceiveEnergy(side);
     }
 }

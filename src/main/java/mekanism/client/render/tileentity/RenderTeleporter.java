@@ -25,9 +25,9 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
     private Map<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
 
     @Override
-    public void render(TileEntityTeleporter tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+    public void render(TileEntityTeleporter tile, double x, double y, double z, float partialTick, int destroyStage) {
         //TODO: Figure out why it always renders in one direction even if the teleporter is assembled along the other axis
-        if (tileEntity.shouldRender) {
+        if (tile.shouldRender) {
             GlStateManager.pushMatrix();
             GlStateManager.enableCull();
             GlStateManager.disableLighting();
@@ -40,9 +40,9 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
 
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             GlStateManager.translatef((float) x, (float) y, (float) z);
-            BlockPos pos = tileEntity.getPos().west();
+            BlockPos pos = tile.getPos().west();
             int type = 0;
-            BlockState s = tileEntity.getWorld().getBlockState(pos);
+            BlockState s = tile.getWorld().getBlockState(pos);
             if (s.getBlock() instanceof BlockTeleporter) {
                 type = 1;
             }

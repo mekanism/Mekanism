@@ -35,32 +35,32 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tileEntity, resource));
-        addButton(new GuiSecurityTab<>(this, tileEntity, resource));
+        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
-                    EnergyDisplay.of(tileEntity.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier() : 0), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t")),
+                    EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier() : 0), "/t"),
+              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tile.getMaxOutput()), "/t")),
               this, resource));
-        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), 45, 6, 0x404040);
+        drawString(tile.getName(), 45, 6, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawString(EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
+        drawString(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         //TODO: Why is this different from how all the other ones do it
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.power"),
-              ": " + powerFormat.format(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get() * tileEntity.getCurrentMultiplier()))),
+              ": " + powerFormat.format(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier()))),
               51, 35, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.out"), ": ", EnergyDisplay.of(tileEntity.getMaxOutput()), "/t"), 51, 44, 0x00CD00);
+        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.out"), ": ", EnergyDisplay.of(tile.getMaxOutput()), "/t"), 51, 44, 0x00CD00);
         int size = 44;
-        if (!tileEntity.getActive()) {
+        if (!tile.getActive()) {
             size += 9;
             String reason = "gui.mekanism.skyBlocked";
-            if (tileEntity.isBlacklistDimension()) {
+            if (tile.isBlacklistDimension()) {
                 reason = "gui.mekanism.noWind";
             }
             drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of(reason)), 51, size, 0x00CD00);
@@ -71,7 +71,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 20, guiTop + 37, 176, tileEntity.getActive() ? 52 : 64, 12, 12);
+        drawTexturedRect(guiLeft + 20, guiTop + 37, 176, tile.getActive() ? 52 : 64, 12, 12);
     }
 
     @Override

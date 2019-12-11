@@ -43,7 +43,7 @@ public class TileComponentEjector implements ITileComponent {
     //TODO: Figure out why these limits for output rates are here/if there should be an upgrade that modifies the output rates
     private static final int GAS_OUTPUT = 256;
     private static final int FLUID_OUTPUT = 256;
-    private TileEntityMekanism tileEntity;
+    private TileEntityMekanism tile;
     private boolean strictInput;
     private EnumColor outputColor;
     private EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
@@ -51,7 +51,7 @@ public class TileComponentEjector implements ITileComponent {
     private Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
 
     public TileComponentEjector(TileEntityMekanism tile) {
-        tileEntity = tile;
+        this.tile = tile;
         tile.addComponent(this);
     }
 
@@ -72,7 +72,7 @@ public class TileComponentEjector implements ITileComponent {
 
     @Override
     public void tick() {
-        if (!tileEntity.isRemote()) {
+        if (!tile.isRemote()) {
             if (tickDelay == 0) {
                 outputItems();
             } else {
@@ -101,7 +101,7 @@ public class TileComponentEjector implements ITileComponent {
     private void ejectGas(Set<Direction> outputSides, GasTank tank) {
         if (!tank.isEmpty()) {
             GasStack toEmit = new GasStack(tank.getStack(), Math.min(GAS_OUTPUT, tank.getStored()));
-            int emit = GasUtils.emit(toEmit, tileEntity, outputSides);
+            int emit = GasUtils.emit(toEmit, tile, outputSides);
             tank.drain(emit, Action.EXECUTE);
         }
     }
@@ -109,7 +109,7 @@ public class TileComponentEjector implements ITileComponent {
     private void ejectFluid(Set<Direction> outputSides, FluidTank tank) {
         if (!tank.getFluid().isEmpty() && tank.getFluidAmount() > 0) {
             FluidStack toEmit = PipeUtils.copy(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
-            int emit = PipeUtils.emit(outputSides, toEmit, tileEntity);
+            int emit = PipeUtils.emit(outputSides, toEmit, tile);
             tank.drain(emit, FluidAction.EXECUTE);
         }
     }
@@ -135,18 +135,18 @@ public class TileComponentEjector implements ITileComponent {
                     break;
                 }
             }
-            TileEntity tile = MekanismUtils.getTileEntity(tileEntity.getWorld(), tileEntity.getPos().offset(side));
+            TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
             if (tile == null) {
                 //If the spot is not loaded just skip trying to eject to it
                 continue;
             }
             TransitRequest finalEjectMap = ejectMap;
             TransitResponse response = CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()).getIfPresentElseDo(
-                  transporter -> TransporterUtils.insert(tileEntity, transporter, finalEjectMap, outputColor, true, 0),
+                  transporter -> TransporterUtils.insert(this.tile, transporter, finalEjectMap, outputColor, true, 0),
                   () -> InventoryUtils.putStackInInventory(tile, finalEjectMap, side, false)
             );
             if (!response.isEmpty()) {
-                response.getInvStack(tileEntity, side).use();
+                response.getInvStack(this.tile, side).use();
                 //Set map to null so next loop recalculates the eject map so that all sides get a chance to be ejected to
                 // assuming that there is still any left
                 //TODO: Eventually make some way to just directly update the TransitRequest with remaining parts
@@ -175,7 +175,7 @@ public class TileComponentEjector implements ITileComponent {
 
     public void setStrictInput(boolean strict) {
         strictInput = strict;
-        MekanismUtils.saveChunk(tileEntity);
+        MekanismUtils.saveChunk(tile);
     }
 
     public EnumColor getOutputColor() {
@@ -184,12 +184,12 @@ public class TileComponentEjector implements ITileComponent {
 
     public void setOutputColor(EnumColor color) {
         outputColor = color;
-        MekanismUtils.saveChunk(tileEntity);
+        MekanismUtils.saveChunk(tile);
     }
 
     public void setInputColor(RelativeSide side, EnumColor color) {
         inputColors[side.ordinal()] = color;
-        MekanismUtils.saveChunk(tileEntity);
+        MekanismUtils.saveChunk(tile);
     }
 
     public EnumColor getInputColor(RelativeSide side) {

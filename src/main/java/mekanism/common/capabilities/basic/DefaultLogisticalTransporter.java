@@ -51,12 +51,12 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public boolean canEmitTo(TileEntity tileEntity, Direction side) {
+    public boolean canEmitTo(TileEntity tile, Direction side) {
         return false;
     }
 
     @Override
-    public boolean canReceiveFrom(TileEntity tileEntity, Direction side) {
+    public boolean canReceiveFrom(TileEntity tile, Direction side) {
         return false;
     }
 

@@ -21,21 +21,21 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanism<CONTAINER> {
 
     //TODO: Potentially replace usages of this with getTileEntity() and make getTileEntity return container.getTileEntity()
-    protected final TILE tileEntity;
+    protected final TILE tile;
 
     protected GuiMekanismTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        tileEntity = container.getTileEntity();
+        tile = container.getTileEntity();
     }
 
     public TILE getTileEntity() {
-        return tileEntity;
+        return tile;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        if (tileEntity instanceof ISideConfiguration) {
+        if (tile instanceof ISideConfiguration) {
             ItemStack stack = minecraft.player.inventory.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 for (int i = 0; i < container.inventorySlots.size(); i++) {
@@ -54,8 +54,8 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     }
 
     private DataType getFromSlot(Slot slot) {
-        if (slot.slotNumber < tileEntity.getSlots() && slot instanceof InventoryContainerSlot) {
-            ISideConfiguration config = (ISideConfiguration) tileEntity;
+        if (slot.slotNumber < tile.getSlots() && slot instanceof InventoryContainerSlot) {
+            ISideConfiguration config = (ISideConfiguration) tile;
             ConfigInfo info = config.getConfig().getConfig(TransmissionType.ITEM);
             if (info != null) {
                 Set<DataType> supportedDataTypes = info.getSupportedDataTypes();

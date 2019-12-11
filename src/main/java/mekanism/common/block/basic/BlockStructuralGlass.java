@@ -36,12 +36,12 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IH
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            if (tile instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tile).onNeighborChange(neighborBlock);
             }
-            if (tileEntity instanceof IStructuralMultiblock) {
-                ((IStructuralMultiblock) tileEntity).doUpdate();
+            if (tile instanceof IStructuralMultiblock) {
+                ((IStructuralMultiblock) tile).doUpdate();
             }
         }
     }
@@ -66,12 +66,12 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IH
 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        TileEntityStructuralGlass tileEntity = MekanismUtils.getTileEntity(TileEntityStructuralGlass.class, world, pos);
-        if (tileEntity != null) {
+        TileEntityStructuralGlass tile = MekanismUtils.getTileEntity(TileEntityStructuralGlass.class, world, pos);
+        if (tile != null) {
             if (world.isRemote) {
                 return true;
             }
-            return tileEntity.onActivate(player, hand, player.getHeldItem(hand));
+            return tile.onActivate(player, hand, player.getHeldItem(hand));
         }
         return false;
     }

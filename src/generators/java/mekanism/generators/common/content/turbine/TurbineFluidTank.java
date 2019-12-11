@@ -7,8 +7,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TurbineFluidTank extends MultiblockFluidTank<TileEntityTurbineCasing> {
 
-    public TurbineFluidTank(TileEntityTurbineCasing tileEntity) {
-        super(tileEntity);
+    public TurbineFluidTank(TileEntityTurbineCasing tile) {
+        super(tile);
     }
 
     @Override

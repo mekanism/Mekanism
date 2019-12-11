@@ -158,15 +158,15 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public boolean isValidTransmitter(TileEntity tileEntity) {
-        if (!super.isValidTransmitter(tileEntity)) {
+    public boolean isValidTransmitter(TileEntity tile) {
+        if (!super.isValidTransmitter(tile)) {
             return false;
         }
-        if (!(tileEntity instanceof TileEntityMechanicalPipe)) {
+        if (!(tile instanceof TileEntityMechanicalPipe)) {
             return true;
         }
         FluidStack buffer = getBufferWithFallback();
-        FluidStack otherBuffer = ((TileEntityMechanicalPipe) tileEntity).getBufferWithFallback();
+        FluidStack otherBuffer = ((TileEntityMechanicalPipe) tile).getBufferWithFallback();
         return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isFluidEqual(otherBuffer);
     }
 

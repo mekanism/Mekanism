@@ -54,10 +54,10 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
     @Override
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         if (!world.isRemote && state.hasTileEntity() && state.getBlock() != newState.getBlock()) {
-            TileEntityTurbineRotor tileEntity = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
-            if (tileEntity != null) {
+            TileEntityTurbineRotor tile = MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
+            if (tile != null) {
                 //TODO: Evaluate
-                int amount = tileEntity.getHousedBlades();
+                int amount = tile.getHousedBlades();
                 if (amount > 0) {
                     spawnAsEntity(world, pos, GeneratorsItem.TURBINE_BLADE.getItemStack(amount));
                 }
@@ -71,16 +71,16 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tileEntity == null) {
+        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile == null) {
             return false;
         }
-        if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
 
         ItemStack stack = player.getHeldItem(hand);
-        TileEntityTurbineRotor rod = (TileEntityTurbineRotor) tileEntity;
+        TileEntityTurbineRotor rod = (TileEntityTurbineRotor) tile;
         if (!player.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
                 if (rod.addBlade()) {

@@ -48,7 +48,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     }
 
     public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {
-        return (TILE) tileEntity;
+        return (TILE) tile;
     }
 
     @Override
@@ -66,16 +66,16 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
         updateTabs();
 
         addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 156, guiTop + 6, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tileEntity), 0, 0, currentType)),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType)),
               getOnHover("gui.mekanism.autoEject")));
         for (GuiPos guiPos : slotPosList) {
             addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, guiPos.relativeSide.ordinal(),
                   () -> getTile().getConfig().getDataType(currentType, guiPos.relativeSide), () -> {
                 DataType dataType = getTile().getConfig().getDataType(currentType, guiPos.relativeSide);
                 return dataType == null ? EnumColor.GRAY : dataType.getColor();
-            }, tileEntity, () -> currentType, ConfigurationPacket.SIDE_DATA, getOnHover()));
+            }, tile, () -> currentType, ConfigurationPacket.SIDE_DATA, getOnHover()));
         }
     }
 
@@ -122,7 +122,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
     @Override
     public void tick() {
         super.tick();
-        if (tileEntity == null || MekanismUtils.getTileEntity(minecraft.world, tileEntity.getPos()) == null) {
+        if (tile == null || MekanismUtils.getTileEntity(minecraft.world, tile.getPos()) == null) {
             minecraft.displayGuiScreen(null);
         }
     }

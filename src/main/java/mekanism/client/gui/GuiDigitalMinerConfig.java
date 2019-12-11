@@ -64,7 +64,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                 }
             }
 
-            HashList<MinerFilter<?>> filters = tileEntity.getFilters();
+            HashList<MinerFilter<?>> filters = tile.getFilters();
             //Check for filter interaction
             for (int i = 0; i < 4; i++) {
                 int index = getFilterIndex() + i;
@@ -89,16 +89,16 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                             }
                         }
                         if (filter instanceof IItemStackFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_ITEMSTACK, tileEntity.getPos(), index));
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_ITEMSTACK, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IOreDictFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_TAG, tileEntity.getPos(), index));
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_TAG, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IMaterialFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MATERIAL, tileEntity.getPos(), index));
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MATERIAL, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IModIDFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MOD_ID, tileEntity.getPos(), index));
+                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MOD_ID, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         }
                     }
@@ -117,14 +117,14 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     public void init() {
         super.init();
         addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tileEntity.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tile.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 67, 11, 12, getButtonLocation("checkmark"), this::setRadius));
         addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 92, 11, 12, getButtonLocation("checkmark"), this::setMinY));
         addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 117, 11, 12, getButtonLocation("checkmark"), this::setMaxY));
         addButton(new MekanismImageButton(this, guiLeft + 11, guiTop + 141, 14, getButtonLocation("strict_input"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(10))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(10))),
               getOnHover("gui.mekanism.digitalMiner.inverse")));
 
         String prevRad = radiusField != null ? radiusField.getText() : "";
@@ -146,15 +146,15 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        HashList<MinerFilter<?>> filters = tileEntity.getFilters();
+        HashList<MinerFilter<?>> filters = tile.getFilters();
         //TODO: Lang Keys
         drawString(TextComponentUtil.translate("gui.mekanism.digitalMinerConfig"), 43, 6, 0x404040);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.filters"), ":"), 11, 19, 0x00CD00);
         drawString(TextComponentUtil.build("T: " + filters.size()), 11, 28, 0x00CD00);
-        drawString(TextComponentUtil.build("I: ", OnOff.of(tileEntity.inverse)), 11, 131, 0x00CD00);
-        drawString(TextComponentUtil.build("Radi: " + tileEntity.getRadius()), 11, 58, 0x00CD00);
-        drawString(TextComponentUtil.build("Min: " + tileEntity.minY), 11, 83, 0x00CD00);
-        drawString(TextComponentUtil.build("Max: " + tileEntity.maxY), 11, 108, 0x00CD00);
+        drawString(TextComponentUtil.build("I: ", OnOff.of(tile.inverse)), 11, 131, 0x00CD00);
+        drawString(TextComponentUtil.build("Radi: " + tile.getRadius()), 11, 58, 0x00CD00);
+        drawString(TextComponentUtil.build("Min: " + tile.minY), 11, 83, 0x00CD00);
+        drawString(TextComponentUtil.build("Max: " + tile.maxY), 11, 108, 0x00CD00);
 
         for (int i = 0; i < 4; i++) {
             MinerFilter<?> filter = filters.get(getFilterIndex() + i);
@@ -237,23 +237,23 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     private void setRadius() {
         if (!radiusField.getText().isEmpty()) {
             int toUse = Math.max(0, Math.min(Integer.parseInt(radiusField.getText()), MekanismConfig.general.digitalMinerMaxRadius.get()));
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(6, toUse)));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(6, toUse)));
             radiusField.setText("");
         }
     }
 
     private void setMinY() {
         if (!minField.getText().isEmpty()) {
-            int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tileEntity.maxY));
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(7, toUse)));
+            int toUse = Math.max(0, Math.min(Integer.parseInt(minField.getText()), tile.maxY));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(7, toUse)));
             minField.setText("");
         }
     }
 
     private void setMaxY() {
         if (!maxField.getText().isEmpty()) {
-            int toUse = Math.max(tileEntity.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
-            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(8, toUse)));
+            int toUse = Math.max(tile.minY, Math.min(Integer.parseInt(maxField.getText()), 255));
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(8, toUse)));
             maxField.setText("");
         }
     }

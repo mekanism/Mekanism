@@ -139,14 +139,14 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
      */
     @Override
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
-        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tileEntity != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
+        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tile).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
             float zRandom = (float) pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
-            Direction side = tileEntity.getDirection();
+            Direction side = tile.getDirection();
 
             switch (side) {
                 case WEST:
@@ -174,8 +174,8 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
     @Override
     public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get()) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).wasActiveRecently()) {
                 return MekanismConfig.client.ambientLightingLevel.get();
             }
         }
@@ -188,8 +188,8 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
             return true;
         }
         //TODO: Make this be moved into the logistical sorter tile
-        TileEntityLogisticalSorter tileEntity = MekanismUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
-        if (tileEntity == null) {
+        TileEntityLogisticalSorter tile = MekanismUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
+        if (tile == null) {
             return false;
         }
         ItemStack stack = player.getHeldItem(hand);
@@ -197,22 +197,22 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
             IMekWrench wrenchHandler = Wrenches.getHandler(stack);
             if (wrenchHandler != null) {
                 if (wrenchHandler.canUseWrench(stack, player, hit.getPos())) {
-                    if (SecurityUtils.canAccess(player, tileEntity)) {
+                    if (SecurityUtils.canAccess(player, tile)) {
                         if (player.isSneaking()) {
                             MekanismUtils.dismantleBlock(state, world, pos);
                             return true;
                         }
-                        Direction change = tileEntity.getDirection().rotateY();
-                        if (!tileEntity.hasConnectedInventory()) {
+                        Direction change = tile.getDirection().rotateY();
+                        if (!tile.hasConnectedInventory()) {
                             for (Direction dir : EnumUtils.DIRECTIONS) {
-                                TileEntity tile = MekanismUtils.getTileEntity(world, pos.offset(dir));
-                                if (InventoryUtils.isItemHandler(tile, dir)) {
+                                TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos.offset(dir));
+                                if (InventoryUtils.isItemHandler(tileEntity, dir)) {
                                     change = dir.getOpposite();
                                     break;
                                 }
                             }
                         }
-                        tileEntity.setFacing(change);
+                        tile.setFacing(change);
                         world.notifyNeighborsOfStateChange(pos, this);
                     } else {
                         SecurityUtils.displayNoAccess(player);
@@ -221,7 +221,7 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
                 }
             }
         }
-        return tileEntity.openGui(player);
+        return tile.openGui(player);
     }
 
     @Nonnull
@@ -246,16 +246,16 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
     @Deprecated
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         if (!world.isRemote) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (tileEntity instanceof TileEntityMekanism) {
-                ((TileEntityMekanism) tileEntity).onNeighborChange(neighborBlock);
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            if (tile instanceof TileEntityMekanism) {
+                ((TileEntityMekanism) tile).onNeighborChange(neighborBlock);
             }
-            if (tileEntity instanceof TileEntityLogisticalSorter) {
-                TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) tileEntity;
+            if (tile instanceof TileEntityLogisticalSorter) {
+                TileEntityLogisticalSorter sorter = (TileEntityLogisticalSorter) tile;
                 if (!sorter.hasConnectedInventory()) {
                     for (Direction dir : EnumUtils.DIRECTIONS) {
-                        TileEntity tile = MekanismUtils.getTileEntity(world, pos.offset(dir));
-                        if (InventoryUtils.isItemHandler(tile, dir)) {
+                        TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos.offset(dir));
+                        if (InventoryUtils.isItemHandler(tileEntity, dir)) {
                             sorter.setFacing(dir.getOpposite());
                             return;
                         }

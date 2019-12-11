@@ -38,9 +38,9 @@ public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble<BlockMechani
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            PipeTier tier = getTier(itemstack);
+            PipeTier tier = getTier(stack);
             if (tier != null) {
                 tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.capacity"), ": ", EnumColor.GRAY, tier.getPipeCapacity() + "mB/t"));
                 tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.pumpRate"), ": ", EnumColor.GRAY, tier.getPipePullAmount() + "mB/t"));

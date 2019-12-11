@@ -30,21 +30,21 @@ public abstract class ItemBlockAdvancedTooltip<BLOCK extends Block> extends Item
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            addStats(itemstack, world, tooltip, flag);
+            addStats(stack, world, tooltip, flag);
             tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
                   EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.for_details"), "."));
             tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.AQUA, MekanismKeyHandler.sneakKey.getKey(),
                   EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.and"), " ", EnumColor.AQUA, MekanismKeyHandler.modeSwitchKey.getKey(), EnumColor.GRAY, " ",
                   Translation.of("tooltip.mekanism.for_description"), "."));
         } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
-            addDetails(itemstack, world, tooltip, flag);
+            addDetails(stack, world, tooltip, flag);
         } else {
-            addDescription(itemstack, world, tooltip, flag);
+            addDescription(stack, world, tooltip, flag);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public abstract void addDetails(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag);
+    public abstract void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag);
 }

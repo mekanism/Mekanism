@@ -27,9 +27,9 @@ public abstract class GuiTypeFilter<FILTER extends IFilter<FILTER>, TILE extends
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity instanceof TileEntityDigitalMiner && overReplaceOutput(xAxis, yAxis)) {
+        if (tile instanceof TileEntityDigitalMiner && overReplaceOutput(xAxis, yAxis)) {
             fill(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);
-        } else if (tileEntity instanceof TileEntityLogisticalSorter) {
+        } else if (tile instanceof TileEntityLogisticalSorter) {
             drawItemStackBackground(xAxis, yAxis);
         }
         if (overTypeInput(xAxis, yAxis)) {

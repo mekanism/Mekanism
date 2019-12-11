@@ -37,60 +37,60 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiTurbineTab(this, tileEntity, TurbineTab.STAT, resource));
-        addButton(new GuiVerticalPowerBar(this, tileEntity, resource, 164, 16));
+        addButton(new GuiTurbineTab(this, tile, TurbineTab.STAT, resource));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 16));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return TextComponentUtil.build(Translation.of("gui.mekanism.steamInput"),
-                      ": " + (tileEntity.structure == null ? 0 : tileEntity.structure.lastSteamInput) + " mB/t");
+                      ": " + (tile.structure == null ? 0 : tile.structure.lastSteamInput) + " mB/t");
             }
 
             @Override
             public double getLevel() {
-                if (tileEntity.structure == null) {
+                if (tile.structure == null) {
                     return 0;
                 }
-                double rate = Math.min(tileEntity.structure.lowerVolume * tileEntity.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get(),
-                      tileEntity.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+                double rate = Math.min(tile.structure.lowerVolume * tile.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get(),
+                      tile.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
                 if (rate == 0) {
                     return 0;
                 }
-                return (double) tileEntity.structure.lastSteamInput / rate;
+                return (double) tile.structure.lastSteamInput / rate;
             }
         }, resource, 40, 13));
         addButton(new GuiEnergyInfo(() -> {
-            double producing = tileEntity.structure == null ? 0 : tileEntity.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                                                  Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
-            return Arrays.asList(TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tileEntity.getEnergy(), tileEntity.getMaxEnergy())),
+            double producing = tile.structure == null ? 0 : tile.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
+                                                            Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+            return Arrays.asList(TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
                   TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ", EnergyDisplay.of(producing), "/t"));
         }, this, resource));
-        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tileEntity.structure == null ? GasMode.IDLE : tileEntity.structure.dumpMode,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(0)))));
+        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tile.structure == null ? GasMode.IDLE : tile.structure.dumpMode,
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 5, 0x404040);
-        if (tileEntity.structure != null) {
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 5, 0x404040);
+        if (tile.structure != null) {
             double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
-                                      Math.min(tileEntity.structure.blades, tileEntity.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
-            double rate = tileEntity.structure.lowerVolume * (tileEntity.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
-            rate = Math.min(rate, tileEntity.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+                                      Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+            double rate = tile.structure.lowerVolume * (tile.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+            rate = Math.min(rate, tile.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
             renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.production"), ": ",
-                  EnergyDisplay.of(tileEntity.structure.clientFlow * energyMultiplier)), 53, 26, 0x00CD00, 106);
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.flow_rate"), ": " + tileEntity.structure.clientFlow + " mB/t"), 53, 35, 0x00CD00, 106);
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.capacity"), ": " + tileEntity.structure.getFluidCapacity() + " mB"), 53, 44, 0x00CD00, 106);
+                  EnergyDisplay.of(tile.structure.clientFlow * energyMultiplier)), 53, 26, 0x00CD00, 106);
+            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.flow_rate"), ": " + tile.structure.clientFlow + " mB/t"), 53, 35, 0x00CD00, 106);
+            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.capacity"), ": " + tile.structure.getFluidCapacity() + " mB"), 53, 44, 0x00CD00, 106);
             renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.max_flow"), ": " + rate + " mB/t"), 53, 53, 0x00CD00, 106);
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
             //TODO: 1.14 Convert to GuiElement
             if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-                if (tileEntity.structure.fluidStored.isEmpty()) {
+                if (tile.structure.fluidStored.isEmpty()) {
                     displayTooltip(TextComponentUtil.translate("gui.mekanism.empty"), xAxis, yAxis);
                 } else {
-                    displayTooltip(TextComponentUtil.build(tileEntity.structure.fluidStored, ": " + tileEntity.structure.fluidStored.getAmount() + "mB"), xAxis, yAxis);
+                    displayTooltip(TextComponentUtil.build(tile.structure.fluidStored, ": " + tile.structure.fluidStored.getAmount() + "mB"), xAxis, yAxis);
                 }
             }
         }
@@ -100,11 +100,11 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity.structure != null) {
-            int scaledFluidLevel = tileEntity.getScaledFluidLevel(58);
+        if (tile.structure != null) {
+            int scaledFluidLevel = tile.getScaledFluidLevel(58);
             if (scaledFluidLevel > 0) {
-                displayGauge(7, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 0);
-                displayGauge(23, 14, scaledFluidLevel, tileEntity.structure.fluidStored, 1);
+                displayGauge(7, 14, scaledFluidLevel, tile.structure.fluidStored, 0);
+                displayGauge(23, 14, scaledFluidLevel, tile.structure.fluidStored, 1);
             }
         }
     }

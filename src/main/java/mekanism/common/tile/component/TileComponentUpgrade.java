@@ -33,7 +33,7 @@ public class TileComponentUpgrade implements ITileComponent {
     /**
      * TileEntity implementing this component.
      */
-    private TileEntityMekanism tileEntity;
+    private TileEntityMekanism tile;
     private Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
     private Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
     /**
@@ -42,7 +42,7 @@ public class TileComponentUpgrade implements ITileComponent {
     private UpgradeInventorySlot upgradeSlot;
 
     public TileComponentUpgrade(TileEntityMekanism tile, @Nonnull UpgradeInventorySlot slot) {
-        tileEntity = tile;
+        this.tile = tile;
         upgradeSlot = slot;
         slot.getSupportedUpgrade().forEach(this::setSupported);
         tile.addComponent(this);
@@ -50,7 +50,7 @@ public class TileComponentUpgrade implements ITileComponent {
 
     @Override
     public void tick() {
-        if (!tileEntity.isRemote()) {
+        if (!tile.isRemote()) {
             ItemStack stack = upgradeSlot.getStack();
             if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem) {
                 Upgrade type = ((IUpgradeItem) stack.getItem()).getUpgradeType(stack);
@@ -64,8 +64,8 @@ public class TileComponentUpgrade implements ITileComponent {
                         if (upgradeSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                             //TODO: Print warning about failing to shrink size of stack
                         }
-                        Mekanism.packetHandler.sendUpdatePacket(tileEntity);
-                        tileEntity.markDirty();
+                        Mekanism.packetHandler.sendUpdatePacket(tile);
+                        tile.markDirty();
                     }
                 } else {
                     upgradeTicks = 0;
@@ -93,7 +93,7 @@ public class TileComponentUpgrade implements ITileComponent {
 
     public void addUpgrade(Upgrade upgrade) {
         upgrades.put(upgrade, Math.min(upgrade.getMax(), getUpgrades(upgrade) + 1));
-        tileEntity.recalculateUpgrades(upgrade);
+        tile.recalculateUpgrades(upgrade);
     }
 
     public void removeUpgrade(Upgrade upgrade) {
@@ -101,7 +101,7 @@ public class TileComponentUpgrade implements ITileComponent {
         if (upgrades.get(upgrade) == 0) {
             upgrades.remove(upgrade);
         }
-        tileEntity.recalculateUpgrades(upgrade);
+        tile.recalculateUpgrades(upgrade);
     }
 
     public void setSupported(Upgrade upgrade) {
@@ -142,7 +142,7 @@ public class TileComponentUpgrade implements ITileComponent {
         }
         upgradeTicks = dataStream.readInt();
         for (Upgrade upgrade : getSupportedTypes()) {
-            tileEntity.recalculateUpgrades(upgrade);
+            tile.recalculateUpgrades(upgrade);
         }
     }
 
@@ -160,7 +160,7 @@ public class TileComponentUpgrade implements ITileComponent {
     public void read(CompoundNBT nbtTags) {
         upgrades = Upgrade.buildMap(nbtTags);
         for (Upgrade upgrade : getSupportedTypes()) {
-            tileEntity.recalculateUpgrades(upgrade);
+            tile.recalculateUpgrades(upgrade);
         }
         //Load the inventory
         if (nbtTags.contains("UpgradeSlot", NBT.TAG_COMPOUND)) {

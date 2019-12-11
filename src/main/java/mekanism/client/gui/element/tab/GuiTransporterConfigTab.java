@@ -24,6 +24,6 @@ public class GuiTransporterConfigTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.TRANSPORTER_CONFIGURATION, tileEntity.getPos()));
+        Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.TRANSPORTER_CONFIGURATION, tile.getPos()));
     }
 }

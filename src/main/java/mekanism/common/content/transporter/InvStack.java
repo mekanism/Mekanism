@@ -20,7 +20,7 @@ import net.minecraftforge.items.IItemHandler;
 public final class InvStack {
 
     /** The TileEntity owning the container this InvStack belongs to. */
-    private final TileEntity tileEntity;
+    private final TileEntity tile;
 
     /** The side of the inventory we are accessing with this InvStack. */
     private final Direction side;
@@ -38,7 +38,7 @@ public final class InvStack {
     private int itemCount;
 
     public InvStack(TileEntity inv, Direction facing) {
-        tileEntity = inv;
+        tile = inv;
         side = facing;
     }
 
@@ -47,7 +47,7 @@ public final class InvStack {
     }
 
     public InvStack(TileEntity inv, ItemStack stack, Map<Integer, Integer> idMap, Direction facing) {
-        tileEntity = inv;
+        tile = inv;
         side = facing;
         itemMap = idMap;
         for (Entry<Integer, Integer> entry : idMap.entrySet()) {
@@ -87,10 +87,10 @@ public final class InvStack {
      * @param amount - the amount of items to remove
      */
     public void use(int amount) {
-        if (!InventoryUtils.assertItemHandler("InvStack", tileEntity, side)) {
+        if (!InventoryUtils.assertItemHandler("InvStack", tile, side)) {
             return;
         }
-        IItemHandler handler = InventoryUtils.getItemHandler(tileEntity, side);
+        IItemHandler handler = InventoryUtils.getItemHandler(tile, side);
         for (Entry<Integer, Integer> entry : itemMap.entrySet()) {
             int toUse = Math.min(amount, entry.getValue());
             ItemStack ret = handler.extractItem(entry.getKey(), toUse, false);
@@ -98,7 +98,7 @@ public final class InvStack {
             if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
                 Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count") + " does not line up with InvStack's prediction.");
                 Mekanism.logger.warn("InvStack item: " + itemType.getStack() + ", ret: " + ret);
-                Mekanism.logger.warn("Tile: " + tileEntity + " " + tileEntity.getPos());
+                Mekanism.logger.warn("Tile: " + tile + " " + tile.getPos());
             }
 
             amount -= toUse;

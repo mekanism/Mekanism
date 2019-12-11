@@ -75,14 +75,14 @@ public class BlockEnrichmentChamber extends BlockMekanism implements IBlockElect
      */
     @Override
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
-        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tileEntity != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tileEntity).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
+        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tile).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
             float xRandom = (float) pos.getX() + 0.5F;
             float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
             float zRandom = (float) pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
-            Direction side = tileEntity.getDirection();
+            Direction side = tile.getDirection();
 
             switch (side) {
                 case WEST:
@@ -110,8 +110,8 @@ public class BlockEnrichmentChamber extends BlockMekanism implements IBlockElect
     @Override
     public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get()) {
-            TileEntity tileEntity = MekanismUtils.getTileEntity(world, pos);
-            if (tileEntity instanceof IActiveState && ((IActiveState) tileEntity).lightUpdate() && ((IActiveState) tileEntity).wasActiveRecently()) {
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+            if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).wasActiveRecently()) {
                 return MekanismConfig.client.ambientLightingLevel.get();
             }
         }
@@ -123,14 +123,14 @@ public class BlockEnrichmentChamber extends BlockMekanism implements IBlockElect
         if (world.isRemote) {
             return true;
         }
-        TileEntityMekanism tileEntity = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-        if (tileEntity == null) {
+        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile == null) {
             return false;
         }
-        if (tileEntity.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return true;
         }
-        return tileEntity.openGui(player);
+        return tile.openGui(player);
     }
 
     @Nonnull

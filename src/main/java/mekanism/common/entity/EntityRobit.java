@@ -366,15 +366,15 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     @Nonnull
     @Override
-    public ActionResultType applyPlayerInteraction(PlayerEntity entityplayer, Vec3d vec, Hand hand) {
-        ItemStack stack = entityplayer.getHeldItem(hand);
-        if (entityplayer.isSneaking()) {
+    public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        if (player.isSneaking()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 if (!world.isRemote) {
                     drop();
                 }
                 remove();
-                entityplayer.swingArm(hand);
+                player.swingArm(hand);
                 return ActionResultType.SUCCESS;
             }
         } else {

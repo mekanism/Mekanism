@@ -240,10 +240,10 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 int stackId = nextId++;
                 transit.put(stackId, stack);
                 Coord4D coord = coord();
-                TileEntityLogisticalTransporter tileEntity = getTileEntity();
+                TileEntityLogisticalTransporter tile = getTileEntity();
                 //TODO: Check
-                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(coord, tileEntity.makeSyncPacket(stackId, stack)), tileEntity.getWorld(), coord.getPos());
-                MekanismUtils.saveChunk(tileEntity);
+                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(coord, tile.makeSyncPacket(stackId, stack)), tile.getWorld(), coord.getPos());
+                MekanismUtils.saveChunk(tile);
             }
             return response;
         }
@@ -294,7 +294,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     @Override
-    public boolean canEmitTo(TileEntity tileEntity, Direction side) {
+    public boolean canEmitTo(TileEntity tile, Direction side) {
         if (!getTileEntity().canConnect(side)) {
             return false;
         }
@@ -302,7 +302,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     @Override
-    public boolean canReceiveFrom(TileEntity tileEntity, Direction side) {
+    public boolean canReceiveFrom(TileEntity tile, Direction side) {
         if (!getTileEntity().canConnect(side)) {
             return false;
         }

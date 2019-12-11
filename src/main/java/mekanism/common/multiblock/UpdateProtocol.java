@@ -34,8 +34,8 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
      */
     public TileEntityMultiblock<T> pointer;
 
-    public UpdateProtocol(TileEntityMultiblock<T> tileEntity) {
-        pointer = tileEntity;
+    public UpdateProtocol(TileEntityMultiblock<T> tile) {
+        pointer = tile;
     }
 
     /**
@@ -347,9 +347,9 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
 
             List<String> idsFound = new ArrayList<>();
             for (Coord4D obj : structureFound.locations) {
-                TileEntity tileEntity = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
-                if (tileEntity instanceof TileEntityMultiblock && ((TileEntityMultiblock<?>) tileEntity).cachedID != null) {
-                    idsFound.add(((TileEntityMultiblock<?>) tileEntity).cachedID);
+                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
+                if (tile instanceof TileEntityMultiblock && ((TileEntityMultiblock<?>) tile).cachedID != null) {
+                    idsFound.add(((TileEntityMultiblock<?>) tile).cachedID);
                 }
             }
 
@@ -383,14 +383,14 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>> {
             Coord4D toUse = null;
 
             for (Coord4D obj : structureFound.locations) {
-                TileEntity tileEntity = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
-                if (tileEntity instanceof TileEntityMultiblock) {
-                    ((TileEntityMultiblock<T>) tileEntity).structure = structureFound;
+                TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), obj.getPos());
+                if (tile instanceof TileEntityMultiblock) {
+                    ((TileEntityMultiblock<T>) tile).structure = structureFound;
                     if (toUse == null) {
                         toUse = obj;
                     }
-                } else if (tileEntity instanceof IStructuralMultiblock) {
-                    structures.add((IStructuralMultiblock) tileEntity);
+                } else if (tile instanceof IStructuralMultiblock) {
+                    structures.add((IStructuralMultiblock) tile);
                 }
             }
 

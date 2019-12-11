@@ -56,10 +56,10 @@ public class BlockThermalEvaporationController extends BlockMekanism implements 
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.isSneaking()) {
-            TileEntityThermalEvaporationController tileEntity = MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, world, pos);
-            if (tileEntity != null) {
+            TileEntityThermalEvaporationController tile = MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, world, pos);
+            if (tile != null) {
                 if (!world.isRemote) {
-                    NetworkHooks.openGui((ServerPlayerEntity) player, getProvider(tileEntity), pos);
+                    NetworkHooks.openGui((ServerPlayerEntity) player, getProvider(tile), pos);
                 }
                 return true;
             }

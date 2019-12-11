@@ -37,7 +37,7 @@ public class ItemSeismicReader extends ItemEnergized {
     }
 
     @Override
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
             tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hold"), " ", EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getKey(),
                   EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.for_details"), "."));
@@ -45,7 +45,7 @@ public class ItemSeismicReader extends ItemEnergized {
                   EnumColor.GRAY, " ", Translation.of("tooltip.mekanism.and"), " ", EnumColor.AQUA, MekanismKeyHandler.modeSwitchKey.getKey(), EnumColor.GRAY, " ",
                   Translation.of("tooltip.mekanism.for_description"), "."));
         } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
-            super.addInformation(itemstack, world, tooltip, flag);
+            super.addInformation(stack, world, tooltip, flag);
         } else {
             tooltip.add(TextComponentUtil.translate("tooltip.mekanism.seismic_reader"));
         }

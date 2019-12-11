@@ -43,20 +43,20 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack itemstack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        super.addInformation(itemstack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("tooltip.mekanism.fireMode"), OnOff.of(getFireState(itemstack))));
+    public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
+        super.addInformation(stack, world, tooltip, flag);
+        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("tooltip.mekanism.fireMode"), OnOff.of(getFireState(stack))));
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack itemstack, World world, LivingEntity entityLiving, int itemUseCount) {
-        if (entityLiving instanceof PlayerEntity && getEnergy(itemstack) > 0) {
+    public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity entityLiving, int itemUseCount) {
+        if (entityLiving instanceof PlayerEntity && getEnergy(stack) > 0) {
             PlayerEntity player = (PlayerEntity) entityLiving;
-            boolean flag = player.isCreative() || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, itemstack) > 0;
+            boolean flag = player.isCreative() || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, stack) > 0;
             ItemStack ammo = findAmmo(player);
 
-            int maxItemUse = getUseDuration(itemstack) - itemUseCount;
-            maxItemUse = ForgeEventFactory.onArrowLoose(itemstack, world, player, maxItemUse, !itemstack.isEmpty() || flag);
+            int maxItemUse = getUseDuration(stack) - itemUseCount;
+            maxItemUse = ForgeEventFactory.onArrowLoose(stack, world, player, maxItemUse, !stack.isEmpty() || flag);
             if (maxItemUse < 0) {
                 return;
             }
@@ -73,21 +73,21 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                 if (f > 1.0F) {
                     f = 1.0F;
                 }
-                boolean noConsume = flag && itemstack.getItem() instanceof ArrowItem;
+                boolean noConsume = flag && stack.getItem() instanceof ArrowItem;
                 if (!world.isRemote) {
                     ArrowItem itemarrow = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
-                    AbstractArrowEntity entityarrow = itemarrow.createArrow(world, itemstack, player);
+                    AbstractArrowEntity entityarrow = itemarrow.createArrow(world, stack, player);
                     entityarrow.shoot(player, player.rotationPitch, player.rotationYaw, 0.0F, f * 3.0F, 1.0F);
                     if (f == 1.0F) {
                         entityarrow.setIsCritical(true);
                     }
                     if (!player.isCreative()) {
-                        setEnergy(itemstack, getEnergy(itemstack) - (getFireState(itemstack) ? 1200 : 120));
+                        setEnergy(stack, getEnergy(stack) - (getFireState(stack) ? 1200 : 120));
                     }
                     if (noConsume) {
                         entityarrow.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                     }
-                    entityarrow.setFire(getFireState(itemstack) ? 100 : 0);
+                    entityarrow.setFire(getFireState(stack) ? 100 : 0);
                     world.addEntity(entityarrow);
                 }
 
@@ -106,13 +106,13 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
     }
 
     @Override
-    public int getUseDuration(ItemStack itemstack) {
+    public int getUseDuration(ItemStack stack) {
         return 72000;
     }
 
     @Nonnull
     @Override
-    public UseAction getUseAction(ItemStack itemstack) {
+    public UseAction getUseAction(ItemStack stack) {
         return UseAction.BOW;
     }
 
@@ -123,9 +123,9 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
             return player.getHeldItem(Hand.MAIN_HAND);
         }
         for (int i = 0; i < player.inventory.getSizeInventory(); ++i) {
-            ItemStack itemstack = player.inventory.getStackInSlot(i);
-            if (isArrow(itemstack)) {
-                return itemstack;
+            ItemStack stack = player.inventory.getStackInSlot(i);
+            if (isArrow(stack)) {
+                return stack;
             }
         }
         return ItemStack.EMPTY;
@@ -137,26 +137,26 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        ItemStack itemStackIn = playerIn.getHeldItem(hand);
-        boolean flag = !findAmmo(playerIn).isEmpty();
-        ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(itemStackIn, worldIn, playerIn, hand, flag);
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        boolean flag = !findAmmo(player).isEmpty();
+        ActionResult<ItemStack> ret = ForgeEventFactory.onArrowNock(stack, world, player, hand, flag);
         if (ret != null) {
             return ret;
         }
-        if (!playerIn.isCreative() && !flag) {
-            return new ActionResult<>(ActionResultType.FAIL, itemStackIn);
+        if (!player.isCreative() && !flag) {
+            return new ActionResult<>(ActionResultType.FAIL, stack);
         }
-        playerIn.setActiveHand(hand);
-        return new ActionResult<>(ActionResultType.SUCCESS, itemStackIn);
+        player.setActiveHand(hand);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
-    public void setFireState(ItemStack itemstack, boolean state) {
-        ItemDataUtils.setBoolean(itemstack, "fireState", state);
+    public void setFireState(ItemStack stack, boolean state) {
+        ItemDataUtils.setBoolean(stack, "fireState", state);
     }
 
-    public boolean getFireState(ItemStack itemstack) {
-        return ItemDataUtils.getBoolean(itemstack, "fireState");
+    public boolean getFireState(ItemStack stack) {
+        return ItemDataUtils.getBoolean(stack, "fireState");
     }
 
     @Override

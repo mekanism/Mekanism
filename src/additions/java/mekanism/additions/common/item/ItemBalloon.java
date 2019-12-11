@@ -43,16 +43,16 @@ public class ItemBalloon extends Item {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity entityplayer, @Nonnull Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         if (!world.isRemote) {
-            Pos3D pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(entityplayer.renderYawOffset).translate(new Pos3D(entityplayer));
+            Pos3D pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).rotateYaw(player.renderYawOffset).translate(new Pos3D(player));
             world.addEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 0.25, pos.z - 0.5, color));
         }
-        ItemStack itemstack = entityplayer.getHeldItem(hand);
-        if (!entityplayer.isCreative()) {
-            itemstack.shrink(1);
+        ItemStack stack = player.getHeldItem(hand);
+        if (!player.isCreative()) {
+            stack.shrink(1);
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+        return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }
 
     @Nonnull

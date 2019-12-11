@@ -13,15 +13,15 @@ public class RenderHeatGenerator extends TileEntityRenderer<TileEntityHeatGenera
     private ModelHeatGenerator model = new ModelHeatGenerator();
 
     @Override
-    public void render(TileEntityHeatGenerator tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+    public void render(TileEntityHeatGenerator tile, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "heat_generator.png"));
 
-        MekanismRenderer.rotate(tileEntity.getDirection(), 180, 0, 270, 90);
+        MekanismRenderer.rotate(tile.getDirection(), 180, 0, 270, 90);
 
         GlStateManager.rotatef(180, 0, 0, 1);
-        model.render(0.0625F, tileEntity.getActive(), rendererDispatcher.textureManager);
+        model.render(0.0625F, tile.getActive(), rendererDispatcher.textureManager);
         GlStateManager.popMatrix();
     }
 }

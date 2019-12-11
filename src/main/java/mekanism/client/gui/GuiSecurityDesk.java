@@ -52,9 +52,9 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
 
         addButton(removeButton = new TranslationButton(this, guiLeft + 13, guiTop + 81, 122, 20, "gui.mekanism.remove", () -> {
             int selection = scrollList.getSelection();
-            if (tileEntity.frequency != null && selection != -1) {
-                TileNetworkList data = TileNetworkList.withContents(1, tileEntity.frequency.trusted.get(selection));
-                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+            if (tile.frequency != null && selection != -1) {
+                TileNetworkList data = TileNetworkList.withContents(1, tile.frequency.trusted.get(selection));
+                Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
                 scrollList.clearSelection();
             }
             updateButtons();
@@ -64,19 +64,19 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
         trustedField.setEnableBackgroundDrawing(false);
         addButton(publicButton = new MekanismImageButton(this, guiLeft + 13, guiTop + 113, 40, 16, 40, 16, getButtonLocation("public"),
               () -> {
-                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, SecurityMode.PUBLIC)));
+                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3, SecurityMode.PUBLIC)));
                   updateButtons();
               },
               getOnHover("gui.mekanism.publicMode")));
         addButton(privateButton = new MekanismImageButton(this, guiLeft + 54, guiTop + 113, 40, 16, 40, 16, getButtonLocation("private"),
               () -> {
-                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, SecurityMode.PRIVATE)));
+                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3, SecurityMode.PRIVATE)));
                   updateButtons();
               },
               getOnHover("gui.mekanism.privateMode")));
         addButton(trustedButton = new MekanismImageButton(this, guiLeft + 95, guiTop + 113, 40, 16, 40, 16, getButtonLocation("trusted"),
               () -> {
-                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(3, SecurityMode.TRUSTED)));
+                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3, SecurityMode.TRUSTED)));
                   updateButtons();
               },
               getOnHover("gui.mekanism.trustedMode")));
@@ -88,12 +88,12 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
               }));
         addButton(overrideButton = new MekanismImageButton(this, guiLeft + 146, guiTop + 59, 16, 16, getButtonLocation("exclamation"),
               () -> {
-                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, TileNetworkList.withContents(2)));
+                  Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(2)));
                   updateButtons();
               },
               (onHover, xAxis, yAxis) -> {
-                  if (tileEntity.frequency != null) {
-                      displayTooltip(TextComponentUtil.build(Translation.of("gui.mekanism.securityOverride"), ": ", OnOff.of(tileEntity.frequency.override)), xAxis, yAxis);
+                  if (tile.frequency != null) {
+                      displayTooltip(TextComponentUtil.build(Translation.of("gui.mekanism.securityOverride"), ": ", OnOff.of(tile.frequency.override)), xAxis, yAxis);
                   }
               }));
         updateButtons();
@@ -104,14 +104,14 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
             return;
         }
         TileNetworkList data = TileNetworkList.withContents(0, trusted);
-        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tileEntity, data));
+        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
     }
 
     public void updateButtons() {
-        if (tileEntity.ownerUUID != null) {
+        if (tile.ownerUUID != null) {
             List<String> text = new ArrayList<>();
-            if (tileEntity.frequency != null) {
-                for (String s : tileEntity.frequency.trusted) {
+            if (tile.frequency != null) {
+                for (String s : tile.frequency.trusted) {
                     text.add(s);
                 }
             }
@@ -119,10 +119,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
             removeButton.active = scrollList.hasSelection();
         }
 
-        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(minecraft.player.getUniqueID())) {
-            publicButton.active = tileEntity.frequency.securityMode != SecurityMode.PUBLIC;
-            privateButton.active = tileEntity.frequency.securityMode != SecurityMode.PRIVATE;
-            trustedButton.active = tileEntity.frequency.securityMode != SecurityMode.TRUSTED;
+        if (tile.frequency != null && tile.ownerUUID != null && tile.ownerUUID.equals(minecraft.player.getUniqueID())) {
+            publicButton.active = tile.frequency.securityMode != SecurityMode.PUBLIC;
+            privateButton.active = tile.frequency.securityMode != SecurityMode.PRIVATE;
+            trustedButton.active = tile.frequency.securityMode != SecurityMode.TRUSTED;
             checkboxButton.active = true;
             overrideButton.active = true;
         } else {
@@ -184,14 +184,14 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tileEntity.getName(), (xSize / 2) - (getStringWidth(tileEntity.getName()) / 2), 4, 0x404040);
-        ITextComponent ownerComponent = OwnerDisplay.of(tileEntity.ownerUUID, tileEntity.clientOwner).getTextComponent();
+        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
+        ITextComponent ownerComponent = OwnerDisplay.of(tile.ownerUUID, tile.clientOwner).getTextComponent();
         drawString(ownerComponent, xSize - 7 - getStringWidth(ownerComponent), (ySize - 96) + 2, 0x404040);
         drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
         drawCenteredText(TextComponentUtil.translate("gui.mekanism.trustedPlayers"), 74, 57, 0x787878);
         //TODO: 1.14 Convert to GuiElement
-        if (tileEntity.frequency != null) {
-            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.security"), ": ", tileEntity.frequency.securityMode), 13, 103, 0x404040);
+        if (tile.frequency != null) {
+            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.security"), ": ", tile.frequency.securityMode), 13, 103, 0x404040);
         } else {
             drawString(TextComponentUtil.build(EnumColor.RED, Translation.of("gui.mekanism.securityOffline")), 13, 103, 0x404040);
         }
@@ -202,8 +202,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Sec
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tileEntity.frequency != null && tileEntity.ownerUUID != null && tileEntity.ownerUUID.equals(minecraft.player.getUniqueID())) {
-            drawTexturedRect(guiLeft + 145, guiTop + 78, xSize + (tileEntity.frequency.override ? 0 : 6), 22, 6, 6);
+        if (tile.frequency != null && tile.ownerUUID != null && tile.ownerUUID.equals(minecraft.player.getUniqueID())) {
+            drawTexturedRect(guiLeft + 145, guiTop + 78, xSize + (tile.frequency.override ? 0 : 6), 22, 6, 6);
         } else {
             drawTexturedRect(guiLeft + 145, guiTop + 78, xSize, 28, 6, 6);
         }

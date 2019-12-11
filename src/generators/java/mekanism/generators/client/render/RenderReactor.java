@@ -19,8 +19,8 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
     private ModelEnergyCore core = new ModelEnergyCore();
 
     @Override
-    public void render(TileEntityReactorController tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.isBurning()) {
+    public void render(TileEntityReactorController tile, double x, double y, double z, float partialTick, int destroyStage) {
+        if (tile.isBurning()) {
             GlStateManager.pushMatrix();
             GlStateManager.translatef((float) x + 0.5F, (float) y - 1.5F, (float) z + 0.5F);
             bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png"));
@@ -31,7 +31,7 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
             GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-            long scaledTemp = Math.round(tileEntity.getPlasmaTemp() / 1E8);
+            long scaledTemp = Math.round(tile.getPlasmaTemp() / 1E8);
             float ticks = MekanismClient.ticksPassed + partialTick;
             double scale = 1 + 0.7 * Math.sin(Math.toRadians(ticks * 3.14 * scaledTemp + 135F));
             renderPart(EnumColor.AQUA, scale, ticks, scaledTemp, -6, -7, 0, 36);

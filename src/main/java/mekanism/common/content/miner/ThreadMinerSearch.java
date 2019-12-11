@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread {
 
-    private TileEntityDigitalMiner tileEntity;
+    private TileEntityDigitalMiner tile;
 
     public State state = State.IDLE;
 
@@ -31,7 +31,7 @@ public class ThreadMinerSearch extends Thread {
     public int found = 0;
 
     public ThreadMinerSearch(TileEntityDigitalMiner tile) {
-        tileEntity = tile;
+        this.tile = tile;
     }
 
     public void setChunkCache(Region cache) {
@@ -41,19 +41,19 @@ public class ThreadMinerSearch extends Thread {
     @Override
     public void run() {
         state = State.SEARCHING;
-        HashList<MinerFilter<?>> filters = tileEntity.getFilters();
-        if (!tileEntity.inverse && filters.isEmpty()) {
+        HashList<MinerFilter<?>> filters = tile.getFilters();
+        if (!tile.inverse && filters.isEmpty()) {
             state = State.FINISHED;
             return;
         }
-        Coord4D coord = tileEntity.getStartingCoord();
-        int diameter = tileEntity.getDiameter();
-        int size = tileEntity.getTotalSize();
+        Coord4D coord = tile.getStartingCoord();
+        int diameter = tile.getDiameter();
+        int size = tile.getTotalSize();
         Block info;
-        BlockPos minerPos = tileEntity.getPos();
+        BlockPos minerPos = tile.getPos();
 
         for (int i = 0; i < size; i++) {
-            if (tileEntity.isRemoved()) {
+            if (tile.isRemoved()) {
                 //Make sure the miner is still valid and something hasn't gone wrong
                 return;
             }
@@ -85,7 +85,7 @@ public class ThreadMinerSearch extends Thread {
                     filterFound = acceptedItems.get(info);
                 } else {
                     ItemStack stack = new ItemStack(info);
-                    if (tileEntity.isReplaceStack(stack)) {
+                    if (tile.isReplaceStack(stack)) {
                         continue;
                     }
                     for (MinerFilter<?> filter : filters) {
@@ -96,7 +96,7 @@ public class ThreadMinerSearch extends Thread {
                     }
                     acceptedItems.put(info, filterFound);
                 }
-                if (tileEntity.inverse == (filterFound == null)) {
+                if (tile.inverse == (filterFound == null)) {
                     set(i, new Coord4D(x, y, z, chunkCache.getDimension().getType()));
                     replaceMap.put(i, filterFound);
                     found++;
@@ -105,10 +105,10 @@ public class ThreadMinerSearch extends Thread {
         }
 
         state = State.FINISHED;
-        tileEntity.oresToMine = oresToMine;
-        tileEntity.replaceMap = replaceMap;
+        tile.oresToMine = oresToMine;
+        tile.replaceMap = replaceMap;
         chunkCache = null;
-        MekanismUtils.saveChunk(tileEntity);
+        MekanismUtils.saveChunk(tile);
     }
 
     public void set(int i, Coord4D location) {

@@ -53,10 +53,10 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
-    private void doSparkle(TileEntity tileEntity, SparkleAnimation anim) {
+    private void doSparkle(TileEntity tile, SparkleAnimation anim) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         // If player is within 16 blocks (256 = 16^2), show the status message/sparkles
-        if (tileEntity.getPos().distanceSq(player.getPosition()) <= 256) {
+        if (tile.getPos().distanceSq(player.getPosition()) <= 256) {
             if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
                 anim.run();
             } else {
@@ -66,13 +66,13 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
-        doSparkle(tileEntity, new SparkleAnimation(tileEntity, renderLoc, length, width, height, checker));
+    public void doMultiblockSparkle(TileEntity tile, BlockPos renderLoc, int length, int width, int height, INodeChecker checker) {
+        doSparkle(tile, new SparkleAnimation(tile, renderLoc, length, width, height, checker));
     }
 
     @Override
-    public void doMultiblockSparkle(TileEntity tileEntity, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
-        doSparkle(tileEntity, new SparkleAnimation(tileEntity, corner1, corner2, checker));
+    public void doMultiblockSparkle(TileEntity tile, BlockPos corner1, BlockPos corner2, INodeChecker checker) {
+        doSparkle(tile, new SparkleAnimation(tile, corner1, corner2, checker));
     }
 
     @Override

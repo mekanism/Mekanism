@@ -21,7 +21,7 @@ public class TileComponentSecurity implements ITileComponent {
     /**
      * TileEntity implementing this component.
      */
-    public TileEntityMekanism tileEntity;
+    public TileEntityMekanism tile;
 
     private UUID ownerUUID;
     private String clientOwner;
@@ -31,7 +31,7 @@ public class TileComponentSecurity implements ITileComponent {
     private SecurityFrequency frequency;
 
     public TileComponentSecurity(TileEntityMekanism tile) {
-        tileEntity = tile;
+        this.tile = tile;
         tile.addComponent(this);
     }
 
@@ -46,23 +46,23 @@ public class TileComponentSecurity implements ITileComponent {
 
     public void setFrequency(UUID owner) {
         FrequencyManager manager = Mekanism.securityFrequencies;
-        manager.deactivate(Coord4D.get(tileEntity));
+        manager.deactivate(Coord4D.get(tile));
 
         for (Frequency freq : manager.getFrequencies()) {
             if (freq.ownerUUID.equals(owner)) {
                 frequency = (SecurityFrequency) freq;
-                frequency.activeCoords.add(Coord4D.get(tileEntity));
+                frequency.activeCoords.add(Coord4D.get(tile));
                 return;
             }
         }
 
         Frequency freq = new SecurityFrequency(owner).setPublic(true);
-        freq.activeCoords.add(Coord4D.get(tileEntity));
+        freq.activeCoords.add(Coord4D.get(tile));
         manager.addFrequency(freq);
         frequency = (SecurityFrequency) freq;
 
-        MekanismUtils.saveChunk(tileEntity);
-        tileEntity.markDirty();
+        MekanismUtils.saveChunk(tile);
+        tile.markDirty();
     }
 
     public UUID getOwnerUUID() {
@@ -98,7 +98,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void tick() {
-        if (!tileEntity.isRemote()) {
+        if (!tile.isRemote()) {
             if (frequency == null && ownerUUID != null) {
                 setFrequency(ownerUUID);
             }
@@ -106,10 +106,10 @@ public class TileComponentSecurity implements ITileComponent {
 
             if (manager != null) {
                 if (frequency != null && !frequency.valid) {
-                    frequency = (SecurityFrequency) manager.validateFrequency(ownerUUID, Coord4D.get(tileEntity), frequency);
+                    frequency = (SecurityFrequency) manager.validateFrequency(ownerUUID, Coord4D.get(tile), frequency);
                 }
                 if (frequency != null) {
-                    frequency = (SecurityFrequency) manager.update(Coord4D.get(tileEntity), frequency);
+                    frequency = (SecurityFrequency) manager.update(Coord4D.get(tile), frequency);
                 }
             } else {
                 frequency = null;
@@ -183,11 +183,11 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void invalidate() {
-        if (!tileEntity.isRemote()) {
+        if (!tile.isRemote()) {
             if (frequency != null) {
                 FrequencyManager manager = getManager(frequency);
                 if (manager != null) {
-                    manager.deactivate(Coord4D.get(tileEntity));
+                    manager.deactivate(Coord4D.get(tile));
                 }
             }
         }

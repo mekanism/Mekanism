@@ -50,23 +50,23 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
     public void init() {
         super.init();
         addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tileEntity.getPos()))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 156, guiTop + 6, 14, getButtonLocation("strict_input"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tileEntity), 0, 0, null)),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null)),
               getOnHover("gui.mekanism.configuration.strictInput")));
         addButton(new ColorButton(this, guiLeft + 122, guiTop + 49, 16, 16, () -> getTile().getEjector().getOutputColor(),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile),
                     InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tileEntity), 1, 0, null))));
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), 1, 0, null))));
         for (GuiPos guiPos : slotPosList) {
             addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, guiPos.relativeSide.ordinal(),
                   () -> getTile().getConfig().getDataType(TransmissionType.ITEM, guiPos.relativeSide), () -> getTile().getEjector().getInputColor(guiPos.relativeSide),
-                  tileEntity, () -> null, ConfigurationPacket.INPUT_COLOR, getOnHover()));
+                  tile, () -> null, ConfigurationPacket.INPUT_COLOR, getOnHover()));
         }
     }
 
     public <TILE extends TileEntityMekanism & ISideConfiguration> TILE getTile() {
-        return (TILE) tileEntity;
+        return (TILE) tile;
     }
 
     private IHoverable getOnHover() {

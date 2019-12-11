@@ -124,11 +124,11 @@ public class TransporterManager {
     /**
      * @return TransitResponse of expected items to use
      */
-    public static TransitResponse getPredictedInsert(TileEntity tileEntity, EnumColor color, TransitRequest request, Direction side) {
+    public static TransitResponse getPredictedInsert(TileEntity tile, EnumColor color, TransitRequest request, Direction side) {
         // If the TE in question implements the mekanism interface, check that the color matches and bail
         // fast if it doesn't
-        if (tileEntity instanceof ISideConfiguration) {
-            ISideConfiguration config = (ISideConfiguration) tileEntity;
+        if (tile instanceof ISideConfiguration) {
+            ISideConfiguration config = (ISideConfiguration) tile;
             if (config.getEjector().hasStrictInput()) {
                 Direction tileSide = config.getOrientation();
                 EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side.getOpposite()));
@@ -140,9 +140,9 @@ public class TransporterManager {
 
         // Get the item handler for the TE; fail if it's not an item handler (and log for good measure --
         // there shouldn't be anything that's not an IItemHandler anymore)
-        IItemHandler handler = InventoryUtils.getItemHandler(tileEntity, side.getOpposite());
+        IItemHandler handler = InventoryUtils.getItemHandler(tile, side.getOpposite());
         if (handler == null) {
-            Mekanism.logger.error("Failed to predict insert; not an IItemHandler: {}", tileEntity);
+            Mekanism.logger.error("Failed to predict insert; not an IItemHandler: {}", tile);
             return TransitResponse.EMPTY;
         }
 
@@ -159,7 +159,7 @@ public class TransporterManager {
 
         //For each of the in-flight stacks, simulate their insert into the tile entity. Note that stackSizes
         // for inventoryInfo is updated each time
-        Set<TransporterStack> transporterStacks = flowingStacks.get(Coord4D.get(tileEntity));
+        Set<TransporterStack> transporterStacks = flowingStacks.get(Coord4D.get(tile));
         if (transporterStacks != null) {
             for (TransporterStack stack : transporterStacks) {
                 if (stack != null && stack.getPathType() != Path.NONE) {

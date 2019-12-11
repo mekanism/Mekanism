@@ -15,21 +15,21 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
 
     public Coord4D coord;
 
-    public static EnergyAcceptorWrapper get(TileEntity tileEntity, Direction side) {
-        if (tileEntity == null || tileEntity.getWorld() == null) {
+    public static EnergyAcceptorWrapper get(TileEntity tile, Direction side) {
+        if (tile == null || tile.getWorld() == null) {
             return null;
         }
-        EnergyAcceptorWrapper wrapper = CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side).getIfPresentElseDo(
+        EnergyAcceptorWrapper wrapper = CapabilityUtils.getCapabilityHelper(tile, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side).getIfPresentElseDo(
               MekanismAcceptor::new,
               () -> {
                   if (MekanismUtils.useForge()) {
-                      return CapabilityUtils.getCapabilityHelper(tileEntity, CapabilityEnergy.ENERGY, side).getIfPresent(ForgeAcceptor::new);
+                      return CapabilityUtils.getCapabilityHelper(tile, CapabilityEnergy.ENERGY, side).getIfPresent(ForgeAcceptor::new);
                   }
                   return null;
               }
         );
         if (wrapper != null) {
-            wrapper.coord = Coord4D.get(tileEntity);
+            wrapper.coord = Coord4D.get(tile);
         }
         return wrapper;
     }

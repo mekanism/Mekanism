@@ -366,7 +366,7 @@ public class Mekanism {
 
     private void onNetworkClientRequest(NetworkClientRequest event) {
         try {
-            packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(event.tileEntity)));
+            packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(event.tile)));
         } catch (Exception ignored) {
         }
     }

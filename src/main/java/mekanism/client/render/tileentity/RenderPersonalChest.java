@@ -13,14 +13,14 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
     private ChestModel model = new ChestModel();
 
     @Override
-    public void render(TileEntityPersonalChest tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
+    public void render(TileEntityPersonalChest tile, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x, (float) y + 1F, (float) z);
         GlStateManager.rotatef(90, 0, 1, 0);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "personal_chest.png"));
 
-        MekanismRenderer.rotate(tileEntity.getDirection(), 270, 90, 0, 180);
-        switch (tileEntity.getDirection()) {
+        MekanismRenderer.rotate(tile.getDirection(), 270, 90, 0, 180);
+        switch (tile.getDirection()) {
             case NORTH:
                 GlStateManager.translatef(1.0F, 0, 0);
                 break;
@@ -32,7 +32,7 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
                 break;
         }
 
-        float lidangle = tileEntity.prevLidAngle + (tileEntity.lidAngle - tileEntity.prevLidAngle) * partialTick;
+        float lidangle = tile.prevLidAngle + (tile.lidAngle - tile.prevLidAngle) * partialTick;
         lidangle = 1.0F - lidangle;
         lidangle = 1.0F - lidangle * lidangle * lidangle;
         model.getLid().rotateAngleX = -((lidangle * 3.141593F) / 2.0F);

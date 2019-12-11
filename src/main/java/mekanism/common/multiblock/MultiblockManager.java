@@ -64,10 +64,10 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
     public MultiblockCache<T> pullInventory(World world, String id) {
         MultiblockCache<T> toReturn = inventories.get(id);
         for (Coord4D obj : inventories.get(id).locations) {
-            TileEntityMultiblock<T> tileEntity = (TileEntityMultiblock<T>) MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, obj.getPos());
-            if (tileEntity != null) {
-                tileEntity.cachedData = tileEntity.getNewCache();
-                tileEntity.cachedID = null;
+            TileEntityMultiblock<T> tile = (TileEntityMultiblock<T>) MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, obj.getPos());
+            if (tile != null) {
+                tile.cachedData = tile.getNewCache();
+                tile.cachedID = null;
             }
         }
         inventories.remove(id);
@@ -90,9 +90,9 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
             String inventoryID = entry.getKey();
             for (Coord4D obj : entry.getValue().locations) {
                 if (obj.dimension.equals(world.getDimension().getType()) && world.isBlockLoaded(obj.getPos())) {
-                    TileEntity tileEntity = MekanismUtils.getTileEntity(world, obj.getPos());
-                    if (!(tileEntity instanceof TileEntityMultiblock) || ((TileEntityMultiblock<?>) tileEntity).getManager() != this ||
-                        (getStructureId(((TileEntityMultiblock<?>) tileEntity)) != null && !Objects.equals(getStructureId(((TileEntityMultiblock<?>) tileEntity)), inventoryID))) {
+                    TileEntity tile = MekanismUtils.getTileEntity(world, obj.getPos());
+                    if (!(tile instanceof TileEntityMultiblock) || ((TileEntityMultiblock<?>) tile).getManager() != this ||
+                        (getStructureId(((TileEntityMultiblock<?>) tile)) != null && !Objects.equals(getStructureId(((TileEntityMultiblock<?>) tile)), inventoryID))) {
                         if (!tilesToKill.containsKey(inventoryID)) {
                             tilesToKill.put(inventoryID, new HashSet<>());
                         }

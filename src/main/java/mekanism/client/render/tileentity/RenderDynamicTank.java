@@ -16,14 +16,14 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank> {
 
     @Override
-    public void render(TileEntityDynamicTank tileEntity, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tileEntity.clientHasStructure && tileEntity.isRendering && tileEntity.structure != null && tileEntity.structure.fluidStored.getAmount() > 0) {
+    public void render(TileEntityDynamicTank tile, double x, double y, double z, float partialTick, int destroyStage) {
+        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.fluidStored.getAmount() > 0) {
             RenderData data = new RenderData();
-            data.location = tileEntity.structure.renderLocation;
-            data.height = tileEntity.structure.volHeight - 2;
-            data.length = tileEntity.structure.volLength;
-            data.width = tileEntity.structure.volWidth;
-            data.fluidType = tileEntity.structure.fluidStored;
+            data.location = tile.structure.renderLocation;
+            data.height = tile.structure.volHeight - 2;
+            data.length = tile.structure.volLength;
+            data.width = tile.structure.volWidth;
+            data.fluidType = tile.structure.fluidStored;
 
             if (data.location != null && data.height >= 1) {
                 bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
@@ -35,18 +35,18 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
                 setLightmapDisabled(true);
                 FluidRenderer.translateToOrigin(data.location);
                 GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
-                MekanismRenderer.color(data.fluidType, (float) data.fluidType.getAmount() / (float) tileEntity.clientCapacity);
+                MekanismRenderer.color(data.fluidType, (float) data.fluidType.getAmount() / (float) tile.clientCapacity);
                 if (data.fluidType.getFluid().getAttributes().isGaseous(data.fluidType)) {
                     FluidRenderer.getTankDisplay(data).render();
                 } else {
-                    FluidRenderer.getTankDisplay(data, tileEntity.prevScale).render();
+                    FluidRenderer.getTankDisplay(data, tile.prevScale).render();
                 }
 
                 MekanismRenderer.resetColor();
                 MekanismRenderer.disableGlow(glowInfo);
                 GlStateManager.popMatrix();
 
-                for (ValveData valveData : tileEntity.valveViewing) {
+                for (ValveData valveData : tile.valveViewing) {
                     GlStateManager.pushMatrix();
                     FluidRenderer.translateToOrigin(valveData.location);
                     GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(data.fluidType);

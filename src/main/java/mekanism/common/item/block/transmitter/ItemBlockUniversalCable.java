@@ -39,9 +39,9 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble<BlockUnivers
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemstack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey)) {
-            CableTier tier = getTier(itemstack);
+            CableTier tier = getTier(stack);
             if (tier != null) {
                 tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.capacity"), ": ", EnumColor.GRAY,
                       EnergyDisplay.of(tier.getCableCapacity()), "/t"));

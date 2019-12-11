@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class GuiTileEntityElement<TILE extends TileEntity> extends GuiTexturedElement {
 
-    protected final TILE tileEntity;
+    protected final TILE tile;
 
     public GuiTileEntityElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, TILE tile) {
         this(resource, gui, def, tile, 0, 0);
@@ -18,6 +18,6 @@ public abstract class GuiTileEntityElement<TILE extends TileEntity> extends GuiT
 
     public GuiTileEntityElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, TILE tile, int x, int y, int width, int height) {
         super(resource, gui, def, x, y, width, height);
-        this.tileEntity = tile;
+        this.tile = tile;
     }
 }
