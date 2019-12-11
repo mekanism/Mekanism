@@ -29,7 +29,7 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement itemInput = JSONUtils.isJsonArray(json, "itemInput") ? JSONUtils.getJsonArray(json, "itemInput") :
-                                 JSONUtils.getJsonObject(json, "itemInput");
+                                JSONUtils.getJsonObject(json, "itemInput");
         ItemStackIngredient solidIngredient = ItemStackIngredient.deserialize(itemInput);
         JsonElement fluidInput = JSONUtils.isJsonArray(json, "fluidInput") ? JSONUtils.getJsonArray(json, "fluidInput") :
                                  JSONUtils.getJsonObject(json, "fluidInput");

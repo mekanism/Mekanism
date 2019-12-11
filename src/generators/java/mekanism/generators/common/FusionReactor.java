@@ -288,7 +288,7 @@ public class FusionReactor {
               {-2, -1, -1}, {-2, +0, -2}, {-2, +1, -1},};
         BlockPos centerPos = center.getPos();
         for (int[] coords : positions) {
-            TileEntityReactorBlock tile = MekanismUtils.getTileEntity(TileEntityReactorBlock.class, controller.getWorld(), centerPos.add(coords[0], coords[1], coords[2]));;
+            TileEntityReactorBlock tile = MekanismUtils.getTileEntity(TileEntityReactorBlock.class, controller.getWorld(), centerPos.add(coords[0], coords[1], coords[2]));
             if (tile == null || !tile.isFrame()) {
                 return false;
             }

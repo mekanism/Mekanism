@@ -43,7 +43,6 @@ import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tags.MekanismTagManager;
-import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;

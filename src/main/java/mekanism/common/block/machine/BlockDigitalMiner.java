@@ -124,14 +124,14 @@ public class BlockDigitalMiner extends BlockMekanism implements IBlockElectric, 
               makeCuboidShape(22, 16, -13, 26.5, 26, -15),
               makeCuboidShape(25.5, 16, -14, 30, 26, -16),
               //Right Monitor
-              makeCuboidShape(-3+2.5, 17.75, -10, -6.5+2.5, 24.25, -11.5),
-              makeCuboidShape(-6.5+2.5, 17.75, -10.5, -10+2.5, 24.25, -12),
-              makeCuboidShape(-10+2.5, 17.75, -11.5, -13.5+2.5, 24.25, -13),
-              makeCuboidShape(-13.5+2.5, 17.75, -12.5, -15+2.5, 24.25, -14),
-              makeCuboidShape(-6.5+2.5, 16, -11.5, -2+2.5, 26, -13.5),
-              makeCuboidShape(-10+2.5, 16, -12, -5.5+2.5, 26, -14),
-              makeCuboidShape(-13.5+2.5, 16, -13, -9+2.5, 26, -15),
-              makeCuboidShape(-16.5+2.5, 16, -14, -12.5+2.5, 26, -16)
+              makeCuboidShape(-3 + 2.5, 17.75, -10, -6.5 + 2.5, 24.25, -11.5),
+              makeCuboidShape(-6.5 + 2.5, 17.75, -10.5, -10 + 2.5, 24.25, -12),
+              makeCuboidShape(-10 + 2.5, 17.75, -11.5, -13.5 + 2.5, 24.25, -13),
+              makeCuboidShape(-13.5 + 2.5, 17.75, -12.5, -15 + 2.5, 24.25, -14),
+              makeCuboidShape(-6.5 + 2.5, 16, -11.5, -2 + 2.5, 26, -13.5),
+              makeCuboidShape(-10 + 2.5, 16, -12, -5.5 + 2.5, 26, -14),
+              makeCuboidShape(-13.5 + 2.5, 16, -13, -9 + 2.5, 26, -15),
+              makeCuboidShape(-16.5 + 2.5, 16, -14, -12.5 + 2.5, 26, -16)
         );
         for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
             bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(miner, side);

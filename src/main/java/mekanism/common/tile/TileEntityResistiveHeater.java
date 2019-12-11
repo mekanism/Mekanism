@@ -14,7 +14,6 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;

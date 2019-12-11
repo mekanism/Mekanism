@@ -40,6 +40,7 @@ public class Version {
 
     /**
      * Builds a Version object from an Artifact Version
+     *
      * @implNote We don't currently include the artifact version's build number as we classify our version by major, minor, build
      */
     public Version(ArtifactVersion artifactVersion) {

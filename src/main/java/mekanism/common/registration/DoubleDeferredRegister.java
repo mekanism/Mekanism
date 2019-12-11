@@ -19,12 +19,12 @@ public class DoubleDeferredRegister<PRIMARY extends IForgeRegistryEntry<PRIMARY>
         secondaryRegister = new DeferredRegister<>(secondaryRegistry, modid);
     }
 
-    public <P extends PRIMARY, S extends SECONDARY,  W extends DoubleWrappedRegistryObject<P, S>> W register(String name, Supplier<? extends P> primarySupplier,
+    public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<P, S>> W register(String name, Supplier<? extends P> primarySupplier,
           Supplier<? extends S> secondarySupplier, BiFunction<RegistryObject<P>, RegistryObject<S>, W> objectWrapper) {
         return objectWrapper.apply(primaryRegister.register(name, primarySupplier), secondaryRegister.register(name, secondarySupplier));
     }
 
-    public <P extends PRIMARY, S extends SECONDARY,  W extends DoubleWrappedRegistryObject<P, S>> W register(String name, Supplier<? extends P> primarySupplier,
+    public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<P, S>> W register(String name, Supplier<? extends P> primarySupplier,
           Function<P, S> secondarySupplier, BiFunction<RegistryObject<P>, RegistryObject<S>, W> objectWrapper) {
         RegistryObject<P> primaryObject = primaryRegister.register(name, primarySupplier);
         return objectWrapper.apply(primaryObject, secondaryRegister.register(name, () -> secondarySupplier.apply(primaryObject.get())));

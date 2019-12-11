@@ -42,7 +42,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
         super(container, inv, title);
         ySize = 95;
         currentType = getTopTransmission();
-        slotPosList.add(new GuiPos(RelativeSide.BOTTOM,81, 64));
+        slotPosList.add(new GuiPos(RelativeSide.BOTTOM, 81, 64));
         slotPosList.add(new GuiPos(RelativeSide.TOP, 81, 34));
         slotPosList.add(new GuiPos(RelativeSide.FRONT, 81, 49));
         slotPosList.add(new GuiPos(RelativeSide.BACK, 66, 64));

@@ -28,8 +28,8 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -59,6 +59,7 @@ public class BlockFluidicPlenisher extends BlockMekanism implements IBlockElectr
       IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityFluidicPlenisher>, ISupportsComparator {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+
     static {
         VoxelShape plenisher = VoxelShapeUtils.combine(
               makeCuboidShape(3, 15, 3, 13, 16, 13),//portTop

@@ -41,12 +41,12 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
     public GuiTransporterConfig(TransporterConfigurationContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize = 95;
-        slotPosList.add(new GuiPos(RelativeSide.BOTTOM,54, 64));
-        slotPosList.add(new GuiPos(RelativeSide.TOP,54, 34));
-        slotPosList.add(new GuiPos(RelativeSide.FRONT,54, 49));
-        slotPosList.add(new GuiPos(RelativeSide.BACK,39, 64));
-        slotPosList.add(new GuiPos(RelativeSide.LEFT,39, 49));
-        slotPosList.add(new GuiPos(RelativeSide.RIGHT,69, 49));
+        slotPosList.add(new GuiPos(RelativeSide.BOTTOM, 54, 64));
+        slotPosList.add(new GuiPos(RelativeSide.TOP, 54, 34));
+        slotPosList.add(new GuiPos(RelativeSide.FRONT, 54, 49));
+        slotPosList.add(new GuiPos(RelativeSide.BACK, 39, 64));
+        slotPosList.add(new GuiPos(RelativeSide.LEFT, 39, 49));
+        slotPosList.add(new GuiPos(RelativeSide.RIGHT, 69, 49));
     }
 
     @Override

@@ -250,7 +250,7 @@ public class SoundHandler {
             TileEntity te = MekanismUtils.getTileEntity(minecraft.world, new BlockPos(original.getX(), original.getY(), original.getZ()));
             if (te instanceof IUpgradeTile) {
                 IUpgradeTile upgradeTile = (IUpgradeTile) te;
-                if (upgradeTile.supportsUpgrades() && upgradeTile.getComponent().supports(Upgrade.MUFFLING)){
+                if (upgradeTile.supportsUpgrades() && upgradeTile.getComponent().supports(Upgrade.MUFFLING)) {
                     int mufflerCount = (upgradeTile).getComponent().getUpgrades(Upgrade.MUFFLING);
                     return 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
                 }

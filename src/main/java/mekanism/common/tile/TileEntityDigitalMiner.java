@@ -468,7 +468,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     public void start() {
-        if(getWorld() == null) {
+        if (getWorld() == null) {
             return;
         }
         if (searcher.state == State.IDLE) {

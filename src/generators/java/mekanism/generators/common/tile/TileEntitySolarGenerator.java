@@ -6,7 +6,6 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;

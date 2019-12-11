@@ -25,7 +25,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
