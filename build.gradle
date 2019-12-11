@@ -244,25 +244,29 @@ dependencies {
 def version_properties = ["version": mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version]
 
 processResources {
-    filesMatching('**/mods.toml') {
+    outputs.upToDateWhen { false }
+    filesMatching('META-INF/mods.toml') {
         expand version_properties
     }
 }
 
 processToolsResources {
-    filesMatching('**/mods.toml') {
+    outputs.upToDateWhen { false }
+    filesMatching('META-INF/mods.toml') {
         expand version_properties
     }
 }
 
 processAdditionsResources {
-    filesMatching('**/mods.toml') {
+    outputs.upToDateWhen { false }
+    filesMatching('META-INF/mods.toml') {
         expand version_properties
     }
 }
 
 processGeneratorsResources {
-    filesMatching('**/mods.toml') {
+    outputs.upToDateWhen { false }
+    filesMatching('META-INF/mods.toml') {
         expand version_properties
     }
 }
