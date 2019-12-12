@@ -1,6 +1,7 @@
 package mekanism.generators.client.render.item;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
@@ -8,6 +9,7 @@ import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
@@ -44,13 +46,16 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "wind_generator.png"));
-        //TODO: Only update angle if the player is not in a blacklisted dimension, one that has no "wind".
-        //The best way to do this would be to add an event listener for dimension change.
-        //The event is server side only so we would need to send a packet to clients to tell them if they are
-        //in a blacklisted dimension or not.
         float renderPartialTicks = Minecraft.getInstance().getRenderPartialTicks();
         if (lastTicksUpdated != renderPartialTicks) {
-            angle = (angle + 2) % 360;
+            //Only update the angle if we are in a world and that world is not blacklisted
+            if (Minecraft.getInstance().world != null) {
+                //TODO: Should this check to see if this can be cached somehow
+                List<? extends String> blacklistedDimensions = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get();
+                if (blacklistedDimensions.isEmpty() || !blacklistedDimensions.contains(Minecraft.getInstance().world.getDimension().getType().getRegistryName().toString())) {
+                    angle = (angle + 2) % 360;
+                }
+            }
             lastTicksUpdated = renderPartialTicks;
         }
         windGenerator.render(0.016F, angle);
