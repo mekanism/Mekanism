@@ -158,18 +158,18 @@ minecraft {
             // explaining what information to set the value to/format it expects
             // One thing to note is because of the caching that goes on, after changing these
             // variables, you need to refresh the project and rerun genIntellijRuns/genEclipseRuns
-            if (project.hasProperty('uuid')) {
+            if (project.hasProperty('mc_uuid')) {
                 //Your uuid without any dashes in the middle
-                args '--uuid', project.getProperty('uuid')
+                args '--uuid', project.getProperty('mc_uuid')
             }
-            if (project.hasProperty('username')) {
+            if (project.hasProperty('mc_username')) {
                 //Your username/display name, this is the name that shows up in chat
                 // Note: This is not your email, even if you have a Mojang account
-                args '--username', project.getProperty('username')
+                args '--username', project.getProperty('mc_username')
             }
-            if (project.hasProperty('accessToken')) {
+            if (project.hasProperty('mc_accessToken')) {
                 //Your access token, you can find it in your '.minecraft/launcher_profiles.json' file
-                args '--accessToken', project.getProperty('accessToken')
+                args '--accessToken', project.getProperty('mc_accessToken')
             }
 
             mods {
