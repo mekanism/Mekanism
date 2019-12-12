@@ -25,7 +25,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -40,7 +39,6 @@ public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEn
       IHasTileEntity<TileEntitySolarGenerator>, IStateWaterLogged {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
-
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel
           makeCuboidShape(1, 8, 1, 15, 9, 15),//solarPanelBottom
@@ -86,12 +84,6 @@ public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEn
             return true;
         }
         return tile.openGui(player);
-    }
-
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
     }
 
     @Nonnull

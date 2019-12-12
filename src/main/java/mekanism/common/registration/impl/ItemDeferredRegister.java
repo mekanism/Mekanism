@@ -18,7 +18,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         super(modid, ForgeRegistries.ITEMS);
     }
 
-    //TODO: Move this somewhere else?
+    //TODO: Move this somewhere else? At least add a secondary one for unstackable
     public static Item.Properties getMekBaseProperties() {
         return new Item.Properties().group(Mekanism.tabMekanism);
     }

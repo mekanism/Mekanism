@@ -22,14 +22,12 @@ import mekanism.generators.client.render.RenderGasGenerator;
 import mekanism.generators.client.render.RenderHeatGenerator;
 import mekanism.generators.client.render.RenderIndustrialTurbine;
 import mekanism.generators.client.render.RenderReactor;
-import mekanism.generators.client.render.RenderSolarGenerator;
 import mekanism.generators.client.render.RenderTurbineRotor;
 import mekanism.generators.client.render.RenderWindGenerator;
 import mekanism.generators.client.render.item.RenderAdvancedSolarGeneratorItem;
 import mekanism.generators.client.render.item.RenderBioGeneratorItem;
 import mekanism.generators.client.render.item.RenderGasGeneratorItem;
 import mekanism.generators.client.render.item.RenderHeatGeneratorItem;
-import mekanism.generators.client.render.item.RenderSolarGeneratorItem;
 import mekanism.generators.client.render.item.RenderWindGeneratorItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
@@ -37,7 +35,6 @@ import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
-import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
@@ -91,7 +88,6 @@ public class GeneratorsClientRegistration {
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasGenerator.class, new RenderGasGenerator());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHeatGenerator.class, new RenderHeatGenerator());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorController.class, new RenderReactor());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntitySolarGenerator.class, new RenderSolarGenerator());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineCasing.class, new RenderIndustrialTurbine());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineRotor.class, new RenderTurbineRotor());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineValve.class, new RenderIndustrialTurbine());
@@ -103,7 +99,6 @@ public class GeneratorsClientRegistration {
     public static void onModelBake(ModelBakeEvent event) {
         Map<ResourceLocation, IBakedModel> modelRegistry = event.getModelRegistry();
         registerItemStackModel(modelRegistry, "heat_generator", model -> RenderHeatGeneratorItem.model = model);
-        registerItemStackModel(modelRegistry, "solar_generator", model -> RenderSolarGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "bio_generator", model -> RenderBioGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "wind_generator", model -> RenderWindGeneratorItem.model = model);
         registerItemStackModel(modelRegistry, "gas_burning_generator", model -> RenderGasGeneratorItem.model = model);
