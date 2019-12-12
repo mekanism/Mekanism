@@ -25,7 +25,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import org.jetbrains.annotations.Contract;
 
 //TODO: Set default state for different blocks if the default is not ideal
 public class BlockStateHelper {
@@ -70,20 +70,21 @@ public class BlockStateHelper {
         }
     }
 
-    @Nullable
+    @Contract("_, null, _ -> null")
     public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, BlockItemUseContext context) {
+        return getStateForPlacement(block, state, context.getWorld(), context.getPos(), context.getPlayer());
+    }
+
+    @Contract("_, null, _, _, _ -> null")
+    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player) {
         if (state == null) {
             return null;
         }
-        //TODO: I don't know if there is a tile entity yet so this stuff may not really matter
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
         if (block instanceof IStateFacing) {
             IStateFacing blockFacing = (IStateFacing) block;
             //TODO: Somehow weight this stuff towards context.getFace(), so that it has a higher likelihood of going with the face that was clicked on
             Direction newDirection = Direction.SOUTH;
             if (blockFacing.supportsDirection(Direction.DOWN) && blockFacing.supportsDirection(Direction.UP)) {
-                PlayerEntity player = context.getPlayer();
                 float rotationPitch = player == null ? 0 : player.rotationPitch;
                 int height = Math.round(rotationPitch);
                 if (height >= 65) {
@@ -94,7 +95,8 @@ public class BlockStateHelper {
             }
             if (newDirection != Direction.DOWN && newDirection != Direction.UP) {
                 //TODO: Can this just use newDirection = context.getPlacementHorizontalFacing().getOpposite(); or is that not accurate
-                int side = MathHelper.floor((context.getPlacementYaw() * 4.0F / 360.0F) + 0.5D) & 3;
+                float placementYaw = player == null ? 0 : player.rotationYaw;
+                int side = MathHelper.floor((placementYaw * 4.0F / 360.0F) + 0.5D) & 3;
                 switch (side) {
                     case 0:
                         newDirection = Direction.NORTH;
@@ -116,6 +118,7 @@ public class BlockStateHelper {
             IFluidState fluidState = world.getFluidState(pos);
             state = state.with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
         }
+        //TODO: I don't know if there is a tile entity yet so this stuff may not really matter
         //TODO: Set the proper defaults for the below ones, maybe do it by setting property defaults of everything
         // Also ensure that when the state changes from the tile the state is actually updated
         /*if (block instanceof IStateActive) {

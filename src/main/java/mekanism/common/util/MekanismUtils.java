@@ -20,6 +20,8 @@ import mekanism.common.MekanismFluids;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
+import mekanism.common.block.BlockBounding;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
@@ -361,7 +363,9 @@ public final class MekanismUtils {
         if (world == null) {
             return;
         }
-        world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getDefaultState(), 3);
+        BlockBounding boundingBlock = MekanismBlock.BOUNDING_BLOCK.getBlock();
+        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null);
+        world.setBlockState(boundingLocation, newState, 3);
         if (!world.isRemote()) {
             TileEntityBoundingBlock tile = getTileEntity(TileEntityBoundingBlock.class, world, boundingLocation);
             if (tile != null) {
@@ -380,7 +384,9 @@ public final class MekanismUtils {
      * @param orig             - original block position
      */
     public static void makeAdvancedBoundingBlock(IWorld world, BlockPos boundingLocation, BlockPos orig) {
-        world.setBlockState(boundingLocation, MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock().getDefaultState(), 3);
+        BlockBounding boundingBlock = MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock();
+        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null);
+        world.setBlockState(boundingLocation, newState, 3);
         if (!world.isRemote()) {
             TileEntityAdvancedBoundingBlock tile = getTileEntity(TileEntityAdvancedBoundingBlock.class, world, boundingLocation);
             if (tile != null) {

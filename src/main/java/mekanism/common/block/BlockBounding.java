@@ -60,14 +60,13 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         }
     }
 
+    //Note: This is not a block state so that we can have it easily create the correct TileEntity.
+    // If we end up merging some logic from the TileEntities then this can become a property
     private final boolean advanced;
 
     public BlockBounding(boolean advanced) {
-        //TODO: Should we have two blocks, one for advanced one for not advanced like it is now, or should it be a blockstate
-        // It probably should be a blockstate
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).variableOpacity());
-        //TODO: Use a block state for advanced
         this.advanced = advanced;
         setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
     }
@@ -81,7 +80,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        //TODO: Somehow refer to this for the MekanismUtils method of placing a bounding block so that if it is in water it starts out waterlogged
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
@@ -120,6 +118,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return state1.getBlock().getPickBlock(state1, target, world, mainPos, player);
     }
 
+    //TODO: Change this as there is now proper support for removing when there is a TileEntity in the given location
     /*
      * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}. Used together with {@link
      * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
@@ -136,20 +135,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return super.removedByPlayer(state, world, pos, player, false, fluidState);
     }
 
-    /*
-     * {@inheritDoc} Delegate to main {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}.
-     */
-    //TODO: Loot table? Or how should the bounding block handle drops
-    /*@Override
-    public void getDrops(@Nonnull NonNullList<ItemStack> drops, IBlockReader world, BlockPos pos, @Nonnull BlockState state, int fortune) {
-        BlockPos mainPos = getMainBlockPos(world, pos);
-        if (mainPos == null) {
-            return;
-        }
-        BlockState state1 = world.getBlockState(mainPos);
-        state1.getBlock().getDrops(drops, world, mainPos, state1, fortune);
-    }*/
-
     /**
      * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)}.
      *
@@ -158,9 +143,16 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
      */
     @Override
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        super.harvestBlock(world, player, pos, state, te, stack);
+        BlockPos mainPos = getMainBlockPos(world, pos);
+        if (mainPos != null) {
+            BlockState mainState = world.getBlockState(mainPos);
+            //TODO: Once we properly move things to loot tables, make this proxy it to that instead?
+            // or is this still a good way to proxy it
+            mainState.getBlock().harvestBlock(world, player, mainPos, mainState, MekanismUtils.getTileEntity(world, mainPos), stack);
+        } else {
+            super.harvestBlock(world, player, pos, state, te, stack);
+        }
         world.removeBlock(pos, false);
-        //TODO: We probably need to for now proxy drops here or at least inform the main pos to perform harvest block
     }
 
     @Override
