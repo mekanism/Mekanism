@@ -113,7 +113,7 @@ public class BlockStateHelper {
             state = blockFacing.setDirection(state, newDirection);
         }
         if (block instanceof IStateWaterLogged) {
-            IFluidState fluidState = context.getWorld().getFluidState(context.getPos());
+            IFluidState fluidState = world.getFluidState(pos);
             state = state.with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
         }
         //TODO: Set the proper defaults for the below ones, maybe do it by setting property defaults of everything

@@ -19,6 +19,7 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ElectricPumpContainer;
@@ -56,7 +57,7 @@ import net.minecraft.world.World;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockElectricPump extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntityElectricPump>, ISupportsUpgrades, IStateFacing,
-      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityElectricPump>, ISupportsComparator, IStateActive {
+      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityElectricPump>, ISupportsComparator, IStateActive, IStateWaterLogged {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

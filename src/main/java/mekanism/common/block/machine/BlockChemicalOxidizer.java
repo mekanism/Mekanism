@@ -21,6 +21,7 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ChemicalOxidizerContainer;
@@ -58,7 +59,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockChemicalOxidizer extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityChemicalOxidizer>, IStateFacing,
-      IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalOxidizer>, IBlockSound, ISupportsRedstone, ISupportsComparator {
+      IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalOxidizer>, IBlockSound, ISupportsRedstone, ISupportsComparator, IStateWaterLogged {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.oxidizer"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];

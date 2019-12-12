@@ -240,7 +240,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), Coord4D.get(this));
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
     }
 
     @Override

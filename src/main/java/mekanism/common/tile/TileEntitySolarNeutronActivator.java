@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
@@ -223,7 +222,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), Coord4D.get(this));
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
     }
 
     @Override

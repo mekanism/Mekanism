@@ -15,6 +15,7 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
@@ -53,7 +54,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockResistiveHeater extends BlockMekanism implements IBlockElectric, IHasGui<TileEntityResistiveHeater>, IStateFacing, IStateActive, IHasInventory,
-      IHasSecurity, IHasTileEntity<TileEntityResistiveHeater>, IBlockSound, ISupportsRedstone {
+      IHasSecurity, IHasTileEntity<TileEntityResistiveHeater>, IBlockSound, ISupportsRedstone, IStateWaterLogged {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.resistiveheater"));
     private static final VoxelShape boundsZAxis = VoxelShapeUtils.combine(

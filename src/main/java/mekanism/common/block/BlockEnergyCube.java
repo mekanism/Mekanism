@@ -13,6 +13,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.EnergyCubeContainer;
 import mekanism.common.item.block.ItemBlockEnergyCube;
@@ -57,7 +58,7 @@ import net.minecraft.world.World;
  * @author AidanBrady
  */
 public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntityEnergyCube>, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory,
-      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator {
+      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator, IStateWaterLogged {
 
     private static final VoxelShape[] bounds = new VoxelShape[128];
 

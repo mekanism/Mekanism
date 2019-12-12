@@ -73,7 +73,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
 
     @Override
     public void onPlace() {
-        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), Coord4D.get(this));
+        MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
     }
 
     @Override

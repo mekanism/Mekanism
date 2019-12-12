@@ -3,6 +3,8 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.util.MekanismUtils;
@@ -12,11 +14,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -25,12 +31,11 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-//TODO: Ask the main block about the voxel shape this bounding block should have
-//TODO: Extend BlockTileDrops instead and rename it to MekanismBlock. Not done yet as checking is needed to ensure how drops happen
-// still happens correctly and things in the super class don't mess this up
-public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock> {
+//TODO: Extend MekanismBlock. Not done yet as checking is needed to ensure how drops happen still happens correctly and things in the super class don't mess this up
+public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock>, IStateWaterLogged {
 
     @Nullable
     private static BlockPos getMainBlockPos(IBlockReader world, BlockPos thisPos) {
@@ -62,7 +67,22 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         // It probably should be a blockstate
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).variableOpacity());
+        //TODO: Use a block state for advanced
         this.advanced = advanced;
+        setDefaultState(BlockStateHelper.getDefaultState(stateContainer.getBaseState()));
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        BlockStateHelper.fillBlockStateContainer(this, builder);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        //TODO: Somehow refer to this for the MekanismUtils method of placing a bounding block so that if it is in water it starts out waterlogged
+        return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
     @Override
@@ -79,9 +99,11 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         //Remove the main block if a bounding block gets broken by being directly replaced
-        removeMainBlock(world, pos);
-        super.onReplaced(state, world, pos, newState, isMoving);
-        world.removeTileEntity(pos);
+        // Note: We only do this if we don't go from bounding block to bounding block
+        if (state.getBlock() != newState.getBlock()) {
+            removeMainBlock(world, pos);
+            super.onReplaced(state, world, pos, newState, isMoving);
+        }
     }
 
     /**
@@ -138,6 +160,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, @Nonnull ItemStack stack) {
         super.harvestBlock(world, player, pos, state, te, stack);
         world.removeBlock(pos, false);
+        //TODO: We probably need to for now proxy drops here or at least inform the main pos to perform harvest block
     }
 
     @Override
@@ -213,5 +236,25 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         BlockPos offset = pos.subtract(mainPos);
         //TODO: Can we somehow cache the withOffset? It potentially would have to then be moved into the Tile, but that is probably fine
         return shape.withOffset(-offset.getX(), -offset.getY(), -offset.getZ());
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public IFluidState getFluidState(BlockState state) {
+        if (state.get(BlockStateHelper.WATERLOGGED)) {
+            return Fluids.WATER.getStillFluidState(false);
+        }
+        return super.getFluidState(state);
+    }
+
+    @Nonnull
+    @Override
+    public BlockState updatePostPlacement(BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
+          @Nonnull BlockPos facingPos) {
+        if (state.get(BlockStateHelper.WATERLOGGED)) {
+            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        }
+        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
     }
 }

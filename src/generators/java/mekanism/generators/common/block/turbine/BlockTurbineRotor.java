@@ -3,6 +3,7 @@ package mekanism.generators.common.block.turbine;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -26,7 +27,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<TileEntityTurbineRotor> {
+public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<TileEntityTurbineRotor>, IStateWaterLogged {
 
     private static final VoxelShape bounds = makeCuboidShape(6, 0, 6, 10, 16, 10);
 

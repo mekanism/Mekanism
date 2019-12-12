@@ -8,6 +8,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -39,7 +40,8 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockSecurityDesk extends BlockMekanism implements IStateFacing, IHasGui<TileEntitySecurityDesk>, IHasInventory, IHasTileEntity<TileEntitySecurityDesk> {
+public class BlockSecurityDesk extends BlockMekanism implements IStateFacing, IHasGui<TileEntitySecurityDesk>, IHasInventory, IHasTileEntity<TileEntitySecurityDesk>,
+      IStateWaterLogged {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

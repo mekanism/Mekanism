@@ -18,6 +18,7 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.SolarNeutronActivatorContainer;
@@ -53,7 +54,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockSolarNeutronActivator extends BlockMekanism implements IHasModel, IHasGui<TileEntitySolarNeutronActivator>, ISupportsUpgrades, IStateFacing,
-      IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, ISupportsComparator {
+      IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, ISupportsComparator, IStateWaterLogged {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

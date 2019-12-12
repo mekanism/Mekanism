@@ -17,6 +17,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
@@ -58,7 +59,7 @@ import net.minecraft.world.World;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockElectric, IHasGui<TileEntityQuantumEntangloporter>, ISupportsUpgrades, IStateFacing,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateActive {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateActive, IStateWaterLogged {
 
     //Note: Does not include the "core"
     private static final VoxelShape bounds = VoxelShapeUtils.combine(

@@ -23,6 +23,7 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.MetallurgicInfuserContainer;
@@ -62,7 +63,7 @@ import net.minecraft.world.World;
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockMetallurgicInfuser extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityMetallurgicInfuser>,
       IStateFacing, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityMetallurgicInfuser>, IBlockSound, ISupportsRedstone,
-      ISupportsComparator, IStateActive {
+      ISupportsComparator, IStateActive, IStateWaterLogged {
 
     public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.metalinfuser"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];

@@ -56,6 +56,7 @@ import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.UsernameCache;
@@ -354,17 +355,17 @@ public final class MekanismUtils {
      *
      * @param world            - world to place block in
      * @param boundingLocation - coordinates of bounding block
-     * @param orig             - original block
+     * @param orig             - original block position
      */
-    public static void makeBoundingBlock(@Nullable World world, BlockPos boundingLocation, Coord4D orig) {
+    public static void makeBoundingBlock(@Nullable IWorld world, BlockPos boundingLocation, BlockPos orig) {
         if (world == null) {
             return;
         }
-        world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getDefaultState());
+        world.setBlockState(boundingLocation, MekanismBlock.BOUNDING_BLOCK.getBlock().getDefaultState(), 3);
         if (!world.isRemote()) {
             TileEntityBoundingBlock tile = getTileEntity(TileEntityBoundingBlock.class, world, boundingLocation);
             if (tile != null) {
-                tile.setMainLocation(orig.getPos());
+                tile.setMainLocation(orig);
             } else {
                 Mekanism.logger.warn("Unable to find Bounding Block Tile at: {}", boundingLocation);
             }
@@ -376,14 +377,14 @@ public final class MekanismUtils {
      *
      * @param world            - world to place block in
      * @param boundingLocation - coordinates of bounding block
-     * @param orig             - original block
+     * @param orig             - original block position
      */
-    public static void makeAdvancedBoundingBlock(World world, BlockPos boundingLocation, Coord4D orig) {
-        world.setBlockState(boundingLocation, MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock().getDefaultState());
-        if (!world.isRemote) {
+    public static void makeAdvancedBoundingBlock(IWorld world, BlockPos boundingLocation, BlockPos orig) {
+        world.setBlockState(boundingLocation, MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock().getDefaultState(), 3);
+        if (!world.isRemote()) {
             TileEntityAdvancedBoundingBlock tile = getTileEntity(TileEntityAdvancedBoundingBlock.class, world, boundingLocation);
             if (tile != null) {
-                tile.setMainLocation(orig.getPos());
+                tile.setMainLocation(orig);
             } else {
                 Mekanism.logger.warn("Unable to find Advanced Bounding Block Tile at: {}", boundingLocation);
             }

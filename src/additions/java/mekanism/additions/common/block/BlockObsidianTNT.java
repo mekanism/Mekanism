@@ -3,6 +3,8 @@ package mekanism.additions.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.additions.common.entity.EntityObsidianTNT;
+import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -10,6 +12,10 @@ import net.minecraft.block.TNTBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.TNTEntity;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.StateContainer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -18,9 +24,10 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-public class BlockObsidianTNT extends TNTBlock {
+public class BlockObsidianTNT extends TNTBlock implements IStateWaterLogged {
 
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(0, 0, 0, 16, 3, 16),//Wooden1
@@ -47,6 +54,20 @@ public class BlockObsidianTNT extends TNTBlock {
 
     public BlockObsidianTNT() {
         super(Block.Properties.create(Material.TNT));
+        //Uses getDefaultState as starting state to take into account the stuff from super
+        setDefaultState(BlockStateHelper.getDefaultState(getDefaultState()));
+    }
+
+    @Override
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        super.fillStateContainer(builder);
+        BlockStateHelper.fillBlockStateContainer(this, builder);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
     @Override
@@ -79,5 +100,25 @@ public class BlockObsidianTNT extends TNTBlock {
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         return bounds;
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
+    public IFluidState getFluidState(BlockState state) {
+        if (state.get(BlockStateHelper.WATERLOGGED)) {
+            return Fluids.WATER.getStillFluidState(false);
+        }
+        return super.getFluidState(state);
+    }
+
+    @Nonnull
+    @Override
+    public BlockState updatePostPlacement(BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
+          @Nonnull BlockPos facingPos) {
+        if (state.get(BlockStateHelper.WATERLOGGED)) {
+            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+        }
+        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
     }
 }

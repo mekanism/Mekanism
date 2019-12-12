@@ -1,7 +1,6 @@
 package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -11,6 +10,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
@@ -147,11 +147,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         if (world == null) {
             return;
         }
-        Coord4D current = Coord4D.get(this);
-        MekanismUtils.makeBoundingBlock(world, getPos().up(), current);
-        MekanismUtils.makeBoundingBlock(world, getPos().up(2), current);
-        MekanismUtils.makeBoundingBlock(world, getPos().up(3), current);
-        MekanismUtils.makeBoundingBlock(world, getPos().up(4), current);
+        BlockPos pos = getPos();
+        MekanismUtils.makeBoundingBlock(world, pos.up(), pos);
+        MekanismUtils.makeBoundingBlock(world, pos.up(2), pos);
+        MekanismUtils.makeBoundingBlock(world, pos.up(3), pos);
+        MekanismUtils.makeBoundingBlock(world, pos.up(4), pos);
         // Check to see if the placement is happening in a blacklisted dimension
         isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimension().getType().getRegistryName().toString());
     }

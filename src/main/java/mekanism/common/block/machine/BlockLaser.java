@@ -13,6 +13,7 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
@@ -48,7 +49,8 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
-public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound, IStateActive {
+public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound, IStateActive,
+      IStateWaterLogged {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.laser"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
