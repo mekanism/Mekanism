@@ -14,7 +14,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
@@ -234,19 +233,14 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     @Deprecated
     public IFluidState getFluidState(BlockState state) {
-        if (state.get(BlockStateHelper.WATERLOGGED)) {
-            return Fluids.WATER.getStillFluidState(false);
-        }
-        return super.getFluidState(state);
+        return getFluid(state);
     }
 
     @Nonnull
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
-          @Nonnull BlockPos facingPos) {
-        if (state.get(BlockStateHelper.WATERLOGGED)) {
-            world.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-        }
+    public BlockState updatePostPlacement(@Nonnull BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+          @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
+        updateFluids(state, world, currentPos);
         return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
     }
 }
