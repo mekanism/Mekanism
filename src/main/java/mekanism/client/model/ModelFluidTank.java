@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.Model;
 import org.lwjgl.opengl.GL11;
 
+//TODO: Replace usage of this by using the json model and drawing fluid inside of it?
 public class ModelFluidTank extends Model {
 
     private final RendererModel Base;

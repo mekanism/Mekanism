@@ -4,7 +4,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-//TODO: Move to client package
 public class ModelProperties {
 
     //TODO: Limit the different options that it can be?
@@ -17,5 +16,4 @@ public class ModelProperties {
     public static final ModelProperty<ConnectionType> SOUTH_CONNECTION = new ModelProperty<>();
     public static final ModelProperty<ConnectionType> WEST_CONNECTION = new ModelProperty<>();
     public static final ModelProperty<ConnectionType> EAST_CONNECTION = new ModelProperty<>();
-
 }

@@ -1,4 +1,4 @@
-package mekanism.client.model;
+package mekanism.additions.client.model;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.api.text.EnumColor;
