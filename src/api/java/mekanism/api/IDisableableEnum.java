@@ -10,12 +10,14 @@ public interface IDisableableEnum<TYPE extends Enum<TYPE> & IDisableableEnum<TYP
     @Nonnull
     @Override
     default TYPE getNext() {
-        return getNext(IDisableableEnum::isEnabled);
+        //Note: Do not replace this with method reference, or it will crash not being able to resolve the TYPE
+        return getNext(element -> element.isEnabled());
     }
 
     @Nonnull
     @Override
     default TYPE getPrevious() {
-        return getPrevious(IDisableableEnum::isEnabled);
+        //Note: Do not replace this with method reference, or it will crash not being able to resolve the TYPE
+        return getPrevious(element -> element.isEnabled());
     }
 }
