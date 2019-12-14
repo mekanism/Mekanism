@@ -12,7 +12,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.ajoberstar.grgit' version '3.1.1'
+    id 'org.ajoberstar.grgit' version '4.0.0'
     id "com.matthewprenger.cursegradle" version '1.4.0'
     id 'java'
     id 'idea'
@@ -104,9 +104,9 @@ configurations {
     def compileExtenders = [apiCompile, additionsCompile, generatorsCompile, toolsCompile,
                             datagenmainCompile, datagenadditionsCompile, datagengeneratorsCompile, datagentoolsCompile];
     def compileOnlyExtenders = [apiCompileOnly, additionsCompileOnly, generatorsCompileOnly, toolsCompileOnly,
-            datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagentoolsCompileOnly];
+                                datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagentoolsCompileOnly];
     def runtimeOnlyExtenders = [apiRuntimeOnly, additionsRuntimeOnly, generatorsRuntimeOnly, toolsRuntimeOnly,
-            datagenmainRuntimeOnly, datagenadditionsRuntimeOnly, datagengeneratorsRuntimeOnly, datagentoolsRuntimeOnly];
+                                datagenmainRuntimeOnly, datagenadditionsRuntimeOnly, datagengeneratorsRuntimeOnly, datagentoolsRuntimeOnly];
     for (def compileExtender : compileExtenders) {
         compileExtender.extendsFrom(compile)
     }
@@ -247,7 +247,6 @@ minecraft {
                     '--mod', 'mekanismtools',
                     '--existing', '"' + sourceSets.tools.resources.srcDirs[0] + '"'
 
-
             mods {
                 mekanism {
                     sources(sourceSets.main, sourceSets.api, sourceSets.datagenmain)
@@ -303,30 +302,22 @@ def version_properties = ["version": mod_version, "mc_version": minecraft_versio
 
 processResources {
     outputs.upToDateWhen { false }
-    filesMatching('META-INF/mods.toml') {
-        expand version_properties
-    }
+    filesMatching('META-INF/mods.toml') { expand version_properties }
 }
 
 processToolsResources {
     outputs.upToDateWhen { false }
-    filesMatching('META-INF/mods.toml') {
-        expand version_properties
-    }
+    filesMatching('META-INF/mods.toml') { expand version_properties }
 }
 
 processAdditionsResources {
     outputs.upToDateWhen { false }
-    filesMatching('META-INF/mods.toml') {
-        expand version_properties
-    }
+    filesMatching('META-INF/mods.toml') { expand version_properties }
 }
 
 processGeneratorsResources {
     outputs.upToDateWhen { false }
-    filesMatching('META-INF/mods.toml') {
-        expand version_properties
-    }
+    filesMatching('META-INF/mods.toml') { expand version_properties }
 }
 
 jar {
@@ -374,21 +365,11 @@ artifacts {
 }
 
 reobf {
-    apiJar {
-        classpath = sourceSets.api.compileClasspath
-    }
-    coreJar {
-        classpath = sourceSets.main.compileClasspath
-    }
-    additionsJar {
-        classpath = sourceSets.additions.compileClasspath
-    }
-    generatorsJar {
-        classpath = sourceSets.generators.compileClasspath
-    }
-    toolsJar {
-        classpath = sourceSets.tools.compileClasspath
-    }
+    apiJar { classpath = sourceSets.api.compileClasspath }
+    coreJar { classpath = sourceSets.main.compileClasspath }
+    additionsJar { classpath = sourceSets.additions.compileClasspath }
+    generatorsJar { classpath = sourceSets.generators.compileClasspath }
+    toolsJar { classpath = sourceSets.tools.compileClasspath }
 }
 
 task fullBuild(type: Delete) {
@@ -454,9 +435,9 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {
 //Ignore PRs and Merges
                     message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
-                        return "<a href=\"https://github.com/mekanism-mod/Mekanism/issues/${match[1]}\">${match[0]}</a>"
+                        return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
                     })
-                    generatedChangelog += "<a href=\"https://github.com/mekanism-mod/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
+                    generatedChangelog += "<a href=\"https://github.com/mekanism/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
                 }
             }
             generatedChangelog += "</pre>"
