@@ -45,6 +45,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.opengl.GL11;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -56,9 +57,16 @@ public class MekanismRenderer {
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
-    private static RenderConfigurableMachine<?> machineRenderer = new RenderConfigurableMachine<>();
+    private static RenderConfigurableMachine<?> machineRenderer;
     public static TextureAtlasSprite missingIcon;
     private static AtlasTexture texMap = null;
+
+    @SubscribeEvent
+    public static void init(FMLClientSetupEvent event) {
+        //Note: We set the machine renderer in a FMLClientSetupEvent, to make sure that it does not get set at the
+        // wrong time when running the data generators and thus cause a crash
+        machineRenderer = new RenderConfigurableMachine<>();
+    }
 
     @SuppressWarnings("unchecked")
     public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {

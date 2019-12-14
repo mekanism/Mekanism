@@ -50,46 +50,72 @@ sourceSets {
             include '**/**'
             // copy everything else, but blender files.
             exclude '**/*.blend'
+            //Add the generated main module resources
+            srcDirs += 'src/datagen/generated/mekanism'
+            //But exclude the cache of the generated data from what gets built
+            exclude '.cache'
         }
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
     }
-    additions {
-        java {
-            srcDir 'src/additions/java'
-        }
-        compileClasspath += sourceSets.api.output
-        compileClasspath += sourceSets.main.output
+    additions { setupSourceSet(sourceSets.additions, 'additions') }
+    generators { setupSourceSet(sourceSets.generators, 'generators') }
+    tools { setupSourceSet(sourceSets.tools, 'tools') }
+    //Data gen modules for the different modules
+    datagenmain { setupDataGenSourceSet(sourceSets.datagenmain, null, 'main') }
+    datagenadditions { setupDataGenSourceSet(sourceSets.datagenadditions, sourceSets.additions, 'additions') }
+    datagengenerators { setupDataGenSourceSet(sourceSets.datagengenerators, sourceSets.generators, 'generators') }
+    datagentools { setupDataGenSourceSet(sourceSets.datagentools, sourceSets.tools, 'tools') }
+}
+
+//This method sets up an additional sourceset in src/$name and adds a reference to the corresponding
+// data gen's resource directory excluding the cache. It also adds the api and main mekanism module
+// to the dependencies of the source set we are setting up
+def setupSourceSet(SourceSet sourceSet, String name) {
+    sourceSet.java {
+        srcDir 'src/' + name + '/java'
     }
-    generators {
-        java {
-            srcDir 'src/generators/java'
-        }
-        compileClasspath += sourceSets.api.output
-        compileClasspath += sourceSets.main.output
+    sourceSet.resources {
+        //Add the generated module resources
+        srcDirs += 'src/datagen/generated/mekanism' + name
+        //But exclude the cache of the generated data from what gets built
+        exclude '.cache'
     }
-    tools {
-        java {
-            srcDir 'src/tools/java'
-        }
-        compileClasspath += sourceSets.api.output
-        compileClasspath += sourceSets.main.output
+    sourceSet.compileClasspath += sourceSets.api.output
+    sourceSet.compileClasspath += sourceSets.main.output
+}
+
+//This method sets up a source set in datagen/$name and adds the api, main mekanism module and an optional
+// base module to the dependencies of the data generators source set that we are setting up
+// Note: While IntelliJ claims this can be made static it really cannot
+def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, String name) {
+    datagenSourceSet.java.srcDirs = ['src/datagen/' + name + '/java']
+    datagenSourceSet.resources.srcDirs = ['src/datagen/' + name + '/resources']
+    datagenSourceSet.compileClasspath += sourceSets.api.output
+    datagenSourceSet.compileClasspath += sourceSets.main.output
+    if (baseSourceSet != null) {
+        datagenSourceSet.compileClasspath += baseSourceSet.output
     }
 }
 
 configurations {
-    apiCompile.extendsFrom(compile)
-    apiCompileOnly.extendsFrom(compileOnly)
-    apiRuntimeOnly.extendsFrom(runtimeOnly)
-    additionsCompile.extendsFrom(compile)
-    additionsCompileOnly.extendsFrom(compileOnly)
-    additionsRuntimeOnly.extendsFrom(runtimeOnly)
-    generatorsCompile.extendsFrom(compile)
-    generatorsCompileOnly.extendsFrom(compileOnly)
-    generatorsRuntimeOnly.extendsFrom(runtimeOnly)
-    toolsCompile.extendsFrom(compile)
-    toolsCompileOnly.extendsFrom(compileOnly)
-    toolsRuntimeOnly.extendsFrom(runtimeOnly)
+    //Make sure all our sub source set stuff extends the proper base methods so that
+    // they can see all the dependencies we have in dependencies including forge
+    def compileExtenders = [apiCompile, additionsCompile, generatorsCompile, toolsCompile,
+                            datagenmainCompile, datagenadditionsCompile, datagengeneratorsCompile, datagentoolsCompile];
+    def compileOnlyExtenders = [apiCompileOnly, additionsCompileOnly, generatorsCompileOnly, toolsCompileOnly,
+            datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagentoolsCompileOnly];
+    def runtimeOnlyExtenders = [apiRuntimeOnly, additionsRuntimeOnly, generatorsRuntimeOnly, toolsRuntimeOnly,
+            datagenmainRuntimeOnly, datagenadditionsRuntimeOnly, datagengeneratorsRuntimeOnly, datagentoolsRuntimeOnly];
+    for (def compileExtender : compileExtenders) {
+        compileExtender.extendsFrom(compile)
+    }
+    for (def compileOnlyExtender : compileOnlyExtenders) {
+        compileOnlyExtender.extendsFrom(compileOnly)
+    }
+    for (def runtimeOnlyExtender : runtimeOnlyExtenders) {
+        runtimeOnlyExtender.extendsFrom(runtimeOnly)
+    }
 }
 
 repositories {
@@ -211,18 +237,29 @@ minecraft {
             workingDirectory project.file("run")
             properties 'fml.earlyprogresswindow': 'false'
 
+            args '--all', '--output', '"' + file('src/datagen/generated/') + '"',
+                    '--mod', 'mekanism',
+                    '--existing', '"' + sourceSets.main.resources.srcDirs[0] + '"',
+                    '--mod', 'mekanismadditions',
+                    '--existing', '"' + sourceSets.additions.resources.srcDirs[0] + '"',
+                    '--mod', 'mekanismgenerators',
+                    '--existing', '"' + sourceSets.generators.resources.srcDirs[0] + '"',
+                    '--mod', 'mekanismtools',
+                    '--existing', '"' + sourceSets.tools.resources.srcDirs[0] + '"'
+
+
             mods {
                 mekanism {
-                    sources(sourceSets.main, sourceSets.api)
+                    sources(sourceSets.main, sourceSets.api, sourceSets.datagenmain)
                 }
                 mekanismadditions {
-                    source(sourceSets.additions)
+                    sources(sourceSets.additions, sourceSets.datagenadditions)
                 }
                 mekanismgenerators {
-                    source(sourceSets.generators)
+                    sources(sourceSets.generators, sourceSets.datagengenerators)
                 }
                 mekanismtools {
-                    source(sourceSets.tools)
+                    sources(sourceSets.tools, sourceSets.datagentools)
                 }
             }
         }

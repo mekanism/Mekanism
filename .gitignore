@@ -20,3 +20,6 @@ MDK.zip
 *.blend1
 *.blend2
 /bin
+
+# datagen caches
+**/.cache
