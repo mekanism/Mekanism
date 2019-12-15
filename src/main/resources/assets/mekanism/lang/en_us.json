@@ -772,7 +772,6 @@
   "tooltip.mekanism.tile": "Tile",
   "tooltip.mekanism.keysFound": "Key(s) found",
   "tooltip.mekanism.noKey": "No key",
-  "tooltip.mekanism.hp": "HP",
   "tooltip.mekanism.configureState": "Configure State: %s",
   "tooltip.mekanism.outputRate": "Output Rate",
   "tooltip.mekanism.insufficientFuel": "Insufficient Fuel",

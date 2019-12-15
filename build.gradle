@@ -94,6 +94,9 @@ def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, S
     datagenSourceSet.compileClasspath += sourceSets.api.output
     datagenSourceSet.compileClasspath += sourceSets.main.output
     if (baseSourceSet != null) {
+        //Only case it is null is when we are doing datagenmain so other cases also add access to the stuff
+        // in datagenmain so we can add helper classes
+        datagenSourceSet.compileClasspath += sourceSets.datagenmain.output
         datagenSourceSet.compileClasspath += baseSourceSet.output
     }
 }

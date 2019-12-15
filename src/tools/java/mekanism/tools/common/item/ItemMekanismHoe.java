@@ -4,9 +4,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import mekanism.tools.common.IHasRepairType;
+import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.HoeItem;
@@ -27,7 +27,7 @@ public class ItemMekanismHoe extends HoeItem implements IHasRepairType {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.hp"), ": " + (stack.getMaxDamage() - stack.getDamage())));
+        tooltip.add(Translation.of(ToolsLang.HP, stack.getMaxDamage() - stack.getDamage()).getTextComponent());
     }
 
     @Nonnull

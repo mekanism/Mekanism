@@ -22,4 +22,4 @@ MDK.zip
 /bin
 
 # datagen caches
-**/.cache
+/src/datagen/generated/**/.cache
