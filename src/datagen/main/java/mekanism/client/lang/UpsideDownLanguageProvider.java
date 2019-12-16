@@ -1,13 +1,25 @@
 package mekanism.client.lang;
 
+import java.text.ChoiceFormat;
 import java.util.List;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.client.lang.FormatSplitter.FormatComponent;
 import mekanism.client.lang.FormatSplitter.MessageFormatComponent;
+import mekanism.common.Mekanism;
 import net.minecraft.data.DataGenerator;
 
 //TODO: If at some point we make unit tests, we should add some tests for this and for FormatSplitter
 public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
+
+    public UpsideDownLanguageProvider(DataGenerator gen, String modid) {
+        super(gen, modid, "en_ud");
+        //Note: This technically is supposed to be upside down british english but we are doing it as upside down US english
+    }
+
+    @Override
+    public void convert(String key, List<Component> splitEnglish) {
+        add(key, convertComponents(splitEnglish));
+    }
 
     private static final String normal = "abcdefghijklmnopqrstuvwxyz" +
                                          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
@@ -55,16 +67,74 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
      */
     private static String convertMessageFormatCode(MessageFormatComponent component) {
         String formatStyle = component.getFormatStyle();
-        if (formatStyle == null || component.isStyleLiteral()) {
-            //If we don't have a style we don't need to invert it so just return what we have
-            // Or our style is literal text and we don't want to invert it because it has meaning
-            return component.getContents();
+        if (formatStyle != null && component.isChoice()) {
+            //The formatting style is a choice and we want to invert any "excess" text that is part of it
+            String newFormatStyle = invertChoice(formatStyle);
+            try {
+                new ChoiceFormat(newFormatStyle);
+            } catch (IllegalArgumentException e) {
+                Mekanism.logger.warn("Failed to convert '{}' to an upside down choice format. Got: '{}' which was invalid.", formatStyle, newFormatStyle);
+                //Safety check for if we failed to convert it into a valid choice format just fallback to leaving the format as is
+                return component.getContents();
+            }
+            return "{" + component.getArgumentIndex() + "," + component.getFormatType() + "," + newFormatStyle + "}";
         }
-        //Invert the format style as the argument index and format type should stay as is
-        // Note: we only bother splitting it as message format as because we only ever can be a message format ourselves if
-        // the entire string doesn't have any valid % formatting codes, as forge does not mix formatting code styles
-        String newFormatStyle = convertComponents(FormatSplitter.splitMessageFormat(formatStyle));
-        return "{" + component.getArgumentIndex() + "," + component.getFormatType() + "," + newFormatStyle + "}";
+        //If we don't have a style we don't need to invert it so just return what we have
+        // or our style is not a choice as only choice's need to have further processing done
+        return component.getContents();
+    }
+
+    private static String invertChoice(String choice) {
+        //TODO: Fix this method not properly respecting inner brackets and allowing them to be converted
+        // For example {0,choice,1#1 mod|1<{4} mods} makes the 4 get flipped even though it should be left alone
+        StringBuilder converted = new StringBuilder();
+        StringBuilder literalBuilder = new StringBuilder();
+        StringBuilder textBuilder = new StringBuilder();
+        char[] exploded = choice.toCharArray();
+        int leftBrackets = 0;
+        boolean inLiteral = true;
+        for (char c : exploded) {
+            if (inLiteral) {
+                literalBuilder.append(c);
+                if (c == '#' || c == '<' || c == '\u2264') {
+                    inLiteral = false;
+                    converted.append(literalBuilder);
+                    literalBuilder = new StringBuilder();
+                }
+            } else {
+                if (c == '{') {
+                    leftBrackets++;
+                } else if (c == '}') {
+                    leftBrackets--;
+                    if (leftBrackets == 0) {
+                        //We closed a bracket
+                    }
+                } else if (c == '|' && leftBrackets == 0) {
+                    inLiteral = true;
+                    appendInverted(converted, textBuilder.toString());
+                    textBuilder = new StringBuilder();
+                }
+                if (inLiteral) {
+                    literalBuilder.append(c);
+                } else {
+                    textBuilder.append(c);
+                }
+            }
+        }
+        if (inLiteral) {
+            converted.append(literalBuilder);
+        } else {
+            appendInverted(converted, textBuilder.toString());
+        }
+        return converted.toString();
+    }
+
+    private static void appendInverted(StringBuilder converted, String toConvert) {
+        //Convert each character to being upside down and then insert at end
+        char[] toConvertArr = toConvert.toCharArray();
+        for (int j = toConvertArr.length - 1; j >= 0; j--) {
+            converted.append(flip(toConvertArr[j]));
+        }
     }
 
     private static String convertComponents(List<Component> splitText) {
@@ -78,22 +148,9 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
                 converted.append(convertFormattingComponent((FormatComponent) component, curIndex--, numArguments));
             } else {
                 //Convert each character to being upside down and then insert at end
-                char[] toConvert = component.getContents().toCharArray();
-                for (int j = toConvert.length - 1; j >= 0; j--) {
-                    converted.append(flip(toConvert[j]));
-                }
+                appendInverted(converted, component.getContents());
             }
         }
         return new String(converted);
-    }
-
-    public UpsideDownLanguageProvider(DataGenerator gen, String modid) {
-        super(gen, modid, "en_ud");
-        //Note: This technically is supposed to be upside down british english but we are doing it as upside down US english
-    }
-
-    @Override
-    public void convert(String key, List<Component> splitEnglish) {
-        add(key, convertComponents(splitEnglish));
     }
 }

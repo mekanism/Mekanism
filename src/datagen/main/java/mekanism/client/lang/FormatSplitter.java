@@ -1,6 +1,9 @@
 package mekanism.client.lang;
 
 import com.google.common.collect.ImmutableList;
+import java.text.ChoiceFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -180,14 +183,14 @@ public class FormatSplitter {
         private final String formatType;
         @Nullable
         private final String formatStyle;
-        private final boolean isStyleLiteral;
+        private final boolean isChoice;
 
-        private MessageFormatComponent(String contents, int argumentIndex, @Nullable String formatType, @Nullable String formatStyle, boolean isStyleLiteral) {
+        private MessageFormatComponent(String contents, int argumentIndex, @Nullable String formatType, @Nullable String formatStyle, boolean isChoice) {
             super(contents);
             this.argumentIndex = argumentIndex;
             this.formatType = formatType;
             this.formatStyle = formatStyle;
-            this.isStyleLiteral = isStyleLiteral;
+            this.isChoice = isChoice;
         }
 
         public int getArgumentIndex() {
@@ -207,8 +210,8 @@ public class FormatSplitter {
             return formatStyle;
         }
 
-        public boolean isStyleLiteral() {
-            return isStyleLiteral;
+        public boolean isChoice() {
+            return isChoice;
         }
 
         /**
@@ -216,8 +219,6 @@ public class FormatSplitter {
          *
          * @return A {@link MessageFormatComponent} representing the given contents, or {@code null} if the contents do not represent a valid {@link
          * MessageFormatComponent}
-         *
-         * @implNote This does not bother to verify if the formatStyle is representing a SubformatPattern, that it is a valid SubformatPattern
          */
         @Nullable
         private static MessageFormatComponent fromContents(String contents) {
@@ -241,7 +242,7 @@ public class FormatSplitter {
             }
             if (firstComma == -1) {
                 //If we don't have a comma so it is only an argument index we can just exit now
-                return new MessageFormatComponent(contents, argumentIndex, null, null, true);
+                return new MessageFormatComponent(contents, argumentIndex, null, null, false);
             }
             //Look for the next comma
             int secondComma = contents.indexOf(",", firstComma + 1);
@@ -249,22 +250,32 @@ public class FormatSplitter {
             //Set the format style based on the format type or to null if we do not have one
             String formatStyle = secondComma == -1 ? null : contents.substring(secondComma + 1, length - 1);
             String trimmedFormatType = formatType.trim();
-            boolean isStyleLiteral = true;
+            boolean isChoice = false;
             switch (trimmedFormatType) {
                 //Built in Java Format Types
                 case "number":
                     if (formatStyle != null && !formatStyle.equals("integer") && !formatStyle.equals("currency") && !formatStyle.equals("percent")) {
-                        //If it is not a valid format style for number assume that it is a SubformatPattern
-                        // Note: We do not verify that it is a valid SubformatPattern
-                        isStyleLiteral = false;
+                        //If it is not a valid format style for number check if it is a valid SubformatPattern
+                        // number uses DecimalFormat as a SubformatPattern
+                        try {
+                            new DecimalFormat(formatStyle);
+                        } catch (IllegalArgumentException e) {
+                            //If it is not a valid DecimalFormat then it is not a valid format overall, so return null
+                            return null;
+                        }
                     }
                     break;
                 case "date":
                 case "time":
                     if (formatStyle != null && !formatStyle.equals("short") && !formatStyle.equals("medium") && !formatStyle.equals("long") && !formatStyle.equals("full")) {
-                        //If it is not a valid format style for date or time assume that it is a SubformatPattern
-                        // Note: We do not verify that it is a valid SubformatPattern
-                        isStyleLiteral = false;
+                        //If it is not a valid format style for date or time check if it is a valid SubformatPattern
+                        // time and date both use SimpleDateFormat as a SubformatPattern
+                        try {
+                            new SimpleDateFormat(formatStyle);
+                        } catch (IllegalArgumentException e) {
+                            //If it is not a valid SimpleDateFormat then it is not a valid format overall, so return null
+                            return null;
+                        }
                     }
                     break;
                 case "choice":
@@ -272,8 +283,13 @@ public class FormatSplitter {
                         return null;
                     }
                     //Choice is only valid when it has a SubformatPattern so we return null if we don't have a formatStyle
-                    //Note: We do not verify that it is a valid SubformatPattern
-                    isStyleLiteral = false;
+                    try {
+                        new ChoiceFormat(formatStyle);
+                    } catch (IllegalArgumentException e) {
+                        //If it is not a valid ChoiceFormat to begin with then it is not a valid format overall, so return null
+                        return null;
+                    }
+                    isChoice = true;
                     break;
                 //Forge added Format types
                 case "modinfo":
@@ -307,7 +323,7 @@ public class FormatSplitter {
                     //Not a valid format type
                     return null;
             }
-            return new MessageFormatComponent(contents, argumentIndex, formatType, formatStyle, isStyleLiteral);
+            return new MessageFormatComponent(contents, argumentIndex, formatType, formatStyle, isChoice);
         }
     }
 }
