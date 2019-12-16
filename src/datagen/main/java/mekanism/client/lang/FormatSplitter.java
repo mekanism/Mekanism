@@ -2,7 +2,6 @@ package mekanism.client.lang;
 
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -176,64 +175,19 @@ public class FormatSplitter {
      */
     public static class MessageFormatComponent extends FormatComponent {
 
-        private static final List<String> validFormatTypes = Arrays.asList(
-              "number", "date", "time", "choice",//Java MessageFormat formatTypes
-              "modinfo", "lower", "upper", "exc", "vr", "i18n", "ornull");//Forge added formatTypes
-
         private final int argumentIndex;
         @Nullable
         private final String formatType;
         @Nullable
         private final String formatStyle;
+        private final boolean isStyleLiteral;
 
-        private MessageFormatComponent(String contents, int argumentIndex, @Nullable String formatType, @Nullable String formatStyle) {
+        private MessageFormatComponent(String contents, int argumentIndex, @Nullable String formatType, @Nullable String formatStyle, boolean isStyleLiteral) {
             super(contents);
             this.argumentIndex = argumentIndex;
             this.formatType = formatType;
             this.formatStyle = formatStyle;
-        }
-
-        /**
-         * @param contents Contents to create a {@link MessageFormatComponent} from.
-         *
-         * @return A {@link MessageFormatComponent} representing the given contents, or {@code null} if the contents do not represent a valid {@link
-         * MessageFormatComponent}
-         */
-        @Nullable
-        private static MessageFormatComponent fromContents(String contents) {
-            int length = contents.length();
-            if (length < 3 || contents.charAt(0) != '{' || contents.charAt(length - 1) != '}') {
-                //If we don't have at least one digit between the two brackets or we don't start and end with a bracket
-                // then this is not a valid
-                return null;
-            }
-            int firstComma = contents.indexOf(",");
-            int argumentIndex;
-            try {
-                argumentIndex = Integer.parseInt(contents.substring(1, firstComma == -1 ? length - 1 : firstComma));
-            } catch (NumberFormatException e) {
-                //If the argument is not a valid number, just exit as it is probably not meant to be a
-                return null;
-            }
-            if (firstComma == -1) {
-                //If we don't have a comma so it is only an argument index we can just exit now
-                return new MessageFormatComponent(contents, argumentIndex, null, null);
-            }
-            //Look for the next comma
-            int secondComma = contents.indexOf(",", firstComma + 1);
-            String formatType = contents.substring(firstComma + 1, secondComma == -1 ? length - 1 : secondComma);
-            if (!validFormatTypes.contains(formatType.trim())) {
-                //If we don't have a valid format type (even after removing the surrounding whitespace) then return that contents is invalid as a MessageFormatComponent
-                // Note: If any formatType ever cares about white space we will have to test with and without trimming
-                return null;
-            }
-            if (secondComma == -1) {
-                //If we don't have a second comma, we only have an argument index and format type
-                return new MessageFormatComponent(contents, argumentIndex, formatType, null);
-            }
-            //We have a format style and so it is the remainder of the input
-            String formatStyle = contents.substring(secondComma + 1, length - 1);
-            return new MessageFormatComponent(contents, argumentIndex, formatType, formatStyle);
+            this.isStyleLiteral = isStyleLiteral;
         }
 
         public int getArgumentIndex() {
@@ -251,6 +205,109 @@ public class FormatSplitter {
         @Nullable
         public String getFormatStyle() {
             return formatStyle;
+        }
+
+        public boolean isStyleLiteral() {
+            return isStyleLiteral;
+        }
+
+        /**
+         * @param contents Contents to create a {@link MessageFormatComponent} from.
+         *
+         * @return A {@link MessageFormatComponent} representing the given contents, or {@code null} if the contents do not represent a valid {@link
+         * MessageFormatComponent}
+         *
+         * @implNote This does not bother to verify if the formatStyle is representing a SubformatPattern, that it is a valid SubformatPattern
+         */
+        @Nullable
+        private static MessageFormatComponent fromContents(String contents) {
+            int length = contents.length();
+            if (length < 3 || contents.charAt(0) != '{' || contents.charAt(length - 1) != '}') {
+                //If we don't have at least one digit between the two brackets or we don't start and end with a bracket
+                // then this is not a valid
+                return null;
+            }
+            int firstComma = contents.indexOf(",");
+            int argumentIndex;
+            try {
+                argumentIndex = Integer.parseInt(contents.substring(1, firstComma == -1 ? length - 1 : firstComma));
+            } catch (NumberFormatException e) {
+                //If the argument is not a valid number, just exit as it is probably not meant to be a
+                return null;
+            }
+            if (argumentIndex < 0 || argumentIndex > 9) {
+                //MessageFormat only supports up to 10 total arguments
+                return null;
+            }
+            if (firstComma == -1) {
+                //If we don't have a comma so it is only an argument index we can just exit now
+                return new MessageFormatComponent(contents, argumentIndex, null, null, true);
+            }
+            //Look for the next comma
+            int secondComma = contents.indexOf(",", firstComma + 1);
+            String formatType = contents.substring(firstComma + 1, secondComma == -1 ? length - 1 : secondComma);
+            //Set the format style based on the format type or to null if we do not have one
+            String formatStyle = secondComma == -1 ? null : contents.substring(secondComma + 1, length - 1);
+            String trimmedFormatType = formatType.trim();
+            boolean isStyleLiteral = true;
+            switch (trimmedFormatType) {
+                //Built in Java Format Types
+                case "number":
+                    if (formatStyle != null && !formatStyle.equals("integer") && !formatStyle.equals("currency") && !formatStyle.equals("percent")) {
+                        //If it is not a valid format style for number assume that it is a SubformatPattern
+                        // Note: We do not verify that it is a valid SubformatPattern
+                        isStyleLiteral = false;
+                    }
+                    break;
+                case "date":
+                case "time":
+                    if (formatStyle != null && !formatStyle.equals("short") && !formatStyle.equals("medium") && !formatStyle.equals("long") && !formatStyle.equals("full")) {
+                        //If it is not a valid format style for date or time assume that it is a SubformatPattern
+                        // Note: We do not verify that it is a valid SubformatPattern
+                        isStyleLiteral = false;
+                    }
+                    break;
+                case "choice":
+                    if (formatStyle == null) {
+                        return null;
+                    }
+                    //Choice is only valid when it has a SubformatPattern so we return null if we don't have a formatStyle
+                    //Note: We do not verify that it is a valid SubformatPattern
+                    isStyleLiteral = false;
+                    break;
+                //Forge added Format types
+                case "modinfo":
+                    if (formatStyle == null || (!formatStyle.equals("id") && !formatStyle.equals("name"))) {
+                        //modinfo only supports id, and name, and is not valid if the type is missing
+                        return null;
+                    }
+                    break;
+                case "lower":
+                case "upper":
+                case "vr":
+                    if (formatStyle != null) {
+                        //lower, upper, and vr do not support any format style
+                        return null;
+                    }
+                    break;
+                case "exc":
+                    if (formatStyle == null || (!formatStyle.equals("class") && !formatStyle.equals("msg"))) {
+                        //exc only supports class, and msg, and is not valid if the type is missing
+                        return null;
+                    }
+                    break;
+                case "i18n":
+                case "ornull":
+                    if (formatStyle == null) {
+                        //i18n, and ornull both require a format style
+                        return null;
+                    }
+                    break;
+                default:
+                    //Not a valid format type
+                    return null;
+            }
+            return new MessageFormatComponent(contents, argumentIndex, formatType, formatStyle, isStyleLiteral);
         }
     }
 }

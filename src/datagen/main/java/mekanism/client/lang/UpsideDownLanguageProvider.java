@@ -55,8 +55,9 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
      */
     private static String convertMessageFormatCode(MessageFormatComponent component) {
         String formatStyle = component.getFormatStyle();
-        if (formatStyle == null) {
+        if (formatStyle == null || component.isStyleLiteral()) {
             //If we don't have a style we don't need to invert it so just return what we have
+            // Or our style is literal text and we don't want to invert it because it has meaning
             return component.getContents();
         }
         //Invert the format style as the argument index and format type should stay as is
