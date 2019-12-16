@@ -30,9 +30,80 @@ public class FormatSplitter {
             start = matcher.end();
         }
         if (start < text.length()) {
-            components.add(new Component(text.substring(start), false));
+            if (start == 0) {
+                //If there were no formatting codes, see if there are any potential MessageFormat codes
+                // which will get picked up by forge if it could not find any normal formatting codes
+                // Note: This assumes every thing between two {} is valid, instead of bothering to check against the set that java + forge declare
+                components.addAll(splitMessageFormat(text));
+            } else {
+                components.add(new Component(text.substring(start), false));
+            }
         }
         return ImmutableList.copyOf(components);
+    }
+
+    private static List<Component> splitMessageFormat(String text) {
+        List<Component> components = new ArrayList<>();
+        StringBuilder formattingCode = new StringBuilder();
+        StringBuilder rawText = new StringBuilder();
+        char[] exploded = text.toCharArray();
+        int leftBrackets = 0;
+        int maxCurBrackets = 0;
+        for (char c : exploded) {
+            if (c == '{') {
+                if (leftBrackets == 0) {
+                    String raw = rawText.toString();
+                    if (!raw.isEmpty()) {
+                        //If we have text and run into a left bracket, then add our text
+                        components.add(new Component(raw, false));
+                        rawText = new StringBuilder();
+                    }
+                }
+                leftBrackets++;
+                maxCurBrackets++;
+                formattingCode.append(c);
+            } else if (leftBrackets > 0) {
+                formattingCode.append(c);
+                if (c == '}') {
+                    leftBrackets--;
+                    if (leftBrackets == 0) {
+                        //If we finish closing our brackets add our formatting code
+                        components.add(new Component(formattingCode.toString(), true));
+                        formattingCode = new StringBuilder();
+                        maxCurBrackets = 0;
+                    }
+                }
+            } else {
+                rawText.append(c);
+            }
+        }
+        if (leftBrackets == 0) {
+            String raw = rawText.toString();
+            if (!raw.isEmpty()) {
+                //Add any remaining text
+                components.add(new Component(raw, false));
+            }
+        } else {
+            String remainingString = formattingCode.toString();
+            if (maxCurBrackets > leftBrackets && remainingString.length() > 1) {
+                //At least part of our remaining has a valid MessageFormat representation
+                List<Component> subComponents = splitMessageFormat(remainingString.substring(1));
+                Component firstComponent = subComponents.get(0);
+                if (firstComponent.isFormattingCode()) {
+                    components.add(new Component("{", false));
+                    components.addAll(subComponents);
+                } else {
+                    components.add(new Component("{" + firstComponent.getContents(), false));
+                    for (int i = 1; i < subComponents.size(); i++) {
+                        components.add(subComponents.get(i));
+                    }
+                }
+            } else {
+                //If we don't have a closing bracket and we didn't have more brackets at some point, add what we have as raw text
+                components.add(new Component(remainingString, false));
+            }
+        }
+        return components;
     }
 
     public static class Component {
