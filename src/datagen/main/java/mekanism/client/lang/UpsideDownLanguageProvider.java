@@ -85,8 +85,6 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
     }
 
     private static String invertChoice(String choice) {
-        //TODO: Fix this method not properly respecting inner brackets and allowing them to be converted
-        // For example {0,choice,1#1 mod|1<{4} mods} makes the 4 get flipped even though it should be left alone
         StringBuilder converted = new StringBuilder();
         StringBuilder literalBuilder = new StringBuilder();
         StringBuilder textBuilder = new StringBuilder();
@@ -97,6 +95,8 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
             if (inLiteral) {
                 literalBuilder.append(c);
                 if (c == '#' || c == '<' || c == '\u2264') {
+                    //#, <, and less than equal are valid comparisions for ChoiceFormat
+                    // after we hit one, we are no longer in a literal though so mark it as such
                     inLiteral = false;
                     converted.append(literalBuilder);
                     literalBuilder = new StringBuilder();
@@ -106,12 +106,10 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
                     leftBrackets++;
                 } else if (c == '}') {
                     leftBrackets--;
-                    if (leftBrackets == 0) {
-                        //We closed a bracket
-                    }
                 } else if (c == '|' && leftBrackets == 0) {
                     inLiteral = true;
-                    appendInverted(converted, textBuilder.toString());
+                    //Note: We directly use MessageFormat because forge does not use MessageFormat at all if it has valid % formatting codes
+                    converted.append(convertComponents(FormatSplitter.splitMessageFormat(textBuilder.toString())));
                     textBuilder = new StringBuilder();
                 }
                 if (inLiteral) {
@@ -124,17 +122,10 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
         if (inLiteral) {
             converted.append(literalBuilder);
         } else {
-            appendInverted(converted, textBuilder.toString());
+            //Note: We directly use MessageFormat because forge does not use MessageFormat at all if it has valid % formatting codes
+            converted.append(convertComponents(FormatSplitter.splitMessageFormat(textBuilder.toString())));
         }
         return converted.toString();
-    }
-
-    private static void appendInverted(StringBuilder converted, String toConvert) {
-        //Convert each character to being upside down and then insert at end
-        char[] toConvertArr = toConvert.toCharArray();
-        for (int j = toConvertArr.length - 1; j >= 0; j--) {
-            converted.append(flip(toConvertArr[j]));
-        }
     }
 
     private static String convertComponents(List<Component> splitText) {
@@ -148,7 +139,10 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
                 converted.append(convertFormattingComponent((FormatComponent) component, curIndex--, numArguments));
             } else {
                 //Convert each character to being upside down and then insert at end
-                appendInverted(converted, component.getContents());
+                char[] toConvertArr = component.getContents().toCharArray();
+                for (int j = toConvertArr.length - 1; j >= 0; j--) {
+                    converted.append(flip(toConvertArr[j]));
+                }
             }
         }
         return new String(converted);
