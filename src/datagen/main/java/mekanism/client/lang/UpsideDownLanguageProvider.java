@@ -1,12 +1,12 @@
 package mekanism.client.lang;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import mekanism.client.lang.FormatSplitter.Component;
+import mekanism.client.lang.FormatSplitter.FormatComponent;
+import mekanism.client.lang.FormatSplitter.MessageFormatComponent;
 import net.minecraft.data.DataGenerator;
 
+//TODO: If at some point we make unit tests, we should add some tests for this and for FormatSplitter
 public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
 
     private static final String normal = "abcdefghijklmnopqrstuvwxyz" +
@@ -23,11 +23,12 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
         return index == -1 ? c : upside_down[index];
     }
 
-    private static String convertFormattingCode(String formattingCode, int curIndex, int numArguments) {
-        if (formattingCode.startsWith("{")) {
+    private static String convertFormattingComponent(FormatComponent component, int curIndex, int numArguments) {
+        if (component instanceof MessageFormatComponent) {
             //Convert a MessageFormat styled formatting code
-            return convertMessageFormatCode(formattingCode);
+            return convertMessageFormatCode((MessageFormatComponent) component);
         }
+        String formattingCode = component.getContents();
         //Convert a % styled formatting code
         String ending;
         int storedIndex = curIndex;
@@ -52,76 +53,28 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
     /**
      * Reverses order of inner arguments of a MessageFormat styled formatting code
      */
-    private static String convertMessageFormatCode(String messageFormat) {
-        //TODO: This does not convert inner pieces/words that are not "valid" formatting components
-        //Note: because we only call this when we know it is a full formatting code, we don't have to worry about mismatched brackets
-        Deque<List<String>> stack = new ArrayDeque<>();
-        List<String> current = new ArrayList<>();
-        StringBuilder pieceBuilder = new StringBuilder();
-        char[] exploded = messageFormat.toCharArray();
-        for (char c : exploded) {
-            if (c == ',') {
-                //Add regardless of if pieceBuilder is empty to make sure we add enough commas back
-                current.add(pieceBuilder.toString());
-                pieceBuilder = new StringBuilder();
-            } else if (c == '{') {
-                //Add the current piece builder even if it is empty
-                // this is because we will append to the last element once we pop to go back up a level
-                current.add(pieceBuilder.toString());
-                //Add our current one to the stack
-                stack.push(current);
-                //Reset our current information we are building with
-                current = new ArrayList<>();
-                pieceBuilder = new StringBuilder();
-            } else if (c == '}') {
-                //Add regardless of if pieceBuilder is empty to make sure we add enough commas back
-                // Note: We don't bother resetting string builder here as we do it at the end if this else if branch
-                current.add(pieceBuilder.toString());
-                //Add the pieces in reverse to a local string
-                StringBuilder localBuilder = new StringBuilder("{");
-                for (int i = current.size() - 1; i >= 0; i--) {
-                    localBuilder.append(current.get(i));
-                    if (i > 0) {
-                        //Note: Spaces seem off for things like {0, 1} would become { 1,0}
-                        // Except I believe spaces are actually important as forge doesn't use any
-                        // so they should be copied as is instead of trying to do fancy things for readability
-                        localBuilder.append(",");
-                    }
-                }
-                localBuilder.append("}");
-                List<String> pop = stack.pop();
-                int lastElement = pop.size() - 1;
-                //Set our piece builder back to where we were at before we entered the bracket/branch
-                pieceBuilder = new StringBuilder(pop.get(lastElement));
-                //And include our reversed inner piece on it
-                pieceBuilder.append(localBuilder);
-                //Remove the last element that was just storage for where we currently were at
-                pop.remove(lastElement);
-                //Reset the pointer for current to where it was before
-                current = pop;
-            } else {
-                pieceBuilder.append(c);
-            }
+    private static String convertMessageFormatCode(MessageFormatComponent component) {
+        String formatStyle = component.getFormatStyle();
+        if (formatStyle == null) {
+            //If we don't have a style we don't need to invert it so just return what we have
+            return component.getContents();
         }
-        return pieceBuilder.toString();
+        //Invert the format style as the argument index and format type should stay as is
+        // Note: we only bother splitting it as message format as because we only ever can be a message format ourselves if
+        // the entire string doesn't have any valid % formatting codes, as forge does not mix formatting code styles
+        String newFormatStyle = convertComponents(FormatSplitter.splitMessageFormat(formatStyle));
+        return "{" + component.getArgumentIndex() + "," + component.getFormatType() + "," + newFormatStyle + "}";
     }
 
-    public UpsideDownLanguageProvider(DataGenerator gen, String modid) {
-        super(gen, modid, "en_ud");
-        //Note: This technically is supposed to be upside down british english but we are doing it as upside down US english
-    }
-
-    //TODO: If at some point we make unit tests, we should add some tests for this and for FormatSplitter
-    @Override
-    public void convert(String key, List<Component> splitEnglish) {
-        int numArguments = (int) splitEnglish.stream().filter(Component::isFormattingCode).count();
+    private static String convertComponents(List<Component> splitText) {
+        int numArguments = (int) splitText.stream().filter(component -> component instanceof FormatComponent).count();
         StringBuilder converted = new StringBuilder();
         int curIndex = numArguments;
-        for (int i = splitEnglish.size() - 1; i >= 0; i--) {
-            Component component = splitEnglish.get(i);
-            if (component.isFormattingCode()) {
+        for (int i = splitText.size() - 1; i >= 0; i--) {
+            Component component = splitText.get(i);
+            if (component instanceof FormatComponent) {
                 //Insert the full code directly
-                converted.append(convertFormattingCode(component.getContents(), curIndex--, numArguments));
+                converted.append(convertFormattingComponent((FormatComponent) component, curIndex--, numArguments));
             } else {
                 //Convert each character to being upside down and then insert at end
                 char[] toConvert = component.getContents().toCharArray();
@@ -130,6 +83,16 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
                 }
             }
         }
-        add(key, new String(converted));
+        return new String(converted);
+    }
+
+    public UpsideDownLanguageProvider(DataGenerator gen, String modid) {
+        super(gen, modid, "en_ud");
+        //Note: This technically is supposed to be upside down british english but we are doing it as upside down US english
+    }
+
+    @Override
+    public void convert(String key, List<Component> splitEnglish) {
+        add(key, convertComponents(splitEnglish));
     }
 }
