@@ -1,5 +1,8 @@
 package mekanism.client.lang;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import mekanism.client.lang.FormatSplitter.Component;
 import net.minecraft.data.DataGenerator;
@@ -46,10 +49,61 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
         return "%" + storedIndex + "$" + ending;
     }
 
-    public static String convertMessageFormatCode(String messageFormat) {
-        //If it is a MessageFormat styled code just return it as is
-        //TODO: Implement this being reversed by commas and having inner pieces also get reversed?
-        return messageFormat;
+    /**
+     * Reverses order of inner arguments of a MessageFormat styled formatting code
+     */
+    private static String convertMessageFormatCode(String messageFormat) {
+        //TODO: This does not convert inner pieces/words that are not "valid" formatting components
+        //Note: because we only call this when we know it is a full formatting code, we don't have to worry about mismatched brackets
+        Deque<List<String>> stack = new ArrayDeque<>();
+        List<String> current = new ArrayList<>();
+        StringBuilder pieceBuilder = new StringBuilder();
+        char[] exploded = messageFormat.toCharArray();
+        for (char c : exploded) {
+            if (c == ',') {
+                //Add regardless of if pieceBuilder is empty to make sure we add enough commas back
+                current.add(pieceBuilder.toString());
+                pieceBuilder = new StringBuilder();
+            } else if (c == '{') {
+                //Add the current piece builder even if it is empty
+                // this is because we will append to the last element once we pop to go back up a level
+                current.add(pieceBuilder.toString());
+                //Add our current one to the stack
+                stack.push(current);
+                //Reset our current information we are building with
+                current = new ArrayList<>();
+                pieceBuilder = new StringBuilder();
+            } else if (c == '}') {
+                //Add regardless of if pieceBuilder is empty to make sure we add enough commas back
+                // Note: We don't bother resetting string builder here as we do it at the end if this else if branch
+                current.add(pieceBuilder.toString());
+                //Add the pieces in reverse to a local string
+                StringBuilder localBuilder = new StringBuilder("{");
+                for (int i = current.size() - 1; i >= 0; i--) {
+                    localBuilder.append(current.get(i));
+                    if (i > 0) {
+                        //Note: Spaces seem off for things like {0, 1} would become { 1,0}
+                        // Except I believe spaces are actually important as forge doesn't use any
+                        // so they should be copied as is instead of trying to do fancy things for readability
+                        localBuilder.append(",");
+                    }
+                }
+                localBuilder.append("}");
+                List<String> pop = stack.pop();
+                int lastElement = pop.size() - 1;
+                //Set our piece builder back to where we were at before we entered the bracket/branch
+                pieceBuilder = new StringBuilder(pop.get(lastElement));
+                //And include our reversed inner piece on it
+                pieceBuilder.append(localBuilder);
+                //Remove the last element that was just storage for where we currently were at
+                pop.remove(lastElement);
+                //Reset the pointer for current to where it was before
+                current = pop;
+            } else {
+                pieceBuilder.append(c);
+            }
+        }
+        return pieceBuilder.toString();
     }
 
     public UpsideDownLanguageProvider(DataGenerator gen, String modid) {
