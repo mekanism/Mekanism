@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,4 +60,4 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
         itemStacks.set(1, recipe.getOutputDefinition());
         itemStacks.set(2, recipe.getExtraInput().getRepresentations());
     }
-}
+}*/

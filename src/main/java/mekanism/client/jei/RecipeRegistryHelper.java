@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class RecipeRegistryHelper {
                     smeltingWrapper.add(new MachineRecipeWrapper<>(entry.getValue()));
                 }
             }
-            registry.addRecipes(smeltingWrapper, mekanismBlock.getJEICategory());*/
+            registry.addRecipes(smeltingWrapper, mekanismBlock.getJEICategory());/
         }
     }
 
@@ -61,4 +61,4 @@ public class RecipeRegistryHelper {
     private static ClientWorld getWorld() {
         return Minecraft.getInstance().world;
     }
-}
+}*/

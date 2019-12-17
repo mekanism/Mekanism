@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.handlers;
+/*package mekanism.common.integration.crafttweaker.handlers;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import mekanism.common.integration.crafttweaker.MekanismBracketHandlers;
@@ -13,4 +13,4 @@ public class MekanismHelper {
     public static IGasStack getGas(String name) {
         return MekanismBracketHandlers.getGas(name);
     }
-}
+}*/

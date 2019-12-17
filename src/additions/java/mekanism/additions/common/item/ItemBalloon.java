@@ -105,8 +105,8 @@ public class ItemBalloon extends Item {
     public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) {
         if (player.isSneaking()) {
             if (!player.world.isRemote) {
-                AxisAlignedBB bound = new AxisAlignedBB(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2,
-                      entity.posY + entity.getSize(entity.getPose()).height + 4, entity.posZ + 0.2);
+                AxisAlignedBB bound = new AxisAlignedBB(entity.func_226277_ct_() - 0.2, entity.func_226277_ct_() - 0.5, entity.func_226281_cx_() - 0.2,
+                      entity.func_226277_ct_() + 0.2, entity.func_226277_ct_() + entity.getSize(entity.getPose()).height + 4, entity.func_226281_cx_() + 0.2);
                 List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
                 for (EntityBalloon balloon : balloonsNear) {
                     if (balloon.latchedEntity == entity) {
@@ -133,8 +133,8 @@ public class ItemBalloon extends Item {
             boolean latched = false;
 
             for (LivingEntity entity : entities) {
-                AxisAlignedBB bound = new AxisAlignedBB(entity.posX - 0.2, entity.posY - 0.5, entity.posZ - 0.2, entity.posX + 0.2,
-                      entity.posY + entity.getSize(entity.getPose()).height + 4, entity.posZ + 0.2);
+                AxisAlignedBB bound = new AxisAlignedBB(entity.func_226277_ct_() - 0.2, entity.func_226277_ct_() - 0.5, entity.func_226281_cx_() - 0.2,
+                      entity.func_226277_ct_() + 0.2, entity.func_226277_ct_() + entity.getSize(entity.getPose()).height + 4, entity.func_226281_cx_() + 0.2);
                 List<EntityBalloon> balloonsNear = source.getWorld().getEntitiesWithinAABB(EntityBalloon.class, bound);
                 boolean hasBalloon = false;
                 for (EntityBalloon balloon : balloonsNear) {

@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
 
     /**
      * Helper method for JEI to get the stacks to display for a specific infusion ingredient
-     */
+     *
     private static List<ItemStack> getInfuseStacks(@NonNull InfusionIngredient infusionIngredient) {
         World world = Minecraft.getInstance().world;
         if (world == null) {
@@ -173,4 +173,4 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
             return 1;
         }
     }
-}
+}*/

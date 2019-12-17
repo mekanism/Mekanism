@@ -12,7 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IEnviromentBlockReader;
+import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 
 public class BlockSuperheatingElement extends BlockMekanism implements IStateActive, IHasTileEntity<TileEntitySuperheatingElement> {
@@ -33,7 +33,7 @@ public class BlockSuperheatingElement extends BlockMekanism implements IStateAct
     }
 
     @Override
-    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
+    public int getLightValue(BlockState state, ILightReader world, BlockPos pos) {
         return isActive(state) ? 15 : super.getLightValue(state, world, pos);
     }
 

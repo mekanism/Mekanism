@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[28,)"
+loaderVersion="[${loader_version},)"
 issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
 
 [[mods]]

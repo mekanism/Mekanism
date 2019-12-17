@@ -1,6 +1,5 @@
 package mekanism.common.integration;
 
-import mekanism.common.integration.crafttweaker.CrafttweakerIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import net.minecraftforge.fml.ModList;
 
@@ -87,8 +86,8 @@ public final class MekanismHooks {
         }*/
         if (CraftTweakerLoaded) {
             //CraftTweaker must be ran after all other recipe changes
-            CrafttweakerIntegration.registerCommands();
-            CrafttweakerIntegration.applyRecipeChanges();
+            //CrafttweakerIntegration.registerCommands();
+            //CrafttweakerIntegration.applyRecipeChanges();
         }
         Wrenches.initialise();
     }

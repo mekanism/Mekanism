@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,7 +96,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
 
     /**
      * Helper method for JEI to get the stacks to display for a specific type of gas
-     */
+     *
     private static List<ItemStack> getStacksForGas(@Nonnull Gas type) {
         if (type.isEmptyType()) {
             return Collections.emptyList();
@@ -117,4 +117,4 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         }
         return stacks;
     }
-}
+}*/

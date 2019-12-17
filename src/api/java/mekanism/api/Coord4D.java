@@ -38,9 +38,10 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      * @param entity - entity to create the Coord4D from
      */
     public Coord4D(Entity entity) {
-        this.x = (int) entity.posX;
-        this.y = (int) entity.posY;
-        this.z = (int) entity.posZ;
+        BlockPos entityPosition = entity.getPosition();
+        this.x = entityPosition.getX();
+        this.y = entityPosition.getY();
+        this.z = entityPosition.getX();
         this.dimension = entity.world.getDimension().getType();
     }
 

@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.gas;
+/*package mekanism.common.integration.crafttweaker.gas;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
@@ -39,4 +39,4 @@ public interface IGasStack extends IIngredient {
 
     @ZenCodeType.Method
     boolean matches(IGasStack gasStack);
-}
+}*/

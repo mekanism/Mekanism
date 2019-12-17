@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -181,4 +181,4 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
             blit(x, y, blitOffset, width, height, sprite);
         }
     }
-}
+}*/

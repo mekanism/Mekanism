@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,4 +43,4 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory<ChemicalIn
         initGas(gasStacks, 1, true, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getRightInput().getRepresentations(), true);
         initGas(gasStacks, 2, false, 80 - xOffset, 5 - yOffset, 16, 58, recipe.getOutputDefinition(), true);
     }
-}
+}*/

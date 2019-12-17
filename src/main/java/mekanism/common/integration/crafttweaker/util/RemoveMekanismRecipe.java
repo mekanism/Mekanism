@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.util;
+/*package mekanism.common.integration.crafttweaker.util;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import mekanism.api.recipes.MekanismRecipe;
@@ -23,7 +23,7 @@ public class RemoveMekanismRecipe<RECIPE extends MekanismRecipe> extends RecipeM
             if (IngredientHelper.matches(key, input) && IngredientHelper.matches(value.getOutput(), output)) {
                 recipes.put(key, value);
             }
-        });*/
+        });/
         if (recipes.isEmpty()) {
             String warning = "";
             if (input.isEmpty()) {
@@ -51,4 +51,4 @@ public class RemoveMekanismRecipe<RECIPE extends MekanismRecipe> extends RecipeM
         //Don't describe anything. It is too early for us to have a full description
         return null;
     }
-}
+}*/

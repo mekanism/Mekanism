@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import mekanism.api.block.FactoryType;
 import mekanism.api.providers.IBlockProvider;
@@ -40,4 +40,4 @@ public class CatalystRegistryHelper {
             }
         }
     }
-}
+}*/

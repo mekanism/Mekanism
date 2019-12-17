@@ -12,7 +12,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +37,7 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
         bipedHeadwear.cubeList.clear();
     }
 
-    public static boolean useModel(ArmorModel type, RendererModel partRender, ModelCustomArmor biped) {
+    public static boolean useModel(ArmorModel type, ModelRenderer partRender, ModelCustomArmor biped) {
         if (type.armorSlot == 0) {
             return partRender == biped.bipedHead;
         } else if (type.armorSlot == 1) {
@@ -101,14 +101,14 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
         bipedLeftLeg.showModel = false;
     }
 
-    public void resetPart(RendererModel renderer, float x, float y, float z) {
+    public void resetPart(ModelRenderer renderer, float x, float y, float z) {
         renderer.cubeList.clear();
         ModelCustom model = new ModelCustom(this, renderer);
         renderer.addChild(model);
         setOffset(renderer, x, y, z);
     }
 
-    public void setOffset(RendererModel renderer, float x, float y, float z) {
+    public void setOffset(ModelRenderer renderer, float x, float y, float z) {
         renderer.offsetX = x;
         renderer.offsetY = y;
         renderer.offsetZ = z;
@@ -161,12 +161,12 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
         }
     }
 
-    public class ModelCustom extends RendererModel {
+    public class ModelCustom extends ModelRenderer {
 
         public ModelCustomArmor biped;
-        public RendererModel partRender;
+        public ModelRenderer partRender;
 
-        public ModelCustom(ModelCustomArmor base, RendererModel renderer) {
+        public ModelCustom(ModelCustomArmor base, ModelRenderer renderer) {
             super(base);
             biped = base;
             partRender = renderer;

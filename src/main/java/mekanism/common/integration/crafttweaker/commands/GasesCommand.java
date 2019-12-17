@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.commands;
+/*package mekanism.common.integration.crafttweaker.commands;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.impl.commands.CTCommands.CommandImpl;
@@ -24,4 +24,4 @@ public class GasesCommand extends CommandImpl {
             return 0;
         });
     }
-}
+}*/

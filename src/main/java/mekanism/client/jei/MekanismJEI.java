@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -113,7 +113,7 @@ public class MekanismJEI implements IModPlugin {
         //TODO: Why do these still show up in JEI (Is it due to an error with category types?)
         ingredientBlacklist.addIngredientToBlacklist(MekanismItem.ITEM_PROXY.getItemStack());
         ingredientBlacklist.addIngredientToBlacklist(MekanismBlock.BOUNDING_BLOCK.getItemStack());
-    }*/
+    }/
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
@@ -195,4 +195,4 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeTransferHandler(InventoryRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
         registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 20, 9, 35, 36);
     }
-}
+}*/

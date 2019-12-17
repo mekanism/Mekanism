@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.helpers;
+/*package mekanism.common.integration.crafttweaker.helpers;
 
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import javax.annotation.Nonnull;
@@ -44,4 +44,4 @@ public class GasHelper {
         }
         return stack;
     }
-}
+}*/

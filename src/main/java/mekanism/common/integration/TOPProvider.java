@@ -1,4 +1,4 @@
-package mekanism.common.integration;
+/*package mekanism.common.integration;
 
 import java.util.function.Function;
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -66,4 +66,4 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
             });
         }
     }
-}
+}*/

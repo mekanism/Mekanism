@@ -1,4 +1,4 @@
-package mekanism.client.jei.gas;
+/*package mekanism.client.jei.gas;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import java.text.NumberFormat;
@@ -180,4 +180,4 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         SHOW_AMOUNT_AND_CAPACITY,
         ITEM_LIST
     }
-}
+}*/

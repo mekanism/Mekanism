@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker;
+/*package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.actions.IAction;
@@ -20,7 +20,7 @@ public class CrafttweakerIntegration {
      * Apply after (machine)recipes have been applied, but before the FMLLoadCompleteEvent is fired. Preferably in (post)init.
      * <p>
      * Applying to early causes remove to malfunction as no recipes have been registered. Applying to late causes JEI to not pickup the changes.
-     */
+     *
     public static void applyRecipeChanges() {
         //Remove before addition, so recipes can be overwritten
         applyChanges(LATE_REMOVALS);
@@ -43,4 +43,4 @@ public class CrafttweakerIntegration {
         CTCommands.registerCommand(new InfuseTypesCommand());
         CTCommands.registerCommand(new MekRecipesCommand());
     }
-}
+}*/

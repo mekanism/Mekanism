@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.helpers;
+/*package mekanism.common.integration.crafttweaker.helpers;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.item.IIngredient;
@@ -103,4 +103,4 @@ public class IngredientHelper {
         //TODO: Implement
         return null;//ItemStackIngredient.from(CraftTweakerMC.getIngredient(ingredient), ingredient.getAmount());
     }
-}
+}*/

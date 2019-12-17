@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,4 +73,4 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
         initGas(gasStacks, 0, false, 59 - xOffset, 19 - yOffset, 16, 28, recipe.getLeftGasOutputRepresentation(), true);
         initGas(gasStacks, 1, false, 101 - xOffset, 19 - yOffset, 16, 28, recipe.getRightGasOutputRepresentation(), true);
     }
-}
+}*/

@@ -205,9 +205,9 @@ public class MultipartMekanism implements IMCMPAddon {
             GlStateManager.lineWidth(2.0F);
             GlStateManager.disableTexture2D();
             GlStateManager.depthMask(false);
-            double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * ev.getPartialTicks();
-            double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * ev.getPartialTicks();
-            double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * ev.getPartialTicks();
+            double x = player.lastTickPosX + (player.func_226277_ct_() - player.lastTickPosX) * ev.getPartialTicks();
+            double y = player.lastTickPosY + (player.func_226277_ct_() - player.lastTickPosY) * ev.getPartialTicks();
+            double z = player.lastTickPosZ + (player.func_226281_cx_() - player.lastTickPosZ) * ev.getPartialTicks();
             WorldRenderer.drawSelectionBoundingBox(bb.grow(0.002).offset(-x, -y, -z), 0.0F, 0.0F, 0.0F, 0.4F);
             GlStateManager.depthMask(true);
             GlStateManager.enableTexture2D();

@@ -68,7 +68,7 @@ public class ClientTickHandler {
                         return minecraft.currentScreen == null && minecraft.gameSettings.keyBindJump.isKeyDown();
                     } else if (mode == JetpackMode.HOVER) {
                         boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
-                        boolean descending = minecraft.gameSettings.keyBindSneak.isKeyDown();
+                        boolean descending = MekanismKeyHandler.sneakKey.isKeyDown();
                         //if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null || (descending && minecraft.currentScreen == null))
                         //Simplifies to
                         if (!ascending || descending || minecraft.currentScreen != null) {
@@ -190,9 +190,9 @@ public class ClientTickHandler {
                 Entry<PlayerEntity, TeleportData> entry = iter.next();
                 PlayerEntity player = entry.getKey();
                 for (int i = 0; i < 100; i++) {
-                    double x = player.posX + rand.nextDouble() - 0.5D;
-                    double y = player.posY + rand.nextDouble() * 2 - 2D;
-                    double z = player.posZ + rand.nextDouble() - 0.5D;
+                    double x = player.func_226277_ct_() + rand.nextDouble() - 0.5D;
+                    double y = player.func_226277_ct_() + rand.nextDouble() * 2 - 2D;
+                    double z = player.func_226281_cx_() + rand.nextDouble() - 0.5D;
                     minecraft.world.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
                 }
 
@@ -206,7 +206,7 @@ public class ClientTickHandler {
 
             if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemJetpack) {
                 MekanismClient.updateKey(minecraft.gameSettings.keyBindJump, KeySync.ASCEND);
-                MekanismClient.updateKey(minecraft.gameSettings.keyBindSneak, KeySync.DESCEND);
+                MekanismClient.updateKey(MekanismKeyHandler.sneakKey, KeySync.DESCEND);
             }
 
             if (!minecraft.player.isCreative() && !minecraft.player.isSpectator()) {
@@ -225,7 +225,7 @@ public class ClientTickHandler {
                     minecraft.player.fallDistance = 0.0F;
                 } else if (mode == JetpackMode.HOVER) {
                     boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
-                    boolean descending = minecraft.gameSettings.keyBindSneak.isKeyDown();
+                    boolean descending = MekanismKeyHandler.sneakKey.isKeyDown();
                     if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null) {
                         if (motion.getY() > 0) {
                             minecraft.player.setMotion(0, Math.max(motion.getY() - 0.15D, 0), 0);

@@ -20,21 +20,22 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         super(renderManager);
     }
 
+    @Nonnull
     @Override
-    protected ResourceLocation getEntityTexture(@Nonnull EntityBalloon entity) {
+    public ResourceLocation getEntityTexture(@Nonnull EntityBalloon entity) {
         return MekanismUtils.getResource(ResourceType.RENDER, "balloon.png");
     }
 
     @Override
     public void doRender(@Nonnull EntityBalloon balloon, double x, double y, double z, float f, float partialTick) {
-        double renderPosX = x - (balloon.lastTickPosX + (balloon.posX - balloon.lastTickPosX) * partialTick);
-        double renderPosY = y - (balloon.lastTickPosY + (balloon.posY - balloon.lastTickPosY) * partialTick);
-        double renderPosZ = z - (balloon.lastTickPosZ + (balloon.posZ - balloon.lastTickPosZ) * partialTick);
+        double renderPosX = x - (balloon.lastTickPosX + (balloon.func_226277_ct_() - balloon.lastTickPosX) * partialTick);
+        double renderPosY = y - (balloon.lastTickPosY + (balloon.func_226277_ct_() - balloon.lastTickPosY) * partialTick);
+        double renderPosZ = z - (balloon.lastTickPosZ + (balloon.func_226281_cx_() - balloon.lastTickPosZ) * partialTick);
 
         if (balloon.isLatchedToEntity()) {
-            x = balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.posX - balloon.latchedEntity.lastTickPosX) * partialTick;
-            y = balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY) * partialTick;
-            z = balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.posZ - balloon.latchedEntity.lastTickPosZ) * partialTick;
+            x = balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.func_226277_ct_() - balloon.latchedEntity.lastTickPosX) * partialTick;
+            y = balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.func_226277_ct_() - balloon.latchedEntity.lastTickPosY) * partialTick;
+            z = balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.func_226281_cx_() - balloon.latchedEntity.lastTickPosZ) * partialTick;
 
             x += renderPosX;
             y += renderPosY;

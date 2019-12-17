@@ -1,6 +1,7 @@
 package mekanism.api;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.GlobalPos;
 import net.minecraft.world.World;
@@ -38,8 +39,9 @@ public class Chunk3D {
      * @param entity - the entity to get the Chunk3D object from
      */
     public Chunk3D(Entity entity) {
-        x = (int) entity.posX >> 4;
-        z = (int) entity.posZ >> 4;
+        BlockPos entityPosition = entity.getPosition();
+        x = entityPosition.getX() >> 4;
+        z = entityPosition.getZ() >> 4;
         dimension = entity.dimension;
     }
 

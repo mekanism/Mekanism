@@ -26,9 +26,9 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
     public PlayerSound(@Nonnull PlayerEntity player, @Nonnull ResourceLocation sound) {
         super(sound, SoundCategory.PLAYERS);
         this.playerReference = new WeakReference<>(player);
-        this.lastX = (float) player.posX;
-        this.lastY = (float) player.posY;
-        this.lastZ = (float) player.posZ;
+        this.lastX = (float) player.func_226277_ct_();
+        this.lastY = (float) player.func_226277_ct_();
+        this.lastZ = (float) player.func_226281_cx_();
         this.repeat = true;
         this.repeatDelay = 0;
 
@@ -47,7 +47,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
-            this.lastX = (float) player.posX;
+            this.lastX = (float) player.func_226277_ct_();
         }
         return this.lastX;
     }
@@ -57,7 +57,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
-            this.lastY = (float) player.posY;
+            this.lastY = (float) player.func_226277_ct_();
         }
         return this.lastY;
     }
@@ -67,7 +67,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
-            this.lastZ = (float) player.posZ;
+            this.lastZ = (float) player.func_226281_cx_();
         }
         return this.lastZ;
     }

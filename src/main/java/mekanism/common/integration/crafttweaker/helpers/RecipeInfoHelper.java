@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.helpers;
+/*package mekanism.common.integration.crafttweaker.helpers;
 
 import com.blamejared.crafttweaker.impl.item.MCItemStack;
 import java.util.List;
@@ -131,4 +131,4 @@ public class RecipeInfoHelper {
     public static String getItemName(ItemStack stack) {
         return new MCItemStack(stack).getCommandString();
     }
-}
+}*/

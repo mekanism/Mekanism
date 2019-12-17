@@ -26,9 +26,9 @@ import net.minecraftforge.fml.LogicalSide;
 public class CommonPlayerTickHandler {
 
     public static boolean isOnGround(PlayerEntity player) {
-        int x = MathHelper.floor(player.posX);
-        int y = MathHelper.floor(player.posY - 0.01);
-        int z = MathHelper.floor(player.posZ);
+        int x = MathHelper.floor(player.func_226277_ct_());
+        int y = MathHelper.floor(player.func_226277_ct_() - 0.01);
+        int z = MathHelper.floor(player.func_226281_cx_());
         BlockPos pos = new BlockPos(x, y, z);
         BlockState s = player.world.getBlockState(pos);
         AxisAlignedBB box = s.getShape(player.world, pos).getBoundingBox().offset(pos);

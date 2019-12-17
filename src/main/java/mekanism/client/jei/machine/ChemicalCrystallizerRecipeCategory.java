@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import mekanism.api.gas.GasStack;
@@ -44,4 +44,4 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasTo
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58, recipe.getInput().getRepresentations(), true);
     }
-}
+}*/

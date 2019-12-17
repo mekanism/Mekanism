@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -66,4 +66,4 @@ public class GasStackHelper implements IIngredientHelper<GasStack> {
         }
         return toStringHelper.toString();
     }
-}
+}*/

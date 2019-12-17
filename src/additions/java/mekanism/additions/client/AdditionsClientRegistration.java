@@ -5,25 +5,26 @@ import mekanism.additions.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.additions.common.AdditionsBlock;
 import mekanism.additions.common.AdditionsItem;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.entity.EntityBabySkeleton;
-import mekanism.additions.common.entity.EntityBalloon;
-import mekanism.additions.common.entity.EntityObsidianTNT;
+import mekanism.additions.common.entity.AdditionsEntityType;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -51,9 +52,13 @@ public class AdditionsClientRegistration {
         new AdditionsKeyHandler();
 
         //Register entity rendering handlers
-        RenderingRegistry.registerEntityRenderingHandler(EntityObsidianTNT.class, RenderObsidianTNTPrimed::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBalloon.class, RenderBalloon::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBabySkeleton.class, SkeletonRenderer::new);
+        registerEntityRenderingHandler(AdditionsEntityType.OBSIDIAN_TNT, RenderObsidianTNTPrimed::new);
+        registerEntityRenderingHandler(AdditionsEntityType.BALLOON, RenderBalloon::new);
+        registerEntityRenderingHandler(AdditionsEntityType.BABY_SKELETON, SkeletonRenderer::new);
+    }
+
+    private static <T extends Entity> void registerEntityRenderingHandler(EntityTypeRegistryObject<T> entityTypeRO, IRenderFactory<? super T> renderFactory) {
+        RenderingRegistry.registerEntityRenderingHandler(entityTypeRO.getEntityType(), renderFactory);
     }
 
     @SubscribeEvent

@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -59,4 +59,4 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
         initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);
         initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getOutputDefinition(), true);
     }
-}
+}*/

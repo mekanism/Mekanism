@@ -1,4 +1,4 @@
-package mekanism.client.jei.machine;
+/*package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import mekanism.api.gas.GasStack;
@@ -57,4 +57,4 @@ public class ItemStackToGasRecipeCategory extends BaseRecipeCategory<ItemStackTo
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getOutputDefinition(), true);
     }
-}
+}*/

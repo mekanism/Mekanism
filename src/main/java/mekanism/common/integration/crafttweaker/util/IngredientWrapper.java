@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.util;
+/*package mekanism.common.integration.crafttweaker.util;
 
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import mekanism.common.integration.crafttweaker.helpers.IngredientHelper;
@@ -83,4 +83,4 @@ public class IngredientWrapper {
     private String getDescriptor(IIngredient ingredient) {
         return ingredient.getCommandString();
     }
-}
+}*/

@@ -50,7 +50,7 @@ public class Pos3D extends Vec3d {
      * @param entity - entity to create the Pos3D from
      */
     public Pos3D(Entity entity) {
-        this(entity.posX, entity.posY, entity.posZ);
+        this(entity.getPosition());
     }
 
     /**

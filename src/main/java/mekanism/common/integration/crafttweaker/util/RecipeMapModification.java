@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.util;
+/*package mekanism.common.integration.crafttweaker.util;
 
 import com.blamejared.crafttweaker.api.actions.IAction;
 import java.util.HashSet;
@@ -42,7 +42,7 @@ public abstract class RecipeMapModification<RECIPE extends MekanismRecipe> imple
                     }
                 }
             }
-        }*/
+        }/
     }
 
     private String getRecipeInfo() {
@@ -56,4 +56,4 @@ public abstract class RecipeMapModification<RECIPE extends MekanismRecipe> imple
     public String describe() {
         return String.format("%s %d %s Recipe(s) for %s", add ? "Adding" : "Removing", recipes.size(), name, getRecipeInfo());
     }
-}
+}*/

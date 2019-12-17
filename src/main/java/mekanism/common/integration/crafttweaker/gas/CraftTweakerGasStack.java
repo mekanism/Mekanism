@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.gas;
+/*package mekanism.common.integration.crafttweaker.gas;
 
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import java.util.Collections;
@@ -95,4 +95,4 @@ public class CraftTweakerGasStack implements IGasStack {
     public IItemStack[] getItems() {
         return new IItemStack[0];
     }
-}
+}*/

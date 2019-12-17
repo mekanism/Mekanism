@@ -1,11 +1,9 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import mekanism.common.Mekanism;
-import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
-@ZenCodeType.Name("mekanism.thermal_evaporation")
+//@ZenRegister
+//@ZenCodeType.Name("mekanism.thermal_evaporation")
 public class ThermalEvaporation {
 
     public static final String NAME = Mekanism.MOD_NAME + " Solar Evaporation";

@@ -22,7 +22,7 @@ use List::Util qw[max];
 my %parts;
 
 while(<>) {
-    if(/(\w+) = new RendererModel\(this, (\d+), (\d+)\);/) {
+    if(/(\w+) = new ModelRenderer\(this, (\d+), (\d+)\);/) {
         $parts{$1}{base_uv} = [$2, $3];
     }
     elsif(/(\w+)\.addBox\((-?\d*\.?\d*)[Ff]?, (-?\d*\.?\d*)[Ff]?, (-?\d*\.?\d*)[Ff]?, (\d+), (\d+), (\d+)\);/) {

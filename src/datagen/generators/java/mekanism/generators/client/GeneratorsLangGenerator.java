@@ -12,6 +12,6 @@ public class GeneratorsLangGenerator extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
-        //TODO: Add things
+        //TODO: Add things, start with blocks/items and then look at the other lang entries
     }
 }

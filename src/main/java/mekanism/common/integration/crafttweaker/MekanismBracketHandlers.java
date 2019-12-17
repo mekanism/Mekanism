@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker;
+/*package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.annotations.BracketResolver;
@@ -27,4 +27,4 @@ public class MekanismBracketHandlers {
         }
         return new CraftTweakerGasStack(new GasStack(gas, 1));
     }
-}
+}*/

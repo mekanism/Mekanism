@@ -1,4 +1,4 @@
-package mekanism.tools.client.jei;
+/*package mekanism.tools.client.jei;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
@@ -53,4 +53,4 @@ public class ToolsJEI implements IModPlugin {
             }
         }
     }
-}
+}*/

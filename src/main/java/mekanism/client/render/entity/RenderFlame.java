@@ -79,8 +79,9 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         GlStateManager.popMatrix();
     }
 
+    @Nonnull
     @Override
-    protected ResourceLocation getEntityTexture(@Nonnull EntityFlame entity) {
+    public ResourceLocation getEntityTexture(@Nonnull EntityFlame entity) {
         return new ResourceLocation(Mekanism.MODID, "render/flame.png");
     }
 }

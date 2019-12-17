@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.util;
+/*package mekanism.common.integration.crafttweaker.util;
 
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -21,4 +21,4 @@ public class RemoveAllMekanismRecipe<RECIPE extends MekanismRecipe> extends Reci
     public String describe() {
         return "Removed all recipes for " + name;
     }
-}
+}*/

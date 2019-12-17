@@ -63,8 +63,9 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
         GlStateManager.popMatrix();
     }
 
+    @Nonnull
     @Override
-    protected ResourceLocation getEntityTexture(@Nonnull EntityObsidianTNT entity) {
+    public ResourceLocation getEntityTexture(@Nonnull EntityObsidianTNT entity) {
         return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
 }

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -83,8 +84,9 @@ public class Range4D {
         }
         //Ignore height for partial Cubic chunks support as range comparision gets used ignoring player height normally anyways
         int radius = player.server.getPlayerList().getViewDistance() * 16;
-        int playerX = (int) player.posX;
-        int playerZ = (int) player.posZ;
+        BlockPos playerPosition = player.getPosition();
+        int playerX = playerPosition.getX();
+        int playerZ = playerPosition.getZ();
         //playerX/Z + radius is the max, so to stay in line with how it was before,
         // it has an extra + 1 added to it
         return (playerX + radius + 1.99999 > xMin) && (xMax + 0.99999 > playerX - radius) &&

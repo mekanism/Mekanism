@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.gas;
+/*package mekanism.common.integration.crafttweaker.gas;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
@@ -26,4 +26,4 @@ public class IngredientExpansion {
         //TODO: Implement
         return false;
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package mekanism.client.jei;
+/*package mekanism.client.jei;
 
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.gui.GuiEnergizedSmelter;
@@ -35,4 +35,4 @@ public class GuiHandlerRegistryHelper {
             registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.FURNACE);
         }
     }
-}
+}*/

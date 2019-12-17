@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -31,24 +32,17 @@ import mekanism.generators.client.render.item.RenderHeatGeneratorItem;
 import mekanism.generators.client.render.item.RenderWindGeneratorItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
-import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
-import mekanism.generators.common.tile.TileEntityBioGenerator;
-import mekanism.generators.common.tile.TileEntityGasGenerator;
-import mekanism.generators.common.tile.TileEntityHeatGenerator;
-import mekanism.generators.common.tile.TileEntityWindGenerator;
-import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
+import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.gui.ScreenManager.IScreenFactory;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -63,16 +57,20 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAdvancedSolarGenerator.class, new RenderAdvancedSolarGenerator());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBioGenerator.class, new RenderBioGenerator());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasGenerator.class, new RenderGasGenerator());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityHeatGenerator.class, new RenderHeatGenerator());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityReactorController.class, new RenderReactor());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineCasing.class, new RenderIndustrialTurbine());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineRotor.class, new RenderTurbineRotor());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineValve.class, new RenderIndustrialTurbine());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurbineVent.class, new RenderIndustrialTurbine());
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityWindGenerator.class, new RenderWindGenerator());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.ADVANCED_SOLAR_GENERATOR, new RenderAdvancedSolarGenerator());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.BIO_GENERATOR, new RenderBioGenerator());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, new RenderGasGenerator());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.HEAT_GENERATOR, new RenderHeatGenerator());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.REACTOR_CONTROLLER, new RenderReactor());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_CASING, new RenderIndustrialTurbine());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_ROTOR, new RenderTurbineRotor());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VALVE, new RenderIndustrialTurbine());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VENT, new RenderIndustrialTurbine());
+        bindTileEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR, new RenderWindGenerator());
+    }
+
+    private static <T extends TileEntity> void bindTileEntityRenderer(TileEntityTypeRegistryObject<T> tileTypeRO, TileEntityRenderer<? super T> specialRenderer) {
+        ClientRegistry.bindTileEntityRenderer(tileTypeRO.getTileEntityType(), specialRenderer);
     }
 
     @SubscribeEvent

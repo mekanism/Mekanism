@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.commands;
+/*package mekanism.common.integration.crafttweaker.commands;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.impl.commands.CTCommands.CommandImpl;
@@ -48,7 +48,7 @@ public class MekRecipesCommand extends CommandImpl {
         /*if (args.length == 0 || !subCommands.contains(args[0])) {
             sender.sendMessage(SpecialMessagesChat.getNormalMessage("Recipe Type required, pick one of the following: " + Arrays.toString(subCommands.toArray())));
             return;
-        }*/
+        }/
         String subCommand = context.getInput();//args[0];
         CraftTweakerAPI.logInfo(subCommand + ":");
         ServerWorld world = context.getSource().getWorld();
@@ -248,4 +248,4 @@ public class MekRecipesCommand extends CommandImpl {
         CraftTweakerAPI.logInfo(message.getFormattedText());
         return 0;
     }
-}
+}*/

@@ -1,11 +1,9 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import mekanism.common.Mekanism;
-import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
-@ZenCodeType.Name("mekanism.chemical.infuser")
+//@ZenRegister
+//@ZenCodeType.Name("mekanism.chemical.infuser")
 public class ChemicalInfuser {
 
     public static final String NAME = Mekanism.MOD_NAME + " Chemical Infuser";

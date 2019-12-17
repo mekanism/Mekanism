@@ -102,7 +102,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             return from(new FluidStack(fluid, amount, nbt));
         } else if (jsonObject.has("tag")) {
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
-            Tag<Fluid> tag = FluidTags.getCollection().get(resourceLocation);
+            Tag<Fluid> tag = FluidTags.func_226157_a_().get(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown fluid tag '" + resourceLocation + "'");
             }

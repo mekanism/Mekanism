@@ -1,11 +1,9 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import mekanism.common.Mekanism;
-import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
-@ZenCodeType.Name("mekanism.compressor")
+//@ZenRegister
+//@ZenCodeType.Name("mekanism.compressor")
 public class Compressor {
 
     public static final String NAME = Mekanism.MOD_NAME + " Compressor";

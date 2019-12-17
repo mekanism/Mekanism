@@ -41,7 +41,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public static KeyBinding armorModeSwitchKey = new KeyBinding("mekanism.key.armorMode", GLFW.GLFW_KEY_G, keybindCategory);
     public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("mekanism.key.feetMode", GLFW.GLFW_KEY_H, keybindCategory);
 
-    public static KeyBinding sneakKey = Minecraft.getInstance().gameSettings.keyBindSneak;
+    public static KeyBinding sneakKey = Minecraft.getInstance().gameSettings.field_228046_af_;
 
     private static Builder BINDINGS = new Builder()
           .addBinding(modeSwitchKey, false)

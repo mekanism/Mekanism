@@ -1,4 +1,4 @@
-package mekanism.common.integration.crafttweaker.gas;
+/*package mekanism.common.integration.crafttweaker.gas;
 
 import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
@@ -28,4 +28,4 @@ public class CraftTweakerGasDefinition implements IGasDefinition {
         //TODO
         return gas.getTranslationKey();
     }
-}
+}*/

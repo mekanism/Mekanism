@@ -1,11 +1,9 @@
 package mekanism.common.integration.crafttweaker.handlers;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import mekanism.common.Mekanism;
-import org.openzen.zencode.java.ZenCodeType;
 
-@ZenRegister
-@ZenCodeType.Name("mekanism.gas.conversion")
+//@ZenRegister
+//@ZenCodeType.Name("mekanism.gas.conversion")
 public class GasConversion {
 
     //Commit that still had things this references in case it will be useful to find stuff quicker

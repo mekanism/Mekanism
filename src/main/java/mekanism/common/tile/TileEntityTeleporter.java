@@ -119,7 +119,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
                     break;
             }
         }
-        player.connection.setPlayerLocation(player.posX, player.posY, player.posZ, yaw, player.rotationPitch);
+        player.connection.setPlayerLocation(player.func_226277_ct_(), player.func_226277_ct_(), player.func_226281_cx_(), yaw, player.rotationPitch);
     }
 
     @Override
@@ -299,7 +299,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coords), world, coords.getPos());
                 }
                 setEnergy(getEnergy() - calculateEnergyCost(entity, closestCoords));
-                world.playSound(entity.posX, entity.posY, entity.posZ, SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
+                world.playSound(entity.func_226277_ct_(), entity.func_226277_ct_(), entity.func_226281_cx_(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F, false);
             }
         }
     }
