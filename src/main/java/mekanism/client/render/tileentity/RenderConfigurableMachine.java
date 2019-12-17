@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
@@ -19,6 +20,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -49,28 +51,28 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                     if (bp.equals(configurable.getPos())) {
                         DataType dataType = configurable.getConfig().getDataType(type, RelativeSide.fromDirections(configurable.getOrientation(), pos.getFace()));
                         if (dataType != null) {
-                            GlStateManager.pushMatrix();
-                            GlStateManager.enableCull();
-                            GlStateManager.disableLighting();
+                            RenderSystem.pushMatrix();
+                            RenderSystem.enableCull();
+                            RenderSystem.disableLighting();
                             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-                            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-                            GlStateManager.disableAlphaTest();
-                            GlStateManager.enableBlend();
-                            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                            RenderSystem.shadeModel(GL11.GL_SMOOTH);
+                            RenderSystem.disableAlphaTest();
+                            RenderSystem.enableBlend();
+                            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
                             MekanismRenderer.color(dataType.getColor(), 0.6F);
                             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                            GlStateManager.translatef((float) x, (float) y, (float) z);
+                            RenderSystem.translatef((float) x, (float) y, (float) z);
                             int display = getOverlayDisplay(pos.getFace(), type).display;
                             GlStateManager.callList(display);
                             MekanismRenderer.resetColor();
 
-                            GlStateManager.disableBlend();
-                            GlStateManager.enableAlphaTest();
+                            RenderSystem.disableBlend();
+                            RenderSystem.enableAlphaTest();
                             MekanismRenderer.disableGlow(glowInfo);
-                            GlStateManager.enableLighting();
-                            GlStateManager.disableCull();
-                            GlStateManager.popMatrix();
+                            RenderSystem.enableLighting();
+                            RenderSystem.disableCull();
+                            RenderSystem.popMatrix();
                         }
                     }
                 }

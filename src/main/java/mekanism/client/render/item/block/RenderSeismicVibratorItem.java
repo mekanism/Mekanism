@@ -1,6 +1,6 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.render.MekanismRenderer;
@@ -18,9 +18,9 @@ public class RenderSeismicVibratorItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotatef(180, 0, 0, 1);
-        GlStateManager.scalef(0.6F, 0.6F, 0.6F);
-        GlStateManager.translatef(0, -0.55F, 0);
+        RenderSystem.rotatef(180, 0, 0, 1);
+        RenderSystem.scalef(0.6F, 0.6F, 0.6F);
+        RenderSystem.translatef(0, -0.55F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "seismic_vibrator.png"));
         seismicVibrator.render(0.0625F);
     }

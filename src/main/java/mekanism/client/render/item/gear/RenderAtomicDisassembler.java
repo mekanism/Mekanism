@@ -1,6 +1,6 @@
 package mekanism.client.render.item.gear;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.render.MekanismRenderer;
@@ -22,34 +22,34 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(1.4F, 1.4F, 1.4F);
-        GlStateManager.rotatef(180, 0, 0, 1);
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(1.4F, 1.4F, 1.4F);
+        RenderSystem.rotatef(180, 0, 0, 1);
 
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                GlStateManager.rotatef(-90, 0, 1, 0);
+                RenderSystem.rotatef(-90, 0, 1, 0);
             }
-            GlStateManager.rotatef(45, 0, 1, 0);
-            GlStateManager.rotatef(50, 1, 0, 0);
-            GlStateManager.scalef(2.0F, 2.0F, 2.0F);
-            GlStateManager.translatef(0, -0.4F, 0.4F);
+            RenderSystem.rotatef(45, 0, 1, 0);
+            RenderSystem.rotatef(50, 1, 0, 0);
+            RenderSystem.scalef(2.0F, 2.0F, 2.0F);
+            RenderSystem.translatef(0, -0.4F, 0.4F);
         } else if (transformType == TransformType.GUI) {
-            GlStateManager.rotatef(225, 0, 1, 0);
-            GlStateManager.rotatef(45, -1, 0, -1);
-            GlStateManager.scalef(0.6F, 0.6F, 0.6F);
-            GlStateManager.translatef(0, -0.2F, 0);
+            RenderSystem.rotatef(225, 0, 1, 0);
+            RenderSystem.rotatef(45, -1, 0, -1);
+            RenderSystem.scalef(0.6F, 0.6F, 0.6F);
+            RenderSystem.translatef(0, -0.2F, 0);
         } else {
             if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-                GlStateManager.rotatef(90, 0, 1, 0);
+                RenderSystem.rotatef(90, 0, 1, 0);
             }
-            GlStateManager.rotatef(45, 0, 1, 0);
-            GlStateManager.translatef(0, -0.7F, 0);
+            RenderSystem.rotatef(45, 0, 1, 0);
+            RenderSystem.translatef(0, -0.7F, 0);
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "atomic_disassembler.png"));
         atomicDisassembler.render(0.0625F);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Nonnull

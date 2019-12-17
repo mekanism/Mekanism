@@ -1,9 +1,9 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
@@ -16,7 +16,6 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
@@ -42,7 +41,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                 if (rotor == null) {
                     break;
                 }
-                TileEntityRendererDispatcher.instance.render(rotor, partialTick, destroyStage);
+                field_228858_b_.render(rotor, partialTick, destroyStage);
             }
 
             RenderTurbineRotor.internalRender = false;
@@ -59,24 +58,24 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                 data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
 
-                bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                field_228858_b_.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
                 if (data.location != null && data.height >= 1 && tile.structure.fluidStored.getFluid() != Fluids.EMPTY) {
-                    GlStateManager.pushMatrix();
-                    GlStateManager.enableCull();
-                    GlStateManager.enableBlend();
-                    GlStateManager.disableLighting();
-                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                    RenderSystem.pushMatrix();
+                    RenderSystem.enableCull();
+                    RenderSystem.enableBlend();
+                    RenderSystem.disableLighting();
+                    RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     FluidRenderer.translateToOrigin(data.location);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.fluidStored);
                     MekanismRenderer.color(tile.structure.fluidStored, (float) tile.structure.fluidStored.getAmount() / (float) tile.structure.getFluidCapacity());
                     FluidRenderer.getTankDisplay(data).render();
                     MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);
-                    GlStateManager.enableLighting();
-                    GlStateManager.disableBlend();
-                    GlStateManager.disableCull();
-                    GlStateManager.popMatrix();
+                    RenderSystem.enableLighting();
+                    RenderSystem.disableBlend();
+                    RenderSystem.disableCull();
+                    RenderSystem.popMatrix();
                 }
             }
         }

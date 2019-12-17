@@ -1,6 +1,6 @@
 package mekanism.generators.client.render.item;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
@@ -18,9 +18,9 @@ public class RenderAdvancedSolarGeneratorItem extends MekanismItemStackRenderer 
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotatef(180, 0, 0, 1);
-        GlStateManager.rotatef(90, 0, 1, 0);
-        GlStateManager.translatef(0, 0.2F, 0);
+        RenderSystem.rotatef(180, 0, 0, 1);
+        RenderSystem.rotatef(90, 0, 1, 0);
+        RenderSystem.translatef(0, 0.2F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "advanced_solar_generator.png"));
         advancedSolarGenerator.render(0.022F);
     }

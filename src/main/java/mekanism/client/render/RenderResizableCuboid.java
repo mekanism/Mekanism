@@ -1,7 +1,7 @@
 package mekanism.client.render;
 
 import com.google.common.collect.ImmutableSet;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -129,10 +129,10 @@ public class RenderResizableCuboid {
      * This will render a cuboid from its middle.
      */
     public void renderCubeFromCentre(Model3D cuboid) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef((float) -cuboid.sizeX() / 2F, (float) -cuboid.sizeY() / 2F, (float) -cuboid.sizeZ() / 2F);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef((float) -cuboid.sizeX() / 2F, (float) -cuboid.sizeY() / 2F, (float) -cuboid.sizeZ() / 2F);
         renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public void renderCube(Model3D cuboid) {
@@ -161,9 +161,9 @@ public class RenderResizableCuboid {
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder wr = tess.getBuffer();
 
-        GlStateManager.enableAlphaTest();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-        GlStateManager.disableLighting();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+        RenderSystem.disableLighting();
 
         wr.begin(GL11.GL_QUADS, shadeTypes.vertexFormat);
 
@@ -175,8 +175,8 @@ public class RenderResizableCuboid {
 
         tess.draw();
 
-        GlStateManager.enableLighting();
-        GlStateManager.disableAlphaTest();
+        RenderSystem.enableLighting();
+        RenderSystem.disableAlphaTest();
     }
 
     private void renderCuboidFace(BufferBuilder wr, Direction face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,

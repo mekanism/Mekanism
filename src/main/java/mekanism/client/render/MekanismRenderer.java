@@ -2,6 +2,7 @@ package mekanism.client.render;
 
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
@@ -192,10 +193,10 @@ public class MekanismRenderer {
             return;
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef((float) object.minX, (float) object.minY, (float) object.minZ);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef((float) object.minX, (float) object.minY, (float) object.minZ);
         RenderResizableCuboid.INSTANCE.renderCube(object);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void bindTexture(ResourceLocation texture) {
@@ -204,8 +205,8 @@ public class MekanismRenderer {
 
     //Color
     public static void resetColor() {
-        //TODO: Should this be GlStateManager.clearColor
-        GlStateManager.color4f(1, 1, 1, 1);
+        //TODO: Should this be RenderSystem.clearColor
+        RenderSystem.color4f(1, 1, 1, 1);
     }
 
     private static float getRed(int color) {
@@ -221,14 +222,14 @@ public class MekanismRenderer {
     }
 
     public static void color(int color) {
-        GlStateManager.color4f(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255f);
+        RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255f);
     }
 
     public static void color(@Nonnull FluidStack fluid, float fluidScale) {
         if (!fluid.isEmpty()) {
             int color = fluid.getFluid().getAttributes().getColor(fluid);
             if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
-                GlStateManager.color4f(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+                RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
             } else {
                 color(color);
             }
@@ -256,7 +257,7 @@ public class MekanismRenderer {
     public static <CHEMICAL extends Chemical<CHEMICAL>> void color(@Nonnull CHEMICAL chemical) {
         if (!chemical.isEmptyType()) {
             int color = chemical.getTint();
-            GlStateManager.color3f(getRed(color), getGreen(color), getBlue(color));
+            RenderSystem.color3f(getRed(color), getGreen(color), getBlue(color));
         }
     }
 
@@ -274,7 +275,7 @@ public class MekanismRenderer {
 
     public static void color(@Nullable EnumColor color, float alpha, float multiplier) {
         if (color != null) {
-            GlStateManager.color4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+            RenderSystem.color4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
         }
     }
 
@@ -331,16 +332,16 @@ public class MekanismRenderer {
     public static void rotate(Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
-                GlStateManager.rotatef(north, 0, 1, 0);
+                RenderSystem.rotatef(north, 0, 1, 0);
                 break;
             case SOUTH:
-                GlStateManager.rotatef(south, 0, 1, 0);
+                RenderSystem.rotatef(south, 0, 1, 0);
                 break;
             case WEST:
-                GlStateManager.rotatef(west, 0, 1, 0);
+                RenderSystem.rotatef(west, 0, 1, 0);
                 break;
             case EAST:
-                GlStateManager.rotatef(east, 0, 1, 0);
+                RenderSystem.rotatef(east, 0, 1, 0);
                 break;
         }
     }
@@ -388,7 +389,8 @@ public class MekanismRenderer {
         energyIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
         heatIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
 
-        TransmitterModel.getIcons(map);
+        //TODO: 1.15
+        //TransmitterModel.getIcons(map);
 
         initFluidTextures(map);
 

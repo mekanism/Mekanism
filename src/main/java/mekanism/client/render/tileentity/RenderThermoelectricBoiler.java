@@ -1,9 +1,9 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
@@ -42,7 +42,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
                 if (data.height >= 1 && waterStored.getFluid() != Fluids.EMPTY) {
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
                     glChanged = makeGLChanges(glChanged);
                     FluidRenderer.translateToOrigin(data.location);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
@@ -54,15 +54,15 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                     }
                     MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
 
                     for (ValveData valveData : tile.valveViewing) {
-                        GlStateManager.pushMatrix();
+                        RenderSystem.pushMatrix();
                         FluidRenderer.translateToOrigin(valveData.location);
                         GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(waterStored);
                         FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
                         MekanismRenderer.disableGlow(valveGlowInfo);
-                        GlStateManager.popMatrix();
+                        RenderSystem.popMatrix();
                     }
                 }
             }
@@ -80,7 +80,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
                 if (data.height >= 1 && tile.structure.steamStored.getFluid() != Fluids.EMPTY) {
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
                     glChanged = makeGLChanges(glChanged);
                     FluidRenderer.translateToOrigin(data.location);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.steamStored);
@@ -90,24 +90,24 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                     display.render();
                     MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
                 }
             }
             if (glChanged) {
                 setLightmapDisabled(false);
-                GlStateManager.enableLighting();
-                GlStateManager.disableBlend();
-                GlStateManager.disableCull();
+                RenderSystem.enableLighting();
+                RenderSystem.disableBlend();
+                RenderSystem.disableCull();
             }
         }
     }
 
     private boolean makeGLChanges(boolean glChanged) {
         if (!glChanged) {
-            GlStateManager.enableCull();
-            GlStateManager.enableBlend();
-            GlStateManager.disableLighting();
-            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.enableCull();
+            RenderSystem.enableBlend();
+            RenderSystem.disableLighting();
+            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             setLightmapDisabled(true);
         }
         return true;

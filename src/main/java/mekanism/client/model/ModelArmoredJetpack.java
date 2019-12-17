@@ -1,9 +1,9 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
@@ -245,31 +245,31 @@ public class ModelArmoredJetpack extends Model {
         Packdoodad3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Bottomthruster.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.pushMatrix();
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        GlStateManager.enableCull();
-        GlStateManager.color4f(1, 1, 1, 0.2F);
+        RenderSystem.enableCull();
+        RenderSystem.color4f(1, 1, 1, 0.2F);
 
         WingbladeL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         WingbladeR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.resetColor();
-        GlStateManager.disableCull();
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.popMatrix();
+        RenderSystem.disableCull();
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.popMatrix();
 
         light1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         light2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         light3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Packcore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, -0.0625F);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, 0, -0.0625F);
 
         Rightlight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Leftlight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -282,7 +282,7 @@ public class ModelArmoredJetpack extends Model {
         Rightguardbot.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Leftguardbot.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -1,6 +1,6 @@
 package mekanism.client.render.item.gear;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.render.MekanismRenderer;
@@ -22,34 +22,34 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotatef(160, 0, 0, 1);
+        RenderSystem.pushMatrix();
+        RenderSystem.rotatef(160, 0, 0, 1);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "flamethrower.png"));
-        GlStateManager.translatef(0, -1.0F, 0);
-        GlStateManager.rotatef(135, 0, 1, 0);
-        GlStateManager.rotatef(-20, 0, 0, 1);
+        RenderSystem.translatef(0, -1.0F, 0);
+        RenderSystem.rotatef(135, 0, 1, 0);
+        RenderSystem.rotatef(-20, 0, 0, 1);
 
         if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_RIGHT_HAND
             || transformType == TransformType.FIRST_PERSON_LEFT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                GlStateManager.rotatef(55, 0, 1, 0);
+                RenderSystem.rotatef(55, 0, 1, 0);
             } else if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-                GlStateManager.rotatef(-160, 0, 1, 0);
-                GlStateManager.rotatef(30, 1, 0, 0);
+                RenderSystem.rotatef(-160, 0, 1, 0);
+                RenderSystem.rotatef(30, 1, 0, 0);
             } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND) {
-                GlStateManager.translatef(0, 0.7F, 0);
-                GlStateManager.rotatef(75, 0, 1, 0);
+                RenderSystem.translatef(0, 0.7F, 0);
+                RenderSystem.rotatef(75, 0, 1, 0);
             } else {//if(type == TransformType.THIRD_PERSON_LEFT_HAND)
-                GlStateManager.translatef(-0.5F, 0.7F, 0);
+                RenderSystem.translatef(-0.5F, 0.7F, 0);
             }
-            GlStateManager.scalef(2.5F, 2.5F, 2.5F);
-            GlStateManager.translatef(0, -1.0F, -0.5F);
+            RenderSystem.scalef(2.5F, 2.5F, 2.5F);
+            RenderSystem.translatef(0, -1.0F, -0.5F);
         } else if (transformType == TransformType.GUI) {
-            GlStateManager.translatef(-0.6F, 0, 0);
-            GlStateManager.rotatef(45, 0, 1, 0);
+            RenderSystem.translatef(-0.6F, 0, 0);
+            RenderSystem.rotatef(45, 0, 1, 0);
         }
         flamethrower.render(0.0625F);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Nonnull

@@ -1,6 +1,6 @@
 package mekanism.client.render.item.gear;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.render.MekanismRenderer;
@@ -22,13 +22,13 @@ public class RenderGasMask extends MekanismItemStackRenderer {
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotatef(180, 0, 0, 1);
-        GlStateManager.rotatef(90, 0, -1, 0);
-        GlStateManager.translatef(0.1F, 0.2F, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.rotatef(180, 0, 0, 1);
+        RenderSystem.rotatef(90, 0, -1, 0);
+        RenderSystem.translatef(0.1F, 0.2F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png"));
         gasMask.render(0.0625F);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Nonnull

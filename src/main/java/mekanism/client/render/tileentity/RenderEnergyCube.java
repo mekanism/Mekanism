@@ -1,9 +1,9 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
@@ -33,22 +33,22 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
     public void func_225616_a_(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         //TODO: Debate converting the energy cube to a normal baked model and then just have this draw the model AND then add the core in the middle
         // Would this improve performance at all? We probably would have to put port state information into the blockstate
-        GlStateManager.pushMatrix();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+        RenderSystem.pushMatrix();
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         switch (tile.getDirection()) {
             case DOWN:
-                GlStateManager.rotatef(90, -1, 0, 0);
-                GlStateManager.translatef(0, 1.0F, -1.0F);
+                RenderSystem.rotatef(90, -1, 0, 0);
+                RenderSystem.translatef(0, 1.0F, -1.0F);
                 break;
             case UP:
-                GlStateManager.rotatef(90, 1, 0, 0);
-                GlStateManager.translatef(0, 1.0F, 1.0F);
+                RenderSystem.rotatef(90, 1, 0, 0);
+                RenderSystem.translatef(0, 1.0F, 1.0F);
                 break;
             default:
                 //Otherwise use the helper method for handling different face options because it is one of them
@@ -56,8 +56,8 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
                 break;
         }
 
-        GlStateManager.rotatef(180, 0, 0, 1);
-        model.render(0.0625F, tile.tier, rendererDispatcher.textureManager, false);
+        RenderSystem.rotatef(180, 0, 0, 1);
+        model.render(0.0625F, tile.tier, field_228858_b_.textureManager, false);
 
         setLightmapDisabled(true);
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -70,30 +70,30 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
                 canInput = slotInfo.canInput();
                 canOutput = slotInfo.canOutput();
             }
-            model.renderSide(0.0625F, side, canInput, canOutput, rendererDispatcher.textureManager);
+            model.renderSide(0.0625F, side, canInput, canOutput, field_228858_b_.textureManager);
         }
         setLightmapDisabled(false);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         double energyPercentage = tile.getEnergy() / tile.getMaxEnergy();
         if (energyPercentage > 0.1) {
-            GlStateManager.translatef(0, -1.0F, 0);
+            RenderSystem.translatef(0, -1.0F, 0);
             bindTexture(coreTexture);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             float ticks = MekanismClient.ticksPassed + partialTick;
-            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
+            RenderSystem.scalef(0.4F, 0.4F, 0.4F);
             MekanismRenderer.color(tile.tier.getBaseTier().getColor(), (float) energyPercentage);
-            GlStateManager.translatef(0, (float) Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
-            GlStateManager.rotatef(4 * ticks, 0, 1, 0);
-            GlStateManager.rotatef(36F + 4 * ticks, 0, 1, 1);
+            RenderSystem.translatef(0, (float) Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+            RenderSystem.rotatef(4 * ticks, 0, 1, 0);
+            RenderSystem.rotatef(36F + 4 * ticks, 0, 1, 1);
             core.render(0.0625F);
             MekanismRenderer.resetColor();
             MekanismRenderer.disableGlow(glowInfo);
         }
 
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.popMatrix();
-        MekanismRenderer.machineRenderer().render(tile, x, y, z, partialTick, destroyStage);
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.popMatrix();
+        MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, otherLight);
     }
 }

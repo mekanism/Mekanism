@@ -1,7 +1,7 @@
 package mekanism.generators.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
@@ -64,8 +64,8 @@ public class ModelTurbine extends Model {
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         //public void render(float size, int index) {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotatef(index * 5, 0, 1, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.rotatef(index * 5, 0, 1, 0);
         extension_south.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         extension_west.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         extension_east.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -76,16 +76,16 @@ public class ModelTurbine extends Model {
         renderBlade(blade_east, size, scale, scale / widthDiv, 0.25F, 0.0F);
         renderBlade(blade_north, size, scale / widthDiv, scale, 0.0F, -0.25F);
         renderBlade(blade_south, size, scale / widthDiv, scale, 0.0F, 0.25F);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private void renderBlade(ModelRenderer blade, float size, float scaleX, float scaleZ, float transX, float transZ) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(transX, 0, transZ);
-        GlStateManager.scalef(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
-        GlStateManager.translatef(-transX, 0, -transZ);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(transX, 0, transZ);
+        RenderSystem.scalef(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
+        RenderSystem.translatef(-transX, 0, -transZ);
         blade.render(size);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {

@@ -1,8 +1,8 @@
 package mekanism.additions.client.render.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.AdditionsBlock;
 import mekanism.additions.common.entity.EntityObsidianTNT;
@@ -25,8 +25,8 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
     @Override
     public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks) {
         BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRendererDispatcher();
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef((float) x, (float) y + 0.5F, (float) z);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef((float) x, (float) y + 0.5F, (float) z);
 
         if (entityobsidiantnt.getFuse() - partialTicks + 1.0F < 10.0F) {
             float f = 1.0F - (entityobsidiantnt.getFuse() - partialTicks + 1.0F) / 10.0F;
@@ -34,33 +34,33 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
             f = f * f;
             f = f * f;
             float scale = 1.0F + f * 0.3F;
-            GlStateManager.scalef(scale, scale, scale);
+            RenderSystem.scalef(scale, scale, scale);
         }
 
         float f3 = (1.0F - ((entityobsidiantnt.getFuse() - partialTicks) + 1.0F) / 100F) * 0.8F;
         bindEntityTexture(entityobsidiantnt);
-        GlStateManager.translatef(-0.5F, -0.5F, 0.5F);
+        RenderSystem.translatef(-0.5F, -0.5F, 0.5F);
         renderer.renderBlockBrightness(AdditionsBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), entityobsidiantnt.getBrightness());
-        GlStateManager.translatef(0, 0, 1.0F);
+        RenderSystem.translatef(0, 0, 1.0F);
 
         if (entityobsidiantnt.getFuse() / 5 % 2 == 0) {
-            GlStateManager.disableTexture();
-            GlStateManager.disableLighting();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.DST_ALPHA);
-            GlStateManager.color4f(1, 1, 1, f3);
-            GlStateManager.polygonOffset(-3.0F, -3.0F);
-            GlStateManager.enablePolygonOffset();
+            RenderSystem.disableTexture();
+            RenderSystem.disableLighting();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.DST_ALPHA);
+            RenderSystem.color4f(1, 1, 1, f3);
+            RenderSystem.polygonOffset(-3.0F, -3.0F);
+            RenderSystem.enablePolygonOffset();
             renderer.renderBlockBrightness(AdditionsBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), 1.0F);
-            GlStateManager.polygonOffset(0.0F, 0.0F);
-            GlStateManager.disablePolygonOffset();
+            RenderSystem.polygonOffset(0.0F, 0.0F);
+            RenderSystem.disablePolygonOffset();
             MekanismRenderer.resetColor();
-            GlStateManager.disableBlend();
-            GlStateManager.enableLighting();
-            GlStateManager.enableTexture();
+            RenderSystem.disableBlend();
+            RenderSystem.enableLighting();
+            RenderSystem.enableTexture();
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Nonnull

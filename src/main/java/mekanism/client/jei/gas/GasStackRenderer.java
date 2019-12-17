@@ -1,6 +1,5 @@
 /*package mekanism.client.jei.gas;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,17 +92,17 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         if (gasStack == null || gasStack.isEmpty()) {
             return;
         }
-        GlStateManager.enableBlend();
-        GlStateManager.enableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.enableAlphaTest();
         drawGas(xPosition, yPosition, gasStack);
         if (overlay != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef(0, 0, 200);
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef(0, 0, 200);
             overlay.draw(xPosition, yPosition);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
-        GlStateManager.disableAlphaTest();
-        GlStateManager.disableBlend();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableBlend();
     }
 
     private void drawGas(int xPosition, int yPosition, @Nonnull GasStack gasStack) {

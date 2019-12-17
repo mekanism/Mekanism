@@ -1,6 +1,6 @@
 package mekanism.client.render.item.gear;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.render.MekanismRenderer;
@@ -22,14 +22,14 @@ public class RenderFreeRunners extends MekanismItemStackRenderer {
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotatef(180, 0, 0, 1);
-        GlStateManager.rotatef(90, 0, -1, 0);
-        GlStateManager.scalef(2.0F, 2.0F, 2.0F);
-        GlStateManager.translatef(0.2F, -1.43F, 0.12F);
+        RenderSystem.pushMatrix();
+        RenderSystem.rotatef(180, 0, 0, 1);
+        RenderSystem.rotatef(90, 0, -1, 0);
+        RenderSystem.scalef(2.0F, 2.0F, 2.0F);
+        RenderSystem.translatef(0.2F, -1.43F, 0.12F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png"));
         freeRunners.render(0.0625F);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Nonnull

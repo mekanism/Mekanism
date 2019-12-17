@@ -1,9 +1,9 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
@@ -29,11 +29,11 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
             if (data.location != null && data.height >= 1) {
                 bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                GlStateManager.pushMatrix();
-                GlStateManager.enableCull();
-                GlStateManager.enableBlend();
-                GlStateManager.disableLighting();
-                GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                RenderSystem.pushMatrix();
+                RenderSystem.enableCull();
+                RenderSystem.enableBlend();
+                RenderSystem.disableLighting();
+                RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                 setLightmapDisabled(true);
                 FluidRenderer.translateToOrigin(data.location);
                 GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
@@ -46,22 +46,22 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
                 MekanismRenderer.resetColor();
                 MekanismRenderer.disableGlow(glowInfo);
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
 
                 for (ValveData valveData : tile.valveViewing) {
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
                     FluidRenderer.translateToOrigin(valveData.location);
                     GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(data.fluidType);
                     MekanismRenderer.color(data.fluidType);
                     FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
                     MekanismRenderer.disableGlow(valveGlowInfo);
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
                 }
                 MekanismRenderer.resetColor();
                 setLightmapDisabled(false);
-                GlStateManager.enableLighting();
-                GlStateManager.disableBlend();
-                GlStateManager.disableCull();
+                RenderSystem.enableLighting();
+                RenderSystem.disableBlend();
+                RenderSystem.disableCull();
             }
         }
     }

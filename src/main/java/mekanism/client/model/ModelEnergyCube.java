@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
@@ -372,9 +372,9 @@ public class ModelEnergyCube extends Model {
             corner1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(1.001F, 1.005F, 1.001F);
-        GlStateManager.translatef(0, -0.0061F, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(1.001F, 1.005F, 1.001F);
+        RenderSystem.translatef(0, -0.0061F, 0);
         manager.bindTexture(BASE_OVERLAY);
         MekanismRenderer.color(tier.getBaseTier().getColor());
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
@@ -390,7 +390,7 @@ public class ModelEnergyCube extends Model {
 
         MekanismRenderer.disableGlow(glowInfo);
         MekanismRenderer.resetColor();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public void renderSide(float size, Direction side, boolean canInput, boolean canOutput, TextureManager renderer) {

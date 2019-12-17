@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
@@ -132,7 +132,7 @@ public class ModelAtomicDisassembler extends Model {
 
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
         Shape3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -142,7 +142,7 @@ public class ModelAtomicDisassembler extends Model {
         Shape14.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.disableGlow(glowInfo);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         Shape1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Shape2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);

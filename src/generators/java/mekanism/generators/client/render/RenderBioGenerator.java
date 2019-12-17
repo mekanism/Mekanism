@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -30,31 +31,31 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     @Override
     public void func_225616_a_(@Nonnull TileEntityBioGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         if (tile.bioFuelSlot.fluidStored > 0) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableCull();
-            GlStateManager.enableBlend();
-            GlStateManager.disableLighting();
-            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.pushMatrix();
+            RenderSystem.enableCull();
+            RenderSystem.enableBlend();
+            RenderSystem.disableLighting();
+            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-            GlStateManager.translatef((float) x, (float) y, (float) z);
-            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            RenderSystem.translatef((float) x, (float) y, (float) z);
+            field_228858_b_.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             getDisplayList(tile.getDirection())[tile.getScaledFuelLevel(stages - 1)].render();
             MekanismRenderer.disableGlow(glowInfo);
-            GlStateManager.enableLighting();
-            GlStateManager.disableBlend();
-            GlStateManager.disableCull();
-            GlStateManager.popMatrix();
+            RenderSystem.enableLighting();
+            RenderSystem.disableBlend();
+            RenderSystem.disableCull();
+            RenderSystem.popMatrix();
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "bio_generator.png"));
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+        field_228858_b_.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "bio_generator.png"));
 
         MekanismRenderer.rotate(tile.getDirection(), 180, 0, 270, 90);
 
-        GlStateManager.rotatef(180, 0, 0, 1);
+        RenderSystem.rotatef(180, 0, 0, 1);
         model.render(0.0625F);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @SuppressWarnings("incomplete-switch")

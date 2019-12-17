@@ -3,6 +3,7 @@ package mekanism.client.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,23 +26,23 @@ public final class MinerVisualRenderer {
     private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 
     public static void render(TileEntityDigitalMiner miner) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef((float) getX(miner.getPos().getX()), (float) getY(miner.getPos().getY()), (float) getZ(miner.getPos().getZ()));
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef((float) getX(miner.getPos().getX()), (float) getY(miner.getPos().getY()), (float) getZ(miner.getPos().getZ()));
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        GlStateManager.enableCull();
-        GlStateManager.color4f(1, 1, 1, 0.8F);
+        RenderSystem.enableCull();
+        RenderSystem.color4f(1, 1, 1, 0.8F);
         minecraft.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         getList(new MinerRenderData(miner)).render();
         MekanismRenderer.resetColor();
-        GlStateManager.disableCull();
+        RenderSystem.disableCull();
         MekanismRenderer.disableGlow(glowInfo);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.popMatrix();
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.popMatrix();
     }
 
     private static DisplayInteger getList(MinerRenderData data) {

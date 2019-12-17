@@ -1,6 +1,7 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -24,7 +25,7 @@ public final class FluidRenderer {
     private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<>();
 
     public static void translateToOrigin(Coord4D origin) {
-        GlStateManager.translatef((float) getX(origin.x), (float) getY(origin.y), (float) getZ(origin.z));
+        RenderSystem.translatef((float) getX(origin.x), (float) getY(origin.y), (float) getZ(origin.z));
     }
 
     public static int getStages(RenderData data) {
@@ -61,7 +62,7 @@ public final class FluidRenderer {
         DisplayInteger display = DisplayInteger.createAndStart();
         cachedCenter[stage] = display;
 
-        if (data.fluidType.getFluid().getAttributes().getStill(data.fluidType) != null) {
+        if (data.fluidType.getFluid().getAttributes().getStillTexture(data.fluidType) != null) {
             toReturn.minX = 0.01;
             toReturn.minY = 0.01;
             toReturn.minZ = 0.01;
@@ -149,7 +150,7 @@ public final class FluidRenderer {
                 break;
         }
 
-        if (data.fluidType.getFluid().getAttributes().getFlowing(data.fluidType) != null) {
+        if (data.fluidType.getFluid().getAttributes().getFlowingTexture(data.fluidType) != null) {
             MekanismRenderer.renderObject(toReturn);
         }
 

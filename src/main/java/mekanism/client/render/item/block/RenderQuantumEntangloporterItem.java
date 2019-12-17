@@ -1,6 +1,6 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelQuantumEntangloporter;
 import mekanism.client.render.MekanismRenderer;
@@ -19,8 +19,8 @@ public class RenderQuantumEntangloporterItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotatef(180, 0, 0, 1);
-        GlStateManager.translatef(0, -1.0F, 0);
+        RenderSystem.rotatef(180, 0, 0, 1);
+        RenderSystem.translatef(0, -1.0F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter.png"));
         quantumEntangloporter.render(0.0625F, Minecraft.getInstance().textureManager, true);
     }

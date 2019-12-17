@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
@@ -130,8 +130,8 @@ public class ModelRobit extends EntityModel<EntityRobit> {
         //super.func_225597_a_(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.rotatef(180, 0, 1, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.rotatef(180, 0, 1, 0);
 
         Body.render(scale);
         Bottom.render(scale);
@@ -151,7 +151,7 @@ public class ModelRobit extends EntityModel<EntityRobit> {
         eyeRight.render(scale);
         eyeLeft.render(scale);
         MekanismRenderer.disableGlow(glowInfo);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package mekanism.client.render.item;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.RenderState;
@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 //TODO: Make some item models that just have straight edges be gotten via JSON instead of using a TEISR
 // Maybe we can even clean up some of the things currently using TESRs instead of using json.
 // For example the normal solar panel block
+//TODO: Declare the renderers via json that they are "built in renderers"?
 public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRenderer {
 
     protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType);
@@ -30,16 +31,16 @@ public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRende
     protected void renderWithTransform(@Nonnull ItemStack stack) {
         TransformType transformType = getTransform(stack);
         if (transformType == TransformType.GUI) {
-            GlStateManager.rotatef(180, 0, 1, 0);
+            RenderSystem.rotatef(180, 0, 1, 0);
         }
 
         renderBlockSpecific(stack, transformType);
 
         if (!earlyExit()) {
             if (transformType == TransformType.GUI) {
-                GlStateManager.rotatef(90, 0, 1, 0);
+                RenderSystem.rotatef(90, 0, 1, 0);
             } else {
-                GlStateManager.rotatef(180, 0, 1, 0);
+                RenderSystem.rotatef(180, 0, 1, 0);
             }
             renderItemSpecific(stack, transformType);
         }
@@ -49,13 +50,13 @@ public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRende
     public void func_228364_a_(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         Tessellator tessellator = Tessellator.getInstance();
         RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0.5F, 0.5F, 0.5F);
-        GlStateManager.rotatef(180, 0, 1, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0.5F, 0.5F, 0.5F);
+        RenderSystem.rotatef(180, 0, 1, 0);
 
         renderWithTransform(stack);
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
         MekanismRenderer.resumeRenderer(tessellator, renderState);
     }
 }

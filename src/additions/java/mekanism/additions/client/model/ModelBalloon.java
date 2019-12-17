@@ -1,7 +1,7 @@
 package mekanism.additions.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
@@ -55,10 +55,10 @@ public class ModelBalloon extends Model {
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         //public void render(float size, EnumColor color) {
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         MekanismRenderer.color(color);
-        GlStateManager.scalef(1.5F, 1.5F, 1.5F);
-        GlStateManager.translatef(0, -0.07F, 0);
+        RenderSystem.scalef(1.5F, 1.5F, 1.5F);
+        RenderSystem.translatef(0, -0.07F, 0);
 
         Balloon2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Balloon1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -66,12 +66,12 @@ public class ModelBalloon extends Model {
         Balloonnub.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.resetColor();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(0.2F, 1, 0.2F);
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(0.2F, 1, 0.2F);
         String.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

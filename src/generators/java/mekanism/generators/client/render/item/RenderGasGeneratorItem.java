@@ -1,6 +1,6 @@
 package mekanism.generators.client.render.item;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
@@ -18,10 +18,10 @@ public class RenderGasGeneratorItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotatef(180, 0, 1, 1);
-        GlStateManager.rotatef(90, -1, 0, 0);
-        GlStateManager.translatef(0, -1.0F, 0);
-        GlStateManager.rotatef(180, 0, 1, 0);
+        RenderSystem.rotatef(180, 0, 1, 1);
+        RenderSystem.rotatef(90, -1, 0, 0);
+        RenderSystem.translatef(0, -1.0F, 0);
+        RenderSystem.rotatef(180, 0, 1, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "gas_burning_generator.png"));
         gasGenerator.render(0.0625F);
     }

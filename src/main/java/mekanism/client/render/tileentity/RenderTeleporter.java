@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -30,18 +31,18 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     public void func_225616_a_(@Nonnull TileEntityTeleporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         //TODO: Figure out why it always renders in one direction even if the teleporter is assembled along the other axis
         if (tile.shouldRender) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableCull();
-            GlStateManager.disableLighting();
+            RenderSystem.pushMatrix();
+            RenderSystem.enableCull();
+            RenderSystem.disableLighting();
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlphaTest();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.shadeModel(GL11.GL_SMOOTH);
+            RenderSystem.disableAlphaTest();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             MekanismRenderer.color(EnumColor.PURPLE, 0.75F);
 
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translatef((float) x, (float) y, (float) z);
+            RenderSystem.translatef((float) x, (float) y, (float) z);
             BlockPos pos = tile.getPos().west();
             int type = 0;
             BlockState s = tile.getWorld().getBlockState(pos);
@@ -53,12 +54,12 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
             GlStateManager.callList(display);
 
             MekanismRenderer.resetColor();
-            GlStateManager.disableBlend();
-            GlStateManager.enableAlphaTest();
+            RenderSystem.disableBlend();
+            RenderSystem.enableAlphaTest();
             MekanismRenderer.disableGlow(glowInfo);
-            GlStateManager.enableLighting();
-            GlStateManager.disableCull();
-            GlStateManager.popMatrix();
+            RenderSystem.enableLighting();
+            RenderSystem.disableCull();
+            RenderSystem.popMatrix();
         }
     }
 

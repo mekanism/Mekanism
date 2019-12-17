@@ -1,6 +1,6 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelSecurityDesk;
 import mekanism.client.render.MekanismRenderer;
@@ -19,14 +19,14 @@ public class RenderSecurityDeskItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotatef(180, 1, 0, 0);
+        RenderSystem.rotatef(180, 1, 0, 0);
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            GlStateManager.rotatef(90, 0, 1, 0);
+            RenderSystem.rotatef(90, 0, 1, 0);
         } else {
-            GlStateManager.rotatef(-90, 0, 1, 0);
+            RenderSystem.rotatef(-90, 0, 1, 0);
         }
-        GlStateManager.scalef(0.8F, 0.8F, 0.8F);
-        GlStateManager.translatef(0, -0.8F, 0);
+        RenderSystem.scalef(0.8F, 0.8F, 0.8F);
+        RenderSystem.translatef(0, -0.8F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "security_desk.png"));
         securityDesk.render(0.0625F, Minecraft.getInstance().textureManager);
     }

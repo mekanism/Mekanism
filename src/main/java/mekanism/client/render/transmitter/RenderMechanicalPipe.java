@@ -1,6 +1,7 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import javax.annotation.Nonnull;
@@ -61,42 +62,42 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
         float scale = Math.min(pipe.currentScale, 1);
         if (scale > 0.01 && !fluidStack.isEmpty()) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableCull();
-            GlStateManager.disableLighting();
+            RenderSystem.pushMatrix();
+            RenderSystem.enableCull();
+            RenderSystem.disableLighting();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluidStack);
             MekanismRenderer.color(fluidStack);
 
             bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translatef((float) x, (float) y, (float) z);
+            RenderSystem.translatef((float) x, (float) y, (float) z);
 
             boolean gas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
             for (Direction side : EnumUtils.DIRECTIONS) {
                 if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
                     renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
                 } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {
-                    GlStateManager.translatef(0.5F, 0.5F, 0.5F);
+                    RenderSystem.translatef(0.5F, 0.5F, 0.5F);
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder worldRenderer = tessellator.getBuffer();
                     if (renderFluidInOut(worldRenderer, side, pipe)) {
                         tessellator.draw();
                     }
-                    GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
+                    RenderSystem.translatef(-0.5F, -0.5F, -0.5F);
                 }
             }
             renderDisplayLists(getListAndRender(null, fluidStack), scale, gas);
             MekanismRenderer.resetColor();
             MekanismRenderer.disableGlow(glowInfo);
-            GlStateManager.enableLighting();
-            GlStateManager.disableCull();
-            GlStateManager.popMatrix();
+            RenderSystem.enableLighting();
+            RenderSystem.disableCull();
+            RenderSystem.popMatrix();
         }
     }
 
     private void renderDisplayLists(DisplayInteger[] displayLists, float scale, boolean gas) {
         if (displayLists != null) {
             if (gas) {
-                GlStateManager.color4f(1, 1, 1, scale);
+                RenderSystem.color4f(1, 1, 1, scale);
                 displayLists[stages - 1].render();
                 MekanismRenderer.resetColor();
             } else {

@@ -3,6 +3,7 @@ package mekanism.client.render.transmitter;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -67,7 +68,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         boolean pushed = false;
         Collection<TransporterStack> inTransit = transporter.getTransmitter().getTransit();
         if (!inTransit.isEmpty()) {
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             pushed = true;
 
             //TODO: Do we have to make a new entity item each time we render
@@ -85,31 +86,31 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 float yShifted = (float) y + pos[1];
                 float zShifted = (float) z + pos[2];
 
-                GlStateManager.pushMatrix();
-                GlStateManager.translatef(xShifted, yShifted, zShifted);
-                GlStateManager.scalef(0.75F, 0.75F, 0.75F);
+                RenderSystem.pushMatrix();
+                RenderSystem.translatef(xShifted, yShifted, zShifted);
+                RenderSystem.scalef(0.75F, 0.75F, 0.75F);
                 renderer.doRender(entityItem, 0, 0, 0, 0, 0);
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
 
                 if (stack.color != null) {
                     bindTexture(transporterBox);
-                    GlStateManager.pushMatrix();
+                    RenderSystem.pushMatrix();
                     GlowInfo glowInfo = MekanismRenderer.enableGlow();
-                    GlStateManager.disableCull();
+                    RenderSystem.disableCull();
                     MekanismRenderer.color(stack.color);
-                    GlStateManager.translatef(xShifted, yShifted, zShifted);
+                    RenderSystem.translatef(xShifted, yShifted, zShifted);
                     modelBox.render(0.0625F);
                     MekanismRenderer.resetColor();
-                    GlStateManager.enableCull();
+                    RenderSystem.enableCull();
                     MekanismRenderer.disableGlow(glowInfo);
-                    GlStateManager.popMatrix();
+                    RenderSystem.popMatrix();
                 }
             }
         }
 
         if (transporter instanceof TileEntityDiversionTransporter) {
             if (!pushed) {
-                GlStateManager.pushMatrix();
+                RenderSystem.pushMatrix();
                 pushed = true;
             }
             ItemStack itemStack = minecraft.player.inventory.getCurrentItem();
@@ -118,36 +119,36 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 BlockRayTraceResult pos = null;//minecraft.player.rayTrace(8.0D, 1.0F);
                 if (pos != null && pos.getFace() != null && pos.getPos().equals(transporter.getPos())) {
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.getFace().ordinal()];
-                    GlStateManager.pushMatrix();
-                    GlStateManager.enableCull();
-                    GlStateManager.disableLighting();
+                    RenderSystem.pushMatrix();
+                    RenderSystem.enableCull();
+                    RenderSystem.disableLighting();
                     GlowInfo glowInfo = MekanismRenderer.enableGlow();
-                    GlStateManager.shadeModel(GL11.GL_SMOOTH);
-                    GlStateManager.disableAlphaTest();
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-                    GlStateManager.color4f(1, 1, 1, 0.8F);
+                    RenderSystem.shadeModel(GL11.GL_SMOOTH);
+                    RenderSystem.disableAlphaTest();
+                    RenderSystem.enableBlend();
+                    RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                    RenderSystem.color4f(1, 1, 1, 0.8F);
                     bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                    GlStateManager.translatef((float) x, (float) y, (float) z);
-                    GlStateManager.scalef(0.5F, 0.5F, 0.5F);
-                    GlStateManager.translatef(0.5F, 0.5F, 0.5F);
+                    RenderSystem.translatef((float) x, (float) y, (float) z);
+                    RenderSystem.scalef(0.5F, 0.5F, 0.5F);
+                    RenderSystem.translatef(0.5F, 0.5F, 0.5F);
 
                     int display = getOverlayDisplay(pos.getFace(), mode).display;
                     GlStateManager.callList(display);
 
                     MekanismRenderer.resetColor();
-                    GlStateManager.disableBlend();
-                    GlStateManager.enableAlphaTest();
+                    RenderSystem.disableBlend();
+                    RenderSystem.enableAlphaTest();
                     MekanismRenderer.disableGlow(glowInfo);
-                    GlStateManager.enableLighting();
-                    GlStateManager.disableCull();
-                    GlStateManager.popMatrix();
+                    RenderSystem.enableLighting();
+                    RenderSystem.disableCull();
+                    RenderSystem.popMatrix();
                 }
             }
         }
         if (pushed) {
             //If we did anything we need to pop the matrix we pushed
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 

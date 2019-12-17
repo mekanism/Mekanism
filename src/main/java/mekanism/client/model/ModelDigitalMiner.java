@@ -1,9 +1,9 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
@@ -425,27 +425,27 @@ public class ModelDigitalMiner extends Model {
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         //public void render(float size, boolean on, TextureManager manager, boolean renderMain) {
-        GlStateManager.pushMatrix();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.pushMatrix();
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
         if (renderMain) {
             doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         }
 
         manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
-        GlStateManager.scalef(1.001F, 1.001F, 1.001F);
-        GlStateManager.translatef(-0.0011F, -0.0011F, -0.0011F);
+        RenderSystem.scalef(1.001F, 1.001F, 1.001F);
+        RenderSystem.translatef(-0.0011F, -0.0011F, -0.0011F);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
         doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.disableGlow(glowInfo);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.popMatrix();
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.popMatrix();
     }
 
     public void doRender(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {

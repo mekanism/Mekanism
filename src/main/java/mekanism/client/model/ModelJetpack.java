@@ -1,9 +1,9 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
@@ -197,22 +197,22 @@ public class ModelJetpack extends Model {
         Packcore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         //Wing blades need some more special stuff
-        GlStateManager.pushMatrix();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.enableCull();
-        GlStateManager.color4f(1, 1, 1, 0.2F);
+        RenderSystem.pushMatrix();
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enableCull();
+        RenderSystem.color4f(1, 1, 1, 0.2F);
 
         WingbladeL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         WingbladeR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.resetColor();
-        GlStateManager.disableCull();
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.popMatrix();
+        RenderSystem.disableCull();
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.popMatrix();
         MekanismRenderer.disableGlow(glowInfo);
     }
 

@@ -1,8 +1,8 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -63,10 +63,10 @@ public abstract class GuiElement extends Widget {
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
 
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(scale, scale, scale);
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(scale, scale, scale);
             drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
         //Make sure the color does not leak from having drawn the string
         MekanismRenderer.resetColor();
@@ -133,9 +133,9 @@ public abstract class GuiElement extends Widget {
         MekanismRenderer.bindTexture(WIDGETS_LOCATION);
         //TODO: This can use isHovered() once we fix the isHovered logic
         int i = getYImage(isMouseOver(mouseX, mouseY));
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
         int width = getButtonWidth();
         int height = getButtonHeight();
@@ -167,6 +167,6 @@ public abstract class GuiElement extends Widget {
             drawCenteredString(getFontRenderer(), message, x + halfWidthLeft, y + (height - 8) / 2,
                   getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
         }
-        GlStateManager.disableBlend();
+        RenderSystem.disableBlend();
     }
 }

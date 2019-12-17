@@ -1,6 +1,6 @@
 package mekanism.generators.client.render.item;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
@@ -23,26 +23,26 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotatef(180, 0, 0, 1);
+        RenderSystem.pushMatrix();
+        RenderSystem.rotatef(180, 0, 0, 1);
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            GlStateManager.rotatef(180, 0, 1, 0);
-            GlStateManager.translatef(0, 0.4F, 0);
+            RenderSystem.rotatef(180, 0, 1, 0);
+            RenderSystem.translatef(0, 0.4F, 0);
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                GlStateManager.rotatef(-45, 0, 1, 0);
+                RenderSystem.rotatef(-45, 0, 1, 0);
             } else {
-                GlStateManager.rotatef(45, 0, 1, 0);
+                RenderSystem.rotatef(45, 0, 1, 0);
             }
-            GlStateManager.rotatef(50, 1, 0, 0);
-            GlStateManager.scalef(2.0F, 2.0F, 2.0F);
-            GlStateManager.translatef(0, -0.4F, 0);
+            RenderSystem.rotatef(50, 1, 0, 0);
+            RenderSystem.scalef(2.0F, 2.0F, 2.0F);
+            RenderSystem.translatef(0, -0.4F, 0);
         } else {
             if (transformType == TransformType.GUI) {
-                GlStateManager.rotatef(90, 0, 1, 0);
+                RenderSystem.rotatef(90, 0, 1, 0);
             } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                GlStateManager.rotatef(180, 0, 1, 0);
+                RenderSystem.rotatef(180, 0, 1, 0);
             }
-            GlStateManager.translatef(0, 0.4F, 0);
+            RenderSystem.translatef(0, 0.4F, 0);
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "wind_generator.png"));
@@ -59,7 +59,7 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
             lastTicksUpdated = renderPartialTicks;
         }
         windGenerator.render(0.016F, angle);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Override

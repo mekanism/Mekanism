@@ -3,6 +3,7 @@ package mekanism.client.render.item.block;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
@@ -42,18 +43,18 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         FluidStack fluid = itemFluidTank.getFluidStack(stack);
         float fluidScale = (float) fluid.getAmount() / itemFluidTank.getCapacity(stack);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         if (!fluid.isEmpty() && fluidScale > 0) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableCull();
-            GlStateManager.disableLighting();
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlphaTest();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.pushMatrix();
+            RenderSystem.enableCull();
+            RenderSystem.disableLighting();
+            RenderSystem.shadeModel(GL11.GL_SMOOTH);
+            RenderSystem.disableAlphaTest();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
             MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
+            RenderSystem.translatef(-0.5F, -0.5F, -0.5F);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
 
             DisplayInteger[] displayList = getListAndRender(fluid);
@@ -69,18 +70,18 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             }
             MekanismRenderer.resetColor();
             MekanismRenderer.disableGlow(glowInfo);
-            GlStateManager.disableBlend();
-            GlStateManager.enableAlphaTest();
-            GlStateManager.enableLighting();
-            GlStateManager.disableCull();
-            GlStateManager.popMatrix();
+            RenderSystem.disableBlend();
+            RenderSystem.enableAlphaTest();
+            RenderSystem.enableLighting();
+            RenderSystem.disableCull();
+            RenderSystem.popMatrix();
         }
 
-        GlStateManager.translatef(0, -0.9F, 0);
-        GlStateManager.scalef(0.9F, 0.8F, 0.9F);
+        RenderSystem.translatef(0, -0.9F, 0);
+        RenderSystem.scalef(0.9F, 0.8F, 0.9F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png"));
         fluidTank.render(0.073F, tier);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private static DisplayInteger[] getListAndRender(@Nonnull FluidStack fluid) {
@@ -98,7 +99,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         for (int i = 0; i < stages; i++) {
             displays[i] = DisplayInteger.createAndStart();
 
-            if (fluid.getFluid().getAttributes().getStill(fluid) != null) {
+            if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
                 toReturn.minX = 0.125 + .01;
                 toReturn.minY = 0.0625 + .01;
                 toReturn.minZ = 0.125 + .01;

@@ -1,6 +1,6 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelFreeRunners;
@@ -162,8 +162,8 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
         @Override
         public void render(float size) {
             if (ModelCustomArmor.this.modelType != null) {
-                GlStateManager.pushMatrix();
-                GlStateManager.translatef(0, 0, 0.06F);
+                RenderSystem.pushMatrix();
+                RenderSystem.translatef(0, 0, 0.06F);
                 Minecraft.getInstance().textureManager.bindTexture(modelType.resource);
                 if (useModel(biped.modelType, partRender, biped)) {
                     if (biped.modelType == ArmorModel.JETPACK) {
@@ -173,20 +173,20 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
                     } else if (biped.modelType == ArmorModel.SCUBATANK) {
                         ArmorModel.scubaTankModel.render(0.0625F);
                     } else if (biped.modelType == ArmorModel.GASMASK) {
-                        GlStateManager.translatef(0, 0, -0.05F);
+                        RenderSystem.translatef(0, 0, -0.05F);
                         ArmorModel.gasMaskModel.render(0.0625F);
                     } else if (biped.modelType == ArmorModel.FREERUNNERS) {
-                        GlStateManager.scalef(1.02F, 1.02F, 1.02F);
+                        RenderSystem.scalef(1.02F, 1.02F, 1.02F);
                         if (partRender == biped.bipedLeftLeg) {
-                            GlStateManager.translatef(-0.1375F, -0.75F, -0.0625F);
+                            RenderSystem.translatef(-0.1375F, -0.75F, -0.0625F);
                             ArmorModel.freeRunnersModel.renderLeft(0.0625F);
                         } else if (partRender == biped.bipedRightLeg) {
-                            GlStateManager.translatef(0.1375F, -0.75F, -0.0625F);
+                            RenderSystem.translatef(0.1375F, -0.75F, -0.0625F);
                             ArmorModel.freeRunnersModel.renderRight(0.0625F);
                         }
                     }
                 }
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
             }
         }
     }

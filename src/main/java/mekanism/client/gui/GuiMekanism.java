@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,10 +105,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             float scale = (float) maxX / length;
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
-            GlStateManager.pushMatrix();
-            GlStateManager.scalef(scale, scale, scale);
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(scale, scale, scale);
             drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
     }
 
@@ -205,17 +205,17 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
         if (!stack.isEmpty()) {
             try {
-                GlStateManager.pushMatrix();
-                GlStateManager.enableDepthTest();
+                RenderSystem.pushMatrix();
+                RenderSystem.enableDepthTest();
                 RenderHelper.enableGUIStandardItemLighting();
                 if (scale != 1) {
-                    GlStateManager.scalef(scale, scale, scale);
+                    RenderSystem.scalef(scale, scale, scale);
                 }
                 //TODO: renderItemAndEffectIntoGUI has some form of GL leak. Fix it
                 itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
-                GlStateManager.disableDepthTest();
-                GlStateManager.popMatrix();
+                RenderSystem.disableDepthTest();
+                RenderSystem.popMatrix();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }

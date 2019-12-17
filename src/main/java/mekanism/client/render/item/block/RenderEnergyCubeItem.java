@@ -1,8 +1,8 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
@@ -34,14 +34,14 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         if (tier == null) {
             return;
         }
-        GlStateManager.pushMatrix();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.pushMatrix();
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, -1.0F, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, -1.0F, 0);
         MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
         energyCube.render(0.0625F, tier, Minecraft.getInstance().textureManager, true);
 
@@ -49,25 +49,25 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             MekanismRenderer.bindTexture(RenderEnergyCube.baseTexture);
             energyCube.renderSide(0.0625F, side, true, side == Direction.NORTH, Minecraft.getInstance().textureManager);
         }
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         double energyPercentage = ItemDataUtils.getDouble(stack, "energyStored") / tier.getMaxEnergy();
         if (energyPercentage > 0.1) {
             MekanismRenderer.bindTexture(RenderEnergyCube.coreTexture);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
+            RenderSystem.scalef(0.4F, 0.4F, 0.4F);
             MekanismRenderer.color(tier.getBaseTier().getColor(), (float) energyPercentage);
-            GlStateManager.translatef(0, (float) Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
-            GlStateManager.rotatef(4 * MekanismClient.ticksPassed, 0, 1, 0);
-            GlStateManager.rotatef(36F + 4 * MekanismClient.ticksPassed, 0, 1, 1);
+            RenderSystem.translatef(0, (float) Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
+            RenderSystem.rotatef(4 * MekanismClient.ticksPassed, 0, 1, 0);
+            RenderSystem.rotatef(36F + 4 * MekanismClient.ticksPassed, 0, 1, 1);
             core.render(0.0625F);
             MekanismRenderer.resetColor();
             MekanismRenderer.disableGlow(glowInfo);
         }
 
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.popMatrix();
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.popMatrix();
     }
 
     @Override

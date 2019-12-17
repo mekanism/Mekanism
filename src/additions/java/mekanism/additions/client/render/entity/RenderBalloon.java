@@ -1,10 +1,10 @@
 package mekanism.additions.client.render.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
+import mekanism.additions.client.model.ModelBalloon;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.api.text.EnumColor;
-import mekanism.additions.client.model.ModelBalloon;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -48,11 +48,11 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
     }
 
     public void render(EnumColor color, double x, double y, double z) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef((float) x, (float) y, (float) z);
-        GlStateManager.rotatef(180, 1, 0, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef((float) x, (float) y, (float) z);
+        RenderSystem.rotatef(180, 1, 0, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "balloon.png"));
         model.render(0.0625F, color);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 }

@@ -1,6 +1,6 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
@@ -8,7 +8,6 @@ import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.ChestTileEntityRenderer;
 import net.minecraft.item.ItemStack;
 
 public class RenderPersonalChestItem extends MekanismItemStackRenderer {
@@ -19,14 +18,14 @@ public class RenderPersonalChestItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotatef(180, 0, 1, 0);
-        GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
-        GlStateManager.translatef(0, 1.0F, 1.0F);
-        GlStateManager.scalef(1.0F, -1F, -1F);
+        RenderSystem.pushMatrix();
+        RenderSystem.rotatef(180, 0, 1, 0);
+        RenderSystem.translatef(-0.5F, -0.5F, -0.5F);
+        RenderSystem.translatef(0, 1.0F, 1.0F);
+        RenderSystem.scalef(1.0F, -1F, -1F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "personal_chest.png"));
         personalChest.renderAll();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Override

@@ -1,8 +1,8 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
@@ -84,18 +84,18 @@ public class GuiGraph extends GuiTexturedElement {
 
             int displays = (relativeHeight - 1) / 10 + ((relativeHeight - 1) % 10 > 0 ? 1 : 0);
 
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
-            GlStateManager.disableAlphaTest();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.shadeModel(GL11.GL_SMOOTH);
+            RenderSystem.disableAlphaTest();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             for (int iter = 0; iter < displays; iter++) {
-                GlStateManager.color4f(1, 1, 1, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
+                RenderSystem.color4f(1, 1, 1, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawModalRectWithCustomSizedTexture(x + i, y + (height - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height, 12, 10);
             }
             MekanismRenderer.resetColor();
-            GlStateManager.disableBlend();
-            GlStateManager.enableAlphaTest();
+            RenderSystem.disableBlend();
+            RenderSystem.enableAlphaTest();
         }
     }
 

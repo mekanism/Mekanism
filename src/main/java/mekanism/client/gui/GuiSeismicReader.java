@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
@@ -79,16 +79,16 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         blit(guiLeft, guiTop, 0, 0, xSize, ySize);
 
         // Fix the overlapping if > 100
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(guiLeft + 48, guiTop + 87, 0);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(guiLeft + 48, guiTop + 87, 0);
 
         if (currentLayer >= 100) {
-            GlStateManager.translatef(0, 1, 0);
-            GlStateManager.scalef(0.7F, 0.7F, 0.7F);
+            RenderSystem.translatef(0, 1, 0);
+            RenderSystem.scalef(0.7F, 0.7F, 0.7F);
         }
 
         drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         // Render the item stacks
         for (int i = 0; i < 9; i++) {
@@ -97,17 +97,17 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             if (0 <= layer && layer < blockList.size()) {
                 BlockState state = blockList.get(layer);
                 ItemStack stack = new ItemStack(state.getBlock());
-                GlStateManager.pushMatrix();
-                GlStateManager.translatef(centralX - 2, centralY - i * 16 + (22 * 2), 0);
+                RenderSystem.pushMatrix();
+                RenderSystem.translatef(centralX - 2, centralY - i * 16 + (22 * 2), 0);
                 if (i < 4) {
-                    GlStateManager.translatef(0.2F, 2.5F, 0);
+                    RenderSystem.translatef(0.2F, 2.5F, 0);
                 }
                 if (i != 4) {
-                    GlStateManager.translatef(1.5F, 0, 0);
-                    GlStateManager.scalef(0.8F, 0.8F, 0.8F);
+                    RenderSystem.translatef(1.5F, 0, 0);
+                    RenderSystem.scalef(0.8F, 0.8F, 0.8F);
                 }
                 renderItem(stack, 0, 0);
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
             }
         }
 
@@ -120,32 +120,32 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             int lengthX = getStringWidth(displayName);
             float renderScale = lengthX > 53 ? 53f / lengthX : 1.0f;
 
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef(guiLeft + 72, guiTop + 16, 0);
-            GlStateManager.scalef(renderScale, renderScale, renderScale);
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef(guiLeft + 72, guiTop + 16, 0);
+            RenderSystem.scalef(renderScale, renderScale, renderScale);
             drawString(displayName, 0, 0, 0x919191);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
 
             //TODO
             /*if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
                 minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
                 int fontLengthX = lengthX + 5;
                 int renderX = mouseX + 10, renderY = mouseY - 5;
-                GlStateManager.pushMatrix();
+                RenderSystem.pushMatrix();
                 blit(renderX, renderY, 0, 0, fontLengthX, 16);
                 blit(renderX + fontLengthX, renderY, 0, 16, 2, 16);
                 drawString(displayName, renderX + 4, renderY + 4, 0x919191);
-                GlStateManager.popMatrix();
+                RenderSystem.popMatrix();
             }*/
 
             frequency = (int) blockList.stream().filter(blockState -> state.getBlock() == blockState.getBlock()).count();
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(guiLeft + 72, guiTop + 26, 0);
-        GlStateManager.scalef(0.7F, 0.7F, 0.7F);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(guiLeft + 72, guiTop + 26, 0);
+        RenderSystem.scalef(0.7F, 0.7F, 0.7F);
         drawString(TextComponentUtil.build(Translation.of("gui.mekanism.abundancy"), ": " + frequency), 0, 0, 0x919191);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
         MekanismRenderer.resetColor();
         super.render(mouseX, mouseY, partialTick);
     }

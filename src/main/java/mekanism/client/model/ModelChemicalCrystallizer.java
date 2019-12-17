@@ -1,9 +1,9 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
@@ -140,10 +140,10 @@ public class ModelChemicalCrystallizer extends Model {
 
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
         tray.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         support4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -163,8 +163,8 @@ public class ModelChemicalCrystallizer extends Model {
         base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Shape1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

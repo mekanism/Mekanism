@@ -1,7 +1,7 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.Mekanism;
@@ -28,8 +28,8 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
             return;
         }
 
-        GlStateManager.pushMatrix();
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "turbine.png"));
+        RenderSystem.pushMatrix();
+        field_228858_b_.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "turbine.png"));
 
         int baseIndex = tile.getPosition() * 2;
         float rotateSpeed = 0.0F;
@@ -44,22 +44,22 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         }
 
         if (tile.getHousedBlades() > 0) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef((float) x + 0.5F, (float) y - 1F, (float) z + 0.5F);
-            GlStateManager.rotatef(tile.rotationLower, 0, 1, 0);
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef((float) x + 0.5F, (float) y - 1F, (float) z + 0.5F);
+            RenderSystem.rotatef(tile.rotationLower, 0, 1, 0);
             model.render(0.0625F, baseIndex);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
         if (tile.getHousedBlades() == 2) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
-            GlStateManager.rotatef(tile.rotationUpper, 0, 1, 0);
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
+            RenderSystem.rotatef(tile.rotationUpper, 0, 1, 0);
             model.render(0.0625F, baseIndex + 1);
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Override

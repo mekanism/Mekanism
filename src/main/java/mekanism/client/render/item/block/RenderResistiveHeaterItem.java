@@ -1,6 +1,6 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelResistiveHeater;
 import mekanism.client.render.MekanismRenderer;
@@ -20,8 +20,8 @@ public class RenderResistiveHeaterItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        GlStateManager.rotatef(180, 0, 0, 1);
-        GlStateManager.translatef(0.05F, -0.96F, 0.05F);
+        RenderSystem.rotatef(180, 0, 0, 1);
+        RenderSystem.translatef(0.05F, -0.96F, 0.05F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "resistive_heater.png"));
         resistiveHeater.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getInstance().textureManager, true);
     }

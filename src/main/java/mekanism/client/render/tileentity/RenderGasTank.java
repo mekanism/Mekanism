@@ -11,6 +11,6 @@ public class RenderGasTank extends MekanismTileEntityRenderer<TileEntityGasTank>
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityGasTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        MekanismRenderer.machineRenderer().render(tile, x, y, z, partialTick, destroyStage);
+        MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, otherLight);
     }
 }

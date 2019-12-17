@@ -1,6 +1,5 @@
 /*package mekanism.common.integration.multipart;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.Collection;
@@ -200,18 +199,18 @@ public class MultipartMekanism implements IMCMPAddon {
             @SuppressWarnings("deprecation")
             AxisAlignedBB bb = state.getBlock().getSelectedBoundingBox(state, ev.getPartInfo().getPartWorld(), ev.getPartInfo().getPartPos());
             //NB rendering code copied from MCMultipart
-            GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-            GlStateManager.lineWidth(2.0F);
-            GlStateManager.disableTexture2D();
-            GlStateManager.depthMask(false);
+            RenderSystem.enableBlend();
+            RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+            RenderSystem.lineWidth(2.0F);
+            RenderSystem.disableTexture2D();
+            RenderSystem.depthMask(false);
             double x = player.lastTickPosX + (player.func_226277_ct_() - player.lastTickPosX) * ev.getPartialTicks();
             double y = player.lastTickPosY + (player.func_226277_ct_() - player.lastTickPosY) * ev.getPartialTicks();
             double z = player.lastTickPosZ + (player.func_226281_cx_() - player.lastTickPosZ) * ev.getPartialTicks();
             WorldRenderer.drawSelectionBoundingBox(bb.grow(0.002).offset(-x, -y, -z), 0.0F, 0.0F, 0.0F, 0.4F);
-            GlStateManager.depthMask(true);
-            GlStateManager.enableTexture2D();
-            GlStateManager.disableBlend();
+            RenderSystem.depthMask(true);
+            RenderSystem.enableTexture2D();
+            RenderSystem.disableBlend();
             ev.setCanceled(true);
         }
     }

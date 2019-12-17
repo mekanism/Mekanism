@@ -1,6 +1,6 @@
 package mekanism.client.particle;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
 import mekanism.client.render.MekanismRenderer;
@@ -43,27 +43,27 @@ public class ParticleLaser extends SpriteTexturedParticle {
         Tessellator tessellator = Tessellator.getInstance();
         RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
         float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - interpPosY);
         float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - interpPosZ);
 
-        GlStateManager.translatef(newX, newY, newZ);
+        RenderSystem.translatef(newX, newY, newZ);
 
         switch (direction) {
             case WEST:
             case EAST:
-                GlStateManager.rotatef(90, 0, 0, 1);
+                RenderSystem.rotatef(90, 0, 0, 1);
                 break;
             case NORTH:
             case SOUTH:
-                GlStateManager.rotatef(90, 1, 0, 0);
+                RenderSystem.rotatef(90, 1, 0, 0);
                 break;
             default:
                 break;
         }
         drawLaser(buffer, tessellator);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
         MekanismRenderer.resumeRenderer(tessellator, renderState);
     }
 
@@ -72,16 +72,16 @@ public class ParticleLaser extends SpriteTexturedParticle {
         float uMax = getMaxU();
         float vMin = getMinV();
         float vMax = getMaxV();
-        GlStateManager.disableCull();
+        RenderSystem.disableCull();
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 45);
         drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 90);
         MekanismRenderer.disableGlow(glowInfo);
-        GlStateManager.enableCull();
+        RenderSystem.enableCull();
     }
 
     private void drawComponent(BufferBuilder buffer, Tessellator tessellator, float uMin, float uMax, float vMin, float vMax, float angle) {
-        GlStateManager.rotatef(angle, 0, 1, 0);
+        RenderSystem.rotatef(angle, 0, 1, 0);
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
         buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
         buffer.pos(-particleScale, length / 2, 0).tex(uMin, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();

@@ -1,8 +1,8 @@
 package mekanism.client.render.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
@@ -31,19 +31,19 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         float alpha = (entity.ticksExisted + partialTick) / (float) EntityFlame.LIFESPAN;
         float size = (float) Math.pow(2 * alpha, 2);
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.disableAlphaTest();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color4f(1, 1, 1, 1 - alpha);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.color4f(1, 1, 1, 1 - alpha);
 
         bindTexture(getEntityTexture(entity));
 
-        GlStateManager.translatef((float) x, (float) y, (float) z);
-        GlStateManager.rotatef((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0, 1, 0);
-        GlStateManager.rotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0, 0, 1);
+        RenderSystem.translatef((float) x, (float) y, (float) z);
+        RenderSystem.rotatef((entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTick) - 90F, 0, 1, 0);
+        RenderSystem.rotatef(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick, 0, 0, 1);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldrenderer = tessellator.getBuffer();
@@ -55,14 +55,14 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         float f5 = (float) (5 + i * 10) / 32F;
         float scale = 0.05625F * (0.8F + size);
 
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.rotatef(45, 1, 0, 0);
-        GlStateManager.scalef(scale, scale, scale);
-        GlStateManager.translatef(-4F, 0, 0);
+        RenderSystem.enableRescaleNormal();
+        RenderSystem.rotatef(45, 1, 0, 0);
+        RenderSystem.scalef(scale, scale, scale);
+        RenderSystem.translatef(-4F, 0, 0);
 
         for (int j = 0; j < 4; j++) {
-            GlStateManager.rotatef(90, 1, 0, 0);
-            GlStateManager.normal3f(0.0F, 0.0F, scale);
+            RenderSystem.rotatef(90, 1, 0, 0);
+            RenderSystem.normal3f(0.0F, 0.0F, scale);
 
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
             worldrenderer.pos(-8.0D, -2.0D, 0.0D).tex(f2, f4).endVertex();
@@ -71,12 +71,12 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
             worldrenderer.pos(-8.0D, 2.0D, 0.0D).tex(f2, f5).endVertex();
             tessellator.draw();
         }
-        GlStateManager.disableRescaleNormal();
+        RenderSystem.disableRescaleNormal();
         MekanismRenderer.resetColor();
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
         MekanismRenderer.disableGlow(glowInfo);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Nonnull
