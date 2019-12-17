@@ -19,4 +19,9 @@ public interface IInfuseTypeProvider extends IBaseProvider {
     default ITextComponent getTextComponent() {
         return getInfuseType().getTextComponent();
     }
+
+    @Override
+    default String getTranslationKey() {
+        return getInfuseType().getTranslationKey();
+    }
 }

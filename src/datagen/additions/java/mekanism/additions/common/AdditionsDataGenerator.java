@@ -1,5 +1,6 @@
 package mekanism.additions.common;
 
+import mekanism.additions.client.AdditionsLangGenerator;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -14,6 +15,7 @@ public class AdditionsDataGenerator {
         DataGenerator gen = event.getGenerator();
         if (event.includeClient()) {
             //Client side data generators
+            gen.addProvider(new AdditionsLangGenerator(gen));
         }
         if (event.includeServer()) {
             //Server side data generators

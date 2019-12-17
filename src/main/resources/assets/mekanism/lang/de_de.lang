@@ -3,7 +3,6 @@
 ###########
 
 # Items
-tile.ObsidianTNT.name=Obsidian-TNT
 item.EnrichedAlloy.name=Angereicherte Legierung
 item.ReinforcedAlloy.name=Verstärkte Legierung
 item.AtomicAlloy.name=Atomlegierung
@@ -25,7 +24,6 @@ item.PortableTeleporter.name=Tragbarer Teleporter
 item.TeleportationCore.name=Teleportationskern
 item.Configurator.name=Konfigurator
 item.NetworkReader.name=Netzwerklesegerät
-item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=Jetpack
 item.ScubaTank.name=Taucherflasche
 item.GasMask.name=Gasmaske
@@ -159,15 +157,6 @@ tile.MachineBlock3.ResistiveHeater.name=Stromwärmeheizung
 tile.MachineBlock3.FormulaicAssemblicator.name=Formelfertigungsfabrikator
 tile.MachineBlock3.FuelwoodHeater.name=Feuerholzverfeuerer
 
-# Plastic
-tile.PlasticBlock.name=Plastikblock
-tile.SlickPlasticBlock.name=Glatter Plastikblock
-tile.GlowPlasticBlock.name=Schimmernder Plastikblock
-tile.ReinforcedPlasticBlock.name=Verstärkter Plastikblock
-tile.RoadPlasticBlock.name=Plastikstraße
-
-tile.PlasticFence.name=Plastikbarriere
-
 # Infuse types
 infuse.carbon=Kohlenstoff
 infuse.tin=Zinn
@@ -205,9 +194,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=Thermodynamischer Basisleiter
 tile.Transmitter.AdvancedThermodynamicConductor.name=Fortgeschr. Thermodynamischer Leiter
 tile.Transmitter.EliteThermodynamicConductor.name=Thermodynamischer Eliteleiter
 tile.Transmitter.UltimateThermodynamicConductor.name=Ultimativer Thermodynamischer Leiter
-
-# Glow Panel
-tile.GlowPanel.name=Leuchtplatte
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Basis-Energiewürfel
@@ -388,7 +374,6 @@ mekanism.key.voice=Stimme
 
 # Entities
 entity.Robit.name=Robit
-entity.BabySkeleton.name=Baby-Skelett
 
 # Gui text
 gui.condensentrating=Kondensentrieren
@@ -707,7 +692,6 @@ tooltip.restrictiveDesc=Nur verwendet, wenn kein anderer Pfad verfügbar ist
 tooltip.diversionDesc=Kontrollierbar via Redstone
 tooltip.noGas=Kein Gas gespeichert
 tooltip.stored=Gespeichert
-tooltip.channel=Kanal
 tooltip.mode=Modus
 tooltip.efficiency=Effizienz
 tooltip.modeToggle=Modus gewechselt auf
@@ -744,8 +728,6 @@ mekanism.tooltip.disassembler.off=off
 tooltip.configurationCard.got=Konfigurationsdaten erhalten: %s
 tooltip.configurationCard.set=Konfigurationsdaten übertragen: %s
 tooltip.configurationCard.unequal=Inkompatible Konfigurationsdatenformate
-
-tooltip.balloon=Ballon
 
 tooltip.jetpack.regular=Regulär
 tooltip.jetpack.hover=Schweben
@@ -887,26 +869,6 @@ color.yellow=Gelb
 color.white=Weiß
 color.brown=Braun
 color.brightPink=Hellrosa
-
-# Dyes
-dye.black=Schwarz
-dye.darkBlue=Blau
-dye.brown=Braun
-dye.darkGreen=Grün
-dye.darkAqua=Türkis
-dye.darkRed=Dunkelrot
-dye.purple=Violett
-dye.orange=Orange
-dye.grey=Hellgrau
-dye.darkGrey=Grau
-dye.indigo=Hellblau
-dye.brightGreen=Hellgrün
-dye.aqua=Cyan
-dye.red=Rot
-dye.brightPink=Pink
-dye.pink=Magentafarben
-dye.yellow=Gelb
-dye.white=Weiß
 
 # Reactor Logic modes
 reactor.disabled=Deaktiviert

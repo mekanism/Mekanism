@@ -25,4 +25,9 @@ public interface IGasProvider extends IBaseProvider {
     default ITextComponent getTextComponent() {
         return getGas().getTextComponent();
     }
+
+    @Override
+    default String getTranslationKey() {
+        return getGas().getTranslationKey();
+    }
 }

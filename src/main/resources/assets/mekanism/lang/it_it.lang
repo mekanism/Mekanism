@@ -3,7 +3,6 @@
 ###########
 
 # Items
-tile.ObsidianTNT.name=Tritolo di ossidiana
 item.EnrichedAlloy.name=Lega arricchita
 item.ReinforcedAlloy.name=Lega rinforzata
 item.AtomicAlloy.name=Lega atomica
@@ -24,7 +23,6 @@ item.PortableTeleporter.name=Teleportatore portatile
 item.TeleportationCore.name=Nucleo di teletrasporto
 item.Configurator.name=Configuratore
 item.NetworkReader.name=Lettore di Rete
-item.WalkieTalkie.name=Walkie talkie
 item.Jetpack.name=Jetpack
 item.ScubaTank.name=Bombola da sub
 item.GasMask.name=Maschera antigas
@@ -129,15 +127,6 @@ tile.MachineBlock2.LaserTractorBeam.name=Raggio traente laser
 tile.MachineBlock3.SolarNeutronActivator.name=Attivatore di neutroni solare
 tile.MachineBlock3.Oredictionificator.name=Oredictionificatore
 
-# Plastic
-tile.PlasticBlock.name=Blocco di plastica
-tile.SlickPlasticBlock.name=Blocco di plastica scivoloso
-tile.GlowPlasticBlock.name=Blocco di plastica risplendente
-tile.ReinforcedPlasticBlock.name=Blocco di plastica rinforzato
-tile.RoadPlasticBlock.name=Strada di plastica
-
-tile.PlasticFence.name=Staccionata di plastica
-
 # Infuse types
 infuse.carbon=Carbonio
 infuse.tin=Stagno
@@ -171,9 +160,6 @@ tile.Transmitter.EliteLogisticalTransporter.name=Trasportatore logistico élite
 tile.Transmitter.UltimateLogisticalTransporter.name=Trasportatore logistico definitivo
 tile.Transmitter.RestrictiveTransporter.name=Trasportatore restrittivo
 tile.Transmitter.DiversionTransporter.name=Trasportatore diversivo
-
-# Glow Panel
-tile.GlowPanel.name=Pannello risplendente
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Cubo di energia base
@@ -349,7 +335,6 @@ mekanism.key.voice=Voce
 
 # Entities
 entity.Robit.name=Robit
-entity.BabySkeleton.name=Scheletro baby
 
 # Gui text
 gui.remove=Rimuovi
@@ -614,7 +599,6 @@ tooltip.restrictiveDesc=Usato soltanto se nessun'altra strada è avviabile
 tooltip.diversionDesc=Controllabile da pietrarossa
 tooltip.noGas=Nessun gas immagazzinato
 tooltip.stored=Immagazzinato
-tooltip.channel=Canale
 tooltip.mode=Modalità
 tooltip.efficiency=Efficienza
 tooltip.modeToggle=Scambiato modalità a
@@ -642,8 +626,6 @@ mekanism.tooltip.disassembler.fast=veloce
 mekanism.tooltip.disassembler.vein=filone
 mekanism.tooltip.disassembler.extended_vein=Estrazione di filone estese
 mekanism.tooltip.disassembler.off=spento
-
-tooltip.balloon=Palloncino
 
 tooltip.jetpack.regular=Regolare
 tooltip.jetpack.hover=Librarsi
@@ -744,26 +726,6 @@ color.yellow=Giallo
 color.white=Bianco
 color.brown=Marrone
 color.brightPink=Rosa acceso
-
-# Dyes
-dye.black=Nero
-dye.darkBlue=Blu
-dye.brown=Marrone
-dye.darkGreen=Verde
-dye.darkAqua=Ciano
-dye.darkRed=Rosso scuro
-dye.purple=Viola
-dye.orange=Arancione
-dye.grey=Grigio chiaro
-dye.darkGrey=Grigio
-dye.indigo=Azzurro
-dye.brightGreen=Lime
-dye.aqua=Acqua
-dye.red=Rosso
-dye.brightPink=Rosa
-dye.pink=Magenta
-dye.yellow=Giallo
-dye.white=Bianco
 
 # Reactor Logic modes
 reactor.disabled=Disabilitato

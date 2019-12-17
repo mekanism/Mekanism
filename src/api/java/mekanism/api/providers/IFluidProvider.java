@@ -30,4 +30,9 @@ public interface IFluidProvider extends IBaseProvider {
     default ITextComponent getTextComponent() {
         return getFluid().getAttributes().getDisplayName(getFluidStack(1));
     }
+
+    @Override
+    default String getTranslationKey() {
+        return getFluid().getAttributes().getTranslationKey();
+    }
 }

@@ -25,7 +25,6 @@ item.PortableTeleporter.name=Téléporteur portable
 item.TeleportationCore.name=Noyau de téléportation
 item.Configurator.name=Configurateur
 item.NetworkReader.name=Analyseur de réseaux
-item.WalkieTalkie.name=Talkie-walkie
 item.Jetpack.name=Propulseur à réaction
 item.ScubaTank.name=Réservoir de scaphandre
 item.GasMask.name=Masque à gaz
@@ -156,15 +155,6 @@ tile.MachineBlock3.Oredictionificator.name=Oredictionificateur
 tile.MachineBlock3.ResistiveHeater.name=Chauffeur Resistif
 tile.MachineBlock3.FormulaicAssemblicator.name=Assembleur Formulaic
 
-# Plastic
-tile.PlasticBlock.name=Bloc de plastique
-tile.SlickPlasticBlock.name=Bloc de plastique lisse
-tile.GlowPlasticBlock.name=Bloc de plastique lumineux
-tile.ReinforcedPlasticBlock.name=Bloc de plastique renforcé
-tile.RoadPlasticBlock.name=Route en plastique
-
-tile.PlasticFence.name=Barrière en plastique
-
 # Infuse types
 infuse.carbon=Charbon
 infuse.tin=Étain
@@ -202,9 +192,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=Conducteur Thermodynamique Bas
 tile.Transmitter.AdvancedThermodynamicConductor.name=Conducteur Thermodynamique Avancé
 tile.Transmitter.EliteThermodynamicConductor.name=Conducteur Thermodynamique Elite
 tile.Transmitter.UltimateThermodynamicConductor.name=Conducteur Thermodynamique Ultime
-
-# Glow Panel
-tile.GlowPanel.name=Panneau lumineux
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Cube d'énergie basique
@@ -378,7 +365,6 @@ mekanism.key.voice=Voix
 
 # Entities
 entity.Robit.name=Robit
-entity.BabySkeleton.name=Bébé squelette
 
 # Gui text
 gui.condensentrating=Condensation
@@ -691,7 +677,6 @@ tooltip.restrictiveDesc=utilisé seulement si aucun autre chemin de disponible
 tooltip.diversionDesc=Contrôlable par redstone
 tooltip.noGas=Pas de gaz stocké
 tooltip.stored=Stocké
-tooltip.channel=Cannal
 tooltip.mode=Mode
 tooltip.efficiency=Efficacité
 tooltip.modeToggle=Mode basculé en
@@ -730,8 +715,6 @@ mekanism.tooltip.disassembler.off=arrêt
 tooltip.configurationCard.got=Données de configuration récupérées de %s
 tooltip.configurationCard.set=Données de configuration injectées de type %s
 tooltip.configurationCard.unequal=Formats de données de configuration inégaux
-
-tooltip.balloon=Ballon
 
 tooltip.jetpack.regular=Normal
 tooltip.jetpack.hover=Stabilisé
@@ -830,26 +813,6 @@ color.yellow=Jaune
 color.white=Blanc
 color.brown=Marron
 color.brightPink=Rose clair
-
-# Dyes
-dye.black=Noir
-dye.darkBlue=Bleu
-dye.brown=Marron
-dye.darkGreen=Vert
-dye.darkAqua=Cyan
-dye.darkRed=Rouge foncé
-dye.purple=Violet
-dye.orange=Orange
-dye.grey=Gris clair
-dye.darkGrey=Gris
-dye.indigo=Bleu clair
-dye.brightGreen=Citron
-dye.aqua=Bleu-vert
-dye.red=Rouge
-dye.brightPink=Rose
-dye.pink=Magenta
-dye.yellow=Jaune
-dye.white=Blanc
 
 # Reactor Logic modes
 reactor.disabled=Désactivé

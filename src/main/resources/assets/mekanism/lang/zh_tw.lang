@@ -3,7 +3,6 @@
 ############
 
 # Items
-tile.ObsidianTNT.name=黑曜石TNT
 item.EnrichedAlloy.name=富集合金
 item.ReinforcedAlloy.name=強化合金
 item.AtomicAlloy.name=原子合金
@@ -23,7 +22,6 @@ item.PortableTeleporter.name=便攜傳送器
 item.TeleportationCore.name=傳送核心
 item.Configurator.name=調整器
 item.NetworkReader.name=網絡讀取器
-item.WalkieTalkie.name=步話機
 item.Jetpack.name=噴射背包
 item.ScubaTank.name=潛水罐
 item.GasMask.name=燃氣面具
@@ -123,15 +121,6 @@ tile.MachineBlock2.LaserTractorBeam.name=激光牽引光束
 tile.MachineBlock3.SolarNeutronActivator.name=太陽能中子活化器
 tile.MachineBlock3.Oredictionificator.name=礦典轉換器
 
-# Plastic
-tile.PlasticBlock.name=塑料方塊
-tile.SlickPlasticBlock.name=光滑塑料方塊
-tile.GlowPlasticBlock.name=塑料熒光方塊
-tile.ReinforcedPlasticBlock.name=強化塑料方塊
-tile.RoadPlasticBlock.name=塑料路
-
-tile.PlasticFence.name=塑料柵欄
-
 # Infuse types
 infuse.carbon=碳
 infuse.tin=錫
@@ -157,9 +146,6 @@ tile.Transmitter.EliteMechanicalPipe.name=精英機械管道
 tile.Transmitter.UltimateMechanicalPipe.name=終極機械管道
 tile.Transmitter.RestrictiveTransporter.name=限制傳送管道
 tile.Transmitter.DiversionTransporter.name=轉移傳送管道
-
-# Glow Panel
-tile.GlowPanel.name=熒光板
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=基礎能量立方
@@ -320,7 +306,6 @@ mekanism.key.voice=聲音
 
 # Entities
 entity.Robit.name=機器人
-entity.BabySkeleton.name=骷髏射手寶寶
 
 # Gui text
 gui.condensentrating=凝聚液體中...
@@ -545,7 +530,6 @@ tooltip.restrictiveDesc=別無選擇時使用
 tooltip.diversionDesc=可受紅石信號控制
 tooltip.noGas=無氣體存儲
 tooltip.stored=已存儲
-tooltip.channel=頻道
 tooltip.mode=模式
 tooltip.efficiency=效率
 tooltip.modeToggle=模式切換至
@@ -572,8 +556,6 @@ mekanism.tooltip.disassembler.slow=慢
 mekanism.tooltip.disassembler.fast=快
 mekanism.tooltip.disassembler.vein=礦脈
 mekanism.tooltip.disassembler.off=關
-
-tooltip.balloon=氣球
 
 tooltip.jetpack.regular=標準
 tooltip.jetpack.hover=懸浮
@@ -673,26 +655,6 @@ color.yellow=黃色
 color.white=白色
 color.brown=棕色
 color.brightPink=亮粉紅色
-
-# Dyes
-dye.black=黑色
-dye.darkBlue=藍色
-dye.brown=棕色
-dye.darkGreen=綠色
-dye.darkAqua=青色
-dye.darkRed=深紅色
-dye.purple=紫色
-dye.orange=橙色
-dye.grey=淡灰色
-dye.darkGrey=灰色
-dye.indigo=淡藍色
-dye.brightGreen=亮綠色
-dye.aqua=水藍色
-dye.red=紅色
-dye.brightPink=粉色
-dye.pink=品紅色
-dye.yellow=黃色
-dye.white=白色
 
 # Creative tab
 itemGroup.tabMekanism=通用機械

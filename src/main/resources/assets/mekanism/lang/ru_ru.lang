@@ -3,7 +3,6 @@
 ###########
 
 # Items
-tile.ObsidianTNT.name=Обсидиановый динамит
 item.EnrichedAlloy.name=Обогащённый сплав
 item.ReinforcedAlloy.name=Укреплённый сплав
 item.AtomicAlloy.name=Атомный сплав
@@ -26,7 +25,6 @@ item.PortableTeleporter.name=Переносной телепорт
 item.TeleportationCore.name=Ядро телепортации
 item.Configurator.name=Конфигуратор
 item.NetworkReader.name=Считыватель сети
-item.WalkieTalkie.name=Переносная рация
 item.Jetpack.name=Реактивный ранец
 item.ScubaTank.name=Акваланг
 item.GasMask.name=Противогаз
@@ -163,15 +161,6 @@ tile.MachineBlock3.ResistiveHeater.name=Устойчивый нагревате�
 tile.MachineBlock3.FormulaicAssemblicator.name=Формульный сборщик
 tile.MachineBlock3.FuelwoodHeater.name=Твердотопливный нагреватель
 
-# Plastic
-tile.PlasticBlock.name=Пластиковый блок
-tile.SlickPlasticBlock.name=Гладкий пластиковый блок
-tile.GlowPlasticBlock.name=Пластиковый светящийся блок
-tile.ReinforcedPlasticBlock.name=Укреплённый пластиковый блок
-tile.RoadPlasticBlock.name=Пластиковый путь
-
-tile.PlasticFence.name=Пластиковый забор
-
 # Infuse types
 infuse.carbon=Углерод
 infuse.tin=Олово
@@ -209,9 +198,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=Базовый теплопр�
 tile.Transmitter.AdvancedThermodynamicConductor.name=Продвинутый теплопровод
 tile.Transmitter.EliteThermodynamicConductor.name=Элитный теплопровод
 tile.Transmitter.UltimateThermodynamicConductor.name=Совершенный теплопровод
-
-# Glow Panel
-tile.GlowPanel.name=Cветящийся полублок
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Основной энергетический куб
@@ -403,7 +389,6 @@ mekanism.key.voice=Голос
 
 # Entities
 entity.Robit.name=Робит
-entity.BabySkeleton.name=Скелет-ребёнок
 
 # Gui text
 gui.condensentrating=Конденсация
@@ -737,7 +722,6 @@ tooltip.restrictiveDesc=Используется только если нет д
 tooltip.diversionDesc=Контролируется редстоуном
 tooltip.noGas=Нет газа
 tooltip.stored=Хранится
-tooltip.channel=Канал
 tooltip.mode=Режим
 tooltip.efficiency=Эффективность
 tooltip.modeToggle=Режим изменён на
@@ -778,8 +762,6 @@ mekanism.tooltip.disassembler.off=нет
 tooltip.configurationCard.got=Получена конфигурация из %s
 tooltip.configurationCard.set=Введена конфигурация типа %s
 tooltip.configurationCard.unequal=Неравные форматы конфигураций
-
-tooltip.balloon=Воздушный шар
 
 tooltip.jetpack.regular=Обычный
 tooltip.jetpack.hover=Зависание
@@ -927,26 +909,6 @@ color.yellow=Желтый
 color.white=Белый
 color.brown=Коричневый
 color.brightPink=Светло-Розовый
-
-# Dyes
-dye.black=Черный
-dye.darkBlue=Синий
-dye.brown=Коричневый
-dye.darkGreen=Зеленый
-dye.darkAqua=Темно-Голубой
-dye.darkRed=Темно-Красный
-dye.purple=Фиолетовый
-dye.orange=Оранжевый
-dye.grey=Светло-Серый
-dye.darkGrey=Серый
-dye.indigo=Светло-Голубой
-dye.brightGreen=Светло-Зеленый
-dye.aqua=Голубой
-dye.red=Красный
-dye.brightPink=Розовый
-dye.pink=Пурпурный
-dye.yellow=Желтый
-dye.white=Белый
 
 # Reactor Logic modes
 reactor.disabled=Отключен

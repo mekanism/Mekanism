@@ -3,7 +3,6 @@
 ############
 
 # Items
-tile.ObsidianTNT.name=Obsydianowe TNT
 item.EnrichedAlloy.name=Wzbogacony stop
 item.ReinforcedAlloy.name=Wzmocniony stop
 item.AtomicAlloy.name=Stop atomowy
@@ -26,7 +25,6 @@ item.PortableTeleporter.name=Przenośny teleporter
 item.TeleportationCore.name=Jądro teleportu
 item.Configurator.name=Konfigurator 
 item.NetworkReader.name=Czytnik sieci
-item.WalkieTalkie.name=Walkie-talkie
 item.Jetpack.name=Plecak odrzutowy
 item.ScubaTank.name=Butla z tlenem
 item.GasMask.name=Maska tlenowa
@@ -163,15 +161,6 @@ tile.MachineBlock3.ResistiveHeater.name=Grzejnik rezystancyjny
 tile.MachineBlock3.FormulaicAssemblicator.name=Automat produkcyjny
 tile.MachineBlock3.FuelwoodHeater.name=Podgrzewacz na drewno opałowe
 
-# Plastic
-tile.PlasticBlock.name=blok plastiku
-tile.SlickPlasticBlock.name=elastyczny blok plastiku
-tile.GlowPlasticBlock.name=świecący blok plastiku
-tile.ReinforcedPlasticBlock.name=wzmocniony blok plastiku
-tile.RoadPlasticBlock.name=blok plastikowej drogi
-
-tile.PlasticFence.name=plastikowa bariera
-
 # Infuse types
 infuse.carbon=Czysty węgiel
 infuse.tin=Cyna
@@ -209,9 +198,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=Podstawowy ciepłociąg
 tile.Transmitter.AdvancedThermodynamicConductor.name=Zaawansowany ciepłociąg
 tile.Transmitter.EliteThermodynamicConductor.name=Profesjonalny ciepłociąg
 tile.Transmitter.UltimateThermodynamicConductor.name=Najlepszy ciepłociąg
-
-# Glow Panel
-tile.GlowPanel.name=panel świetlny
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Podstawowa bateria kondensac.
@@ -403,7 +389,6 @@ mekanism.key.voice=Głos
 
 # Entities
 entity.Robit.name=Robit
-entity.BabySkeleton.name=Szkielet dziecko
 
 # Gui text
 gui.condensentrating=Kondensentracja
@@ -726,7 +711,6 @@ tooltip.restrictiveDesc=Używany tylko, o ile nie ma innych dróg
 tooltip.diversionDesc=Kontrolowane przez czerwony proszek
 tooltip.noGas=Brak gazu
 tooltip.stored=Przechowywane
-tooltip.channel=Kanał
 tooltip.mode=Tryb
 tooltip.efficiency=Wydajność
 tooltip.modeToggle=Przełączenie trybu na
@@ -767,8 +751,6 @@ mekanism.tooltip.disassembler.off=wyłącz.
 tooltip.configurationCard.got=Pobrane dane ustawień z: %s
 tooltip.configurationCard.set=Przenoszenie danych ustawień do: %s
 tooltip.configurationCard.unequal=Niekompatybilne formaty danych ustawień
-
-tooltip.balloon=Balon
 
 tooltip.jetpack.regular=Normalny
 tooltip.jetpack.hover=Unoszenie
@@ -915,26 +897,6 @@ color.yellow=Żółty
 color.white=Biały
 color.brown=Brązowy
 color.brightPink=Jasnoróżowy
-
-# Dyes
-dye.black=Czarny
-dye.darkBlue=Ciemnonebieski
-dye.brown=Brązowy
-dye.darkGreen=Zielony
-dye.darkAqua=Ciemnoturkusowy
-dye.darkRed=Ciemnoczerwony
-dye.purple=Fioletowy
-dye.orange=Pomarańczowy
-dye.grey=Jasnoszary
-dye.darkGrey=Ciemnoszary
-dye.indigo=Jasnoniebieski
-dye.brightGreen=Jasnozielony
-dye.aqua=Turkusowy
-dye.red=Czerwony
-dye.brightPink=Jasnoróżowy
-dye.pink=Różowy
-dye.yellow=Żółty
-dye.white=Biały
 
 # Reactor Logic modes
 reactor.disabled=Nieaktywny

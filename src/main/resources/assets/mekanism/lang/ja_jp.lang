@@ -3,7 +3,6 @@
 ###########
 
 # Items
-tile.ObsidianTNT.name=黒曜石TNT
 item.EnrichedAlloy.name=濃縮合金
 item.ReinforcedAlloy.name=強化合金
 item.AtomicAlloy.name=原子合金
@@ -26,7 +25,6 @@ item.PortableTeleporter.name=ポータブルテレポーター
 item.TeleportationCore.name=テレポーテーションコア
 item.Configurator.name=コンフィギュレーター
 item.NetworkReader.name=ネットワークリーダー
-item.WalkieTalkie.name=トランシーバー
 item.Jetpack.name=ジェットパック
 item.ScubaTank.name=潜水タンク
 item.GasMask.name=ガスマスク
@@ -163,15 +161,6 @@ tile.MachineBlock3.ResistiveHeater.name=抵抗型発熱器
 tile.MachineBlock3.FormulaicAssemblicator.name=組立機
 tile.MachineBlock3.FuelwoodHeater.name=薪木ストーブ
 
-# Plastic
-tile.PlasticBlock.name=プラスチックブロック
-tile.SlickPlasticBlock.name=滑らかなプラスチックブロック
-tile.GlowPlasticBlock.name=輝くプラスチックブロック
-tile.ReinforcedPlasticBlock.name=強化プラスチックブロック
-tile.RoadPlasticBlock.name=プラスチックロード
-
-tile.PlasticFence.name=プラスチックの柵
-
 # Infuse types
 infuse.carbon=炭素
 infuse.tin=錫
@@ -209,9 +198,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=基本熱力学的伝導体
 tile.Transmitter.AdvancedThermodynamicConductor.name=発展熱力学的伝導体
 tile.Transmitter.EliteThermodynamicConductor.name=精鋭熱力学的伝導体
 tile.Transmitter.UltimateThermodynamicConductor.name=究極熱力学的伝導体
-
-# Glow Panel
-tile.GlowPanel.name=発光パネル
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=基本エネルギーキューブ
@@ -403,7 +389,6 @@ mekanism.key.voice=周波数
 
 # Entities
 entity.Robit.name=ロビット
-entity.BabySkeleton.name=ベビースケルトン
 
 # Config Gui
 mekanism.configgui.ctgy.general=Mekanism 基本設定
@@ -760,8 +745,6 @@ tooltip.restrictiveDesc=他の可能なパスが存在しない時に限り通�
 tooltip.diversionDesc=レッドストーン信号で制御可能
 tooltip.noGas=ガスは保存されていません
 tooltip.stored=保存ガス
-tooltip.channel=チャンネル
-tooltip.walkie_disabled=ボイスサーバーが無効です
 tooltip.mode=モード
 tooltip.efficiency=効率
 tooltip.modeToggle=モード切り替え:
@@ -803,8 +786,6 @@ mekanism.tooltip.disassembler.off=オフ
 tooltip.configurationCard.got=%sから設定データを読み取りました
 tooltip.configurationCard.set=%sの設定を適用しました
 tooltip.configurationCard.unequal=設定データに互換性がありません
-
-tooltip.balloon=風船
 
 tooltip.jetpack.regular=通常
 tooltip.jetpack.hover=ホバー
@@ -952,26 +933,6 @@ color.yellow=黄色
 color.white=白色
 color.brown=茶色
 color.brightPink=明るい桃色
-
-# Dyes
-dye.black=黒色
-dye.darkBlue=青色
-dye.brown=茶色
-dye.darkGreen=緑色
-dye.darkAqua=水色
-dye.darkRed=赤色
-dye.purple=紫色
-dye.orange=橙色
-dye.grey=薄灰色
-dye.darkGrey=灰色
-dye.indigo=空色
-dye.brightGreen=黄緑色
-dye.aqua=水色
-dye.red=赤色
-dye.brightPink=桃色
-dye.pink=赤紫色
-dye.yellow=黄色
-dye.white=白色
 
 # Reactor Logic modes
 reactor.disabled=無効

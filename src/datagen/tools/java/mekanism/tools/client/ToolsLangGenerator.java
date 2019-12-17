@@ -1,7 +1,7 @@
 package mekanism.tools.client;
 
+import mekanism.api.providers.IItemProvider;
 import mekanism.client.lang.BaseLanguageProvider;
-import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsItem;
 import mekanism.tools.common.ToolsLang;
@@ -17,11 +17,11 @@ public class ToolsLangGenerator extends BaseLanguageProvider {
     protected void addTranslations() {
         add(ToolsLang.HP, "HP: %s");
         //Vanilla Paxels
-        addItem(ToolsItem.WOOD_PAXEL, "Wood Paxel");
-        addItem(ToolsItem.STONE_PAXEL, "Stone Paxel");
-        addItem(ToolsItem.IRON_PAXEL, "Iron Paxel");
-        addItem(ToolsItem.GOLD_PAXEL, "Gold Paxel");
-        addItem(ToolsItem.DIAMOND_PAXEL, "Diamond Paxel");
+        add(ToolsItem.WOOD_PAXEL, "Wood Paxel");
+        add(ToolsItem.STONE_PAXEL, "Stone Paxel");
+        add(ToolsItem.IRON_PAXEL, "Iron Paxel");
+        add(ToolsItem.GOLD_PAXEL, "Gold Paxel");
+        add(ToolsItem.DIAMOND_PAXEL, "Diamond Paxel");
         //Tool sets
         addSet("Bronze", ToolsItem.BRONZE_HELMET, ToolsItem.BRONZE_CHESTPLATE, ToolsItem.BRONZE_LEGGINGS, ToolsItem.BRONZE_BOOTS, ToolsItem.BRONZE_SWORD,
               ToolsItem.BRONZE_PICKAXE, ToolsItem.BRONZE_AXE, ToolsItem.BRONZE_SHOVEL, ToolsItem.BRONZE_HOE, ToolsItem.BRONZE_PAXEL);
@@ -40,18 +40,17 @@ public class ToolsLangGenerator extends BaseLanguageProvider {
               ToolsItem.STEEL_PICKAXE, ToolsItem.STEEL_AXE, ToolsItem.STEEL_SHOVEL, ToolsItem.STEEL_HOE, ToolsItem.STEEL_PAXEL);
     }
 
-    private void addSet(String type, ItemRegistryObject<?> helmet, ItemRegistryObject<?> chestplate, ItemRegistryObject<?> leggings, ItemRegistryObject<?> boots,
-          ItemRegistryObject<?> sword, ItemRegistryObject<?> pickaxe, ItemRegistryObject<?> axe, ItemRegistryObject<?> shovel, ItemRegistryObject<?> hoe,
-          ItemRegistryObject<?> paxel) {
-        addItem(helmet, type + " Helmet");
-        addItem(chestplate, " Chestplate");
-        addItem(leggings, type + " Leggings");
-        addItem(boots, type + " Boots");
-        addItem(sword, type + " Sword");
-        addItem(pickaxe, type + " Pickaxe");
-        addItem(axe, type + " Axe");
-        addItem(shovel, type + " Shovel");
-        addItem(hoe, type + " Hoe");
-        addItem(paxel, type + " Paxel");
+    private void addSet(String type, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings, IItemProvider boots, IItemProvider sword,
+          IItemProvider pickaxe, IItemProvider axe, IItemProvider shovel, IItemProvider hoe, IItemProvider paxel) {
+        add(helmet, type + " Helmet");
+        add(chestplate, " Chestplate");
+        add(leggings, type + " Leggings");
+        add(boots, type + " Boots");
+        add(sword, type + " Sword");
+        add(pickaxe, type + " Pickaxe");
+        add(axe, type + " Axe");
+        add(shovel, type + " Shovel");
+        add(hoe, type + " Hoe");
+        add(paxel, type + " Paxel");
     }
 }

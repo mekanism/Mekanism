@@ -3,7 +3,6 @@
 ###########
 
 # Items
-tile.ObsidianTNT.name=옵시디언 TNT
 item.EnrichedAlloy.name=강화 합금
 item.ReinforcedAlloy.name=강화된 합금
 item.AtomicAlloy.name=아토믹 합금
@@ -50,15 +49,6 @@ tile.MachineBlock.Chargepad.name=차지패드
 tile.MachineBlock.LogisticalSorter.name=논리 정렬기
 tile.MachineBlock.DigitalMiner.name=디지털 채굴기
 
-# Plastic
-tile.PlasticBlock.name=플라스틱 블럭
-tile.SlickPlasticBlock.name=끈적거리는 플라스틱 블럭
-tile.GlowPlasticBlock.name=빛나는 플라스틱 블럭
-tile.ReinforcedPlasticBlock.name=강화된 플라스틱 블럭
-tile.RoadPlasticBlock.name=플라스틱 길
-
-tile.PlasticFence.name=플라스틱 배리어
-
 # Infuse types
 infuse.carbon=탄소
 infuse.tin=주석
@@ -83,9 +73,6 @@ tile.Transmitter.EliteMechanicalPipe.name=엘리트 기계 파이프
 tile.Transmitter.UltimateMechanicalPipe.name=궁극 기계 파이프
 tile.Transmitter.RestrictiveTransporter.name=제한 수송기
 tile.Transmitter.DiversionTransporter.name=우회 수송기
-
-# Glow Panel
-tile.GlowPanel.name=발광 패널
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=기본 에너지 큐브
@@ -232,7 +219,6 @@ tooltip.universal=범용
 tooltip.fluids=액체
 tooltip.gasses=가스
 tooltip.noGas=가스가 저장되어있지 않습니다
-tooltip.channel=채널
 tooltip.mode=모드
 tooltip.efficiency=효율
 tooltip.yes=예
@@ -245,8 +231,6 @@ mekanism.tooltip.disassembler.slow=느림
 mekanism.tooltip.disassembler.fast=빠름
 mekanism.tooltip.disassembler.vein=광맥 채굴
 mekanism.tooltip.disassembler.off=꺼짐
-
-tooltip.balloon=풍선
 
 tooltip.jetpack.disabled=비활성화
 
@@ -282,26 +266,6 @@ color.yellow=노랑색
 color.white=하양색
 color.brown=갈색
 color.brightPink=밝은 분홍
-
-# Dyes
-dye.black=검은색
-dye.darkBlue=파랑색
-dye.brown=갈색
-dye.darkGreen=초록색
-dye.darkAqua=청록색
-dye.darkRed=짙은 빨간색
-dye.purple=보라색
-dye.orange=주황색
-dye.grey=밝은 회색
-dye.darkGrey=회색
-dye.indigo=밝은 회색
-dye.brightGreen=연두색
-dye.aqua=아쿠아
-dye.red=빨간색
-dye.brightPink=분홍색
-dye.pink=다홍색
-dye.yellow=노랑색
-dye.white=하양색
 
 # Creative tab
 itemGroup.tabMekanism=Mekanism [메카니즘]

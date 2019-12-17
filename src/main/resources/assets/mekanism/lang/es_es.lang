@@ -3,7 +3,6 @@
 ###########
 
 # Items / Objetos
-tile.ObsidianTNT.name=Dinamita de obsidiana
 item.EnrichedAlloy.name=Aleación enriquecida
 item.ReinforcedAlloy.name=Aleación reforzada
 item.AtomicAlloy.name=Aleación atómica
@@ -26,7 +25,6 @@ item.PortableTeleporter.name=Teletransportador portátil
 item.TeleportationCore.name=Núcleo de teletransportador
 item.Configurator.name=Configurador
 item.NetworkReader.name=Lector de red
-item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=Jetpack
 item.ScubaTank.name=Botella de buceo
 item.GasMask.name=Máscara de gas
@@ -163,15 +161,6 @@ tile.MachineBlock3.ResistiveHeater.name=Calentador resistivo
 tile.MachineBlock3.FormulaicAssemblicator.name=Ensamblador de fórmulas
 tile.MachineBlock3.FuelwoodHeater.name=Calentador de leña
 
-# Plastic / Plástico
-tile.PlasticBlock.name=Bloque de plástico
-tile.SlickPlasticBlock.name=Bloque de plástico recubierto
-tile.GlowPlasticBlock.name=Bloque de plástico luminoso
-tile.ReinforcedPlasticBlock.name=Bloque de plástico reforzado
-tile.RoadPlasticBlock.name=Vara de plástico
-
-tile.PlasticFence.name=Valla de plástico
-
 # Infuse types / Tipos de infundidos
 infuse.carbon=Carbón
 infuse.tin=Estaño
@@ -209,9 +198,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=Conductor termodinámico Bási
 tile.Transmitter.AdvancedThermodynamicConductor.name=Conductor termodinámico Avanzado
 tile.Transmitter.EliteThermodynamicConductor.name=Conductor termodinámico Élite
 tile.Transmitter.UltimateThermodynamicConductor.name=Conductor termodinámico Ultimo
-
-# Glow Panel / Panel luminoso
-tile.GlowPanel.name=Panel luminoso
 
 # Energy Cubes / Cubos de energía
 tile.EnergyCubeBasic.name=Cubo de energía Básico
@@ -403,7 +389,6 @@ mekanism.key.voice=Voz
 
 # Entities / Entidades
 entity.Robit.name=Robit
-entity.BabySkeleton.name=Bebé esqueleto
 
 # Gui text / Textos de Interfaz
 gui.condensentrating=Condensante
@@ -744,8 +729,6 @@ tooltip.restrictiveDesc=Solo se usa si no hay otros caminos disponibles
 tooltip.diversionDesc=Controlado por señal de redstone
 tooltip.noGas=Sin gas almacenado
 tooltip.stored=Almacenado
-tooltip.channel=Canal
-tooltip.walkie_disabled=Sevidor de voz desactivado.
 tooltip.mode=Modo
 tooltip.efficiency=Eficiencia
 tooltip.modeToggle=Modo cambiado a
@@ -787,8 +770,6 @@ mekanism.tooltip.disassembler.off=Apagado
 tooltip.configurationCard.got=Recibiendo datos de conf. de %s
 tooltip.configurationCard.set=Inyectando datos de conf. de tipo %s
 tooltip.configurationCard.unequal=Datos de conf. con formatos diferentes
-
-tooltip.balloon=Globo
 
 tooltip.jetpack.regular=A pulso
 tooltip.jetpack.hover=Mantenido
@@ -936,26 +917,6 @@ color.yellow=Amarillo
 color.white=Blanco
 color.brown=Marron
 color.brightPink=Rosa brillante
-
-# Dyes / Tintes
-dye.black=Negro
-dye.darkBlue=Azul
-dye.brown=Marron
-dye.darkGreen=Verde
-dye.darkAqua=Cian
-dye.darkRed=Rojo oscuro
-dye.purple=Purpura
-dye.orange=Naranja
-dye.grey=Gris claro
-dye.darkGrey=Gris oscuro
-dye.indigo=Indigo
-dye.brightGreen=Verde lima
-dye.aqua=Cian
-dye.red=Rojo
-dye.brightPink=Rosa claro
-dye.pink=Rosa
-dye.yellow=Amarillo
-dye.white=Blanco
 
 # Reactor Logic modes / Modos lógicos del reactor
 reactor.disabled=Deshabilitado

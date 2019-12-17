@@ -3,7 +3,6 @@
 ###########
 
 # Items
-tile.ObsidianTNT.name=Obsidian TNT
 item.EnrichedAlloy.name=Beriget Legering
 item.ReinforcedAlloy.name=Forstærket Legering
 item.AtomicAlloy.name=Atomar Legering
@@ -25,7 +24,6 @@ item.PortableTeleporter.name=Portabel Teleportør
 item.TeleportationCore.name=Teleporteringskerne
 item.Configurator.name=Konfiguratør
 item.NetworkReader.name=Netværkslæser
-item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=Jetpack
 item.ScubaTank.name=Iltflaske
 item.GasMask.name=Gasmaske
@@ -154,15 +152,6 @@ tile.MachineBlock3.Oredictionificator.name=Oredictionificator
 tile.MachineBlock3.ResistiveHeater.name=Modstandsvarmeelement
 tile.MachineBlock3.FormulaicAssemblicator.name=Formulæisk Samleenhed
 
-# Plastic
-tile.PlasticBlock.name=Plastblok
-tile.SlickPlasticBlock.name=Slick Plastblok
-tile.GlowPlasticBlock.name=Plast Glødeblok
-tile.ReinforcedPlasticBlock.name=Forstærket Plastblok
-tile.RoadPlasticBlock.name=Plastvej
-
-tile.PlasticFence.name=Plastbarriere
-
 # Infuse types
 infuse.carbon=Kulstof
 infuse.tin=Tin
@@ -200,9 +189,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=Basal Termodynamisk Leder
 tile.Transmitter.AdvancedThermodynamicConductor.name=Avanceret Termodynamisk Leder
 tile.Transmitter.EliteThermodynamicConductor.name=Elite Termodynamisk Leder
 tile.Transmitter.UltimateThermodynamicConductor.name=Ultimativ Thermodynamisk Leder
-
-# Glow Panel
-tile.GlowPanel.name=Glødepanel
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Basal Energikube
@@ -376,7 +362,6 @@ mekanism.key.voice=Stemme
 
 # Entities
 entity.Robit.name=Robit
-entity.BabySkeleton.name=Baby Skelet
 
 # Gui text
 gui.condensentrating=Condensentrating
@@ -688,7 +673,6 @@ tooltip.restrictiveDesc=Kun brugt hvis ingen andre veje er tilgængelige
 tooltip.diversionDesc=Kontrollerbar via rødsten
 tooltip.noGas=Ingen gas opbevaret
 tooltip.stored=Opbevaret
-tooltip.channel=Kanal
 tooltip.mode=Modus
 tooltip.efficiency=Effektivitet
 tooltip.modeToggle=Modus skiftet til
@@ -727,8 +711,6 @@ mekanism.tooltip.disassembler.off=fra
 tooltip.configurationCard.got=Hentede konfigurationsdata fra %s
 tooltip.configurationCard.set=Injicerede konfigurationsdata af type %s
 tooltip.configurationCard.unequal=Uens konfigurationsdataformater
-
-tooltip.balloon=Ballon
 
 tooltip.jetpack.regular=Almindelig
 tooltip.jetpack.hover=Svæv
@@ -862,26 +844,6 @@ color.yellow=Gul
 color.white=Hvid
 color.brown=Brun
 color.brightPink=Lyserød
-
-# Dyes
-dye.black=Sort
-dye.darkBlue=Blå
-dye.brown=Brun
-dye.darkGreen=Grøn
-dye.darkAqua=Cyan
-dye.darkRed=Mørkerød
-dye.purple=Lilla
-dye.orange=Orange
-dye.grey=Lysegrå
-dye.darkGrey=Mørkegrå
-dye.indigo=Lyseblå
-dye.brightGreen=Lime
-dye.aqua=Aqua
-dye.red=Rød
-dye.brightPink=Pink
-dye.pink=Magenta
-dye.yellow=Gul
-dye.white=Hvid
 
 # Reactor Logic modes
 reactor.disabled=Deaktiveret

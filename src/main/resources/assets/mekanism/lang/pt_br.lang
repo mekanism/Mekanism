@@ -3,7 +3,6 @@
 ###########
 
 # Items
-tile.ObsidianTNT.name=TNT de Obsidiana
 item.EnrichedAlloy.name=Liga Enriquecida
 item.ReinforcedAlloy.name=Liga Reforçada
 item.AtomicAlloy.name=Liga Atômica
@@ -25,7 +24,6 @@ item.PortableTeleporter.name=Teletransportador Portátil
 item.TeleportationCore.name=Núcleo de Teletransporte 
 item.Configurator.name=Configurador
 item.NetworkReader.name=Leitor de Rede
-item.WalkieTalkie.name=Rádio Transmissor
 item.Jetpack.name=Jetpack
 item.ScubaTank.name=Tanque de Mergulho
 item.GasMask.name=Máscara de Gás
@@ -159,15 +157,6 @@ tile.MachineBlock3.ResistiveHeater.name=Aquecedor Resistivo
 tile.MachineBlock3.FormulaicAssemblicator.name=Montador Formular
 tile.MachineBlock3.FuelwoodHeater.name=Aquecedor Sólido
 
-# Plastic
-tile.PlasticBlock.name=Bloco de Plástico
-tile.SlickPlasticBlock.name=Bloco de Plástico Liso
-tile.GlowPlasticBlock.name=Bloco de Plástico Fluorescente
-tile.ReinforcedPlasticBlock.name=Bloco de Plástico Reforçado
-tile.RoadPlasticBlock.name=Estrada de Plástico
-
-tile.PlasticFence.name=Barreira de Plástico
-
 # Infuse types
 infuse.carbon=Carbono
 infuse.tin=Estanho
@@ -205,9 +194,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=Conduíte Térmico Básico
 tile.Transmitter.AdvancedThermodynamicConductor.name=Conduíte Térmico Avançado
 tile.Transmitter.EliteThermodynamicConductor.name=Conduíte Térmico Elite
 tile.Transmitter.UltimateThermodynamicConductor.name=Conduíte Térmico Final
-
-# Glow Panel
-tile.GlowPanel.name=Painel Luminoso
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Cubo de Energia Básico
@@ -381,7 +367,6 @@ mekanism.key.voice=Voz
 
 # Entities
 entity.Robit.name=Robit
-entity.BabySkeleton.name=Esqueleto Bebê
 
 # Gui text
 gui.condensentrating=Condensentrando
@@ -698,7 +683,6 @@ tooltip.restrictiveDesc=Só é usado se não houver outros caminhos disponíveis
 tooltip.diversionDesc=Controlável por redstone
 tooltip.noGas=Sem gás armazenado
 tooltip.stored=Armazenado
-tooltip.channel=Canal
 tooltip.mode=Modo
 tooltip.efficiency=Eficiência
 tooltip.modeToggle=Modo alternado para
@@ -736,8 +720,6 @@ mekanism.tooltip.disassembler.off=desligado
 tooltip.configurationCard.got=Dados de configuração de %s salvos
 tooltip.configurationCard.set=Dados de configuração de %s inseridos
 tooltip.configurationCard.unequal=Dados desiguais
-
-tooltip.balloon=Balão
 
 tooltip.jetpack.regular=Normal
 tooltip.jetpack.hover=Pairar
@@ -880,26 +862,6 @@ color.yellow=Amarelo
 color.white=Branco
 color.brown=Marrom
 color.brightPink=Rosa
-
-# Dyes
-dye.black=Preto
-dye.darkBlue=Azul
-dye.brown=Marrom
-dye.darkGreen=Verde
-dye.darkAqua=Ciano
-dye.darkRed=Vermelho Escuro
-dye.purple=Lilás
-dye.orange=Laranja
-dye.grey=Cinza Claro
-dye.darkGrey=Cinza
-dye.indigo=Azul Claro
-dye.brightGreen=Verde Limão
-dye.aqua=Ciano Claro
-dye.red=Vermelho
-dye.brightPink=Rosa
-dye.pink=Magenta
-dye.yellow=Amarelo
-dye.white=Branco
 
 # Reactor Logic modes
 reactor.disabled=Desativado

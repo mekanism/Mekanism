@@ -3,7 +3,6 @@
 ###########
 
 # Items
-tile.ObsidianTNT.name=Obsidian TNT
 item.EnrichedAlloy.name=Beriket Legering
 item.ReinforcedAlloy.name=Forsterket Legering
 item.AtomicAlloy.name=Kjernefysisk Legering
@@ -22,7 +21,6 @@ item.PortableTeleporter.name=Portabel Teleportør
 item.TeleportationCore.name=Teleporterings Kjerne
 item.Configurator.name=Konfigurator
 item.NetworkReader.name=Nettverk Leser
-item.WalkieTalkie.name=Walkie-Talkie
 item.Jetpack.name=Jetpack
 item.ScubaTank.name=Dykkertank
 item.GasMask.name=Gassmaske
@@ -93,14 +91,6 @@ tile.MachineBlock.ElectricPump.name=Elektrisk Pumpe
 tile.MachineBlock.Chargepad.name=Ladepad
 tile.MachineBlock.DigitalMiner.name=Digital Graver
 
-# Plastic
-tile.PlasticBlock.name=Plast Blokk
-tile.GlowPlasticBlock.name=Plast Gløde Blokk
-tile.ReinforcedPlasticBlock.name=Forsterket Plast Blokk
-tile.RoadPlasticBlock.name=Plast Vei
-
-tile.PlasticFence.name=Plast Barriere
-
 # Infuse types
 infuse.carbon=Karbon
 infuse.tin=Tin
@@ -126,9 +116,6 @@ tile.Transmitter.EliteMechanicalPipe.name=Elite Mekanisk Rør
 tile.Transmitter.UltimateMechanicalPipe.name=Ultimat Mekanisk Rør
 tile.Transmitter.RestrictiveTransporter.name=Restriktiv Transporter
 tile.Transmitter.DiversionTransporter.name=Avlednings Transporter
-
-# Glow Panel
-tile.GlowPanel.name=Gløde Panel
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Enkel Energi Kube
@@ -494,7 +481,6 @@ tooltip.restrictiveDesc=Bare brukt hvis ingen andre veier er tilgjengelig
 tooltip.diversionDesc=Kontrollerbar av rødstein
 tooltip.noGas=Ingen gass oppbevart
 tooltip.stored=Oppbevart
-tooltip.channel=Kanal
 tooltip.mode=Modus
 tooltip.efficiency=Effektivitet
 tooltip.modeToggle=Modus byttet til
@@ -521,8 +507,6 @@ mekanism.tooltip.disassembler.slow=treg
 mekanism.tooltip.disassembler.fast=rask
 mekanism.tooltip.disassembler.vein=åre
 mekanism.tooltip.disassembler.off=av
-
-tooltip.balloon=Ballong
 
 tooltip.jetpack.regular=Vanlig
 tooltip.jetpack.hover=Hover
@@ -620,26 +604,6 @@ color.yellow=Gul
 color.white=Hvit
 color.brown=Brun
 color.brightPink=Lyserosa
-
-# Dyes
-dye.black=Svart
-dye.darkBlue=Blå
-dye.brown=Brun
-dye.darkGreen=Grønn
-dye.darkAqua=Cyan
-dye.darkRed=Mørkerød
-dye.purple=Lilla
-dye.orange=Oransje
-dye.grey=Lysebrå
-dye.darkGrey=Grå
-dye.indigo=Lyseblå
-dye.brightGreen=Lime
-dye.aqua=Aqua
-dye.red=Rød
-dye.brightPink=Rosa
-dye.pink=Magenta
-dye.yellow=Gul
-dye.white=Hvit
 
 # Creative tab
 itemGroup.tabMekanism=Mekanism

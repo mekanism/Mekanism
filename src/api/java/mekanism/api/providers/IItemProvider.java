@@ -44,4 +44,9 @@ public interface IItemProvider extends IBaseProvider, net.minecraft.util.IItemPr
     default ITextComponent getTextComponent() {
         return getItem().getName();
     }
+
+    @Override
+    default String getTranslationKey() {
+        return getItem().getTranslationKey();
+    }
 }

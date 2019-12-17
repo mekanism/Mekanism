@@ -3,7 +3,6 @@
 ###########
 
 # Items
-tile.ObsidianTNT.name=Obsidiánové TNT
 item.EnrichedAlloy.name=Obohacená Slitina
 item.ReinforcedAlloy.name=Tvrzená Slitina
 item.AtomicAlloy.name=Atomická Slitina
@@ -25,7 +24,6 @@ item.PortableTeleporter.name=Přenosný Teleportér
 item.TeleportationCore.name=Teleportační Jádro
 item.Configurator.name=Konfigurátor
 item.NetworkReader.name=Čtečka sítě
-item.WalkieTalkie.name=Vysílačka
 item.Jetpack.name=Jetpack
 item.ScubaTank.name=Potápěcí Nádrž
 item.GasMask.name=Plynová Maska
@@ -159,15 +157,6 @@ tile.MachineBlock3.ResistiveHeater.name=Odporový Ohřívač
 tile.MachineBlock3.FormulaicAssemblicator.name=Skladač Formulí
 tile.MachineBlock3.FuelwoodHeater.name=Ohřívač na Palivové Dřevo
 
-# Plastic
-tile.PlasticBlock.name=Plastový Blok
-tile.SlickPlasticBlock.name=Uhlazený Plastový Blok
-tile.GlowPlasticBlock.name=Svítivý Plastový Blok
-tile.ReinforcedPlasticBlock.name=Tvrzený Plastový Blok
-tile.RoadPlasticBlock.name=Plastová Cesta
-
-tile.PlasticFence.name=Plastová Bariéra
-
 # Infuse types
 infuse.carbon=Uhlík
 infuse.tin=Cín
@@ -205,9 +194,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=Základní Termodynamický Vod
 tile.Transmitter.AdvancedThermodynamicConductor.name=Pokročilý Termodynamický Vodič
 tile.Transmitter.EliteThermodynamicConductor.name=Elitní Termodynamický Vodič
 tile.Transmitter.UltimateThermodynamicConductor.name=Ultimátní Termodynamický Vodič
-
-# Glow Panel
-tile.GlowPanel.name=Svítící Panel
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=Základní Energetická Kostka
@@ -381,7 +367,6 @@ mekanism.key.voice=Hlas
 
 # Entities
 entity.Robit.name=Robit
-entity.BabySkeleton.name=Dítě Kostlivce
 
 # Gui text
 gui.condensentrating=Kondenzace
@@ -703,7 +688,6 @@ tooltip.restrictiveDesc=Využit pouze když není jiná cesta
 tooltip.diversionDesc=Ovladatelný ruditem
 tooltip.noGas=Neuložen žádný plyn
 tooltip.stored=Uloženo
-tooltip.channel=Kanál
 tooltip.mode=Mód
 tooltip.efficiency=Efektivita
 tooltip.modeToggle=Mód nastaven na
@@ -741,8 +725,6 @@ mekanism.tooltip.disassembler.off=vyplý
 tooltip.configurationCard.got=Získaná konfigurační data z %s
 tooltip.configurationCard.set=Vložená konfigurační data typu %s
 tooltip.configurationCard.unequal=Nerovné formáty konfiguračních dat
-
-tooltip.balloon=Balón
 
 tooltip.jetpack.regular=Normální
 tooltip.jetpack.hover=Vznášecí
@@ -885,26 +867,6 @@ color.yellow=Žlutá
 color.white=Bílá
 color.brown=Hnědá
 color.brightPink=Světle Růžová
-
-# Dyes
-dye.black=Černá
-dye.darkBlue=Modrá
-dye.brown=Hnědá
-dye.darkGreen=Zelená
-dye.darkAqua=Tyrkysová
-dye.darkRed=Tmavě Červená
-dye.purple=Nachová
-dye.orange=Oranžová
-dye.grey=Světle Šedá
-dye.darkGrey=Šedá
-dye.indigo=Světle Modrá
-dye.brightGreen=Limetka
-dye.aqua=Aqua
-dye.red=Červená
-dye.brightPink=Růžová
-dye.pink=Magenta
-dye.yellow=Žlutá
-dye.white=Bílá
 
 # Reactor Logic modes
 reactor.disabled=Deaktivovaný

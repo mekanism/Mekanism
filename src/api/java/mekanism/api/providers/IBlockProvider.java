@@ -36,6 +36,11 @@ public interface IBlockProvider extends IItemProvider {
         return getBlock().getNameTextComponent();
     }
 
+    @Override
+    default String getTranslationKey() {
+        return getBlock().getTranslationKey();
+    }
+
     @Nullable
     default FactoryType getFactoryType() {
         Block block = getBlock();

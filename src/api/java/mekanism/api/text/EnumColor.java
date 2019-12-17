@@ -77,6 +77,49 @@ public enum EnumColor implements IStringSerializable {
         return null;
     }
 
+    public String getEnglishName() {
+        switch (this) {
+            case BLACK:
+                return "Black";
+            case DARK_BLUE:
+                return "Blue";
+            case DARK_GREEN:
+                return "Green";
+            case DARK_AQUA:
+                return "Cyan";
+            case DARK_RED:
+                return "Dark Red";
+            case PURPLE:
+                return "Purple";
+            case ORANGE:
+                return "Orange";
+            case GRAY:
+                return "Light Gray";
+            case DARK_GRAY:
+                return "Gray";
+            case INDIGO:
+                return "Light Blue";
+            case BRIGHT_GREEN:
+                return "Lime";
+            case AQUA:
+                //TODO: Decide if this is what we want the name to be
+                return "Aqua";
+            case RED:
+                return "Red";
+            case PINK:
+                return "Magenta";
+            case YELLOW:
+                return "Yellow";
+            case WHITE:
+                return "White";
+            case BROWN:
+                return "Brown";
+            case BRIGHT_PINK:
+                return "Pink";
+        }
+        return "invalid";
+    }
+
     //Note: Do not implement IHasTranslationKey as we want the default behaviour of EnumColor to be formatting
     public String getTranslationKey() {
         return "color." + unlocalizedName;

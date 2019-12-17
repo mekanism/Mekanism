@@ -3,7 +3,6 @@
 #############
 
 # Items
-tile.ObsidianTNT.name=黑曜石TNT
 item.EnrichedAlloy.name=富集合金
 item.ReinforcedAlloy.name=强化合金
 item.AtomicAlloy.name=原子合金
@@ -26,7 +25,6 @@ item.PortableTeleporter.name=便携传送器
 item.TeleportationCore.name=传送核心
 item.Configurator.name=调整器
 item.NetworkReader.name=网络读取器
-item.WalkieTalkie.name=步话机
 item.Jetpack.name=喷射背包
 item.ScubaTank.name=潜水罐
 item.GasMask.name=燃气面具
@@ -163,15 +161,6 @@ tile.MachineBlock3.ResistiveHeater.name=电阻加热装置
 tile.MachineBlock3.FormulaicAssemblicator.name=公式装配器
 tile.MachineBlock3.FuelwoodHeater.name=木料加热器
 
-# Plastic
-tile.PlasticBlock.name=塑料方块
-tile.SlickPlasticBlock.name=光滑塑料方块
-tile.GlowPlasticBlock.name=塑料荧光方块
-tile.ReinforcedPlasticBlock.name=强化塑料方块
-tile.RoadPlasticBlock.name=塑料路
-
-tile.PlasticFence.name=塑料栅栏
-
 # Infuse types
 infuse.carbon=碳
 infuse.tin=锡
@@ -209,9 +198,6 @@ tile.Transmitter.BasicThermodynamicConductor.name=基础热导线缆
 tile.Transmitter.AdvancedThermodynamicConductor.name=高级热导线缆
 tile.Transmitter.EliteThermodynamicConductor.name=精英热导线缆
 tile.Transmitter.UltimateThermodynamicConductor.name=终极热导线缆
-
-# Glow Panel
-tile.GlowPanel.name=荧光板
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=基础能量立方
@@ -402,7 +388,6 @@ mekanism.key.voice=声音
 
 # Entities
 entity.Robit.name=机器人
-entity.BabySkeleton.name=骷髅射手宝宝
 
 # Gui text
 gui.condensentrating=凝聚液体中...
@@ -729,7 +714,6 @@ tooltip.restrictiveDesc=别无选择时使用
 tooltip.diversionDesc=可受红石信号控制
 tooltip.noGas=无气体存储
 tooltip.stored=已存储
-tooltip.channel=频道
 tooltip.mode=模式
 tooltip.efficiency=效率
 tooltip.modeToggle=模式切换至
@@ -770,8 +754,6 @@ mekanism.tooltip.disassembler.off=关
 tooltip.configurationCard.got=从%s恢复过滤器数据
 tooltip.configurationCard.set=导入类型%s的过滤器数据
 tooltip.configurationCard.unequal=过滤器数据格式不符规则
-
-tooltip.balloon=气球
 
 tooltip.jetpack.regular=标准
 tooltip.jetpack.hover=悬浮
@@ -915,26 +897,6 @@ color.yellow=黄色
 color.white=白色
 color.brown=棕色
 color.brightPink=亮粉红色
-
-# Dyes
-dye.black=黑色
-dye.darkBlue=蓝色
-dye.brown=棕色
-dye.darkGreen=绿色
-dye.darkAqua=青色
-dye.darkRed=深红色
-dye.purple=紫色
-dye.orange=橙色
-dye.grey=淡灰色
-dye.darkGrey=灰色
-dye.indigo=淡蓝色
-dye.brightGreen=亮绿色
-dye.aqua=水蓝色
-dye.red=红色
-dye.brightPink=粉色
-dye.pink=品红色
-dye.yellow=黄色
-dye.white=白色
 
 # Reactor Logic modes
 reactor.disabled=关闭

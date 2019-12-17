@@ -19,4 +19,9 @@ public interface IEntityTypeProvider extends IBaseProvider {
     default ITextComponent getTextComponent() {
         return getEntityType().getName();
     }
+
+    @Override
+    default String getTranslationKey() {
+        return getEntityType().getTranslationKey();
+    }
 }
