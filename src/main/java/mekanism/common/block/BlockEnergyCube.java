@@ -226,12 +226,6 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
 
     @Nonnull
     @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Nonnull
-    @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         TileEntityEnergyCube energyCube = MekanismUtils.getTileEntity(TileEntityEnergyCube.class, world, pos, true);

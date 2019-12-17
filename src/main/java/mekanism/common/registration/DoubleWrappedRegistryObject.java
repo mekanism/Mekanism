@@ -1,5 +1,6 @@
 package mekanism.common.registration;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import net.minecraftforge.fml.RegistryObject;
@@ -17,10 +18,12 @@ public class DoubleWrappedRegistryObject<PRIMARY extends IForgeRegistryEntry<? s
         this.secondaryRO = secondaryRO;
     }
 
+    @Nonnull
     public PRIMARY getPrimary() {
         return primaryRO.get();
     }
 
+    @Nonnull
     public SECONDARY getSecondary() {
         return secondaryRO.get();
     }

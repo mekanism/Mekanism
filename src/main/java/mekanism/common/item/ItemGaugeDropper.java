@@ -56,7 +56,7 @@ public class ItemGaugeDropper extends Item implements IGasItem {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking() && !world.isRemote) {
+        if (player.func_225608_bj_() && !world.isRemote) {
             setGas(stack, GasStack.EMPTY);
             FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(CAPACITY, FluidAction.EXECUTE));
             ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);

@@ -91,7 +91,7 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
                 BinInventorySlot binSlot = bin.getBinSlot();
                 if (!binSlot.isEmpty()) {
                     ItemStack stack;
-                    if (player.isSneaking()) {
+                    if (player.func_225608_bj_()) {
                         stack = StackUtils.size(binSlot.getStack(), 1);
                         if (binSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                             //TODO: Print error that something went wrong??

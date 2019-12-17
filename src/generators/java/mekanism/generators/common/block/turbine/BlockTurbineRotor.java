@@ -18,7 +18,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -82,7 +81,7 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
 
         ItemStack stack = player.getHeldItem(hand);
         TileEntityTurbineRotor rod = (TileEntityTurbineRotor) tile;
-        if (!player.isSneaking()) {
+        if (!player.func_225608_bj_()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
                 if (rod.addBlade()) {
                     if (!player.isCreative()) {
@@ -112,12 +111,6 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
             }
         }
         return true;
-    }
-
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
     }
 
     @Nonnull

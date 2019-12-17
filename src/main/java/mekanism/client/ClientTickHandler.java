@@ -174,7 +174,7 @@ public class ClientTickHandler {
             }
 
             ItemStack bootStack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.FEET);
-            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !minecraft.player.isSneaking()) {
+            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !minecraft.player.func_225608_bj_()) {
                 minecraft.player.stepHeight = 1.002F;
             } else if (minecraft.player.stepHeight == 1.002F) {
                 minecraft.player.stepHeight = 0.6F;
@@ -267,7 +267,7 @@ public class ClientTickHandler {
     //TODO: I believe this requires https://github.com/MinecraftForge/MinecraftForge/pull/6037
     /*@SubscribeEvent
     public void onMouseEvent(InputEvent.MouseInputEvent event) {
-        if (MekanismConfig.client.allowConfiguratorModeScroll.get() && minecraft.player != null && minecraft.player.isSneaking()) {
+        if (MekanismConfig.client.allowConfiguratorModeScroll.get() && minecraft.player != null && minecraft.player.func_225608_bj_()) {
             ItemStack stack = minecraft.player.getHeldItemMainhand();
             int delta = event.getDwheel();
 

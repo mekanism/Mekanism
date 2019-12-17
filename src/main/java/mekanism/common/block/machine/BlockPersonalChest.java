@@ -134,12 +134,6 @@ public class BlockPersonalChest extends BlockMekanism implements IBlockElectric,
 
     @Nonnull
     @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Nonnull
-    @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         return bounds[getDirection(state).ordinal() - 2];

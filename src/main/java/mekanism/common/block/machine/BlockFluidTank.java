@@ -93,7 +93,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
             return true;
         }
         //Handle filling fluid tank
-        if (!player.isSneaking()) {
+        if (!player.func_225608_bj_()) {
             if (SecurityUtils.canAccess(player, tile)) {
                 ItemStack stack = player.getHeldItem(hand);
                 if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack) && manageInventory(player, (TileEntityFluidTank) tile, hand, stack)) {
@@ -106,12 +106,6 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
             }
         }
         return tile.openGui(player);
-    }
-
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
     }
 
     @Override

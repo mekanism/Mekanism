@@ -57,12 +57,6 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IH
         return adjacentBlockState.getBlock() == this;
     }
 
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         TileEntityStructuralGlass tile = MekanismUtils.getTileEntity(TileEntityStructuralGlass.class, world, pos);

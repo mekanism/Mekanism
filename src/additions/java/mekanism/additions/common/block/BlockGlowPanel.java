@@ -13,7 +13,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.state.DirectionProperty;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -82,10 +81,5 @@ public class BlockGlowPanel extends BlockMekanism implements IStateFacing, IColo
         // This commented out thing is more or less how the torch checks it
         //return !VoxelShapes.compare(state.getCollisionShape(world, pos).project(side), field_220084_c, IBooleanFunction.ONLY_SECOND);
         return Block.hasSolidSide(world.getBlockState(positionOn), world, positionOn, side);
-    }
-
-    @Override
-    public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
-        return true;
     }
 }

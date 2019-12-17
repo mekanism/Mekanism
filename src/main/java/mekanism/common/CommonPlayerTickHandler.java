@@ -68,7 +68,7 @@ public class CommonPlayerTickHandler {
 
     public void tickEnd(PlayerEntity player) {
         ItemStack feetStack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners && !player.isSneaking()) {
+        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners && !player.func_225608_bj_()) {
             player.stepHeight = 1.002F;
         } else if (player.stepHeight == 1.002F) {
             player.stepHeight = 0.6F;

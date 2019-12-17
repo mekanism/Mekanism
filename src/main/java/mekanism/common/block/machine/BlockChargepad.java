@@ -133,12 +133,6 @@ public class BlockChargepad extends BlockMekanism implements IBlockElectric, IHa
         return tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS;
     }
 
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
     @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {

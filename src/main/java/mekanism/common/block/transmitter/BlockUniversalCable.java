@@ -5,7 +5,6 @@ import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntityType;
 
 public class BlockUniversalCable extends BlockSmallTransmitter implements ITieredBlock<CableTier>, IHasTileEntity<TileEntityUniversalCable> {
@@ -19,11 +18,6 @@ public class BlockUniversalCable extends BlockSmallTransmitter implements ITiere
     @Override
     public CableTier getTier() {
         return tier;
-    }
-
-    @Override
-    public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
-        return layer == BlockRenderLayer.CUTOUT;
     }
 
     @Override

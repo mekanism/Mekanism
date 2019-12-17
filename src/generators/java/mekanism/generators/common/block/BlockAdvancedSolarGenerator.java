@@ -27,7 +27,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -105,12 +104,6 @@ public class BlockAdvancedSolarGenerator extends BlockMekanism implements IHasGu
             return true;
         }
         return tile.openGui(player);
-    }
-
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
     }
 
     @Nonnull

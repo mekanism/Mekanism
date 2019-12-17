@@ -34,7 +34,7 @@ public class ItemDictionary extends Item {
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         World world = context.getWorld();
-        if (player != null && !player.isSneaking()) {
+        if (player != null && !player.func_225608_bj_()) {
             BlockPos pos = context.getPos();
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
@@ -61,7 +61,7 @@ public class ItemDictionary extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking() && !world.isRemote()) {
+        if (player.func_225608_bj_() && !world.isRemote()) {
             NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new DictionaryContainer(i, inv, hand, stack)),
                   buf -> {
                       buf.writeEnumValue(hand);

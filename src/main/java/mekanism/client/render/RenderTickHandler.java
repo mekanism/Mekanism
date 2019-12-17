@@ -123,9 +123,9 @@ public class RenderTickHandler {
 
                     float random = (rand.nextFloat() - 0.5F) * 0.1F;
 
-                    Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
-                    Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
-                    Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
+                    Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.func_225608_bj_() ? 20 : 0).rotateYaw(p.renderYawOffset);
+                    Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.func_225608_bj_() ? 20 : 0).rotateYaw(p.renderYawOffset);
+                    Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.func_225608_bj_() ? 25 : 0).rotateYaw(p.renderYawOffset);
 
                     Pos3D rLeft = vLeft.scale(random);
                     Pos3D rRight = vRight.scale(random);
@@ -190,7 +190,7 @@ public class RenderTickHandler {
                                     flameXCoord += 0.25F;
                                     flameXCoord -= 0.45F;
                                     flameZCoord += 0.15F;
-                                    if (p.isSneaking()) {
+                                    if (p.func_225608_bj_()) {
                                         flameYCoord -= 0.55F;
                                         flameZCoord -= 0.15F;
                                     }

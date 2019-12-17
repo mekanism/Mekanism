@@ -1,6 +1,5 @@
 package mekanism.generators.common.block.reactor;
 
-import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -13,7 +12,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -47,12 +45,6 @@ public class BlockLaserFocusMatrix extends BlockMekanism implements IHasTileEnti
             return false;
         }
         return tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS;
-    }
-
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.TRANSLUCENT;
     }
 
     @Override

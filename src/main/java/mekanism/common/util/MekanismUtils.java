@@ -596,7 +596,7 @@ public final class MekanismUtils {
         double posZ = player.func_226281_cx_();
         if (!player.world.isRemote) {
             posY += player.getEyeHeight();
-            if (player instanceof ServerPlayerEntity && player.isSneaking()) {
+            if (player instanceof ServerPlayerEntity && player.func_225608_bj_()) {
                 posY -= 0.08;
             }
         }

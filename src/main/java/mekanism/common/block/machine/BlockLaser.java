@@ -153,12 +153,6 @@ public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasMod
         return tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS;
     }
 
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
     @Override
     @Deprecated
     public float getPlayerRelativeBlockHardness(BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {

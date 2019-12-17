@@ -178,16 +178,6 @@ public class BlockSolarNeutronActivator extends BlockMekanism implements IHasMod
         }
     }
 
-    /**
-     * @inheritDoc
-     * @apiNote Only called on the client side
-     */
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
-
     @Override
     public int getLightValue(BlockState state, ILightReader world, BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get()) {

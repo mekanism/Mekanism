@@ -313,7 +313,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                         SecurityUtils.displayNoAccess(player);
                         return WrenchResult.NO_SECURITY;
                     }
-                    if (player.isSneaking()) {
+                    if (player.func_225608_bj_()) {
                         MekanismUtils.dismantleBlock(state, getWorld(), pos, this);
                         return WrenchResult.DISMANTLED;
                     }
@@ -332,7 +332,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     public boolean openGui(PlayerEntity player) {
-        if (hasGui() && !player.isSneaking()) {
+        if (hasGui() && !player.func_225608_bj_()) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
             } else {

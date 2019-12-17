@@ -73,7 +73,7 @@ public class ItemBalloon extends Item {
             return ActionResultType.PASS;
         }
         ItemStack stack = player.getHeldItem(context.getHand());
-        if (player.isSneaking()) {
+        if (player.func_225608_bj_()) {
             BlockPos pos = context.getPos();
             AxisAlignedBB bound = new AxisAlignedBB(pos, pos.add(1, 3, 1));
             List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
@@ -103,7 +103,7 @@ public class ItemBalloon extends Item {
 
     @Override
     public boolean itemInteractionForEntity(ItemStack stack, PlayerEntity player, LivingEntity entity, Hand hand) {
-        if (player.isSneaking()) {
+        if (player.func_225608_bj_()) {
             if (!player.world.isRemote) {
                 AxisAlignedBB bound = new AxisAlignedBB(entity.func_226277_ct_() - 0.2, entity.func_226277_ct_() - 0.5, entity.func_226281_cx_() - 0.2,
                       entity.func_226277_ct_() + 0.2, entity.func_226277_ct_() + entity.getSize(entity.getPose()).height + 4, entity.func_226281_cx_() + 0.2);

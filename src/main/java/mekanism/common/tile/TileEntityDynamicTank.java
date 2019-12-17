@@ -106,7 +106,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     @Override
     public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (!player.isSneaking() && structure != null) {
+        if (!player.func_225608_bj_() && structure != null) {
             if (manageInventory(player, hand, stack)) {
                 player.inventory.markDirty();
                 sendPacketToRenderer();

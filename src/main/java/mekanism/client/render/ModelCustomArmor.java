@@ -64,9 +64,8 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
     public void init(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float size) {
         reset();
 
-        isSneak = entity.isSneaking();
-        //TODO
-        isSitting = false;//entity.isRiding();
+        isSneak = entity.func_225608_bj_();
+        isSitting = entity.isPassenger();
         isChild = entity.isChild();
 
         if (modelType.armorSlot == 0) {
@@ -149,9 +148,8 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
 
         @Override
         public void render(@Nonnull LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-            isSneak = entity.isSneaking();
-            //TODO
-            isSitting = false;//entity.isRiding();
+            isSneak = entity.func_225608_bj_();
+            isSitting = entity.isPassenger();
             isChild = entity.isChild();
 
             setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);

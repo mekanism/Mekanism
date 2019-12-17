@@ -5,7 +5,6 @@ import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntityType;
 
 public class BlockLogisticalTransporter extends BlockLargeTransmitter implements ITieredBlock<TransporterTier>, IHasTileEntity<TileEntityLogisticalTransporter> {
@@ -19,11 +18,6 @@ public class BlockLogisticalTransporter extends BlockLargeTransmitter implements
     @Override
     public TransporterTier getTier() {
         return tier;
-    }
-
-    @Override
-    public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
-        return layer == BlockRenderLayer.TRANSLUCENT || layer == BlockRenderLayer.CUTOUT;
     }
 
     @Override

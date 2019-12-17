@@ -6,7 +6,6 @@ import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.model.ChestModel;
 
 public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalChest> {
 

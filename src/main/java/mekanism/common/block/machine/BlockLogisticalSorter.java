@@ -198,7 +198,7 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
             if (wrenchHandler != null) {
                 if (wrenchHandler.canUseWrench(stack, player, hit.getPos())) {
                     if (SecurityUtils.canAccess(player, tile)) {
-                        if (player.isSneaking()) {
+                        if (player.func_225608_bj_()) {
                             MekanismUtils.dismantleBlock(state, world, pos);
                             return true;
                         }
@@ -222,12 +222,6 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
             }
         }
         return tile.openGui(player);
-    }
-
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
     }
 
     @Override

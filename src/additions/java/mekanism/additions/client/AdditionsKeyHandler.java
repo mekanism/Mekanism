@@ -41,7 +41,7 @@ public class AdditionsKeyHandler extends MekKeyHandler {
             ItemStack toolStack = player.inventory.getCurrentItem();
             Item item = toolStack.getItem();
 
-            if (player.isSneaking() && item instanceof ItemWalkieTalkie) {
+            if (player.func_225608_bj_() && item instanceof ItemWalkieTalkie) {
                 ItemWalkieTalkie wt = (ItemWalkieTalkie) item;
                 if (wt.getOn(toolStack)) {
                     int newChan = wt.getChannel(toolStack) + 1;

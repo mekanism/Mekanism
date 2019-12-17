@@ -201,13 +201,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return MekanismTileEntityTypes.BOUNDING_BLOCK.getTileEntityType();
     }
 
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        //TODO: Check if this is the ideal solution or do we want to offload it to the main block somehow
-        return BlockRenderLayer.CUTOUT;
-    }
-
     //TODO: If need be override: getCollisionShape, getRenderShape, getRaytraceShape to allow for
     // the blocks to properly proxy that stuff, if they have overridden implementations of the methods
     // rather than have them basically have the defaults which is just based off of getShape

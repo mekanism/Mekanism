@@ -88,7 +88,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                     if (info != null) {
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getOrientation(), side);
                         DataType dataType = info.getDataType(relativeSide);
-                        if (!player.isSneaking()) {
+                        if (!player.func_225608_bj_()) {
                             player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
                                   Translation.of("tooltip.mekanism.configurator.view_mode", TextComponentUtil.build(transmissionType)), ": ", dataType.getColor(), dataType,
                                   " (", dataType.getColor().getColoredName(), ")"));
@@ -113,7 +113,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                 }
                 if (SecurityUtils.canAccess(player, tile)) {
                     return CapabilityUtils.getCapabilityHelper(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).getIfPresentElse(config -> {
-                              if (player.isSneaking()) {
+                              if (player.func_225608_bj_()) {
                                   return config.onSneakRightClick(player, side);
                               }
                               return config.onRightClick(player, side);
@@ -154,9 +154,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                 if (rotations != null && rotations.length > 0) {
                     List<Direction> l = Arrays.asList(rotations);
                     //TODO: Convert direction to Rotation
-                    /*if (!player.isSneaking() && l.contains(side)) {
+                    /*if (!player.func_225608_bj_() && l.contains(side)) {
                         block.rotate(state, world, pos, side);
-                    } else if (player.isSneaking() && l.contains(side.getOpposite())) {
+                    } else if (player.func_225608_bj_() && l.contains(side.getOpposite())) {
                         block.rotate(state, world, pos, side.getOpposite());
                     }*/
                 }

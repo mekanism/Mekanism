@@ -58,7 +58,7 @@ public class ItemWalkieTalkie extends Item implements IItemNetwork {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
+        if (player.func_225608_bj_()) {
             setOn(itemStack, !getOn(itemStack));
             return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
         }

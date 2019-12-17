@@ -95,7 +95,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 return ActionResultType.SUCCESS;
             }
 
-            if (player.isSneaking() && MekanismAPI.debug) {
+            if (player.func_225608_bj_() && MekanismAPI.debug) {
                 String[] strings = TransmitterNetworkRegistry.getInstance().toStrings();
                 //TODO: Lang string for Mekanism Debug?
                 player.sendMessage(TextComponentUtil.build(EnumColor.GRAY, "---------- ", EnumColor.DARK_BLUE, "[Mekanism Debug]", EnumColor.GRAY, " ----------"));
