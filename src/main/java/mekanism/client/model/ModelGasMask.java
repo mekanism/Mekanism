@@ -1,12 +1,15 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class ModelGasMask extends Model {
@@ -217,32 +220,33 @@ public class ModelGasMask extends Model {
         setRotation(lightR, 0F, 0F, 0F);
     }
 
-    public void render(float size) {
-        helmetfeed.render(size);
-        tubeback.render(size);
-        tubeL.render(size);
-        tubeR.render(size);
-        tubefront.render(size);
-        mouthintake.render(size);
-        finupperR.render(size);
-        finupperL.render(size);
-        finmidR.render(size);
-        finmidL.render(size);
-        finback.render(size);
-        topplate.render(size);
-        filterL.render(size);
-        filterR.render(size);
-        filterpipelower.render(size);
-        filterpipeupper.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        helmetfeed.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tubeback.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tubeL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tubeR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tubefront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        mouthintake.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        finupperR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        finupperL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        finmidR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        finmidL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        finback.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        topplate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        filterL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        filterR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        filterpipelower.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        filterpipeupper.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        pipecornerFL.render(size);
-        pipecornerFR.render(size);
-        pipecornerBR.render(size);
-        pipecornerBL.render(size);
+        pipecornerFL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        pipecornerFR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        pipecornerBR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        pipecornerBL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        lightL.render(size);
-        lightR.render(size);
+        lightL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        lightR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         //Glass needs more settings
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
@@ -252,12 +256,12 @@ public class ModelGasMask extends Model {
         GlStateManager.color4f(1, 1, 1, 0.3F);
         GlStateManager.enableCull();
 
-        glasstop.render(size);
-        glassfront.render(size);
-        glassR.render(size);
-        glassL.render(size);
-        glassbackR.render(size);
-        glassbackL.render(size);
+        glasstop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        glassfront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        glassR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        glassL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        glassbackR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        glassbackL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         GlStateManager.disableCull();
         MekanismRenderer.resetColor();

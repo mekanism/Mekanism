@@ -1,4 +1,5 @@
-package mekanism.client.render.obj;
+//TODO: 1.15
+/*package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
@@ -49,4 +50,4 @@ public class MekanismOBJModel extends OBJModel {
     public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors) {
         return super.getTextures(modelGetter, missingTextureErrors).stream().filter(r -> !r.getPath().startsWith("#")).collect(Collectors.toList());
     }
-}
+}*/

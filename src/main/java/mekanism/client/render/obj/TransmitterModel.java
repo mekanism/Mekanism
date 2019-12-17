@@ -1,4 +1,5 @@
-package mekanism.client.render.obj;
+//TODO: 1.15
+/*package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -11,8 +12,6 @@ import java.util.Random;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.data.ModelProperties;
 import mekanism.client.model.data.TransmitterModelData;
@@ -21,6 +20,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -296,4 +297,4 @@ public class TransmitterModel extends OBJBakedModelBase {
             return itemCache;
         }
     }
-}
+}*/

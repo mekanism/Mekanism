@@ -1,4 +1,5 @@
-package mekanism.client.render.obj;
+//TODO: 1.15
+/*package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -24,10 +25,6 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.OBJBakedModel;
-import net.minecraftforge.client.model.obj.OBJModel.OBJState;
-import net.minecraftforge.client.model.obj.OBJModel.Texture;
-import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -179,4 +176,4 @@ public class MekanismOBJLoader implements ICustomModelLoader {
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
         modelCache.clear();
     }
-}
+}*/

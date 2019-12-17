@@ -69,15 +69,11 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
         isChild = entity.isChild();
 
         if (modelType.armorSlot == 0) {
-            bipedHead.isHidden = false;
             bipedHead.showModel = true;
         } else if (modelType.armorSlot == 1) {
-            bipedBody.isHidden = false;
             bipedBody.showModel = true;
         } else if (modelType.armorSlot == 3) {
-            bipedLeftLeg.isHidden = false;
             bipedLeftLeg.showModel = true;
-            bipedRightLeg.isHidden = false;
             bipedRightLeg.showModel = true;
         }
 
@@ -85,13 +81,6 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
     }
 
     public void reset() {
-        bipedHead.isHidden = true;
-        bipedBody.isHidden = true;
-        bipedRightArm.isHidden = true;
-        bipedLeftArm.isHidden = true;
-        bipedRightLeg.isHidden = true;
-        bipedLeftLeg.isHidden = true;
-
         bipedHead.showModel = false;
         bipedBody.showModel = false;
         bipedRightArm.showModel = false;

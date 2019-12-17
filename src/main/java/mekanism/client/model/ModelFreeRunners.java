@@ -1,7 +1,10 @@
 package mekanism.client.model;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelFreeRunners extends Model {
 
@@ -56,25 +59,26 @@ public class ModelFreeRunners extends Model {
         SupportR.mirror = false;
     }
 
-    public void render(float size) {
-        SpringL.render(size);
-        SpringR.render(size);
-        BraceL.render(size);
-        BraceR.render(size);
-        SupportL.render(size);
-        SupportR.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        SpringL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        SpringR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        BraceL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        BraceR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        SupportL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        SupportR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
-    public void renderLeft(float size) {
-        SpringL.render(size);
-        BraceL.render(size);
-        SupportL.render(size);
+    public void renderLeft(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        SpringL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        BraceL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        SupportL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
-    public void renderRight(float size) {
-        SpringR.render(size);
-        BraceR.render(size);
-        SupportR.render(size);
+    public void renderRight(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        SpringR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        BraceR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        SupportR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPI.BoxBlacklistEvent;
-import mekanism.client.render.obj.TransmitterModel;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -38,7 +37,8 @@ public class MekanismClient {
         ClientTickHandler.tickingSet.clear();
         ClientTickHandler.portableTeleports.clear();
 
-        TransmitterModel.clearCache();
+        //TODO: 1.15
+        //TransmitterModel.clearCache();
 
         MekanismAPI.getBoxIgnore().clear();
         MekanismAPI.getBoxModIgnore().clear();

@@ -1,5 +1,8 @@
 package mekanism.generators.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
@@ -126,23 +129,24 @@ public class ModelAdvancedSolarGenerator extends Model {
         setRotation(base2, 0F, 0F, 0F);
     }
 
-    public void render(float size) {
-        crossBar.render(size);
-        panel1Bottom.render(size);
-        panel1Top.render(size);
-        portBase.render(size);
-        verticalBar.render(size);
-        sideBar1.render(size);
-        wire1.render(size);
-        sideBar2.render(size);
-        jointBox.render(size);
-        wire2.render(size);
-        panel2Top.render(size);
-        panel2Bottom.render(size);
-        base1.render(size);
-        port.render(size);
-        base3.render(size);
-        base2.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        crossBar.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panel1Bottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panel1Top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portBase.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        verticalBar.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        sideBar1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        wire1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        sideBar2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        jointBox.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        wire2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panel2Top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panel2Bottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        port.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

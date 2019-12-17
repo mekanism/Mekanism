@@ -1,8 +1,10 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
@@ -10,13 +12,13 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 
-public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank> {
+public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDynamicTank> {
 
     @Override
-    public void render(TileEntityDynamicTank tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityDynamicTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.fluidStored.getAmount() > 0) {
             RenderData data = new RenderData();
             data.location = tile.structure.renderLocation;

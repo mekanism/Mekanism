@@ -1,10 +1,13 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelAtomicDisassembler extends Model {
 
@@ -127,30 +130,31 @@ public class ModelAtomicDisassembler extends Model {
         setRotation(Shape8, 0F, 0F, 0F);
     }
 
-    public void render(float size) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         GlStateManager.pushMatrix();
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-        Shape3.render(size);
-        Shape5.render(size);
-        Shape9.render(size);
-        Shape16.render(size);
-        Shape14.render(size);
+        Shape3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape16.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape14.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.popMatrix();
 
-        Shape1.render(size);
-        Shape2.render(size);
-        Shape6.render(size);
-        Shape7.render(size);
-        Shape13.render(size);
-        Shape10.render(size);
-        Shape11.render(size);
-        Shape4.render(size);
-        Shape12.render(size);
-        Shape15.render(size);
-        Shape8.render(size);
+        Shape1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape13.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape10.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape11.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape12.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape15.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

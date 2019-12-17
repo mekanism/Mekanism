@@ -1,12 +1,15 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class ModelArmoredJetpack extends Model {
@@ -224,22 +227,23 @@ public class ModelArmoredJetpack extends Model {
         setRotation(Leftlight, 0F, 0F, 0F);
     }
 
-    public void render(float size) {
-        Packtop.render(size);
-        Packbottom.render(size);
-        Thrusterleft.render(size);
-        Thrusterright.render(size);
-        Fueltuberight.render(size);
-        Fueltubeleft.render(size);
-        Packmid.render(size);
-        WingsupportL.render(size);
-        WingsupportR.render(size);
-        Packtoprear.render(size);
-        ExtendosupportL.render(size);
-        ExtendosupportR.render(size);
-        Packdoodad2.render(size);
-        Packdoodad3.render(size);
-        Bottomthruster.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        Packtop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Packbottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Thrusterleft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Thrusterright.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Fueltuberight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Fueltubeleft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Packmid.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        WingsupportL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        WingsupportR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Packtoprear.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        ExtendosupportL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        ExtendosupportR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Packdoodad2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Packdoodad3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Bottomthruster.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         GlStateManager.pushMatrix();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
@@ -250,8 +254,8 @@ public class ModelArmoredJetpack extends Model {
         GlStateManager.enableCull();
         GlStateManager.color4f(1, 1, 1, 0.2F);
 
-        WingbladeL.render(size);
-        WingbladeR.render(size);
+        WingbladeL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        WingbladeR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.resetColor();
         GlStateManager.disableCull();
@@ -259,24 +263,24 @@ public class ModelArmoredJetpack extends Model {
         GlStateManager.enableAlphaTest();
         GlStateManager.popMatrix();
 
-        light1.render(size);
-        light2.render(size);
-        light3.render(size);
-        Packcore.render(size);
+        light1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        light2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        light3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Packcore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         GlStateManager.pushMatrix();
         GlStateManager.translatef(0, 0, -0.0625F);
 
-        Rightlight.render(size);
-        Leftlight.render(size);
+        Rightlight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Leftlight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         MekanismRenderer.disableGlow(glowInfo);
 
-        Chestplate.render(size);
-        Leftguardtop.render(size);
-        Rightguardtop.render(size);
-        middleplate.render(size);
-        Rightguardbot.render(size);
-        Leftguardbot.render(size);
+        Chestplate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Leftguardtop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Rightguardtop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        middleplate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Rightguardbot.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Leftguardbot.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         GlStateManager.popMatrix();
     }

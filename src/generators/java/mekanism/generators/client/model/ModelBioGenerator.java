@@ -1,10 +1,13 @@
 package mekanism.generators.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class ModelBioGenerator extends Model {
@@ -57,18 +60,19 @@ public class ModelBioGenerator extends Model {
         setRotation(sideLeft, 0F, 0F, 0F);
     }
 
-    public void render(float size) {
-        base.render(size);
-        sideRight.render(size);
-        sideLeft.render(size);
-        back.render(size);
-        bar.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        sideRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        sideLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bar.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        glass.render(size);
+        glass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         GlStateManager.disableBlend();
         GlStateManager.enableAlphaTest();
     }

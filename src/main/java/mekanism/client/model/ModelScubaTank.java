@@ -1,7 +1,10 @@
 package mekanism.client.model;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelScubaTank extends Model {
 
@@ -76,16 +79,17 @@ public class ModelScubaTank extends Model {
         setRotation(tankbackbrace, 0.2443461F, 0F, 0F);
     }
 
-    public void render(float size) {
-        tankL.render(size);
-        tankR.render(size);
-        tankdock.render(size);
-        capL.render(size);
-        capR.render(size);
-        tankbridge.render(size);
-        tankpipelower.render(size);
-        tankpipeupper.render(size);
-        tankbackbrace.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        tankL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tankR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tankdock.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        capL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        capR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tankbridge.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tankpipelower.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tankpipeupper.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tankbackbrace.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

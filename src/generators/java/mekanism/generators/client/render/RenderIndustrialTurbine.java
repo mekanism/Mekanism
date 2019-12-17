@@ -1,5 +1,6 @@
 package mekanism.generators.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
@@ -8,24 +9,25 @@ import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.MekanismFluids;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbineCasing> {
+public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEntityTurbineCasing> {
 
     @Nonnull
     private static FluidStack STEAM = FluidStack.EMPTY;
 
     @Override
-    public void render(TileEntityTurbineCasing tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityTurbineCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         renderAModelAt(tile, x, y, z, partialTick, destroyStage);
     }
 

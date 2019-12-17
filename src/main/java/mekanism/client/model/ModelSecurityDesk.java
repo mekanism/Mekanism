@@ -1,14 +1,17 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -94,21 +97,23 @@ public class ModelSecurityDesk extends Model {
         setRotation(monitorScreen, -0.4712389F, 0F, 0F);
     }
 
-    public void render(float size, TextureManager manager) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        //public void render(float size, TextureManager manager) {
         GlStateManager.pushMatrix();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        doRender(size);
+        doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         manager.bindTexture(OVERLAY);
         GlStateManager.scalef(1.001F, 1.001F, 1.001F);
         GlStateManager.translatef(0, -0.0011F, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-        doRender(size);
+        doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.disableBlend();
@@ -116,17 +121,17 @@ public class ModelSecurityDesk extends Model {
         GlStateManager.popMatrix();
     }
 
-    private void doRender(float size) {
-        deskTop.render(size);
-        deskBase.render(size);
-        led.render(size);
-        monitorBack.render(size);
-        keyboard.render(size);
-        monitor.render(size);
-        standNeck.render(size);
-        standBase.render(size);
-        deskMiddle.render(size);
-        monitorScreen.render(size);
+    public void doRender(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        deskTop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        deskBase.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        led.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitorBack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        keyboard.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitor.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        standNeck.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        standBase.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        deskMiddle.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitorScreen.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

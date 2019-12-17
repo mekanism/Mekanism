@@ -1,7 +1,10 @@
 package mekanism.generators.client.model;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelGasGenerator extends Model {
 
@@ -145,26 +148,27 @@ public class ModelGasGenerator extends Model {
         setRotation(connector1, 0F, 0F, 0F);
     }
 
-    public void render(float size) {
-        port4.render(size);
-        baseStand.render(size);
-        pillar4.render(size);
-        port3.render(size);
-        port2.render(size);
-        connectorAngle1.render(size);
-        pillar3.render(size);
-        pillar2.render(size);
-        pillar1.render(size);
-        center.render(size);
-        connector3.render(size);
-        port1.render(size);
-        connector4.render(size);
-        connectorAngle4.render(size);
-        base.render(size);
-        connectorAngle3.render(size);
-        connector2.render(size);
-        connectorAngle2.render(size);
-        connector1.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        port4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        baseStand.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        pillar4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        port3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        port2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        connectorAngle1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        pillar3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        pillar2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        pillar1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        center.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        connector3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        port1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        connector4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        connectorAngle4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        connectorAngle3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        connector2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        connectorAngle2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        connector1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

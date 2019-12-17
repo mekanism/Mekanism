@@ -150,6 +150,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerEntityRenderingHandler(MekanismEntityTypes.ROBIT, RenderRobit::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(MekanismEntityTypes.FLAME, RenderFlame::new);
 
+        //TODO: Evaluate extending TileEntityRendererAnimation instead of TileEntityRenderer
         //Register TileEntityRenderers
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BOILER_CASING, new RenderThermoelectricBoiler());
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BOILER_VALVE, new RenderThermoelectricBoiler());

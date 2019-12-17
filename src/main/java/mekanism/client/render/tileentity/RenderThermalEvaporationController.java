@@ -1,20 +1,22 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 
-public class RenderThermalEvaporationController extends TileEntityRenderer<TileEntityThermalEvaporationController> {
+public class RenderThermalEvaporationController extends MekanismTileEntityRenderer<TileEntityThermalEvaporationController> {
 
     @Override
-    public void render(TileEntityThermalEvaporationController tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityThermalEvaporationController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         if (tile.structured && tile.height - 2 >= 1 && tile.inputTank.getFluidAmount() > 0) {
             RenderData data = new RenderData();
             data.location = tile.getRenderLocation();

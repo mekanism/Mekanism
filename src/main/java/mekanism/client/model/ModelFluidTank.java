@@ -1,12 +1,14 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.tier.FluidTankTier;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
 
 //TODO: Replace usage of this by using the json model and drawing fluid inside of it?
@@ -89,23 +91,24 @@ public class ModelFluidTank extends Model {
         setRotation(LeftGlass, 0F, 0F, 0F);
     }
 
-    public void render(float size, FluidTankTier tier) {
-        Base.render(size);
-        PoleFL.render(size);
-        PoleLB.render(size);
-        PoleBR.render(size);
-        PoleRF.render(size);
-        Top.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        Base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        PoleFL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        PoleLB.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        PoleBR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        PoleRF.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         MekanismRenderer.color(tier.getBaseTier());
-        FrontGlass.render(size);
-        BackGlass.render(size);
-        RightGlass.render(size);
-        LeftGlass.render(size);
+        FrontGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        BackGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        RightGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        LeftGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         MekanismRenderer.resetColor();
         GlStateManager.disableBlend();
         GlStateManager.enableAlphaTest();

@@ -1,8 +1,10 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import javax.annotation.Nonnull;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
@@ -14,12 +16,12 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
+public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube> {
 
     public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube.png");
     public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
@@ -28,7 +30,7 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
     private ModelEnergyCore core = new ModelEnergyCore();
 
     @Override
-    public void render(TileEntityEnergyCube tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         //TODO: Debate converting the energy cube to a normal baked model and then just have this draw the model AND then add the core in the middle
         // Would this improve performance at all? We probably would have to put port state information into the blockstate
         GlStateManager.pushMatrix();

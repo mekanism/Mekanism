@@ -13,7 +13,8 @@ import net.minecraft.item.ItemStack;
 
 public class RenderPersonalChestItem extends MekanismItemStackRenderer {
 
-    private static ChestModel personalChest = new ChestModel();
+    //TODO: 1.15
+    //private static ChestModel personalChest = new ChestModel();
     public static ItemLayerWrapper model;
 
     @Override

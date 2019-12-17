@@ -1,6 +1,9 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.entity.EntityRobit;
@@ -122,50 +125,52 @@ public class ModelRobit extends EntityModel<EntityRobit> {
     }
 
     @Override
-    public void render(EntityRobit entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.render(entity, f, f1, f2, f3, f4, f5);
-        setRotationAngles(entity, f, f1, f2, f3, f4, f5);
+    public void func_225597_a_(EntityRobit entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //public void render(EntityRobit entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        //super.func_225597_a_(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         GlStateManager.pushMatrix();
         GlStateManager.rotatef(180, 0, 1, 0);
 
-        Body.render(f5);
-        Bottom.render(f5);
-        RightTrack.render(f5);
-        LeftTrack.render(f5);
-        Neck.render(f5);
-        Head.render(f5);
-        Backpack.render(f5);
-        headback.render(f5);
-        rightarn.render(f5);
-        leftarm.render(f5);
-        righthand.render(f5);
-        lefthand.render(f5);
+        Body.render(scale);
+        Bottom.render(scale);
+        RightTrack.render(scale);
+        LeftTrack.render(scale);
+        Neck.render(scale);
+        Head.render(scale);
+        Backpack.render(scale);
+        headback.render(scale);
+        rightarn.render(scale);
+        leftarm.render(scale);
+        righthand.render(scale);
+        lefthand.render(scale);
 
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        backLight.render(f5);
-        eyeRight.render(f5);
-        eyeLeft.render(f5);
+        backLight.render(scale);
+        eyeRight.render(scale);
+        eyeLeft.render(scale);
         MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.popMatrix();
     }
 
-    public void render(float size) {
-        Body.render(size);
-        Bottom.render(size);
-        RightTrack.render(size);
-        LeftTrack.render(size);
-        Neck.render(size);
-        Head.render(size);
-        Backpack.render(size);
-        headback.render(size);
-        rightarn.render(size);
-        leftarm.render(size);
-        righthand.render(size);
-        lefthand.render(size);
-        backLight.render(size);
-        eyeRight.render(size);
-        eyeLeft.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        Body.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Bottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        RightTrack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        LeftTrack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Neck.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Head.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Backpack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        headback.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rightarn.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        leftarm.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        righthand.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        lefthand.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        backLight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        eyeRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        eyeLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

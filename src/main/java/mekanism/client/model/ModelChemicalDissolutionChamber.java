@@ -1,10 +1,13 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class ModelChemicalDissolutionChamber extends Model {
@@ -226,42 +229,43 @@ public class ModelChemicalDissolutionChamber extends Model {
         setRotation(portToggle2, 0F, 0F, 0F);
     }
 
-    public void render(float size) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        support2.render(size);
-        vat5.render(size);
-        top2.render(size);
-        top.render(size);
-        base.render(size);
-        vat2.render(size);
-        vat3.render(size);
-        vat6.render(size);
-        vat9.render(size);
-        vat8.render(size);
-        vat7.render(size);
-        vat4.render(size);
-        backEdge2.render(size);
-        back.render(size);
-        backEdge1.render(size);
-        vents.render(size);
-        support1.render(size);
-        vat1.render(size);
-        nozzle8.render(size);
-        nozzle5.render(size);
-        nozzle7.render(size);
-        nozzle4.render(size);
-        nozzle9.render(size);
-        nozzle6.render(size);
-        nozzle3.render(size);
-        nozzle2.render(size);
-        nozzle1.render(size);
-        glass.render(size);
-        portToggle1.render(size);
-        portToggle2.render(size);
+        support2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vat5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        top2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vat2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vat3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vat6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vat9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vat8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vat7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vat4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        backEdge2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        backEdge1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vents.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        vat1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        nozzle8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        nozzle5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        nozzle7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        nozzle4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        nozzle9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        nozzle6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        nozzle3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        nozzle2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        nozzle1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        glass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portToggle1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portToggle2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         GlStateManager.disableBlend();
         GlStateManager.enableAlphaTest();

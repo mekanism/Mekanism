@@ -1,7 +1,10 @@
 package mekanism.generators.client.model;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelWindGenerator extends Model {
 
@@ -159,20 +162,22 @@ public class ModelWindGenerator extends Model {
         setRotation(post1d, -0.0347321F, 0F, -0.0347321F);
     }
 
-    public void render(float size, double angle) {
-        head.render(size);
-        plateConnector2.render(size);
-        plateConnector.render(size);
-        plate.render(size);
-        baseRim.render(size);
-        base.render(size);
-        wire.render(size);
-        rearPlate1.render(size);
-        rearPlate2.render(size);
-        post1a.render(size);
-        post1b.render(size);
-        post1c.render(size);
-        post1d.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+    //public void render(float size, double angle) {
+        head.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        plateConnector2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        plateConnector.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        plate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        baseRim.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        wire.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rearPlate1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rearPlate2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        post1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        post1b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        post1c.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        post1d.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         setRotation(blade1a, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
         setRotation(blade1b, 0F, 0F, 0.0349066F + getRotation(getAbsoluteAngle(angle)));
@@ -186,15 +191,15 @@ public class ModelWindGenerator extends Model {
         setRotation(bladeCap, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
         setRotation(bladeCenter, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
 
-        blade1a.render(size);
-        blade2a.render(size);
-        blade3a.render(size);
-        blade1b.render(size);
-        blade2b.render(size);
-        blade3b.render(size);
+        blade1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        blade2a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        blade3a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        blade1b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        blade2b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        blade3b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        bladeCap.render(size);
-        bladeCenter.render(size);
+        bladeCap.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bladeCenter.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     public float getRotation(double angle) {

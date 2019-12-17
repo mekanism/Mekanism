@@ -1,13 +1,15 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -343,29 +345,31 @@ public class ModelEnergyCube extends Model {
         connectors = new ModelRenderer[]{connectorBottomToggle, connectorTopToggle, connectorFrontToggle, connectorBackToggle, connectorLeftToggle, connectorRightToggle};
     }
 
-    public void render(float size, EnergyCubeTier tier, TextureManager manager, boolean renderMain) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        //public void render(float size, EnergyCubeTier tier, TextureManager manager, boolean renderMain) {
         if (renderMain) {
-            frame12.render(size);
-            frame11.render(size);
-            frame10.render(size);
-            frame9.render(size);
-            frame8.render(size);
-            frame7.render(size);
-            frame6.render(size);
-            frame5.render(size);
-            frame4.render(size);
-            frame3.render(size);
-            frame2.render(size);
-            frame1.render(size);
+            frame12.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame11.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame10.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            frame1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-            corner8.render(size);
-            corner7.render(size);
-            corner6.render(size);
-            corner5.render(size);
-            corner4.render(size);
-            corner3.render(size);
-            corner2.render(size);
-            corner1.render(size);
+            corner8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            corner7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            corner6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            corner5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            corner4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            corner3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            corner2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            corner1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         }
 
         GlStateManager.pushMatrix();
@@ -375,14 +379,14 @@ public class ModelEnergyCube extends Model {
         MekanismRenderer.color(tier.getBaseTier().getColor());
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-        corner8.render(size);
-        corner7.render(size);
-        corner6.render(size);
-        corner5.render(size);
-        corner4.render(size);
-        corner3.render(size);
-        corner2.render(size);
-        corner1.render(size);
+        corner8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.disableGlow(glowInfo);
         MekanismRenderer.resetColor();
@@ -391,23 +395,23 @@ public class ModelEnergyCube extends Model {
 
     public void renderSide(float size, Direction side, boolean canInput, boolean canOutput, TextureManager renderer) {
         if (canInput || canOutput) {
-            connectors[side.ordinal()].render(size);
-            ports[side.ordinal()].render(size);
+            connectors[side.ordinal()].func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            ports[side.ordinal()].func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         }
 
         GlowInfo glowInfo;
         if (canOutput) {
             glowInfo = MekanismRenderer.enableGlow();
             renderer.bindTexture(BASE_OVERLAY);
-            ports[side.ordinal()].render(size);
+            ports[side.ordinal()].func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         } else {
             glowInfo = MekanismRenderer.NO_GLOW;
         }
 
         renderer.bindTexture(canOutput ? OVERLAY_ON : OVERLAY_OFF);
 
-        leds1[side.ordinal()].render(size);
-        leds2[side.ordinal()].render(size);
+        leds1[side.ordinal()].func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        leds2[side.ordinal()].func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         MekanismRenderer.disableGlow(glowInfo);
     }
 
@@ -432,8 +436,9 @@ public class ModelEnergyCube extends Model {
             cube.mirror = true;
         }
 
-        public void render(float size) {
-            cube.render(size);
+        @Override
+        public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+            cube.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         }
     }
 }

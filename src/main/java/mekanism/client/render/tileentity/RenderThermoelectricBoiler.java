@@ -1,5 +1,6 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
@@ -13,12 +14,12 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.MekanismFluids;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.fluid.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {
+public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileEntityBoilerCasing> {
 
     @Nonnull
     private static FluidStack STEAM = FluidStack.EMPTY;
@@ -26,7 +27,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
     private static final FluidStack WATER = new FluidStack(Fluids.WATER, 1);
 
     @Override
-    public void render(TileEntityBoilerCasing tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityBoilerCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null &&
             tile.structure.upperRenderLocation != null) {
             FluidStack waterStored = tile.structure.waterStored;

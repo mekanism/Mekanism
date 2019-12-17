@@ -1,7 +1,10 @@
 package mekanism.client.model;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelTransporterBox extends Model {
 
@@ -19,8 +22,9 @@ public class ModelTransporterBox extends Model {
         setRotation(box, 0F, 0F, 0F);
     }
 
-    public void render(float size) {
-        box.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        box.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

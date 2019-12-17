@@ -1,20 +1,22 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
-public class RenderBin extends TileEntityRenderer<TileEntityBin> {
+public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
 
     @Override
-    public void render(TileEntityBin tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityBin tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         Coord4D obj = Coord4D.get(tile).offset(tile.getDirection());
         if (!Block.hasSolidSide(tile.getWorld().getBlockState(obj.getPos()), tile.getWorld(), obj.getPos(), tile.getOppositeDirection())) {
             render(tile.getDirection(), tile.clientStack, true, x, y, z);

@@ -1,10 +1,12 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
@@ -15,17 +17,17 @@ import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
-public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
+public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter> {
 
     private Map<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
 
     @Override
-    public void render(TileEntityTeleporter tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityTeleporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         //TODO: Figure out why it always renders in one direction even if the teleporter is assembled along the other axis
         if (tile.shouldRender) {
             GlStateManager.pushMatrix();

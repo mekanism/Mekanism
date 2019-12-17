@@ -1,19 +1,21 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import javax.annotation.Nonnull;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 
-public class RenderSeismicVibrator extends TileEntityRenderer<TileEntitySeismicVibrator> {
+public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntitySeismicVibrator> {
 
     private ModelSeismicVibrator model = new ModelSeismicVibrator();
 
     @Override
-    public void render(TileEntitySeismicVibrator tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntitySeismicVibrator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "seismic_vibrator.png"));

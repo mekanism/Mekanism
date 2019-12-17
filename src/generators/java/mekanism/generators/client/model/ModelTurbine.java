@@ -1,8 +1,11 @@
 package mekanism.generators.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelTurbine extends Model {
 
@@ -58,13 +61,15 @@ public class ModelTurbine extends Model {
         setRotateAngle(blade_west, BLADE_ROTATE, 0.0F, 0.0F);
     }
 
-    public void render(float size, int index) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        //public void render(float size, int index) {
         GlStateManager.pushMatrix();
         GlStateManager.rotatef(index * 5, 0, 1, 0);
-        extension_south.render(size);
-        extension_west.render(size);
-        extension_east.render(size);
-        extension_north.render(size);
+        extension_south.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        extension_west.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        extension_east.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        extension_north.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         float scale = index * 0.5F;
         float widthDiv = 16;
         renderBlade(blade_west, size, scale, scale / widthDiv, -0.25F, 0.0F);

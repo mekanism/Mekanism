@@ -1,5 +1,6 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
@@ -13,12 +14,12 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
-public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
+public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank> {
 
     public static final RenderFluidTank INSTANCE = new RenderFluidTank();
 
@@ -33,7 +34,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
     }
 
     @Override
-    public void render(TileEntityFluidTank tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityFluidTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         FluidStack fluid = tile.fluidTank.getFluid();
         render(tile.tier, fluid, tile.prevScale, tile.valve > 0 ? tile.valveFluid : FluidStack.EMPTY, x, y, z);
     }

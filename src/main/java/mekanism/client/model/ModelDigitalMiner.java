@@ -1,15 +1,17 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -420,7 +422,9 @@ public class ModelDigitalMiner extends Model {
         setRotation(monitor3, 0.0872665F, 0.2094395F, 0F);
     }
 
-    public void render(float size, boolean on, TextureManager manager, boolean renderMain) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        //public void render(float size, boolean on, TextureManager manager, boolean renderMain) {
         GlStateManager.pushMatrix();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
@@ -428,7 +432,7 @@ public class ModelDigitalMiner extends Model {
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
         if (renderMain) {
-            doRender(size);
+            doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         }
 
         manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
@@ -436,7 +440,7 @@ public class ModelDigitalMiner extends Model {
         GlStateManager.translatef(-0.0011F, -0.0011F, -0.0011F);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-        doRender(size);
+        doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.disableBlend();
@@ -444,63 +448,63 @@ public class ModelDigitalMiner extends Model {
         GlStateManager.popMatrix();
     }
 
-    private void doRender(float size) {
-        keyboard.render(size);
-        keyboardBottom.render(size);
-        keyboardSupportExt1.render(size);
-        keyboardSupportExt2.render(size);
-        keyboardSupport1.render(size);
-        keyboardSupport2.render(size);
-        monitor1back.render(size);
-        monitor2back.render(size);
-        monitor3back.render(size);
-        monitorBar1.render(size);
-        monitorBar2.render(size);
-        led1.render(size);
-        led2.render(size);
-        led3.render(size);
-        monitor1.render(size);
-        monitor2.render(size);
-        monitor3.render(size);
-        monitorMount1.render(size);
-        monitorMount2.render(size);
-        frame1.render(size);
-        frame3.render(size);
-        plate5.render(size);
-        bracket1.render(size);
-        bracket2.render(size);
-        bracket3.render(size);
-        bracket4.render(size);
-        bracket5.render(size);
-        bracket6.render(size);
-        bracket7.render(size);
-        bracket8.render(size);
-        bracketPlate1.render(size);
-        bracketPlate2.render(size);
-        bracketPlate3.render(size);
-        bracketPlate4.render(size);
-        supportBeam1.render(size);
-        supportBeam2.render(size);
-        supportBeam3.render(size);
-        supportBeam4.render(size);
-        foot1.render(size);
-        foot2.render(size);
-        foot3.render(size);
-        foot4.render(size);
-        core.render(size);
-        powerCable1a.render(size);
-        powerCable1b.render(size);
-        powerCable2.render(size);
-        powerCable3.render(size);
-        powerConnector1.render(size);
-        powerConnector2a.render(size);
-        powerConnector2b.render(size);
-        powerCpnnector3a.render(size);
-        powerConnector3b.render(size);
-        frame2a.render(size);
-        frame2b.render(size);
-        frame2c.render(size);
-        frame2d.render(size);
+    public void doRender(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        keyboard.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        keyboardBottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        keyboardSupportExt1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        keyboardSupportExt2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        keyboardSupport1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        keyboardSupport2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitor1back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitor2back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitor3back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitorBar1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitorBar2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        led1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        led2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        led3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitor1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitor2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitor3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitorMount1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        monitorMount2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        plate5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracket1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracket2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracket3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracket4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracket5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracket6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracket7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracket8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracketPlate1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracketPlate2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracketPlate3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bracketPlate4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        supportBeam1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        supportBeam2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        supportBeam3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        supportBeam4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        foot1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        foot2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        foot3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        foot4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        core.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        powerCable1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        powerCable1b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        powerCable2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        powerCable3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        powerConnector1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        powerConnector2a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        powerConnector2b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        powerCpnnector3a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        powerConnector3b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame2a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame2b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame2c.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame2d.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -1,7 +1,9 @@
 package mekanism.additions.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import mekanism.api.text.EnumColor;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -50,23 +52,25 @@ public class ModelBalloon extends Model {
         setRotation(String, 0F, 0F, 0F);
     }
 
-    public void render(float size, EnumColor color) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        //public void render(float size, EnumColor color) {
         GlStateManager.pushMatrix();
         MekanismRenderer.color(color);
         GlStateManager.scalef(1.5F, 1.5F, 1.5F);
         GlStateManager.translatef(0, -0.07F, 0);
 
-        Balloon2.render(size);
-        Balloon1.render(size);
-        Balloon3.render(size);
-        Balloonnub.render(size);
+        Balloon2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Balloon1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Balloon3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Balloonnub.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.resetColor();
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
         GlStateManager.scalef(0.2F, 1, 0.2F);
-        String.render(size);
+        String.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         GlStateManager.popMatrix();
     }
 

@@ -1,7 +1,10 @@
 package mekanism.client.model;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelSolarNeutronActivator extends Model {
 
@@ -342,54 +345,55 @@ public class ModelSolarNeutronActivator extends Model {
         setRotation(laserBeamToggle, -0.1117011F, 0F, 0F);
     }
 
-    public void render(float size) {
-        pole.render(size);
-        panel3.render(size);
-        port.render(size);
-        panel1.render(size);
-        panel2.render(size);
-        panelBase.render(size);
-        panelBraceLeft2.render(size);
-        panelBraceRight2.render(size);
-        panelBraceLeft1.render(size);
-        panelBraceRight1.render(size);
-        panelBrace.render(size);
-        bridge.render(size);
-        platform.render(size);
-        hole2.render(size);
-        hole4.render(size);
-        hole1.render(size);
-        hole3.render(size);
-        brace2.render(size);
-        tube2c.render(size);
-        tube1b.render(size);
-        tube1c.render(size);
-        tube2b.render(size);
-        tube2a.render(size);
-        tube1a.render(size);
-        conduit.render(size);
-        brace1.render(size);
-        tank.render(size);
-        laser.render(size);
-        base.render(size);
-        support1.render(size);
-        support2.render(size);
-        support3.render(size);
-        support4.render(size);
-        support5.render(size);
-        support6.render(size);
-        support7.render(size);
-        support8.render(size);
-        support9.render(size);
-        support10.render(size);
-        support11.render(size);
-        support12.render(size);
-        support13.render(size);
-        support14.render(size);
-        support15.render(size);
-        support16.render(size);
-        portConnector.render(size);
-        laserBeamToggle.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        pole.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panel3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        port.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panel1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panel2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panelBase.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panelBraceLeft2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panelBraceRight2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panelBraceLeft1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panelBraceRight1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        panelBrace.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bridge.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        platform.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        hole2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        hole4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        hole1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        hole3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        brace2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tube2c.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tube1b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tube1c.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tube2b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tube2a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tube1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        conduit.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        brace1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tank.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        laser.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support10.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support11.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support12.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support13.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support14.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support15.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support16.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portConnector.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        laserBeamToggle.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

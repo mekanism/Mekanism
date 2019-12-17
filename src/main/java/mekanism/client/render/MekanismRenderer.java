@@ -14,7 +14,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
@@ -109,9 +108,9 @@ public class MekanismRenderer {
         Fluid fluid = fluidStack.getFluid();
         ResourceLocation spriteLocation;
         if (type == FluidType.STILL) {
-            spriteLocation = fluid.getAttributes().getStill(fluidStack);
+            spriteLocation = fluid.getAttributes().getStillTexture(fluidStack);
         } else {
-            spriteLocation = fluid.getAttributes().getFlowing(fluidStack);
+            spriteLocation = fluid.getAttributes().getFlowingTexture(fluidStack);
         }
         return getTextureAtlasSprite(spriteLocation);
     }
@@ -360,7 +359,8 @@ public class MekanismRenderer {
         event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
 
         //TODO: Figure out why this sometimes causes crashes during startup
-        TransmitterModel.addIcons(event);
+        //TODO: 1.15
+        //TransmitterModel.addIcons(event);
 
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
             event.addSprite(gas.getIcon());

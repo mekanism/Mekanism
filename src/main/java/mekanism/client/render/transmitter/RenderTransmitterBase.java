@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -18,7 +19,6 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
@@ -38,7 +38,7 @@ import org.antlr.v4.runtime.atn.BasicState;
 import org.lwjgl.opengl.GL11;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends TileEntityRenderer<T> {
+public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends MekanismTileEntityRenderer<T> {
 
     /* Credit to Eternal Energy */
     public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = location -> DummyAtlasTextureFlipV.instance;

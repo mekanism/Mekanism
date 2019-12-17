@@ -1,7 +1,10 @@
 package mekanism.client.model;
 
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelFlamethrower extends Model {
 
@@ -174,30 +177,31 @@ public class ModelFlamethrower extends Model {
         setRotation(Hydrogen, 0F, 0F, 0.4438713F);
     }
 
-    public void render(float size) {
-        RingButtom.render(size);
-        RingTop.render(size);
-        Ring.render(size);
-        Axle.render(size);
-        AxleBLeft.render(size);
-        AxleBRight.render(size);
-        AxleTRight.render(size);
-        AxleTLeft.render(size);
-        Grasp.render(size);
-        GraspRod.render(size);
-        SupportCentre.render(size);
-        SupportFront.render(size);
-        SupportRear.render(size);
-        LargeBarrel.render(size);
-        LargeBarrelDecor.render(size);
-        LargeBarrelDecor2.render(size);
-        Barrel.render(size);
-        BarrelRing.render(size);
-        BarrelRing2.render(size);
-        Flame.render(size);
-        FlameStrut.render(size);
-        HydrogenDecor.render(size);
-        Hydrogen.render(size);
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        RingButtom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        RingTop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Ring.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Axle.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        AxleBLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        AxleBRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        AxleTRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        AxleTLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Grasp.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        GraspRod.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        SupportCentre.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        SupportFront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        SupportRear.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        LargeBarrel.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        LargeBarrelDecor.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        LargeBarrelDecor2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Barrel.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        BarrelRing.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        BarrelRing2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Flame.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        FlameStrut.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        HydrogenDecor.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Hydrogen.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

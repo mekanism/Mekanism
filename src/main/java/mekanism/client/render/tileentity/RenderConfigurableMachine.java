@@ -1,11 +1,13 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer;
@@ -17,6 +19,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -28,19 +31,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import org.lwjgl.opengl.GL11;
 
-public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntityRenderer<S> {
-
-    private Minecraft minecraft = Minecraft.getInstance();
+public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends MekanismTileEntityRenderer<S> {
 
     private Map<Direction, Map<TransmissionType, DisplayInteger>> cachedOverlays = new EnumMap<>(Direction.class);
 
-    public RenderConfigurableMachine() {
-        rendererDispatcher = TileEntityRendererDispatcher.instance;
-    }
-
     @Override
-    public void render(S configurable, double x, double y, double z, float partialTick, int destroyStage) {
-        ItemStack itemStack = minecraft.player.inventory.getCurrentItem();
+    public void func_225616_a_(@Nonnull S configurable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
         if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
             //TODO: Properly figure out which one the player is looking at

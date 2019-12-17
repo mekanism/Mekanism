@@ -1,14 +1,17 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -311,7 +314,9 @@ public class ModelQuantumEntangloporter extends Model {
         setRotation(portLeftLarge, 0F, 0F, 0F);
     }
 
-    public void render(float size, TextureManager manager, boolean renderMain) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        //public void render(float size, TextureManager manager, boolean renderMain) {
         GlStateManager.pushMatrix();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
@@ -319,7 +324,7 @@ public class ModelQuantumEntangloporter extends Model {
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
         if (renderMain) {
-            doRender(size);
+            doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         }
 
         manager.bindTexture(OVERLAY);
@@ -327,7 +332,7 @@ public class ModelQuantumEntangloporter extends Model {
         GlStateManager.translatef(0, -0.0011F, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-        doRender(size);
+        doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.disableBlend();
@@ -335,48 +340,48 @@ public class ModelQuantumEntangloporter extends Model {
         GlStateManager.popMatrix();
     }
 
-    public void doRender(float size) {
-        portTop.render(size);
-        portBottom.render(size);
-        portLeft.render(size);
-        portRight.render(size);
-        portBack.render(size);
-        portFront.render(size);
-        energyCubeCore.render(size);
-        frameEdge1.render(size);
-        frameEdge2.render(size);
-        frameEdge3.render(size);
-        frameEdge4.render(size);
-        frameEdge5.render(size);
-        frameEdge6.render(size);
-        frameEdge7.render(size);
-        frameEdge8.render(size);
-        frameEdge9.render(size);
-        frameEdge10.render(size);
-        frameEdge11.render(size);
-        frameEdge12.render(size);
-        frame1.render(size);
-        frame2.render(size);
-        frame3.render(size);
-        frame4.render(size);
-        frame5.render(size);
-        frame6.render(size);
-        frame7.render(size);
-        frame8.render(size);
-        frame9.render(size);
-        frame10.render(size);
-        frame11.render(size);
-        frame12.render(size);
-        corner1.render(size);
-        corner2.render(size);
-        corner3.render(size);
-        corner4.render(size);
-        corner5.render(size);
-        corner6.render(size);
-        corner7.render(size);
-        corner8.render(size);
-        //portRightLarge.render(size);
-        //portLeftLarge.render(size);
+    public void doRender(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        portTop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portBottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portBack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portFront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        energyCubeCore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge10.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge11.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frameEdge12.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame10.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame11.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        frame12.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        //portRightLarge.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        //portLeftLarge.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

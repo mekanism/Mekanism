@@ -1,18 +1,21 @@
 package mekanism.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 
-public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalChest> {
+public class RenderPersonalChest extends MekanismTileEntityRenderer<TileEntityPersonalChest> {
 
-    private ChestModel model = new ChestModel();
+    //TODO: 1.15
+    //private ChestModel model = new ChestModel();
 
     @Override
-    public void render(TileEntityPersonalChest tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityPersonalChest tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef((float) x, (float) y + 1F, (float) z);
         GlStateManager.rotatef(90, 0, 1, 0);

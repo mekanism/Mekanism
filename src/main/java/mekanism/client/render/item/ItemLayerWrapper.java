@@ -1,12 +1,10 @@
 package mekanism.client.render.item;
 
-import com.google.common.collect.ImmutableMap;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -17,8 +15,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.data.IModelData;
-import org.apache.commons.lang3.tuple.Pair;
 
 //From: https://github.com/Shadows-of-Fire/Singularities/blob/master/src/main/java/shadows/singularity/client/ItemLayerWrapper.java
 public class ItemLayerWrapper implements IBakedModel {
@@ -105,11 +103,13 @@ public class ItemLayerWrapper implements IBakedModel {
 
     @Nonnull
     @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(@Nonnull TransformType type) {
+    public IBakedModel handlePerspective(@Nonnull TransformType type, MatrixStack matrix) {
         transform = type;
         //TODO: Do we want this to return ForgeHooksClient.handlePerspective(this, type);
         //You can use a field on your TileEntityItemStackRenderer to store this TransformType for use in renderByItem, this method is always called before it.
-        return Pair.of(this, transforms.get(type).getMatrixVec());
+        //TODO: 1.15 re-evaluate
+        //return Pair.of(this, transforms.get(type).getMatrixVec());
+        return ForgeHooksClient.handlePerspective(this, type, matrix);
     }
 
     @Nonnull
@@ -119,7 +119,7 @@ public class ItemLayerWrapper implements IBakedModel {
 
 
     // Copy from old CTM
-    public static Map<TransformType, TRSRTransformation> transforms = ImmutableMap.<TransformType, TRSRTransformation>builder()
+    /*public static Map<TransformType, TRSRTransformation> transforms = ImmutableMap.<TransformType, TRSRTransformation>builder()
           .put(TransformType.GUI, get(0, 0, 0, 30, 225, 0, 0.625f))
           .put(TransformType.THIRD_PERSON_RIGHT_HAND, get(0, 2.5f, 0, 75, 45, 0, 0.375f))
           .put(TransformType.THIRD_PERSON_LEFT_HAND, get(0, 2.5f, 0, 75, 45, 0, 0.375f))
@@ -134,5 +134,5 @@ public class ItemLayerWrapper implements IBakedModel {
     private static TRSRTransformation get(float tx, float ty, float tz, float ax, float ay, float az, float s) {
         return new TRSRTransformation(new Vector3f(tx / 16, ty / 16, tz / 16),
               TRSRTransformation.quatFromXYZDegrees(new Vector3f(ax, ay, az)), new Vector3f(s, s, s), null);
-    }
+    }*/
 }

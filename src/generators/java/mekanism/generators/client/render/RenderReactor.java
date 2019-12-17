@@ -1,25 +1,28 @@
 package mekanism.generators.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import org.lwjgl.opengl.GL11;
 
-public class RenderReactor extends TileEntityRenderer<TileEntityReactorController> {
+public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorController> {
 
     private ModelEnergyCore core = new ModelEnergyCore();
 
     @Override
-    public void render(TileEntityReactorController tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void func_225616_a_(@Nonnull TileEntityReactorController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         if (tile.isBurning()) {
             GlStateManager.pushMatrix();
             GlStateManager.translatef((float) x + 0.5F, (float) y - 1.5F, (float) z + 0.5F);

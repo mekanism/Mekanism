@@ -1,8 +1,11 @@
 package mekanism.generators.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
@@ -140,21 +143,23 @@ public class ModelHeatGenerator extends Model {
         setRotation(base, 0F, 0F, 0F);
     }
 
-    public void render(float size, boolean on, TextureManager manager) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        //public void render(float size, boolean on, TextureManager manager) {
         GlStateManager.pushMatrix();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        doRender(size);
+        doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
         GlStateManager.scalef(1.001F, 1.001F, 1.001F);
         GlStateManager.translatef(0, -0.0011F, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
-        doRender(size);
+        doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         MekanismRenderer.disableGlow(glowInfo);
         GlStateManager.disableBlend();
@@ -162,23 +167,23 @@ public class ModelHeatGenerator extends Model {
         GlStateManager.popMatrix();
     }
 
-    private void doRender(float size) {
-        drum.render(size);
-        ring1.render(size);
-        ring2.render(size);
-        back.render(size);
-        bar1.render(size);
-        bar2.render(size);
-        plate.render(size);
-        fin8.render(size);
-        fin7.render(size);
-        fin1.render(size);
-        fin2.render(size);
-        fin3.render(size);
-        fin4.render(size);
-        fin5.render(size);
-        fin6.render(size);
-        base.render(size);
+    public void doRender(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        drum.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        ring1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        ring2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bar1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        bar2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        plate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        fin8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        fin7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        fin1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        fin2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        fin3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        fin4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        fin5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        fin6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

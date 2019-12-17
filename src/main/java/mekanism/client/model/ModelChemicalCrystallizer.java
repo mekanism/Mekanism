@@ -1,10 +1,13 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import net.minecraft.client.renderer.model.Model;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class ModelChemicalCrystallizer extends Model {
@@ -135,29 +138,30 @@ public class ModelChemicalCrystallizer extends Model {
         setRotation(Shape1, 0F, 0F, 0F);
     }
 
-    public void render(float size) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.disableAlphaTest();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        tray.render(size);
-        support4.render(size);
-        rimBack.render(size);
-        portRight.render(size);
-        rimRight.render(size);
-        rimLeft.render(size);
-        rimFront.render(size);
-        portLeft.render(size);
-        support3.render(size);
-        support2.render(size);
-        support1.render(size);
-        tank.render(size);
-        rod1.render(size);
-        rod2.render(size);
-        rod3.render(size);
-        base.render(size);
-        Shape1.render(size);
+        tray.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rimBack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rimRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rimLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rimFront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        portLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        support1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        tank.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rod1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rod2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rod3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         GlStateManager.disableBlend();
         GlStateManager.enableAlphaTest();

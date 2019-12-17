@@ -1,4 +1,5 @@
-package mekanism.client.render.obj;
+//TODO: 1.15
+/*package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -14,10 +15,10 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.vecmath.Matrix4f;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -36,7 +37,7 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
     private static Method m_updateStateVisibilityMap;
     private static Field f_textures;
     protected IBakedModel baseModel;
-    protected TextureAtlasSprite tempSprite = ModelLoader.White.INSTANCE;
+    protected TextureAtlasSprite tempSprite = ModelLoader.White.instance();
     protected VertexFormat vertexFormat;
     protected ImmutableMap<String, TextureAtlasSprite> textureMap;
     protected Map<TransformType, Matrix4f> transformationMap;
@@ -226,4 +227,4 @@ public abstract class OBJBakedModelBase extends OBJBakedModel {
     protected boolean shouldRotate(Face f, String groupName) {
         return false;
     }
-}
+}*/
