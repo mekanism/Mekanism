@@ -13,7 +13,7 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 
 public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDynamicTank> {
 
@@ -28,7 +28,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
             data.fluidType = tile.structure.fluidStored;
 
             if (data.location != null && data.height >= 1) {
-                bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
                 RenderSystem.pushMatrix();
                 RenderSystem.enableCull();
                 RenderSystem.enableBlend();

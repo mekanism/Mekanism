@@ -1,17 +1,15 @@
 package mekanism.additions.client.render.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.AdditionsBlock;
 import mekanism.additions.common.entity.EntityObsidianTNT;
-import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.entity.TNTMinecartRenderer;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -23,49 +21,29 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
     }
 
     @Override
-    public void doRender(@Nonnull EntityObsidianTNT entityobsidiantnt, double x, double y, double z, float entityYaw, float partialTicks) {
-        BlockRendererDispatcher renderer = Minecraft.getInstance().getBlockRendererDispatcher();
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef((float) x, (float) y + 0.5F, (float) z);
-
-        if (entityobsidiantnt.getFuse() - partialTicks + 1.0F < 10.0F) {
-            float f = 1.0F - (entityobsidiantnt.getFuse() - partialTicks + 1.0F) / 10.0F;
+    public void func_225623_a_(@Nonnull EntityObsidianTNT tnt, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
+        matrix.func_227860_a_();
+        matrix.func_227861_a_(0.0D, 0.5D, 0.0D);
+        if ((float) tnt.getFuse() - partialTick + 1.0F < 10.0F) {
+            float f = 1.0F - ((float) tnt.getFuse() - partialTick + 1.0F) / 10.0F;
             f = MathHelper.clamp(f, 0.0F, 1.0F);
             f = f * f;
             f = f * f;
-            float scale = 1.0F + f * 0.3F;
-            RenderSystem.scalef(scale, scale, scale);
+            float f1 = 1.0F + f * 0.3F;
+            matrix.func_227862_a_(f1, f1, f1);
         }
 
-        float f3 = (1.0F - ((entityobsidiantnt.getFuse() - partialTicks) + 1.0F) / 100F) * 0.8F;
-        bindEntityTexture(entityobsidiantnt);
-        RenderSystem.translatef(-0.5F, -0.5F, 0.5F);
-        renderer.renderBlockBrightness(AdditionsBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), entityobsidiantnt.getBrightness());
-        RenderSystem.translatef(0, 0, 1.0F);
-
-        if (entityobsidiantnt.getFuse() / 5 % 2 == 0) {
-            RenderSystem.disableTexture();
-            RenderSystem.disableLighting();
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.DST_ALPHA);
-            RenderSystem.color4f(1, 1, 1, f3);
-            RenderSystem.polygonOffset(-3.0F, -3.0F);
-            RenderSystem.enablePolygonOffset();
-            renderer.renderBlockBrightness(AdditionsBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), 1.0F);
-            RenderSystem.polygonOffset(0.0F, 0.0F);
-            RenderSystem.disablePolygonOffset();
-            MekanismRenderer.resetColor();
-            RenderSystem.disableBlend();
-            RenderSystem.enableLighting();
-            RenderSystem.enableTexture();
-        }
-
-        RenderSystem.popMatrix();
+        matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-90.0F));
+        matrix.func_227861_a_(-0.5D, -0.5D, 0.5D);
+        matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90.0F));
+        TNTMinecartRenderer.func_229127_a_(AdditionsBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), matrix, renderer, light, tnt.getFuse() / 5 % 2 == 0);
+        matrix.func_227865_b_();
+        super.func_225623_a_(tnt, entityYaw, partialTick, matrix, renderer, light);
     }
 
     @Nonnull
     @Override
     public ResourceLocation getEntityTexture(@Nonnull EntityObsidianTNT entity) {
-        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
+        return PlayerContainer.field_226615_c_;
     }
 }

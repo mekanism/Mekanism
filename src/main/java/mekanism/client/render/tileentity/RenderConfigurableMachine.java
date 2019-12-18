@@ -20,11 +20,8 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -61,7 +58,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
                             MekanismRenderer.color(dataType.getColor(), 0.6F);
-                            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                            field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
                             RenderSystem.translatef((float) x, (float) y, (float) z);
                             int display = getOverlayDisplay(pos.getFace(), type).display;
                             GlStateManager.callList(display);

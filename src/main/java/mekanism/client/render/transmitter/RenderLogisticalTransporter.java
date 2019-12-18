@@ -34,6 +34,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -128,7 +129,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     RenderSystem.enableBlend();
                     RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
                     RenderSystem.color4f(1, 1, 1, 0.8F);
-                    bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                    field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
                     RenderSystem.translatef((float) x, (float) y, (float) z);
                     RenderSystem.scalef(0.5F, 0.5F, 0.5F);
                     RenderSystem.translatef(0.5F, 0.5F, 0.5F);

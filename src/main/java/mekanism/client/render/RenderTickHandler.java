@@ -77,8 +77,8 @@ public class RenderTickHandler {
                     ItemStack stack = player.getHeldItemMainhand();
                     ConfiguratorMode mode = ((ItemConfigurator) stack.getItem()).getState(stack);
 
-                    int x = minecraft.mainWindow.getScaledWidth();
-                    int y = minecraft.mainWindow.getScaledHeight();
+                    int x = minecraft.func_228018_at_().getScaledWidth();
+                    int y = minecraft.func_228018_at_().getScaledHeight();
                     //TODO: Check this, though if we use vanilla status bar text it may be a lot simpler instead
                     String text = mode.getTextComponent().getFormattedText();
                     int color = new ColourRGBA(1, 1, 1, (float) modeSwitchTimer / 100F).argb();
@@ -94,7 +94,7 @@ public class RenderTickHandler {
                 if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()) {
                     ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
-                    int y = minecraft.mainWindow.getScaledHeight();
+                    int y = minecraft.func_228018_at_().getScaledHeight();
                     boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
 
                     if (stack.getItem() instanceof ItemJetpack) {
@@ -228,7 +228,7 @@ public class RenderTickHandler {
             font.drawStringWithShadow(s, 2, y, color);
         } else {
             int width = font.getStringWidth(s) + 2;
-            font.drawStringWithShadow(s, minecraft.mainWindow.getScaledWidth() - width, y, color);
+            font.drawStringWithShadow(s, minecraft.func_228018_at_().getScaledWidth() - width, y, color);
         }
     }
 }

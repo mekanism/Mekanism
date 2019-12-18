@@ -76,7 +76,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
 
     public void renderTransparency(BufferBuilder renderer, TextureAtlasSprite icon, IBakedModel cc, ColourRGBA color, BlockState state, IModelData modelData) {
         if (!renderer.isDrawing) {
-            renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+            renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.field_227849_i_);
         }
 
         int argb = color.argb();

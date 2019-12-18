@@ -12,8 +12,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -77,7 +77,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
                 renderRemaining = scale;
                 scale = 0;
             }
-            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, renderRemaining);
             start += 16;
             if (renderRemaining == 0 || scale == 0) {

@@ -19,7 +19,7 @@ import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
 
 public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBioGenerator> {
@@ -38,7 +38,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             RenderSystem.translatef((float) x, (float) y, (float) z);
-            field_228858_b_.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             getDisplayList(tile.getDirection())[tile.getScaledFuelLevel(stages - 1)].render();
             MekanismRenderer.disableGlow(glowInfo);
             RenderSystem.enableLighting();

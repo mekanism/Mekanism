@@ -15,8 +15,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -58,7 +58,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                 data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
 
-                field_228858_b_.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
 
                 if (data.location != null && data.height >= 1 && tile.structure.fluidStored.getFluid() != Fluids.EMPTY) {
                     RenderSystem.pushMatrix();

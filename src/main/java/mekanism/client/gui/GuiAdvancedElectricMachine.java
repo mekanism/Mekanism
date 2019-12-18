@@ -22,8 +22,8 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -98,7 +98,7 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
 
     public void displayGauge(int xPos, int yPos, int sizeX, int sizeY, @Nonnull GasStack gas) {
         if (!gas.isEmpty()) {
-            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             MekanismRenderer.color(gas);
             drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos, MekanismRenderer.getChemicalTexture(gas.getType()), sizeX, sizeY);
             MekanismRenderer.resetColor();

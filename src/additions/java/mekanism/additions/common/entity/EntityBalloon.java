@@ -246,7 +246,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected boolean canTriggerWalking() {
+    protected boolean func_225502_at_() {
         return false;
     }
 

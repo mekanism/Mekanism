@@ -17,6 +17,7 @@ import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
 
@@ -45,7 +46,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         if (!fluid.isEmpty() && fluidScale > 0) {
             RenderSystem.pushMatrix();
             glChanged = enableGL();
-            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             RenderSystem.translatef((float) x, (float) y, (float) z);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
 
@@ -67,7 +68,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         if (!valveFluid.isEmpty() && !valveFluid.getFluid().getAttributes().isGaseous(valveFluid)) {
             RenderSystem.pushMatrix();
             glChanged = enableGL();
-            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             RenderSystem.translatef((float) x, (float) y, (float) z);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(valveFluid);
             MekanismRenderer.color(valveFluid);

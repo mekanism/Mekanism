@@ -58,7 +58,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),
               getOnHover("gui.mekanism.logisticalSorter.autoEject.tooltip")));
         addButton(new ColorButton(this, guiLeft + 13, guiTop + 137, 16, 16, () -> tile.color,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.mainWindow.getHandle(),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(),
                     GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0))),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, 1)))));
     }

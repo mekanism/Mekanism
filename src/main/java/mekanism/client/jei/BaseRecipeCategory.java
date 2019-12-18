@@ -178,7 +178,8 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
         public void blit(int x, int y, TextureAtlasSprite sprite, int width, int height) {
             //Have this helper method as blitOffset is protected
-            blit(x, y, blitOffset, width, height, sprite);
+            //TODO: 1.15 there is a getter, use it directly instead
+            blit(x, y, getBlitOffset(), width, height, sprite);
         }
     }
 }*/

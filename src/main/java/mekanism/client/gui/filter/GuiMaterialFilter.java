@@ -46,14 +46,14 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
 
     protected void materialMouseClicked() {
         ItemStack stack = minecraft.player.inventory.getItemStack();
-        if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
             if (stack.getItem() instanceof BlockItem) {
                 if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                     filter.setMaterialItem(stack.copy());
                     filter.getMaterialItem().setCount(1);
                 }
             }
-        } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
             filter.setMaterialItem(ItemStack.EMPTY);
         }
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

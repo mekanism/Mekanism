@@ -1,6 +1,5 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Arrays;
@@ -47,6 +46,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
@@ -147,7 +147,8 @@ public class MekanismRenderer {
         return buffer.isDrawing;
     }
 
-    public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite) {
+    //TODO: 1.15
+    /*public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite) {
         int[] vertexData = quad.getVertexData();
         int[] vertices = new int[vertexData.length];
         System.arraycopy(vertexData, 0, vertices, 0, vertices.length);
@@ -163,7 +164,7 @@ public class MekanismRenderer {
         }
 
         return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), format);
-    }
+    }*/
 
     public static BakedQuad rotate(BakedQuad quad, int amount) {
         int[] vertices = new int[quad.getVertexData().length];
@@ -301,9 +302,9 @@ public class MekanismRenderer {
     public static GlowInfo enableGlow(int glow) {
         //TODO: Do we need to make sure optifine is not loaded
         if (/*!FMLClientHandler.instance().hasOptifine() && */glow > 0) {
-            GlowInfo info = new GlowInfo(GLX.lastBrightnessX, GLX.lastBrightnessY, true);
+            GlowInfo info = new GlowInfo(GlStateManager.lastBrightnessX, GlStateManager.lastBrightnessY, true);
             float glowStrength = (glow / 15F) * 240F;
-            GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
+            RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
             return info;
         }
         return NO_GLOW;
@@ -321,7 +322,7 @@ public class MekanismRenderer {
 
     public static void disableGlow(@Nonnull GlowInfo info) {
         if (info.glowEnabled) {
-            GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, info.lightmapLastX, info.lightmapLastY);
+            RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, info.lightmapLastX, info.lightmapLastY);
         }
     }
 

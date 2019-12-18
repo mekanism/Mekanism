@@ -19,9 +19,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -80,7 +80,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             //TODO: Figure out why it is going from right to left
             int scale = (int) (((double) tile.gasTank.getStored() / tile.tier.getStorage()) * 72);
             TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(tile.gasTank.getType());
-            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             MekanismRenderer.color(tile.gasTank.getStack());
             drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, icon, scale, 10);
             int start = 0;

@@ -94,7 +94,7 @@ public class MekanismOBJLoader implements ICustomModelLoader {
     private static void registerModel(Map<ResourceLocation, IBakedModel> modelRegistry, String objFile, ImmutableMap<String, String> textures, ModelResourceLocation mrl) {
         IBakedModel bakedNormal = modelRegistry.get(mrl);
         modelRegistry.put(mrl, createBakedObjModel(bakedNormal, objFile, new OBJState(Lists.newArrayList(OBJModel.Group.ALL), true),
-              DefaultVertexFormats.ITEM, textures));
+              DefaultVertexFormats.field_227849_i_, textures));
     }
 
     public static OBJBakedModel createBakedObjModel(IBakedModel existingModel, String name, IModelState state, VertexFormat format, ImmutableMap<String, String> textures) {

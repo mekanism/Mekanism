@@ -15,8 +15,8 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.inventory.container.PlayerContainer;
 import org.lwjgl.opengl.GL11;
 
 public final class MinerVisualRenderer {
@@ -35,7 +35,7 @@ public final class MinerVisualRenderer {
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         RenderSystem.enableCull();
         RenderSystem.color4f(1, 1, 1, 0.8F);
-        minecraft.getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        minecraft.getTextureManager().bindTexture(PlayerContainer.field_226615_c_);
         getList(new MinerRenderData(miner)).render();
         MekanismRenderer.resetColor();
         RenderSystem.disableCull();

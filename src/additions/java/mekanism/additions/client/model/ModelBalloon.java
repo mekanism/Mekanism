@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
@@ -17,6 +18,8 @@ public class ModelBalloon extends Model {
     private final ModelRenderer String;
 
     public ModelBalloon() {
+        //TODO: 1.15 test
+        super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 32;
 
@@ -56,7 +59,8 @@ public class ModelBalloon extends Model {
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         //public void render(float size, EnumColor color) {
         RenderSystem.pushMatrix();
-        MekanismRenderer.color(color);
+        //MekanismRenderer.color(color);
+        RenderSystem.color4f(red, green, blue, alpha);
         RenderSystem.scalef(1.5F, 1.5F, 1.5F);
         RenderSystem.translatef(0, -0.07F, 0);
 

@@ -121,7 +121,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     private void drawTiledSprite(int xPosition, int yPosition, int tiledWidth, int tiledHeight, @Nonnull Gas gas, int scaledAmount, TextureAtlasSprite sprite) {
-        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        MekanismRenderer.bindTexture(PlayerContainer.field_226615_c_);
         MekanismRenderer.color(gas);
 
         final int xTileCount = tiledWidth / TEX_WIDTH;

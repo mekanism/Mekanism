@@ -100,7 +100,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         RenderSystem.translatef(displayWidth / 2, 1F, displayHeight / 2);
         RenderSystem.rotatef(-90, 1, 0, 0);
 
-        FontRenderer font = getFontRenderer();
+        FontRenderer font = field_228858_b_.getFontRenderer();
 
         int requiredWidth = Math.max(font.getStringWidth(text), 1);
         int requiredHeight = font.FONT_HEIGHT + 2;

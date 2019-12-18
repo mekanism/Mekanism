@@ -20,7 +20,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.lwjgl.opengl.GL11;
@@ -53,7 +53,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            MekanismRenderer.bindTexture(PlayerContainer.field_226615_c_);
             RenderSystem.translatef(-0.5F, -0.5F, -0.5F);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
 

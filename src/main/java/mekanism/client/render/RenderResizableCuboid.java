@@ -15,11 +15,12 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.realms.Tezzelator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
@@ -99,7 +100,7 @@ public class RenderResizableCuboid {
     }
 
     public static void setWorldRendererRGB(BufferBuilder wr, Vec3d color) {
-        wr.color((float) color.x, (float) color.y, (float) color.z, 1f);
+        wr.func_227885_a_((float) color.x, (float) color.y, (float) color.z, 1f);
     }
 
     public static Vec3d vec3(double value) {
@@ -156,7 +157,7 @@ public class RenderResizableCuboid {
         Vec3d textureOffset = new Vec3d(cube.textureOffsetX / 16D, cube.textureOffsetY / 16D, cube.textureOffsetZ / 16D);
         Vec3d size = new Vec3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
 
-        manager.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        manager.textureManager.bindTexture(PlayerContainer.field_226615_c_);
 
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder wr = tess.getBuffer();
@@ -234,9 +235,10 @@ public class RenderResizableCuboid {
         } else if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
             Vec3d transVertex = locationFormula.transformToWorld(vertex);
             BlockPos pos = convertFloor(transVertex);
-            BlockState block = access.getBlockState(pos);
-            int combindedLight = block.getPackedLightmapCoords(access, pos);
-            wr.lightmap(combindedLight >> 16 & 65535, combindedLight & 65535);
+            BlockState state = access.getBlockState(pos);
+            //TODO: 1.15 packed light map
+            int combindedLight = access.func_225524_e_().func_227470_b_(pos, state.getLightValue(access, pos));
+            wr.func_225583_a_(combindedLight >> 16 & 65535, combindedLight & 65535);
         }
 
         wr.endVertex();
@@ -255,7 +257,9 @@ public class RenderResizableCuboid {
         Vec3d transVertex = locationFormula.transformToWorld(vertex);
         BlockPos pos = convertFloor(transVertex);
         BlockState state = access.getBlockState(pos);
-        int combindedLight = state.getPackedLightmapCoords(access, pos);
+
+        //TODO: 1.15 check if this is the right way to get the packed lightmap coords
+        int combindedLight = access.func_225524_e_().func_227470_b_(pos, state.getLightValue(access, pos));
 
         skyLight[0] = combindedLight / 0x10000;
         blockLight[0] = combindedLight % 0x10000;
@@ -269,7 +273,8 @@ public class RenderResizableCuboid {
             Vec3d nearestOther = vertex.add(convert(otherFace));
             pos = convertFloor(locationFormula.transformToWorld(nearestOther));
             state = access.getBlockState(pos);
-            combindedLight = state.getPackedLightmapCoords(access, pos);
+            //TODO: 1.15 packed lightmap
+            combindedLight = access.func_225524_e_().func_227470_b_(pos, state.getLightValue(access, pos));
 
             index++;
 
@@ -295,7 +300,7 @@ public class RenderResizableCuboid {
         if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
             int capBlockLight = (int) avgBlockLight;
             int capSkyLight = (int) avgSkyLight;
-            wr.lightmap(capBlockLight, capSkyLight);
+            wr.func_225583_a_(capBlockLight, capSkyLight);
         }
 
         Vec3d color;
@@ -454,7 +459,7 @@ public class RenderResizableCuboid {
                 list[i * arr.length + j] = used;
             }
         }
-        return new BakedQuad(list, -1, face, sprite, true, DefaultVertexFormats.ITEM);
+        return new BakedQuad(list, -1, face, sprite, true, DefaultVertexFormats.field_227849_i_);
     }
 
     /**

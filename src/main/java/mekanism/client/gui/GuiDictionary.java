@@ -62,7 +62,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
         double xAxis = mouseX - guiLeft;
         double yAxis = mouseY - guiTop;
         if (button == 0) {
-            if (InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            if (InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 Slot hovering = null;
                 for (int i = 0; i < container.inventorySlots.size(); i++) {
                     Slot slot = container.inventorySlots.get(i);
@@ -86,11 +86,11 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
             if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
                 ItemStack stack = minecraft.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                     itemType = stack.copy();
                     itemType.setCount(1);
                     scrollList.setText(OreDictCache.getOreDictName(itemType));
-                } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                     itemType = ItemStack.EMPTY;
                     scrollList.setText(null);
                 }

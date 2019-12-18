@@ -17,6 +17,7 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileEntityBoilerCasing> {
@@ -41,7 +42,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                 data.fluidType = WATER;
 
                 if (data.height >= 1 && waterStored.getFluid() != Fluids.EMPTY) {
-                    bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                    field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
                     RenderSystem.pushMatrix();
                     glChanged = makeGLChanges(glChanged);
                     FluidRenderer.translateToOrigin(data.location);
@@ -79,7 +80,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                 data.fluidType = STEAM;
 
                 if (data.height >= 1 && tile.structure.steamStored.getFluid() != Fluids.EMPTY) {
-                    bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                    field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
                     RenderSystem.pushMatrix();
                     glChanged = makeGLChanges(glChanged);
                     FluidRenderer.translateToOrigin(data.location);

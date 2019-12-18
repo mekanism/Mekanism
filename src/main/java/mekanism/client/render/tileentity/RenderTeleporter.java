@@ -19,7 +19,7 @@ import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
@@ -41,7 +41,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             MekanismRenderer.color(EnumColor.PURPLE, 0.75F);
 
-            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             RenderSystem.translatef((float) x, (float) y, (float) z);
             BlockPos pos = tile.getPos().west();
             int type = 0;

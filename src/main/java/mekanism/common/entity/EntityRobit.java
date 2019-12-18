@@ -387,7 +387,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public void drop() {
         //TODO: Move this to loot table?
-        ItemEntity entityItem = new ItemEntity(world, posX, posY + 0.3, posZ, MekanismItem.ROBIT.getItemStack());
+        ItemEntity entityItem = new ItemEntity(world, func_226277_ct_(), func_226278_cu_() + 0.3, func_226281_cx_(), MekanismItem.ROBIT.getItemStack());
         ItemRobit item = (ItemRobit) entityItem.getItem().getItem();
         item.setEnergy(entityItem.getItem(), getEnergy());
         item.setInventory(((ISustainedInventory) this).getInventory(), entityItem.getItem());

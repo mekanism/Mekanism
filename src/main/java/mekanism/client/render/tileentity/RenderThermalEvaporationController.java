@@ -11,7 +11,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 
 public class RenderThermalEvaporationController extends MekanismTileEntityRenderer<TileEntityThermalEvaporationController> {
 
@@ -25,7 +25,7 @@ public class RenderThermalEvaporationController extends MekanismTileEntityRender
             data.length = 2;
             data.width = 2;
             data.fluidType = tile.inputTank.getFluid();
-            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             RenderSystem.pushMatrix();
             RenderSystem.enableCull();
             RenderSystem.enableBlend();

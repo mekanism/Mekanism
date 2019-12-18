@@ -152,7 +152,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height) {
-        blit(x, y, blitOffset, width, height, icon);
+        blit(x, y, getBlitOffset(), width, height, icon);
     }
 
     @Override
@@ -207,7 +207,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             try {
                 RenderSystem.pushMatrix();
                 RenderSystem.enableDepthTest();
-                RenderHelper.enableGUIStandardItemLighting();
+                RenderHelper.func_227780_a_();
                 if (scale != 1) {
                     RenderSystem.scalef(scale, scale, scale);
                 }

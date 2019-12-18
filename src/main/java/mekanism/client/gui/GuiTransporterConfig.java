@@ -56,7 +56,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
               getOnHover("gui.mekanism.configuration.strictInput")));
         addButton(new ColorButton(this, guiLeft + 122, guiTop + 49, 16, 16, () -> getTile().getEjector().getOutputColor(),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile),
-                    InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
+                    InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), 1, 0, null))));
         for (GuiPos guiPos : slotPosList) {
             addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, guiPos.relativeSide.ordinal(),

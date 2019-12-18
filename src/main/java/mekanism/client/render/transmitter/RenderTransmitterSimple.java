@@ -10,7 +10,7 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
 
 public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter<?, ?, ?>> extends RenderTransmitterBase<T> {
@@ -25,7 +25,7 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter<?,
         RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuffer();
-        bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
         RenderSystem.translatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
 
         for (Direction side : EnumUtils.DIRECTIONS) {
