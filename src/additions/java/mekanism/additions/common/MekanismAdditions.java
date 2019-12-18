@@ -1,5 +1,6 @@
 package mekanism.additions.common;
 
+import javax.annotation.Nonnull;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.AdditionsEntityType;
@@ -7,6 +8,14 @@ import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpawnEggItem;
+import net.minecraft.util.Direction;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -80,6 +89,19 @@ public class MekanismAdditions implements IModule {
                 }
             }
         }*/
+
+        //TODO: Remove this when we can, for now just lazy add the dispense behavior
+        DispenserBlock.registerDispenseBehavior(AdditionsItem.BABY_SKELETON_SPAWN_EGG, new DefaultDispenseItemBehavior() {
+            @Nonnull
+            @Override
+            public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+                Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+                EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
+                entityType.spawn(source.getWorld(), stack, null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+                stack.shrink(1);
+                return stack;
+            }
+        });
 
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }

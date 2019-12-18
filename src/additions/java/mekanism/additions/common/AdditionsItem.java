@@ -1,6 +1,6 @@
 package mekanism.additions.common;
 
-import mekanism.additions.common.entity.AdditionsEntityType;
+import mekanism.additions.common.item.BabySkeletonSpawnEggItem;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.api.text.EnumColor;
@@ -12,11 +12,9 @@ public class AdditionsItem {
 
     public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismAdditions.MODID);
 
-    //TODO: FIXME because EntityTypes are now also using deferred registers this ends up passing null
-    // Needs https://github.com/MinecraftForge/MinecraftForge/pull/6299 or similar to be merged to be able ot fix it
-    // for now just don't use the baby skeleton spawn egg
-    public static final ItemRegistryObject<SpawnEggItem> BABY_SKELETON_SPAWN_EGG = ITEMS.register("baby_skeleton_spawn_egg", () ->
-          new SpawnEggItem(AdditionsEntityType.BABY_SKELETON.getEntityType(), 0xFFFFFF, 0x800080, ItemDeferredRegister.getMekBaseProperties()));
+    //TODO: FIXME We are required to use a custom item as we cannot use the base SpawnEggItem due to needing something like
+    // https://github.com/MinecraftForge/MinecraftForge/pull/6299 to allow for lazy initialization
+    public static final ItemRegistryObject<SpawnEggItem> BABY_SKELETON_SPAWN_EGG = ITEMS.register("baby_skeleton_spawn_egg", BabySkeletonSpawnEggItem::new);
     public static final ItemRegistryObject<ItemWalkieTalkie> WALKIE_TALKIE = ITEMS.register("walkie_talkie", ItemWalkieTalkie::new);
 
     public static final ItemRegistryObject<ItemBalloon> BLACK_BALLOON = registerBalloon(EnumColor.BLACK);
