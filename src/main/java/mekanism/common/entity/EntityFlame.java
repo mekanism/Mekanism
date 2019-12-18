@@ -84,9 +84,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         prevRotationYaw = rotationYaw;
 
         Vec3d motion = getMotion();
-        posX += motion.getX();
-        posY += motion.getY();
-        posZ += motion.getZ();
+        func_226288_n_(func_226277_ct_() + motion.getX(), func_226278_cu_() + motion.getY(), func_226281_cx_() + motion.getZ());
 
         setPosition(func_226277_ct_(), func_226278_cu_(), func_226281_cx_());
 

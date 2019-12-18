@@ -58,7 +58,8 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
             }
             lastTicksUpdated = renderPartialTicks;
         }
-        windGenerator.render(0.016F, angle);
+        //TODO: 1.15
+        //windGenerator.render(0.016F, angle);
         RenderSystem.popMatrix();
     }
 

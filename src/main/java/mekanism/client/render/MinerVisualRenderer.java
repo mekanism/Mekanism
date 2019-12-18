@@ -1,23 +1,14 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
-import org.lwjgl.opengl.GL11;
 
 public final class MinerVisualRenderer {
 
@@ -26,7 +17,8 @@ public final class MinerVisualRenderer {
     private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 
     public static void render(TileEntityDigitalMiner miner) {
-        RenderSystem.pushMatrix();
+        //TODO: 1.15
+        /*RenderSystem.pushMatrix();
         RenderSystem.translatef((float) getX(miner.getPos().getX()), (float) getY(miner.getPos().getY()), (float) getZ(miner.getPos().getZ()));
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
         RenderSystem.disableAlphaTest();
@@ -42,10 +34,11 @@ public final class MinerVisualRenderer {
         MekanismRenderer.disableGlow(glowInfo);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
-    private static DisplayInteger getList(MinerRenderData data) {
+    //TODO: 1.15
+    /*private static DisplayInteger getList(MinerRenderData data) {
         if (cachedVisuals.containsKey(data)) {
             return cachedVisuals.get(data);
         }
@@ -74,7 +67,7 @@ public final class MinerVisualRenderer {
         GlStateManager.endList();
 
         return display;
-    }
+    }*/
 
     private static Model3D createModel(Coord4D rel) {
         Model3D toReturn = new Model3D();

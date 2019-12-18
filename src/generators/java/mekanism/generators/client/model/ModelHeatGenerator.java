@@ -156,7 +156,8 @@ public class ModelHeatGenerator extends Model {
 
         doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
+        //TODO: 1.15
+        //manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
         RenderSystem.scalef(1.001F, 1.001F, 1.001F);
         RenderSystem.translatef(0, -0.0011F, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();

@@ -5,13 +5,11 @@ import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.client.render.MekanismRenderer.RenderState;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -37,7 +35,8 @@ public class ParticleLaser extends SpriteTexturedParticle {
         direction = dir;
     }
 
-    @Override
+    //TODO: 1.15
+    /*@Override
     public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull ActiveRenderInfo renderInfo, float partialTicks, float rotationX, float rotationZ, float rotationYZ,
           float rotationXY, float rotationXZ) {
         Tessellator tessellator = Tessellator.getInstance();
@@ -65,7 +64,7 @@ public class ParticleLaser extends SpriteTexturedParticle {
         drawLaser(buffer, tessellator);
         RenderSystem.popMatrix();
         MekanismRenderer.resumeRenderer(tessellator, renderState);
-    }
+    }*/
 
     private void drawLaser(BufferBuilder buffer, Tessellator tessellator) {
         float uMin = getMinU();

@@ -1,14 +1,9 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
-import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelTurbine;
-import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
@@ -20,11 +15,13 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityTurbineRotor tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        renderAModelAt(tile, x, y, z, partialTick);
+        //TODO: 1.15
+        //renderAModelAt(tile, x, y, z, partialTick);
     }
 
     private void renderAModelAt(TileEntityTurbineRotor tile, double x, double y, double z, float partialTick) {
-        if (tile.getMultiblock() != null && !internalRender) {
+        //TODO: 1.15
+        /*if (tile.getMultiblock() != null && !internalRender) {
             return;
         }
 
@@ -59,7 +56,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
             RenderSystem.popMatrix();
         }
 
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
     @Override

@@ -26,11 +26,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.fluid.Fluid;
@@ -45,7 +42,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -58,7 +54,6 @@ public class MekanismRenderer {
     public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
     private static RenderConfigurableMachine<?> machineRenderer;
-    public static TextureAtlasSprite missingIcon;
     private static AtlasTexture texMap = null;
 
     @SubscribeEvent
@@ -74,7 +69,6 @@ public class MekanismRenderer {
     }
 
     public static void initFluidTextures(AtlasTexture map) {
-        missingIcon = MissingTextureSprite.func_217790_a();
         texMap = map;
     }
 
@@ -87,10 +81,6 @@ public class MekanismRenderer {
      * @return the sprite, or missing sprite if not found
      */
     public static TextureAtlasSprite getBaseFluidTexture(@Nonnull Fluid fluid, @Nonnull FluidType type) {
-        if (fluid == Fluids.EMPTY) {
-            return missingIcon;
-        }
-
         ResourceLocation spriteLocation;
         if (type == FluidType.STILL) {
             spriteLocation = fluid.getAttributes().getStillTexture();
@@ -102,10 +92,6 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getFluidTexture(@Nonnull FluidStack fluidStack, @Nonnull FluidType type) {
-        if (fluidStack.isEmpty()) {
-            return missingIcon;
-        }
-
         Fluid fluid = fluidStack.getFluid();
         ResourceLocation spriteLocation;
         if (type == FluidType.STILL) {
@@ -126,10 +112,11 @@ public class MekanismRenderer {
 
     public static RenderState pauseRenderer(Tessellator tess) {
         RenderState state = null;
-        if (MekanismRenderer.isDrawing(tess)) {
+        //TODO: 1.15
+        /*if (MekanismRenderer.isDrawing(tess)) {
             state = new RenderState(tess.getBuffer().getVertexFormat(), tess.getBuffer().getDrawMode());
             tess.draw();
-        }
+        }*/
         return state;
     }
 
@@ -164,7 +151,7 @@ public class MekanismRenderer {
         }
 
         return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), format);
-    }*/
+    }
 
     public static BakedQuad rotate(BakedQuad quad, int amount) {
         int[] vertices = new int[quad.getVertexData().length];
@@ -181,7 +168,7 @@ public class MekanismRenderer {
         }
 
         return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
-    }
+    }*/
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
         TextureAtlasSprite still = getFluidTexture(fluid, FluidType.STILL);
@@ -349,7 +336,8 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().getBasePath().equals("textures")) {
+        //TODO: 1.15 if this is broken try printing all the paths
+        if (!event.getMap().func_229223_g_().equals(new ResourceLocation("minecraft", "textures"))) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -379,7 +367,8 @@ public class MekanismRenderer {
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Post event) {
         AtlasTexture map = event.getMap();
-        if (!map.getBasePath().equals("textures")) {
+        //TODO: 1.15 if this is broken try printing all the paths
+        if (!map.func_229223_g_().equals(new ResourceLocation("minecraft", "textures"))) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -481,8 +470,9 @@ public class MekanismRenderer {
 
         public static DisplayInteger createAndStart() {
             DisplayInteger newInteger = new DisplayInteger();
-            newInteger.display = GLAllocation.generateDisplayLists(1);
-            GlStateManager.newList(newInteger.display, GL11.GL_COMPILE);
+            //TODO: 1.15
+            /*newInteger.display = GLAllocation.generateDisplayLists(1);
+            GlStateManager.newList(newInteger.display, GL11.GL_COMPILE);*/
             return newInteger;
         }
 
@@ -499,7 +489,8 @@ public class MekanismRenderer {
         }
 
         public void render() {
-            GlStateManager.callList(display);
+            //TODO: 1.15
+            //GlStateManager.callList(display);
         }
     }
 

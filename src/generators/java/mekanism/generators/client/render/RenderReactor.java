@@ -1,21 +1,12 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import org.lwjgl.opengl.GL11;
 
 public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorController> {
 
@@ -23,7 +14,8 @@ public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorC
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityReactorController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        if (tile.isBurning()) {
+        //TODO: 1.15
+        /*if (tile.isBurning()) {
             RenderSystem.pushMatrix();
             RenderSystem.translatef((float) x + 0.5F, (float) y - 1.5F, (float) z + 0.5F);
             field_228858_b_.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png"));
@@ -49,11 +41,12 @@ public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorC
             RenderSystem.disableBlend();
             RenderSystem.enableAlphaTest();
             RenderSystem.popMatrix();
-        }
+        }*/
     }
 
     private void renderPart(EnumColor color, double scale, float ticks, long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
-        float ticksScaledTemp = ticks * scaledTemp;
+        //TODO: 1.15
+        /*float ticksScaledTemp = ticks * scaledTemp;
         RenderSystem.pushMatrix();
         RenderSystem.scalef((float) scale, (float) scale, (float) scale);
         MekanismRenderer.color(color);
@@ -61,7 +54,7 @@ public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorC
         RenderSystem.rotatef(ticksScaledTemp * mult2 + shift2, 0, 1, 1);
         core.render(0.0625F);
         MekanismRenderer.resetColor();
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
     @Override

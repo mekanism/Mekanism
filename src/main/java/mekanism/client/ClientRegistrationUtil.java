@@ -55,6 +55,12 @@ public class ClientRegistrationUtil {
         }
     }
 
+    public static void registerBlockColorHandler(BlockColors blockColors, IBlockColor blockColor, IBlockProvider... blocks) {
+        for (IBlockProvider additionsBlock : blocks) {
+            blockColors.register(blockColor, additionsBlock.getBlock());
+        }
+    }
+
     public static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, IBlockColor blockColor, IItemColor itemColor, IBlockProvider... blocks) {
         for (IBlockProvider additionsBlock : blocks) {
             blockColors.register(blockColor, additionsBlock.getBlock());

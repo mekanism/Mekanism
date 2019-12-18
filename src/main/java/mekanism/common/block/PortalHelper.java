@@ -1,11 +1,8 @@
 package mekanism.common.block;
 
-import com.google.common.cache.LoadingCache;
 import javax.annotation.Nonnull;
 import mekanism.common.block.basic.BlockResource;
 import mekanism.common.resource.BlockResourceInfo;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,12 +10,8 @@ import net.minecraft.block.FireBlock;
 import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.pattern.BlockPattern;
-import net.minecraft.block.pattern.BlockPattern.PatternHelper;
-import net.minecraft.util.CachedBlockInfo;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -112,7 +105,8 @@ public class PortalHelper {
             setRegistryName(new ResourceLocation("minecraft", "nether_portal"));
         }
 
-        @Nonnull
+        //TODO: 1.15 FIXME, this is now a static method in NetherPortalBlock
+        /*@Nonnull
         @Override
         public PatternHelper createPatternHelper(@Nonnull IWorld world, BlockPos pos) {
             Axis axis = Axis.Z;
@@ -135,6 +129,7 @@ public class PortalHelper {
 
                 for (int i = 0; i < size.getWidth(); ++i) {
                     for (int j = 0; j < size.getHeight(); ++j) {
+                        //TODO: Make this check isAir instead of against the Material
                         if (patternHelper.translateOffset(i, j, 1).getBlockState().getMaterial() != Material.AIR) {
                             ++aint[direction.ordinal()];
                         }
@@ -150,7 +145,7 @@ public class PortalHelper {
             }
             return new PatternHelper(dir.getAxisDirection() == axisDirection ? blockpos : blockpos.offset(size.rightDir, size.getWidth() - 1),
                   Direction.getFacingFromAxis(axisDirection, axis), Direction.UP, loadingCache, size.getWidth(), size.getHeight(), 1);
-        }
+        }*/
 
         @Override
         public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {

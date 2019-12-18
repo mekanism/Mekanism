@@ -182,7 +182,8 @@ public class ModelWindGenerator extends Model {
         post1c.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         post1d.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        setRotation(blade1a, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
+        //TODO: 1.15
+        /*setRotation(blade1a, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
         setRotation(blade1b, 0F, 0F, 0.0349066F + getRotation(getAbsoluteAngle(angle)));
 
         setRotation(blade2a, 0F, 0F, getRotation(getAbsoluteAngle(angle - 60)));
@@ -192,7 +193,7 @@ public class ModelWindGenerator extends Model {
         setRotation(blade3b, 0F, 0F, 0.0349066F + getRotation(getAbsoluteAngle(angle + 60)));
 
         setRotation(bladeCap, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
-        setRotation(bladeCenter, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
+        setRotation(bladeCenter, 0F, 0F, getRotation(getAbsoluteAngle(angle)));*/
 
         blade1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         blade2a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);

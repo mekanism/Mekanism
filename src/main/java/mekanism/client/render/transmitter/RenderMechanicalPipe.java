@@ -1,12 +1,10 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -82,7 +80,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }*/
     }
 
-    private void renderDisplayLists(DisplayInteger[] displayLists, float scale, boolean gas) {
+    //TODO: 1.15
+    /*private void renderDisplayLists(DisplayInteger[] displayLists, float scale, boolean gas) {
         if (displayLists != null) {
             if (gas) {
                 RenderSystem.color4f(1, 1, 1, scale);
@@ -94,8 +93,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
     }
 
-    //TODO: 1.15
-    /*private DisplayInteger[] getListAndRender(Direction side, @Nonnull FluidStack fluid) {
+    private DisplayInteger[] getListAndRender(Direction side, @Nonnull FluidStack fluid) {
         if (fluid.isEmpty()) {
             return null;
         }

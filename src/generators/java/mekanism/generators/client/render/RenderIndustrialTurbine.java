@@ -1,23 +1,10 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
-import mekanism.client.render.FluidRenderer;
-import mekanism.client.render.FluidRenderer.RenderData;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
-import mekanism.common.MekanismFluids;
-import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEntityTurbineCasing> {
@@ -27,11 +14,13 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityTurbineCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        renderAModelAt(tile, x, y, z, partialTick, destroyStage);
+        //TODO: 1.15
+        //renderAModelAt(tile, x, y, z, partialTick, destroyStage);
     }
 
     public void renderAModelAt(TileEntityTurbineCasing tile, double x, double y, double z, float partialTick, int destroyStage) {
-        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null) {
+        //TODO: 1.15
+        /*if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null) {
             RenderTurbineRotor.internalRender = true;
             BlockPos complexPos = tile.structure.complex.getPos();
 
@@ -78,7 +67,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                     RenderSystem.popMatrix();
                 }
             }
-        }
+        }*/
     }
 
     @Override

@@ -11,6 +11,7 @@ import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
@@ -113,7 +114,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         }
         // Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
-        float brightness = world.getSunBrightness(1.0f);
+        float brightness = getSunBrightness(world, 1.0f);
         //TODO: Galacticraft
         /*if (MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel")) {
             brightness *= ((ISolarLevel) world.provider).getSolarEnergyMultiplier();
@@ -127,6 +128,18 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
             production *= 0.2;
         }
         return production;
+    }
+
+    //TODO: 1.15 re-evaluate
+    //Vanilla copy of ClientWorld#func_228326_g_ used to be World#getSunBrightness
+    private float getSunBrightness(World world, float partialTicks) {
+        float f = world.getCelestialAngle(partialTicks);
+        float f1 = 1.0F - (MathHelper.cos(f * ((float)Math.PI * 2F)) * 2.0F + 0.2F);
+        f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
+        f1 = 1.0F - f1;
+        f1 = (float)((double)f1 * (1.0D - (double)(world.getRainStrength(partialTicks) * 5.0F) / 16.0D));
+        f1 = (float)((double)f1 * (1.0D - (double)(world.getThunderStrength(partialTicks) * 5.0F) / 16.0D));
+        return f1 * 0.8F + 0.2F;
     }
 
     @Override

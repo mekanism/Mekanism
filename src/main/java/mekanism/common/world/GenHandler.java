@@ -8,10 +8,9 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.GenerationStage.Decoration;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.feature.OreFeatureConfig.FillerBlockType;
 import net.minecraft.world.gen.feature.SphereReplaceConfig;
 import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.FrequencyConfig;
@@ -42,15 +41,15 @@ public class GenHandler {
     }
 
     private static void addOreGeneration(Biome biome, IBlockProvider blockProvider, IntValue maxVeinSize, IntValue veinsPerChunk, int minHeight, int topOffset, int maxHeight) {
-        biome.addFeature(Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE,
-              new OreFeatureConfig(FillerBlockType.NATURAL_STONE, blockProvider.getBlock().getDefaultState(), maxVeinSize.get()), Placement.COUNT_RANGE,
-              new CountRangeConfig(veinsPerChunk.get(), minHeight, topOffset, maxHeight)));
+        biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,
+              Feature.ORE.func_225566_b_(new OreFeatureConfig(OreFeatureConfig.FillerBlockType.NATURAL_STONE, blockProvider.getBlock().getDefaultState(),
+                    maxVeinSize.get())).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(new CountRangeConfig(veinsPerChunk.get(), minHeight, topOffset, maxHeight))));
     }
 
     private static void addSaltGeneration(Biome biome, IBlockProvider blockProvider, IntValue maxVeinSize, IntValue veinsPerChunk, int radius, int ySize, int count) {
         BlockState state = blockProvider.getBlock().getDefaultState();
         //TODO: Does this need to include the above state in the targets or is dirt fine
-        biome.addFeature(Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.DISK,
-              new SphereReplaceConfig(state, radius, ySize, Lists.newArrayList(Blocks.DIRT.getDefaultState())), Placement.COUNT_TOP_SOLID, new FrequencyConfig(count)));
+        biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.DISK.func_225566_b_(new SphereReplaceConfig(state, radius, ySize,
+              Lists.newArrayList(Blocks.DIRT.getDefaultState()))).func_227228_a_(Placement.COUNT_TOP_SOLID.func_227446_a_(new FrequencyConfig(count))));
     }
 }

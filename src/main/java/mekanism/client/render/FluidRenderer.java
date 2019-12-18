@@ -1,18 +1,12 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
@@ -32,7 +26,8 @@ public final class FluidRenderer {
         return data.height * BLOCK_STAGES;
     }
 
-    public static DisplayInteger getTankDisplay(RenderData data) {
+    //TODO: 1.15
+    /*public static DisplayInteger getTankDisplay(RenderData data) {
         return getTankDisplay(data, 1);
     }
 
@@ -157,7 +152,7 @@ public final class FluidRenderer {
         GlStateManager.endList();
 
         return display;
-    }
+    }*/
 
     private static int getValveFluidHeight(ValveRenderData data) {
         return data.valveLocation.y - data.location.y;

@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
 import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.realms.Tezzelator;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Direction.AxisDirection;
@@ -629,14 +629,15 @@ public class RenderResizableCuboid {
         final VertexFormat vertexFormat;
 
         EnumShadeArgument(EnumShadeType... types) {
-            this.vertexFormat = new VertexFormat();
-            vertexFormat.addElement(DefaultVertexFormats.POSITION_3F);
-            vertexFormat.addElement(DefaultVertexFormats.TEX_2F);
+            List<VertexFormatElement> elements = new ArrayList<>();
+            elements.add(DefaultVertexFormats.POSITION_3F);
+            elements.add(DefaultVertexFormats.TEX_2F);
             for (EnumShadeType type : types) {
-                if (!vertexFormat.getElements().contains(type.element)) {
-                    vertexFormat.addElement(type.element);
+                if (!elements.contains(type.element)) {
+                    elements.add(type.element);
                 }
             }
+            this.vertexFormat = new VertexFormat(ImmutableList.copyOf(elements));
             this.types = ImmutableSet.copyOf(types);
         }
 
