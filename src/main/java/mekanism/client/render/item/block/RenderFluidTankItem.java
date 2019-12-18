@@ -1,29 +1,13 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import mekanism.common.item.block.machine.ItemBlockFluidTank;
-import mekanism.common.tier.FluidTankTier;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 public class RenderFluidTankItem extends MekanismItemStackRenderer {
 
@@ -35,7 +19,8 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        ItemBlockFluidTank itemFluidTank = (ItemBlockFluidTank) stack.getItem();
+        //TODO: 1.15
+        /*ItemBlockFluidTank itemFluidTank = (ItemBlockFluidTank) stack.getItem();
         FluidTankTier tier = itemFluidTank.getTier(stack);
         if (tier == null) {
             return;
@@ -81,10 +66,11 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         RenderSystem.scalef(0.9F, 0.8F, 0.9F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png"));
         fluidTank.render(0.073F, tier);
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
-    private static DisplayInteger[] getListAndRender(@Nonnull FluidStack fluid) {
+    //TODO: 1.15
+    /*private static DisplayInteger[] getListAndRender(@Nonnull FluidStack fluid) {
         if (cachedCenterFluids.containsKey(fluid)) {
             return cachedCenterFluids.get(fluid);
         }
@@ -115,7 +101,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         }
 
         return displays;
-    }
+    }*/
 
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {

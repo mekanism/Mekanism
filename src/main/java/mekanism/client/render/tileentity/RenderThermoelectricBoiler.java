@@ -1,23 +1,10 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
-import mekanism.client.render.FluidRenderer;
-import mekanism.client.render.FluidRenderer.RenderData;
-import mekanism.client.render.FluidRenderer.ValveRenderData;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.common.MekanismFluids;
-import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileEntityBoilerCasing> {
@@ -29,7 +16,8 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityBoilerCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null &&
+        //TODO: 1.15
+        /*if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null &&
             tile.structure.upperRenderLocation != null) {
             FluidStack waterStored = tile.structure.waterStored;
             boolean glChanged = false;
@@ -100,10 +88,11 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                 RenderSystem.disableBlend();
                 RenderSystem.disableCull();
             }
-        }
+        }*/
     }
 
-    private boolean makeGLChanges(boolean glChanged) {
+    //TODO: 1.15
+    /*private boolean makeGLChanges(boolean glChanged) {
         if (!glChanged) {
             RenderSystem.enableCull();
             RenderSystem.enableBlend();
@@ -112,7 +101,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
             setLightmapDisabled(true);
         }
         return true;
-    }
+    }*/
 
     @Override
     public boolean isGlobalRenderer(TileEntityBoilerCasing tile) {

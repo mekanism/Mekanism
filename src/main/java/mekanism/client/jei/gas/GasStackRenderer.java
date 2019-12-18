@@ -80,10 +80,10 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuffer();
         vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        vertexBuffer.pos(xCoord, yCoord + 16, zLevel).tex(uMin, vMax).endVertex();
-        vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + 16, zLevel).tex(uMax, vMax).endVertex();
-        vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + maskTop, zLevel).tex(uMax, vMin).endVertex();
-        vertexBuffer.pos(xCoord, yCoord + maskTop, zLevel).tex(uMin, vMin).endVertex();
+        vertexBuffer.func_225582_a_(xCoord, yCoord + 16, zLevel).func_225583_a_(uMin, vMax).endVertex();
+        vertexBuffer.func_225582_a_(xCoord + 16 - maskRight, yCoord + 16, zLevel).func_225583_a_(uMax, vMax).endVertex();
+        vertexBuffer.func_225582_a_(xCoord + 16 - maskRight, yCoord + maskTop, zLevel).func_225583_a_(uMax, vMin).endVertex();
+        vertexBuffer.func_225582_a_(xCoord, yCoord + maskTop, zLevel).func_225583_a_(uMin, vMin).endVertex();
         tessellator.draw();
     }
 

@@ -1,25 +1,12 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraftforge.fluids.FluidStack;
-import org.lwjgl.opengl.GL11;
 
 public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank> {
 
@@ -38,10 +25,12 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     @Override
     public void func_225616_a_(@Nonnull TileEntityFluidTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         FluidStack fluid = tile.fluidTank.getFluid();
-        render(tile.tier, fluid, tile.prevScale, tile.valve > 0 ? tile.valveFluid : FluidStack.EMPTY, x, y, z);
+        //TODO: 1.15
+        //render(tile.tier, fluid, tile.prevScale, tile.valve > 0 ? tile.valveFluid : FluidStack.EMPTY, x, y, z);
     }
 
-    public void render(FluidTankTier tier, @Nonnull FluidStack fluid, float fluidScale, @Nonnull FluidStack valveFluid, double x, double y, double z) {
+    //TODO: 1.15
+    /*public void render(FluidTankTier tier, @Nonnull FluidStack fluid, float fluidScale, @Nonnull FluidStack valveFluid, double x, double y, double z) {
         boolean glChanged = false;
         if (!fluid.isEmpty() && fluidScale > 0) {
             RenderSystem.pushMatrix();
@@ -155,5 +144,5 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             GlStateManager.endList();
         }
         return displays;
-    }
+    }*/
 }

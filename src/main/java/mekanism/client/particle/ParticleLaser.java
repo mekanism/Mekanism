@@ -83,10 +83,10 @@ public class ParticleLaser extends SpriteTexturedParticle {
     private void drawComponent(BufferBuilder buffer, Tessellator tessellator, float uMin, float uMax, float vMin, float vMax, float angle) {
         RenderSystem.rotatef(angle, 0, 1, 0);
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).func_225583_a_(240, 240).endVertex();
-        buffer.pos(-particleScale, length / 2, 0).tex(uMin, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).func_225583_a_(240, 240).endVertex();
-        buffer.pos(particleScale, length / 2, 0).tex(uMax, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).func_225583_a_(240, 240).endVertex();
-        buffer.pos(particleScale, -length / 2, 0).tex(uMax, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).func_225583_a_(240, 240).endVertex();
+        buffer.func_225582_a_(-particleScale, -length / 2, 0).func_225583_a_(uMin, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225583_a_(240, 240).endVertex();
+        buffer.func_225582_a_(-particleScale, length / 2, 0).func_225583_a_(uMin, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225583_a_(240, 240).endVertex();
+        buffer.func_225582_a_(particleScale, length / 2, 0).func_225583_a_(uMax, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225583_a_(240, 240).endVertex();
+        buffer.func_225582_a_(particleScale, -length / 2, 0).func_225583_a_(uMax, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225583_a_(240, 240).endVertex();
         tessellator.draw();
     }
 

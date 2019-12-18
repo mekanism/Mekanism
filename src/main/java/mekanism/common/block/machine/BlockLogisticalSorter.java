@@ -48,6 +48,7 @@ import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -182,15 +183,16 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
         return 0;
     }
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) {
-            return true;
+            return ActionResultType.SUCCESS;
         }
         //TODO: Make this be moved into the logistical sorter tile
         TileEntityLogisticalSorter tile = MekanismUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
         if (tile == null) {
-            return false;
+            return ActionResultType.PASS;
         }
         ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty()) {
@@ -200,7 +202,7 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
                     if (SecurityUtils.canAccess(player, tile)) {
                         if (player.func_225608_bj_()) {
                             MekanismUtils.dismantleBlock(state, world, pos);
-                            return true;
+                            return ActionResultType.SUCCESS;
                         }
                         Direction change = tile.getDirection().rotateY();
                         if (!tile.hasConnectedInventory()) {
@@ -217,7 +219,7 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
                     } else {
                         SecurityUtils.displayNoAccess(player);
                     }
-                    return true;
+                    return ActionResultType.SUCCESS;
                 }
             }
         }

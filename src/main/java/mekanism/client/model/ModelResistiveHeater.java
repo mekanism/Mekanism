@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -42,6 +43,8 @@ public class ModelResistiveHeater extends Model {
     private final ModelRenderer portLeft;
 
     public ModelResistiveHeater() {
+        //TODO: 1.15 Check if this is the proper render type to use
+        super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
 
@@ -176,11 +179,12 @@ public class ModelResistiveHeater extends Model {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-        if (renderMain) {
+        //TODO: 1.15
+        /*if (renderMain) {
             doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         }
 
-        manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
+        manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);*/
         RenderSystem.scalef(1.001F, 1.001F, 1.001F);
         RenderSystem.translatef(0, -0.0011F, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();

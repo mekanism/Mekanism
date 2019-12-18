@@ -16,6 +16,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -35,11 +36,12 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateWa
         super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));
     }
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack stack = player.getHeldItem(hand);
         if (stack.isEmpty()) {
-            return false;
+            return ActionResultType.PASS;
         }
         IMekWrench wrenchHandler = Wrenches.getHandler(stack);
         if (wrenchHandler != null) {
@@ -47,10 +49,10 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateWa
                 if (!world.isRemote) {
                     MekanismUtils.dismantleBlock(state, world, pos);
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     @Override

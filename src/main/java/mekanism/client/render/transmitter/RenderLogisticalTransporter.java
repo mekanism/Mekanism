@@ -1,45 +1,29 @@
 package mekanism.client.render.transmitter;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.TransporterUtils;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockRayTraceResult;
-import org.lwjgl.opengl.GL11;
 
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
@@ -50,19 +34,22 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static TextureAtlasSprite torchOnIcon;
     private ModelTransporterBox modelBox = new ModelTransporterBox();
     private ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
-    private EntityRenderer<ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(ItemEntity.class);
+    //TODO: 1.15
+    //private EntityRenderer<ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(ItemEntity.class);
 
     public static void onStitch(AtlasTexture map) {
         cachedOverlays.clear();
 
-        gunpowderIcon = map.getAtlasSprite("minecraft:item/gunpowder");
-        torchOffIcon = map.getAtlasSprite("minecraft:block/redstone_torch_off");
-        torchOnIcon = map.getAtlasSprite("minecraft:block/redstone_torch_on");
+        gunpowderIcon = map.getSprite(new ResourceLocation("minecraft", "item/gunpowder"));
+        torchOffIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_off"));
+        torchOnIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_on"));
     }
 
     @Override
-    public void render(TileEntityLogisticalTransporter transporter, double x, double y, double z, float partialTick, int destroyStage) {
-        if (MekanismConfig.client.opaqueTransmitters.get()) {
+    public void func_225616_a_(@Nonnull TileEntityLogisticalTransporter transporter, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
+          int light, int otherLight) {
+        //TODO: 1.15
+        /*if (MekanismConfig.client.opaqueTransmitters.get()) {
             return;
         }
         //Keep track of if we had to push. Makes it so that we don't have to push and pop if we end up doing no rendering
@@ -150,7 +137,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         if (pushed) {
             //If we did anything we need to pop the matrix we pushed
             RenderSystem.popMatrix();
-        }
+        }*/
     }
 
     /**
@@ -169,7 +156,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         return reducedTransit;
     }
 
-    private DisplayInteger getOverlayDisplay(Direction side, int mode) {
+    //TODO: 1.15
+    /*private DisplayInteger getOverlayDisplay(Direction side, int mode) {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode)) {
             return cachedOverlays.get(side).get(mode);
         }
@@ -262,7 +250,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         MekanismRenderer.renderObject(toReturn);
         GlStateManager.endList();
         return display;
-    }
+    }*/
 
     private static class TransportInformation {
 

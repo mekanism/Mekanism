@@ -1,57 +1,36 @@
 package mekanism.client.render.transmitter;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.ColourRGBA;
-import mekanism.common.Mekanism;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
-import net.minecraftforge.client.model.pipeline.LightUtil;
-import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import org.antlr.v4.runtime.atn.BasicState;
-import org.lwjgl.opengl.GL11;
 
-@Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+//TODO: 1.15
+//@Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends MekanismTileEntityRenderer<T> {
 
     /* Credit to Eternal Energy */
-    public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = location -> DummyAtlasTextureFlipV.instance;
+    //TODO: 1.15
+    //public static Function<ResourceLocation, TextureAtlasSprite> textureGetterFlipV = location -> DummyAtlasTextureFlipV.instance;
     private static OBJModel contentsModel;
     private static Map<String, IBakedModel> contentsMap = new HashMap<>();
     protected Minecraft minecraft = Minecraft.getInstance();
 
-    @SubscribeEvent
+    //TODO: 1.15
+    /*@SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
         if (contentsModel == null) {
             try {
                 //TODO: Is the obj model loading/creating contentsMap correctly or is it totally broken
-                contentsModel = (OBJModel) OBJLoader.INSTANCE.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"));
+                contentsModel = OBJLoader.INSTANCE.loadModel(MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj"));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -72,10 +51,11 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
             }
         }
         return modelParts;
-    }
+    }*/
 
     public void renderTransparency(BufferBuilder renderer, TextureAtlasSprite icon, IBakedModel cc, ColourRGBA color, BlockState state, IModelData modelData) {
-        if (!renderer.isDrawing) {
+        //TODO: 1.15
+        /*if (!renderer.isDrawing) {
             renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.field_227849_i_);
         }
 
@@ -89,10 +69,11 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
 
         for (BakedQuad quad : cc.getQuads(state, null, minecraft.world.getRandom(), modelData)) {
             renderQuad(renderer, icon, quad, argb);
-        }
+        }*/
     }
 
-    private void renderQuad(BufferBuilder renderer, TextureAtlasSprite icon, BakedQuad quad, int argb) {
+    //TODO: 1.15
+    /*private void renderQuad(BufferBuilder renderer, TextureAtlasSprite icon, BakedQuad quad, int argb) {
         //TODO: Check if retextureQuad or MekanismRenderer#iconTransform is more efficient
         // If it is iconTransform, we have to figure out why it is broken
         // NOTE: It does not seem that the retexture quad method supports "luminosity" for example with lava
@@ -169,5 +150,5 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
         public float getInterpolatedV(double v) {
             return (float) v / -16;
         }
-    }
+    }*/
 }

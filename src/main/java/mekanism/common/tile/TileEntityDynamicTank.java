@@ -24,6 +24,7 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.fluids.FluidStack;
@@ -105,16 +106,16 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     @Override
-    public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
+    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         if (!player.func_225608_bj_() && structure != null) {
             if (manageInventory(player, hand, stack)) {
                 player.inventory.markDirty();
                 sendPacketToRenderer();
-                return true;
+                return ActionResultType.SUCCESS;
             }
             return openGui(player);
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     @Override

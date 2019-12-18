@@ -15,6 +15,7 @@ import net.minecraft.entity.EntitySpawnPlacementRegistry.PlacementType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -63,18 +64,19 @@ public class BlockBasicMultiblock extends BlockMekanism {
         return super.canCreatureSpawn(state, world, pos, type, entityType);
     }
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile != null) {
             if (world.isRemote) {
-                return true;
+                return ActionResultType.SUCCESS;
             }
             if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-                return true;
+                return ActionResultType.SUCCESS;
             }
             return tile.onActivate(player, hand, player.getHeldItem(hand));
         }
-        return false;
+        return ActionResultType.PASS;
     }
 }

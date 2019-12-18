@@ -28,7 +28,8 @@ public class RenderFreeRunners extends MekanismItemStackRenderer {
         RenderSystem.scalef(2.0F, 2.0F, 2.0F);
         RenderSystem.translatef(0.2F, -1.43F, 0.12F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png"));
-        freeRunners.render(0.0625F);
+        //TODO: 1.15
+        //freeRunners.render(0.0625F);
         RenderSystem.popMatrix();
     }
 

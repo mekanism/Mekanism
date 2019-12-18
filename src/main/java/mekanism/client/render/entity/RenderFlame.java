@@ -1,20 +1,11 @@
 package mekanism.client.render.entity;
 
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityFlame;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class RenderFlame extends EntityRenderer<EntityFlame> {
 
@@ -22,7 +13,8 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         super(renderManager);
     }
 
-    @Override
+    //TODO: 1.15
+    /*@Override
     public void doRender(@Nonnull EntityFlame entity, double x, double y, double z, float f, float partialTick) {
         if (entity.ticksExisted < 1) {
             return;
@@ -65,10 +57,10 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
             RenderSystem.normal3f(0.0F, 0.0F, scale);
 
             worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            worldrenderer.pos(-8.0D, -2.0D, 0.0D).tex(f2, f4).endVertex();
-            worldrenderer.pos(8.0D, -2.0D, 0.0D).tex(f3, f4).endVertex();
-            worldrenderer.pos(8.0D, 2.0D, 0.0D).tex(f3, f5).endVertex();
-            worldrenderer.pos(-8.0D, 2.0D, 0.0D).tex(f2, f5).endVertex();
+            worldrenderer.func_225582_a_(-8.0D, -2.0D, 0.0D).func_225583_a_(f2, f4).endVertex();
+            worldrenderer.func_225582_a_(8.0D, -2.0D, 0.0D).func_225583_a_(f3, f4).endVertex();
+            worldrenderer.func_225582_a_(8.0D, 2.0D, 0.0D).func_225583_a_(f3, f5).endVertex();
+            worldrenderer.func_225582_a_(-8.0D, 2.0D, 0.0D).func_225583_a_(f2, f5).endVertex();
             tessellator.draw();
         }
         RenderSystem.disableRescaleNormal();
@@ -77,7 +69,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         RenderSystem.enableAlphaTest();
         MekanismRenderer.disableGlow(glowInfo);
         RenderSystem.popMatrix();
-    }
+    }*/
 
     @Nonnull
     @Override

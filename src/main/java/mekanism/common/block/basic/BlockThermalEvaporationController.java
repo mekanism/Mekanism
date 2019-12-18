@@ -1,5 +1,6 @@
 package mekanism.common.block.basic;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
@@ -22,6 +23,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -53,18 +55,19 @@ public class BlockThermalEvaporationController extends BlockMekanism implements 
         return 9F;
     }
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!player.func_225608_bj_()) {
             TileEntityThermalEvaporationController tile = MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, world, pos);
             if (tile != null) {
                 if (!world.isRemote) {
                     NetworkHooks.openGui((ServerPlayerEntity) player, getProvider(tile), pos);
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     @Override

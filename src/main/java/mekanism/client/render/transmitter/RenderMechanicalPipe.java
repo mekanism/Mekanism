@@ -1,6 +1,6 @@
 package mekanism.client.render.transmitter;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -8,23 +8,8 @@ import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.FluidType;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.ColourRGBA;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
-import mekanism.common.transmitters.grid.FluidNetwork;
-import mekanism.common.util.EnumUtils;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.Direction;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe> {
 
@@ -39,8 +24,10 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     }
 
     @Override
-    public void render(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage) {
-        if (MekanismConfig.client.opaqueTransmitters.get()) {
+    public void func_225616_a_(@Nonnull TileEntityMechanicalPipe pipe, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+          int otherLight) {
+        //TODO: 1.15
+        /*if (MekanismConfig.client.opaqueTransmitters.get()) {
             return;
         }
 
@@ -92,7 +79,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             RenderSystem.enableLighting();
             RenderSystem.disableCull();
             RenderSystem.popMatrix();
-        }
+        }*/
     }
 
     private void renderDisplayLists(DisplayInteger[] displayLists, float scale, boolean gas) {
@@ -107,7 +94,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
     }
 
-    private DisplayInteger[] getListAndRender(Direction side, @Nonnull FluidStack fluid) {
+    //TODO: 1.15
+    /*private DisplayInteger[] getListAndRender(Direction side, @Nonnull FluidStack fluid) {
         if (fluid.isEmpty()) {
             return null;
         }
@@ -227,5 +215,5 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             return true;
         }
         return false;
-    }
+    }*/
 }

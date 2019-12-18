@@ -76,9 +76,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
         ticksExisted++;
 
-        prevPosX = posX;
-        prevPosY = posY;
-        prevPosZ = posZ;
+        prevPosX = func_226277_ct_();
+        prevPosY = func_226278_cu_();
+        prevPosZ = func_226281_cx_();
 
         prevRotationPitch = rotationPitch;
         prevRotationYaw = rotationYaw;
@@ -88,7 +88,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         posY += motion.getY();
         posZ += motion.getZ();
 
-        setPosition(posX, posY, posZ);
+        setPosition(func_226277_ct_(), func_226278_cu_(), func_226281_cx_());
 
         calculateVector();
         if (ticksExisted > LIFESPAN) {

@@ -27,7 +27,8 @@ public class RenderArmoredJetpack extends MekanismItemStackRenderer {
         RenderSystem.rotatef(90, 0, -1, 0);
         RenderSystem.translatef(0.2F, -0.35F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png"));
-        armoredJetpack.render(0.0625F);
+        //TODO: 1.15
+        //armoredJetpack.render(0.0625F);
         RenderSystem.popMatrix();
     }
 

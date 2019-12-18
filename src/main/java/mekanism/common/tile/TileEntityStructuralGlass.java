@@ -11,6 +11,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
@@ -23,7 +24,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
     }
 
     @Override
-    public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
+    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         if (master != null) {
             TileEntity masterTile = MekanismUtils.getTileEntity(getWorld(), master.getPos());
             if (masterTile instanceof IMultiblock) {
@@ -31,7 +32,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
             }
             master = null;
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     @Override

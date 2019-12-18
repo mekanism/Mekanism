@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
@@ -26,6 +27,8 @@ public class ModelFluidTank extends Model {
     private final ModelRenderer LeftGlass;
 
     public ModelFluidTank() {
+        //TODO: 1.15 Check if this is the proper render type to use
+        super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 128;
 
@@ -104,7 +107,8 @@ public class ModelFluidTank extends Model {
         RenderSystem.disableAlphaTest();
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.color(tier.getBaseTier());
+        //TODO: 1.15
+        //RenderSystem.color(tier.getBaseTier());
         FrontGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         BackGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         RightGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);

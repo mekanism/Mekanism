@@ -3,6 +3,7 @@ package mekanism.generators.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
@@ -31,6 +32,8 @@ public class ModelWindGenerator extends Model {
     private final ModelRenderer post1d;
 
     public ModelWindGenerator() {
+        //TODO: 1.15 Check if this is the proper render type to use
+        super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 128;
 

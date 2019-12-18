@@ -3,6 +3,7 @@ package mekanism.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
@@ -55,6 +56,8 @@ public class ModelSeismicVibrator extends Model {
     private final ModelRenderer rivet9;
 
     public ModelSeismicVibrator() {
+        //TODO: 1.15 Check if this is the proper render type to use
+        super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
 
@@ -383,8 +386,8 @@ public class ModelSeismicVibrator extends Model {
         shaft1.rotationPointY = 6 - (piston * 12);
         plate2.rotationPointY = 21 - (piston * 12);
         plate3.rotationPointY = 22 - (piston * 12);
-
-        render(size);
+        //TODO: 1.15
+        //render(size);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

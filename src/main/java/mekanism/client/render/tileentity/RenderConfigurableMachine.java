@@ -1,34 +1,15 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.Nonnull;
-import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.tile.component.config.DataType;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import org.lwjgl.opengl.GL11;
 
 public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends MekanismTileEntityRenderer<S> {
 
@@ -36,7 +17,8 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
 
     @Override
     public void func_225616_a_(@Nonnull S configurable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
+        //TODO: 1.15
+        /*ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
         if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
             //TODO: Properly figure out which one the player is looking at
@@ -74,10 +56,11 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                     }
                 }
             }
-        }
+        }*/
     }
 
-    private DisplayInteger getOverlayDisplay(Direction side, TransmissionType type) {
+    //TODO: 1.15
+    /*private DisplayInteger getOverlayDisplay(Direction side, TransmissionType type) {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type)) {
             return cachedOverlays.get(side).get(type);
         }
@@ -157,5 +140,5 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         GlStateManager.endList();
 
         return display;
-    }
+    }*/
 }

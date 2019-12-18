@@ -5,9 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.item.ItemStack;
@@ -19,12 +17,14 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
     public void func_225616_a_(@Nonnull TileEntityBin tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         Coord4D obj = Coord4D.get(tile).offset(tile.getDirection());
         if (!Block.hasSolidSide(tile.getWorld().getBlockState(obj.getPos()), tile.getWorld(), obj.getPos(), tile.getOppositeDirection())) {
-            render(tile.getDirection(), tile.clientStack, true, x, y, z);
+            //TODO: 1.15
+            //render(tile.getDirection(), tile.clientStack, true, x, y, z);
         }
     }
 
     public void render(Direction facing, ItemStack clientStack, boolean text, double x, double y, double z) {
-        if (!clientStack.isEmpty()) {
+        //TODO: 1.15
+        /*if (!clientStack.isEmpty()) {
             int clientAmount = clientStack.getCount();
             String amount = Integer.toString(clientAmount);
             if (clientAmount == Integer.MAX_VALUE) {
@@ -62,7 +62,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
                 renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
             }
             setLightmapDisabled(false);
-        }
+        }*/
     }
 
     @SuppressWarnings("incomplete-switch")

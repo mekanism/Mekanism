@@ -1,13 +1,11 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -70,6 +68,8 @@ public class ModelEnergyCube extends Model {
     private final ModelRenderer ledLeft2;
 
     public ModelEnergyCube() {
+        //TODO: 1.15 Check if this is the proper render type to use
+        super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 64;
 
@@ -348,7 +348,8 @@ public class ModelEnergyCube extends Model {
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         //public void render(float size, EnergyCubeTier tier, TextureManager manager, boolean renderMain) {
-        if (renderMain) {
+        //TODO: 1.15
+        /*if (renderMain) {
             frame12.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
             frame11.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
             frame10.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -390,11 +391,12 @@ public class ModelEnergyCube extends Model {
 
         MekanismRenderer.disableGlow(glowInfo);
         MekanismRenderer.resetColor();
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
     public void renderSide(float size, Direction side, boolean canInput, boolean canOutput, TextureManager renderer) {
-        if (canInput || canOutput) {
+        //TODO: 1.15
+        /*if (canInput || canOutput) {
             connectors[side.ordinal()].func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
             ports[side.ordinal()].func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         }
@@ -412,7 +414,7 @@ public class ModelEnergyCube extends Model {
 
         leds1[side.ordinal()].func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         leds2[side.ordinal()].func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        MekanismRenderer.disableGlow(glowInfo);
+        MekanismRenderer.disableGlow(glowInfo);*/
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -426,6 +428,8 @@ public class ModelEnergyCube extends Model {
         private ModelRenderer cube;
 
         public ModelEnergyCore() {
+            //TODO: 1.15 Check if this is the proper render type to use
+            super(RenderType::func_228634_a_);
             textureWidth = 32;
             textureHeight = 32;
 

@@ -1,16 +1,12 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import javax.annotation.Nonnull;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
@@ -27,14 +23,17 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
     public ArmorModel modelType;
 
     public ModelCustomArmor() {
-        resetPart(bipedHead, 0, 0, 0);
+        //TODO: 1.15 check if this is the correct size
+        super(0.5F);
+        //TODO: 1.15
+        /*resetPart(bipedHead, 0, 0, 0);
         resetPart(bipedBody, 0, 0, 0);
         resetPart(bipedRightArm, 5, 2, 0);
         resetPart(bipedLeftArm, -5, 2, 0);
         resetPart(bipedRightLeg, 0, 0, 0);
         resetPart(bipedLeftLeg, 0, 0, 0);
 
-        bipedHeadwear.cubeList.clear();
+        bipedHeadwear.cubeList.clear();*/
     }
 
     public static boolean useModel(ArmorModel type, ModelRenderer partRender, ModelCustomArmor biped) {
@@ -64,7 +63,8 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
     public void init(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float size) {
         reset();
 
-        isSneak = entity.func_225608_bj_();
+        //TODO: 1.15
+        //isSneak = entity.func_225608_bj_();
         isSitting = entity.isPassenger();
         isChild = entity.isChild();
 
@@ -77,7 +77,8 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
             bipedRightLeg.showModel = true;
         }
 
-        setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, size);
+        //TODO: 1.15
+        //setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, size);
     }
 
     public void reset() {
@@ -89,7 +90,8 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
         bipedLeftLeg.showModel = false;
     }
 
-    public void resetPart(ModelRenderer renderer, float x, float y, float z) {
+    //TODO: 1.15
+    /*public void resetPart(ModelRenderer renderer, float x, float y, float z) {
         renderer.cubeList.clear();
         ModelCustom model = new ModelCustom(this, renderer);
         renderer.addChild(model);
@@ -106,7 +108,7 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
     public void render(@Nonnull LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         init(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
         super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-    }
+    }*/
 
     public enum ArmorModel {
         JETPACK(1, MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png")),
@@ -135,9 +137,11 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
             super(size);
         }
 
-        @Override
+        //TODO: 1.15
+        /*@Override
         public void render(@Nonnull LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-            isSneak = entity.func_225608_bj_();
+            //TODO: 1.15
+            //isSneak = entity.func_225608_bj_();
             isSitting = entity.isPassenger();
             isChild = entity.isChild();
 
@@ -145,7 +149,7 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
             MekanismRenderer.disableGlow(glowInfo);
-        }
+        }*/
     }
 
     public class ModelCustom extends ModelRenderer {
@@ -159,7 +163,8 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
             partRender = renderer;
         }
 
-        @Override
+        //TODO: 1.15
+        /*@Override
         public void render(float size) {
             if (ModelCustomArmor.this.modelType != null) {
                 RenderSystem.pushMatrix();
@@ -188,6 +193,6 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
                 }
                 RenderSystem.popMatrix();
             }
-        }
+        }*/
     }
 }

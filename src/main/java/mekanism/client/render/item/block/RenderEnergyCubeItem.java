@@ -1,26 +1,12 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
-import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import mekanism.client.render.tileentity.RenderEnergyCube;
-import mekanism.common.item.block.ItemBlockEnergyCube;
-import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.ItemDataUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import org.lwjgl.opengl.GL11;
 
 public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
@@ -30,7 +16,8 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
     @Override
     protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier(stack);
+        //TODO: 1.15
+        /*EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier(stack);
         if (tier == null) {
             return;
         }
@@ -67,7 +54,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
     @Override

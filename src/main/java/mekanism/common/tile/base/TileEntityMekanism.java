@@ -71,6 +71,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
@@ -331,17 +332,17 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return WrenchResult.PASS;
     }
 
-    public boolean openGui(PlayerEntity player) {
+    public ActionResultType openGui(PlayerEntity player) {
         if (hasGui() && !player.func_225608_bj_()) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
-            } else {
-                //TODO: Is this correct. Also check the other spots were NetworkHooks.openGui are
-                NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityMekanism>) blockProvider.getBlock()).getProvider(this), pos);
+                return ActionResultType.FAIL;
             }
-            return true;
+            //TODO: Is this correct. Also check the other spots were NetworkHooks.openGui are
+            NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityMekanism>) blockProvider.getBlock()).getProvider(this), pos);
+            return ActionResultType.SUCCESS;
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     @Override

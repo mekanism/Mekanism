@@ -87,15 +87,18 @@ public final class MinerVisualRenderer {
     }
 
     private static double getX(int x) {
-        return x - TileEntityRendererDispatcher.staticPlayerX;
+        //TODO: 1.15 - check this
+        return x - TileEntityRendererDispatcher.instance.renderInfo.getProjectedView().getX();//TileEntityRendererDispatcher.staticPlayerX;
     }
 
     private static double getY(int y) {
-        return y - TileEntityRendererDispatcher.staticPlayerY;
+        //TODO: 1.15 - check this
+        return y - TileEntityRendererDispatcher.instance.renderInfo.getProjectedView().getY();//TileEntityRendererDispatcher.staticPlayerY;
     }
 
     private static double getZ(int z) {
-        return z - TileEntityRendererDispatcher.staticPlayerZ;
+        //TODO: 1.15 - check this
+        return z - TileEntityRendererDispatcher.instance.renderInfo.getProjectedView().getZ();//TileEntityRendererDispatcher.staticPlayerZ;
     }
 
     public static class MinerRenderData {

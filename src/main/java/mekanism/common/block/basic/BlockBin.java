@@ -30,6 +30,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
@@ -117,14 +118,15 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
         }
     }
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         TileEntityBin bin = MekanismUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
-            return false;
+            return ActionResultType.PASS;
         }
         if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-            return true;
+            return ActionResultType.SUCCESS;
         }
         if (!world.isRemote) {
             BinInventorySlot binSlot = bin.getBinSlot();
@@ -155,7 +157,7 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
                 }
             }
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Nonnull

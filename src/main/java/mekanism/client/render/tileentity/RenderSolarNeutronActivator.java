@@ -1,13 +1,9 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelSolarNeutronActivator;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
 public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<TileEntitySolarNeutronActivator> {
@@ -16,7 +12,8 @@ public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<Tile
 
     @Override
     public void func_225616_a_(@Nonnull TileEntitySolarNeutronActivator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        RenderSystem.pushMatrix();
+        //TODO: 1.15
+        /*RenderSystem.pushMatrix();
         RenderSystem.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
         bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "solar_neutron_activator.png"));
         MekanismRenderer.rotate(tile.getDirection(), 0, 180, 90, 270);
@@ -24,7 +21,7 @@ public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<Tile
         setLightmapDisabled(true);
         model.render(0.0625F);
         setLightmapDisabled(false);
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
     @Override

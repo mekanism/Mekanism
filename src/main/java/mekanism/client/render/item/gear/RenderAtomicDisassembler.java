@@ -48,7 +48,8 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
         }
 
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "atomic_disassembler.png"));
-        atomicDisassembler.render(0.0625F);
+        //TODO: 1.15
+        //atomicDisassembler.render(0.0625F);
         RenderSystem.popMatrix();
     }
 

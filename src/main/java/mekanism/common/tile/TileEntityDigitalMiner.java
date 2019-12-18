@@ -471,7 +471,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         }
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingCoord().getPos();
-            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(radius, maxY - minY, radius)));
+            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(radius, maxY - minY, radius)), getWorld().getDimension().getType());
             searcher.start();
         }
         running = true;

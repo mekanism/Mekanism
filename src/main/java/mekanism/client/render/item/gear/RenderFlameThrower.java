@@ -48,7 +48,8 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
             RenderSystem.translatef(-0.6F, 0, 0);
             RenderSystem.rotatef(45, 0, 1, 0);
         }
-        flamethrower.render(0.0625F);
+        //TODO: 1.15
+        //flamethrower.render(0.0625F);
         RenderSystem.popMatrix();
     }
 

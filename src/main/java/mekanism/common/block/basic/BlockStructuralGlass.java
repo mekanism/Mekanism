@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -57,16 +58,17 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IH
         return adjacentBlockState.getBlock() == this;
     }
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         TileEntityStructuralGlass tile = MekanismUtils.getTileEntity(TileEntityStructuralGlass.class, world, pos);
         if (tile != null) {
             if (world.isRemote) {
-                return true;
+                return ActionResultType.SUCCESS;
             }
             return tile.onActivate(player, hand, player.getHeldItem(hand));
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     @Override

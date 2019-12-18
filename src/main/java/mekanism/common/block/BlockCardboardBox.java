@@ -16,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -43,8 +44,9 @@ public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStat
         return testingPlace;
     }*/
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (!world.isRemote && player.func_225608_bj_()) {
             TileEntityCardboardBox tile = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
 
@@ -72,7 +74,7 @@ public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStat
                 spawnAsEntity(world, pos, MekanismBlock.CARDBOARD_BOX.getItemStack());
             }
         }
-        return player.func_225608_bj_();
+        return player.func_225608_bj_() ? ActionResultType.SUCCESS : ActionResultType.PASS;
     }
 
     @Nonnull

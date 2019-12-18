@@ -3,9 +3,9 @@ package mekanism.generators.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.tileentity.ChestTileEntityRenderer;
 
 public class ModelAdvancedSolarGenerator extends Model {
 
@@ -29,6 +29,8 @@ public class ModelAdvancedSolarGenerator extends Model {
     //TODO: Do we want to implement what I think was an original idea based on the rotates comments
     // where the panels rotate to face towards the sun?
     public ModelAdvancedSolarGenerator() {
+        //TODO: 1.15 Check if this is the proper render type to use
+        super(RenderType::func_228634_a_);
         textureWidth = 256;
         textureHeight = 256;
 

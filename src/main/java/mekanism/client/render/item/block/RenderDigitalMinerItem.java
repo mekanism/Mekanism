@@ -1,15 +1,9 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelDigitalMiner;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 
@@ -20,7 +14,8 @@ public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
 
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        RenderSystem.pushMatrix();
+        //TODO: 1.15
+        /*RenderSystem.pushMatrix();
         RenderSystem.rotatef(180, 0, 0, 1);
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             RenderSystem.rotatef(-90, 0, 1, 0);
@@ -30,7 +25,7 @@ public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
         RenderSystem.translatef(0.35F, 0.1F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "digital_miner.png"));
         digitalMiner.render(0.022F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getInstance().textureManager, true);
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
     @Override

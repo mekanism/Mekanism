@@ -15,6 +15,7 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Region;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread {
@@ -26,7 +27,8 @@ public class ThreadMinerSearch extends Thread {
     private Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
     private Map<Integer, MinerFilter<?>> replaceMap = new HashMap<>();
     private Map<Block, MinerFilter<?>> acceptedItems = new HashMap<>();
-    private Region chunkCache = null;
+    private DimensionType dimensionType;
+    private Region chunkCache;
 
     public int found = 0;
 
@@ -34,8 +36,9 @@ public class ThreadMinerSearch extends Thread {
         this.tile = tile;
     }
 
-    public void setChunkCache(Region cache) {
+    public void setChunkCache(Region cache, DimensionType dimensionType) {
         this.chunkCache = cache;
+        this.dimensionType = dimensionType;
     }
 
     @Override
@@ -66,7 +69,8 @@ public class ThreadMinerSearch extends Thread {
             }
 
             BlockPos testPos = new BlockPos(x, y, z);
-            if (!chunkCache.isBlockLoaded(testPos) || MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
+            //TODO: 1.15 verify that we don't need to check if the block is loaded. Probably got removed given a region is a cache
+            if (/*!chunkCache.isBlockLoaded(testPos) || */MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
                 //If it is not loaded or it is a bounding block skip it
                 continue;
             }
@@ -97,7 +101,7 @@ public class ThreadMinerSearch extends Thread {
                     acceptedItems.put(info, filterFound);
                 }
                 if (tile.inverse == (filterFound == null)) {
-                    set(i, new Coord4D(x, y, z, chunkCache.getDimension().getType()));
+                    set(i, new Coord4D(x, y, z, dimensionType));
                     replaceMap.put(i, filterFound);
                     found++;
                 }
@@ -108,6 +112,7 @@ public class ThreadMinerSearch extends Thread {
         tile.oresToMine = oresToMine;
         tile.replaceMap = replaceMap;
         chunkCache = null;
+        dimensionType = null;
         MekanismUtils.saveChunk(tile);
     }
 
@@ -120,6 +125,7 @@ public class ThreadMinerSearch extends Thread {
     public void reset() {
         state = State.IDLE;
         chunkCache = null;
+        dimensionType = null;
     }
 
     public enum State {

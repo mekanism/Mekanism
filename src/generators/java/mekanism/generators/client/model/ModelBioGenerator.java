@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import org.lwjgl.opengl.GL11;
@@ -20,6 +21,8 @@ public class ModelBioGenerator extends Model {
     private final ModelRenderer sideLeft;
 
     public ModelBioGenerator() {
+        //TODO: 1.15 Check if this is the proper render type to use
+        super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 64;
 

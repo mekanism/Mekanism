@@ -1,11 +1,8 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -128,7 +125,8 @@ public class ModelRobit extends EntityModel<EntityRobit> {
     public void func_225597_a_(EntityRobit entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         //public void render(EntityRobit entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         //super.func_225597_a_(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        //TODO: 1.15
+        /*setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         RenderSystem.pushMatrix();
         RenderSystem.rotatef(180, 0, 1, 0);
@@ -151,7 +149,7 @@ public class ModelRobit extends EntityModel<EntityRobit> {
         eyeRight.render(scale);
         eyeLeft.render(scale);
         MekanismRenderer.disableGlow(glowInfo);
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
     @Override

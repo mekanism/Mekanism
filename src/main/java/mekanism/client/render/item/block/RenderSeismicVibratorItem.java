@@ -22,7 +22,8 @@ public class RenderSeismicVibratorItem extends MekanismItemStackRenderer {
         RenderSystem.scalef(0.6F, 0.6F, 0.6F);
         RenderSystem.translatef(0, -0.55F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "seismic_vibrator.png"));
-        seismicVibrator.render(0.0625F);
+        //TODO: 1.15
+        //seismicVibrator.render(0.0625F);
     }
 
     @Override

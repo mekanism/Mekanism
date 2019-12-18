@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -81,15 +82,16 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
-            return false;
+            return ActionResultType.FAIL;
         }
         BlockState state1 = world.getBlockState(mainPos);
         //TODO: Use proper ray trace result, currently is using the one we got but we probably should make one with correct position information
-        return state1.getBlock().onBlockActivated(state1, world, mainPos, player, hand, hit);
+        return state1.getBlock().func_225533_a_(state1, world, mainPos, player, hand, hit);
     }
 
     @Override

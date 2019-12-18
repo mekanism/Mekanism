@@ -21,7 +21,8 @@ public class RenderChemicalCrystallizerItem extends MekanismItemStackRenderer {
         RenderSystem.rotatef(180, 0, 0, 1);
         RenderSystem.translatef(0.05F, -1.001F, 0.05F);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "chemical_crystallizer.png"));
-        chemicalCrystallizer.render(0.0625F);
+        //TODO: 1.15
+        //chemicalCrystallizer.render(0.0625F);
     }
 
     @Override

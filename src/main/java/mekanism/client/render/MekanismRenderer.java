@@ -98,7 +98,7 @@ public class MekanismRenderer {
             spriteLocation = fluid.getAttributes().getFlowingTexture();
         }
 
-        return getTextureAtlasSprite(spriteLocation);
+        return getSprite(spriteLocation);
     }
 
     public static TextureAtlasSprite getFluidTexture(@Nonnull FluidStack fluidStack, @Nonnull FluidType type) {
@@ -113,14 +113,14 @@ public class MekanismRenderer {
         } else {
             spriteLocation = fluid.getAttributes().getFlowingTexture(fluidStack);
         }
-        return getTextureAtlasSprite(spriteLocation);
+        return getSprite(spriteLocation);
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>> TextureAtlasSprite getChemicalTexture(@Nonnull CHEMICAL chemical) {
-        return getTextureAtlasSprite(chemical.getIcon());
+        return getSprite(chemical.getIcon());
     }
 
-    public static TextureAtlasSprite getTextureAtlasSprite(ResourceLocation spriteLocation) {
+    public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
         return texMap.getSprite(spriteLocation);
     }
 

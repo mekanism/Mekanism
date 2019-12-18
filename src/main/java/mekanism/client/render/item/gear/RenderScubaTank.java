@@ -28,7 +28,8 @@ public class RenderScubaTank extends MekanismItemStackRenderer {
         RenderSystem.scalef(1.6F, 1.6F, 1.6F);
         RenderSystem.translatef(0.2F, -0.5F, 0);
         MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png"));
-        scubaTank.render(0.0625F);
+        //TODO: 1.15
+        //scubaTank.render(0.0625F);
         RenderSystem.popMatrix();
     }
 

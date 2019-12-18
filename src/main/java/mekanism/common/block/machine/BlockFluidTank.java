@@ -38,6 +38,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -80,17 +81,18 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
         return 0;
     }
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) {
-            return true;
+            return ActionResultType.SUCCESS;
         }
         TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
-            return false;
+            return ActionResultType.PASS;
         }
         if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
-            return true;
+            return ActionResultType.SUCCESS;
         }
         //Handle filling fluid tank
         if (!player.func_225608_bj_()) {
@@ -98,11 +100,11 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                 ItemStack stack = player.getHeldItem(hand);
                 if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack) && manageInventory(player, (TileEntityFluidTank) tile, hand, stack)) {
                     player.inventory.markDirty();
-                    return true;
+                    return ActionResultType.SUCCESS;
                 }
             } else {
                 SecurityUtils.displayNoAccess(player);
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
         return tile.openGui(player);

@@ -223,8 +223,8 @@ public class RenderResizableCuboid {
         vertex = withValue(vertex, v, ri.xyz[V_ARRAY]);
         vertex = withValue(vertex, face.getAxis(), other);
 
-        wr.pos(vertex.x, vertex.y, vertex.z);
-        wr.tex(ri.uv[U_ARRAY], ri.uv[V_ARRAY]);
+        wr.func_225582_a_(vertex.x, vertex.y, vertex.z);
+        wr.func_225583_a_(ri.uv[U_ARRAY], ri.uv[V_ARRAY]);
 
         if (shadeTypes.isEnabled(EnumShadeType.FACE)) {
             setWorldRendererRGB(wr, aoMap.get(faceFormula.transformToWorld(face)));

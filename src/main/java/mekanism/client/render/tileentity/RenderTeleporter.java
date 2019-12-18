@@ -1,27 +1,12 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import mekanism.api.text.EnumColor;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.MekanismGases;
-import mekanism.common.block.machine.BlockTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.math.BlockPos;
-import org.lwjgl.opengl.GL11;
 
 public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter> {
 
@@ -30,7 +15,8 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     @Override
     public void func_225616_a_(@Nonnull TileEntityTeleporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
         //TODO: Figure out why it always renders in one direction even if the teleporter is assembled along the other axis
-        if (tile.shouldRender) {
+        //TODO: 1.15
+        /*if (tile.shouldRender) {
             RenderSystem.pushMatrix();
             RenderSystem.enableCull();
             RenderSystem.disableLighting();
@@ -60,10 +46,11 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
             RenderSystem.enableLighting();
             RenderSystem.disableCull();
             RenderSystem.popMatrix();
-        }
+        }*/
     }
 
-    private DisplayInteger getOverlayDisplay(Integer type) {
+    //TODO: 1.15
+    /*private DisplayInteger getOverlayDisplay(Integer type) {
         if (cachedOverlays.containsKey(type)) {
             return cachedOverlays.get(type);
         }
@@ -101,7 +88,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         GlStateManager.endList();
 
         return display;
-    }
+    }*/
 
     @Override
     public boolean isGlobalRenderer(TileEntityTeleporter tile) {

@@ -14,6 +14,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -43,16 +44,20 @@ public class BlockRotationalComplex extends BlockMekanism implements IHasTileEnt
         return SecurityUtils.canAccess(player, MekanismUtils.getTileEntity(world, pos)) ? super.getPlayerRelativeBlockHardness(state, player, world, pos) : 0.0F;
     }
 
+    @Nonnull
     @Override
-    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) {
-            return true;
+            return ActionResultType.SUCCESS;
         }
         TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
-            return false;
+            return ActionResultType.PASS;
         }
-        return tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS;
+        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
     }
 
     @Override

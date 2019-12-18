@@ -21,6 +21,7 @@ import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -96,8 +97,11 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     }
 
     @Override
-    public boolean onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        return structure != null && openGui(player);
+    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
+        if (structure == null) {
+            return ActionResultType.PASS;
+        }
+        return openGui(player);
     }
 
     @Override
