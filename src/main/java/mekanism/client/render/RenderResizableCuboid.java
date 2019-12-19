@@ -238,7 +238,7 @@ public class RenderResizableCuboid {
             BlockState state = access.getBlockState(pos);
             //TODO: 1.15 packed light map
             int combindedLight = access.func_225524_e_().func_227470_b_(pos, state.getLightValue(access, pos));
-            wr.func_225583_a_(combindedLight >> 16 & 65535, combindedLight & 65535);
+            wr.func_225587_b_(combindedLight >> 16 & 65535, combindedLight & 65535);
         }
 
         wr.endVertex();
@@ -300,7 +300,7 @@ public class RenderResizableCuboid {
         if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
             int capBlockLight = (int) avgBlockLight;
             int capSkyLight = (int) avgSkyLight;
-            wr.func_225583_a_(capBlockLight, capSkyLight);
+            wr.func_225587_b_(capBlockLight, capSkyLight);
         }
 
         Vec3d color;

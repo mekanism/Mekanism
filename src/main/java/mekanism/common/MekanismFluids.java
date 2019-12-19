@@ -11,7 +11,6 @@ import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
-//TODO: Fix the bucket models once the model PR gets merged as it will be simpler to deal with then
 //TODO: Things only used in MekanismGenerators should be moved to that mod such as fusion fuel, and any conversion recipes like
 // those should then use tags for the input gas rather than direct reference
 public class MekanismFluids {

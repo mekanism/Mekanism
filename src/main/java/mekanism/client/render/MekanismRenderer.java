@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -210,7 +211,7 @@ public class MekanismRenderer {
     }
 
     public static void color(int color) {
-        RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255f);
+        RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255.0F);
     }
 
     public static void color(@Nonnull FluidStack fluid, float fluidScale) {
@@ -337,7 +338,7 @@ public class MekanismRenderer {
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
         //TODO: 1.15 if this is broken try printing all the paths
-        if (!event.getMap().func_229223_g_().equals(new ResourceLocation("minecraft", "textures"))) {
+        if (!event.getMap().func_229223_g_().equals(PlayerContainer.field_226615_c_)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -368,7 +369,7 @@ public class MekanismRenderer {
     public static void onStitch(TextureStitchEvent.Post event) {
         AtlasTexture map = event.getMap();
         //TODO: 1.15 if this is broken try printing all the paths
-        if (!map.func_229223_g_().equals(new ResourceLocation("minecraft", "textures"))) {
+        if (!map.func_229223_g_().equals(PlayerContainer.field_226615_c_)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -464,6 +465,7 @@ public class MekanismRenderer {
         }
     }
 
+    //TODO: RenderSystem.glGenBuffers or maybe RenderSystem.recordRenderCall
     public static class DisplayInteger {
 
         public int display;

@@ -18,7 +18,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.JSONUtils;
-import net.minecraftforge.common.crafting.IngredientNBT;
+import net.minecraftforge.common.crafting.NBTIngredient;
 
 //TODO: Allow for empty item stacks?
 public abstract class ItemStackIngredient implements InputIngredient<@NonNull ItemStack> {
@@ -34,7 +34,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         //It is a protected constructor so pretend we are extending it and implementing it via the {}
         // Note: Only bother making it an NBT ingredient if the stack has NBT, otherwise there is no point in doing the extra checks
         //TODO: Figure out if this note is correct on what we should do
-        Ingredient ingredient = stack.hasTag() ? new IngredientNBT(stack) {} : Ingredient.fromStacks(stack);
+        Ingredient ingredient = stack.hasTag() ? new NBTIngredient(stack) {} : Ingredient.fromStacks(stack);
         return from(ingredient, amount);
     }
 
