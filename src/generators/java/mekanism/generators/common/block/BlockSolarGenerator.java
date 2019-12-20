@@ -27,7 +27,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -39,7 +38,7 @@ import net.minecraft.world.World;
 public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEntitySolarGenerator>, IBlockElectric, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntitySolarGenerator>, IStateWaterLogged {
 
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.solar"));
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.gen.solar"));
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel
           makeCuboidShape(1, 8, 1, 15, 9, 15),//solarPanelBottom

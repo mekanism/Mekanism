@@ -535,7 +535,7 @@ public class ClientRegistration {
     }
 
     private static void registerItemStackModel(Map<ResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
-        ModelResourceLocation resourceLocation = ClientRegistrationUtil.getInventoryMRL(Mekanism.MODID, type);
+        ModelResourceLocation resourceLocation = ClientRegistrationUtil.getInventoryMRL(Mekanism::rl, type);
         modelRegistry.put(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.get(resourceLocation))));
     }
 

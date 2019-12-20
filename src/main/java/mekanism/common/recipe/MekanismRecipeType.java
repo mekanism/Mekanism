@@ -108,7 +108,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
 
     private MekanismRecipeType(String name) {
         this.name = name;
-        this.registryName = new ResourceLocation(Mekanism.MODID, name);
+        this.registryName = Mekanism.rl(name);
     }
 
     @Override

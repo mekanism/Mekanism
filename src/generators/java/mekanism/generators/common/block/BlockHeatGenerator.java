@@ -34,7 +34,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -46,7 +45,7 @@ import net.minecraft.world.World;
 public class BlockHeatGenerator extends BlockMekanism implements IHasGui<TileEntityHeatGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntityHeatGenerator>, ISupportsComparator, IStateWaterLogged, IStateActive {
 
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.gen.heat"));
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.gen.heat"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {

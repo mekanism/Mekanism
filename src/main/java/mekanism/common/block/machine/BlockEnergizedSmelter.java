@@ -44,7 +44,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -57,7 +56,7 @@ import net.minecraft.world.World;
 public class BlockEnergizedSmelter extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityEnergizedSmelter>, IStateFacing, IStateActive,
       IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityEnergizedSmelter>, IBlockSound, ISupportsRedstone, ISupportsComparator {
 
-    public static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.smelter"));
+    public static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.smelter"));
 
     public BlockEnergizedSmelter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));

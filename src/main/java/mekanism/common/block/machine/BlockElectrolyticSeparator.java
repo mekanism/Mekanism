@@ -46,7 +46,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -63,7 +62,7 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
       IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityElectrolyticSeparator>, IBlockSound, ISupportsRedstone, ISupportsComparator,
       IStateWaterLogged {
 
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.electrolyticseparator"));
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.electrolyticseparator"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {

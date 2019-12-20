@@ -524,8 +524,8 @@ public final class MekanismUtils {
      * @return the corresponding ResourceLocation
      */
     public static ResourceLocation getResource(ResourceType type, String name) {
-        //TODO: Move resources for Mekanism Generators/Tools that use this out of Mekanism's resources folder
-        return new ResourceLocation(Mekanism.MODID, type.getPrefix() + name);
+        //TODO: 1.15 - Move resources for Mekanism Generators that use this out of Mekanism's resources folder
+        return Mekanism.rl(type.getPrefix() + name);
     }
 
     /**

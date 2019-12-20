@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
@@ -45,19 +46,13 @@ public class ClientRegistrationUtil {
         ScreenManager.registerFactory(type.getContainerType(), factory);
     }
 
-    public static ModelResourceLocation getInventoryMRL(String modid, String type) {
-        return new ModelResourceLocation(new ResourceLocation(modid, type), "inventory");
+    public static ModelResourceLocation getInventoryMRL(Function<String, ResourceLocation> rlCreator, String type) {
+        return new ModelResourceLocation(rlCreator.apply(type), "inventory");
     }
 
     public static void registerItemColorHandler(ItemColors colors, IItemColor itemColor, IItemProvider... items) {
         for (IItemProvider itemProvider : items) {
             colors.register(itemColor, itemProvider.getItem());
-        }
-    }
-
-    public static void registerBlockColorHandler(BlockColors blockColors, IBlockColor blockColor, IBlockProvider... blocks) {
-        for (IBlockProvider additionsBlock : blocks) {
-            blockColors.register(blockColor, additionsBlock.getBlock());
         }
     }
 

@@ -364,12 +364,12 @@ public class MekanismRenderer {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
-            event.addSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/" + type.getTransmission() + "_overlay"));
+            event.addSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay"));
         }
 
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/overlay_white"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
-        event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
+        event.addSprite(Mekanism.rl("block/overlay/overlay_white"));
+        event.addSprite(Mekanism.rl("block/liquid/liquid_energy"));
+        event.addSprite(Mekanism.rl("block/liquid/liquid_heat"));
 
         //TODO: Figure out why this sometimes causes crashes during startup
         //TODO: 1.15
@@ -395,12 +395,12 @@ public class MekanismRenderer {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
-            overlays.put(type, map.getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/" + type.getTransmission() + "_overlay")));
+            overlays.put(type, map.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay")));
         }
 
-        whiteIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/overlay_white"));
-        energyIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
-        heatIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
+        whiteIcon = map.getSprite(Mekanism.rl("block/overlay/overlay_white"));
+        energyIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_energy"));
+        heatIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_heat"));
 
         //TODO: 1.15
         //TransmitterModel.getIcons(map);

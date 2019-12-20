@@ -196,6 +196,11 @@ public class Mekanism {
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
     }
 
+    //TODO: 1.15 - Look at usages of this and move some things to proper sub modules like sounds of generators, etc
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(Mekanism.MODID, path);
+    }
+
     private void addCustomRegistryDeferredRegisters(RegistryEvent.NewRegistry event) {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MekanismInfuseTypes.INFUSE_TYPES.register(modEventBus);

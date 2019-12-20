@@ -166,6 +166,8 @@ public class SoundHandler {
             return;
         }
 
+        //TODO: This will need to be modified if we want to let modules be supported by this such as having generators include their own sounds
+        // instead of packing them in the main module
         // Ignore any sound event outside this mod namespace
         ResourceLocation soundLoc = event.getSound().getSoundLocation();
         if (!soundLoc.getNamespace().equals(Mekanism.MODID)) {

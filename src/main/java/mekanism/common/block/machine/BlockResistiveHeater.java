@@ -40,7 +40,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -56,7 +55,7 @@ import net.minecraft.world.World;
 public class BlockResistiveHeater extends BlockMekanism implements IBlockElectric, IHasGui<TileEntityResistiveHeater>, IStateFacing, IStateActive, IHasInventory,
       IHasSecurity, IHasTileEntity<TileEntityResistiveHeater>, IBlockSound, ISupportsRedstone, IStateWaterLogged {
 
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.resistiveheater"));
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.resistiveheater"));
     private static final VoxelShape boundsZAxis = VoxelShapeUtils.combine(
           makeCuboidShape(0, 0, 0, 16, 7, 16),//base
           makeCuboidShape(5, 6.5, 7.5, 11, 12.5, 8.5),//center

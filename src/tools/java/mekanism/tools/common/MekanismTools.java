@@ -11,6 +11,7 @@ import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -47,6 +48,10 @@ public class MekanismTools implements IModule {
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
 
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
+    }
+
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(MekanismTools.MODID, path);
     }
 
     private void setStackIfEmpty(LivingEntity entity, EquipmentSlotType slot, ItemStack item) {

@@ -93,13 +93,13 @@ public class MekanismTags {
     }
 
     private static Tag<Item> makeItemTag(String name) {
-        return new ItemTags.Wrapper(new ResourceLocation(Mekanism.MODID, name));
+        return new ItemTags.Wrapper(Mekanism.rl(name));
     }
 
     public static final Tag<Gas> DIRTY_SLURRY = makeGasTag("dirty_slurry");
     public static final Tag<Gas> CLEAN_SLURRY = makeGasTag("clean_slurry");
 
     private static Tag<Gas> makeGasTag(String name) {
-        return new GasTags.Wrapper(new ResourceLocation(Mekanism.MODID, name));
+        return new GasTags.Wrapper(Mekanism.rl(name));
     }
 }

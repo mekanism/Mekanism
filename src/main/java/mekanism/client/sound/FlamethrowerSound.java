@@ -8,8 +8,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class FlamethrowerSound extends PlayerSound {
 
-    private static final ResourceLocation IDLE_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.idle");
-    private static final ResourceLocation ON_SOUND = new ResourceLocation(Mekanism.MODID, "item.flamethrower.active");
+    private static final ResourceLocation IDLE_SOUND = Mekanism.rl("item.flamethrower.idle");
+    private static final ResourceLocation ON_SOUND = Mekanism.rl("item.flamethrower.active");
 
     private boolean active;
 

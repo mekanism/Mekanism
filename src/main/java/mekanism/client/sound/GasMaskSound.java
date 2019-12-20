@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GasMaskSound extends PlayerSound {
 
-    private static final ResourceLocation SOUND = new ResourceLocation(Mekanism.MODID, "item.gasMask");
+    private static final ResourceLocation SOUND = Mekanism.rl("item.gasMask");
 
     public GasMaskSound(@Nonnull PlayerEntity player) {
         super(player, SOUND);

@@ -52,7 +52,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -81,7 +80,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     private EnergyInventorySlot energySlot;
 
     public TileEntityPressurizedReactionChamber() {
-        super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 100, new ResourceLocation(Mekanism.MODID, "gui/gui_pressurized_reaction_chamber.png"));
+        super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 100, Mekanism.rl("gui/gui_pressurized_reaction_chamber.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

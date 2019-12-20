@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class JetpackSound extends PlayerSound {
 
-    private static final ResourceLocation SOUND = new ResourceLocation(Mekanism.MODID, "item.jetpack");
+    private static final ResourceLocation SOUND = Mekanism.rl("item.jetpack");
 
     public JetpackSound(@Nonnull PlayerEntity player) {
         super(player, SOUND);

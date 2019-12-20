@@ -21,7 +21,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -29,9 +28,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCraftingFormula extends Item {
 
-    public static ModelResourceLocation MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "crafting_formula"), "inventory");
-    public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "crafting_formula_invalid"), "inventory");
-    public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation(new ResourceLocation(Mekanism.MODID, "crafting_formula_encoded"), "inventory");
+    public static ModelResourceLocation MODEL = new ModelResourceLocation(Mekanism.rl("crafting_formula"), "inventory");
+    public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation(Mekanism.rl("crafting_formula_invalid"), "inventory");
+    public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation(Mekanism.rl("crafting_formula_encoded"), "inventory");
 
     public ItemCraftingFormula(Properties properties) {
         super(properties);

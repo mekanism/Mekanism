@@ -63,7 +63,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  */
 public class PacketHandler {
 
-    private static final SimpleChannel netHandler = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(Mekanism.MODID, Mekanism.MODID))
+    private static final SimpleChannel netHandler = NetworkRegistry.ChannelBuilder.named(Mekanism.rl(Mekanism.MODID))
           .clientAcceptedVersions(getProtocolVersion()::equals)
           .serverAcceptedVersions(getProtocolVersion()::equals)
           .networkProtocolVersion(PacketHandler::getProtocolVersion)

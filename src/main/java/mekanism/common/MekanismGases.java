@@ -6,7 +6,6 @@ import mekanism.api.gas.Slurry;
 import mekanism.common.registration.impl.GasDeferredRegister;
 import mekanism.common.registration.impl.GasRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
-import net.minecraft.util.ResourceLocation;
 
 //TODO: Move things that are only used by mekanism generators to that module
 public class MekanismGases {
@@ -16,7 +15,7 @@ public class MekanismGases {
 
     public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN);
     public static final GasRegistryObject<Gas> OXYGEN = GASES.register(ChemicalConstants.OXYGEN);
-    public static final GasRegistryObject<Gas> STEAM = GASES.register("steam", () -> new Gas(GasAttributes.builder(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_steam"))));
+    public static final GasRegistryObject<Gas> STEAM = GASES.register("steam", () -> new Gas(GasAttributes.builder(Mekanism.rl("block/liquid/liquid_steam"))));
     public static final GasRegistryObject<Gas> CHLORINE = GASES.register(ChemicalConstants.CHLORINE);
     public static final GasRegistryObject<Gas> SULFUR_DIOXIDE = GASES.register(ChemicalConstants.SULFUR_DIOXIDE);
     public static final GasRegistryObject<Gas> SULFUR_TRIOXIDE = GASES.register(ChemicalConstants.SULFUR_TRIOXIDE);

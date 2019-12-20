@@ -22,7 +22,6 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -50,7 +49,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public AxisAlignedBB box;
     public double clientTemp = 0;
     public boolean clientBurning = false;
-    private SoundEvent soundEvent = new SoundEvent(new ResourceLocation(Mekanism.MODID, "tile.machine.fusionreactor"));
+    private SoundEvent soundEvent = new SoundEvent(Mekanism.rl("tile.machine.fusionreactor"));
     /**
      * Only used by the client
      */

@@ -96,7 +96,7 @@ public class GeneratorsClientRegistration {
     }
 
     private static void registerItemStackModel(Map<ResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
-        ModelResourceLocation resourceLocation = ClientRegistrationUtil.getInventoryMRL(MekanismGenerators.MODID, type);
+        ModelResourceLocation resourceLocation = ClientRegistrationUtil.getInventoryMRL(MekanismGenerators::rl, type);
         modelRegistry.put(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.get(resourceLocation))));
     }
 }
