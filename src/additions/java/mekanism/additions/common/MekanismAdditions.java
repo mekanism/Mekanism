@@ -1,5 +1,6 @@
 package mekanism.additions.common;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
@@ -11,11 +12,15 @@ import mekanism.common.base.IModule;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Direction;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -80,15 +85,16 @@ public class MekanismAdditions implements IModule {
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
             voiceManager = new VoiceServerManager();
         }
-        //Add baby skeleton spawner
-        //TODO: Spawn baby skeletons
-        /*if (MekanismAdditionsConfig.additions.spawnBabySkeletons.get()) {
+        //Add baby skeleton to spawn table
+        if (MekanismAdditionsConfig.additions.spawnBabySkeletons.get()) {
+            SpawnListEntry spawnListEntry = new SpawnListEntry(AdditionsEntityType.BABY_SKELETON.get(), 40, 1, 3);
             for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
-                if (biome.getSpawns(EntityClassification.MONSTER).size() > 0) {
-                    EntityRegistry.addSpawn(EntityBabySkeleton.class, 40, 1, 3, EntityClassification.MONSTER, biome);
+                List<SpawnListEntry> monsterSpawns = biome.getSpawns(EntityClassification.MONSTER);
+                if (!monsterSpawns.isEmpty()) {
+                    monsterSpawns.add(spawnListEntry);
                 }
             }
-        }*/
+        }
 
         //TODO: Remove this when we can, for now just lazy add the dispense behavior
         DispenserBlock.registerDispenseBehavior(AdditionsItem.BABY_SKELETON_SPAWN_EGG, new DefaultDispenseItemBehavior() {

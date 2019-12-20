@@ -12,8 +12,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class BabySkeletonSpawnEggItem extends SpawnEggItem {
 
     public BabySkeletonSpawnEggItem() {
-        super(EntityType.SKELETON, 0xFFFFFF, 0x800080, ItemDeferredRegister.getMekBaseProperties());
-        //TODO: Should we pass it "null" given I think this might be overriding the normal skeleton spawn egg at least pick block on skeleton returned spawn egg
+        //Note: We pass null for now so that it does not override "pick block" on skeletons or some other existing type
+        super(null, 0xFFFFFF, 0x800080, ItemDeferredRegister.getMekBaseProperties());
     }
 
     @Nonnull

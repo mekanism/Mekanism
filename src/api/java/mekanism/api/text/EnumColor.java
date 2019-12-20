@@ -102,7 +102,6 @@ public enum EnumColor implements IStringSerializable {
             case BRIGHT_GREEN:
                 return "Lime";
             case AQUA:
-                //TODO: Decide if this is what we want the name to be
                 return "Aqua";
             case RED:
                 return "Red";

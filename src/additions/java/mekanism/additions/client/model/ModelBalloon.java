@@ -1,10 +1,8 @@
 package mekanism.additions.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -18,7 +16,6 @@ public class ModelBalloon extends Model {
     private final ModelRenderer String;
 
     public ModelBalloon() {
-        //TODO: 1.15 test
         super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 32;
@@ -57,25 +54,20 @@ public class ModelBalloon extends Model {
 
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        //public void render(float size, EnumColor color) {
-        RenderSystem.pushMatrix();
-        //MekanismRenderer.color(color);
-        RenderSystem.color4f(red, green, blue, alpha);
-        RenderSystem.scalef(1.5F, 1.5F, 1.5F);
-        RenderSystem.translatef(0, -0.07F, 0);
+        matrix.func_227860_a_();
+        matrix.func_227862_a_(1.5F, 1.5F, 1.5F);
+        matrix.func_227861_a_(0, -0.07F, 0);
 
         Balloon2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Balloon1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Balloon3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Balloonnub.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        matrix.func_227865_b_();
 
-        MekanismRenderer.resetColor();
-        RenderSystem.popMatrix();
-
-        RenderSystem.pushMatrix();
-        RenderSystem.scalef(0.2F, 1, 0.2F);
-        String.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        RenderSystem.popMatrix();
+        matrix.func_227860_a_();
+        matrix.func_227862_a_(0.2F, 1, 0.2F);
+        String.func_228309_a_(matrix, vertexBuilder, light, otherLight, 1, 1, 1, 1);
+        matrix.func_227865_b_();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
