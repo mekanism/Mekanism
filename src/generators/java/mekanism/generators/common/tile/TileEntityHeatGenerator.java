@@ -88,6 +88,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             energySlot.charge(this);
             ItemStack fuelStack = fuelSlot.getStack();
             if (!fuelStack.isEmpty()) {
+                //TODO: Do we want to at some point try to move this logic into the FuelSlot itself?
                 if (FluidContainerUtils.isFluidContainer(fuelStack)) {
                     lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, fuelSlot, FluidChecker.check(Fluids.LAVA)), FluidAction.EXECUTE);
                 } else {

@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -288,6 +290,8 @@ public class MekanismRenderer {
 
     @Nonnull
     public static GlowInfo enableGlow(int glow) {
+        //TODO: Decide if for fullbright glow we want to just disable the lightmap instead of using this method for glow
+        //to modify the state properly we would add .func_228719_a_(field_228529_u_)
         //TODO: Do we need to make sure optifine is not loaded
         if (/*!FMLClientHandler.instance().hasOptifine() && */glow > 0) {
             GlowInfo info = new GlowInfo(GlStateManager.lastBrightnessX, GlStateManager.lastBrightnessY, true);
@@ -318,6 +322,7 @@ public class MekanismRenderer {
         return Minecraft.getInstance().getRenderPartialTicks();
     }
 
+    @Deprecated
     public static void rotate(Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
@@ -331,6 +336,23 @@ public class MekanismRenderer {
                 break;
             case EAST:
                 RenderSystem.rotatef(east, 0, 1, 0);
+                break;
+        }
+    }
+
+    public static void rotate(MatrixStack matrix, Direction facing, float north, float south, float west, float east) {
+        switch (facing) {
+            case NORTH:
+                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(north));
+                break;
+            case SOUTH:
+                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(south));
+                break;
+            case WEST:
+                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(west));
+                break;
+            case EAST:
+                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(east));
                 break;
         }
     }

@@ -32,7 +32,6 @@ public class ModelWindGenerator extends Model {
     private final ModelRenderer post1d;
 
     public ModelWindGenerator() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 128;
@@ -167,7 +166,11 @@ public class ModelWindGenerator extends Model {
 
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-    //public void render(float size, double angle) {
+        render(matrix, vertexBuilder, 0, light, otherLight, red, green, blue, alpha);
+    }
+
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, double angle, int light, int otherLight, float red, float green,
+          float blue, float alpha) {
         head.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         plateConnector2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         plateConnector.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -183,17 +186,20 @@ public class ModelWindGenerator extends Model {
         post1d.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         //TODO: 1.15
-        /*setRotation(blade1a, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
-        setRotation(blade1b, 0F, 0F, 0.0349066F + getRotation(getAbsoluteAngle(angle)));
+        float baseRotation = getAbsoluteRotation(angle);
+        setRotation(blade1a, 0F, 0F, baseRotation);
+        setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);
 
-        setRotation(blade2a, 0F, 0F, getRotation(getAbsoluteAngle(angle - 60)));
-        setRotation(blade2b, 0F, 0F, 0.0349066F + getRotation(getAbsoluteAngle(angle - 60)));
+        float blade2Rotation = getAbsoluteRotation(angle - 60);
+        setRotation(blade2a, 0F, 0F, blade2Rotation);
+        setRotation(blade2b, 0F, 0F, 0.0349066F + blade2Rotation);
 
-        setRotation(blade3a, 0F, 0F, getRotation(getAbsoluteAngle(angle + 60)));
-        setRotation(blade3b, 0F, 0F, 0.0349066F + getRotation(getAbsoluteAngle(angle + 60)));
+        float blade3Rotation = getAbsoluteRotation(angle + 60);
+        setRotation(blade3a, 0F, 0F, blade3Rotation);
+        setRotation(blade3b, 0F, 0F, 0.0349066F + blade3Rotation);
 
-        setRotation(bladeCap, 0F, 0F, getRotation(getAbsoluteAngle(angle)));
-        setRotation(bladeCenter, 0F, 0F, getRotation(getAbsoluteAngle(angle)));*/
+        setRotation(bladeCap, 0F, 0F, baseRotation);
+        setRotation(bladeCenter, 0F, 0F, baseRotation);
 
         blade1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         blade2a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -206,12 +212,8 @@ public class ModelWindGenerator extends Model {
         bladeCenter.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
-    public float getRotation(double angle) {
-        return (float) Math.toRadians(angle);
-    }
-
-    public double getAbsoluteAngle(double angle) {
-        return angle % 360;
+    private float getAbsoluteRotation(double angle) {
+        return (float) Math.toRadians(angle % 360);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

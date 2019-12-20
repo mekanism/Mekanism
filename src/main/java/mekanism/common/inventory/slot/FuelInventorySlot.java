@@ -20,7 +20,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
 
     public static FuelInventorySlot forFuel(ToIntFunction<@NonNull ItemStack> fuelValue, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
-        return new FuelInventorySlot(stack -> fuelValue.applyAsInt(stack) == 0, stack -> fuelValue.applyAsInt(stack) > 0, inventory, x, y);
+        return new FuelInventorySlot(stack -> fuelValue.applyAsInt(stack) == 0, stack -> fuelValue.applyAsInt(stack) > 0, alwaysTrue, inventory, x, y);
     }
 
     public static FuelInventorySlot forFuel(ToIntFunction<@NonNull ItemStack> fuelValue, Predicate<@NonNull FluidStack> validFuel, @Nullable IMekanismInventory inventory,
@@ -39,11 +39,17 @@ public class FuelInventorySlot extends BasicInventorySlot {
                 return fuelValue.applyAsInt(stack) > 0;
             }
             return validFuel.test(fluidContained) || fuelValue.applyAsInt(stack) > 0;
+        }, stack -> {
+            //Allow for all fluid containers and items with a fuel value to be valid, so that we don't crash
+            // on empty buckets after draining, but we can't insert them because of the more accurate insertion checks
+            return FluidUtil.getFluidHandler(stack).isPresent() || fuelValue.applyAsInt(stack) > 0;
         }, inventory, x, y);
     }
 
-    private FuelInventorySlot(Predicate<@NonNull ItemStack> canExtract, @Nonnull Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
+    private FuelInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
+          @Nullable IMekanismInventory inventory, int x, int y) {
         //TODO: Re-evaluate this can extract
-        super((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), alwaysTrueBi, validator, inventory, x, y);
+        super((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack), validator,
+              inventory, x, y);
     }
 }

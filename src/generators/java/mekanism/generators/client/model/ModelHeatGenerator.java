@@ -1,25 +1,29 @@
 package mekanism.generators.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class ModelHeatGenerator extends Model {
 
+    private static final ResourceLocation GENERATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator.png");
     private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_on.png");
     private static final ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_off.png");
+    private static final RenderType RENDER_TYPE_ON = MekanismRenderType.mek_overlay(OVERLAY_ON);
+    private static final RenderType RENDER_TYPE_OFF = MekanismRenderType.mek_overlay(OVERLAY_OFF);
+
+    private final RenderType RENDER_TYPE = func_228282_a_(GENERATOR_TEXTURE);
 
     private final ModelRenderer drum;
     private final ModelRenderer ring1;
@@ -39,7 +43,6 @@ public class ModelHeatGenerator extends Model {
     private final ModelRenderer base;
 
     public ModelHeatGenerator() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
@@ -145,32 +148,22 @@ public class ModelHeatGenerator extends Model {
         setRotation(base, 0F, 0F, 0F);
     }
 
-    @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        //public void render(float size, boolean on, TextureManager manager) {
-        RenderSystem.pushMatrix();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-
-        doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        //TODO: 1.15
-        //manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
-        RenderSystem.scalef(1.001F, 1.001F, 1.001F);
-        RenderSystem.translatef(0, -0.0011F, 0);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, boolean on) {
+        matrix.func_227860_a_();
+        //Render the main model
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, OverlayTexture.field_229196_a_, 1, 1, 1, 1);
+        //Adjust size/positioning slightly and render the overlay
+        matrix.func_227862_a_(1.001F, 1.001F, 1.001F);
+        matrix.func_227861_a_(0, -0.0011F, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-
-        doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
+        func_225598_a_(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, OverlayTexture.field_229196_a_, 1, 1, 1, 1);
         MekanismRenderer.disableGlow(glowInfo);
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.popMatrix();
+        matrix.func_227865_b_();
     }
 
-    public void doRender(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue,
+          float alpha) {
         drum.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         ring1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         ring2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);

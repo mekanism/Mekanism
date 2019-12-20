@@ -22,7 +22,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -31,7 +30,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemWalkieTalkie extends Item implements IItemNetwork {
 
-    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation(new ResourceLocation(MekanismAdditions.MODID, "walkie_talkie"), "inventory");
+    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation(MekanismAdditions.rl("walkie_talkie"), "inventory");
 
     public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
 
@@ -40,7 +39,7 @@ public class ItemWalkieTalkie extends Item implements IItemNetwork {
     }
 
     public static ModelResourceLocation getModel(int channel) {
-        CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation(new ResourceLocation(MekanismAdditions.MODID, "walkie_talkie_ch" + c), "inventory"));
+        CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation(MekanismAdditions.rl("walkie_talkie_ch" + c), "inventory"));
         return CHANNEL_MODELS.get(channel);
     }
 

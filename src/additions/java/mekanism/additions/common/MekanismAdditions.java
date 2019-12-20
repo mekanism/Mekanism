@@ -18,6 +18,7 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.biome.provider.BiomeProvider;
@@ -63,6 +64,10 @@ public class MekanismAdditions implements IModule {
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
+    }
+
+    public static ResourceLocation rl(String path) {
+        return new ResourceLocation(MekanismAdditions.MODID, path);
     }
 
     @Override

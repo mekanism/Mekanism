@@ -3,11 +3,20 @@ package mekanism.additions.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.additions.common.MekanismAdditions;
+import mekanism.api.text.EnumColor;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelBalloon extends Model {
+
+    public static final ResourceLocation BALLOON_TEXTURE = MekanismAdditions.rl("textures/item/balloon.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(BALLOON_TEXTURE);
 
     private final ModelRenderer Balloon2;
     private final ModelRenderer Balloon1;
@@ -50,6 +59,15 @@ public class ModelBalloon extends Model {
         String.setTextureSize(64, 32);
         String.mirror = true;
         setRotation(String, 0F, 0F, 0F);
+    }
+
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, EnumColor color) {
+        matrix.func_227860_a_();
+        //Flip the balloon so it is facing up instead of down
+        matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(180));
+        IVertexBuilder vertexBuilder = renderer.getBuffer(RENDER_TYPE);
+        func_225598_a_(matrix, vertexBuilder, light, OverlayTexture.field_229196_a_, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+        matrix.func_227865_b_();
     }
 
     @Override
