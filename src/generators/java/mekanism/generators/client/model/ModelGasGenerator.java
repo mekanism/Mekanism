@@ -3,11 +3,19 @@ package mekanism.generators.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelGasGenerator extends Model {
+
+    private static final ResourceLocation GENERATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "gas_burning_generator.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(GENERATOR_TEXTURE);
 
     private final ModelRenderer port4;
     private final ModelRenderer baseStand;
@@ -30,8 +38,7 @@ public class ModelGasGenerator extends Model {
     private final ModelRenderer connector1;
 
     public ModelGasGenerator() {
-        //TODO: 1.15 Check if this is the proper render type to use
-        super(RenderType::func_228634_a_);
+        super(RenderType::func_228638_b_);
         textureWidth = 128;
         textureHeight = 64;
 
@@ -149,6 +156,10 @@ public class ModelGasGenerator extends Model {
         connector1.setTextureSize(128, 64);
         connector1.mirror = true;
         setRotation(connector1, 0F, 0F, 0F);
+    }
+
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, OverlayTexture.field_229196_a_, 1, 1, 1, 1);
     }
 
     @Override

@@ -149,10 +149,10 @@ public class ModelHeatGenerator extends Model {
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, boolean on) {
-        matrix.func_227860_a_();
         //Render the main model
         func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, OverlayTexture.field_229196_a_, 1, 1, 1, 1);
         //Adjust size/positioning slightly and render the overlay
+        matrix.func_227860_a_();
         matrix.func_227862_a_(1.001F, 1.001F, 1.001F);
         matrix.func_227861_a_(0, -0.0011F, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();

@@ -2,28 +2,25 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelGasGenerator;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 
 public class RenderGasGenerator extends MekanismTileEntityRenderer<TileEntityGasGenerator> {
 
     private ModelGasGenerator model = new ModelGasGenerator();
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityGasGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        //TODO: 1.15
-        /*RenderSystem.pushMatrix();
-        RenderSystem.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        field_228858_b_.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "gas_burning_generator.png"));
-
-        MekanismRenderer.rotate(tile.getDirection(), 90, 270, 180, 0);
-
-        RenderSystem.rotatef(180, 0, 1, 1);
-        RenderSystem.rotatef(90, -1, 0, 0);
-        RenderSystem.rotatef(90, 0, 1, 0);
-        model.render(0.0625F);
-        RenderSystem.popMatrix();*/
+    public void func_225616_a_(@Nonnull TileEntityGasGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+          int otherLight) {
+        matrix.func_227860_a_();
+        matrix.func_227861_a_(0.5F, 1.5F, 0.5F);
+        MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        model.render(matrix, renderer, light);
+        matrix.func_227865_b_();
     }
 }

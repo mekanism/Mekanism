@@ -3,11 +3,19 @@ package mekanism.generators.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelWindGenerator extends Model {
+
+    private static final ResourceLocation GENERATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "wind_generator.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(GENERATOR_TEXTURE);
 
     private final ModelRenderer head;
     private final ModelRenderer plateConnector2;
@@ -164,28 +172,7 @@ public class ModelWindGenerator extends Model {
         setRotation(post1d, -0.0347321F, 0F, -0.0347321F);
     }
 
-    @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        render(matrix, vertexBuilder, 0, light, otherLight, red, green, blue, alpha);
-    }
-
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, double angle, int light, int otherLight, float red, float green,
-          float blue, float alpha) {
-        head.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        plateConnector2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        plateConnector.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        plate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        baseRim.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        wire.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rearPlate1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rearPlate2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        post1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        post1b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        post1c.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        post1d.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        //TODO: 1.15
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, double angle, int light) {
         float baseRotation = getAbsoluteRotation(angle);
         setRotation(blade1a, 0F, 0F, baseRotation);
         setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);
@@ -200,6 +187,25 @@ public class ModelWindGenerator extends Model {
 
         setRotation(bladeCap, 0F, 0F, baseRotation);
         setRotation(bladeCenter, 0F, 0F, baseRotation);
+
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, OverlayTexture.field_229196_a_, 1, 1, 1, 1);
+    }
+
+    @Override
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        head.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        plateConnector2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        plateConnector.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        plate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        baseRim.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        wire.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rearPlate1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        rearPlate2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        post1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        post1b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        post1c.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        post1d.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         blade1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         blade2a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
