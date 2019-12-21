@@ -2,56 +2,50 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.Direction;
 
 public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube> {
 
-    public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube.png");
-    public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
-
+    private static final Vector3f coreVec = new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO);
     private ModelEnergyCube model = new ModelEnergyCube();
     private ModelEnergyCore core = new ModelEnergyCore();
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        //TODO: Debate converting the energy cube to a normal baked model and then just have this draw the model AND then add the core in the middle
-        // Would this improve performance at all? We probably would have to put port state information into the blockstate
-        //TODO: 1.15
-        /*RenderSystem.pushMatrix();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
+        matrix.func_227860_a_();
+        matrix.func_227861_a_(0.5, 1.5, 0.5);
 
-        RenderSystem.pushMatrix();
+        matrix.func_227860_a_();
         switch (tile.getDirection()) {
             case DOWN:
-                RenderSystem.rotatef(90, -1, 0, 0);
-                RenderSystem.translatef(0, 1.0F, -1.0F);
+                matrix.func_227863_a_(Vector3f.field_229178_a_.func_229187_a_(90));
+                matrix.func_227861_a_(0, 1, -1);
                 break;
             case UP:
-                RenderSystem.rotatef(90, 1, 0, 0);
-                RenderSystem.translatef(0, 1.0F, 1.0F);
+                matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90));
+                matrix.func_227861_a_(0, 1, 1);
                 break;
             default:
                 //Otherwise use the helper method for handling different face options because it is one of them
-                MekanismRenderer.rotate(tile.getDirection(), 0, 180, 90, 270);
+                MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
                 break;
         }
 
-        RenderSystem.rotatef(180, 0, 0, 1);
-        model.render(0.0625F, tile.tier, field_228858_b_.textureManager, false);
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        model.render(matrix, renderer, light, otherLight, tile.tier, false);
 
-        setLightmapDisabled(true);
         for (Direction side : EnumUtils.DIRECTIONS) {
-            bindTexture(baseTexture);
             ISlotInfo slotInfo = tile.configComponent.getSlotInfo(TransmissionType.ENERGY, side);
             //TODO: Re-evaluate
             boolean canInput = false;
@@ -60,30 +54,21 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
                 canInput = slotInfo.canInput();
                 canOutput = slotInfo.canOutput();
             }
-            model.renderSide(0.0625F, side, canInput, canOutput, field_228858_b_.textureManager);
+            model.renderSide(matrix, renderer, light, otherLight, side, canInput, canOutput);
         }
-        setLightmapDisabled(false);
-        RenderSystem.popMatrix();
+        matrix.func_227865_b_();
 
         double energyPercentage = tile.getEnergy() / tile.getMaxEnergy();
         if (energyPercentage > 0.1) {
-            RenderSystem.translatef(0, -1.0F, 0);
-            bindTexture(coreTexture);
-            GlowInfo glowInfo = MekanismRenderer.enableGlow();
+            matrix.func_227861_a_(0, -1, 0);
             float ticks = MekanismClient.ticksPassed + partialTick;
-            RenderSystem.scalef(0.4F, 0.4F, 0.4F);
-            MekanismRenderer.color(tile.tier.getBaseTier().getColor(), (float) energyPercentage);
-            RenderSystem.translatef(0, (float) Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
-            RenderSystem.rotatef(4 * ticks, 0, 1, 0);
-            RenderSystem.rotatef(36F + 4 * ticks, 0, 1, 1);
-            core.render(0.0625F);
-            MekanismRenderer.resetColor();
-            MekanismRenderer.disableGlow(glowInfo);
+            matrix.func_227862_a_(0.4F, 0.4F, 0.4F);
+            matrix.func_227861_a_(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(4 * ticks));
+            matrix.func_227863_a_(coreVec.func_229187_a_(36F + 4 * ticks));
+            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, otherLight, tile.tier, (float) energyPercentage);
         }
-
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.popMatrix();
-        MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, otherLight);*/
+        matrix.func_227865_b_();
+        MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, otherLight);
     }
 }

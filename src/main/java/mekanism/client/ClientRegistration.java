@@ -313,13 +313,6 @@ public class ClientRegistration {
         //TODO: Remove??
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.QUANTUM_ENTANGLOPORTER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ROTARY_CONDENSENTRATOR, RenderType.func_228643_e_());
-        //Energy Cubes
-        //TODO: Remove??
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_ENERGY_CUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_ENERGY_CUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_ENERGY_CUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_ENERGY_CUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CREATIVE_ENERGY_CUBE, RenderType.func_228643_e_());
         //Fluid Tanks
         //TODO: Remove??
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_FLUID_TANK, RenderType.func_228643_e_());

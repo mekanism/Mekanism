@@ -78,6 +78,8 @@ import org.jetbrains.annotations.Contract;
  */
 public final class MekanismUtils {
 
+    public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
+
     public static final Direction[] SIDE_DIRS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
     public static final Map<String, Class<?>> classesFound = new HashMap<>();
