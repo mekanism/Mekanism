@@ -290,16 +290,8 @@ public class ClientRegistration {
         //TODO: Re-evaluate the different layers things are set to, as most things are set to cutout, but I believe a good number of these
         // can be solid (so not listed here at all) and some maybe translucent
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.STRUCTURAL_GLASS, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CHARGEPAD, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CHEMICAL_CRYSTALLIZER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CHEMICAL_INFUSER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CHEMICAL_INJECTION_CHAMBER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CHEMICAL_OXIDIZER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CHEMICAL_WASHER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.COMBINER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.CRUSHER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.DIGITAL_MINER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELECTRIC_PUMP, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELECTROLYTIC_SEPARATOR, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ENERGIZED_SMELTER, RenderType.func_228643_e_());
@@ -318,72 +310,23 @@ public class ClientRegistration {
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.PRECISION_SAWMILL, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.PURIFICATION_CHAMBER, RenderType.func_228643_e_());
+        //TODO: Remove??
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.QUANTUM_ENTANGLOPORTER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.RESISTIVE_HEATER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ROTARY_CONDENSENTRATOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.SEISMIC_VIBRATOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, RenderType.func_228643_e_());
-        //Bounding Blocks
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BOUNDING_BLOCK, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_BOUNDING_BLOCK, RenderType.func_228643_e_());
         //Energy Cubes
+        //TODO: Remove??
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_ENERGY_CUBE, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_ENERGY_CUBE, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_ENERGY_CUBE, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_ENERGY_CUBE, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.CREATIVE_ENERGY_CUBE, RenderType.func_228643_e_());
         //Fluid Tanks
+        //TODO: Remove??
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_FLUID_TANK, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_FLUID_TANK, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_FLUID_TANK, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_FLUID_TANK, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.CREATIVE_FLUID_TANK, RenderType.func_228643_e_());
-        //Factories
-        //Combining
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_COMBINING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_COMBINING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_COMBINING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_COMBINING_FACTORY, RenderType.func_228643_e_());
-        //Compressing
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_COMPRESSING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_COMPRESSING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_COMPRESSING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_COMPRESSING_FACTORY, RenderType.func_228643_e_());
-        //Crushing
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_CRUSHING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_CRUSHING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_CRUSHING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_CRUSHING_FACTORY, RenderType.func_228643_e_());
-        //Enriching
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_ENRICHING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_ENRICHING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_ENRICHING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_ENRICHING_FACTORY, RenderType.func_228643_e_());
-        //Infusing
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_INFUSING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_INFUSING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_INFUSING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_INFUSING_FACTORY, RenderType.func_228643_e_());
-        //Injecting
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_INJECTING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_INJECTING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_INJECTING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_INJECTING_FACTORY, RenderType.func_228643_e_());
-        //Purifying
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_PURIFYING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_PURIFYING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_PURIFYING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_PURIFYING_FACTORY, RenderType.func_228643_e_());
-        //Sawing
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_SAWING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_SAWING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_SAWING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_SAWING_FACTORY, RenderType.func_228643_e_());
-        //Smelting
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_SMELTING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_SMELTING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_SMELTING_FACTORY, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_SMELTING_FACTORY, RenderType.func_228643_e_());
         //Transmitters
         //TODO: Is this even the proper way to convert the canRenderInLayer the transmitters used to use
         //Logistical transporters

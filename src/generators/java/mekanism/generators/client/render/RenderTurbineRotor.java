@@ -3,9 +3,12 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
+import mekanism.common.Mekanism;
 import mekanism.generators.client.model.ModelTurbine;
+import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 
 public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTurbineRotor> {
 
@@ -15,18 +18,11 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityTurbineRotor tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        //TODO: 1.15
-        //renderAModelAt(tile, x, y, z, partialTick);
-    }
-
-    private void renderAModelAt(TileEntityTurbineRotor tile, double x, double y, double z, float partialTick) {
-        //TODO: 1.15
-        /*if (tile.getMultiblock() != null && !internalRender) {
+        if (tile.getMultiblock() != null && !internalRender) {
             return;
         }
 
-        RenderSystem.pushMatrix();
-        field_228858_b_.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "turbine.png"));
+        matrix.func_227860_a_();
 
         int baseIndex = tile.getPosition() * 2;
         float rotateSpeed = 0.0F;
@@ -41,22 +37,21 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         }
 
         if (tile.getHousedBlades() > 0) {
-            RenderSystem.pushMatrix();
-            RenderSystem.translatef((float) x + 0.5F, (float) y - 1F, (float) z + 0.5F);
-            RenderSystem.rotatef(tile.rotationLower, 0, 1, 0);
-            model.render(0.0625F, baseIndex);
-            RenderSystem.popMatrix();
+            matrix.func_227860_a_();
+            matrix.func_227861_a_(0.5, -1, 0.5);
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(tile.rotationLower));
+            model.render(matrix, renderer, light, otherLight, baseIndex);
+            matrix.func_227865_b_();
         }
 
         if (tile.getHousedBlades() == 2) {
-            RenderSystem.pushMatrix();
-            RenderSystem.translatef((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
-            RenderSystem.rotatef(tile.rotationUpper, 0, 1, 0);
-            model.render(0.0625F, baseIndex + 1);
-            RenderSystem.popMatrix();
+            matrix.func_227860_a_();
+            matrix.func_227861_a_(0.5, -0.5, 0.5);
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(tile.rotationUpper));
+            model.render(matrix, renderer, light, otherLight, baseIndex + 1);
+            matrix.func_227865_b_();
         }
-
-        RenderSystem.popMatrix();*/
+        matrix.func_227865_b_();
     }
 
     @Override

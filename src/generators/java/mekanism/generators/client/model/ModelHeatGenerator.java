@@ -19,8 +19,8 @@ public class ModelHeatGenerator extends Model {
     private static final ResourceLocation GENERATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator.png");
     private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_on.png");
     private static final ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_off.png");
-    private static final RenderType RENDER_TYPE_ON = MekanismRenderType.mek_overlay(OVERLAY_ON);
-    private static final RenderType RENDER_TYPE_OFF = MekanismRenderType.mek_overlay(OVERLAY_OFF);
+    private static final RenderType RENDER_TYPE_ON = MekanismRenderType.mekStandard(OVERLAY_ON);
+    private static final RenderType RENDER_TYPE_OFF = MekanismRenderType.mekStandard(OVERLAY_OFF);
 
     private final RenderType RENDER_TYPE = func_228282_a_(GENERATOR_TEXTURE);
 
@@ -153,7 +153,7 @@ public class ModelHeatGenerator extends Model {
         //Adjust size/positioning slightly and render the overlay
         matrix.func_227860_a_();
         matrix.func_227862_a_(1.001F, 1.001F, 1.001F);
-        matrix.func_227861_a_(0, -0.0011F, 0);
+        matrix.func_227861_a_(0, -0.0011, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         func_225598_a_(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, otherLight, 1, 1, 1, 1);
         MekanismRenderer.disableGlow(glowInfo);

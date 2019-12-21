@@ -17,7 +17,7 @@ public final class MinerVisualRenderer {
     private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
 
     public static void render(TileEntityDigitalMiner miner) {
-        //TODO: 1.15
+        //TODO: 1.15 - note light map would be disabled by digital miner previously
         /*RenderSystem.pushMatrix();
         RenderSystem.translatef((float) getX(miner.getPos().getX()), (float) getY(miner.getPos().getY()), (float) getZ(miner.getPos().getZ()));
         RenderSystem.shadeModel(GL11.GL_SMOOTH);

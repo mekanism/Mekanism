@@ -65,7 +65,6 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.setRenderLayer(GeneratorsBlock.BIO_GENERATOR, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(GeneratorsBlock.LASER_FOCUS_MATRIX, RenderType.func_228645_f_());
         ClientRegistrationUtil.setRenderLayer(GeneratorsBlock.REACTOR_GLASS, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(GeneratorsBlock.TURBINE_ROTOR, RenderType.func_228643_e_());
     }
 
     @SubscribeEvent

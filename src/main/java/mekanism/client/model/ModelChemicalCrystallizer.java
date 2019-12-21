@@ -1,17 +1,23 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelChemicalCrystallizer extends Model {
+
+    private static final ResourceLocation CRYSTALLIZER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "chemical_crystallizer.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(CRYSTALLIZER_TEXTURE);
+    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(CRYSTALLIZER_TEXTURE);
 
     private final ModelRenderer tray;
     private final ModelRenderer support4;
@@ -29,10 +35,9 @@ public class ModelChemicalCrystallizer extends Model {
     private final ModelRenderer rod2;
     private final ModelRenderer rod3;
     private final ModelRenderer base;
-    private final ModelRenderer Shape1;
+    private final ModelRenderer glass;
 
     public ModelChemicalCrystallizer() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
@@ -57,7 +62,7 @@ public class ModelChemicalCrystallizer extends Model {
         setRotation(rimBack, 0F, 0F, 0F);
         portRight = new ModelRenderer(this, 54, 42);
         portRight.mirror = true;
-        portRight.func_228304_a_(0F, 0F, 0F, 1, 10, 10, false);
+        portRight.func_228304_a_(0F, 0F, 0F, 1, 10, 10, true);
         portRight.setRotationPoint(7.01F, 11F, -5F);
         portRight.setTextureSize(128, 64);
         setRotation(portRight, 0F, 0F, 0F);
@@ -133,21 +138,26 @@ public class ModelChemicalCrystallizer extends Model {
         base.setTextureSize(128, 64);
         base.mirror = true;
         setRotation(base, 0F, 0F, 0F);
-        Shape1 = new ModelRenderer(this, 64, 11);
-        Shape1.func_228304_a_(0F, 0F, 0F, 14, 4, 14, false);
-        Shape1.setRotationPoint(-7F, 13F, -7F);
-        Shape1.setTextureSize(128, 64);
-        Shape1.mirror = true;
-        setRotation(Shape1, 0F, 0F, 0F);
+        glass = new ModelRenderer(this, 64, 11);
+        glass.func_228304_a_(0F, 0F, 0F, 14, 4, 14, false);
+        glass.setRotationPoint(-7F, 13F, -7F);
+        glass.setTextureSize(128, 64);
+        glass.mirror = true;
+        setRotation(glass, 0F, 0F, 0F);
+    }
+
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        matrix.func_227860_a_();
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        //Render the glass on a more translucent layer
+        //Note: The glass makes water, ice etc behind it invisible. This is due to an engine limitation
+        glass.func_228309_a_(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        matrix.func_227865_b_();
     }
 
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-
         tray.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         support4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         rimBack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -164,10 +174,6 @@ public class ModelChemicalCrystallizer extends Model {
         rod2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         rod3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

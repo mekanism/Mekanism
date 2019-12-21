@@ -3,13 +3,21 @@ package mekanism.generators.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelTurbine extends Model {
 
+    private static final ResourceLocation TURBINE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "turbine.png");
     private static float BLADE_ROTATE = 0.418879F;
+
+    private final RenderType RENDER_TYPE = func_228282_a_(TURBINE_TEXTURE);
 
     private final ModelRenderer rod;
     private final ModelRenderer extension_north;
@@ -22,7 +30,6 @@ public class ModelTurbine extends Model {
     private final ModelRenderer blade_west;
 
     public ModelTurbine() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 64;
@@ -63,33 +70,36 @@ public class ModelTurbine extends Model {
         setRotateAngle(blade_west, BLADE_ROTATE, 0.0F, 0.0F);
     }
 
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, int index) {
+        matrix.func_227860_a_();
+        matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(index * 5));
+        float scale = index * 0.5F;
+        float widthDiv = 16;
+        IVertexBuilder vertexBuilder = renderer.getBuffer(RENDER_TYPE);
+        renderBlade(matrix, vertexBuilder, light, otherLight, blade_west, scale, scale / widthDiv, -0.25, 0);
+        renderBlade(matrix, vertexBuilder, light, otherLight, blade_east, scale, scale / widthDiv, 0.25, 0);
+        renderBlade(matrix, vertexBuilder, light, otherLight, blade_north, scale / widthDiv, scale, 0, -0.25);
+        renderBlade(matrix, vertexBuilder, light, otherLight, blade_south, scale / widthDiv, scale, 0, 0.25);
+        matrix.func_227865_b_();
+    }
+
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        //public void render(float size, int index) {
-        //TODO: 1.15
-        /*RenderSystem.pushMatrix();
-        RenderSystem.rotatef(index * 5, 0, 1, 0);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue,
+          float alpha) {
         extension_south.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         extension_west.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         extension_east.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         extension_north.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        float scale = index * 0.5F;
-        float widthDiv = 16;
-        renderBlade(blade_west, size, scale, scale / widthDiv, -0.25F, 0.0F);
-        renderBlade(blade_east, size, scale, scale / widthDiv, 0.25F, 0.0F);
-        renderBlade(blade_north, size, scale / widthDiv, scale, 0.0F, -0.25F);
-        renderBlade(blade_south, size, scale / widthDiv, scale, 0.0F, 0.25F);
-        RenderSystem.popMatrix();*/
     }
 
-    private void renderBlade(ModelRenderer blade, float size, float scaleX, float scaleZ, float transX, float transZ) {
-        //TODO: 1.15
-        /*RenderSystem.pushMatrix();
-        RenderSystem.translatef(transX, 0, transZ);
-        RenderSystem.scalef(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
-        RenderSystem.translatef(-transX, 0, -transZ);
-        blade.render(size);
-        RenderSystem.popMatrix();*/
+    private void renderBlade(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, ModelRenderer blade, float scaleX,
+          float scaleZ, double transX, double transZ) {
+        matrix.func_227860_a_();
+        matrix.func_227861_a_(transX, 0, transZ);
+        matrix.func_227862_a_(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
+        matrix.func_227861_a_(-transX, 0, -transZ);
+        blade.func_228309_a_(matrix, vertexBuilder, light, otherLight, 1, 1, 1, 1);
+        matrix.func_227865_b_();
     }
 
     public void setRotateAngle(ModelRenderer ModelRenderer, float x, float y, float z) {

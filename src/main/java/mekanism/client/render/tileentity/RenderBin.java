@@ -28,18 +28,18 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
             matrix.func_227860_a_();
             switch (facing) {
                 case NORTH:
-                    matrix.func_227861_a_(0.73F, 0.83F, -0.0001F);
+                    matrix.func_227861_a_(0.73, 0.83, -0.0001);
                     break;
                 case SOUTH:
-                    matrix.func_227861_a_(0.27F, 0.83F, 1.0001F);
+                    matrix.func_227861_a_(0.27, 0.83, 1.0001);
                     matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180));
                     break;
                 case WEST:
-                    matrix.func_227861_a_(-0.0001F, 0.83F, 0.27F);
+                    matrix.func_227861_a_(-0.0001, 0.83, 0.27);
                     matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90));
                     break;
                 case EAST:
-                    matrix.func_227861_a_(1.0001F, 0.83F, 0.73F);
+                    matrix.func_227861_a_(1.0001, 0.83, 0.73);
                     matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-90));
                     break;
                 default:
@@ -62,7 +62,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
     @SuppressWarnings("incomplete-switch")
     private void renderText(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int otherLight, String text, Direction side, float maxScale) {
         matrix.func_227860_a_();
-        matrix.func_227861_a_(0, -0.3725F, 0);
+        matrix.func_227861_a_(0, -0.3725, 0);
         switch (side) {
             case SOUTH:
                 matrix.func_227861_a_(0, 1, 0);
@@ -87,7 +87,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
 
         float displayWidth = 1;
         float displayHeight = 1;
-        matrix.func_227861_a_(displayWidth / 2, 1F, displayHeight / 2);
+        matrix.func_227861_a_(displayWidth / 2, 1, displayHeight / 2);
         matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-90));
 
         FontRenderer font = field_228858_b_.getFontRenderer();

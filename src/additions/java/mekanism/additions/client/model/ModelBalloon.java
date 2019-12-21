@@ -74,7 +74,7 @@ public class ModelBalloon extends Model {
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         matrix.func_227860_a_();
         matrix.func_227862_a_(1.5F, 1.5F, 1.5F);
-        matrix.func_227861_a_(0, -0.07F, 0);
+        matrix.func_227861_a_(0, -0.07, 0);
 
         Balloon2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Balloon1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);

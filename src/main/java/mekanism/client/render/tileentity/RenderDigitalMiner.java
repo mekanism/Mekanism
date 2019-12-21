@@ -3,6 +3,8 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelDigitalMiner;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MinerVisualRenderer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
@@ -12,23 +14,16 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityDigitalMiner tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        //TODO: 1.15
-        /*setLightmapDisabled(true);
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "digital_miner.png"));
-
-        MekanismRenderer.rotate(tile.getDirection(), 0, 180, 90, 270);
-        RenderSystem.translatef(0, 0, -1.0F);
-
-        RenderSystem.rotatef(180, 0, 0, 1);
-        model.render(0.0625F, tile.getActive(), field_228858_b_.textureManager, true);
-        RenderSystem.popMatrix();
+        matrix.func_227860_a_();
+        matrix.func_227861_a_(0.5, 1.5, 0.5);
+        MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
+        matrix.func_227861_a_(0, 0, -1);
+        model.render(matrix, renderer, light, otherLight, tile.getActive());
+        matrix.func_227865_b_();
 
         if (tile.clientRendering) {
             MinerVisualRenderer.render(tile);
         }
-        setLightmapDisabled(false);*/
     }
 
     @Override
