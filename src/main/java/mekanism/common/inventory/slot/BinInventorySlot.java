@@ -15,7 +15,6 @@ import mekanism.common.tier.BinTier;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 
-//TODO: Check if we need any more special handling for creative bins
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BinInventorySlot extends BasicInventorySlot {
@@ -37,6 +36,16 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
+        if (isCreative && isEmpty() && action.execute() && automationType.equals(AutomationType.MANUAL)) {
+            //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
+            // Note: We check that it is manual insertion because an empty creative bin acts as a "void" for automation
+            ItemStack simulatedRemainder = super.insertItem(stack, Action.SIMULATE, automationType);
+            if (simulatedRemainder.isEmpty()) {
+                //If we are able to insert it then set perform the action of setting it to full
+                setStackUnchecked(StackUtils.size(stack, getLimit(stack)));
+            }
+            return simulatedRemainder;
+        }
         return super.insertItem(stack, action.combine(!isCreative), automationType);
     }
 

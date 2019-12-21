@@ -24,7 +24,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
         if (tile.getActive()) {
             angle = (tile.getAngle() + ((tile.getPos().getY() + 4F) / TileEntityWindGenerator.SPEED_SCALED) * partialTick) % 360;
         }
-        model.render(matrix, renderer, angle, light);
+        model.render(matrix, renderer, angle, light, otherLight);
         matrix.func_227865_b_();
     }
 

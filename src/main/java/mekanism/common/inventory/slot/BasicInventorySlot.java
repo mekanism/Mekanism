@@ -146,12 +146,13 @@ public class BasicInventorySlot implements IInventorySlot {
                 if (sameType) {
                     //We can just grow our stack by the amount we want to increase it
                     current.grow(toAdd);
+                    onContentsChanged();
                 } else {
                     //If we are not the same type then we have to copy the stack and set it
                     // Just set it unchecked as we have already validated it
+                    // Note: this also will mark that the contents changed
                     setStackUnchecked(StackUtils.size(stack, toAdd));
                 }
-                onContentsChanged();
             }
             return StackUtils.size(stack, stack.getCount() - toAdd);
         }
@@ -276,6 +277,8 @@ public class BasicInventorySlot implements IInventorySlot {
             }
         }
         //Directly set the stack in case the item is no longer valid for the stack.
-        setStackUnchecked(stack);
+        // We do this instead of using setStackUnchecked to avoid calling markDirty when we are loading
+        // the inventory and the world is still null on the tile
+        current = stack;
     }
 }

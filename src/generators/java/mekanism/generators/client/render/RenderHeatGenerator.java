@@ -20,7 +20,7 @@ public class RenderHeatGenerator extends MekanismTileEntityRenderer<TileEntityHe
         matrix.func_227861_a_(0.5F, 1.5F, 0.5F);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 180, 0, 270, 90);
         matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-        model.render(matrix, renderer, light, tile.getActive());
+        model.render(matrix, renderer, light, otherLight, tile.getActive());
         matrix.func_227865_b_();
     }
 }

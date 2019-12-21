@@ -10,8 +10,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank> {
 
-    public static final RenderFluidTank INSTANCE = new RenderFluidTank();
-
     private static FluidRenderMap<DisplayInteger[]> cachedCenterFluids = new FluidRenderMap<>();
     private static FluidRenderMap<DisplayInteger[]> cachedValveFluids = new FluidRenderMap<>();
 

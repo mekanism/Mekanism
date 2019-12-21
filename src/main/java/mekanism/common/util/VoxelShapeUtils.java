@@ -303,7 +303,6 @@ public final class VoxelShapeUtils {
         //float zHalf = (minZ + maxZ) / 2F;
         //Mekanism.logger.info("Half: {}, {}, {}, {}, {}, {}", xHalf, yHalf, zHalf, calculateTransform(xHalf, yHalf, zHalf, rotateAngleX, rotateAngleY, rotateAngleZ), start1, end4);
         //TODO: Lag when we have overly complex boxes comes from GameRenderer#updateCameraAndRender - outline and probably: WorldRenderer#drawSelectionBox
-        //TODO: 1.15, test if it still has lag or if the vanilla changes to rendering made it better
         return createSlope(startX, startY, startZ, endX, endY, endZ, shapeCreator);
     }
 

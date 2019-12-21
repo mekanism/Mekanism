@@ -179,29 +179,33 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.TELEPORTER, new RenderTeleporter());
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, new RenderThermalEvaporationController());
         //Bins
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_BIN, new RenderBin());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_BIN, new RenderBin());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_BIN, new RenderBin());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_BIN, new RenderBin());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_BIN, new RenderBin());
+        RenderBin binRenderer = new RenderBin();
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_BIN, binRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_BIN, binRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_BIN, binRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_BIN, binRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_BIN, binRenderer);
         //Gas tanks
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_GAS_TANK, new RenderGasTank());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_GAS_TANK, new RenderGasTank());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_GAS_TANK, new RenderGasTank());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_GAS_TANK, new RenderGasTank());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_GAS_TANK, new RenderGasTank());
+        RenderGasTank gasTankRenderer = new RenderGasTank();
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_GAS_TANK, gasTankRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_GAS_TANK, gasTankRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_GAS_TANK, gasTankRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_GAS_TANK, gasTankRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_GAS_TANK, gasTankRenderer);
         //Energy Cubes
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_ENERGY_CUBE, new RenderEnergyCube());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_ENERGY_CUBE, new RenderEnergyCube());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_ENERGY_CUBE, new RenderEnergyCube());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_ENERGY_CUBE, new RenderEnergyCube());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_ENERGY_CUBE, new RenderEnergyCube());
+        RenderEnergyCube energyCubeRenderer = new RenderEnergyCube();
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_ENERGY_CUBE, energyCubeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_ENERGY_CUBE, energyCubeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_ENERGY_CUBE, energyCubeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_ENERGY_CUBE, energyCubeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_ENERGY_CUBE, energyCubeRenderer);
         //Fluid Tanks
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_FLUID_TANK, RenderFluidTank.INSTANCE);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_FLUID_TANK, RenderFluidTank.INSTANCE);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_FLUID_TANK, RenderFluidTank.INSTANCE);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_FLUID_TANK, RenderFluidTank.INSTANCE);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_FLUID_TANK, RenderFluidTank.INSTANCE);
+        RenderFluidTank fluidTankRenderer = new RenderFluidTank();
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_FLUID_TANK, fluidTankRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_FLUID_TANK, fluidTankRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_FLUID_TANK, fluidTankRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_FLUID_TANK, fluidTankRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_FLUID_TANK, fluidTankRenderer);
         //Factories
         //Combining
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_COMBINING_FACTORY, new RenderConfigurableMachine<>());
@@ -250,32 +254,37 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_SMELTING_FACTORY, new RenderConfigurableMachine<>());
         //Transmitters
         //Logistical transporters
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER, new RenderLogisticalTransporter());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DIVERSION_TRANSPORTER, new RenderLogisticalTransporter());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER, new RenderLogisticalTransporter());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER, new RenderLogisticalTransporter());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER, new RenderLogisticalTransporter());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER, new RenderLogisticalTransporter());
+        RenderLogisticalTransporter logisticalTransporterRenderer = new RenderLogisticalTransporter();
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER, logisticalTransporterRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DIVERSION_TRANSPORTER, logisticalTransporterRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER, logisticalTransporterRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER, logisticalTransporterRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER, logisticalTransporterRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER, logisticalTransporterRenderer);
         //Mechanical Pipes
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE, new RenderMechanicalPipe());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE, new RenderMechanicalPipe());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE, new RenderMechanicalPipe());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE, new RenderMechanicalPipe());
+        RenderMechanicalPipe mechanicalPipeRenderer = new RenderMechanicalPipe();
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE, mechanicalPipeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE, mechanicalPipeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE, mechanicalPipeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE, mechanicalPipeRenderer);
         //Pressurized Tubes
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE, new RenderPressurizedTube());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE, new RenderPressurizedTube());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE, new RenderPressurizedTube());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE, new RenderPressurizedTube());
+        RenderPressurizedTube pressurizedTubeRenderer = new RenderPressurizedTube();
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE, pressurizedTubeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE, pressurizedTubeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE, pressurizedTubeRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE, pressurizedTubeRenderer);
         //Universal Cables
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE, new RenderUniversalCable());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE, new RenderUniversalCable());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE, new RenderUniversalCable());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE, new RenderUniversalCable());
+        RenderUniversalCable universalCableRenderer = new RenderUniversalCable();
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE, universalCableRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE, universalCableRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE, universalCableRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE, universalCableRenderer);
         //Thermodynamic Conductors
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR, new RenderThermodynamicConductor());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR, new RenderThermodynamicConductor());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, new RenderThermodynamicConductor());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR, new RenderThermodynamicConductor());
+        RenderThermodynamicConductor thermodynamicConductorRenderer = new RenderThermodynamicConductor();
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
 
         //Block render layers
         //TODO: Re-evaluate the different layers things are set to, as most things are set to cutout, but I believe a good number of these

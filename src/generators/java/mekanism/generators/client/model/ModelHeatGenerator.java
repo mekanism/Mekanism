@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelHeatGenerator extends Model {
@@ -148,15 +147,15 @@ public class ModelHeatGenerator extends Model {
         setRotation(base, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, boolean on) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, boolean on) {
         //Render the main model
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, OverlayTexture.field_229196_a_, 1, 1, 1, 1);
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
         //Adjust size/positioning slightly and render the overlay
         matrix.func_227860_a_();
         matrix.func_227862_a_(1.001F, 1.001F, 1.001F);
         matrix.func_227861_a_(0, -0.0011F, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        func_225598_a_(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, OverlayTexture.field_229196_a_, 1, 1, 1, 1);
+        func_225598_a_(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, otherLight, 1, 1, 1, 1);
         MekanismRenderer.disableGlow(glowInfo);
         matrix.func_227865_b_();
     }

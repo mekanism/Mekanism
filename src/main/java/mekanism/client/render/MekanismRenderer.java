@@ -51,6 +51,7 @@ import org.lwjgl.opengl.GL13;
 public class MekanismRenderer {
 
     public static final GlowInfo NO_GLOW = new GlowInfo(0, 0, false);
+    public static final int FULL_LIGHT = 0xF000F0;
 
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;

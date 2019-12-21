@@ -404,7 +404,7 @@ public final class MekanismUtils {
      * @param pos   Position of the block
      */
     public static void updateBlock(@Nullable World world, BlockPos pos) {
-        if (world == null || !world.isBlockLoaded(pos)) {
+        if (!isBlockLoaded(world, pos)) {
             return;
         }
         //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
@@ -944,6 +944,7 @@ public final class MekanismUtils {
      *
      * @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
      */
+    @Contract("null, _ -> false")
     public static boolean isBlockLoaded(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
         if (world == null) {
             return false;

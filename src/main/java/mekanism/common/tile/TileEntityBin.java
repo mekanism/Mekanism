@@ -127,10 +127,15 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         ItemStack stack = binSlot.getStack();
-        //TODO: Just write our own item stack method for over the network/slot sending method
-        data.add(stack);
-        //Add size so that we can fix it
-        data.add(stack.getCount());
+        if (stack.isEmpty()) {
+            data.add(false);
+        } else {
+            data.add(true);
+            //TODO: Just write our own item stack method for over the network/slot sending method
+            data.add(stack);
+            //Add size so that we can fix it
+            data.add(stack.getCount());
+        }
         return data;
     }
 
@@ -138,9 +143,14 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            clientStack = dataStream.readItemStack();
-            //Fix the size as it was packed
-            clientStack.setCount(dataStream.readInt());
+            boolean hasStack = dataStream.readBoolean();
+            if (hasStack) {
+                clientStack = dataStream.readItemStack();
+                //Fix the size as it was packed
+                clientStack.setCount(dataStream.readInt());
+            } else {
+                clientStack = ItemStack.EMPTY;
+            }
             MekanismUtils.updateBlock(getWorld(), getPos());
         }
     }
