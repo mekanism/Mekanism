@@ -1,24 +1,25 @@
 package mekanism.client.particle;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class ParticleLaser extends SpriteTexturedParticle {
 
     private final Direction direction;
-    private final double length;
+    private final float halfLength;
 
     public ParticleLaser(World world, Pos3D start, Pos3D end, Direction dir, double energy) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
@@ -26,57 +27,54 @@ public class ParticleLaser extends SpriteTexturedParticle {
         particleRed = 1;
         particleGreen = 0;
         particleBlue = 0;
-        //TODO: Figure out why alpha no longer works (Note: If it is set to a low value like 0.1F it just makes the laser invisible)
-        //particleAlpha = 0.1F;
-        particleScale = (float) Math.min(energy / 50000, 0.6);
-        length = end.distance(start);
+        particleAlpha = 0.1F;
+        //TODO: We probably want the 50,000 to scale with the max energy of the laser?
+        particleScale = (float) Math.min(energy / 50_000, 0.6);
+        halfLength = (float) (end.distance(start) / 2);
         direction = dir;
     }
 
     @Override
     public void func_225606_a_(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
-        RenderSystem.pushMatrix();
-        float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - renderInfo.getProjectedView().getX());
-        float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - renderInfo.getProjectedView().getY());
-        float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - renderInfo.getProjectedView().getZ());
-
-        RenderSystem.translatef(newX, newY, newZ);
-        switch (direction) {
-            case WEST:
-            case EAST:
-                RenderSystem.rotatef(90, 0, 0, 1);
-                break;
-            case NORTH:
-            case SOUTH:
-                RenderSystem.rotatef(90, 1, 0, 0);
-                break;
-            default:
-                break;
-        }
-        drawLaser(vertexBuilder);
-        RenderSystem.popMatrix();
-    }
-
-    private void drawLaser(IVertexBuilder buffer) {
+        Vec3d view = renderInfo.getProjectedView();
+        float newX = (float) (MathHelper.lerp(partialTicks, prevPosX, posX) - view.getX());
+        float newY = (float) (MathHelper.lerp(partialTicks, prevPosY, posY) - view.getY());
+        float newZ = (float) (MathHelper.lerp(partialTicks, prevPosZ, posZ) - view.getZ());
         float uMin = getMinU();
         float uMax = getMaxU();
         float vMin = getMinV();
         float vMax = getMaxV();
-        RenderSystem.disableCull();
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        drawComponent(buffer, uMin, uMax, vMin, vMax, 45);
-        drawComponent(buffer, uMin, uMax, vMin, vMax, 90);
-        MekanismRenderer.disableGlow(glowInfo);
-        RenderSystem.enableCull();
+        //TODO: Do we need to disable cull, we previously had it disabled, was that for purposes of rendering when underwater
+        // if it even showed under water before or what
+        Quaternion quaternion = direction.func_229384_a_();
+        quaternion.multiply(Vector3f.field_229181_d_.func_229193_c_(45));
+        drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);
+        Quaternion quaternion2 = new Quaternion(quaternion);
+        quaternion2.multiply(Vector3f.field_229181_d_.func_229193_c_(90));
+        drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ), uMin, uMax, vMin, vMax);
     }
 
-    private void drawComponent(IVertexBuilder buffer, float uMin, float uMax, float vMin, float vMax, float angle) {
-        RenderSystem.rotatef(angle, 0, 1, 0);
-        //buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        buffer.func_225582_a_(-particleScale, -length / 2, 0).func_225583_a_(uMin, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        buffer.func_225582_a_(-particleScale, length / 2, 0).func_225583_a_(uMin, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        buffer.func_225582_a_(particleScale, length / 2, 0).func_225583_a_(uMax, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        buffer.func_225582_a_(particleScale, -length / 2, 0).func_225583_a_(uMax, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
+    private Vector3f[] getResultVector(Quaternion quaternion, float newX, float newY, float newZ) {
+        //TODO: 1.15 - Fix the fact the angles are off slightly, it should be going through both corners
+        // I believe this has to do with the fact that we may be doing the transformations slightly improperly below
+        Vector3f[] resultVector = new Vector3f[]{
+              new Vector3f(-particleScale, -halfLength, 0),
+              new Vector3f(-particleScale, halfLength, 0),
+              new Vector3f(particleScale, halfLength, 0),
+              new Vector3f(particleScale, -halfLength, 0)
+        };
+        for (Vector3f vec : resultVector) {
+            vec.func_214905_a(quaternion);
+            vec.add(newX, newY, newZ);
+        }
+        return resultVector;
+    }
+
+    private void drawComponent(IVertexBuilder vertexBuilder, Vector3f[] resultVector, float uMin, float uMax, float vMin, float vMax) {
+        vertexBuilder.func_225582_a_(resultVector[0].getX(), resultVector[0].getY(), resultVector[0].getZ()).func_225583_a_(uMax, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
+        vertexBuilder.func_225582_a_(resultVector[1].getX(), resultVector[1].getY(), resultVector[1].getZ()).func_225583_a_(uMax, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
+        vertexBuilder.func_225582_a_(resultVector[2].getX(), resultVector[2].getY(), resultVector[2].getZ()).func_225583_a_(uMin, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
+        vertexBuilder.func_225582_a_(resultVector[3].getX(), resultVector[3].getY(), resultVector[3].getZ()).func_225583_a_(uMin, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
     }
 
     @Nonnull

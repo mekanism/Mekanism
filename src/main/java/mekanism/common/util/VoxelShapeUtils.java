@@ -48,9 +48,9 @@ public final class VoxelShapeUtils {
             case NORTH:
                 return new AxisAlignedBB(box.minX, -box.minZ, box.minY, box.maxX, -box.maxZ, box.maxY);
             case SOUTH:
-                return new AxisAlignedBB(box.minX, box.minZ, -box.minY, box.maxX, box.maxZ, -box.maxY);
+                return new AxisAlignedBB(-box.minX, box.minZ, -box.minY, -box.maxX, box.maxZ, -box.maxY);
             case WEST:
-                return new AxisAlignedBB(box.minY, -box.minZ, box.minX, box.maxY, -box.maxZ, box.maxX);
+                return new AxisAlignedBB(box.minY, -box.minZ, -box.minX, box.maxY, -box.maxZ, -box.maxX);
             case EAST:
                 return new AxisAlignedBB(-box.minY, box.minZ, box.minX, -box.maxY, box.maxZ, box.maxX);
         }
