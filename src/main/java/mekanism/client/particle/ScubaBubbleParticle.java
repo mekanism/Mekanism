@@ -14,7 +14,6 @@ public class ScubaBubbleParticle extends BubbleParticle {
 
     private ScubaBubbleParticle(World world, double posX, double posY, double posZ, double velX, double velY, double velZ) {
         super(world, posX, posY, posZ, velX, velY, velZ);
-        //particleScale = (rand.nextFloat() * 0.2F) + 0.3F;
         maxAge *= 2;
     }
 
