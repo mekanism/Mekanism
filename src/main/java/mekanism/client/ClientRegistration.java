@@ -70,7 +70,10 @@ import mekanism.client.gui.robit.GuiRobitInventory;
 import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
-import mekanism.client.particle.ParticleLaser;
+import mekanism.client.particle.JetpackFlameParticle;
+import mekanism.client.particle.JetpackSmokeParticle;
+import mekanism.client.particle.LaserParticle;
+import mekanism.client.particle.ScubaBubbleParticle;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
@@ -484,7 +487,10 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.LASER.getParticleType(), ParticleLaser.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.LASER.getParticleType(), LaserParticle.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.JETPACK_FLAME.getParticleType(), JetpackFlameParticle.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.JETPACK_SMOKE.getParticleType(), JetpackSmokeParticle.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.SCUBA_BUBBLE.getParticleType(), ScubaBubbleParticle.Factory::new);
     }
 
     @SubscribeEvent

@@ -13,6 +13,7 @@ import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.particle.MekanismParticleType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
@@ -22,8 +23,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -138,16 +138,16 @@ public class RenderTickHandler {
                     mRight = mRight.translate(rRight);
 
                     Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.getMotion()));
-                    spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-                    spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 
                     v = playerPos.translate(vRight).translate(new Pos3D(p.getMotion()));
-                    spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-                    spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 
                     v = playerPos.translate(vCenter).translate(new Pos3D(p.getMotion()));
-                    spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
-                    spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
                 }
 
                 // Traverse a copy of gasmask state and do animations
@@ -160,14 +160,11 @@ public class RenderTickHandler {
 
                         Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
 
-                        float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
-                        float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
-
                         Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(1))).translate(0, -0.2, 0);
                         Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.getMotion()));
 
                         Pos3D v = playerPos.translate(vec);
-                        spawnAndSetParticle(ParticleTypes.BUBBLE, world, v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+                        world.addParticle((BasicParticleType) MekanismParticleType.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                     }
                 }
 
@@ -199,26 +196,15 @@ public class RenderTickHandler {
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
                                 }
                                 Pos3D mergedVec = playerPos.translate(flameVec);
-                                spawnAndSetParticle(ParticleTypes.FLAME, world, mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
+                                //TODO: The particle is a bit offset
+                                world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_FLAME.getParticleType(),
+                                      mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
                             }
                         }
                     }
                 }
             }
         }
-    }
-
-    public void spawnAndSetParticle(ParticleType<?> s, World world, double x, double y, double z, double velX, double velY, double velZ) {
-        //TODO: Fix this
-        /*Particle fx = null;
-        if (s.equals(ParticleTypes.FLAME)) {
-            fx = new EntityJetpackFlameFX(world, x, y, z, velX, velY, velZ);
-        } else if (s.equals(ParticleTypes.SMOKE)) {
-            fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
-        } else if (s.equals(ParticleTypes.BUBBLE)) {
-            fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
-        }
-        minecraft.particles.addEffect(fx);*/
     }
 
     private void drawString(String s, boolean leftSide, int y, int color) {

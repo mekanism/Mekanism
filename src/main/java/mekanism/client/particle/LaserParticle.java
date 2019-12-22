@@ -16,12 +16,15 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class ParticleLaser extends SpriteTexturedParticle {
+public class LaserParticle extends SpriteTexturedParticle {
+
+    private static final float RADIAN_45 = (float) Math.toRadians(45);
+    private static final float RADIAN_90 = (float) Math.toRadians(90);
 
     private final Direction direction;
     private final float halfLength;
 
-    public ParticleLaser(World world, Pos3D start, Pos3D end, Direction dir, double energy) {
+    private LaserParticle(World world, Pos3D start, Pos3D end, Direction dir, double energy) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
         maxAge = 5;
         particleRed = 1;
@@ -47,16 +50,14 @@ public class ParticleLaser extends SpriteTexturedParticle {
         //TODO: Do we need to disable cull, we previously had it disabled, was that for purposes of rendering when underwater
         // if it even showed under water before or what
         Quaternion quaternion = direction.func_229384_a_();
-        quaternion.multiply(Vector3f.field_229181_d_.func_229193_c_(45));
+        quaternion.multiply(Vector3f.field_229181_d_.func_229193_c_(RADIAN_45));
         drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);
         Quaternion quaternion2 = new Quaternion(quaternion);
-        quaternion2.multiply(Vector3f.field_229181_d_.func_229193_c_(90));
+        quaternion2.multiply(Vector3f.field_229181_d_.func_229193_c_(RADIAN_90));
         drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ), uMin, uMax, vMin, vMax);
     }
 
     private Vector3f[] getResultVector(Quaternion quaternion, float newX, float newY, float newZ) {
-        //TODO: 1.15 - Fix the fact the angles are off slightly, it should be going through both corners
-        // I believe this has to do with the fact that we may be doing the transformations slightly improperly below
         Vector3f[] resultVector = new Vector3f[]{
               new Vector3f(-particleScale, -halfLength, 0),
               new Vector3f(-particleScale, halfLength, 0),
@@ -92,10 +93,10 @@ public class ParticleLaser extends SpriteTexturedParticle {
         }
 
         @Override
-        public ParticleLaser makeParticle(LaserParticleData data, @Nonnull World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public LaserParticle makeParticle(LaserParticleData data, @Nonnull World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             Pos3D start = new Pos3D(x, y, z);
             Pos3D end = start.translate(data.direction, data.distance);
-            ParticleLaser particleLaser = new ParticleLaser(world, start, end, data.direction, data.energy);
+            LaserParticle particleLaser = new LaserParticle(world, start, end, data.direction, data.energy);
             particleLaser.selectSpriteRandomly(this.spriteSet);
             return particleLaser;
         }

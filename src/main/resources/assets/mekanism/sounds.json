@@ -56,6 +56,6 @@
 
 	"item.flamethrower.idle": {"category": "player", "sounds": [{"name": "mekanism:flamethroweridle", "stream": false}]},
 	"item.flamethrower.active": {"category": "player", "sounds": [{"name": "mekanism:flamethroweractive", "stream": false}]},
-	"item.gasmask": {"category": "player", "sounds": [{"name": "mekanism:gasmask", "stream": false}]},
+	"item.gas_mask": {"category": "player", "sounds": [{"name": "mekanism:gas_mask", "stream": false}]},
 	"item.jetpack": {"category": "player", "sounds": [{"name": "mekanism:jetpack", "stream": false}]}
 }
