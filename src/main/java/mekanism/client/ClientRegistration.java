@@ -310,8 +310,6 @@ public class ClientRegistration {
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.PRECISION_SAWMILL, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.PURIFICATION_CHAMBER, RenderType.func_228643_e_());
-        //TODO: Remove??
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.QUANTUM_ENTANGLOPORTER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlock.ROTARY_CONDENSENTRATOR, RenderType.func_228643_e_());
         //Fluid Tanks
         //TODO: Remove??

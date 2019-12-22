@@ -3,11 +3,19 @@ package mekanism.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelSeismicVibrator extends Model {
+
+    private static final ResourceLocation VIBRATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "seismic_vibrator.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(VIBRATOR_TEXTURE);
 
     private final ModelRenderer plate3;
     private final ModelRenderer baseBack;
@@ -56,7 +64,6 @@ public class ModelSeismicVibrator extends Model {
     private final ModelRenderer rivet9;
 
     public ModelSeismicVibrator() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
@@ -333,6 +340,16 @@ public class ModelSeismicVibrator extends Model {
         setRotation(rivet9, 0F, 0F, 0F);
     }
 
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, float piston) {
+        shaft1.rotationPointY = 6 - (piston * 12);
+        plate2.rotationPointY = 21 - (piston * 12);
+        plate3.rotationPointY = 22 - (piston * 12);
+        matrix.func_227860_a_();
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        matrix.func_227865_b_();
+    }
+
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         plate3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -380,14 +397,6 @@ public class ModelSeismicVibrator extends Model {
         rivet8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         rivet4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         rivet9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-    }
-
-    public void renderWithPiston(float piston, float size) {
-        shaft1.rotationPointY = 6 - (piston * 12);
-        plate2.rotationPointY = 21 - (piston * 12);
-        plate3.rotationPointY = 22 - (piston * 12);
-        //TODO: 1.15
-        //render(size);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

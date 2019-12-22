@@ -3,11 +3,19 @@ package mekanism.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelSolarNeutronActivator extends Model {
+
+    private static final ResourceLocation ACTIVATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "solar_neutron_activator.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(ACTIVATOR_TEXTURE);
 
     private final ModelRenderer pole;
     private final ModelRenderer panel3;
@@ -58,8 +66,7 @@ public class ModelSolarNeutronActivator extends Model {
     private final ModelRenderer laserBeamToggle;
 
     public ModelSolarNeutronActivator() {
-        //TODO: 1.15 Check if this is the proper render type to use
-        super(RenderType::func_228634_a_);
+        super(RenderType::func_228638_b_);
         textureWidth = 128;
         textureHeight = 64;
 
@@ -346,6 +353,13 @@ public class ModelSolarNeutronActivator extends Model {
         laserBeamToggle.setTextureSize(128, 64);
         laserBeamToggle.mirror = true;
         setRotation(laserBeamToggle, -0.1117011F, 0F, 0F);
+    }
+
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        matrix.func_227860_a_();
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        matrix.func_227865_b_();
     }
 
     @Override

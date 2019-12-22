@@ -1,24 +1,25 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class ModelQuantumEntangloporter extends Model {
 
+    private static final ResourceLocation ENTANGLOPORTER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter.png");
     private static final ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter_overlay.png");
+    private static final RenderType RENDER_TYPE_OVERLAY = MekanismRenderType.mekStandard(OVERLAY);
+    private final RenderType RENDER_TYPE = func_228282_a_(ENTANGLOPORTER_TEXTURE);
 
     private final ModelRenderer portTop;
     private final ModelRenderer portBottom;
@@ -59,11 +60,10 @@ public class ModelQuantumEntangloporter extends Model {
     private final ModelRenderer corner6;
     private final ModelRenderer corner7;
     private final ModelRenderer corner8;
-    private final ModelRenderer portRightLarge;
-    private final ModelRenderer portLeftLarge;
+    //private final ModelRenderer portRightLarge;
+    //private final ModelRenderer portLeftLarge;
 
     public ModelQuantumEntangloporter() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
@@ -302,7 +302,7 @@ public class ModelQuantumEntangloporter extends Model {
         corner8.setTextureSize(128, 64);
         corner8.mirror = true;
         setRotation(corner8, 0F, 0F, 0F);
-        portRightLarge = new ModelRenderer(this, 68, 0);
+        /*portRightLarge = new ModelRenderer(this, 68, 0);
         portRightLarge.mirror = true;
         portRightLarge.func_228304_a_(0F, 0F, 0F, 1, 10, 10, false);
         portRightLarge.setRotationPoint(7F, 11F, -5F);
@@ -313,37 +313,24 @@ public class ModelQuantumEntangloporter extends Model {
         portLeftLarge.setRotationPoint(-8F, 11F, -5F);
         portLeftLarge.setTextureSize(128, 64);
         portLeftLarge.mirror = true;
-        setRotation(portLeftLarge, 0F, 0F, 0F);
+        setRotation(portLeftLarge, 0F, 0F, 0F);*/
+    }
+
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, boolean renderMain) {
+        matrix.func_227860_a_();
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        if (renderMain) {
+            func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        }
+        matrix.func_227862_a_(1.001F, 1.001F, 1.001F);
+        matrix.func_227861_a_(0, -0.0011, 0);
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE_OVERLAY), MekanismRenderer.FULL_LIGHT, otherLight, 1, 1, 1, 1);
+        matrix.func_227865_b_();
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        //public void render(float size, TextureManager manager, boolean renderMain) {
-        RenderSystem.pushMatrix();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-
-        //TODO: 1.15
-        /*if (renderMain) {
-            doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        }
-
-        manager.bindTexture(OVERLAY);*/
-        RenderSystem.scalef(1.001F, 1.001F, 1.001F);
-        RenderSystem.translatef(0, -0.0011F, 0);
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
-
-        doRender(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        MekanismRenderer.disableGlow(glowInfo);
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.popMatrix();
-    }
-
-    public void doRender(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue,
+          float alpha) {
         portTop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         portBottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         portLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
