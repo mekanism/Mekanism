@@ -1,19 +1,23 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelGasMask extends Model {
+
+    private static final ResourceLocation MASK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
+    private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(MASK_TEXTURE);
+    private final RenderType RENDER_TYPE = func_228282_a_(MASK_TEXTURE);
 
     private final ModelRenderer helmetfeed;
     private final ModelRenderer tubeback;
@@ -45,7 +49,6 @@ public class ModelGasMask extends Model {
     private final ModelRenderer lightR;
 
     public ModelGasMask() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
@@ -223,6 +226,11 @@ public class ModelGasMask extends Model {
         setRotation(lightR, 0F, 0F, 0F);
     }
 
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        renderGlass(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), MekanismRenderer.FULL_LIGHT, otherLight, 1, 1, 1, 0.3F);
+    }
+
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         helmetfeed.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -247,30 +255,18 @@ public class ModelGasMask extends Model {
         pipecornerBR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         pipecornerBL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        lightL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        lightR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        //These should be full bright
+        lightL.func_228309_a_(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, otherLight, red, green, blue, alpha);
+        lightR.func_228309_a_(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, otherLight, red, green, blue, alpha);
+    }
 
-        //Glass needs more settings
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.color4f(1, 1, 1, 0.3F);
-        RenderSystem.enableCull();
-
+    private void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         glasstop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         glassfront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         glassR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         glassL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         glassbackR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         glassbackL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        RenderSystem.disableCull();
-        MekanismRenderer.resetColor();
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
-        MekanismRenderer.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

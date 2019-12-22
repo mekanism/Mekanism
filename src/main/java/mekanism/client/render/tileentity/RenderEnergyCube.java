@@ -17,7 +17,7 @@ import net.minecraft.util.Direction;
 
 public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube> {
 
-    private static final Vector3f coreVec = new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO);
+    public static final Vector3f coreVec = new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO);
     private ModelEnergyCube model = new ModelEnergyCube();
     private ModelEnergyCore core = new ModelEnergyCore();
 

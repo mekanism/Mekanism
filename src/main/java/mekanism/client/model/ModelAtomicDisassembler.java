@@ -1,16 +1,21 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelAtomicDisassembler extends Model {
+
+    private static final ResourceLocation DISASSEMBLER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "atomic_disassembler.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(DISASSEMBLER_TEXTURE);
 
     private final ModelRenderer Shape1;
     private final ModelRenderer Shape2;
@@ -30,7 +35,6 @@ public class ModelAtomicDisassembler extends Model {
     private final ModelRenderer Shape8;
 
     public ModelAtomicDisassembler() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 32;
@@ -133,20 +137,14 @@ public class ModelAtomicDisassembler extends Model {
         setRotation(Shape8, 0F, 0F, 0F);
     }
 
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        IVertexBuilder vertexBuilder = renderer.getBuffer(RENDER_TYPE);
+        renderBlade(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, otherLight, 1, 1, 1, 1);
+        func_225598_a_(matrix, vertexBuilder, light, otherLight, 1, 1, 1, 1);
+    }
+
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        RenderSystem.pushMatrix();
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
-
-        Shape3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape16.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape14.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        MekanismRenderer.disableGlow(glowInfo);
-        RenderSystem.popMatrix();
-
         Shape1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Shape2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Shape6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -158,6 +156,14 @@ public class ModelAtomicDisassembler extends Model {
         Shape12.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Shape15.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Shape8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    }
+
+    private void renderBlade(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        Shape3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape16.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Shape14.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -1,22 +1,17 @@
 package mekanism.common.item.gear;
 
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.gas.IGasItem;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.client.render.item.gear.RenderArmoredJetpack;
-import mekanism.common.MekanismGases;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -40,17 +35,6 @@ public class ItemArmoredJetpack extends ItemJetpack {
         ModelCustomArmor model = ModelCustomArmor.INSTANCE;
         model.modelType = ArmorModel.ARMOREDJETPACK;
         return model;
-    }
-
-    @Override
-    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
-        if (!isInGroup(group)) {
-            return;
-        }
-        ItemStack filled = new ItemStack(this);
-        setGas(filled, MekanismGases.HYDROGEN.getGasStack(((IGasItem) filled.getItem()).getMaxGas(filled)));
-        items.add(filled);
     }
 
     @ParametersAreNonnullByDefault

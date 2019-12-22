@@ -7,7 +7,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -356,10 +355,7 @@ public class ModelSolarNeutronActivator extends Model {
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        matrix.func_227860_a_();
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
         func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
-        matrix.func_227865_b_();
     }
 
     @Override

@@ -144,6 +144,7 @@ import mekanism.common.tier.TransporterTier;
 import mekanism.common.tier.TubeTier;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 
 //TODO: Ensure all IBlockMekanism's set the required information
 public class MekanismBlock {
@@ -314,8 +315,8 @@ public class MekanismBlock {
     public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> ELITE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.ELITE);
     public static final BlockRegistryObject<BlockThermodynamicConductor, ItemBlockThermodynamicConductor> ULTIMATE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(ConductorTier.ULTIMATE);
 
-    public static final BlockRegistryObject<BlockBounding, BlockItem> BOUNDING_BLOCK = BLOCKS.register("bounding_block", () -> new BlockBounding(false));
-    public static final BlockRegistryObject<BlockBounding, BlockItem> ADVANCED_BOUNDING_BLOCK = BLOCKS.register("advanced_bounding_block", () -> new BlockBounding(true));
+    public static final BlockRegistryObject<BlockBounding, BlockItem> BOUNDING_BLOCK = registerBoundingBlock("bounding_block", () -> new BlockBounding(false));
+    public static final BlockRegistryObject<BlockBounding, BlockItem> ADVANCED_BOUNDING_BLOCK = registerBoundingBlock("advanced_bounding_block", () -> new BlockBounding(true));
 
     public static final BlockRegistryObject<BlockGasTank, ItemBlockGasTank> BASIC_GAS_TANK = registerGasTank(GasTankTier.BASIC);
     public static final BlockRegistryObject<BlockGasTank, ItemBlockGasTank> ADVANCED_GAS_TANK = registerGasTank(GasTankTier.ADVANCED);
@@ -326,6 +327,10 @@ public class MekanismBlock {
     public static final BlockRegistryObject<BlockCardboardBox, ItemBlockCardboardBox> CARDBOARD_BOX = BLOCKS.register("cardboard_box", BlockCardboardBox::new, ItemBlockCardboardBox::new);
     //TODO: Tag Entry
     public static final BlockRegistryObject<BlockSalt, BlockItem> SALT_BLOCK = BLOCKS.register("block_salt", BlockSalt::new);
+
+    private static BlockRegistryObject<BlockBounding, BlockItem> registerBoundingBlock(String name, Supplier<BlockBounding> blockSupplier) {
+        return BLOCKS.register(name, blockSupplier, block -> new BlockItem(block, new Item.Properties().group(null)));
+    }
 
     private static BlockRegistryObject<BlockResource, ItemBlockResource> registerResourceBlock(BlockResourceInfo resource) {
         return BLOCKS.register("block_" + resource.getRegistrySuffix(), () -> new BlockResource(resource), ItemBlockResource::new);

@@ -36,7 +36,7 @@ public class ItemGasMask extends ArmorItem {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return "mekanism:render/NullArmor.png";
+        return "mekanism:render/null_armor.png";
     }
 
     @Override

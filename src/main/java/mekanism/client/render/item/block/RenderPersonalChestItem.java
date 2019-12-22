@@ -1,8 +1,10 @@
 package mekanism.client.render.item.block;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 
@@ -13,7 +15,8 @@ public class RenderPersonalChestItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+          TransformType transformType) {
         //TODO: 1.15
         /*RenderSystem.pushMatrix();
         RenderSystem.rotatef(180, 0, 1, 0);
@@ -26,7 +29,8 @@ public class RenderPersonalChestItem extends MekanismItemStackRenderer {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+          TransformType transformType) {
     }
 
     @Nonnull

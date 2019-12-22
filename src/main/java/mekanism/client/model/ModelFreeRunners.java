@@ -3,11 +3,18 @@ package mekanism.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelFreeRunners extends Model {
+
+    private static final ResourceLocation FREE_RUNNER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(FREE_RUNNER_TEXTURE);
 
     private final ModelRenderer SpringL;
     private final ModelRenderer SpringR;
@@ -17,7 +24,6 @@ public class ModelFreeRunners extends Model {
     private final ModelRenderer SupportR;
 
     public ModelFreeRunners() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 32;
@@ -62,14 +68,14 @@ public class ModelFreeRunners extends Model {
         SupportR.mirror = false;
     }
 
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    }
+
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        SpringL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        SpringR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        BraceL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        BraceR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        SupportL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        SupportR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        renderLeft(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        renderRight(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     public void renderLeft(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {

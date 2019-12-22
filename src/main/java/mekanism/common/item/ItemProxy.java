@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 public class ItemProxy extends Item {
 
     public ItemProxy(Properties properties) {
-        super(properties.maxDamage(1));
+        super(properties.maxDamage(1).group(null));
     }
 
     @Nonnull

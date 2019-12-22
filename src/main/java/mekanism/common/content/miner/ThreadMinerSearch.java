@@ -69,7 +69,7 @@ public class ThreadMinerSearch extends Thread {
             }
 
             BlockPos testPos = new BlockPos(x, y, z);
-            //TODO: 1.15 verify that we don't need to check if the block is loaded. Probably got removed given a region is a cache
+            //TODO: verify that we don't need to check if the block is loaded. Probably got removed given a region is a cache
             if (/*!chunkCache.isBlockLoaded(testPos) || */MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
                 //If it is not loaded or it is a bounding block skip it
                 continue;

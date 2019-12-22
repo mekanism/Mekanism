@@ -6,6 +6,7 @@ import mekanism.client.model.ModelChemicalCrystallizer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 
 public class RenderChemicalCrystallizer extends MekanismTileEntityRenderer<TileEntityChemicalCrystallizer> {
 
@@ -16,6 +17,7 @@ public class RenderChemicalCrystallizer extends MekanismTileEntityRenderer<TileE
         matrix.func_227860_a_();
         matrix.func_227861_a_(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
         model.render(matrix, renderer, light, otherLight);
         matrix.func_227865_b_();
         MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, otherLight);

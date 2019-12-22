@@ -1,13 +1,18 @@
 package mekanism.client.render.item.block;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
+import mekanism.common.item.block.machine.ItemBlockFluidTank;
+import mekanism.common.tier.FluidTankTier;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public class RenderFluidTankItem extends MekanismItemStackRenderer {
 
@@ -18,9 +23,9 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
     private static int stages = 1400;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        //TODO: 1.15
-        /*ItemBlockFluidTank itemFluidTank = (ItemBlockFluidTank) stack.getItem();
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+          TransformType transformType) {
+        ItemBlockFluidTank itemFluidTank = (ItemBlockFluidTank) stack.getItem();
         FluidTankTier tier = itemFluidTank.getTier(stack);
         if (tier == null) {
             return;
@@ -28,9 +33,10 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         FluidStack fluid = itemFluidTank.getFluidStack(stack);
         float fluidScale = (float) fluid.getAmount() / itemFluidTank.getCapacity(stack);
 
-        RenderSystem.pushMatrix();
+        matrix.func_227860_a_();
         if (!fluid.isEmpty() && fluidScale > 0) {
-            RenderSystem.pushMatrix();
+            //TODO: 1.15
+            /*matrix.func_227860_a_();
             RenderSystem.enableCull();
             RenderSystem.disableLighting();
             RenderSystem.shadeModel(GL11.GL_SMOOTH);
@@ -59,14 +65,15 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             RenderSystem.enableAlphaTest();
             RenderSystem.enableLighting();
             RenderSystem.disableCull();
-            RenderSystem.popMatrix();
+            matrix.func_227865_b_();*/
         }
 
-        RenderSystem.translatef(0, -0.9F, 0);
-        RenderSystem.scalef(0.9F, 0.8F, 0.9F);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png"));
-        fluidTank.render(0.073F, tier);
-        RenderSystem.popMatrix();*/
+        matrix.func_227861_a_(0, -0.9, 0);
+        matrix.func_227862_a_(0.9F, 0.8F, 0.9F);
+        //Scale to to size of item
+        matrix.func_227862_a_(1.168F, 1.168F, 1.168F);
+        fluidTank.render(matrix, renderer, light, otherLight, tier);
+        matrix.func_227865_b_();
     }
 
     //TODO: 1.15
@@ -104,7 +111,8 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
     }*/
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+          TransformType transformType) {
     }
 
     @Nonnull

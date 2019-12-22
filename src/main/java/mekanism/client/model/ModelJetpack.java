@@ -1,19 +1,23 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelJetpack extends Model {
+
+    private static final ResourceLocation JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
+    private static final RenderType WING_RENDER_TYPE = MekanismRenderType.mekStandard(JETPACK_TEXTURE);
+    private final RenderType RENDER_TYPE = func_228282_a_(JETPACK_TEXTURE);
 
     private final ModelRenderer Packtop;
     private final ModelRenderer Packbottom;
@@ -38,7 +42,6 @@ public class ModelJetpack extends Model {
     private final ModelRenderer light3;
 
     public ModelJetpack() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
@@ -171,6 +174,12 @@ public class ModelJetpack extends Model {
         setRotation(light3, 0F, 0F, 0F);
     }
 
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        //TODO: Should our wing render type have cull enabled? It previously was enabled
+        renderWings(matrix, renderer.getBuffer(WING_RENDER_TYPE), MekanismRenderer.FULL_LIGHT, otherLight, 1, 1, 1, 0.2F);
+    }
+
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         Packtop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -191,32 +200,19 @@ public class ModelJetpack extends Model {
         Packdoodad3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Bottomthruster.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
+        //Stuff below here uses full bright for the lighting
+        light = MekanismRenderer.FULL_LIGHT;
         Packcore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
         light1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         light2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         light3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Packcore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    }
 
-        //Wing blades need some more special stuff
-        RenderSystem.pushMatrix();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.enableCull();
-        RenderSystem.color4f(1, 1, 1, 0.2F);
-
+    private void renderWings(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         WingbladeL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         WingbladeR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        MekanismRenderer.resetColor();
-        RenderSystem.disableCull();
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.popMatrix();
-        MekanismRenderer.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

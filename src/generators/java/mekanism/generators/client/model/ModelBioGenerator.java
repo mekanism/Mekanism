@@ -1,17 +1,22 @@
 package mekanism.generators.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelBioGenerator extends Model {
+
+    private static final ResourceLocation CRYSTALLIZER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "bio_generator.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(CRYSTALLIZER_TEXTURE);
+    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(CRYSTALLIZER_TEXTURE);
 
     private final ModelRenderer base;
     private final ModelRenderer sideRight;
@@ -21,7 +26,6 @@ public class ModelBioGenerator extends Model {
     private final ModelRenderer sideLeft;
 
     public ModelBioGenerator() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 64;
@@ -63,6 +67,13 @@ public class ModelBioGenerator extends Model {
         setRotation(sideLeft, 0F, 0F, 0F);
     }
 
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        //Render the glass on a more translucent layer
+        //Note: The glass makes water, ice etc behind it invisible. This is due to an engine limitation
+        glass.func_228309_a_(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    }
+
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -70,14 +81,6 @@ public class ModelBioGenerator extends Model {
         sideLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         bar.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        glass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

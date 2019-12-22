@@ -4,11 +4,13 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.util.Direction;
 
 public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBioGenerator> {
@@ -19,9 +21,9 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityBioGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        //TODO: 1.15
-        /*if (tile.bioFuelSlot.fluidStored > 0) {
-            RenderSystem.pushMatrix();
+        if (tile.bioFuelSlot.fluidStored > 0) {
+            //TODO: 1.15
+            /*matrix.func_227860_a_();
             RenderSystem.enableCull();
             RenderSystem.enableBlend();
             RenderSystem.disableLighting();
@@ -34,18 +36,15 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             RenderSystem.enableLighting();
             RenderSystem.disableBlend();
             RenderSystem.disableCull();
-            RenderSystem.popMatrix();
+            matrix.func_227865_b_();*/
         }
 
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
-        field_228858_b_.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "bio_generator.png"));
-
-        MekanismRenderer.rotate(tile.getDirection(), 180, 0, 270, 90);
-
-        RenderSystem.rotatef(180, 0, 0, 1);
-        model.render(0.0625F);
-        RenderSystem.popMatrix();*/
+        matrix.func_227860_a_();
+        matrix.func_227861_a_(0.5, 1.5, 0.5);
+        MekanismRenderer.rotate(matrix, tile.getDirection(), 180, 0, 270, 90);
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        model.render(matrix, renderer, light, otherLight);
+        matrix.func_227865_b_();
     }
 
     //TODO: 1.15

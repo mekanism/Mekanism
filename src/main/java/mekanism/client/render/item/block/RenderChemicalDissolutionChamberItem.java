@@ -1,13 +1,12 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelChemicalDissolutionChamber;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 
@@ -17,16 +16,16 @@ public class RenderChemicalDissolutionChamberItem extends MekanismItemStackRende
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
-        RenderSystem.rotatef(180, 0, 0, 1);
-        RenderSystem.translatef(0.05F, -1.001F, 0.05F);
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "chemical_dissolution_chamber.png"));
-        //TODO: 1.15
-        //chemicalDissolutionChamber.render(0.0625F);
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+          TransformType transformType) {
+        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.func_227861_a_(0.05, -1.001, 0.05);
+        chemicalDissolutionChamber.render(matrix, renderer, light, otherLight);
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+          TransformType transformType) {
     }
 
     @Nonnull

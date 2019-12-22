@@ -3,11 +3,18 @@ package mekanism.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelScubaTank extends Model {
+
+    private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(TANK_TEXTURE);
 
     private final ModelRenderer tankL;
     private final ModelRenderer tankR;
@@ -20,7 +27,6 @@ public class ModelScubaTank extends Model {
     private final ModelRenderer tankbackbrace;
 
     public ModelScubaTank() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
@@ -80,6 +86,10 @@ public class ModelScubaTank extends Model {
         tankbackbrace.setTextureSize(128, 64);
         tankbackbrace.mirror = true;
         setRotation(tankbackbrace, 0.2443461F, 0F, 0F);
+    }
+
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
     }
 
     @Override

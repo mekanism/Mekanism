@@ -1,19 +1,25 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.api.text.EnumColor;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.common.tier.FluidTankTier;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.ResourceLocation;
 
 //TODO: Replace usage of this by using the json model and drawing fluid inside of it?
 public class ModelFluidTank extends Model {
+
+    private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png");
+    private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(TANK_TEXTURE);
+    private final RenderType RENDER_TYPE = func_228282_a_(TANK_TEXTURE);
 
     private final ModelRenderer Base;
     private final ModelRenderer PoleFL;
@@ -27,7 +33,6 @@ public class ModelFluidTank extends Model {
     private final ModelRenderer LeftGlass;
 
     public ModelFluidTank() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 128;
@@ -94,6 +99,13 @@ public class ModelFluidTank extends Model {
         setRotation(LeftGlass, 0F, 0F, 0F);
     }
 
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, FluidTankTier tier) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        EnumColor color = tier.getBaseTier().getColor();
+        //TODO: Try to make it so the lines can still show up on the back walls of the tank in first person
+        renderGlass(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, otherLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+    }
+
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         Base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -102,20 +114,13 @@ public class ModelFluidTank extends Model {
         PoleBR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         PoleRF.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    }
 
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        //TODO: 1.15
-        //RenderSystem.color(tier.getBaseTier());
+    private void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         FrontGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         BackGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         RightGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         LeftGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        MekanismRenderer.resetColor();
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -1,19 +1,23 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelArmoredJetpack extends Model {
+
+    private static final ResourceLocation JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
+    private static final RenderType WING_RENDER_TYPE = MekanismRenderType.mekStandard(JETPACK_TEXTURE);
+    private final RenderType RENDER_TYPE = func_228282_a_(JETPACK_TEXTURE);
 
     private final ModelRenderer Packtop;
     private final ModelRenderer Packbottom;
@@ -46,7 +50,6 @@ public class ModelArmoredJetpack extends Model {
     private final ModelRenderer Leftlight;
 
     public ModelArmoredJetpack() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 128;
         textureHeight = 64;
@@ -230,6 +233,12 @@ public class ModelArmoredJetpack extends Model {
         setRotation(Leftlight, 0F, 0F, 0F);
     }
 
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        //TODO: Should our wing render type have cull enabled? It previously was enabled
+        renderWings(matrix, renderer.getBuffer(WING_RENDER_TYPE), MekanismRenderer.FULL_LIGHT, otherLight, 1, 1, 1, 0.2F);
+    }
+
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
         Packtop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -248,35 +257,8 @@ public class ModelArmoredJetpack extends Model {
         Packdoodad3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Bottomthruster.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        RenderSystem.pushMatrix();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        RenderSystem.enableCull();
-        RenderSystem.color4f(1, 1, 1, 0.2F);
-
-        WingbladeL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        WingbladeR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        MekanismRenderer.resetColor();
-        RenderSystem.disableCull();
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.popMatrix();
-
-        light1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        light2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        light3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Packcore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(0, 0, -0.0625F);
-
-        Rightlight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Leftlight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        MekanismRenderer.disableGlow(glowInfo);
+        matrix.func_227860_a_();
+        matrix.func_227861_a_(0, 0, -0.0625);
 
         Chestplate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Leftguardtop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
@@ -285,7 +267,21 @@ public class ModelArmoredJetpack extends Model {
         Rightguardbot.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
         Leftguardbot.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
 
-        RenderSystem.popMatrix();
+        //Stuff below here uses full bright for the lighting
+        light = MekanismRenderer.FULL_LIGHT;
+        Rightlight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Leftlight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+
+        matrix.func_227865_b_();
+        light1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        light2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        light3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Packcore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    }
+
+    private void renderWings(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+        WingbladeL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        WingbladeR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

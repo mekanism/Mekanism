@@ -3,11 +3,18 @@ package mekanism.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.ResourceLocation;
 
 public class ModelFlamethrower extends Model {
+
+    private static final ResourceLocation FLAMETHROWER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "flamethrower.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(FLAMETHROWER_TEXTURE);
 
     private final ModelRenderer RingButtom;
     private final ModelRenderer RingTop;
@@ -34,7 +41,6 @@ public class ModelFlamethrower extends Model {
     private final ModelRenderer Hydrogen;
 
     public ModelFlamethrower() {
-        //TODO: 1.15 Check if this is the proper render type to use
         super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 64;
@@ -178,6 +184,10 @@ public class ModelFlamethrower extends Model {
         Hydrogen.setTextureSize(64, 64);
         Hydrogen.mirror = true;
         setRotation(Hydrogen, 0F, 0F, 0.4438713F);
+    }
+
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
     }
 
     @Override
