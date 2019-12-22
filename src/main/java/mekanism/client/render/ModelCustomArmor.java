@@ -1,5 +1,8 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import javax.annotation.Nonnull;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelGasMask;
@@ -7,6 +10,7 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
@@ -49,7 +53,6 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
 
     public static BipedModel<LivingEntity> getGlow(EquipmentSlotType index) {
         BipedModel<LivingEntity> biped = index != EquipmentSlotType.LEGS ? GLOW_BIG : GLOW_SMALL;
-
         biped.bipedHead.showModel = index == EquipmentSlotType.HEAD;
         biped.bipedHeadwear.showModel = index == EquipmentSlotType.HEAD;
         biped.bipedBody.showModel = index == EquipmentSlotType.CHEST || index == EquipmentSlotType.LEGS;
@@ -77,8 +80,7 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
             bipedRightLeg.showModel = true;
         }
 
-        //TODO: 1.15
-        //setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, size);
+        func_225597_a_(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
 
     public void reset() {
@@ -145,7 +147,7 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
             isSitting = entity.isPassenger();
             isChild = entity.isChild();
 
-            setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+            func_225597_a_(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             super.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
             MekanismRenderer.disableGlow(glowInfo);
@@ -163,36 +165,40 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
             partRender = renderer;
         }
 
-        //TODO: 1.15
-        /*@Override
-        public void render(float size) {
+        @Override
+        public void func_228309_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue,
+              float alpha) {
             if (ModelCustomArmor.this.modelType != null) {
-                RenderSystem.pushMatrix();
-                RenderSystem.translatef(0, 0, 0.06F);
+                matrix.func_227860_a_();
+                matrix.func_227861_a_(0, 0, 0.06);
                 Minecraft.getInstance().textureManager.bindTexture(modelType.resource);
                 if (useModel(biped.modelType, partRender, biped)) {
                     if (biped.modelType == ArmorModel.JETPACK) {
-                        ArmorModel.jetpackModel.render(0.0625F);
+                        //TODO: 1.15
+                        //ArmorModel.jetpackModel.render(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
                     } else if (biped.modelType == ArmorModel.ARMOREDJETPACK) {
-                        ArmorModel.armoredJetpackModel.render(0.0625F);
+                        //TODO: 1.15
+                        //ArmorModel.armoredJetpackModel.render(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
                     } else if (biped.modelType == ArmorModel.SCUBATANK) {
-                        ArmorModel.scubaTankModel.render(0.0625F);
+                        //TODO: 1.15
+                        //ArmorModel.scubaTankModel.render(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
                     } else if (biped.modelType == ArmorModel.GASMASK) {
-                        RenderSystem.translatef(0, 0, -0.05F);
-                        ArmorModel.gasMaskModel.render(0.0625F);
+                        matrix.func_227861_a_(0, 0, -0.05);
+                        //TODO: 1.15
+                        //ArmorModel.gasMaskModel.render(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
                     } else if (biped.modelType == ArmorModel.FREERUNNERS) {
-                        RenderSystem.scalef(1.02F, 1.02F, 1.02F);
+                        matrix.func_227862_a_(1.02F, 1.02F, 1.02F);
                         if (partRender == biped.bipedLeftLeg) {
-                            RenderSystem.translatef(-0.1375F, -0.75F, -0.0625F);
-                            ArmorModel.freeRunnersModel.renderLeft(0.0625F);
+                            matrix.func_227861_a_(-0.1375, -0.75, -0.0625);
+                            ArmorModel.freeRunnersModel.renderLeft(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
                         } else if (partRender == biped.bipedRightLeg) {
-                            RenderSystem.translatef(0.1375F, -0.75F, -0.0625F);
-                            ArmorModel.freeRunnersModel.renderRight(0.0625F);
+                            matrix.func_227861_a_(0.1375, -0.75, -0.0625);
+                            ArmorModel.freeRunnersModel.renderRight(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
                         }
                     }
                 }
-                RenderSystem.popMatrix();
+                matrix.func_227865_b_();
             }
-        }*/
+        }
     }
 }

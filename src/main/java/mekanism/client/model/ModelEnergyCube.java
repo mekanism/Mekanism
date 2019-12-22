@@ -442,8 +442,7 @@ public class ModelEnergyCube extends Model {
             cube.mirror = true;
         }
 
-        public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, EnergyCubeTier tier, float energyPercentage) {
-            EnumColor color = tier.getBaseTier().getColor();
+        public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, EnumColor color, float energyPercentage) {
             cube.func_228309_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, color.getColor(0), color.getColor(1), color.getColor(2),
                   energyPercentage);
         }

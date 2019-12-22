@@ -66,7 +66,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             matrix.func_227861_a_(0, Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
             matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(4 * MekanismClient.ticksPassed));
             matrix.func_227863_a_(RenderEnergyCube.coreVec.func_229187_a_(36F + 4 * MekanismClient.ticksPassed));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, otherLight, tier, (float) energyPercentage);
+            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, otherLight, tier.getBaseTier().getColor(), (float) energyPercentage);
         }
         matrix.func_227865_b_();
     }

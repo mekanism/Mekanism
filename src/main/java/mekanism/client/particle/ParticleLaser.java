@@ -1,6 +1,7 @@
 package mekanism.client.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
 import mekanism.client.render.MekanismRenderer;
@@ -10,12 +11,9 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
 
 public class ParticleLaser extends SpriteTexturedParticle {
 
@@ -35,20 +33,14 @@ public class ParticleLaser extends SpriteTexturedParticle {
         direction = dir;
     }
 
-    //TODO: 1.15
-    /*@Override
-    public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull ActiveRenderInfo renderInfo, float partialTicks, float rotationX, float rotationZ, float rotationYZ,
-          float rotationXY, float rotationXZ) {
-        Tessellator tessellator = Tessellator.getInstance();
-        RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
-
+    @Override
+    public void func_225606_a_(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
         RenderSystem.pushMatrix();
-        float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
-        float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - interpPosY);
-        float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - interpPosZ);
+        float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - renderInfo.getProjectedView().getX());
+        float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - renderInfo.getProjectedView().getY());
+        float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - renderInfo.getProjectedView().getZ());
 
         RenderSystem.translatef(newX, newY, newZ);
-
         switch (direction) {
             case WEST:
             case EAST:
@@ -61,38 +53,36 @@ public class ParticleLaser extends SpriteTexturedParticle {
             default:
                 break;
         }
-        drawLaser(buffer, tessellator);
+        drawLaser(vertexBuilder);
         RenderSystem.popMatrix();
-        MekanismRenderer.resumeRenderer(tessellator, renderState);
-    }*/
+    }
 
-    private void drawLaser(BufferBuilder buffer, Tessellator tessellator) {
+    private void drawLaser(IVertexBuilder buffer) {
         float uMin = getMinU();
         float uMax = getMaxU();
         float vMin = getMinV();
         float vMax = getMaxV();
         RenderSystem.disableCull();
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 45);
-        drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 90);
+        drawComponent(buffer, uMin, uMax, vMin, vMax, 45);
+        drawComponent(buffer, uMin, uMax, vMin, vMax, 90);
         MekanismRenderer.disableGlow(glowInfo);
         RenderSystem.enableCull();
     }
 
-    private void drawComponent(BufferBuilder buffer, Tessellator tessellator, float uMin, float uMax, float vMin, float vMax, float angle) {
+    private void drawComponent(IVertexBuilder buffer, float uMin, float uMax, float vMin, float vMax, float angle) {
         RenderSystem.rotatef(angle, 0, 1, 0);
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+        //buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
         buffer.func_225582_a_(-particleScale, -length / 2, 0).func_225583_a_(uMin, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
         buffer.func_225582_a_(-particleScale, length / 2, 0).func_225583_a_(uMin, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
         buffer.func_225582_a_(particleScale, length / 2, 0).func_225583_a_(uMax, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
         buffer.func_225582_a_(particleScale, -length / 2, 0).func_225583_a_(uMax, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        tessellator.draw();
     }
 
     @Nonnull
     @Override
     public IParticleRenderType getRenderType() {
-        return IParticleRenderType.CUSTOM;
+        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     public static class Factory implements IParticleFactory<LaserParticleData> {

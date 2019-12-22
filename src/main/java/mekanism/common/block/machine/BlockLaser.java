@@ -77,6 +77,7 @@ public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasMod
               makeCuboidShape(11, 4, 4, 12, 5, 12),//fin7
               makeCuboidShape(11, 2, 4, 12, 3, 12)//fin8
         );
+        //TODO: 1.15 the LED seems to be in a different spot
         for (Direction side : EnumUtils.DIRECTIONS) {
             bounds[side.ordinal()] = VoxelShapeUtils.rotate(laser, side.getOpposite());
         }

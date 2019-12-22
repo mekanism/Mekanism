@@ -66,7 +66,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
             matrix.func_227861_a_(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(4 * ticks));
             matrix.func_227863_a_(coreVec.func_229187_a_(36F + 4 * ticks));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, otherLight, tile.tier, (float) energyPercentage);
+            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, otherLight, tile.tier.getBaseTier().getColor(), (float) energyPercentage);
         }
         matrix.func_227865_b_();
         MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, otherLight);

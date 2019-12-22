@@ -3,7 +3,7 @@ package mekanism.client.model;
 //TODO: JavaDoc - contains client side methods to help convert models to VoxelShapes
 public class ModelToVoxelShapeUtil {
 
-    //TODO: 1.15 AT to get access to the cubeList and childModel or not bother given we have already converted things
+    //TODO: AT to get access to the cubeList and childModel or not bother given we have already converted things
     /*public static VoxelShape getShapeFromModel(ModelRenderer... models) {
         return getShapeFromModel(false, models);
     }
