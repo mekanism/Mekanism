@@ -7,11 +7,10 @@ import mekanism.api.Coord4D;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.SeismicReaderButton;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -87,7 +86,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             RenderSystem.scalef(0.7F, 0.7F, 0.7F);
         }
 
-        drawString(String.format("%s", currentLayer), 0, 0, 0xAFAFAF);
+        drawString(MekanismLang.GENERIC.translate(currentLayer), 0, 0, 0xAFAFAF);
         RenderSystem.popMatrix();
 
         // Render the item stacks
@@ -144,7 +143,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         RenderSystem.pushMatrix();
         RenderSystem.translatef(guiLeft + 72, guiTop + 26, 0);
         RenderSystem.scalef(0.7F, 0.7F, 0.7F);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.abundancy"), ": " + frequency), 0, 0, 0x919191);
+        drawString(MekanismLang.ABUNDANCY.translate(frequency), 0, 0, 0x919191);
         RenderSystem.popMatrix();
         MekanismRenderer.resetColor();
         super.render(mouseX, mouseY, partialTick);

@@ -5,29 +5,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
+import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public enum Upgrade implements IHasTranslationKey {
-    SPEED("speed", 8, EnumColor.RED),
-    ENERGY("energy", 8, EnumColor.BRIGHT_GREEN),
-    FILTER("filter", 1, EnumColor.DARK_AQUA),
-    GAS("gas", 8, EnumColor.YELLOW),
-    MUFFLING("muffling", 4, EnumColor.DARK_GRAY),
-    ANCHOR("anchor", 1, EnumColor.DARK_GREEN);
+    SPEED("speed", APILang.UPGRADE_SPEED, APILang.UPGRADE_SPEED_DESCRIPTION, 8, EnumColor.RED),
+    ENERGY("energy", APILang.UPGRADE_ENERGY, APILang.UPGRADE_ENERGY_DESCRIPTION, 8, EnumColor.BRIGHT_GREEN),
+    FILTER("filter", APILang.UPGRADE_FILTER, APILang.UPGRADE_FILTER_DESCRIPTION, 1, EnumColor.DARK_AQUA),
+    GAS("gas", APILang.UPGRADE_GAS, APILang.UPGRADE_GAS_DESCRIPTION, 8, EnumColor.YELLOW),
+    MUFFLING("muffling", APILang.UPGRADE_MUFFLING, APILang.UPGRADE_MUFFLING_DESCRIPTION, 4, EnumColor.DARK_GRAY),
+    ANCHOR("anchor", APILang.UPGRADE_ANCHOR, APILang.UPGRADE_ANCHOR_DESCRIPTION, 1, EnumColor.DARK_GREEN);
 
-    private String name;
-    private int maxStack;
-    private EnumColor color;
+    private final String name;
+    private final APILang langKey;
+    private final APILang descLangKey;
+    private final int maxStack;
+    private final EnumColor color;
 
-    Upgrade(String s, int max, EnumColor c) {
-        name = s;
-        maxStack = max;
-        color = c;
+    Upgrade(String name, APILang langKey, APILang descLangKey, int maxStack, EnumColor color) {
+        this.name = name;
+        this.langKey = langKey;
+        this.descLangKey = descLangKey;
+        this.maxStack = maxStack;
+        this.color = color;
     }
 
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundNBT nbtTags) {
@@ -66,11 +72,11 @@ public enum Upgrade implements IHasTranslationKey {
 
     @Override
     public String getTranslationKey() {
-        return "upgrade.mekanism." + name;
+        return langKey.getTranslationKey();
     }
 
-    public String getDescription() {
-        return "upgrade.mekanism." + name + ".desc";
+    public ITextComponent getDescription() {
+        return new TranslationTextComponent(descLangKey.getTranslationKey());
     }
 
     public int getMax() {

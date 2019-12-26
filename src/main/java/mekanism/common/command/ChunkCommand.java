@@ -3,7 +3,7 @@ package mekanism.common.command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import java.util.HashSet;
 import java.util.Set;
-import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.MekanismLang;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
@@ -107,8 +107,7 @@ public class ChunkCommand {
         ChunkPos pos = event.getChunk().getPos();
         long key = ChunkPos.asLong(pos.x, pos.z);
         if (chunkWatchers.contains(key)) {
-            String msg = String.format("%s chunk %d, %d", direction, pos.x, pos.z);
-            ITextComponent message = TextComponentUtil.build(msg);
+            ITextComponent message = MekanismLang.CHUNK_COMMAND.translate(direction, pos.x, pos.z);
             event.getWorld().getPlayers().forEach(player -> player.sendMessage(message));
         }
     }

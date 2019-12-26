@@ -2,12 +2,11 @@ package mekanism.client.gui.filter;
 
 import mekanism.api.text.EnumColor;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.InputMappings;
@@ -31,15 +30,15 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
         if (ticker > 0) {
             ticker--;
         } else {
-            status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.mekanism.allOK"));
+            status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
         }
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.mekanism.new" : "gui.mekanism.edit"), " ", Translation.of("gui.mekanism.materialFilter")), 43, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.status"), ": ", status), 35, 20, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.materialFilter.details"), ":"), 35, 32, 0x00CD00);
+        drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.MATERIAL_FILTER), 43, 6, 0x404040);
+        drawString(MekanismLang.STATUS.translate(status), 35, 20, 0x00CD00);
+        drawString(MekanismLang.MATERIAL_FILTER_DETAILS.translate(), 35, 32, 0x00CD00);
         drawForegroundLayer(mouseX, mouseY);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

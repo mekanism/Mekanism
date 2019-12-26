@@ -16,8 +16,11 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -59,7 +62,7 @@ import net.minecraft.world.World;
 
 public class BlockPressurizedReactionChamber extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntityPressurizedReactionChamber>, ISupportsUpgrades,
       IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPressurizedReactionChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator,
-      IStateWaterLogged {
+      IStateWaterLogged, IHasDescription {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.prc"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -199,7 +202,7 @@ public class BlockPressurizedReactionChamber extends BlockMekanism implements IB
 
     @Override
     public INamedContainerProvider getProvider(TileEntityPressurizedReactionChamber tile) {
-        return new ContainerProvider("mekanism.container.pressurized_reaction_chamber", (i, inv, player) -> new PressurizedReactionChamberContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new PressurizedReactionChamberContainer(i, inv, tile));
     }
 
     @Override
@@ -211,5 +214,11 @@ public class BlockPressurizedReactionChamber extends BlockMekanism implements IB
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_PRESSURIZED_REACTION_CHAMBER;
     }
 }

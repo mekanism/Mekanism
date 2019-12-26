@@ -3,9 +3,9 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -23,7 +23,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         BlockPos coverPos = tile.getPos().offset(facing);
         //if the bin has an item stack and the face isn't covered by a solid side
         if (!tile.clientStack.isEmpty() && !tile.getWorld().getBlockState(coverPos).func_224755_d(tile.getWorld(), coverPos, facing.getOpposite())) {
-            String amount = tile.getTier() == BinTier.CREATIVE ? TextComponentUtil.translate("gui.mekanism.infinite").getFormattedText()
+            String amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate().getFormattedText()
                                                                : Integer.toString(tile.clientStack.getCount());
             matrix.func_227860_a_();
             switch (facing) {

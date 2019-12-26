@@ -4,13 +4,16 @@ import javax.annotation.Nonnull;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.reactor.ReactorControllerContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -26,7 +29,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class BlockReactorController extends BlockMekanism implements IHasGui<TileEntityReactorController>, IStateActive, IBlockElectric, IHasInventory, IHasTileEntity<TileEntityReactorController> {
+public class BlockReactorController extends BlockMekanism implements IHasGui<TileEntityReactorController>, IStateActive, IBlockElectric, IHasInventory, IHasDescription,
+      IHasTileEntity<TileEntityReactorController> {
 
     public BlockReactorController() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -66,11 +70,17 @@ public class BlockReactorController extends BlockMekanism implements IHasGui<Til
 
     @Override
     public INamedContainerProvider getProvider(TileEntityReactorController tile) {
-        return new ContainerProvider("mekanismgenerators.container.reactor_controller", (i, inv, player) -> new ReactorControllerContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new ReactorControllerContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityReactorController> getTileType() {
         return GeneratorsTileEntityTypes.REACTOR_CONTROLLER.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_REACTOR_CONTROLLER;
     }
 }

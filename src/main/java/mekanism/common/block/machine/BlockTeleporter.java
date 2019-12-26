@@ -13,8 +13,11 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -45,7 +48,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockTeleporter extends BlockMekanism implements IBlockElectric, IHasGui<TileEntityTeleporter>, ISupportsUpgrades, IHasInventory, IHasSecurity,
-      ISupportsRedstone, IHasTileEntity<TileEntityTeleporter>, ISupportsComparator {
+      ISupportsRedstone, IHasTileEntity<TileEntityTeleporter>, ISupportsComparator, IHasDescription {
 
     public BlockTeleporter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -140,7 +143,7 @@ public class BlockTeleporter extends BlockMekanism implements IBlockElectric, IH
 
     @Override
     public INamedContainerProvider getProvider(TileEntityTeleporter tile) {
-        return new ContainerProvider("mekanism.container.teleporter", (i, inv, player) -> new TeleporterContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new TeleporterContainer(i, inv, tile));
     }
 
     @Override
@@ -152,5 +155,11 @@ public class BlockTeleporter extends BlockMekanism implements IBlockElectric, IH
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.ANCHOR);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_TELEPORTER;
     }
 }

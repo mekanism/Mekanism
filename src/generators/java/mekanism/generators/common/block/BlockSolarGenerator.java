@@ -7,7 +7,9 @@ import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -16,6 +18,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
@@ -36,7 +39,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEntitySolarGenerator>, IBlockElectric, IHasInventory, IHasSecurity, IBlockSound,
-      IHasTileEntity<TileEntitySolarGenerator>, IStateWaterLogged {
+      IHasTileEntity<TileEntitySolarGenerator>, IStateWaterLogged, IHasDescription {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.gen.solar"));
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
@@ -107,11 +110,17 @@ public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEn
 
     @Override
     public INamedContainerProvider getProvider(TileEntitySolarGenerator tile) {
-        return new ContainerProvider("mekanismgenerators.container.solar_generator", (i, inv, player) -> new SolarGeneratorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new SolarGeneratorContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntitySolarGenerator> getTileType() {
         return GeneratorsTileEntityTypes.SOLAR_GENERATOR.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_SOLAR_GENERATOR;
     }
 }

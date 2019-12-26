@@ -14,11 +14,10 @@ import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.MekanismGases;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
@@ -61,12 +60,11 @@ public class ItemScubaTank extends ArmorItem implements IGasItem {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(stack);
         if (gasStack.isEmpty()) {
-            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.noGas"), "."));
+            tooltip.add(MekanismLang.NO_GAS.translate());
         } else {
-            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.stored"), " ", gasStack, ": " + gasStack.getAmount()));
+            tooltip.add(MekanismLang.STORED.translate(gasStack, gasStack.getAmount()));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.flowing"), ": ",
-              (getFlowing(stack) ? EnumColor.DARK_GREEN : EnumColor.DARK_RED), getFlowingComponent(stack)));
+        tooltip.add(MekanismLang.FLOWING.translateColored(EnumColor.GRAY, YesNo.of(getFlowing(stack), true)));
     }
 
     @Override
@@ -156,10 +154,6 @@ public class ItemScubaTank extends ArmorItem implements IGasItem {
 
     public boolean getFlowing(ItemStack stack) {
         return ItemDataUtils.getBoolean(stack, "flowing");
-    }
-
-    public ITextComponent getFlowingComponent(ItemStack stack) {
-        return YesNo.of(getFlowing(stack)).getTextComponent();
     }
 
     public void setFlowing(ItemStack stack, boolean flowing) {

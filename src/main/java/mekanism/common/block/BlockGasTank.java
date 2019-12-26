@@ -6,6 +6,9 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateFacing;
@@ -41,7 +44,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGasTank>, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity,
-      ISupportsRedstone, IHasTileEntity<TileEntityGasTank>, ISupportsComparator, IStateWaterLogged {
+      ISupportsRedstone, IHasTileEntity<TileEntityGasTank>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
@@ -126,7 +129,7 @@ public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGas
 
     @Override
     public INamedContainerProvider getProvider(TileEntityGasTank tile) {
-        return new ContainerProvider("mekanism.container.gas_tank", (i, inv, player) -> new GasTankContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new GasTankContainer(i, inv, tile));
     }
 
     @Override
@@ -144,5 +147,11 @@ public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGas
             default:
                 return MekanismTileEntityTypes.BASIC_GAS_TANK.getTileEntityType();
         }
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_GAS_TANK;
     }
 }

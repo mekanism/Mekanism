@@ -47,8 +47,7 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
                     IProgressStyle style = probeInfo.defaultProgressStyle().suffix("mB");
                     if (!tank.getStack().isEmpty()) {
                         Gas gas = tank.getStack().getType();
-                        //TODO: Lang key
-                        probeInfo.text(TextStyleClass.NAME + TextComponentUtil.build("Gas: ", gas).getFormattedText());
+                        probeInfo.text(TextStyleClass.NAME + MekanismLang.GAS.translate(gas).getFormattedText());
                         int tint = gas.getTint();
                         //TOP respects transparency so we need to filter out the transparent layer
                         // if the gas has one. (Currently they are all fully transparent)

@@ -71,7 +71,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                         structure.clientFlow = 0;
                     }
 
-                    if (structure.dumpMode == GasMode.DUMPING && structure.fluidStored != null) {
+                    if (structure.dumpMode == GasMode.DUMPING && !structure.fluidStored.isEmpty()) {
                         structure.fluidStored.setAmount(structure.fluidStored.getAmount() - Math.min(structure.fluidStored.getAmount(),
                               Math.max(structure.fluidStored.getAmount() / 50, structure.lastSteamInput * 2)));
                         if (structure.fluidStored.getAmount() == 0) {

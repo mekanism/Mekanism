@@ -5,10 +5,9 @@ import java.util.List;
 import mekanism.api.Upgrade;
 import mekanism.api.Upgrade.IUpgradeInfoHandler;
 import mekanism.common.MekanismItem;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
@@ -49,7 +48,7 @@ public class UpgradeUtils {
         List<ITextComponent> ret = new ArrayList<>();
         if (tile.supportsUpgrades() && upgrade.canMultiply()) {
             double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), (float) tile.getComponent().getUpgrades(upgrade) / (float) upgrade.getMax());
-            ret.add(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.effect"), ": " + (Math.round(effect * 100) / 100F) + "x"));
+            ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.round(effect * 100) / 100F));
         }
         return ret;
     }
@@ -57,8 +56,7 @@ public class UpgradeUtils {
     public static List<ITextComponent> getExpScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
         List<ITextComponent> ret = new ArrayList<>();
         if (tile.supportsUpgrades() && upgrade.canMultiply()) {
-            double effect = Math.pow(2, (float) tile.getComponent().getUpgrades(upgrade));
-            ret.add(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.effect"), ": " + effect + "x"));
+            ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.pow(2, (float) tile.getComponent().getUpgrades(upgrade))));
         }
         return ret;
     }

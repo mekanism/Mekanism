@@ -9,6 +9,7 @@ import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
@@ -18,7 +19,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -75,14 +75,14 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         minecraft.textureManager.bindTexture(getGuiLocation());
         drawTexturedRect(84, 8 + getScroll(), 202, 0, 4, 4);
-        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.supported"), ":"), 26, 59, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismLang.UPGRADES_SUPPORTED.translate(), 26, 59, 0x404040);
         if (selectedType == null) {
-            renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.noSelection"), "."), 92, 8, 0.8F);
+            renderText(MekanismLang.UPGRADE_NO_SELECTION.translate(), 92, 8, 0.8F);
         } else {
             int amount = tile.getComponent().getUpgrades(selectedType);
-            renderText(TextComponentUtil.build(selectedType, " ", Translation.of("gui.mekanism.upgrade")), 92, 8, 0.6F);
-            renderText(TextComponentUtil.build(Translation.of("gui.mekanism.upgrades.amount"), ": " + amount + "/" + selectedType.getMax()), 92, 16, 0.6F);
+            renderText(MekanismLang.UPGRADE_TYPE.translate(selectedType), 92, 8, 0.6F);
+            renderText(MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), 92, 16, 0.6F);
             int text = 0;
             for (ITextComponent component : UpgradeUtils.getInfo(tile, selectedType)) {
                 renderText(component, 92, 22 + (6 * text++), 0.6F);
@@ -110,7 +110,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
             drawString(TextComponentUtil.build(upgrade), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F);
             if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
-                displayTooltip(TextComponentUtil.build(Translation.of(upgrade.getDescription()), UpgradeUtils.getStack(upgrade)), xAxis, yAxis);
+                displayTooltip(TextComponentUtil.build(upgrade.getDescription(), UpgradeUtils.getStack(upgrade)), xAxis, yAxis);
             }
         }
 

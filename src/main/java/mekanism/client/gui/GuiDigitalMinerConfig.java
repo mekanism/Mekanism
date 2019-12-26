@@ -7,6 +7,7 @@ import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -21,8 +22,6 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -116,7 +115,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     @Override
     public void init() {
         super.init();
-        addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
+        addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tile.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
@@ -124,8 +123,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 92, 11, 12, getButtonLocation("checkmark"), this::setMinY));
         addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 117, 11, 12, getButtonLocation("checkmark"), this::setMaxY));
         addButton(new MekanismImageButton(this, guiLeft + 11, guiTop + 141, 14, getButtonLocation("strict_input"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(10))),
-              getOnHover("gui.mekanism.digitalMiner.inverse")));
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(10))), getOnHover(MekanismLang.MINER_INVERSE)));
 
         String prevRad = radiusField != null ? radiusField.getText() : "";
         String prevMin = minField != null ? minField.getText() : "";
@@ -147,14 +145,13 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         HashList<MinerFilter<?>> filters = tile.getFilters();
-        //TODO: Lang Keys
-        drawString(TextComponentUtil.translate("gui.mekanism.digitalMinerConfig"), 43, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.filters"), ":"), 11, 19, 0x00CD00);
-        drawString(TextComponentUtil.build("T: " + filters.size()), 11, 28, 0x00CD00);
-        drawString(TextComponentUtil.build("I: ", OnOff.of(tile.inverse)), 11, 131, 0x00CD00);
-        drawString(TextComponentUtil.build("Radi: " + tile.getRadius()), 11, 58, 0x00CD00);
-        drawString(TextComponentUtil.build("Min: " + tile.minY), 11, 83, 0x00CD00);
-        drawString(TextComponentUtil.build("Max: " + tile.maxY), 11, 108, 0x00CD00);
+        drawString(MekanismLang.MINER_CONFIG.translate(), 43, 6, 0x404040);
+        drawString(MekanismLang.FILTERS.translate(), 11, 19, 0x00CD00);
+        drawString(MekanismLang.FILTER_COUNT.translate(filters.size()), 11, 28, 0x00CD00);
+        drawString(MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.inverse)), 11, 131, 0x00CD00);
+        drawString(MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 11, 58, 0x00CD00);
+        drawString(MekanismLang.MIN.translate(tile.minY), 11, 83, 0x00CD00);
+        drawString(MekanismLang.MAX.translate(tile.maxY), 11, 108, 0x00CD00);
 
         for (int i = 0; i < 4; i++) {
             MinerFilter<?> filter = filters.get(getFilterIndex() + i);
@@ -162,24 +159,24 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                 int yStart = i * filterH + filterY;
                 if (filter instanceof IItemStackFilter) {
                     renderItem(((IItemStackFilter<?>) filter).getItemStack(), 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.mekanism.itemFilter"), 78, yStart + 2, 0x404040);
+                    drawString(MekanismLang.ITEM_FILTER.translate(), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IOreDictFilter) {
                     IOreDictFilter<?> oreFilter = (IOreDictFilter<?>) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }
                     renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.mekanism.oredictFilter"), 78, yStart + 2, 0x404040);
+                    drawString(MekanismLang.TAG_FILTER.translate(), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IMaterialFilter) {
                     renderItem(((IMaterialFilter<?>) filter).getMaterialItem(), 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.mekanism.materialFilter"), 78, yStart + 2, 0x404040);
+                    drawString(MekanismLang.MATERIAL_FILTER.translate(), 78, yStart + 2, 0x404040);
                 } else if (filter instanceof IModIDFilter) {
                     IModIDFilter<?> modFilter = (IModIDFilter<?>) filter;
                     if (!modIDStacks.containsKey(modFilter)) {
                         updateStackList(modFilter);
                     }
                     renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.mekanism.modIDFilter"), 78, yStart + 2, 0x404040);
+                    drawString(MekanismLang.MODID_FILTER.translate(), 78, yStart + 2, 0x404040);
                 }
             }
         }

@@ -5,12 +5,12 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
@@ -37,7 +37,7 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.translate("gui.mekanism.factory.autoSort"), mouseX, mouseY);
+        displayTooltip(MekanismLang.AUTO_SORT.translate(), mouseX, mouseY);
     }
 
     @Override

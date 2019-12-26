@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import mekanism.common.util.text.Translation;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsItem;
@@ -33,7 +32,7 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(Translation.of(ToolsLang.HP, stack.getMaxDamage() - stack.getDamage()).getTextComponent());
+        tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
     }
 
     @Override

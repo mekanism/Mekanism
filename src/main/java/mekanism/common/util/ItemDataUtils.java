@@ -8,6 +8,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO: Use ItemStack#getOrCreateTag in various places
+//TODO: Move constants to some sort of constant file
 public final class ItemDataUtils {
 
     public static final String DATA_ID = "mekData";

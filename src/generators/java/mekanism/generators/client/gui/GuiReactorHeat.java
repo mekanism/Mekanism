@@ -13,13 +13,13 @@ import mekanism.client.gui.element.gauge.GuiNumberGauge;
 import mekanism.client.gui.element.gauge.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.reactor.info.ReactorHeatContainer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
@@ -37,10 +37,9 @@ public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
-                    EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
+        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+              GeneratorsLang.PRODUCING.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
+              this, resource));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
@@ -59,8 +58,7 @@ public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
 
             @Override
             public ITextComponent getText(double level) {
-                //TODO: Lang String for Plasma
-                return TextComponentUtil.build("Plasma: ", MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
+                return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, Type.STANDARD, this, resource, 7, 50));
         addButton(new GuiProgress(new IProgressInfoHandler() {
@@ -87,8 +85,7 @@ public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
 
             @Override
             public ITextComponent getText(double level) {
-                //TODO: Lang String for Case
-                return TextComponentUtil.build("Case: ", MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
+                return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, Type.STANDARD, this, resource, 61, 50));
         addButton(new GuiProgress(new IProgressInfoHandler() {

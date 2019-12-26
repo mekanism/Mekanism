@@ -5,13 +5,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.block.basic.BlockInductionCell;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -42,10 +41,8 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockInductionCell>
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         InductionCellTier tier = getTier(stack);
         if (tier != null) {
-            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("tooltip.mekanism.capacity"), ": ", EnumColor.GRAY,
-                  EnergyDisplay.of(tier.getMaxEnergy())));
-            tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, Translation.of("tooltip.mekanism.stored_energy"), ": ", EnumColor.GRAY,
-                  EnergyDisplay.of(getEnergy(stack))));
+            tooltip.add(MekanismLang.CAPACITY.translateColored(tier.getBaseTier().getColor(), EnumColor.GRAY, EnergyDisplay.of(tier.getMaxEnergy())));
+            tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
         }
     }
 

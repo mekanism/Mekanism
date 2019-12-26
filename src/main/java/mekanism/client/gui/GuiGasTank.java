@@ -12,13 +12,12 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.PlayerContainer;
@@ -51,21 +50,20 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
         //TODO: 1.14 Convert to GuiElement
         ITextComponent component;
         if (tile.gasTank.getStored() == Integer.MAX_VALUE) {
-            component = TextComponentUtil.translate("gui.mekanism.infinite");
-        } else if (tile.tier.getStorage() == Integer.MAX_VALUE) {
-            component = TextComponentUtil.build(tile.gasTank.getStored(), "/", Translation.of("gui.mekanism.infinite"));
+            component = MekanismLang.INFINITE.translate();
         } else {
-            component = TextComponentUtil.getString(tile.gasTank.getStored() + "/" + tile.tier.getStorage());
+            component = MekanismLang.GENERIC_FRACTION.translate(tile.gasTank.getStored(),
+                  tile.tier.getStorage() == Integer.MAX_VALUE ? MekanismLang.INFINITE : tile.tier.getStorage());
         }
         drawString(component, 45, 40, 0x404040);
         //TODO: 1.14 Convert to GuiElement
         GasStack gasStack = tile.gasTank.getStack();
         if (!gasStack.isEmpty()) {
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.gas"), ": ", gasStack), 45, 49, 0x404040, 112);
+            renderScaledText(MekanismLang.GAS.translate(gasStack), 45, 49, 0x404040, 112);
         } else {
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.gas"), ": ", Translation.of("gui.mekanism.none")), 45, 49, 0x404040, 112);
+            renderScaledText(MekanismLang.GAS.translate(MekanismLang.NONE), 45, 49, 0x404040, 112);
         }
-        drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, ySize - 96 + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

@@ -17,7 +17,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IItemNetwork;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -27,8 +29,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -63,7 +63,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.PINK, Translation.of("gui.mekanism.state"), ": ", getState(stack)));
+        tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getState(stack)));
     }
 
     @Nonnull
@@ -89,17 +89,17 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getOrientation(), side);
                         DataType dataType = info.getDataType(relativeSide);
                         if (!player.func_225608_bj_()) {
-                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                                  Translation.of("tooltip.mekanism.configurator.view_mode", TextComponentUtil.build(transmissionType)), ": ", dataType.getColor(), dataType,
-                                  " (", dataType.getColor().getColoredName(), ")"));
+                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                                  MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(), dataType,
+                                        dataType.getColor().getColoredName())));
                         } else {
                             if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
                                 if (SecurityUtils.canAccess(player, tile)) {
                                     setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
                                     dataType = info.incrementDataType(relativeSide);
-                                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                                          Translation.of("tooltip.mekanism.configurator.toggle_mode", TextComponentUtil.build(transmissionType)), ": ",
-                                          dataType.getColor(), dataType, " (", dataType.getColor().getColoredName(), ")"));
+                                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                                          MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType,
+                                                dataType.getColor(), dataType, dataType.getColor().getColoredName())));
                                     if (config instanceof TileEntityMekanism) {
                                         Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
                                     }
@@ -227,35 +227,35 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     @MethodsReturnNonnullByDefault
     @FieldsAreNonnullByDefault
     public enum ConfiguratorMode implements IIncrementalEnum<ConfiguratorMode>, IHasTextComponent {
-        CONFIGURATE_ITEMS("configurate", TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_FLUIDS("configurate", TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_GASES("configurate", TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_ENERGY("configurate", TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true),
-        CONFIGURATE_HEAT("configurate", TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true),
-        EMPTY("empty", null, EnumColor.DARK_RED, false),
-        ROTATE("rotate", null, EnumColor.YELLOW, false),
-        WRENCH("wrench", null, EnumColor.PINK, false);
+        CONFIGURATE_ITEMS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ITEM, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_FLUIDS(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.FLUID, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_GASES(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.GAS, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_ENERGY(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.ENERGY, EnumColor.BRIGHT_GREEN, true),
+        CONFIGURATE_HEAT(MekanismLang.CONFIGURATOR_CONFIGURATE, TransmissionType.HEAT, EnumColor.BRIGHT_GREEN, true),
+        EMPTY(MekanismLang.CONFIGURATOR_EMPTY, null, EnumColor.DARK_RED, false),
+        ROTATE(MekanismLang.CONFIGURATOR_ROTATE, null, EnumColor.YELLOW, false),
+        WRENCH(MekanismLang.CONFIGURATOR_WRENCH, null, EnumColor.PINK, false);
 
         private static ConfiguratorMode[] MODES = values();
-        private String name;
+        private final ILangEntry langEntry;
         @Nullable
         private final TransmissionType transmissionType;
-        private EnumColor color;
-        private boolean configurating;
+        private final EnumColor color;
+        private final boolean configurating;
 
-        ConfiguratorMode(String s, @Nullable TransmissionType s1, EnumColor c, boolean b) {
-            name = s;
-            transmissionType = s1;
-            color = c;
-            configurating = b;
+        ConfiguratorMode(ILangEntry langEntry, @Nullable TransmissionType transmissionType, EnumColor color, boolean configurating) {
+            this.langEntry = langEntry;
+            this.transmissionType = transmissionType;
+            this.color = color;
+            this.configurating = configurating;
         }
 
         @Override
         public ITextComponent getTextComponent() {
-            if (this.transmissionType != null) {
-                return TextComponentUtil.build(color, Translation.of("tooltip.mekanism.configurator." + name), " (", transmissionType, ")");
+            if (transmissionType != null) {
+                return langEntry.translateColored(color, transmissionType);
             }
-            return TextComponentUtil.build(color, Translation.of("tooltip.mekanism.configurator." + name));
+            return langEntry.translateColored(color);
         }
 
         public EnumColor getColor() {

@@ -3,11 +3,14 @@ package mekanism.generators.common.block.reactor;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorPort;
 import net.minecraft.block.Block;
@@ -21,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class BlockReactorPort extends BlockMekanism implements IStateActive, IBlockElectric, IHasTileEntity<TileEntityReactorPort> {
+public class BlockReactorPort extends BlockMekanism implements IStateActive, IBlockElectric, IHasTileEntity<TileEntityReactorPort>, IHasDescription {
 
     public BlockReactorPort() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -62,5 +65,11 @@ public class BlockReactorPort extends BlockMekanism implements IStateActive, IBl
     @Override
     public TileEntityType<TileEntityReactorPort> getTileType() {
         return GeneratorsTileEntityTypes.REACTOR_PORT.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_REACTOR_PORT;
     }
 }

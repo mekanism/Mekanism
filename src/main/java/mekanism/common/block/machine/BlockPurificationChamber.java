@@ -17,8 +17,11 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -54,7 +57,8 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockPurificationChamber extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityPurificationChamber>, IStateFacing,
-      IStateActive, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPurificationChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator {
+      IStateActive, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPurificationChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator,
+      IHasDescription {
 
     public static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.purifier"));
 
@@ -174,7 +178,7 @@ public class BlockPurificationChamber extends BlockMekanism implements IBlockEle
 
     @Override
     public INamedContainerProvider getProvider(TileEntityPurificationChamber tile) {
-        return new ContainerProvider("mekanism.container.purification_chamber", (i, inv, player) -> new PurificationChamberContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new PurificationChamberContainer(i, inv, tile));
     }
 
     @Override
@@ -186,5 +190,11 @@ public class BlockPurificationChamber extends BlockMekanism implements IBlockEle
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_PURIFICATION_CHAMBER;
     }
 }

@@ -9,16 +9,17 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.client.render.item.gear.RenderFreeRunners;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
@@ -76,9 +77,8 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.stored_energy"), ": ", EnumColor.GRAY,
-              EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.mode"), ": ", EnumColor.GRAY, getMode(stack).getTextComponent()));
+        tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
+        tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
     @Override
@@ -144,21 +144,22 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized {
         setMode(itemStack, getMode(itemStack).getNext());
     }
 
-    public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode> {
-        NORMAL("tooltip.freerunner.regular", EnumColor.DARK_GREEN),
-        DISABLED("tooltip.freerunner.disabled", EnumColor.DARK_RED);
+    public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {
+        NORMAL(MekanismLang.FREE_RUNNER_NORMAL, EnumColor.DARK_GREEN),
+        DISABLED(MekanismLang.FREE_RUNNER_DISABLED, EnumColor.DARK_RED);
 
         private static final FreeRunnerMode[] MODES = values();
-        private String unlocalized;
-        private EnumColor color;
+        private final ILangEntry langEntry;
+        private final EnumColor color;
 
-        FreeRunnerMode(String unlocalized, EnumColor color) {
-            this.unlocalized = unlocalized;
+        FreeRunnerMode(ILangEntry langEntry, EnumColor color) {
+            this.langEntry = langEntry;
             this.color = color;
         }
 
+        @Override
         public ITextComponent getTextComponent() {
-            return TextComponentUtil.build(color, unlocalized);
+            return langEntry.translateColored(color);
         }
 
         @Nonnull

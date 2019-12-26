@@ -26,6 +26,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.ChemicalCrystallizerContainer;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
@@ -33,7 +34,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -64,10 +64,8 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         addButton(new GuiVerticalPowerBar(this, tile, resource, 160, 23));
         addButton(new GuiSideConfigurationTab(this, tile, resource));
         addButton(new GuiTransporterConfigTab(this, tile, resource));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.getEnergyPerTick()), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
-        ), this, resource));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
         addButton(new GuiGasGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
         addButton(new GuiSlot(SlotType.EXTRA, this, resource, 5, 64).with(SlotOverlay.PLUS));
         addButton(new GuiSlot(SlotType.POWER, this, resource, 154, 4).with(SlotOverlay.POWER));
@@ -87,13 +85,13 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         if (!gasStack.isEmpty()) {
             drawString(TextComponentUtil.build(gasStack), 29, 15, 0x00CD00);
             if (gasStack.getType() instanceof Slurry && !renderStack.isEmpty()) {
-                drawString(TextComponentUtil.build("(", renderStack.getDisplayName(), ")"), 29, 24, 0x00CD00);
+                drawString(MekanismLang.GENERIC_PARENTHESIS.translate(renderStack), 29, 24, 0x00CD00);
             } else {
                 CachedRecipe<GasToItemStackRecipe> recipe = tile.getUpdatedCache(0);
                 if (recipe == null) {
-                    drawString(TextComponentUtil.build("(", Translation.of("gui.mekanism.noRecipe"), ")"), 29, 24, 0x00CD00);
+                    drawString(MekanismLang.NO_RECIPE.translate(), 29, 24, 0x00CD00);
                 } else {
-                    drawString(TextComponentUtil.build("(", recipe.getRecipe().getOutput(gasStack).getDisplayName(), ")"), 29, 24, 0x00CD00);
+                    drawString(MekanismLang.GENERIC_PARENTHESIS.translate(recipe.getRecipe().getOutput(gasStack)), 29, 24, 0x00CD00);
                 }
             }
         }

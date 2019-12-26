@@ -6,6 +6,7 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
@@ -15,8 +16,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -35,7 +34,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(Translation.of("gui.mekanism.boilRate"), ": " + tile.getLastBoilRate() + " mB/t");
+                return MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate());
             }
 
             @Override
@@ -46,7 +45,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(Translation.of("gui.mekanism.maxBoil"), ": " + tile.getLastMaxBoil() + " mB/t");
+                return MekanismLang.MAX_BOIL_RATE.translate(tile.getLastMaxBoil());
             }
 
             @Override
@@ -57,19 +56,18 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         }, resource, 144, 13));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
-            String environment = UnitDisplayUtils.getDisplayShort(tile.getLastEnvironmentLoss() * unit.intervalSize, false, unit);
-            return Collections.singletonList(TextComponentUtil.build(Translation.of("gui.mekanism.dissipated"), ": " + environment + "/t"));
+            ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.getLastEnvironmentLoss() * unit.intervalSize, unit, false);
+            return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this, resource));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 4, 0x404040);
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 5, 0x404040);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.temp"), ": ",
-              MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 43, 30, 0x00CD00, 90);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.boilRate"), ": " + tile.getLastBoilRate() + " mB/t"), 43, 39, 0x00CD00, 90);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.maxBoil"), ": " + tile.getLastMaxBoil() + " mB/t"), 43, 48, 0x00CD00, 90);
+        renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 43, 30, 0x00CD00, 90);
+        renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 43, 39, 0x00CD00, 90);
+        renderScaledText(MekanismLang.MAX_BOIL_RATE.translate(tile.getLastMaxBoil()), 43, 48, 0x00CD00, 90);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

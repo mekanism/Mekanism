@@ -11,7 +11,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiContainerEditMode extends GuiInsetElement<TileEntityMekanism> {
@@ -38,7 +37,7 @@ public class GuiContainerEditMode extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.build(((IFluidContainerManager) tile).getContainerEditMode()), mouseX, mouseY);
+        displayTooltip(((IFluidContainerManager) tile).getContainerEditMode().getTextComponent(), mouseX, mouseY);
     }
 
     @Override

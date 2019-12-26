@@ -13,8 +13,11 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -54,7 +57,8 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockSolarNeutronActivator extends BlockMekanism implements IHasModel, IHasGui<TileEntitySolarNeutronActivator>, ISupportsUpgrades, IStateFacing,
-      IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, ISupportsComparator, IStateWaterLogged {
+      IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySolarNeutronActivator>, ISupportsComparator, IStateWaterLogged,
+      IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
@@ -238,7 +242,7 @@ public class BlockSolarNeutronActivator extends BlockMekanism implements IHasMod
 
     @Override
     public INamedContainerProvider getProvider(TileEntitySolarNeutronActivator tile) {
-        return new ContainerProvider("mekanism.container.solar_neutron_activator", (i, inv, player) -> new SolarNeutronActivatorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new SolarNeutronActivatorContainer(i, inv, tile));
     }
 
     @Override
@@ -250,5 +254,11 @@ public class BlockSolarNeutronActivator extends BlockMekanism implements IHasMod
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_SOLAR_NEUTRON_ACTIVATOR;
     }
 }

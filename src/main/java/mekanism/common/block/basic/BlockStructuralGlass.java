@@ -4,7 +4,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.tile.TileEntityStructuralGlass;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
@@ -26,7 +29,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IHasTileEntity<TileEntityStructuralGlass> {
+public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IHasTileEntity<TileEntityStructuralGlass>, IHasDescription {
 
     public BlockStructuralGlass() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F).func_226896_b_());
@@ -74,5 +77,11 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IH
     @Override
     public TileEntityType<TileEntityStructuralGlass> getTileType() {
         return MekanismTileEntityTypes.STRUCTURAL_GLASS.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_STRUCTURAL_GLASS;
     }
 }

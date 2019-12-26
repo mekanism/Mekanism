@@ -5,7 +5,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.FactoryType;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismBlock;
+import mekanism.common.MekanismLang;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
@@ -51,28 +53,27 @@ public interface IFactory {
         CHANCE
     }
 
-    enum RecipeType implements IStringSerializable {
-        SMELTING("Smelting", MekanismBlock.ENERGIZED_SMELTER, MachineFuelType.BASIC, false),
-        ENRICHING("Enriching", MekanismBlock.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false),
-        CRUSHING("Crushing", MekanismBlock.CRUSHER, MachineFuelType.BASIC, false),
-        COMPRESSING("Compressing", MekanismBlock.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false),
-        COMBINING("Combining", MekanismBlock.COMBINER, MachineFuelType.DOUBLE, false),
-        PURIFYING("Purifying", MekanismBlock.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true),
-        INJECTING("Injecting", MekanismBlock.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true),
-        INFUSING("Infusing", MekanismBlock.METALLURGIC_INFUSER, MachineFuelType.BASIC, false),
-        SAWING("Sawing", MekanismBlock.PRECISION_SAWMILL, MachineFuelType.CHANCE, false);
+    enum RecipeType implements IStringSerializable, IHasTranslationKey {
+        SMELTING(MekanismLang.SMELTING, MekanismBlock.ENERGIZED_SMELTER, MachineFuelType.BASIC, false),
+        ENRICHING(MekanismLang.ENRICHING, MekanismBlock.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false),
+        CRUSHING(MekanismLang.CRUSHING, MekanismBlock.CRUSHER, MachineFuelType.BASIC, false),
+        COMPRESSING(MekanismLang.COMPRESSING, MekanismBlock.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false),
+        COMBINING(MekanismLang.COMBINING, MekanismBlock.COMBINER, MachineFuelType.DOUBLE, false),
+        PURIFYING(MekanismLang.PURIFYING, MekanismBlock.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true),
+        INJECTING(MekanismLang.INJECTING, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true),
+        INFUSING(MekanismLang.INFUSING, MekanismBlock.METALLURGIC_INFUSER, MachineFuelType.BASIC, false),
+        SAWING(MekanismLang.SAWING, MekanismBlock.PRECISION_SAWMILL, MachineFuelType.CHANCE, false);
 
-        private String name;
-        private IBlockProvider type;
-        private MachineFuelType fuelType;
-        private boolean fuelSpeed;
-        private TileEntityAdvancedElectricMachine cacheTile;
+        private final ILangEntry langEntry;
+        private final IBlockProvider type;
+        private final MachineFuelType fuelType;
+        private final boolean fuelSpeed;
 
-        RecipeType(String s, IBlockProvider t, MachineFuelType ft, boolean speed) {
-            name = s;
-            type = t;
-            fuelType = ft;
-            fuelSpeed = speed;
+        RecipeType(ILangEntry langEntry, IBlockProvider type, MachineFuelType fuelType, boolean fuelSpeed) {
+            this.langEntry = langEntry;
+            this.type = type;
+            this.fuelType = fuelType;
+            this.fuelSpeed = fuelSpeed;
         }
 
         public static RecipeType getFromFactoryType(@Nonnull FactoryType factoryType) {
@@ -122,12 +123,9 @@ public interface IFactory {
             return ItemStack.EMPTY;//type.getStack();
         }
 
+        @Override
         public String getTranslationKey() {
-            return name;
-        }
-
-        public String getGuiTranslationKey() {
-            return "gui.mekanism.factory." + name;
+            return langEntry.getTranslationKey();
         }
 
         public MachineFuelType getFuelType() {

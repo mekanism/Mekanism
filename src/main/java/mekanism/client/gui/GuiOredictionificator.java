@@ -16,6 +16,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
@@ -23,7 +24,6 @@ import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -57,8 +57,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         }, ProgressBar.LARGE_RIGHT, this, resource, 62, 118));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 114));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 133, 114));
-
-        addButton(new TranslationButton(this, guiLeft + 10, guiTop + 86, 142, 20, "gui.mekanism.newFilter",
+        addButton(new TranslationButton(this, guiLeft + 10, guiTop + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile.getPos(), 0))));
     }
 
@@ -78,7 +77,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
         HashList<OredictionificatorFilter> filters = tile.getFilters();
         for (int i = 0; i < 3; i++) {
             if (filters.get(getFilterIndex() + i) != null) {
@@ -88,7 +87,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 }
                 int yStart = i * 22 + 18;
                 renderItem(renderStacks.get(filter), 13, yStart + 3);
-                drawString(TextComponentUtil.translate("gui.mekanism.filter"), 32, yStart + 2, 0x404040);
+                drawString(MekanismLang.FILTER.translate(), 32, yStart + 2, 0x404040);
                 renderScaledText(filter.getFilterText(), 32, yStart + 2 + 9, 0x404040, 117);
             }
         }

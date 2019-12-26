@@ -10,12 +10,12 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.reactor.info.ReactorFuelContainer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
@@ -35,10 +35,9 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
     public void init() {
         super.init();
         ResourceLocation resource = getGuiLocation();
-        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ",
-                    EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)), "/t")) : Collections.emptyList(), this, resource));
+        addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+              GeneratorsLang.PRODUCING.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
+              this, resource));
         addButton(new GuiGasGauge(() -> tile.deuteriumTank, Type.SMALL, this, resource, 25, 64));
         addButton(new GuiGasGauge(() -> tile.fuelTank, Type.STANDARD, this, resource, 79, 50));
         addButton(new GuiGasGauge(() -> tile.tritiumTank, Type.SMALL, this, resource, 133, 64));
@@ -67,10 +66,9 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         drawString(tile.getName(), 46, 6, 0x404040);
-        //TODO: Lang key for None
-        drawCenteredText(TextComponentUtil.build(Translation.of("gui.mekanism.reactor.injectionRate"),
-              ": " + (tile.getReactor() == null ? "None" : tile.getReactor().getInjectionRate())), 0, xSize, 35, 0x404040);
-        drawString("Edit Rate" + ":", 50, 117, 0x404040);
+        drawCenteredText(GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getReactor() == null ? MekanismLang.NONE : tile.getReactor().getInjectionRate()),
+              0, xSize, 35, 0x404040);
+        drawString(GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, 0x404040);
     }
 
     @Override

@@ -79,6 +79,8 @@ public class Mekanism {
 
     public static final String MODID = MekanismAPI.MEKANISM_MODID;
     public static final String MOD_NAME = "Mekanism";
+    //TODO: Do this somehow better for auto colored + with space?
+    // maybe make a lang string entry for it?
     public static final String LOG_TAG = '[' + MOD_NAME + ']';
     public static final PlayerState playerState = new PlayerState();
     public static final Set<UUID> freeRunnerOn = new HashSet<>();

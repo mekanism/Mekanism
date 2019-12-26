@@ -8,11 +8,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -90,26 +90,27 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     @Override
     protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         int newMode = (modes[side.ordinal()] + 1) % 3;
-        Translation description;
+        //TODO: 1.15 make this instead be an ITranslationHelper or MekanismLang
+        ILangEntry langEntry;
         modes[side.ordinal()] = newMode;
         switch (newMode) {
             case 0:
-                description = Translation.of("tooltip.mekanism.control.disabled.desc");
+                langEntry = MekanismLang.DIVERSION_CONTROL_DISABLED;
                 break;
             case 1:
-                description = Translation.of("tooltip.mekanism.control.high.desc");
+                langEntry = MekanismLang.DIVERSION_CONTROL_HIGH;
                 break;
             case 2:
-                description = Translation.of("tooltip.mekanism.control.low.desc");
+                langEntry = MekanismLang.DIVERSION_CONTROL_LOW;
                 break;
             default:
-                description = Translation.of("gui.mekanism.none");
+                langEntry = MekanismLang.NONE;
                 break;
         }
         refreshConnections();
         notifyTileChange();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-              Translation.of("tooltip.mekanism.configurator.toggle_diverter"), ": ", EnumColor.RED, description));
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+              MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, langEntry)));
         Mekanism.packetHandler.sendUpdatePacket(this);
         return ActionResultType.SUCCESS;
     }

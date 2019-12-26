@@ -9,7 +9,9 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -21,6 +23,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.HeatGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
@@ -43,7 +46,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockHeatGenerator extends BlockMekanism implements IHasGui<TileEntityHeatGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
-      IHasTileEntity<TileEntityHeatGenerator>, ISupportsComparator, IStateWaterLogged, IStateActive {
+      IHasTileEntity<TileEntityHeatGenerator>, ISupportsComparator, IStateWaterLogged, IStateActive, IHasDescription {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.gen.heat"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -158,11 +161,17 @@ public class BlockHeatGenerator extends BlockMekanism implements IHasGui<TileEnt
 
     @Override
     public INamedContainerProvider getProvider(TileEntityHeatGenerator tile) {
-        return new ContainerProvider("mekanismgenerators.container.heat_generator", (i, inv, player) -> new HeatGeneratorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new HeatGeneratorContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityHeatGenerator> getTileType() {
         return GeneratorsTileEntityTypes.HEAT_GENERATOR.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_HEAT_GENERATOR;
     }
 }

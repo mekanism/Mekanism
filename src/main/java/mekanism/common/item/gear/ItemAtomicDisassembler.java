@@ -16,15 +16,14 @@ import mekanism.api.IDisableableEnum;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
-import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.OreDictCache;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -83,8 +82,8 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
         Mode mode = getMode(stack);
-        tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.mode"), ": ", EnumColor.INDIGO, mode));
-        tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.efficiency"), ": ", EnumColor.INDIGO, mode.getEfficiency()));
+        tooltip.add(MekanismLang.MODE.translate(EnumColor.INDIGO, mode));
+        tooltip.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, mode.getEfficiency()));
     }
 
     @Override
@@ -189,8 +188,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             if (!world.isRemote) {
                 toggleMode(stack);
                 Mode mode = getMode(stack);
-                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                      Translation.of("tooltip.mekanism.modeToggle"), " ", EnumColor.INDIGO, mode, EnumColor.AQUA, " (" + mode.getEfficiency() + ")"));
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                      MekanismLang.DISASSEMBLER_MODE_TOGGLE.translateColored(EnumColor.GRAY, EnumColor.INDIGO, mode,
+                            MekanismLang.GENERIC_PARENTHESIS.translateColored(EnumColor.AQUA, mode.getEfficiency()))));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
@@ -330,22 +330,22 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     }
 
     public enum Mode implements IDisableableEnum<Mode>, IHasTranslationKey {
-        NORMAL("normal", 20, 3, () -> true),
-        SLOW("slow", 8, 1, MekanismConfig.general.disassemblerSlowMode::get),
-        FAST("fast", 128, 5, MekanismConfig.general.disassemblerFastMode::get),
-        VEIN("vein", 20, 3, MekanismConfig.general.disassemblerVeinMining::get),
-        EXTENDED_VEIN("extended_vein", 20, 3, MekanismConfig.general.disassemblerExtendedMining::get),
-        OFF("off", 0, 0, () -> true);
+        NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, 3, () -> true),
+        SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, 1, MekanismConfig.general.disassemblerSlowMode::get),
+        FAST(MekanismLang.DISASSEMBLER_FAST, 128, 5, MekanismConfig.general.disassemblerFastMode::get),
+        VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, 3, MekanismConfig.general.disassemblerVeinMining::get),
+        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, 3, MekanismConfig.general.disassemblerExtendedMining::get),
+        OFF(MekanismLang.DISASSEMBLER_OFF, 0, 0, () -> true);
 
         private static Mode[] VALUES = values();
         private final Supplier<Boolean> checkEnabled;
-        private final String mode;
+        private final ILangEntry langEntry;
         private final int efficiency;
         //Must be odd, or zero
         private final int diameter;
 
-        Mode(String mode, int efficiency, int diameter, Supplier<Boolean> checkEnabled) {
-            this.mode = mode;
+        Mode(ILangEntry langEntry, int efficiency, int diameter, Supplier<Boolean> checkEnabled) {
+            this.langEntry = langEntry;
             this.efficiency = efficiency;
             this.diameter = diameter;
             this.checkEnabled = checkEnabled;
@@ -368,7 +368,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
         @Override
         public String getTranslationKey() {
-            return "tooltip.mekanism.disassembler." + mode;
+            return langEntry.getTranslationKey();
         }
 
         public int getEfficiency() {

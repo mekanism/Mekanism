@@ -8,8 +8,11 @@ import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -49,7 +52,7 @@ import net.minecraft.world.World;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound, IStateActive,
-      IStateWaterLogged {
+      IStateWaterLogged, IHasDescription {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.laser"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
@@ -206,5 +209,11 @@ public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasMod
     @Override
     public TileEntityType<TileEntityLaser> getTileType() {
         return MekanismTileEntityTypes.LASER.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_LASER;
     }
 }

@@ -7,8 +7,11 @@ import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -43,7 +46,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockOredictionificator extends BlockMekanism implements IHasGui<TileEntityOredictionificator>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
-      ISupportsRedstone, IHasTileEntity<TileEntityOredictionificator> {
+      ISupportsRedstone, IHasTileEntity<TileEntityOredictionificator>, IHasDescription {
 
     public BlockOredictionificator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -139,11 +142,17 @@ public class BlockOredictionificator extends BlockMekanism implements IHasGui<Ti
 
     @Override
     public INamedContainerProvider getProvider(TileEntityOredictionificator tile) {
-        return new ContainerProvider("mekanism.container.oredictionificator", (i, inv, player) -> new OredictionificatorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new OredictionificatorContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityOredictionificator> getTileType() {
         return MekanismTileEntityTypes.OREDICTIONIFICATOR.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_OREDICTIONIFICATOR;
     }
 }

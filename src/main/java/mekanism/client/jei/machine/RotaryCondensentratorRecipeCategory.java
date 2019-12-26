@@ -30,7 +30,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
         super(helper, "mekanism:gui/nei/rotary_condensentrator.png", MekanismBlock.ROTARY_CONDENSENTRATOR, null, 3, 12, 170, 71);
         this.condensentrating = condensentrating;
         uid = new ResourceLocation(Mekanism.MODID, condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating");
-        this.title = Translation.of(condensentrating ? "gui.mekanism.condensentrating" : "gui.mekanism.decondensentrating").getTextComponent().getFormattedText();
+        this.title = (condensentrating ? MekanismLang.CONDENSENTRATING : MekanismLang.DECONDENSENTRATING).translate().getFormattedText();
     }
 
     @Override

@@ -119,6 +119,7 @@ public enum EnumColor implements IStringSerializable {
         return "invalid";
     }
 
+    //TODO: This should probably be color.mekanism??
     //Note: Do not implement IHasTranslationKey as we want the default behaviour of EnumColor to be formatting
     public String getTranslationKey() {
         return "color." + unlocalizedName;

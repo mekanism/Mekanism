@@ -2,12 +2,15 @@ package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.reactor.ReactorLogicAdapterContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
@@ -25,7 +28,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockReactorLogicAdapter extends BlockMekanism implements IHasGui<TileEntityReactorLogicAdapter>, IHasTileEntity<TileEntityReactorLogicAdapter> {
+public class BlockReactorLogicAdapter extends BlockMekanism implements IHasGui<TileEntityReactorLogicAdapter>, IHasTileEntity<TileEntityReactorLogicAdapter>,
+      IHasDescription {
 
     public BlockReactorLogicAdapter() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -75,11 +79,17 @@ public class BlockReactorLogicAdapter extends BlockMekanism implements IHasGui<T
 
     @Override
     public INamedContainerProvider getProvider(TileEntityReactorLogicAdapter tile) {
-        return new ContainerProvider("mekanismgenerators.container.reactor_logic_adapter", (i, inv, player) -> new ReactorLogicAdapterContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new ReactorLogicAdapterContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityReactorLogicAdapter> getTileType() {
         return GeneratorsTileEntityTypes.REACTOR_LOGIC_ADAPTER.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_REACTOR_LOGIC_ADAPTER;
     }
 }

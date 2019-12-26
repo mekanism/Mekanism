@@ -30,6 +30,7 @@ import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.block.basic.BlockThermalEvaporation;
 import mekanism.common.block.basic.BlockThermalEvaporationController;
 import mekanism.common.block.basic.BlockThermalEvaporationValve;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.machine.BlockChargepad;
 import mekanism.common.block.machine.BlockChemicalCrystallizer;
 import mekanism.common.block.machine.BlockChemicalDissolutionChamber;
@@ -390,11 +391,11 @@ public class MekanismBlock {
         return BLOCKS.register(tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + suffix, blockSupplier, itemCreator);
     }
 
-    private static BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> registerOre(INamedResource resource) {
+    private static BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> registerOre(Resource resource) {
         return BLOCKS.register(resource.getRegistrySuffix() + "_ore", () -> new BlockOre(resource), ItemBlockTooltip::new);
     }
 
-    private static <BLOCK extends Block> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerBlock(String name, Supplier<? extends BLOCK> blockSupplier) {
+    private static <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerBlock(String name, Supplier<? extends BLOCK> blockSupplier) {
         return BLOCKS.register(name, blockSupplier, ItemBlockTooltip::new);
     }
 

@@ -5,8 +5,8 @@ import java.util.Calendar;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -42,6 +42,7 @@ public final class HolidayManager {
         }
     }
 
+    //TODO: Note this is not actually used currently?
     public static ResourceLocation filterSound(ResourceLocation sound) {
         if (!MekanismConfig.client.holidays.get()) {
             return sound;
@@ -122,15 +123,15 @@ public final class HolidayManager {
 
         @Override
         public void onEvent(PlayerEntity player) {
-            //TODO: Lang strings for this
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
-            player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, Mekanism.LOG_TAG + themedLines));
-            player.sendMessage(TextComponentUtil.build(EnumColor.RED, "Merry Christmas, ", EnumColor.DARK_BLUE, player.getName(), EnumColor.RED, "!"));
-            player.sendMessage(TextComponentUtil.build(EnumColor.RED, "May you have plenty of Christmas cheer"));
-            player.sendMessage(TextComponentUtil.build(EnumColor.RED, "and have a relaxing holiday with your"));
-            player.sendMessage(TextComponentUtil.build(EnumColor.RED, "family :)"));
-            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GRAY, "-aidancbrady"));
-            player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, "[=======]" + themedLines));
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)));
+            //TODO: Decide if this should be display name instead of name
+            player.sendMessage(MekanismLang.CHRISTMAS_LINE_ONE.translateColored(EnumColor.RED, EnumColor.DARK_BLUE, player.getName()));
+            player.sendMessage(MekanismLang.CHRISTMAS_LINE_TWO.translateColored(EnumColor.RED));
+            player.sendMessage(MekanismLang.CHRISTMAS_LINE_THREE.translateColored(EnumColor.RED));
+            player.sendMessage(MekanismLang.CHRISTMAS_LINE_FOUR.translateColored(EnumColor.RED));
+            player.sendMessage(MekanismLang.HOLIDAY_SIGNATURE.translateColored(EnumColor.DARK_GRAY));
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"));
         }
 
         @Override
@@ -160,14 +161,14 @@ public final class HolidayManager {
 
         @Override
         public void onEvent(PlayerEntity player) {
-            //TODO: Lang strings for this
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.WHITE, EnumColor.YELLOW}, 13);
-            player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, Mekanism.LOG_TAG + themedLines));
-            player.sendMessage(TextComponentUtil.build(EnumColor.AQUA, "Happy New Year, ", EnumColor.DARK_BLUE, player.getName(), EnumColor.RED, "!"));
-            player.sendMessage(TextComponentUtil.build(EnumColor.AQUA, "Best wishes to you as we enter this"));
-            player.sendMessage(TextComponentUtil.build(EnumColor.AQUA, "new and exciting year of " + calendar.get(Calendar.YEAR) + "! :)"));
-            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_GRAY, "-aidancbrady"));
-            player.sendMessage(TextComponentUtil.build(themedLines, EnumColor.DARK_BLUE, "[=======]" + themedLines));
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)));
+            //TODO: Decide if this should be display name instead of name
+            player.sendMessage(MekanismLang.NEW_YEAR_LINE_ONE.translateColored(EnumColor.AQUA, EnumColor.DARK_BLUE, player.getName()));
+            player.sendMessage(MekanismLang.NEW_YEAR_LINE_TWO.translateColored(EnumColor.AQUA));
+            player.sendMessage(MekanismLang.NEW_YEAR_LINE_TWO.translateColored(EnumColor.AQUA, calendar.get(Calendar.YEAR)));
+            player.sendMessage(MekanismLang.HOLIDAY_SIGNATURE.translateColored(EnumColor.DARK_GRAY));
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"));
         }
     }
 

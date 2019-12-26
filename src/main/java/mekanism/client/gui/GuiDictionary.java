@@ -3,11 +3,12 @@ package mekanism.client.gui;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.MekanismItem;
+import mekanism.common.MekanismLang;
 import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -35,8 +36,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.translate("mekanism.item.dictionary"), 64, 5, 0x404040);
-        drawString(TextComponentUtil.translate("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+        drawString(MekanismItem.DICTIONARY.getTextComponent(), 64, 5, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, ySize - 96 + 2, 0x404040);
         renderItem(itemType, 6, 6);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

@@ -9,16 +9,16 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.inventory.container.turbine.TurbineContainer;
@@ -42,8 +42,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(Translation.of("gui.mekanism.steamInput"),
-                      ": " + (tile.structure == null ? 0 : tile.structure.lastSteamInput) + " mB/t");
+                return GeneratorsLang.STEAM_INPUT_RATE.translate(tile.structure == null ? 0 : tile.structure.lastSteamInput);
             }
 
             @Override
@@ -62,8 +61,8 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         addButton(new GuiEnergyInfo(() -> {
             double producing = tile.structure == null ? 0 : tile.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                                             Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
-            return Arrays.asList(TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-                  TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ", EnergyDisplay.of(producing), "/t"));
+            return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+                  GeneratorsLang.PRODUCING.translate(EnergyDisplay.of(producing)));
         }, this, resource));
         addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tile.structure == null ? GasMode.IDLE : tile.structure.dumpMode,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
@@ -71,26 +70,26 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 4, 0x404040);
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 5, 0x404040);
         if (tile.structure != null) {
             double energyMultiplier = (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                       Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             double rate = tile.structure.lowerVolume * (tile.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
             rate = Math.min(rate, tile.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.production"), ": ",
-                  EnergyDisplay.of(tile.structure.clientFlow * energyMultiplier)), 53, 26, 0x00CD00, 106);
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.flow_rate"), ": " + tile.structure.clientFlow + " mB/t"), 53, 35, 0x00CD00, 106);
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.capacity"), ": " + tile.structure.getFluidCapacity() + " mB"), 53, 44, 0x00CD00, 106);
-            renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.max_flow"), ": " + rate + " mB/t"), 53, 53, 0x00CD00, 106);
+            renderScaledText(GeneratorsLang.PRODUCTION_AMOUNT.translate(EnergyDisplay.of(tile.structure.clientFlow * energyMultiplier)),
+                  53, 26, 0x00CD00, 106);
+            renderScaledText(GeneratorsLang.TURBINE_FLOW_RATE.translate(tile.structure.clientFlow), 53, 35, 0x00CD00, 106);
+            renderScaledText(GeneratorsLang.TURBINE_CAPACITY.translate(tile.structure.getFluidCapacity()), 53, 44, 0x00CD00, 106);
+            renderScaledText(GeneratorsLang.TURBINE_MAX_FLOW.translate(rate), 53, 53, 0x00CD00, 106);
             int xAxis = mouseX - guiLeft;
             int yAxis = mouseY - guiTop;
             //TODO: 1.14 Convert to GuiElement
             if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
                 if (tile.structure.fluidStored.isEmpty()) {
-                    displayTooltip(TextComponentUtil.translate("gui.mekanism.empty"), xAxis, yAxis);
+                    displayTooltip(MekanismLang.EMPTY.translate(), xAxis, yAxis);
                 } else {
-                    displayTooltip(TextComponentUtil.build(tile.structure.fluidStored, ": " + tile.structure.fluidStored.getAmount() + "mB"), xAxis, yAxis);
+                    displayTooltip(MekanismLang.GENERIC_STORED_MB.translate(tile.structure.fluidStored, tile.structure.fluidStored.getAmount()), xAxis, yAxis);
                 }
             }
         }

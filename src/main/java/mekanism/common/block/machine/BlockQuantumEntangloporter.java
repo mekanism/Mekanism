@@ -11,8 +11,11 @@ import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsUpgrades;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -59,7 +62,7 @@ import net.minecraft.world.World;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockElectric, IHasGui<TileEntityQuantumEntangloporter>, ISupportsUpgrades, IStateFacing,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateActive, IStateWaterLogged {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateActive, IStateWaterLogged, IHasDescription {
 
     //Note: Does not include the "core"
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
@@ -234,7 +237,7 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
 
     @Override
     public INamedContainerProvider getProvider(TileEntityQuantumEntangloporter tile) {
-        return new ContainerProvider("mekanism.container.quantum_entangloporter", (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, tile));
     }
 
     @Override
@@ -246,5 +249,11 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.ANCHOR);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER;
     }
 }

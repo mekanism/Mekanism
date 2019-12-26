@@ -12,8 +12,11 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -48,7 +51,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockFormulaicAssemblicator extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFormulaicAssemblicator>, IStateFacing,
-      IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityFormulaicAssemblicator> {
+      IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityFormulaicAssemblicator>, IHasDescription {
 
     public BlockFormulaicAssemblicator() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -154,7 +157,7 @@ public class BlockFormulaicAssemblicator extends BlockMekanism implements IBlock
 
     @Override
     public INamedContainerProvider getProvider(TileEntityFormulaicAssemblicator tile) {
-        return new ContainerProvider("mekanism.container.formulaic_assemblicator", (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, tile));
     }
 
     @Override
@@ -166,5 +169,11 @@ public class BlockFormulaicAssemblicator extends BlockMekanism implements IBlock
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_FORMULAIC_ASSEMBLICATOR;
     }
 }

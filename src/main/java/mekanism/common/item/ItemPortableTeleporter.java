@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -18,7 +19,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -59,9 +59,8 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
         if (getFrequency(stack) != null) {
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("gui.mekanism.frequency"), ": ", EnumColor.GRAY, getFrequency(stack).name));
-            tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("gui.mekanism.mode"), ": ", EnumColor.GRAY,
-                  Translation.of("gui." + (!getFrequency(stack).publicFreq ? "private" : "public"))));
+            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getFrequency(stack).name));
+            tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, !getFrequency(stack).publicFreq ? MekanismLang.PRIVATE : MekanismLang.PUBLIC));
         }
         super.addInformation(stack, world, tooltip, flag);
     }
@@ -74,7 +73,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
             if (getOwnerUUID(stack) == null) {
                 setOwnerUUID(stack, player.getUniqueID());
                 Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, player.getUniqueID(), null));
-                player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY, Translation.of("gui.mekanism.nowOwn")));
+                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NOW_OWN.translateColored(EnumColor.GRAY)));
             } else if (SecurityUtils.canAccess(player, stack)) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableTeleporterContainer(i, inv, hand, stack)), buf -> {
                     buf.writeEnumValue(hand);

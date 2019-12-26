@@ -9,6 +9,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketSecurityMode;
 import mekanism.common.security.ISecurityItem;
@@ -19,8 +20,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -71,13 +70,11 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        ITextComponent securityComponent = TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.security"), ": ",
-              isItem ? SecurityUtils.getSecurity(getItem(), Dist.CLIENT) : SecurityUtils.getSecurity(tile, Dist.CLIENT));
+        ITextComponent securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, isItem ? SecurityUtils.getSecurity(getItem(), Dist.CLIENT)
+                                                                                                         : SecurityUtils.getSecurity(tile, Dist.CLIENT));
         ITextComponent ownerComponent = OwnerDisplay.of(minecraft.player, getOwner(), getOwnerUsername()).getTextComponent();
         if (isItem ? SecurityUtils.isOverridden(getItem(), Dist.CLIENT) : SecurityUtils.isOverridden(tile, Dist.CLIENT)) {
-            displayTooltips(Arrays.asList(securityComponent, ownerComponent,
-                  TextComponentUtil.build(EnumColor.RED, "(", Translation.of("gui.mekanism.overridden"), ")")
-            ), mouseX, mouseY);
+            displayTooltips(Arrays.asList(securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED)), mouseX, mouseY);
         } else {
             displayTooltips(Arrays.asList(securityComponent, ownerComponent), mouseX, mouseY);
         }

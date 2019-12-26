@@ -14,6 +14,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
@@ -28,8 +29,6 @@ import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -101,7 +100,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public boolean isValidTransmitter(TileEntity tile) {
         return CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).matches(
               transporter -> super.isValidTransmitter(tile) && (getTransmitter().getColor() == null || transporter.getColor() == null ||
-                                                                      getTransmitter().getColor() == transporter.getColor()));
+                                                                getTransmitter().getColor() == transporter.getColor()));
     }
 
     @Override
@@ -284,8 +283,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
         Mekanism.packetHandler.sendUpdatePacket(this);
         EnumColor color = getTransmitter().getColor();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-              Translation.of("tooltip.mekanism.configurator.toggle_color"), ": ", (color != null ? color.getColoredName() : Translation.of("gui.mekanism.none"))));
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+              MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color != null ? color.getColoredName() : MekanismLang.NONE)));
         return ActionResultType.SUCCESS;
     }
 
@@ -293,8 +292,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         super.onRightClick(player, side);
         EnumColor color = getTransmitter().getColor();
-        player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-              Translation.of("tooltip.mekanism.configurator.view_color"), ": ", (color != null ? color.getColoredName() : Translation.of("gui.mekanism.none"))));
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+              MekanismLang.CURRENT_COLOR.translateColored(EnumColor.GRAY, color != null ? color.getColoredName() : MekanismLang.NONE)));
         return ActionResultType.SUCCESS;
     }
 

@@ -2,11 +2,14 @@ package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import net.minecraft.block.Block;
@@ -21,7 +24,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockRotationalComplex extends BlockMekanism implements IHasTileEntity<TileEntityRotationalComplex> {
+public class BlockRotationalComplex extends BlockMekanism implements IHasTileEntity<TileEntityRotationalComplex>, IHasDescription {
 
     public BlockRotationalComplex() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -63,5 +66,11 @@ public class BlockRotationalComplex extends BlockMekanism implements IHasTileEnt
     @Override
     public TileEntityType<TileEntityRotationalComplex> getTileType() {
         return GeneratorsTileEntityTypes.ROTATIONAL_COMPLEX.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_ROTATIONAL_COMPLEX;
     }
 }

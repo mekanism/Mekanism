@@ -7,6 +7,7 @@ import mekanism.api.chemical.ChemicalTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvider;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
@@ -50,9 +51,9 @@ public class GuiVerticalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends
             @Override
             public ITextComponent getTooltip() {
                 if (tank.isEmpty()) {
-                    return TextComponentUtil.translate("gui.mekanism.empty");
+                    return MekanismLang.EMPTY.translate();
                 }
-                return TextComponentUtil.build(tank.getType(), ": " + tank.getStored());
+                return MekanismLang.GENERIC_STORED.translate(tank.getType(), tank.getStored());
             }
 
             @Override

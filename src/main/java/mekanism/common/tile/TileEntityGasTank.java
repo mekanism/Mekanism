@@ -14,10 +14,12 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IComparatorSupport;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.BlockGasTank;
@@ -46,6 +48,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -322,21 +325,21 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         }
     }
 
-    public enum GasMode implements IIncrementalEnum<GasMode>, IHasTranslationKey {
-        IDLE("gui.mekanism.idle"),
-        DUMPING_EXCESS("gui.mekanism.dumping_excess"),
-        DUMPING("gui.mekanism.dumping");
+    public enum GasMode implements IIncrementalEnum<GasMode>, IHasTextComponent {
+        IDLE(MekanismLang.IDLE),
+        DUMPING_EXCESS(MekanismLang.DUMPING_EXCESS),
+        DUMPING(MekanismLang.DUMPING);
 
         private static final GasMode[] MODES = values();
-        private final String langKey;
+        private final ILangEntry langEntry;
 
-        GasMode(String langKey) {
-            this.langKey = langKey;
+        GasMode(ILangEntry langEntry) {
+            this.langEntry = langEntry;
         }
 
         @Override
-        public String getTranslationKey() {
-            return langKey;
+        public ITextComponent getTextComponent() {
+            return langEntry.translate();
         }
 
         @Nonnull

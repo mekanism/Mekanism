@@ -14,8 +14,11 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -57,7 +60,7 @@ import net.minecraft.world.World;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockElectricPump extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntityElectricPump>, ISupportsUpgrades, IStateFacing,
-      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityElectricPump>, ISupportsComparator, IStateActive, IStateWaterLogged {
+      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityElectricPump>, ISupportsComparator, IStateActive, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
@@ -191,7 +194,7 @@ public class BlockElectricPump extends BlockMekanism implements IBlockElectric, 
 
     @Override
     public INamedContainerProvider getProvider(TileEntityElectricPump tile) {
-        return new ContainerProvider("mekanism.container.electric_pump", (i, inv, player) -> new ElectricPumpContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new ElectricPumpContainer(i, inv, tile));
     }
 
     @Override
@@ -203,5 +206,11 @@ public class BlockElectricPump extends BlockMekanism implements IBlockElectric, 
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.FILTER);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_ELECTRIC_PUMP;
     }
 }

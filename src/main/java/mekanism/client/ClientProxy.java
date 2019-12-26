@@ -9,10 +9,9 @@ import mekanism.client.gui.GuiPortableTeleporter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketPortableTeleporter;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
@@ -60,7 +59,7 @@ public class ClientProxy extends CommonProxy {
             if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
                 anim.run();
             } else {
-                player.sendStatusMessage(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("chat.mek.multiblockformed")), true);
+                player.sendStatusMessage(MekanismLang.CHAT_MULTIBLOCK_FORMED.translateColored(EnumColor.INDIGO), true);
             }
         }
     }

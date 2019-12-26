@@ -1,6 +1,10 @@
 package mekanism.common.block;
 
-import mekanism.common.resource.INamedResource;
+import javax.annotation.Nonnull;
+import mekanism.common.MekanismLang;
+import mekanism.common.Resource;
+import mekanism.common.base.ILangEntry;
+import mekanism.common.block.interfaces.IHasDescription;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
@@ -9,12 +13,27 @@ import net.minecraft.block.material.Material;
  *
  * @author AidanBrady
  */
-public class BlockOre extends Block {
+public class BlockOre extends Block implements IHasDescription {
 
-    private final INamedResource resource;
+    private final Resource resource;
 
-    public BlockOre(INamedResource resource) {
+    public BlockOre(Resource resource) {
         super(Block.Properties.create(Material.ROCK).hardnessAndResistance(3F, 5F));
         this.resource = resource;
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        switch (resource) {
+            case OSMIUM:
+                return MekanismLang.DESCRIPTION_OSMIUM_ORE;
+            case COPPER:
+                return MekanismLang.DESCRIPTION_COPPER_ORE;
+            case TIN:
+                return MekanismLang.DESCRIPTION_TIN_ORE;
+            default:
+                return MekanismLang.INVALID;
+        }
     }
 }

@@ -17,6 +17,8 @@ import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -31,8 +33,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -519,7 +519,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
                 refreshConnections();
                 notifyTileChange();
-                player.sendMessage(TextComponentUtil.build(Translation.of("tooltip.mekanism.configurator.mode_change"), " ", connectionTypes[hitSide.ordinal()]));
+                player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(connectionTypes[hitSide.ordinal()]));
                 return ActionResultType.SUCCESS;
             }
         }
@@ -554,8 +554,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             redstoneReactive ^= true;
             refreshConnections();
             notifyTileChange();
-            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                  Translation.of("tooltip.mekanism.configurator.redstone_sensitivity"), " ", EnumColor.INDIGO, OnOff.of(redstoneReactive), "."));
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                  MekanismLang.REDSTONE_SENSITIVITY.translateColored(EnumColor.GRAY,EnumColor.INDIGO, OnOff.of(redstoneReactive))));
         }
         return ActionResultType.SUCCESS;
     }
@@ -613,12 +613,17 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     public enum ConnectionType implements IIncrementalEnum<ConnectionType>, IStringSerializable, IHasTranslationKey {
-        NORMAL,
-        PUSH,
-        PULL,
-        NONE;
+        NORMAL(MekanismLang.CONNECTION_NORMAL),
+        PUSH(MekanismLang.CONNECTION_PUSH),
+        PULL(MekanismLang.CONNECTION_PULL),
+        NONE(MekanismLang.CONNECTION_NONE);
 
         private static final ConnectionType[] TYPES = values();
+        private final ILangEntry langEntry;
+
+        ConnectionType(ILangEntry langEntry) {
+            this.langEntry = langEntry;
+        }
 
         @Override
         public String getName() {
@@ -627,7 +632,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
         @Override
         public String getTranslationKey() {
-            return "mekanism.pipe.connectiontype." + getName();
+            return langEntry.getTranslationKey();
         }
 
         @Nonnull

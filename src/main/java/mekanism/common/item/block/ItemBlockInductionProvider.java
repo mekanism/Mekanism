@@ -4,12 +4,11 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.block.basic.BlockInductionProvider;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,8 +38,7 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockInductionP
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         InductionProviderTier tier = getTier(stack);
         if (tier != null) {
-            tooltip.add(TextComponentUtil.build(tier.getBaseTier().getColor(), Translation.of("tooltip.mekanism.outputRate"), ": ", EnumColor.GRAY,
-                  EnergyDisplay.of(tier.getOutput())));
+            tooltip.add(MekanismLang.INDUCTION_PORT_OUTPUT_RATE.translateColored(tier.getBaseTier().getColor(), EnumColor.GRAY, EnergyDisplay.of(tier.getOutput())));
         }
     }
 }

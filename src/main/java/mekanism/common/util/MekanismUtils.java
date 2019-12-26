@@ -17,6 +17,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismFluids;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IUpgradeTile;
@@ -31,7 +32,6 @@ import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -614,7 +614,7 @@ public final class MekanismUtils {
             case EU:
                 return UnitDisplayUtils.getDisplayShort(IC2Integration.toEU(energy), ElectricUnit.ELECTRICAL_UNITS);
         }
-        return TextComponentUtil.translate("mekanism.error");
+        return MekanismLang.ERROR.translate();
     }
 
     /**
@@ -674,7 +674,7 @@ public final class MekanismUtils {
             case STP:
                 return UnitDisplayUtils.getDisplayShort(TK, TemperatureUnit.AMBIENT);
         }
-        return TextComponentUtil.translate("mekanism.error");
+        return MekanismLang.ERROR.translate();
     }
 
     /**

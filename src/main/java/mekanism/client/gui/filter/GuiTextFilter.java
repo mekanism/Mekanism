@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
@@ -12,8 +13,6 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -47,7 +46,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         if (ticker > 0) {
             ticker--;
         } else {
-            status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.mekanism.allOK"));
+            status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
         }
         if (stackSwitch > 0) {
             stackSwitch--;

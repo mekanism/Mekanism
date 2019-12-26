@@ -3,6 +3,7 @@ package mekanism.common.network;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.common.MekanismLang;
 import mekanism.common.PacketHandler;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.entity.EntityRobit;
@@ -138,117 +139,96 @@ public class PacketGuiButtonPress {
             }
             return null;
         }),
-        SIDE_CONFIGURATION((tile, extra) -> {
-            return new ContainerProvider("mekanism.container.side_configuration", (i, inv, player) -> new SideConfigurationContainer(i, inv, tile));
-        }),
-        TRANSPORTER_CONFIGURATION((tile, extra) -> {
-            return new ContainerProvider("mekanism.container.transporter_configuration", (i, inv, player) -> new TransporterConfigurationContainer(i, inv, tile));
-        }),
-        UPGRADE_MANAGEMENT((tile, extra) -> {
-            return new ContainerProvider("mekanism.container.upgrade_management", (i, inv, player) -> new UpgradeManagementContainer(i, inv, tile));
-        }),
+        SIDE_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.SIDE_CONFIG, (i, inv, player) -> new SideConfigurationContainer(i, inv, tile))),
+        TRANSPORTER_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.TRANSPORTER_CONFIG, (i, inv, player) -> new TransporterConfigurationContainer(i, inv, tile))),
+        UPGRADE_MANAGEMENT((tile, extra) -> new ContainerProvider(MekanismLang.UPGRADES, (i, inv, player) -> new UpgradeManagementContainer(i, inv, tile))),
         OREDICTIONIFICATOR_FILTER((tile, extra) -> {
             if (tile instanceof TileEntityOredictionificator) {
-                return new ContainerProvider("mekanism.container.oredictionificator_filter", (i, inv, player) ->
+                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) ->
                       new OredictionificatorFilterContainer(i, inv, (TileEntityOredictionificator) tile, extra));
             }
             return null;
         }),
         DIGITAL_MINER_CONFIG((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider("mekanism.container.digital_miner_config", (i, inv, player) ->
-                      new DigitalMinerConfigContainer(i, inv, (TileEntityDigitalMiner) tile));
+                return new ContainerProvider(MekanismLang.MINER_CONFIG, (i, inv, player) -> new DigitalMinerConfigContainer(i, inv, (TileEntityDigitalMiner) tile));
             }
             return null;
         }),
         DM_SELECT_FILTER_TYPE((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider("mekanism.container.digital_miner_filter_select", (i, inv, player) ->
-                      new DMFilterSelectContainer(i, inv, (TileEntityDigitalMiner) tile));
+                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new DMFilterSelectContainer(i, inv, (TileEntityDigitalMiner) tile));
             }
             return null;
         }),
         DM_FILTER_ITEMSTACK((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider("mekanism.container.digital_miner_itemstack_filter", (i, inv, player) ->
-                      new DMItemStackFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
+                return new ContainerProvider(MekanismLang.ITEM_FILTER, (i, inv, player) -> new DMItemStackFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
             }
             return null;
         }),
         DM_FILTER_MATERIAL((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider("mekanism.container.digital_miner_material_filter", (i, inv, player) ->
-                      new DMMaterialFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
+                return new ContainerProvider(MekanismLang.MATERIAL_FILTER, (i, inv, player) -> new DMMaterialFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
             }
             return null;
         }),
         DM_FILTER_MOD_ID((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider("mekanism.container.digital_miner_mod_id_filter", (i, inv, player) ->
-                      new DMModIDFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
+                return new ContainerProvider(MekanismLang.MODID_FILTER, (i, inv, player) -> new DMModIDFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
             }
             return null;
         }),
         DM_FILTER_TAG((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider("mekanism.container.digital_miner_tag_filter", (i, inv, player) ->
-                      new DMTagFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
+                return new ContainerProvider(MekanismLang.TAG_FILTER, (i, inv, player) -> new DMTagFilterContainer(i, inv, (TileEntityDigitalMiner) tile, extra));
             }
             return null;
         }),
         LS_SELECT_FILTER_TYPE((tile, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider("mekanism.container.logistical_sorter_filter_select", (i, inv, player) ->
-                      new LSFilterSelectContainer(i, inv, (TileEntityLogisticalSorter) tile));
+                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new LSFilterSelectContainer(i, inv, (TileEntityLogisticalSorter) tile));
             }
             return null;
         }),
         LS_FILTER_ITEMSTACK((tile, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider("mekanism.container.logistical_sorter_itemstack_filter", (i, inv, player) ->
-                      new LSItemStackFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
+                return new ContainerProvider(MekanismLang.ITEM_FILTER, (i, inv, player) -> new LSItemStackFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
             }
             return null;
         }),
         LS_FILTER_MATERIAL((tile, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider("mekanism.container.logistical_sorter_material_filter", (i, inv, player) ->
-                      new LSItemStackFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
+                return new ContainerProvider(MekanismLang.MATERIAL_FILTER, (i, inv, player) -> new LSItemStackFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
             }
             return null;
         }),
         LS_FILTER_MOD_ID((tile, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider("mekanism.container.logistical_sorter_mod_id_filter", (i, inv, player) ->
-                      new LSModIDFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
+                return new ContainerProvider(MekanismLang.MODID_FILTER, (i, inv, player) -> new LSModIDFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
             }
             return null;
         }),
         LS_FILTER_TAG((tile, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider("mekanism.container.logistical_sorter_tag_filter", (i, inv, player) ->
-                      new LSTagFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
+                return new ContainerProvider(MekanismLang.TAG_FILTER, (i, inv, player) -> new LSTagFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
             }
             return null;
         }),
 
         TAB_MAIN((tile, extra) -> {
             if (tile instanceof TileEntityInductionCasing) {
-                return new ContainerProvider("mekanism.container.induction_matrix", (i, inv, player) -> new InductionMatrixContainer(i, inv,
-                      (TileEntityInductionCasing) tile));
+                return new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new InductionMatrixContainer(i, inv, (TileEntityInductionCasing) tile));
             } else if (tile instanceof TileEntityBoilerCasing) {
-                return new ContainerProvider("mekanism.container.thermoelectric_boiler", (i, inv, player) -> new BoilerStatsContainer(i, inv,
-                      (TileEntityBoilerCasing) tile));
+                return new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new BoilerStatsContainer(i, inv, (TileEntityBoilerCasing) tile));
             }
             return null;
         }),
         TAB_STATS((tile, extra) -> {
             if (tile instanceof TileEntityInductionCasing) {
-                return new ContainerProvider("mekanism.container.matrix_stats", (i, inv, player) -> new MatrixStatsContainer(i, inv,
-                      (TileEntityInductionCasing) tile));
+                return new ContainerProvider(MekanismLang.MATRIX_STATS, (i, inv, player) -> new MatrixStatsContainer(i, inv, (TileEntityInductionCasing) tile));
             } else if (tile instanceof TileEntityBoilerCasing) {
-                return new ContainerProvider("mekanism.container.boiler_stats", (i, inv, player) -> new BoilerStatsContainer(i, inv,
-                      (TileEntityBoilerCasing) tile));
+                return new ContainerProvider(MekanismLang.BOILER_STATS, (i, inv, player) -> new BoilerStatsContainer(i, inv, (TileEntityBoilerCasing) tile));
             }
             return null;
         });
@@ -268,31 +248,31 @@ public class PacketGuiButtonPress {
         //Entities
         ROBIT_CRAFTING(entity -> {
             if (entity instanceof EntityRobit) {
-                return new ContainerProvider("mekanism.container.robit_crafting", (i, inv, player) -> new CraftingRobitContainer(i, inv, (EntityRobit) entity));
+                return new ContainerProvider(MekanismLang.ROBIT_CRAFTING, (i, inv, player) -> new CraftingRobitContainer(i, inv, (EntityRobit) entity));
             }
             return null;
         }),
         ROBIT_INVENTORY(entity -> {
             if (entity instanceof EntityRobit) {
-                return new ContainerProvider("mekanism.container.robit_inventory", (i, inv, player) -> new InventoryRobitContainer(i, inv, (EntityRobit) entity));
+                return new ContainerProvider(MekanismLang.ROBIT_INVENTORY, (i, inv, player) -> new InventoryRobitContainer(i, inv, (EntityRobit) entity));
             }
             return null;
         }),
         ROBIT_MAIN(entity -> {
             if (entity instanceof EntityRobit) {
-                return new ContainerProvider("mekanism.container.robit_main", (i, inv, player) -> new MainRobitContainer(i, inv, (EntityRobit) entity));
+                return new ContainerProvider(MekanismLang.ROBIT, (i, inv, player) -> new MainRobitContainer(i, inv, (EntityRobit) entity));
             }
             return null;
         }),
         ROBIT_REPAIR(entity -> {
             if (entity instanceof EntityRobit) {
-                return new ContainerProvider("mekanism.container.robit_repair", (i, inv, player) -> new RepairRobitContainer(i, inv, (EntityRobit) entity));
+                return new ContainerProvider(MekanismLang.ROBIT_REPAIR, (i, inv, player) -> new RepairRobitContainer(i, inv, (EntityRobit) entity));
             }
             return null;
         }),
         ROBIT_SMELTING(entity -> {
             if (entity instanceof EntityRobit) {
-                return new ContainerProvider("mekanism.container.robit_smelting", (i, inv, player) -> new SmeltingRobitContainer(i, inv, (EntityRobit) entity));
+                return new ContainerProvider(MekanismLang.ROBIT_SMELTING, (i, inv, player) -> new SmeltingRobitContainer(i, inv, (EntityRobit) entity));
             }
             return null;
         });

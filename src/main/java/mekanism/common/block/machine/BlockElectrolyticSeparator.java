@@ -16,8 +16,11 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -60,7 +63,7 @@ import net.minecraft.world.World;
 
 public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntityElectrolyticSeparator>, ISupportsUpgrades,
       IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityElectrolyticSeparator>, IBlockSound, ISupportsRedstone, ISupportsComparator,
-      IStateWaterLogged {
+      IStateWaterLogged, IHasDescription {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.electrolyticseparator"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -208,7 +211,7 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
 
     @Override
     public INamedContainerProvider getProvider(TileEntityElectrolyticSeparator tile) {
-        return new ContainerProvider("mekanism.container.electrolytic_separator", (i, inv, player) -> new ElectrolyticSeparatorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new ElectrolyticSeparatorContainer(i, inv, tile));
     }
 
     @Override
@@ -220,5 +223,11 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR;
     }
 }

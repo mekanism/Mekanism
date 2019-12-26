@@ -14,6 +14,7 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
@@ -25,8 +26,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -88,15 +87,15 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }, resource, 158, 26));
         addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 40));
 
-        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", () -> {
+        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", () -> {
+        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", () -> {
+        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -104,7 +103,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", () -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? clientPrivateCache.get(selection) : clientPublicCache.get(selection);
@@ -114,7 +113,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(teleportButton = new TranslationButton(this, guiLeft + 42, guiTop + 140, 92, 20, "gui.mekanism.teleport", () -> {
+        addButton(teleportButton = new TranslationButton(this, guiLeft + 42, guiTop + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             if (clientFreq != null && clientStatus == 1) {
                 //TODO: Set focus
                 //minecraft.func_228018_at_().setIngameFocus();
@@ -156,9 +155,9 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     public ITextComponent getSecurity(Frequency freq) {
         if (!freq.publicFreq) {
-            return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.private"));
+            return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
         }
-        return TextComponentUtil.translate("gui.mekanism.public");
+        return MekanismLang.PUBLIC.translate();
     }
 
     public void updateButtons() {
@@ -248,24 +247,25 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(getName(), (xSize / 2) - (getStringWidth(getName()) / 2), 4, 0x404040);
         drawString(OwnerDisplay.of(getOwner(), getOwnerUsername()).getTextComponent(), 8, !itemStack.isEmpty() ? ySize - 12 : (ySize - 96) + 4, 0x404040);
-        ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.mekanism.freq"), ": ");
+        ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(frequencyComponent, 32, 81, 0x404040);
-        ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.mekanism.security"), ": ");
+        ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
         drawString(securityComponent, 32, 91, 0x404040);
+        int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (clientFreq != null) {
-            drawString(clientFreq.name, 32 + getStringWidth(frequencyComponent), 81, 0x797979);
+            drawString(clientFreq.name, 32 + frequencyOffset, 81, 0x797979);
             drawString(getSecurity(clientFreq), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
-            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.none")), 32 + getStringWidth(frequencyComponent), 81, 0x797979);
-            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.none")), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
+            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.set"), ":"), 27, 104, 0x404040, 20);
+        renderScaledText(MekanismLang.SET.translate(), 27, 104, 0x404040, 20);
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;
         if (xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24) {
             if (clientFreq == null) {
-                displayTooltip(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.noFreq")), xAxis, yAxis);
+                displayTooltip(MekanismLang.NO_FREQUENCY.translateColored(EnumColor.DARK_RED), xAxis, yAxis);
             } else {
                 displayTooltip(getStatusDisplay(), xAxis, yAxis);
             }
@@ -284,15 +284,15 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     public ITextComponent getStatusDisplay() {
         switch (clientStatus) {
             case 1:
-                return TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.mekanism.teleporter.ready"));
+                return MekanismLang.TELEPORTER_READY.translateColored(EnumColor.DARK_GREEN);
             case 2:
-                return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.noFrame"));
-            case 3:
-                return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.noLink"));
+                return MekanismLang.TELEPORTER_NO_FRAME.translateColored(EnumColor.DARK_RED);
             case 4:
-                return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.needsEnergy"));
+                return MekanismLang.TELEPORTER_NEEDS_ENERGY.translateColored(EnumColor.DARK_RED);
+            case 3:
+            default:
+                return MekanismLang.TELEPORTER_NO_LINK.translateColored(EnumColor.DARK_RED);
         }
-        return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.teleporter.noLink"));
     }
 
     private UUID getOwner() {

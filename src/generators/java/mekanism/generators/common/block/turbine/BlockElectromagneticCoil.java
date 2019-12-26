@@ -2,11 +2,14 @@ package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import net.minecraft.block.Block;
@@ -21,7 +24,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockElectromagneticCoil extends BlockMekanism implements IHasTileEntity<TileEntityElectromagneticCoil> {
+public class BlockElectromagneticCoil extends BlockMekanism implements IHasTileEntity<TileEntityElectromagneticCoil>, IHasDescription {
 
     public BlockElectromagneticCoil() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -63,5 +66,11 @@ public class BlockElectromagneticCoil extends BlockMekanism implements IHasTileE
     @Override
     public TileEntityType<TileEntityElectromagneticCoil> getTileType() {
         return GeneratorsTileEntityTypes.ELECTROMAGNETIC_COIL.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_ELECTROMAGNETIC_COIL;
     }
 }

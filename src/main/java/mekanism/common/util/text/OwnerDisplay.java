@@ -4,6 +4,7 @@ import java.util.UUID;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.MekanismClient;
+import mekanism.common.MekanismLang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 
@@ -38,14 +39,14 @@ public class OwnerDisplay implements IHasTextComponent {
     @Override
     public ITextComponent getTextComponent() {
         if (ownerUUID == null) {
-            return TextComponentUtil.build(EnumColor.RED, Translation.of("gui.mekanism.no_owner"));
+            return MekanismLang.NO_OWNER.translateColored(EnumColor.RED);
         }
         //TODO: If the name is supposed to be gotten differently server side, then do so
         //Allows for the name to be overridden by a passed value
         String name = ownerName == null ? MekanismClient.clientUUIDMap.get(ownerUUID) : ownerName;
         if (player == null) {
-            return TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.owner"), name);
+            return MekanismLang.OWNER.translateColored(EnumColor.GRAY, name);
         }
-        return TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.owner"), player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
+        return MekanismLang.OWNER.translateColored(EnumColor.GRAY, player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
     }
 }

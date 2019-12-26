@@ -8,7 +8,9 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
@@ -20,6 +22,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.GasBurningGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
@@ -41,7 +44,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockGasBurningGenerator extends BlockMekanism implements IHasGui<TileEntityGasGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity,
-      IBlockSound, IHasTileEntity<TileEntityGasGenerator>, ISupportsComparator, IStateWaterLogged {
+      IBlockSound, IHasTileEntity<TileEntityGasGenerator>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl( "tile.gen.gas"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -131,11 +134,17 @@ public class BlockGasBurningGenerator extends BlockMekanism implements IHasGui<T
 
     @Override
     public INamedContainerProvider getProvider(TileEntityGasGenerator tile) {
-        return new ContainerProvider("mekanismgenerators.container.gas_burning_generator", (i, inv, player) -> new GasBurningGeneratorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new GasBurningGeneratorContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityGasGenerator> getTileType() {
         return GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_GAS_BURNING_GENERATOR;
     }
 }

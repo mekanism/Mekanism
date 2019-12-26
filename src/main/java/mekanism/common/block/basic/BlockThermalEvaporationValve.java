@@ -1,10 +1,14 @@
 package mekanism.common.block.basic;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.tile.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -19,7 +23,8 @@ import net.minecraft.world.Explosion;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockThermalEvaporationValve extends BlockMekanism implements IHasModel, IHasTileEntity<TileEntityThermalEvaporationValve>, ISupportsComparator {
+public class BlockThermalEvaporationValve extends BlockMekanism implements IHasModel, IHasTileEntity<TileEntityThermalEvaporationValve>, ISupportsComparator,
+      IHasDescription {
 
     public BlockThermalEvaporationValve() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
@@ -44,5 +49,11 @@ public class BlockThermalEvaporationValve extends BlockMekanism implements IHasM
     @Override
     public TileEntityType<TileEntityThermalEvaporationValve> getTileType() {
         return MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_DYNAMIC_VALVE;
     }
 }

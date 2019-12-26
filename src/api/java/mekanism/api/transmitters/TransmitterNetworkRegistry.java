@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
@@ -180,14 +181,14 @@ public class TransmitterNetworkRegistry {
         return "Network Registry:\n" + networks;
     }
 
-    public String[] toStrings() {
-        String[] strings = new String[networks.size()];
+    public ITextComponent[] toComponents() {
+        ITextComponent[] components = new ITextComponent[networks.size()];
         int i = 0;
 
         for (DynamicNetwork<?, ?, ?> network : networks) {
-            strings[i++] = network.toString();
+            components[i++] = network.getTextComponent();
         }
-        return strings;
+        return components;
     }
 
     public class OrphanPathFinder<A, N extends DynamicNetwork<A, N, BUFFER>, BUFFER> {

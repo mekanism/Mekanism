@@ -6,6 +6,7 @@ import mekanism.client.gui.button.ColorButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.transporter.TModIDFilter;
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
@@ -16,8 +17,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -48,7 +47,7 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(this, guiLeft + 47, guiTop + 62, 60, 20, "gui.mekanism.save", () -> {
+        addButton(saveButton = new TranslationButton(this, guiLeft + 47, guiTop + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -60,18 +59,18 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
                 }
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             } else {
-                status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.modIDFilter.noID"));
+                status = MekanismLang.MODID_FILTER_NO_ID.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 109, guiTop + 62, 60, 20, "gui.mekanism.delete", () -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 109, guiTop + 62, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
               () -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         addButton(new MekanismImageButton(this, guiLeft + 11, guiTop + 64, 11, getButtonLocation("default"),
-              () -> filter.allowDefault = !filter.allowDefault, getOnHover("gui.mekanism.allowDefault")));
+              () -> filter.allowDefault = !filter.allowDefault, getOnHover(MekanismLang.ALLOW_DEFAULT)));
         addButton(checkboxButton = new MekanismImageButton(this, guiLeft + 131, guiTop + 47, 12, getButtonLocation("checkmark"),
               this::setText));
         addButton(new ColorButton(this, guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color,

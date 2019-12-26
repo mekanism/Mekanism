@@ -3,7 +3,10 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -20,7 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockInductionCell extends BlockMekanism implements ITieredBlock<InductionCellTier>, IHasTileEntity<TileEntityInductionCell> {
+public class BlockInductionCell extends BlockMekanism implements ITieredBlock<InductionCellTier>, IHasTileEntity<TileEntityInductionCell>, IHasDescription {
 
     private final InductionCellTier tier;
 
@@ -63,5 +66,11 @@ public class BlockInductionCell extends BlockMekanism implements ITieredBlock<In
             default:
                 return MekanismTileEntityTypes.BASIC_INDUCTION_CELL.getTileEntityType();
         }
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_INDUCTION_CELL;
     }
 }

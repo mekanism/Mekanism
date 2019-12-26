@@ -19,13 +19,12 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.PressurizedReactionChamberContainer;
 import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -50,8 +49,8 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber
             CachedRecipe<PressurizedReactionRecipe> recipe = tile.getUpdatedCache(0);
             double extra = recipe == null ? 0 : recipe.getRecipe().getEnergyRequired();
             double energyPerTick = MekanismUtils.getEnergyPerTick(tile, tile.getBaseStorage() + extra);
-            return Arrays.asList(TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(energyPerTick), "/t"),
-                  TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy())));
+            return Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(energyPerTick)),
+                  MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy())));
         }, this, resource));
         addButton(new GuiFluidGauge(() -> tile.inputFluidTank, GuiGauge.Type.STANDARD_YELLOW, this, resource, 5, 10));
         addButton(new GuiGasGauge(() -> tile.inputGasTank, GuiGauge.Type.STANDARD_RED, this, resource, 28, 10));
@@ -71,7 +70,7 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

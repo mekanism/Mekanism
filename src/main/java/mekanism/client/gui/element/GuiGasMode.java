@@ -5,7 +5,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -53,8 +52,7 @@ public class GuiGasMode extends GuiTexturedElement {
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, 10, 10);
         minecraft.textureManager.bindTexture(defaultLocation);
         //Draw the text next to the button
-        GasMode mode = gasModeSupplier.get();
-        ITextComponent component = TextComponentUtil.build(mode);
+        ITextComponent component = gasModeSupplier.get().getTextComponent();
         if (left) {
             renderScaledText(component, x - 3 - (int) (getStringWidth(component) * getNeededScale(component, 66)), y + 1, 0x404040, 66);
         } else {

@@ -21,8 +21,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent.NeighborNotifyEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-//TODO: Rename
-//TODO: Make a PR to forge to change it into going off ot the obsidian tag?
+//TODO: Remove if/when: https://github.com/MinecraftForge/MinecraftForge/pull/6389 gets merged, and instead use that
 public class PortalHelper {
 
     public static class Size extends NetherPortalBlock.Size {

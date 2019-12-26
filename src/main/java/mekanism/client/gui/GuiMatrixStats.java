@@ -7,13 +7,12 @@ import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MatrixStatsContainer;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -33,7 +32,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(Translation.of("gui.mekanism.receiving"), ": ", EnergyDisplay.of(tile.getLastInput()), "/t");
+                return MekanismLang.MATRIX_RECEIVING_RATE.translate(EnergyDisplay.of(tile.getLastInput()));
             }
 
             @Override
@@ -44,7 +43,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return TextComponentUtil.build(Translation.of("gui.mekanism.outputting"), ": ", EnergyDisplay.of(tile.getLastOutput()), "/t");
+                return MekanismLang.OUTPUTTING_RATE.translate(EnergyDisplay.of(tile.getLastOutput()));
             }
 
             @Override
@@ -52,27 +51,26 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
                 return tile.structure == null ? 0 : tile.getLastOutput() / tile.structure.getTransferCap();
             }
         }, resource, 38, 13));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("gui.mekanism.input"), ": ", EnergyDisplay.of(tile.getLastInput()), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.output"), ": ", EnergyDisplay.of(tile.getLastOutput()), "/t")),
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+              MekanismLang.INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
+              MekanismLang.OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))),
               this, resource));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.translate("gui.mekanism.matrixStats"), 0, xSize, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.input"), ":"), 53, 26, 0x797979);
+        drawCenteredText(MekanismLang.MATRIX_STATS.translate(), 0, xSize, 6, 0x404040);
+        drawString(MekanismLang.INPUT_AMOUNT.translate(), 53, 26, 0x797979);
         drawString(EnergyDisplay.of(tile.getLastInput(), tile.getTransferCap()).getTextComponent(), 59, 35, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.output"), ":"), 53, 46, 0x797979);
+        drawString(MekanismLang.OUTPUT_AMOUNT.translate(), 53, 46, 0x797979);
         drawString(EnergyDisplay.of(tile.getLastOutput(), tile.getTransferCap()).getTextComponent(), 59, 55, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.dimensions"), ":"), 8, 82, 0x797979);
+        drawString(MekanismLang.DIMENSIONS.translate(), 8, 82, 0x797979);
         if (tile.structure != null) {
-            drawString(tile.structure.volWidth + " x " + tile.structure.volHeight + " x " + tile.structure.volLength, 14, 91, 0x404040);
+            drawString(MekanismLang.DIMENSION_REPRESENTATION.translate(tile.structure.volWidth, tile.structure.volHeight, tile.structure.volLength), 14, 91, 0x404040);
         }
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.constituents"), ":"), 8, 102, 0x797979);
-        drawString(TextComponentUtil.build(tile.getCellCount() + " ", Translation.of("gui.mekanism.cells")), 14, 111, 0x404040);
-        drawString(TextComponentUtil.build(tile.getProviderCount() + " ", Translation.of("gui.mekanism.providers")), 14, 120, 0x404040);
+        drawString(MekanismLang.CONSTITUENTS.translate(), 8, 102, 0x797979);
+        drawString(MekanismLang.MATRIX_CELLS.translate(tile.getCellCount()), 14, 111, 0x404040);
+        drawString(MekanismLang.MATRIX_PROVIDERS.translate(tile.getProviderCount()), 14, 120, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

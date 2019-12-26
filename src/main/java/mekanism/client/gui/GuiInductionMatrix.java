@@ -5,13 +5,12 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.InductionMatrixContainer;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
@@ -28,21 +27,20 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         super.init();
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT, resource));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              TextComponentUtil.build(Translation.of("gui.mekanism.input"), ": ", EnergyDisplay.of(tile.getLastInput()), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.output"), ": ", EnergyDisplay.of(tile.getLastOutput()), "/t")
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
+              MekanismLang.INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
+              MekanismLang.OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))
         ), this, resource));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 94) + 2, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.input"), ":"), 53, 26, 0x00CD00);
-        drawString(TextComponentUtil.build(EnergyDisplay.of(tile.getLastInput()), "/t"), 53, 35, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.output"), ":"), 53, 44, 0x00CD00);
-        drawString(TextComponentUtil.build(EnergyDisplay.of(tile.getLastOutput()), "/t"), 53, 53, 0x00CD00);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 94) + 2, 0x404040);
+        drawString(MekanismLang.INPUT_AMOUNT.translate(), 53, 26, 0x00CD00);
+        drawString(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastInput())), 53, 35, 0x00CD00);
+        drawString(MekanismLang.OUTPUT_AMOUNT.translate(), 53, 44, 0x00CD00);
+        drawString(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastOutput())), 53, 53, 0x00CD00);
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;
         int yAxis = mouseY - guiTop;

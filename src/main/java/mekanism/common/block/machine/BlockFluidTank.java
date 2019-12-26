@@ -9,9 +9,12 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.IStateActive;
@@ -54,7 +57,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>,
-      IHasInventory, IHasTileEntity<TileEntityFluidTank>, ISupportsComparator, IHasSecurity, IStateWaterLogged {
+      IHasInventory, IHasTileEntity<TileEntityFluidTank>, ISupportsComparator, IHasSecurity, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape bounds = makeCuboidShape(2, 0, 2, 14, 16, 14);
 
@@ -222,7 +225,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
 
     @Override
     public INamedContainerProvider getProvider(TileEntityFluidTank tile) {
-        return new ContainerProvider("mekanism.container.fluid_tank", (i, inv, player) -> new FluidTankContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new FluidTankContainer(i, inv, tile));
     }
 
     @Override
@@ -240,5 +243,11 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
             default:
                 return MekanismTileEntityTypes.BASIC_FLUID_TANK.getTileEntityType();
         }
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_FLUID_TANK;
     }
 }

@@ -1,11 +1,16 @@
 package mekanism.tools.common;
 
-import mekanism.api.text.IHasTranslationKey;
+import mekanism.common.base.ILangEntry;
+import net.minecraft.util.Util;
 
-public enum ToolsLang implements IHasTranslationKey {
-    HP("tooltip.mekanismtools.hp");
+public enum ToolsLang implements ILangEntry {
+    HP("tooltip", "hp");
 
     private final String key;
+
+    ToolsLang(String type, String path) {
+        this(Util.makeTranslationKey(type, MekanismTools.rl(path)));
+    }
 
     ToolsLang(String key) {
         this.key = key;

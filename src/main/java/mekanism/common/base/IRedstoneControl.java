@@ -2,7 +2,9 @@ package mekanism.common.base;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.common.MekanismLang;
+import net.minecraft.util.text.ITextComponent;
 
 public interface IRedstoneControl {
 
@@ -37,22 +39,22 @@ public interface IRedstoneControl {
      */
     boolean canPulse();
 
-    enum RedstoneControl implements IIncrementalEnum<RedstoneControl>, IHasTranslationKey {
-        DISABLED("tooltip.mekanism.control.disabled"),
-        HIGH("tooltip.mekanism.control.high"),
-        LOW("tooltip.mekanism.control.low"),
-        PULSE("tooltip.mekanism.control.pulse");
+    enum RedstoneControl implements IIncrementalEnum<RedstoneControl>, IHasTextComponent {
+        DISABLED(MekanismLang.REDSTONE_CONTROL_DISABLED),
+        HIGH(MekanismLang.REDSTONE_CONTROL_HIGH),
+        LOW(MekanismLang.REDSTONE_CONTROL_LOW),
+        PULSE(MekanismLang.REDSTONE_CONTROL_PULSE);
 
         private static final RedstoneControl[] MODES = values();
-        private String display;
+        private final ILangEntry langEntry;
 
-        RedstoneControl(String s) {
-            display = s;
+        RedstoneControl(ILangEntry langEntry) {
+            this.langEntry = langEntry;
         }
 
         @Override
-        public String getTranslationKey() {
-            return display;
+        public ITextComponent getTextComponent() {
+            return langEntry.translate();
         }
 
         @Nonnull

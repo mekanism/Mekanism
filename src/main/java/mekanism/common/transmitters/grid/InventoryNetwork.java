@@ -8,6 +8,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
@@ -102,6 +103,11 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
     @Override
     public ITextComponent getFlowInfo() {
         return null;
+    }
+
+    @Override
+    public ITextComponent getTextComponent() {
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.INVENTORY_NETWORK, transmitters.size(), possibleAcceptors.size());
     }
 
     public static class AcceptorData {

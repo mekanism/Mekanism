@@ -165,7 +165,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
                     }
                 }
             }
-            return TextComponentUtil.translate("gui.mekanism.empty");
+            return MekanismLang.EMPTY.translate();
         }
 
         @Override

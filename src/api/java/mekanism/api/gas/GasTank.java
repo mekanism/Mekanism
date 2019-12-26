@@ -5,7 +5,7 @@ import mekanism.api.chemical.ChemicalTank;
 import net.minecraft.nbt.CompoundNBT;
 
 /**
- * An optional way of managing and/or storing gasses. Would be very useful in TileEntity and Entity gas storage.
+ * An optional way of managing and/or storing gases. Would be very useful in TileEntity and Entity gas storage.
  *
  * @author aidancbrady
  */

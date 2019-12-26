@@ -2,10 +2,13 @@ package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import net.minecraft.block.Block;
@@ -20,7 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
-public class BlockLaserFocusMatrix extends BlockMekanism implements IHasTileEntity<TileEntityReactorLaserFocusMatrix> {
+public class BlockLaserFocusMatrix extends BlockMekanism implements IHasTileEntity<TileEntityReactorLaserFocusMatrix>, IHasDescription {
 
     public BlockLaserFocusMatrix() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F).func_226896_b_());
@@ -66,5 +69,11 @@ public class BlockLaserFocusMatrix extends BlockMekanism implements IHasTileEnti
     @Override
     public TileEntityType<TileEntityReactorLaserFocusMatrix> getTileType() {
         return GeneratorsTileEntityTypes.LASER_FOCUS_MATRIX.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_LASER_FOCUS_MATRIX;
     }
 }

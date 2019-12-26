@@ -158,10 +158,9 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         tooltip.add(TextComponentUtil.build(gasType).getFormattedText());
         ITextComponent component = null;
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.jei.amount.with.capacity", nf.format(gasStack.getAmount()),
-                  nf.format(capacityMb)));
+            component = MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, nf.format(gasStack.getAmount()), nf.format(capacityMb));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-            component = TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.jei.amount", nf.format(gasStack.getAmount())));
+            component = MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, nf.format(gasStack.getAmount()));
         }
         if (component != null) {
             tooltip.add(component.getFormattedText());

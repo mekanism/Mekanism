@@ -7,7 +7,9 @@ import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
@@ -18,6 +20,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
@@ -40,7 +43,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockAdvancedSolarGenerator extends BlockMekanism implements IHasGui<TileEntityAdvancedSolarGenerator>, IBlockElectric, IStateFacing, IHasInventory,
-      IHasSecurity, IBlockSound, IHasTileEntity<TileEntityAdvancedSolarGenerator>, IStateWaterLogged {
+      IHasSecurity, IBlockSound, IHasTileEntity<TileEntityAdvancedSolarGenerator>, IStateWaterLogged, IHasDescription {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.gen.solar"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -132,7 +135,12 @@ public class BlockAdvancedSolarGenerator extends BlockMekanism implements IHasGu
 
     @Override
     public INamedContainerProvider getProvider(TileEntityAdvancedSolarGenerator tile) {
-        //TODO: Should this be advanced solar generator and stuff
-        return new ContainerProvider("mekanism.container.solar_generator", (i, inv, player) -> new SolarGeneratorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new SolarGeneratorContainer(i, inv, tile));
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_ADVANCED_SOLAR_GENERATOR;
     }
 }

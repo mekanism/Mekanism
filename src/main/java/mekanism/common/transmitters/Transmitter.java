@@ -2,7 +2,7 @@ package mekanism.common.transmitters;
 
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
-import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.MekanismLang;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> {
@@ -52,7 +52,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().getNeededInfo();
         }
-        return TextComponentUtil.translate("mekanism.transmitter.no_network");
+        return MekanismLang.NO_NETWORK.translate();
     }
 
     @Override
@@ -60,7 +60,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().getFlowInfo();
         }
-        return TextComponentUtil.translate("mekanism.transmitter.no_network");
+        return MekanismLang.NO_NETWORK.translate();
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().getStoredInfo();
         }
-        return TextComponentUtil.translate("mekanism.transmitter.no_network");
+        return MekanismLang.NO_NETWORK.translate();
     }
 
     @Override

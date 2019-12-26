@@ -2,7 +2,7 @@ package mekanism.common.inventory.container;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.base.ILangEntry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -15,8 +15,8 @@ public class ContainerProvider implements INamedContainerProvider {
     private final ITextComponent displayName;
     private final IContainerProvider provider;
 
-    public ContainerProvider(String translationKey, IContainerProvider provider) {
-        this(TextComponentUtil.translate(translationKey), provider);
+    public ContainerProvider(ILangEntry translationHelper, IContainerProvider provider) {
+        this(translationHelper.translate(), provider);
     }
 
     public ContainerProvider(ITextComponent displayName, IContainerProvider provider) {

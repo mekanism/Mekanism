@@ -9,8 +9,11 @@ import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -50,7 +53,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockSeismicVibrator extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntitySeismicVibrator>, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySeismicVibrator>, IStateWaterLogged {
+      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySeismicVibrator>, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
@@ -211,11 +214,17 @@ public class BlockSeismicVibrator extends BlockMekanism implements IBlockElectri
 
     @Override
     public INamedContainerProvider getProvider(TileEntitySeismicVibrator tile) {
-        return new ContainerProvider("mekanism.container.seismic_vibrator", (i, inv, player) -> new SeismicVibratorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new SeismicVibratorContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntitySeismicVibrator> getTileType() {
         return MekanismTileEntityTypes.SEISMIC_VIBRATOR.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_SEISMIC_VIBRATOR;
     }
 }

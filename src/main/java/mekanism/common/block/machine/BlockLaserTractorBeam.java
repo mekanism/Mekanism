@@ -8,8 +8,11 @@ import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -50,7 +53,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockLaserTractorBeam extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserTractorBeam>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
-      IHasTileEntity<TileEntityLaserTractorBeam>, ISupportsComparator, IStateWaterLogged {
+      IHasTileEntity<TileEntityLaserTractorBeam>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(1, 1, 1, 15, 15, 15),//Base
@@ -169,11 +172,17 @@ public class BlockLaserTractorBeam extends BlockMekanism implements IHasModel, I
 
     @Override
     public INamedContainerProvider getProvider(TileEntityLaserTractorBeam tile) {
-        return new ContainerProvider("mekanism.container.laser_tractor_beam", (i, inv, player) -> new LaserTractorBeamContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new LaserTractorBeamContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityLaserTractorBeam> getTileType() {
         return MekanismTileEntityTypes.LASER_TRACTOR_BEAM.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM;
     }
 }

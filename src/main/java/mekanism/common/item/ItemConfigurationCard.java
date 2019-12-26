@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
@@ -15,7 +16,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -41,7 +41,7 @@ public class ItemConfigurationCard extends Item {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("gui.mekanism.data"), ": ", EnumColor.INDIGO, Translation.of(getDataType(stack))));
+        tooltip.add(MekanismLang.HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Translation.of(getDataType(stack))));
     }
 
     @Nonnull
@@ -65,10 +65,8 @@ public class ItemConfigurationCard extends Item {
                         if (data != null) {
                             data.putString("dataType", getNameFromTile(tile, side));
                             setData(stack, data);
-                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                                  Translation.of("tooltip.configurationCard.got",
-                                        TextComponentUtil.build(EnumColor.INDIGO, Translation.of(data.getString("dataType")))
-                                  )));
+                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                                  MekanismLang.CONFIG_CARD_GOT.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Translation.of(data.getString("dataType")))));
                         }
                         return ActionResultType.SUCCESS;
                     }
@@ -80,11 +78,11 @@ public class ItemConfigurationCard extends Item {
                                   special -> special.setConfigurationData(data)
                             );
                             updateTile(tile);
-                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.DARK_GREEN,
-                                  Translation.of("tooltip.configurationCard.set", TextComponentUtil.build(EnumColor.INDIGO, Translation.of(getDataType(stack))))));
+                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                                  MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO, Translation.of(getDataType(stack)))));
                         } else {
-                            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.RED,
-                                  Translation.of("tooltip.configurationCard.unequal"), "."));
+                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                                  MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED)));
                         }
                         return ActionResultType.SUCCESS;
                     }
@@ -160,6 +158,6 @@ public class ItemConfigurationCard extends Item {
         if (data != null) {
             return data.getString("dataType");
         }
-        return "gui.mekanism.none";
+        return MekanismLang.NONE.getTranslationKey();
     }
 }

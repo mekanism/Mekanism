@@ -1,7 +1,11 @@
 package mekanism.common.block.basic;
 
+import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.tile.base.MekanismTileEntityTypes;
@@ -15,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 import net.minecraft.world.World;
 
-public class BlockSuperheatingElement extends BlockMekanism implements IStateActive, IHasTileEntity<TileEntitySuperheatingElement> {
+public class BlockSuperheatingElement extends BlockMekanism implements IStateActive, IHasTileEntity<TileEntitySuperheatingElement>, IHasDescription {
 
     public BlockSuperheatingElement() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
@@ -53,5 +57,11 @@ public class BlockSuperheatingElement extends BlockMekanism implements IStateAct
     @Override
     public TileEntityType<TileEntitySuperheatingElement> getTileType() {
         return MekanismTileEntityTypes.SUPERHEATING_ELEMENT.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT;
     }
 }

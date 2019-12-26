@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.block.states.BlockStateHelper;
@@ -12,8 +13,6 @@ import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -42,13 +41,13 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.blockData"), ": ", YesNo.of(getBlockData(stack) != null)));
+        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(getBlockData(stack) != null)));
         BlockData data = getBlockData(stack);
         if (data != null) {
             try {
-                tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.block"), ": " + new ItemStack(data.block).getDisplayName()));
+                tooltip.add(MekanismLang.BLOCK.translate(data.block));
                 if (data.tileTag != null) {
-                    tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.tile"), ": " + data.tileTag.getString("id")));
+                    tooltip.add(MekanismLang.TILE.translate(data.tileTag.getString("id")));
                 }
             } catch (Exception ignored) {
             }

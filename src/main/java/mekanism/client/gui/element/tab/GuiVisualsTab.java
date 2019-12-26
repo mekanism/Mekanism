@@ -4,12 +4,11 @@ import java.util.Arrays;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
+import mekanism.common.MekanismLang;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -21,11 +20,11 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        ITextComponent visualsComponent = TextComponentUtil.build(Translation.of("gui.mekanism.visuals"), ": ", OnOff.of(tile.clientRendering));
+        ITextComponent visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(tile.clientRendering));
         if (tile.getRadius() <= 64) {
             displayTooltip(visualsComponent, mouseX, mouseY);
         } else {
-            displayTooltips(Arrays.asList(visualsComponent, TextComponentUtil.build(EnumColor.RED, Translation.of("gui.mekanism.visuals.toobig"))), mouseX, mouseY);
+            displayTooltips(Arrays.asList(visualsComponent, MekanismLang.MINER_VISUALS_TOO_BIG.translateColored(EnumColor.RED)), mouseX, mouseY);
         }
     }
 

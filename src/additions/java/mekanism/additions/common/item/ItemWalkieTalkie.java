@@ -11,8 +11,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -47,9 +45,9 @@ public class ItemWalkieTalkie extends Item implements IItemNetwork {
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         tooltip.add(OnOff.of(getOn(stack), true).getTextComponent());
-        tooltip.add(TextComponentUtil.build(EnumColor.DARK_AQUA, Translation.of(AdditionsLang.CHANNEL, TextComponentUtil.build(EnumColor.GRAY, getChannel(stack)))));
+        tooltip.add(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, getChannel(stack)));
         if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
-            tooltip.add(TextComponentUtil.build(EnumColor.DARK_RED, AdditionsLang.WALKIE_DISABLED));
+            tooltip.add(AdditionsLang.WALKIE_DISABLED.translateColored(EnumColor.DARK_RED));
         }
     }
 

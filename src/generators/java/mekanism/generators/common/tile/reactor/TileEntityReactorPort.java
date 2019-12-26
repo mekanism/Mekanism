@@ -15,6 +15,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismGases;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
@@ -24,10 +25,9 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.common.util.text.BooleanStateDisplay.OutputInput;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
+import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.GeneratorsLang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
@@ -314,8 +314,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             fluidEject = !fluidEject;
-            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                  Translation.of("tooltip.mekanism.configurator.reactor_port_eject"), " ", (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(fluidEject), "."));
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                  GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(!fluidEject, true))));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }

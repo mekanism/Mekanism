@@ -5,6 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.miner.MMaterialFilter;
 import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
 import mekanism.common.network.PacketEditFilter;
@@ -13,8 +14,6 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -30,7 +29,7 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(this, guiLeft + 27, guiTop + 62, 60, 20, "gui.mekanism.save", () -> {
+        addButton(saveButton = new TranslationButton(this, guiLeft + 27, guiTop + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!filter.getMaterialItem().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tile), filter));
@@ -39,11 +38,11 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
                 }
                 sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
             } else {
-                status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.itemFilter.noItem"));
+                status = MekanismLang.ITEM_FILTER_NO_ITEM.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 60, 20, "gui.mekanism.delete", () -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
         }));

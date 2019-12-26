@@ -10,7 +10,6 @@ import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.network.PacketRedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -27,7 +26,7 @@ public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.build(((IRedstoneControl) tile).getControlType()), mouseX, mouseY);
+        displayTooltip(((IRedstoneControl) tile).getControlType().getTextComponent(), mouseX, mouseY);
     }
 
     @Override

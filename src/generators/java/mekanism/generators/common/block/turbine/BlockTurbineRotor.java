@@ -2,13 +2,16 @@ package mekanism.generators.common.block.turbine;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.generators.common.GeneratorsItem;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.item.ItemTurbineBlade;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
@@ -27,7 +30,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<TileEntityTurbineRotor>, IStateWaterLogged {
+public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<TileEntityTurbineRotor>, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape bounds = makeCuboidShape(6, 0, 6, 10, 16, 10);
 
@@ -123,5 +126,11 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
     @Override
     public TileEntityType<TileEntityTurbineRotor> getTileType() {
         return GeneratorsTileEntityTypes.TURBINE_ROTOR.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_TURBINE_ROTOR;
     }
 }

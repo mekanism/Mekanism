@@ -10,6 +10,7 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
@@ -23,8 +24,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -46,17 +45,17 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         addButton(new GuiUpgradeTab(this, tile, resource));
         addButton(new GuiSecurityTab<>(this, tile, resource));
 
-        addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, "gui.mekanism.newFilter",
+        addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tile.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 58, 14, getButtonLocation("single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(5))),
-              getOnHover("gui.mekanism.logisticalSorter.singleItem.tooltip")));
+              getOnHover(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION)));
         addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 84, 14, getButtonLocation("round_robin"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(2))),
-              getOnHover("gui.mekanism.logisticalSorter.roundRobin.tooltip")));
+              getOnHover(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION)));
         addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 110, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),
-              getOnHover("gui.mekanism.logisticalSorter.autoEject.tooltip")));
+              getOnHover(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION)));
         addButton(new ColorButton(this, guiLeft + 13, guiTop + 137, 16, 16, () -> tile.color,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(),
                     GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0))),
@@ -144,15 +143,15 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         HashList<TransporterFilter<?>> filters = tile.getFilters();
         // Write to info display
         drawString(tile.getName(), 43, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.filters"), ":"), 11, 19, 0x00CD00);
-        drawString("T: " + filters.size(), 11, 28, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.logisticalSorter.singleItem"), ":"), 12, 48, 0x00CD00);
+        drawString(MekanismLang.FILTERS.translate(), 11, 19, 0x00CD00);
+        drawString(MekanismLang.FILTER_COUNT.translate(filters.size()), 11, 28, 0x00CD00);
+        drawString(MekanismLang.SORTER_SINGLE_ITEM.translate(), 12, 48, 0x00CD00);
         drawString(OnOff.of(tile.singleItem).getTextComponent(), 27, 60, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.logisticalSorter.roundRobin"), ":"), 12, 74, 0x00CD00);
+        drawString(MekanismLang.SORTER_ROUND_ROBIN.translate(), 12, 74, 0x00CD00);
         drawString(OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.logisticalSorter.autoEject"), ":"), 12, 100, 0x00CD00);
+        drawString(MekanismLang.SORTER_ROUND_ROBIN.translate(), 12, 100, 0x00CD00);
         drawString(OnOff.of(tile.autoEject).getTextComponent(), 27, 112, 0x00CD00);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.logisticalSorter.default"), ":"), 12, 126, 0x00CD00);
+        drawString(MekanismLang.SORTER_DEFAULT.translate(), 12, 126, 0x00CD00);
 
         //TODO: Convert filters into "proper" buttons/widgets
         // Draw filters
@@ -163,11 +162,11 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
                 if (filter instanceof IItemStackFilter) {
                     IItemStackFilter<?> itemFilter = (IItemStackFilter<?>) filter;
                     renderItem(itemFilter.getItemStack(), 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.mekanism.itemFilter"), 78, yStart + 2, 0x404040);
+                    drawString(MekanismLang.ITEM_FILTER.translate(), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
                         drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
                     } else {
-                        drawString(TextComponentUtil.translate("gui.mekanism.none"), 78, yStart + 11, 0x404040);
+                        drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
                     }
                 } else if (filter instanceof IOreDictFilter) {
                     IOreDictFilter<?> oreFilter = (IOreDictFilter<?>) filter;
@@ -175,20 +174,20 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
                         updateStackList(oreFilter);
                     }
                     renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.mekanism.oredictFilter"), 78, yStart + 2, 0x404040);
+                    drawString(MekanismLang.TAG_FILTER.translate(), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
                         drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
                     } else {
-                        drawString(TextComponentUtil.translate("gui.mekanism.none"), 78, yStart + 11, 0x404040);
+                        drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
                     }
                 } else if (filter instanceof IMaterialFilter) {
                     IMaterialFilter<?> itemFilter = (IMaterialFilter<?>) filter;
                     renderItem(itemFilter.getMaterialItem(), 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.mekanism.materialFilter"), 78, yStart + 2, 0x404040);
+                    drawString(MekanismLang.MATERIAL_FILTER.translate(), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
                         drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
                     } else {
-                        drawString(TextComponentUtil.translate("gui.mekanism.none"), 78, yStart + 11, 0x404040);
+                        drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
                     }
                 } else if (filter instanceof IModIDFilter) {
                     IModIDFilter<?> modFilter = (IModIDFilter<?>) filter;
@@ -196,11 +195,11 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
                         updateStackList(modFilter);
                     }
                     renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(TextComponentUtil.translate("gui.mekanism.modIDFilter"), 78, yStart + 2, 0x404040);
+                    drawString(MekanismLang.MODID_FILTER.translate(), 78, yStart + 2, 0x404040);
                     if (filter.color != null) {
                         drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
                     } else {
-                        drawString(TextComponentUtil.translate("gui.mekanism.none"), 78, yStart + 11, 0x404040);
+                        drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
                     }
                 }
 
@@ -208,10 +207,10 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
                 int arrowX = filterX + filterW - 12;
 
                 if (getFilterIndex() + i > 0 && overUpArrow(xAxis, yAxis, arrowX, yStart)) {
-                    displayTooltip(TextComponentUtil.translate("gui.mekanism.moveUp"), xAxis, yAxis);
+                    displayTooltip(MekanismLang.MOVE_UP.translate(), xAxis, yAxis);
                 }
                 if (getFilterIndex() + i < filters.size() - 1 && overDownArrow(xAxis, yAxis, arrowX, yStart)) {
-                    displayTooltip(TextComponentUtil.translate("gui.mekanism.moveDown"), xAxis, yAxis);
+                    displayTooltip(MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis);
                 }
             }
         }

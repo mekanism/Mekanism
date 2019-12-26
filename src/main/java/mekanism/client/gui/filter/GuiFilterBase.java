@@ -5,6 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.sound.SoundHandler;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.transporter.TransporterFilter;
@@ -13,8 +14,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.InputMappings;
@@ -28,7 +27,7 @@ import org.lwjgl.glfw.GLFW;
 public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiFilter<TILE, CONTAINER> {
 
-    protected ITextComponent status = TextComponentUtil.build(EnumColor.DARK_GREEN, Translation.of("gui.mekanism.allOK"));
+    protected ITextComponent status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
     protected FILTER origFilter;
     protected FILTER filter;
     protected boolean isNew;
@@ -51,8 +50,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
     }
 
     protected IHoverable getOnHoverReplace(MinerFilter<?> filter) {
-        return getOnHover(TextComponentUtil.build(Translation.of("gui.mekanism.digitalMiner.requireReplace"), ": ",
-              YesNo.of(filter.requireStack)));
+        return getOnHover(MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(filter.requireStack)));
     }
 
     protected void drawMinerForegroundLayer(ItemStack stack) {

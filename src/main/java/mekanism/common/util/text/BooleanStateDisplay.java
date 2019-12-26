@@ -1,8 +1,10 @@
 package mekanism.common.util.text;
 
+import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
 
 public abstract class BooleanStateDisplay implements IHasTextComponent {
 
@@ -14,15 +16,14 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
         this.colored = colored;
     }
 
-    protected abstract String getKey();
+    protected abstract ILangEntry getLangEntry();
 
     @Override
     public ITextComponent getTextComponent() {
-        ITextComponent translation = TextComponentUtil.translate(getKey());
         if (colored) {
-            translation.applyTextStyle(value ? TextFormatting.DARK_GREEN : TextFormatting.DARK_RED);
+            return getLangEntry().translateColored(value ? EnumColor.DARK_GREEN : EnumColor.DARK_RED);
         }
-        return translation;
+        return getLangEntry().translate();
     }
 
     public static class YesNo extends BooleanStateDisplay {
@@ -40,8 +41,8 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
         }
 
         @Override
-        protected String getKey() {
-            return "tooltip.mekanism." + (value ? "yes" : "no");
+        protected ILangEntry getLangEntry() {
+            return value ? MekanismLang.YES : MekanismLang.NO;
         }
     }
 
@@ -60,28 +61,28 @@ public abstract class BooleanStateDisplay implements IHasTextComponent {
         }
 
         @Override
-        protected String getKey() {
-            return "gui.mekanism." + (value ? "on" : "off");
+        protected ILangEntry getLangEntry() {
+            return value ? MekanismLang.ON : MekanismLang.OFF;
         }
     }
 
-    public static class OutputInput extends BooleanStateDisplay {
+    public static class InputOutput extends BooleanStateDisplay {
 
-        private OutputInput(boolean value, boolean colored) {
+        private InputOutput(boolean value, boolean colored) {
             super(value, colored);
         }
 
-        public static OutputInput of(boolean value) {
+        public static InputOutput of(boolean value) {
             return of(value, false);
         }
 
-        public static OutputInput of(boolean value, boolean colored) {
-            return new OutputInput(value, colored);
+        public static InputOutput of(boolean value, boolean colored) {
+            return new InputOutput(value, colored);
         }
 
         @Override
-        protected String getKey() {
-            return "gui.mekanism." + (value ? "output" : "input");
+        protected ILangEntry getLangEntry() {
+            return value ? MekanismLang.INPUT : MekanismLang.OUTPUT;
         }
     }
 }

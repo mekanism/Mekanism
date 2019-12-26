@@ -3,12 +3,13 @@ package mekanism.client.gui.element.tab;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -19,16 +20,16 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
     }
 
     public enum MatrixTab implements TabType<TileEntityInductionCasing> {
-        MAIN("energy.png", "gui.mekanism.main", ClickedTileButton.TAB_MAIN),
-        STAT("stats.png", "gui.mekanism.stats", ClickedTileButton.TAB_STATS);
+        MAIN("energy.png", MekanismLang.MAIN_TAB, ClickedTileButton.TAB_MAIN),
+        STAT("stats.png", MekanismLang.STATS_TAB, ClickedTileButton.TAB_STATS);
 
         private final ClickedTileButton button;
-        private final String description;
+        private final ILangEntry description;
         private final String path;
 
-        MatrixTab(String path, String desc, ClickedTileButton button) {
+        MatrixTab(String path, ILangEntry description, ClickedTileButton button) {
             this.path = path;
-            description = desc;
+            this.description = description;
             this.button = button;
         }
 
@@ -44,7 +45,7 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
 
         @Override
         public ITextComponent getDescription() {
-            return TextComponentUtil.translate(description);
+            return description.translate();
         }
 
         @Override

@@ -5,13 +5,16 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.inventory.slot.IInventorySlot;
-import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -157,21 +160,21 @@ public final class FluidContainerUtils {
         return stack;
     }
 
-    public enum ContainerEditMode implements IIncrementalEnum<ContainerEditMode>, IHasTranslationKey {
-        BOTH("mekanism.fluidedit.both"),
-        FILL("mekanism.fluidedit.fill"),
-        EMPTY("mekanism.fluidedit.empty");
+    public enum ContainerEditMode implements IIncrementalEnum<ContainerEditMode>, IHasTextComponent {
+        BOTH(MekanismLang.FLUID_CONTAINER_BOTH),
+        FILL(MekanismLang.FLUID_CONTAINER_FILL),
+        EMPTY(MekanismLang.FLUID_CONTAINER_EMPTY);
 
         private static final ContainerEditMode[] MODES = values();
-        private String display;
+        private final ILangEntry langEntry;
 
-        ContainerEditMode(String s) {
-            display = s;
+        ContainerEditMode(ILangEntry langEntry) {
+            this.langEntry = langEntry;
         }
 
         @Override
-        public String getTranslationKey() {
-            return display;
+        public ITextComponent getTextComponent() {
+            return langEntry.translate();
         }
 
         @Nonnull

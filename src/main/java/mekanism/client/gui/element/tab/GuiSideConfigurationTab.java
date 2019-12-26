@@ -3,11 +3,11 @@ package mekanism.client.gui.element.tab;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
@@ -19,7 +19,7 @@ public class GuiSideConfigurationTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.translate("gui.mekanism.configuration.side"), mouseX, mouseY);
+        displayTooltip(MekanismLang.SIDE_CONFIG.translate(), mouseX, mouseY);
     }
 
     @Override

@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.common.HashList;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -14,6 +17,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.Region;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -128,16 +132,21 @@ public class ThreadMinerSearch extends Thread {
         dimensionType = null;
     }
 
-    public enum State {
-        IDLE("Not ready"),
-        SEARCHING("Searching"),
-        PAUSED("Paused"),
-        FINISHED("Ready");
+    public enum State implements IHasTextComponent {
+        IDLE(MekanismLang.MINER_IDLE),
+        SEARCHING(MekanismLang.MINER_SEARCHING),
+        PAUSED(MekanismLang.MINER_PAUSED),
+        FINISHED(MekanismLang.MINER_READY);
 
-        public String desc;
+        private final ILangEntry langEntry;
 
-        State(String s) {
-            desc = s;
+        State(ILangEntry langEntry) {
+            this.langEntry = langEntry;
+        }
+
+        @Override
+        public ITextComponent getTextComponent() {
+            return langEntry.translate();
         }
     }
 }

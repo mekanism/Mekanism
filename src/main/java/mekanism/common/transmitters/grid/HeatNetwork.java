@@ -4,13 +4,13 @@ import java.util.Collection;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.text.ITextComponent;
 
 public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void> {
@@ -35,22 +35,20 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
 
     @Override
     public ITextComponent getNeededInfo() {
-        //TODO: Lang string
-        return TextComponentUtil.build("Not Applicable");
+        return MekanismLang.NOT_APPLICABLE.translate();
     }
 
     @Override
     public ITextComponent getStoredInfo() {
-        //TODO: Lang String
-        return TextComponentUtil.build(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN), " above ambient");
+        return MekanismLang.HEAT_NETWORK_STORED.translate(MekanismUtils.getTemperatureDisplay(meanTemp, TemperatureUnit.KELVIN));
     }
 
     @Override
     public ITextComponent getFlowInfo() {
-        //TODO: Lang Strings
-        return TextComponentUtil.build(MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN), " transferred to acceptors, ",
-              MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN),
-              " lost to environment, " + (heatTransferred + heatLost == 0 ? "" : heatTransferred / (heatTransferred + heatLost) * 100 + "% efficiency"));
+        ITextComponent transferred = MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN);
+        ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN);
+        return heatTransferred + heatLost == 0 ? MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost)
+               : MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost, heatTransferred / (heatTransferred + heatLost) * 100);
     }
 
     @Override
@@ -92,5 +90,15 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
         heatLost = newHeatLost;
         heatTransferred = newHeatTransferred;
         meanTemp = newSumTemp / transmitters.size();
+    }
+
+    @Override
+    public String toString() {
+        return "[HeatNetwork] " + transmitters.size() + " transmitters, " + possibleAcceptors.size() + " acceptors.";
+    }
+
+    @Override
+    public ITextComponent getTextComponent() {
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.HEAT_NETWORK, transmitters.size(), possibleAcceptors.size());
     }
 }

@@ -4,13 +4,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -34,9 +35,9 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         super.addInformation(stack, world, tooltip, flag);
-        tooltip.add(TextComponentUtil.build(EnumColor.INDIGO, Translation.of("tooltip.mekanism.name"), ": ", EnumColor.GRAY, getName(stack)));
+        tooltip.add(MekanismLang.NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getName(stack)));
         ListNBT inventory = getInventory(stack);
-        tooltip.add(TextComponentUtil.build(EnumColor.AQUA, Translation.of("tooltip.mekanism.inventory"), ": ", EnumColor.GRAY, inventory != null && !inventory.isEmpty()));
+        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(inventory != null && !inventory.isEmpty())));
     }
 
     @Nonnull
@@ -80,6 +81,6 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
 
     public ITextComponent getName(ItemStack stack) {
         String name = ItemDataUtils.getString(stack, "name");
-        return TextComponentUtil.getString(name.isEmpty() ? "Robit" : name);
+        return name.isEmpty() ? MekanismLang.ROBIT.translate() : TextComponentUtil.getString(name);
     }
 }

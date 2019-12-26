@@ -51,7 +51,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
-        displayTooltip(TextComponentUtil.build(transmission), mouseX, mouseY);
+        displayTooltip(TextComponentUtil.translate(transmission.getTranslationKey()), mouseX, mouseY);
     }
 
     @Override

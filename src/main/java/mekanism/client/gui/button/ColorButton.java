@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.util.text.TextComponentUtil;
+import mekanism.common.MekanismLang;
 
 public class ColorButton extends MekanismButton {
 
@@ -16,7 +16,7 @@ public class ColorButton extends MekanismButton {
             if (color != null) {
                 gui.displayTooltip(color.getColoredName(), xAxis, yAxis);
             } else {
-                gui.displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
+                gui.displayTooltip(MekanismLang.NONE.translate(), xAxis, yAxis);
             }
         });
         this.colorSupplier = colorSupplier;

@@ -8,8 +8,11 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -50,7 +53,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserAmplifier>, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
-      IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator, IStateWaterLogged {
+      IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
     //TODO: Mess with both the model and this so that it is technically hollow?
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
@@ -185,11 +188,17 @@ public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHa
 
     @Override
     public INamedContainerProvider getProvider(TileEntityLaserAmplifier tile) {
-        return new ContainerProvider("mekanism.container.laser_amplifier", (i, inv, player) -> new LaserAmplifierContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new LaserAmplifierContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityLaserAmplifier> getTileType() {
         return MekanismTileEntityTypes.LASER_AMPLIFIER.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_LASER_AMPLIFIER;
     }
 }

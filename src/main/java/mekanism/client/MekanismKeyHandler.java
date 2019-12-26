@@ -4,6 +4,7 @@ import java.util.Collections;
 import mekanism.api.text.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.MekanismSounds;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -21,7 +22,6 @@ import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -74,28 +74,28 @@ public class MekanismKeyHandler extends MekKeyHandler {
                     ConfiguratorMode configuratorMode = configurator.getState(toolStack).getNext();
                     configurator.setState(toolStack, configuratorMode);
                     Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(configuratorMode)));
-                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                          Translation.of("tooltip.mekanism.configureState"), configuratorMode));
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                          MekanismLang.CONFIGURE_STATE.translateColored(EnumColor.GRAY, configuratorMode)));
                 } else if (item instanceof ItemElectricBow) {
                     ItemElectricBow bow = (ItemElectricBow) item;
                     boolean newBowState = !bow.getFireState(toolStack);
                     bow.setFireState(toolStack, newBowState);
                     Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newBowState)));
-                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                          Translation.of("tooltip.mekanism.fireMode"), OnOff.of(newBowState, true)));
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                          MekanismLang.FIRE_MODE.translateColored(EnumColor.GRAY, OnOff.of(newBowState, true))));
                 } else if (item instanceof ItemBlockFluidTank) {
                     ItemBlockFluidTank fluidTank = (ItemBlockFluidTank) item;
                     boolean newBucketMode = !fluidTank.getBucketMode(toolStack);
                     fluidTank.setBucketMode(toolStack, newBucketMode);
                     Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(fluidTank.getBucketMode(toolStack))));
-                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                          Translation.of("tooltip.mekanism.portableTank.bucketMode"), OnOff.of(newBucketMode, true)));
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                          MekanismLang.BUCKET_MODE.translateColored(EnumColor.GRAY, OnOff.of(newBucketMode, true))));
                 } else if (item instanceof ItemFlamethrower) {
                     ItemFlamethrower flamethrower = (ItemFlamethrower) item;
                     flamethrower.incrementMode(toolStack);
                     Mekanism.packetHandler.sendToServer(PacketFlamethrowerData.MODE_CHANGE(Hand.MAIN_HAND));
-                    player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                          Translation.of("tooltip.mekanism.flamethrower.modeBump"), flamethrower.getMode(toolStack)));
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                          MekanismLang.FLAME_THROWER_MODE_BUMP.translateColored(EnumColor.GRAY, flamethrower.getMode(toolStack))));
                 }
             }
         } else if (kb == armorModeSwitchKey) {

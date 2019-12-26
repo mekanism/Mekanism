@@ -8,12 +8,12 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
@@ -210,21 +210,20 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public ITextComponent getNeededInfo() {
-        //TODO: Lang String
-        return TextComponentUtil.build(((float) getFluidNeeded() / 1000F) + " buckets");
+        return MekanismLang.FLUID_NETWORK_NEEDED.translate((float) getFluidNeeded() / 1_000F);
     }
 
     @Override
     public ITextComponent getStoredInfo() {
         if (buffer.isEmpty()) {
-            return TextComponentUtil.translate("gui.mekanism.none");
+            return MekanismLang.NONE.translate();
         }
-        return TextComponentUtil.build(buffer, " (" + buffer.getAmount() + " mB)");
+        return MekanismLang.NETWORK_MB_STORED.translate(buffer, buffer.getAmount());
     }
 
     @Override
     public ITextComponent getFlowInfo() {
-        return TextComponentUtil.getString(prevTransferAmount + " mB/t");
+        return MekanismLang.NETWORK_MB_PER_TICK.translate(prevTransferAmount);
     }
 
     @Override
@@ -235,6 +234,11 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public boolean compatibleWithBuffer(@Nonnull FluidStack buffer) {
         return super.compatibleWithBuffer(buffer) && (this.buffer.isEmpty() || buffer.isEmpty() || this.buffer.isFluidEqual(buffer));
+    }
+
+    @Override
+    public ITextComponent getTextComponent() {
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmitters.size(), possibleAcceptors.size());
     }
 
     public static class FluidTransferEvent extends Event {

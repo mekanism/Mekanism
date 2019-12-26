@@ -9,7 +9,9 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
@@ -20,6 +22,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.BioGeneratorContainer;
 import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -42,7 +45,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockBioGenerator extends BlockMekanism implements IHasGui<TileEntityBioGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity,
-      IBlockSound, IHasTileEntity<TileEntityBioGenerator>, ISupportsComparator, IStateWaterLogged {
+      IBlockSound, IHasTileEntity<TileEntityBioGenerator>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.gen.bio"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -137,11 +140,17 @@ public class BlockBioGenerator extends BlockMekanism implements IHasGui<TileEnti
 
     @Override
     public INamedContainerProvider getProvider(TileEntityBioGenerator tile) {
-        return new ContainerProvider("mekanismgenerators.container.bio_generator", (i, inv, player) -> new BioGeneratorContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new BioGeneratorContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityBioGenerator> getTileType() {
         return GeneratorsTileEntityTypes.BIO_GENERATOR.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return GeneratorsLang.DESCRIPTION_BIO_GENERATOR;
     }
 }

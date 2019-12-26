@@ -13,8 +13,11 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -54,7 +57,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockDigitalMiner extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityDigitalMiner>, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityDigitalMiner>, IStateWaterLogged {
+      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityDigitalMiner>, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
@@ -248,7 +251,7 @@ public class BlockDigitalMiner extends BlockMekanism implements IBlockElectric, 
 
     @Override
     public INamedContainerProvider getProvider(TileEntityDigitalMiner tile) {
-        return new ContainerProvider("mekanism.container.digital_miner", (i, inv, player) -> new DigitalMinerContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new DigitalMinerContainer(i, inv, tile));
     }
 
     @Override
@@ -260,5 +263,11 @@ public class BlockDigitalMiner extends BlockMekanism implements IBlockElectric, 
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_DIGITAL_MINER;
     }
 }

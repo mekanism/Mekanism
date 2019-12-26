@@ -10,14 +10,13 @@ import mekanism.client.gui.element.tab.GuiAmplifierTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.LaserAmplifierContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
@@ -57,7 +56,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
             @Override
             public ITextComponent getText(double level) {
-                return TextComponentUtil.build(Translation.of("gui.mekanism.storing"), ": ", EnergyDisplay.of(level, tile.getMaxEnergy()));
+                return MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()));
             }
         }, Type.STANDARD, this, resource, 6, 10));
         addButton(new GuiSecurityTab<>(this, tile, resource));
@@ -80,14 +79,14 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), 55, 6, 0x404040);
-        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
         if (tile.time > 0) {
-            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.delay"), ": " + tile.time + "t"), 26, 30, 0x404040);
+            drawString(MekanismLang.DELAY.translate(tile.time), 26, 30, 0x404040);
         } else {
-            drawString(TextComponentUtil.translate("gui.mekanism.noDelay"), 26, 30, 0x404040);
+            drawString(MekanismLang.NO_DELAY.translate(), 26, 30, 0x404040);
         }
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.min"), ": ", EnergyDisplay.of(tile.minThreshold)), 26, 45, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.max"), ": ", EnergyDisplay.of(tile.maxThreshold)), 26, 60, 0x404040);
+        drawString(MekanismLang.MIN.translate(EnergyDisplay.of(tile.minThreshold)), 26, 45, 0x404040);
+        drawString(MekanismLang.MAX.translate(EnergyDisplay.of(tile.maxThreshold)), 26, 60, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

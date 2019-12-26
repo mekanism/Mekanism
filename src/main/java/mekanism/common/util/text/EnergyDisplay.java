@@ -1,6 +1,7 @@
 package mekanism.common.util.text;
 
 import mekanism.api.text.IHasTextComponent;
+import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.text.ITextComponent;
 
@@ -26,12 +27,12 @@ public class EnergyDisplay implements IHasTextComponent {
     @Override
     public ITextComponent getTextComponent() {
         if (energy == Double.MAX_VALUE) {
-            return TextComponentUtil.translate("gui.mekanism.infinite");
+            return MekanismLang.INFINITE.translate();
         }
         if (max == 0) {
             return MekanismUtils.getEnergyDisplayShort(energy);
         }
         //Pass max back as a new Energy Display so that if we have 0/infinite it shows that properly without us having to add extra handling
-        return TextComponentUtil.build(MekanismUtils.getEnergyDisplayShort(energy), "/", of(max));
+        return MekanismLang.GENERIC_FRACTION.translate(MekanismUtils.getEnergyDisplayShort(energy), of(max));
     }
 }

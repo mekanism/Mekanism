@@ -3,11 +3,10 @@ package mekanism.client.gui.element;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -30,7 +29,7 @@ public class GuiEnergyInfo extends GuiTexturedElement {
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
         List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
-        info.add(TextComponentUtil.build(Translation.of("gui.mekanism.unit"), ": ", MekanismConfig.general.energyUnit.get()));
+        info.add(MekanismLang.UNIT.translate(MekanismConfig.general.energyUnit.get()));
         displayTooltips(info, mouseX, mouseY);
     }
 

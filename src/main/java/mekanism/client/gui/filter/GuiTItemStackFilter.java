@@ -8,6 +8,7 @@ import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.TItemStackFilter;
 import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContainer;
 import mekanism.common.network.PacketEditFilter;
@@ -18,8 +19,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
@@ -43,7 +42,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(this, guiLeft + 47, guiTop + 62, 60, 20, "gui.mekanism.save", () -> {
+        addButton(saveButton = new TranslationButton(this, guiLeft + 47, guiTop + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!filter.getItemStack().isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
                 int min = Integer.parseInt(minField.getText());
                 int max = Integer.parseInt(maxField.getText());
@@ -57,29 +56,28 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
                     }
                     sendPacketToServer(ClickedTileButton.BACK_BUTTON);
                 } else if (min > max) {
-                    //TODO: Lang Keys
-                    status = TextComponentUtil.build(EnumColor.DARK_RED, "Max<min");
+                    status = MekanismLang.ITEM_FILTER_MAX_LESS_THAN_MIN.translateColored(EnumColor.DARK_RED);
                     ticker = 20;
                 } else { //if(max > 64 || min > 64)
-                    status = TextComponentUtil.build(EnumColor.DARK_RED, "Max>64");
+                    status = MekanismLang.ITEM_FILTER_OVER_SIZED.translateColored(EnumColor.DARK_RED);
                     ticker = 20;
                 }
             } else if (filter.getItemStack().isEmpty()) {
-                status = TextComponentUtil.build(EnumColor.DARK_RED, "No item");
+                status = MekanismLang.ITEM_FILTER_NO_ITEM.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
             } else if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
-                status = TextComponentUtil.build(EnumColor.DARK_RED, "Max/min");
+                status = MekanismLang.ITEM_FILTER_SIZE_MISSING.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
             }
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 109, guiTop + 62, 60, 20, "gui.mekanism.delete", () -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 109, guiTop + 62, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
               () -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         addButton(new MekanismImageButton(this, guiLeft + 11, guiTop + 64, 11, getButtonLocation("default"),
-              () -> filter.allowDefault = !filter.allowDefault, getOnHover("gui.mekanism.allowDefault")));
+              () -> filter.allowDefault = !filter.allowDefault, getOnHover(MekanismLang.ALLOW_DEFAULT)));
         addButton(new ColorButton(this, guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color,
               () -> filter.color = InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
               () -> filter.color = TransporterUtils.decrement(filter.color)));
@@ -87,9 +85,9 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
               () -> filter.sizeMode = !filter.sizeMode,
               (onHover, xAxis, yAxis) -> {
                   if (tile.singleItem && filter.sizeMode) {
-                      displayTooltip(TextComponentUtil.build(Translation.of("gui.mekanism.sizeMode"), " - ", Translation.of("gui.mekanism.sizeModeConflict")), xAxis, yAxis);
+                      displayTooltip(MekanismLang.SIZE_MODE_CONFLICT.translate(), xAxis, yAxis);
                   } else {
-                      displayTooltip(TextComponentUtil.translate("gui.mekanism.sizeMode"), xAxis, yAxis);
+                      displayTooltip(MekanismLang.SIZE_MODE.translate(), xAxis, yAxis);
                   }
               }));
     }
@@ -143,10 +141,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void drawForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.itemFilter.min"), ":"), 128, 20, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.itemFilter.max"), ":"), 128, 32, 0x404040);
+        drawString(MekanismLang.MIN.translate(""), 128, 20, 0x404040);
+        drawString(MekanismLang.MAX.translate(""), 128, 32, 0x404040);
         if (tile.singleItem && filter.sizeMode) {
-            drawString(TextComponentUtil.build(EnumColor.RED, OnOff.of(filter.sizeMode), "!"), 141, 46, 0x404040);
+            drawString(MekanismLang.ITEM_FILTER_SIZE_MODE.translateColored(EnumColor.RED, OnOff.of(filter.sizeMode)), 141, 46, 0x404040);
         } else {
             drawString(OnOff.of(filter.sizeMode).getTextComponent(), 141, 46, 0x404040);
         }

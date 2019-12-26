@@ -11,6 +11,7 @@ import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.SideDataButton;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.network.PacketConfigurationUpdate;
@@ -23,7 +24,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -69,7 +69,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 156, guiTop + 6, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType)),
-              getOnHover("gui.mekanism.autoEject")));
+              getOnHover(MekanismLang.AUTO_EJECT)));
         for (GuiPos guiPos : slotPosList) {
             addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, guiPos.relativeSide.ordinal(),
                   () -> getTile().getConfig().getDataType(currentType, guiPos.relativeSide), () -> {
@@ -84,7 +84,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
             if (onHover instanceof SideDataButton) {
                 DataType dataType = ((SideDataButton) onHover).getDataType();
                 if (dataType != null) {
-                    displayTooltip(TextComponentUtil.build(dataType.getColor(), dataType, " (", dataType.getColor().getColoredName(), ")"), xAxis, yAxis);
+                    displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(dataType.getColor(), Translation.of(dataType.getColor().getTranslationKey())), xAxis, yAxis);
                 }
             }
         };
@@ -107,15 +107,15 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.build(currentType, " ", Translation.of("gui.mekanism.config")), 0, xSize, 5, 0x404040);
+        drawCenteredText(MekanismLang.CONFIG_TYPE.translate(currentType), 0, xSize, 5, 0x404040);
         //TODO: 1.14 Convert to GuiElement
         ConfigInfo config = getTile().getConfig().getConfig(currentType);
         if (config != null && config.canEject()) {
-            drawString(TextComponentUtil.build(Translation.of("gui.mekanism.eject"), ": ", OnOff.of(config.isEjecting())), 53, 17, 0x00CD00);
+            drawString(MekanismLang.EJECT.translate(OnOff.of(config.isEjecting())), 53, 17, 0x00CD00);
         } else {
-            drawString(TextComponentUtil.translate("gui.mekanism.noEject"), 53, 17, 0x00CD00);
+            drawString(MekanismLang.NO_EJECT.translate(), 53, 17, 0x00CD00);
         }
-        drawString(TextComponentUtil.translate("gui.mekanism.slots"), 77, 81, 0x787878);
+        drawString(MekanismLang.SLOTS.translate(), 77, 81, 0x787878);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

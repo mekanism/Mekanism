@@ -13,7 +13,9 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IComparatorSupport;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -317,20 +319,20 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     }
 
     public enum RedstoneOutput implements IIncrementalEnum<RedstoneOutput>, IHasTranslationKey {
-        OFF("off"),
-        ENTITY_DETECTION("entityDetection"),
-        ENERGY_CONTENTS("energyContents");
+        OFF(MekanismLang.OFF),
+        ENTITY_DETECTION(MekanismLang.ENTITY_DETECTION),
+        ENERGY_CONTENTS(MekanismLang.ENERGY_CONTENTS);
 
         private static final RedstoneOutput[] MODES = values();
-        private String unlocalizedName;
+        private final ILangEntry langEntry;
 
-        RedstoneOutput(String name) {
-            unlocalizedName = name;
+        RedstoneOutput(ILangEntry langEntry) {
+            this.langEntry = langEntry;
         }
 
         @Override
         public String getTranslationKey() {
-            return "gui.mekanism." + unlocalizedName;
+            return langEntry.getTranslationKey();
         }
 
         @Nonnull

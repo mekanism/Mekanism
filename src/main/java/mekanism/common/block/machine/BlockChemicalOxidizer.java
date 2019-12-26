@@ -16,8 +16,11 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -58,7 +61,8 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockChemicalOxidizer extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityChemicalOxidizer>, IStateFacing,
-      IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalOxidizer>, IBlockSound, ISupportsRedstone, ISupportsComparator, IStateWaterLogged {
+      IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalOxidizer>, IBlockSound, ISupportsRedstone, ISupportsComparator, IStateWaterLogged,
+      IHasDescription {
 
     private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.oxidizer"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -198,7 +202,7 @@ public class BlockChemicalOxidizer extends BlockMekanism implements IBlockElectr
 
     @Override
     public INamedContainerProvider getProvider(TileEntityChemicalOxidizer tile) {
-        return new ContainerProvider("mekanism.container.chemical_oxidizer", (i, inv, player) -> new ChemicalOxidizerContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new ChemicalOxidizerContainer(i, inv, tile));
     }
 
     @Override
@@ -210,5 +214,11 @@ public class BlockChemicalOxidizer extends BlockMekanism implements IBlockElectr
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_CHEMICAL_OXIDIZER;
     }
 }

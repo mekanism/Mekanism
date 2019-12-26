@@ -11,11 +11,11 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.GasBurningGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.entity.player.PlayerInventory;
@@ -35,9 +35,8 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
         addButton(new GuiRedstoneControl(this, tile, resource));
         addButton(new GuiSecurityTab<>(this, tile, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.producing"), ": ", EnergyDisplay.of(tile.generationRate * tile.clientUsed), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.maxOutput"), ": ", EnergyDisplay.of(tile.getMaxOutput()), "/t")),
-              this, resource));
+              GeneratorsLang.PRODUCING.translate(EnergyDisplay.of(tile.generationRate * tile.clientUsed)),
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this, resource));
         addButton(new GuiGasGauge(() -> tile.fuelTank, Type.WIDE, this, resource, 55, 18));
         addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 16, 34).with(SlotOverlay.MINUS));
@@ -47,9 +46,8 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 2, 0x404040);
-        //TODO
-        ITextComponent component = TextComponentUtil.build(Translation.of("gui.mekanism.burn_rate"), ": " + tile.clientUsed);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
+        ITextComponent component = GeneratorsLang.BURN_RATE.translate(tile.clientUsed);
         drawString(component, xSize - 8 - getStringWidth(component), (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

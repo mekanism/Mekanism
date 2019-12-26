@@ -15,13 +15,12 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.ChemicalInfuserContainer;
 import mekanism.common.tile.TileEntityChemicalInfuser;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -40,10 +39,8 @@ public class GuiChemicalInfuser extends GuiMekanismTile<TileEntityChemicalInfuse
         addButton(new GuiRedstoneControl(this, tile, resource));
         addButton(new GuiUpgradeTab(this, tile, resource));
         addButton(new GuiHorizontalPowerBar(this, tile, resource, 115, 75));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.clientEnergyUsed), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
-        ), this, resource));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
         addButton(new GuiGasGauge(() -> tile.leftTank, GuiGauge.Type.STANDARD, this, resource, 25, 13));
         addButton(new GuiGasGauge(() -> tile.centerTank, GuiGauge.Type.STANDARD, this, resource, 79, 4));
         addButton(new GuiGasGauge(() -> tile.rightTank, GuiGauge.Type.STANDARD, this, resource, 133, 13));
@@ -78,8 +75,8 @@ public class GuiChemicalInfuser extends GuiMekanismTile<TileEntityChemicalInfuse
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.translate("gui.mekanism.chemicalInfuser.short"), 5, 5, 0x404040);
-        drawString(TextComponentUtil.translate("container.inventory"), 8, (ySize - 96) + 4, 0x404040);
+        drawString(MekanismLang.CHEMICAL_INFUSER_SHORT.translate(), 5, 5, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 4, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

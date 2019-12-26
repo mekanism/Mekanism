@@ -3,11 +3,14 @@ package mekanism.generators.common.tile.reactor;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.generators.common.GeneratorsLang;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements IComputerIntegration {
@@ -165,16 +168,18 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     }
 
     public enum ReactorLogic implements IHasTranslationKey {
-        DISABLED("disabled", new ItemStack(Items.GUNPOWDER)),
-        READY("ready", new ItemStack(Items.REDSTONE)),
-        CAPACITY("capacity", new ItemStack(Items.REDSTONE)),
-        DEPLETED("depleted", new ItemStack(Items.REDSTONE));
+        DISABLED(GeneratorsLang.REACTOR_DISABLED, GeneratorsLang.REACTOR_DISABLED_DESCRIPTION, new ItemStack(Items.GUNPOWDER)),
+        READY(GeneratorsLang.REACTOR_READY, GeneratorsLang.REACTOR_READY_DESCRIPTION, new ItemStack(Items.REDSTONE)),
+        CAPACITY(GeneratorsLang.REACTOR_CAPACITY, GeneratorsLang.REACTOR_CAPACITY_DESCRIPTION, new ItemStack(Items.REDSTONE)),
+        DEPLETED(GeneratorsLang.REACTOR_DEPLETED, GeneratorsLang.REACTOR_DEPLETED_DESCRIPTION, new ItemStack(Items.REDSTONE));
 
-        private String name;
-        private ItemStack renderStack;
+        private final ILangEntry name;
+        private final ILangEntry description;
+        private final ItemStack renderStack;
 
-        ReactorLogic(String s, ItemStack stack) {
-            name = s;
+        ReactorLogic(ILangEntry name, ILangEntry description, ItemStack stack) {
+            this.name = name;
+            this.description = description;
             renderStack = stack;
         }
 
@@ -184,11 +189,11 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 
         @Override
         public String getTranslationKey() {
-            return "mekanism.reactor." + name;
+            return name.getTranslationKey();
         }
 
-        public String getDescription() {
-            return "mekanism.reactor." + name + ".desc";
+        public ITextComponent getDescription() {
+            return description.translate();
         }
     }
 }

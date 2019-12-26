@@ -12,6 +12,7 @@ import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.SideDataButton;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.network.PacketConfigurationUpdate;
@@ -23,8 +24,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -53,7 +52,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
         addButton(new MekanismImageButton(this, guiLeft + 156, guiTop + 6, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.STRICT_INPUT, Coord4D.get(tile), 0, 0, null)),
-              getOnHover("gui.mekanism.configuration.strictInput")));
+              getOnHover(MekanismLang.STRICT_INPUT)));
         addButton(new ColorButton(this, guiLeft + 122, guiTop + 49, 16, 16, () -> getTile().getEjector().getOutputColor(),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile),
                     InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
@@ -79,7 +78,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
                     if (color != null) {
                         displayTooltip(color.getColoredName(), xAxis, yAxis);
                     } else {
-                        displayTooltip(TextComponentUtil.translate("gui.mekanism.none"), xAxis, yAxis);
+                        displayTooltip(MekanismLang.NONE.translate(), xAxis, yAxis);
                     }
                 }
             }
@@ -88,11 +87,10 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Tr
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(TextComponentUtil.translate("gui.mekanism.configuration.transporter"), 0, xSize, 5, 0x404040);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.strictInput"), " (", OnOff.of(getTile().getEjector().hasStrictInput()), ")"),
-              53, 17, 0x00CD00, 70);
-        drawString(TextComponentUtil.translate("gui.mekanism.input"), 48, 81, 0x787878);
-        drawString(TextComponentUtil.translate("gui.mekanism.output"), 114, 68, 0x787878);
+        drawCenteredText(MekanismLang.TRANSPORTER_CONFIG.translate(), 0, xSize, 5, 0x404040);
+        renderScaledText(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(getTile().getEjector().hasStrictInput())), 53, 17, 0x00CD00, 70);
+        drawString(MekanismLang.INPUT.translate(), 48, 81, 0x787878);
+        drawString(MekanismLang.OUTPUT.translate(), 114, 68, 0x787878);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

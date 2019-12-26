@@ -12,6 +12,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
@@ -26,7 +27,7 @@ import net.minecraftforge.eventbus.api.Event;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Gases. By default this is server-only, but if ticked on the client side and if it's posted events
- * are handled properly, it has the capability to visually display gasses network-wide.
+ * are handled properly, it has the capability to visually display gases network-wide.
  *
  * @author aidancbrady
  */
@@ -231,14 +232,14 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public ITextComponent getStoredInfo() {
         if (buffer.isEmpty()) {
-            return TextComponentUtil.translate("gui.mekanism.none");
+            return MekanismLang.NONE.translate();
         }
-        return TextComponentUtil.build(buffer, " (" + buffer.getAmount() + ")");
+        return MekanismLang.NETWORK_MB_STORED.translate(buffer, buffer.getAmount());
     }
 
     @Override
     public ITextComponent getFlowInfo() {
-        return TextComponentUtil.getString(prevTransferAmount + "/t");
+        return MekanismLang.NETWORK_MB_PER_TICK.translate(prevTransferAmount);
     }
 
     @Override
@@ -249,6 +250,11 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public boolean compatibleWithBuffer(@Nonnull GasStack buffer) {
         return super.compatibleWithBuffer(buffer) && (this.buffer.isEmpty() || buffer.isEmpty() || this.buffer.isTypeEqual(buffer));
+    }
+
+    @Override
+    public ITextComponent getTextComponent() {
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.GAS_NETWORK, transmitters.size(), possibleAcceptors.size());
     }
 
     public static class GasTransferEvent extends Event {

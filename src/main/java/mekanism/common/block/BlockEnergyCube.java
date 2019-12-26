@@ -9,6 +9,9 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.states.BlockStateHelper;
@@ -58,7 +61,7 @@ import net.minecraft.world.World;
  * @author AidanBrady
  */
 public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntityEnergyCube>, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory,
-      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator, IStateWaterLogged {
+      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[128];
 
@@ -259,7 +262,7 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
 
     @Override
     public INamedContainerProvider getProvider(TileEntityEnergyCube tile) {
-        return new ContainerProvider("mekanism.container.energy_cube", (i, inv, player) -> new EnergyCubeContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new EnergyCubeContainer(i, inv, tile));
     }
 
     @Override
@@ -277,5 +280,11 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
             default:
                 return MekanismTileEntityTypes.BASIC_ENERGY_CUBE.getTileEntityType();
         }
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_ENERGY_CUBE;
     }
 }

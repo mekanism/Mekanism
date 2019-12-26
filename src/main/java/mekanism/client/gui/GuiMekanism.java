@@ -9,9 +9,9 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -43,8 +43,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         return length <= maxX ? 1 : (float) maxX / length;
     }
 
-    protected IHoverable getOnHover(String translationKey) {
-        return getOnHover(TextComponentUtil.translate(translationKey));
+    protected IHoverable getOnHover(ILangEntry translationHelper) {
+        return getOnHover(translationHelper.translate());
     }
 
     protected IHoverable getOnHover(ITextComponent component) {

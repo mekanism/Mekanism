@@ -5,7 +5,10 @@ import javax.annotation.Nullable;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -32,8 +35,8 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public class BlockThermalEvaporationController extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasGui<TileEntityThermalEvaporationController>,
-      IHasTileEntity<TileEntityThermalEvaporationController> {
+public class BlockThermalEvaporationController extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, IHasInventory, IHasDescription,
+      IHasGui<TileEntityThermalEvaporationController>, IHasTileEntity<TileEntityThermalEvaporationController> {
 
     public BlockThermalEvaporationController() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
@@ -72,11 +75,17 @@ public class BlockThermalEvaporationController extends BlockMekanism implements 
 
     @Override
     public INamedContainerProvider getProvider(TileEntityThermalEvaporationController tile) {
-        return new ContainerProvider("mekanism.container.thermal_evaporation_controller", (i, inv, player) -> new ThermalEvaporationControllerContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new ThermalEvaporationControllerContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityThermalEvaporationController> getTileType() {
         return MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER;
     }
 }

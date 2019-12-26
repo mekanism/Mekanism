@@ -13,6 +13,7 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
@@ -21,8 +22,6 @@ import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.OwnerDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -57,15 +56,15 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         addButton(new GuiUpgradeTab(this, tile, resource));
         addButton(new GuiSecurityTab<>(this, tile, resource));
 
-        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, "gui.mekanism.public", () -> {
+        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, "gui.mekanism.private", () -> {
+        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, "gui.mekanism.set", () -> {
+        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.privateCache.get(selection) : tile.publicCache.get(selection);
@@ -73,7 +72,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, "gui.mekanism.delete", () -> {
+        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.privateCache.get(selection) : tile.publicCache.get(selection);
@@ -104,9 +103,9 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
 
     public ITextComponent getSecurity(Frequency freq) {
         if (!freq.publicFreq) {
-            return TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.private"));
+            return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
         }
-        return TextComponentUtil.translate("gui.mekanism.public");
+        return MekanismLang.PUBLIC.translate();
     }
 
     public void updateButtons() {
@@ -193,20 +192,21 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
         drawString(OwnerDisplay.of(tile.getSecurity().getOwnerUUID(), tile.getSecurity().getClientOwner()).getTextComponent(), 8, (ySize - 96) + 4, 0x404040);
-        ITextComponent frequencyComponent = TextComponentUtil.build(Translation.of("gui.mekanism.freq"), ": ");
+        ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(frequencyComponent, 32, 81, 0x404040);
-        ITextComponent securityComponent = TextComponentUtil.build(Translation.of("gui.mekanism.security"), ": ");
+        ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
         drawString(securityComponent, 32, 91, 0x404040);
         //TODO: 1.14 Convert to GuiElement
         Frequency frequency = tile.getFrequency(null);
+        int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (frequency != null) {
-            drawString(frequency.name, 32 + getStringWidth(frequencyComponent), 81, 0x797979);
+            drawString(frequency.name, 32 + frequencyOffset, 81, 0x797979);
             drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
-            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.none")), 32 + getStringWidth(frequencyComponent), 81, 0x797979);
-            drawString(TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.none")), 32 + getStringWidth(securityComponent), 91, 0x797979);
+            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);
+            drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.set"), ":"), 27, 104, 0x404040, 20);
+        renderScaledText(MekanismLang.SET.translate(), 27, 104, 0x404040, 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

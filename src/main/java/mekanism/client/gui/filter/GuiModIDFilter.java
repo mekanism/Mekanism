@@ -1,12 +1,11 @@
 package mekanism.client.gui.filter;
 
 import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
@@ -23,10 +22,10 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
-            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.modIDFilter.noID"));
+            status = MekanismLang.MODID_FILTER_NO_ID.translateColored(EnumColor.DARK_RED);
             return;
         } else if (name.equals(filter.getModID())) {
-            status = TextComponentUtil.build(EnumColor.DARK_RED, Translation.of("gui.mekanism.modIDFilter.sameID"));
+            status = MekanismLang.MODID_FILTER_SAME_ID.translateColored(EnumColor.DARK_RED);
             return;
         }
         updateStackList(name);
@@ -36,9 +35,9 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(TextComponentUtil.build(Translation.of(isNew ? "gui.mekanism.new" : "gui.mekanism.edit"), " ", Translation.of("gui.mekanism.modIDFilter")), 43, 6, 0x404040);
-        drawString(TextComponentUtil.build(Translation.of("gui.mekanism.status"), ": ", status), 35, 20, 0x00CD00);
-        renderScaledText(TextComponentUtil.build(Translation.of("gui.mekanism.id"), ": " + filter.getModID()), 35, 32, 0x00CD00, 107);
+        drawString((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.MODID_FILTER), 43, 6, 0x404040);
+        drawString(MekanismLang.STATUS.translate(status), 35, 20, 0x00CD00);
+        renderScaledText(MekanismLang.MODID_FILTER_ID.translate(filter.getModID()), 35, 32, 0x00CD00, 107);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

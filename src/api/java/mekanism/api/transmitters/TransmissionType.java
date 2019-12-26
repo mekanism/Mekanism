@@ -1,21 +1,24 @@
 package mekanism.api.transmitters;
 
+import mekanism.api.text.APILang;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.tileentity.TileEntity;
 
 public enum TransmissionType implements IHasTranslationKey {
-    ENERGY("EnergyNetwork", "energy"),
-    FLUID("FluidNetwork", "fluids"),
-    GAS("GasNetwork", "gases"),
-    ITEM("InventoryNetwork", "items"),
-    HEAT("HeatNetwork", "heat");
+    ENERGY("EnergyNetwork", "energy", APILang.TRANSMISSION_TYPE_ENERGY),
+    FLUID("FluidNetwork", "fluids", APILang.TRANSMISSION_TYPE_FLUID),
+    GAS("GasNetwork", "gases", APILang.TRANSMISSION_TYPE_GAS),
+    ITEM("InventoryNetwork", "items", APILang.TRANSMISSION_TYPE_ITEM),
+    HEAT("HeatNetwork", "heat", APILang.TRANSMISSION_TYPE_HEAT);
 
-    private String name;
-    private String transmission;
+    private final String name;
+    private final String transmission;
+    private final APILang langEntry;
 
-    TransmissionType(String n, String t) {
-        name = n;
-        transmission = t;
+    TransmissionType(String name, String transmission, APILang langEntry) {
+        this.name = name;
+        this.transmission = transmission;
+        this.langEntry = langEntry;
     }
 
     public static boolean checkTransmissionType(ITransmitter sideTile, TransmissionType type) {
@@ -40,7 +43,7 @@ public enum TransmissionType implements IHasTranslationKey {
 
     @Override
     public String getTranslationKey() {
-        return "transmission.mekanism." + getTransmission();
+        return langEntry.getTranslationKey();
     }
 
     public boolean checkTransmissionType(ITransmitter transmitter) {

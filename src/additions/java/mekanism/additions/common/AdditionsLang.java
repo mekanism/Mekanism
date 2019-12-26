@@ -1,12 +1,17 @@
 package mekanism.additions.common;
 
-import mekanism.api.text.IHasTranslationKey;
+import mekanism.common.base.ILangEntry;
+import net.minecraft.util.Util;
 
-public enum AdditionsLang implements IHasTranslationKey {
-    CHANNEL("tooltip.mekanismadditions.channel"),
-    WALKIE_DISABLED("tooltip.mekanismadditions.walkie_disabled");
+public enum AdditionsLang implements ILangEntry {
+    CHANNEL("tooltip", "channel"),
+    WALKIE_DISABLED("tooltip", "walkie_disabled");
 
     private final String key;
+
+    AdditionsLang(String type, String path) {
+        this(Util.makeTranslationKey(type, MekanismAdditions.rl(path)));
+    }
 
     AdditionsLang(String key) {
         this.key = key;

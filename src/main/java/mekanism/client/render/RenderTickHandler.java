@@ -7,6 +7,8 @@ import mekanism.api.Pos3D;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismGases;
+import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -16,7 +18,6 @@ import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.particle.MekanismParticleType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -28,6 +29,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
@@ -99,30 +101,23 @@ public class RenderTickHandler {
 
                     if (stack.getItem() instanceof ItemJetpack) {
                         ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-                        //TODO: Lang strings
-                        //TODO: Also fix components to not ned the getFormattedText here
-                        drawString(TextComponentUtil.build("Mode: ", jetpack.getMode(stack)).getFormattedText(), alignLeft, y - 20, 0xc8c8c8);
-                        drawString(TextComponentUtil.build("Hydrogen: ", jetpack.getStored(stack)).getFormattedText(), alignLeft, y - 11, 0xc8c8c8);
+                        drawString(MekanismLang.MODE.translate(jetpack.getMode(stack)), alignLeft, y - 20, 0xc8c8c8);
+                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.HYDROGEN, jetpack.getStored(stack)), alignLeft, y - 11, 0xc8c8c8);
                     } else if (stack.getItem() instanceof ItemScubaTank) {
                         ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
-                        //TODO: Lang Strings
-                        drawString(TextComponentUtil.build("Mode: ", OnOff.of(scubaTank.getFlowing(stack), true)).getFormattedText(), alignLeft, y - 20, 0xc8c8c8);
-                        drawString(TextComponentUtil.build("Oxygen: ", scubaTank.getStored(stack)).getFormattedText(), alignLeft, y - 11, 0xc8c8c8);
+                        drawString(MekanismLang.MODE.translate(OnOff.of(scubaTank.getFlowing(stack), true)), alignLeft, y - 20, 0xc8c8c8);
+                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.OXYGEN, scubaTank.getStored(stack)), alignLeft, y - 11, 0xc8c8c8);
                     }
                 }
 
                 // Traverse a copy of jetpack state and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
                     PlayerEntity p = minecraft.world.getPlayerByUuid(uuid);
-
                     if (p == null) {
                         continue;
                     }
-
                     Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
-
                     float random = (rand.nextFloat() - 0.5F) * 0.1F;
-
                     Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.func_225608_bj_() ? 20 : 0).rotateYaw(p.renderYawOffset);
                     Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.func_225608_bj_() ? 20 : 0).rotateYaw(p.renderYawOffset);
                     Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.func_225608_bj_() ? 25 : 0).rotateYaw(p.renderYawOffset);
@@ -207,7 +202,8 @@ public class RenderTickHandler {
         }
     }
 
-    private void drawString(String s, boolean leftSide, int y, int color) {
+    private void drawString(ITextComponent textComponent, boolean leftSide, int y, int color) {
+        String s = textComponent.getFormattedText();
         FontRenderer font = minecraft.fontRenderer;
         // Note that we always offset by 2 pixels when left or right aligned
         if (leftSide) {

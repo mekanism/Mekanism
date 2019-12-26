@@ -6,8 +6,11 @@ import javax.annotation.Nullable;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -42,7 +45,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockFuelwoodHeater extends BlockMekanism implements IHasGui<TileEntityFuelwoodHeater>, IStateFacing, IStateActive, IHasInventory, IHasSecurity,
-      IHasTileEntity<TileEntityFuelwoodHeater> {
+      IHasTileEntity<TileEntityFuelwoodHeater>, IHasDescription {
 
     public BlockFuelwoodHeater() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -138,11 +141,17 @@ public class BlockFuelwoodHeater extends BlockMekanism implements IHasGui<TileEn
 
     @Override
     public INamedContainerProvider getProvider(TileEntityFuelwoodHeater tile) {
-        return new ContainerProvider("mekanism.container.fuelwood_heater", (i, inv, player) -> new FuelwoodHeaterContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new FuelwoodHeaterContainer(i, inv, tile));
     }
 
     @Override
     public TileEntityType<TileEntityFuelwoodHeater> getTileType() {
         return MekanismTileEntityTypes.FUELWOOD_HEATER.getTileEntityType();
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_FUELWOOD_HEATER;
     }
 }

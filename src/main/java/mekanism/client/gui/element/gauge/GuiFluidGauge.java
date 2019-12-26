@@ -4,6 +4,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
@@ -61,13 +62,13 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
         }
         FluidStack fluidStack = infoHandler.getTank().getFluid();
         if (fluidStack.isEmpty()) {
-            return TextComponentUtil.translate("gui.mekanism.empty");
+            return MekanismLang.EMPTY.translate();
         }
         int amount = infoHandler.getTank().getFluidAmount();
         if (amount == Integer.MAX_VALUE) {
-            return TextComponentUtil.translate("gui.mekanism.infinite");
+            return MekanismLang.INFINITE.translate();
         }
-        return TextComponentUtil.build(fluidStack, ": " + amount + " mB");
+        return MekanismLang.GENERIC_STORED_MB.translate(fluidStack, amount);
     }
 
     @Override

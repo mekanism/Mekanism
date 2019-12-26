@@ -14,8 +14,11 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
@@ -55,7 +58,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockFluidicPlenisher extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntityFluidicPlenisher>, ISupportsUpgrades, IStateFacing,
-      IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityFluidicPlenisher>, ISupportsComparator, IStateWaterLogged {
+      IStateActive, IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityFluidicPlenisher>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
@@ -192,7 +195,7 @@ public class BlockFluidicPlenisher extends BlockMekanism implements IBlockElectr
 
     @Override
     public INamedContainerProvider getProvider(TileEntityFluidicPlenisher tile) {
-        return new ContainerProvider("mekanism.container.fluidic_plenisher", (i, inv, player) -> new FluidicPlenisherContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new FluidicPlenisherContainer(i, inv, tile));
     }
 
     @Override
@@ -204,5 +207,11 @@ public class BlockFluidicPlenisher extends BlockMekanism implements IBlockElectr
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_FLUIDIC_PLENISHER;
     }
 }

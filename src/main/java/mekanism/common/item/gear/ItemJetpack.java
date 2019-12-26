@@ -12,14 +12,15 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.ModelCustomArmor.ArmorModel;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.common.MekanismGases;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
@@ -82,11 +83,11 @@ public class ItemJetpack extends ArmorItem implements IGasItem {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(stack);
         if (gasStack.isEmpty()) {
-            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.noGas"), "."));
+            tooltip.add(MekanismLang.NO_GAS.translate());
         } else {
-            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.stored"), " ", gasStack, ": " + gasStack.getAmount()));
+            tooltip.add(MekanismLang.STORED.translate(gasStack, gasStack.getAmount()));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.mode"), ": ", EnumColor.GRAY, getMode(stack).getTextComponent()));
+        tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 
     @Override
@@ -200,22 +201,23 @@ public class ItemJetpack extends ArmorItem implements IGasItem {
         return 0;
     }
 
-    public enum JetpackMode implements IIncrementalEnum<JetpackMode> {
-        NORMAL("tooltip.jetpack.regular", EnumColor.DARK_GREEN),
-        HOVER("tooltip.jetpack.hover", EnumColor.DARK_AQUA),
-        DISABLED("tooltip.jetpack.disabled", EnumColor.DARK_RED);
+    public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
+        NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN),
+        HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA),
+        DISABLED(MekanismLang.JETPACK_DISABLED, EnumColor.DARK_RED);
 
         private static final JetpackMode[] MODES = values();
-        private String unlocalized;
-        private EnumColor color;
+        private final ILangEntry langEntry;
+        private final EnumColor color;
 
-        JetpackMode(String s, EnumColor c) {
-            unlocalized = s;
-            color = c;
+        JetpackMode(ILangEntry langEntry, EnumColor color) {
+            this.langEntry = langEntry;
+            this.color = color;
         }
 
+        @Override
         public ITextComponent getTextComponent() {
-            return TextComponentUtil.build(color, unlocalized);
+            return langEntry.translateColored(color);
         }
 
         @Nonnull

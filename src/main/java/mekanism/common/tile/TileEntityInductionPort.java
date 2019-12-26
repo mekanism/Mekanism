@@ -11,6 +11,7 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismBlock;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
@@ -19,9 +20,7 @@ import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.text.BooleanStateDisplay.OutputInput;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
+import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -129,8 +128,8 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             mode = !mode;
-            player.sendMessage(TextComponentUtil.build(EnumColor.DARK_BLUE, Mekanism.LOG_TAG + " ", EnumColor.GRAY,
-                  Translation.of("tooltip.mekanism.configurator.inductionPortMode"), " ", (mode ? EnumColor.DARK_RED : EnumColor.DARK_GREEN), OutputInput.of(mode), "."));
+            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                  MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(!mode, true))));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }

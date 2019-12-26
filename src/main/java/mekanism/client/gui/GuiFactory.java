@@ -23,6 +23,7 @@ import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.FactoryContainer;
@@ -36,8 +37,6 @@ import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -71,10 +70,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryCon
         addButton(new GuiTransporterConfigTab(this, tile, resource));
         addButton(new GuiSortingTab(this, tile, resource));
         addButton(new GuiVerticalPowerBar(this, tile, resource, xSize - 12, 16));
-        addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              TextComponentUtil.build(Translation.of("gui.mekanism.using"), ": ", EnergyDisplay.of(tile.lastUsage), "/t"),
-              TextComponentUtil.build(Translation.of("gui.mekanism.needed"), ": ", EnergyDisplay.of(tile.getNeededEnergy()))
-        ), this, resource));
+        addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.lastUsage)),
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
 
         if (tile.hasSecondaryResourceBar()) {
             ChemicalInfoProvider<? extends Chemical<?>> provider = null;
@@ -134,7 +131,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryCon
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
-        drawString(TextComponentUtil.translate("container.inventory"), tile.tier == FactoryTier.ULTIMATE ? 26 : 8,
+        drawString(MekanismLang.INVENTORY.translate(), tile.tier == FactoryTier.ULTIMATE ? 26 : 8,
               tile.hasSecondaryResourceBar() ? 85 : tile instanceof TileEntitySawingFactory ? 95 : 75, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

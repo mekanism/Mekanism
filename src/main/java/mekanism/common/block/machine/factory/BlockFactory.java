@@ -17,9 +17,12 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
+import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.machine.BlockChemicalInjectionChamber;
@@ -68,9 +71,9 @@ import net.minecraft.world.ILightReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFactory<?>>,
-      IStateFacing, IStateActive, IBlockSound, ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory<?>>,
-      ISupportsRedstone, ISupportsComparator {
+public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFactory<?>>, IStateFacing, IStateActive, IBlockSound,
+      ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory<?>>, ISupportsRedstone, ISupportsComparator,
+      IHasDescription {
 
     private final FactoryTier tier;
     private final FactoryType type;
@@ -223,7 +226,7 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
 
     @Override
     public INamedContainerProvider getProvider(TileEntityFactory<?> tile) {
-        return new ContainerProvider("mekanism.container.factory", (i, inv, player) -> new FactoryContainer(i, inv, tile));
+        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new FactoryContainer(i, inv, tile));
     }
 
     @Override
@@ -357,5 +360,11 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
+    }
+
+    @Nonnull
+    @Override
+    public ILangEntry getDescription() {
+        return MekanismLang.DESCRIPTION_FACTORY;
     }
 }

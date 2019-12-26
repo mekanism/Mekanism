@@ -4,10 +4,12 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
+import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress.ClickedGeneratorsTileButton;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -21,18 +23,18 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
     }
 
     public enum ReactorTab implements TabType<TileEntityReactorController> {
-        HEAT("heat.png", "gui.mekanism.heat", 6, ClickedGeneratorsTileButton.TAB_HEAT),
-        FUEL("fuel.png", "gui.mekanism.fuel", 34, ClickedGeneratorsTileButton.TAB_FUEL),
-        STAT("stats.png", "gui.mekanism.stats", 62, ClickedGeneratorsTileButton.TAB_STATS);
+        HEAT("heat.png", GeneratorsLang.HEAT_TAB, 6, ClickedGeneratorsTileButton.TAB_HEAT),
+        FUEL("fuel.png", GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL),
+        STAT("stats.png", MekanismLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS);
 
         private final ClickedGeneratorsTileButton button;
-        private final String description;
+        private final ILangEntry description;
         private final String path;
         private final int yPos;
 
-        ReactorTab(String path, String desc, int y, ClickedGeneratorsTileButton button) {
+        ReactorTab(String path, ILangEntry description, int y, ClickedGeneratorsTileButton button) {
             this.path = path;
-            description = desc;
+            this.description = description;
             yPos = y;
             this.button = button;
         }
@@ -49,7 +51,7 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
 
         @Override
         public ITextComponent getDescription() {
-            return TextComponentUtil.translate(description);
+            return description.translate();
         }
 
         @Override

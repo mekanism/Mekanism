@@ -1,41 +1,36 @@
 package mekanism.common.tile.component.config;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 
 //TODO: Re-evaluate how we do colors, given for say energy as the transmission type it makes more sense to have input be green?
 public enum DataType implements IIncrementalEnum<DataType>, IHasTranslationKey {
-    NONE("None", EnumColor.GRAY),
-    INPUT("Input", EnumColor.DARK_RED),
-    OUTPUT("Output", EnumColor.DARK_BLUE),
-    ENERGY("Energy", EnumColor.DARK_GREEN),
-    EXTRA("Extra", EnumColor.PURPLE);
+    NONE(MekanismLang.SIDE_DATA_NONE, EnumColor.GRAY),
+    INPUT(MekanismLang.SIDE_DATA_INPUT, EnumColor.DARK_RED),
+    OUTPUT(MekanismLang.SIDE_DATA_OUTPUT, EnumColor.DARK_BLUE),
+    ENERGY(MekanismLang.SIDE_DATA_ENERGY, EnumColor.DARK_GREEN),
+    EXTRA(MekanismLang.SIDE_DATA_EXTRA, EnumColor.PURPLE);
 
     private static final DataType[] TYPES = values();
-    private final String name;
     private final EnumColor color;
-    private final String translationKey;
+    private final ILangEntry langEntry;
 
-    DataType(String name, EnumColor color) {
-        this.name = name;
+    DataType(ILangEntry langEntry, EnumColor color) {
         this.color = color;
-        translationKey = "side_data.mekanism." + name.toLowerCase(Locale.ROOT);
+        this.langEntry = langEntry;
     }
 
     public EnumColor getColor() {
         return color;
     }
 
-    public String getName() {
-        return name;
-    }
-
     @Override
     public String getTranslationKey() {
-        return translationKey;
+        return langEntry.getTranslationKey();
     }
 
     @Nonnull

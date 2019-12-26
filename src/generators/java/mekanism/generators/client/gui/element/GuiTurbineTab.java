@@ -4,9 +4,10 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress.ClickedGeneratorsTileButton;
@@ -21,16 +22,16 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
     }
 
     public enum TurbineTab implements TabType<TileEntityTurbineCasing> {
-        MAIN("gases.png", "gui.mekanism.main", ClickedGeneratorsTileButton.TAB_MAIN),
-        STAT("stats.png", "gui.mekanism.stats", ClickedGeneratorsTileButton.TAB_STATS);
+        MAIN("gases.png", MekanismLang.MAIN_TAB, ClickedGeneratorsTileButton.TAB_MAIN),
+        STAT("stats.png", MekanismLang.STATS_TAB, ClickedGeneratorsTileButton.TAB_STATS);
 
         private final ClickedGeneratorsTileButton button;
-        private final String description;
+        private final ILangEntry description;
         private final String path;
 
-        TurbineTab(String path, String desc, ClickedGeneratorsTileButton button) {
+        TurbineTab(String path, ILangEntry description, ClickedGeneratorsTileButton button) {
             this.path = path;
-            description = desc;
+            this.description = description;
             this.button = button;
         }
 
@@ -46,7 +47,7 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
 
         @Override
         public ITextComponent getDescription() {
-            return TextComponentUtil.translate(description);
+            return description.translate();
         }
 
         @Override

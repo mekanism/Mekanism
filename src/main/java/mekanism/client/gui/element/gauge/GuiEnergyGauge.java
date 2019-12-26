@@ -4,8 +4,8 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.util.text.EnergyDisplay;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -42,7 +42,7 @@ public class GuiEnergyGauge extends GuiGauge {
         if (infoHandler.getEnergyStorage().getEnergy() > 0) {
             return EnergyDisplay.of(infoHandler.getEnergyStorage().getEnergy(), infoHandler.getEnergyStorage().getMaxEnergy()).getTextComponent();
         }
-        return TextComponentUtil.translate("gui.mekanism.empty");
+        return MekanismLang.EMPTY.translate();
     }
 
     public interface IEnergyInfoHandler {

@@ -2,8 +2,8 @@ package mekanism.client.gui.robit;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
+import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -44,16 +44,16 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         RenderSystem.disableLighting();
-        drawString(TextComponentUtil.translate("container.repair"), 60, 6, 0x404040);
+        drawString(MekanismLang.REPAIR.translate(), 60, 6, 0x404040);
 
         int maximumCost = container.getMaximumCost();
         if (maximumCost > 0) {
             //TODO: Verify this works as intended
             int k = 0x80FF20;
             boolean flag = true;
-            ITextComponent component = TextComponentUtil.translate("container.repair.cost", maximumCost);
+            ITextComponent component = MekanismLang.REPAIR_COST.translate(maximumCost);
             if (maximumCost >= 40 && !minecraft.player.isCreative()) {
-                component = TextComponentUtil.translate("container.repair.expensive");
+                component = MekanismLang.REPAIR_EXPENSIVE.translate();
                 k = 0xFF6060;
             } else if (!container.getSlot(2).getHasStack()) {
                 flag = false;

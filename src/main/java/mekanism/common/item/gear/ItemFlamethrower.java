@@ -12,10 +12,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.common.MekanismGases;
+import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -48,11 +48,11 @@ public class ItemFlamethrower extends Item implements IGasItem {
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         GasStack gasStack = getGas(stack);
         if (gasStack.isEmpty()) {
-            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.noGas"), "."));
+            tooltip.add(MekanismLang.NO_GAS.translate());
         } else {
-            tooltip.add(TextComponentUtil.build(Translation.of("tooltip.mekanism.stored"), " ", gasStack, ": " + gasStack.getAmount()));
+            tooltip.add(MekanismLang.STORED.translate(gasStack, gasStack.getAmount()));
         }
-        tooltip.add(TextComponentUtil.build(EnumColor.GRAY, Translation.of("tooltip.mekanism.mode"), ": ", EnumColor.GRAY, getMode(stack)));
+        tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 
     public void useGas(ItemStack stack) {
@@ -162,22 +162,22 @@ public class ItemFlamethrower extends Item implements IGasItem {
     }
 
     public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasTextComponent {
-        COMBAT("tooltip.flamethrower.combat", EnumColor.YELLOW),
-        HEAT("tooltip.flamethrower.heat", EnumColor.ORANGE),
-        INFERNO("tooltip.flamethrower.inferno", EnumColor.DARK_RED);
+        COMBAT(MekanismLang.FLAME_THROWER_COMBAT, EnumColor.YELLOW),
+        HEAT(MekanismLang.FLAME_THROWER_HEAT, EnumColor.ORANGE),
+        INFERNO(MekanismLang.FLAME_THROWER_INFERNO, EnumColor.DARK_RED);
 
         private static final FlamethrowerMode[] MODES = values();
-        private String unlocalized;
-        private EnumColor color;
+        private final ILangEntry langEntry;
+        private final EnumColor color;
 
-        FlamethrowerMode(String s, EnumColor c) {
-            unlocalized = s;
-            color = c;
+        FlamethrowerMode(ILangEntry langEntry, EnumColor color) {
+            this.langEntry = langEntry;
+            this.color = color;
         }
 
         @Override
         public ITextComponent getTextComponent() {
-            return TextComponentUtil.build(color, unlocalized);
+            return langEntry.translateColored(color);
         }
 
         @Nonnull
