@@ -20,6 +20,10 @@ public enum MekanismLang implements ILangEntry {
     FORGE("mekanism.forge"),
     IC2("mekanism.ic2"),
 
+    KEY_MODE("mekanism.key.mode"),
+    KEY_ARMOR_MODE("mekanism.key.armorMode"),
+    KEY_FEET_MODE("mekanism.key.feetMode"),
+
     HOLIDAY_BORDER("holiday.mekanism.border"),
     HOLIDAY_SIGNATURE("holiday.mekanism.signature"),
 

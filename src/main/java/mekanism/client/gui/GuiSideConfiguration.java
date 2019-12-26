@@ -24,7 +24,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -84,7 +83,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
             if (onHover instanceof SideDataButton) {
                 DataType dataType = ((SideDataButton) onHover).getDataType();
                 if (dataType != null) {
-                    displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(dataType.getColor(), Translation.of(dataType.getColor().getTranslationKey())), xAxis, yAxis);
+                    displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(dataType.getColor(), dataType.getColor().getName()), xAxis, yAxis);
                 }
             }
         };

@@ -24,11 +24,30 @@ public enum APILang implements IHasTranslationKey {
     UPGRADE_ANCHOR("upgrade", "anchor"),
     UPGRADE_ANCHOR_DESCRIPTION("upgrade", "anchor.description"),
     //Transmission types
-    TRANSMISSION_TYPE_ENERGY("transmission.mekanism.energy"),
-    TRANSMISSION_TYPE_FLUID("transmission.mekanism.fluids"),
-    TRANSMISSION_TYPE_GAS("transmission.mekanism.gases"),
-    TRANSMISSION_TYPE_ITEM("transmission.mekanism.items"),
-    TRANSMISSION_TYPE_HEAT("transmission.mekanism.heat");
+    TRANSMISSION_TYPE_ENERGY("transmission", "energy"),
+    TRANSMISSION_TYPE_FLUID("transmission", "fluids"),
+    TRANSMISSION_TYPE_GAS("transmission", "gases"),
+    TRANSMISSION_TYPE_ITEM("transmission", "items"),
+    TRANSMISSION_TYPE_HEAT("transmission", "heat"),
+    //Colors
+    COLOR_BLACK("color", "black"),
+    COLOR_DARK_BLUE("color", "dark_blue"),
+    COLOR_DARK_GREEN("color", "dark_green"),
+    COLOR_DARK_AQUA("color", "dark_aqua"),
+    COLOR_DARK_RED("color", "dark_red"),
+    COLOR_PURPLE("color", "purple"),
+    COLOR_ORANGE("color", "orange"),
+    COLOR_GRAY("color", "gray"),
+    COLOR_DARK_GRAY("color", "dark_gray"),
+    COLOR_INDIGO("color", "indigo"),
+    COLOR_BRIGHT_GREEN("color", "bright_green"),
+    COLOR_AQUA("color", "aqua"),
+    COLOR_RED("color", "red"),
+    COLOR_PINK("color", "pink"),
+    COLOR_YELLOW("color", "yellow"),
+    COLOR_WHITE("color", "white"),
+    COLOR_BROWN("color", "brown"),
+    COLOR_BRIGHT_PINK("color", "bright_pink");
 
     private final String key;
 

@@ -181,6 +181,7 @@
   "item.mekanismadditions.walkie_talkie": "Walkie-Talkie",
   "item.mekanismadditions.white_balloon": "White Balloon",
   "item.mekanismadditions.yellow_balloon": "Yellow Balloon",
+  "mekanismadditions.key.voice": "Voice",
   "tooltip.mekanismadditions.channel": "Channel: %s",
   "tooltip.mekanismadditions.walkie_disabled": "Voice server disabled."
 }

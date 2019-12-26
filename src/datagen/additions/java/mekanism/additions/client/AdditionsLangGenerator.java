@@ -34,6 +34,7 @@ public class AdditionsLangGenerator extends BaseLanguageProvider {
     protected void addTranslations() {
         add(AdditionsLang.CHANNEL, "Channel: %s");
         add(AdditionsLang.WALKIE_DISABLED, "Voice server disabled.");
+        add(AdditionsLang.KEY_VOICE, "Voice");
         //Entity types
         add(AdditionsEntityType.BABY_SKELETON, "Baby Skeleton");
         add(AdditionsEntityType.BALLOON, "Balloon");

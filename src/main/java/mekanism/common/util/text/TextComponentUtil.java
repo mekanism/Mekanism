@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.common.MekanismLang;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.fluid.Fluid;
@@ -59,7 +60,8 @@ public class TextComponentUtil {
                 //Put actual boolean or integer/double, etc value
                 current = getString(component.toString());
             } else {
-                //TODO: Warning when unexpected type?
+                //Fallback to a generic replacement
+                current = MekanismLang.GENERIC.translate(component);
             }
             if (current == null) {
                 //If we don't have a component to add, don't
@@ -133,10 +135,11 @@ public class TextComponentUtil {
                     current = getString(component.toString());
                 } else if (component instanceof EnumColor) {
                     //If we already have a format allow using the EnumColor's name
-                    current = translate(((EnumColor) component).getTranslationKey());
+                    current = ((EnumColor) component).getName();
+                } else {
+                    //Fallback to a direct replacement just so that we can properly color it
+                    current = MekanismLang.GENERIC.translate(component);
                 }
-                //TODO: Do we want a translation component that is just %s so that we can then color that with having to have
-                // a special case to handle it
             }
             //Formatting
             else if (component instanceof EnumColor) {
@@ -148,7 +151,7 @@ public class TextComponentUtil {
             }
             if (cachedFormat != null) {
                 //If we don't have a text component, then we have to just ignore the formatting and
-                // add it directly as an argument
+                // add it directly as an argument. (Note: This should never happen because of the fallback)
                 if (current == null) {
                     args.add(component);
                 } else {
@@ -169,7 +172,7 @@ public class TextComponentUtil {
             //Note: We know that we have at least one element in the array, so we don't need to safety check here
             Object lastComponent = components[components.length - 1];
             if (lastComponent instanceof EnumColor) {
-                args.add(translate(((EnumColor) lastComponent).getTranslationKey()));
+                args.add(((EnumColor) lastComponent).getName());
             } else {
                 args.add(lastComponent);
             }

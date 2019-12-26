@@ -477,7 +477,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 if (color == null) {
                     return new Object[]{"Default color set to null"};
                 }
-                return new Object[]{"Default color set to " + color.dyeName};
+                return new Object[]{"Default color set to " + color.getDyeName()};
             } else if (method == 1) {
                 if (!(arguments[0] instanceof Boolean)) {
                     return new Object[]{"Invalid parameters."};

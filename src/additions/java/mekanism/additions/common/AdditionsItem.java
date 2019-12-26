@@ -35,6 +35,6 @@ public class AdditionsItem {
     public static final ItemRegistryObject<ItemBalloon> WHITE_BALLOON = registerBalloon(EnumColor.WHITE);
 
     private static ItemRegistryObject<ItemBalloon> registerBalloon(EnumColor color) {
-        return ITEMS.register(color.registry_prefix + "_balloon", () -> new ItemBalloon(color));
+        return ITEMS.register(color.getRegistryPrefix() + "_balloon", () -> new ItemBalloon(color));
     }
 }

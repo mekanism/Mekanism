@@ -222,7 +222,7 @@ public class AdditionsBlock {
     }
 
     private static BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName> registerPlasticStairs(IBlockProvider baseBlock, EnumColor color) {
-        return BLOCKS.register(color.registry_prefix + "_plastic_stairs", () -> new BlockPlasticStairs(baseBlock, color), ItemBlockColoredName::new);
+        return BLOCKS.register(color.getRegistryPrefix() + "_plastic_stairs", () -> new BlockPlasticStairs(baseBlock, color), ItemBlockColoredName::new);
     }
 
     private static BlockRegistryObject<BlockPlasticSlab, ItemBlockColoredName> registerPlasticSlab(EnumColor color) {
@@ -239,6 +239,6 @@ public class AdditionsBlock {
 
     private static <BLOCK extends Block & IColoredBlock> BlockRegistryObject<BLOCK, ItemBlockColoredName> registerColoredBlock(Function<EnumColor, BLOCK> blockCreator,
           String blockTypeSuffix, EnumColor color) {
-        return BLOCKS.register(color.registry_prefix + blockTypeSuffix, () -> blockCreator.apply(color), ItemBlockColoredName::new);
+        return BLOCKS.register(color.getRegistryPrefix() + blockTypeSuffix, () -> blockCreator.apply(color), ItemBlockColoredName::new);
     }
 }

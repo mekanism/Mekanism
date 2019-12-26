@@ -13,7 +13,6 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.util.text.Translation;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -44,8 +43,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
                     if (isMouseOverSlot(slot, mouseX, mouseY)) {
                         DataType data = getFromSlot(slot);
                         if (data != null) {
-                            displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(data.getColor(), Translation.of(data.getColor().getTranslationKey())),
-                                  mouseX - guiLeft, mouseY - guiTop);
+                            displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(data.getColor(), data.getColor().getName()), mouseX - guiLeft, mouseY - guiTop);
                         }
                         break;
                     }

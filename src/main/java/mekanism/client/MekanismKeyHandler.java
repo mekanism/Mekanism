@@ -21,7 +21,6 @@ import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketJetpackData;
 import mekanism.common.network.PacketScubaTankData;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,9 +36,9 @@ import org.lwjgl.glfw.GLFW;
 public class MekanismKeyHandler extends MekKeyHandler {
 
     public static final String keybindCategory = Mekanism.MOD_NAME;
-    public static KeyBinding modeSwitchKey = new KeyBinding("mekanism.key.mode", GLFW.GLFW_KEY_N, keybindCategory);
-    public static KeyBinding armorModeSwitchKey = new KeyBinding("mekanism.key.armorMode", GLFW.GLFW_KEY_G, keybindCategory);
-    public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding("mekanism.key.feetMode", GLFW.GLFW_KEY_H, keybindCategory);
+    public static KeyBinding modeSwitchKey = new KeyBinding(MekanismLang.KEY_MODE.getTranslationKey(), GLFW.GLFW_KEY_N, keybindCategory);
+    public static KeyBinding armorModeSwitchKey = new KeyBinding(MekanismLang.KEY_ARMOR_MODE.getTranslationKey(), GLFW.GLFW_KEY_G, keybindCategory);
+    public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding(MekanismLang.KEY_FEET_MODE.getTranslationKey(), GLFW.GLFW_KEY_H, keybindCategory);
 
     public static KeyBinding sneakKey = Minecraft.getInstance().gameSettings.field_228046_af_;
 

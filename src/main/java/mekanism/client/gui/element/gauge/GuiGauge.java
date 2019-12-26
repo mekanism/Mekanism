@@ -16,7 +16,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
@@ -109,9 +108,9 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                         }
                     }
                     if (dataType == null) {
-                        guiObj.displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(color, Translation.of(color.getTranslationKey())), mouseX, mouseY);
+                        guiObj.displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()), mouseX, mouseY);
                     } else {
-                        guiObj.displayTooltip(TextComponentUtil.build(color, dataType, MekanismLang.GENERIC_PARENTHESIS.translate(Translation.of(color.getTranslationKey()))), mouseX, mouseY);
+                        guiObj.displayTooltip(TextComponentUtil.build(color, dataType, MekanismLang.GENERIC_PARENTHESIS.translate(color.getName())), mouseX, mouseY);
                     }
                 }
             }
