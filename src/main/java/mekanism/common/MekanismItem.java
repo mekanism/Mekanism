@@ -65,6 +65,7 @@ public class MekanismItem {
     public static final ItemRegistryObject<Item> SALT = ITEMS.register("salt");
     public static final ItemRegistryObject<Item> SUBSTRATE = ITEMS.register("substrate");
     //TODO: Make sure we match the common spec
+    //TODO: 1.15, Move to generators module?? Given I think it may only be used there (check recipes, and side effects)
     public static final ItemRegistryObject<Item> BIO_FUEL = ITEMS.register("bio_fuel");
 
     //TODO: Should we make an enriched type for each infusion type

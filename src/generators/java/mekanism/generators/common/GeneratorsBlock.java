@@ -37,6 +37,8 @@ import net.minecraft.block.Block;
 
 public class GeneratorsBlock {
 
+    //TODO: Lang files had a string for a Neutron Capture Plate with the description:
+    // A block that can be used to both block Fusion Reactor radiation and assist in the production of Tritium.
     public static BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismGenerators.MODID);
 
     public static final BlockRegistryObject<BlockHeatGenerator, ItemBlockHeatGenerator> HEAT_GENERATOR = BLOCKS.register("heat_generator", BlockHeatGenerator::new, ItemBlockHeatGenerator::new);

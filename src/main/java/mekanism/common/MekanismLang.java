@@ -6,6 +6,8 @@ import net.minecraft.util.Util;
 //TODO: Figure out some good way to organize this file
 //TODO: Also go through and convert all keys to lower case?
 //TODO: Also potentially make better names for various things
+//TODO: Look at !n and determine if they are artifacts that should be deleted
+//TODO: Also search for "= in case any copy paste errors happened
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy pasted all over the place
     INVENTORY("container.inventory"),

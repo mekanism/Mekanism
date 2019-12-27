@@ -35,7 +35,7 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
         addButton(new GuiRedstoneControl(this, tile, resource));
         addButton(new GuiSecurityTab<>(this, tile, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
-              GeneratorsLang.PRODUCING.translate(EnergyDisplay.of(tile.generationRate * tile.clientUsed)),
+              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.generationRate * tile.clientUsed)),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this, resource));
         addButton(new GuiGasGauge(() -> tile.fuelTank, Type.WIDE, this, resource, 55, 18));
         addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
@@ -47,7 +47,7 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Gas
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
-        ITextComponent component = GeneratorsLang.BURN_RATE.translate(tile.clientUsed);
+        ITextComponent component = GeneratorsLang.GAS_BURN_RATE.translate(tile.clientUsed);
         drawString(component, xSize - 8 - getStringWidth(component), (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

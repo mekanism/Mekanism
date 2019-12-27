@@ -38,7 +38,7 @@ public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
         super.init();
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              GeneratorsLang.PRODUCING.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
+              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
               this, resource));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override

@@ -393,7 +393,6 @@ entity.Robit.name=Robit
 # Gui text
 gui.condensentrating=Kondensentracja
 gui.decondensentrating=Dekondensentracja
-gui.power=Energia
 gui.confirm=Zatwierdź
 gui.open=Otwórz
 gui.allOK=Wszystko OK
@@ -408,7 +407,6 @@ gui.autoEject=Automatyczne wysyłanie
 gui.itemstack=Przedmioty
 gui.oredict=Encyklopedia Surowców
 gui.material=Materiał
-gui.out=Wyjście
 gui.noFluid=Brak cieczy
 gui.empty=Pusty
 gui.volume=Objętość
@@ -443,16 +441,12 @@ gui.min=Min
 gui.max=Maks.
 gui.delay=Opóźnienie
 gui.noDelay=Bez opóźnienia
-gui.fuel=Paliwo
-gui.heat=Ciepło
 gui.formed=Kompletne
 gui.incomplete=Niekompletne
 gui.inductionMatrix=Zbiornik indukcyjny
 gui.matrixStats=Statystyki matrycy zbiornika
-gui.turbineStats=Statystyki turbiny
 gui.boilerStats=Statystyki kotła
 gui.main=Główny
-gui.outputting=Wyjście
 gui.receiving=Odbiór
 gui.dimensions=Wymiary
 gui.constituents=Składniki
@@ -460,7 +454,6 @@ gui.cells=komórki
 gui.providers=dostawcy
 gui.structure=Struktura
 gui.dynamicTank=Przyłącze zbiornika cieczy
-gui.industrialTurbine=Turbina przemysłowa
 gui.thermoelectricBoiler=Kocioł termoelektryczny
 gui.visuals=Wizualizacje
 gui.noEject=Nieusuwalne
@@ -472,11 +465,9 @@ gui.add=Dodaj
 gui.set=Częstotliwość
 gui.freq=Częstotliwość
 gui.security=Zabezpieczenie
-gui.index=Indeks		`
-gui.producing=Produkcja
+gui.index=Indeks
 gui.maxOutput=Maks. wyjście
 gui.storing=Przechowywanie
-gui.skyBlocked=Niebo zablokowane
 gui.using=Zużywa
 gui.needed=Potrzeba
 gui.noRecipe=Brak przepisu
@@ -489,28 +480,11 @@ gui.abundancy=Ilość
 gui.nextItem=Następny przedmiot
 gui.lastItem=Poprzedni przedmiot
 gui.oreDictCompat=Klucz Encyklopedii Surowców zgodny
-gui.toggleCooling=Przełącza chłodzenie
-gui.coolingMeasurements=Aktywne chłodzenie
-gui.redstoneOutputMode=Tryb czerwonego proszku
 gui.moveUp=Podnieś
 gui.moveDown=Opuść
-gui.flowRate=Prędkość przepływu
-gui.maxFlow=Maksymalny przepływ
-gui.tankVolume=Objętość zbiornika
-gui.steamFlow=Przepływ pary
-gui.production=Produkcja
-gui.blades=Ostrza
-gui.coils=Cewki
-gui.dispersers=Zawory
-gui.vents=Otwory wentylacyjne
-gui.maxProduction=Maks. produkcja
-gui.limiting=Ograniczenie
-gui.steamInput=Wejście pary
-gui.capacity=Pojemność
 gui.unit=Jednostka
 gui.temp=Temp
 gui.usage=Zużycie
-gui.transferred=Przeniesione
 gui.dissipated=Rozrzutnie
 gui.boilRate=Szybkość wrzenia
 gui.maxBoil=Maks. gotowaniew
@@ -537,16 +511,12 @@ gui.overridden=Zastąpiono
 gui.nowOwn=Jesteś właścicielem tego elementu.
 gui.frequency=Częstotliwość
 gui.mode=Tryb
-gui.burnRate=Stopień spalania
 gui.entityDetection=Detekcja jednostek
 gui.energyContents=Składowe energii
 gui.redstoneOutput=Wyjście czerwonego proszku
-gui.maxWaterOutput=Maks. moc wyjściowa wody
 gui.stockControl=Kontrola zapasów
 gui.allowDefault=Zezwól na domyślne
 gui.sizeMode=Tryb rozmiaru
-
-gui.reactor.injectionRate=Stopień wtrysku
 
 gui.upgrades=Ulepszenia
 gui.upgrades.supported=Wspiera
@@ -685,7 +655,6 @@ tooltip.configurator.plenisherReset=Zresetuj obliczenia wypełniacza cieczą
 tooltip.configurator.inductionPortMode=Przełączono tryb transferu przyłącza indukcyjnego do
 tooltip.configurator.toggleColor=Kolor zmieniony na
 tooltip.configurator.viewColor=Obecny kolor
-tooltip.configurator.reactorPortEject=Zmieniono tryb przyłącza reaktora na
 
 tooltip.upgrade.speed=Prędkość
 tooltip.upgrade.energy=Energia
@@ -727,8 +696,6 @@ tooltip.noKey=Brak klucza
 tooltip.hp=HP
 mekanism.tooltip.configureState=Ustaw stan: %s
 tooltip.outputRate=Wydajność
-tooltip.insufficientFuel=Niewystarczająca ilość paliwa
-tooltip.readyForReaction=Gotowy do reakcji
 tooltip.speed=Prędkość
 tooltip.and=i
 tooltip.heat=Ciepło
@@ -823,28 +790,6 @@ tooltip.FormulaicAssemblicator=Maszyna wykorzystująca energię  w produkcji z d
 tooltip.FuelwoodHeater=Urządzenie mogące wytwarzać duże ilości energii cieplnej przez spalanie palnych elementów.
 tooltip.QuantumEntangloporter=Bardzo zaawansowany blok umożliwiający przesyłanie praktycznie dowolnych zasobów na duże odległości i wymiary.
 
-tooltip.HeatGenerator=Generator, który wykorzystuje ciepło lawy lub innych palnych zasobów do produkcji energii.
-tooltip.SolarGenerator=Generator wykorzystujący promienie słoneczne do produkcji energii.
-tooltip.GasGenerator=Generator, który wykorzystuje molekularne gazy przetwarzając je w celu wytworzenia energii.
-tooltip.BioGenerator=Generator spalający wszelkie materiały organiczne w celu produkcji energii.
-tooltip.AdvancedSolarGenerator=Zaawansowany generator, który za pomocą paneli pochłania promieniowanie słoneczne i przetwarza w energię.
-tooltip.WindGenerator=Generator, który wykorzystuje siłę wiatru do wytwarzania energii, z większą wydajnością im wyższe wzniesienie.
-tooltip.TurbineRotor=Stalowy pręt, który jest używany do mocowania łopat turbiny w obrębie turbiny przemysłowej.
-tooltip.RotationalComplex=Złącze umieszczane na najwyższym wirniku turbiny przemysłowej w celu przenoszenia energii kinetycznej do cewek elektromagnetycznych.
-tooltip.ElectromagneticCoil=Blok, który przemienia energię kinetyczną z kompleksu turbin rotacyjnych na użyteczną elektryczność. Może być umieszczony w dowolnym układzie powyżej twojego kompleksu rotacyjnego, o ile każdy z nich dotyka siebie nawzajem i samego kompleksu.
-tooltip.TurbineCasing=Obudowa odporna na ciśnienie stosowana przy budowie turbiny przemysłowej.
-tooltip.TurbineValve=Rodzaj obudowy turbiny, który zawiera przyłącze do przesyłania energii i pary.
-tooltip.TurbineVent=Rodzaj obudowy turbiny ze zintegrowanym odpowietrznikiem do uwalniania pary wodnej. Powinien być umieszczony na poziomie lub powyżej kompleksu turbin rotacyjnych.
-tooltip.SaturatingCondenser=Blok, który kondensuje parę przetwarzaną przez turbinę przemysłową w wodę wielokrotnego użytku. Mogą być umieszczony w dowolnym układzie nad obrotowym zespołem.
-
-tooltip.ReactorGlass=Wzmocnione szkło, które może być użyte w wielobloku reaktora syntezy jądrowej.
-tooltip.ReactorLaserFocusMatrix=Szklany element reaktora zdolny do pochłaniania energii nuklearnej i ogrzewania reaktora syntezy jądrowej.
-tooltip.ReactorController=Blok kontrolny dla całej struktury reaktora syntezy jądrowej.
-tooltip.ReactorFrame=Wzmocnione ramy, które mogą być użyte w wielobloku reaktora syntezy jądrowej.
-tooltip.ReactorNeutronCapturePlate=Blok, który może być użyty zarówno do blokowania promieniowania reaktora syntezy jądrowej i wspomagania produkcji Tritium.
-tooltip.ReactorPort=Blok wzmocnionego materiału, zdolny do zarządzania zarówno przepływem gazu i  energii reaktora syntezy jądrowej.
-tooltip.ReactorLogicAdapter=Blok, który może być wykorzystany do umożliwienia podstawowego monitorowania reaktora za pomocą czerwonego proszku.
-
 tooltip.OsmiumOre=Wytrzymały materiał znajdywany na każdej wysokości. Ma wiele zastosowań w budowie maszyn.
 tooltip.CopperOre=Pospolity materiał z wysoką przewodnością prądu wykorzystywaną do tworzenia kabli. Wysoka temperatura topnienia daje miedzi wiele zastosowań również w budowie maszyn.
 tooltip.TinOre=Lekki i wytrzymały materiał z wysoką przewodnością występujący trochę rzadziej niż miedź.
@@ -898,16 +843,6 @@ color.white=Biały
 color.brown=Brązowy
 color.brightPink=Jasnoróżowy
 
-# Reactor Logic modes
-reactor.disabled=Nieaktywny
-reactor.disabled.desc=Nie emituje sygnału czerwonego proszku
-reactor.ready=Gotowy do zapłonu
-reactor.ready.desc=Reaktor osiągnął temperaturę wymaganą do zapłonu
-reactor.capacity=Wydajność cieplna
-reactor.capacity.desc=Osiągnięto pojemność cieplną reaktora
-reactor.depleted=Zbyt mało paliwa
-reactor.depleted.desc=Reaktor ma niewystarczającą ilość paliwa w celu utrzymania reakcji
-
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -915,47 +850,6 @@ itemGroup.tabMekanism=Mekanism
 # GENERATORS
 ##############
 
-# Items
-item.SolarPanel.name=Panel słoneczny
-item.Hohlraum.name=Pojemnik termonuklearny
-item.TurbineBlade.name=Łopaty turbiny
-
-# Generators
-tile.Generator.HeatGenerator.name=Generator cieplny
-tile.Generator.SolarGenerator.name=Generator słoneczny
-tile.Generator.GasGenerator.name=Generator spalania gazowego
-tile.Generator.BioGenerator.name=Biogenerator
-tile.Generator.AdvancedSolarGenerator.name=Zaawansowany generator słoneczny
-tile.Generator.WindGenerator.name=Turbina wiatrowa
-tile.Generator.TurbineRotor.name=Wirnik turbiny
-tile.Generator.RotationalComplex.name=Kompleks rotacyjny
-tile.Generator.ElectromagneticCoil.name=Cewka elektromagnetyczna
-tile.Generator.TurbineCasing.name=Obudowa turbiny
-tile.Generator.TurbineValve.name=Zawór turbiny
-tile.Generator.TurbineVent.name=Wyciąg turbiny
-tile.Generator.SaturatingCondenser.name=Nasycacz skraplacza
-
-tile.Reactor.ReactorController.name=Sterownik reaktora
-tile.Reactor.ReactorFrame.name=Rama reaktora
-tile.Reactor.ReactorNeutronCapturePlate.name=Płyta przechwytująca neutrony
-tile.Reactor.ReactorPort.name=Przyłącze reaktora
-tile.Reactor.ReactorLogicAdapter.name=Adapter logiczny reaktora
-
-tile.ReactorGlass.ReactorGlass.name=Szkło reaktorowe
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Matryca skupienia lasera
-
 # Gui text
-gui.heatGenerator.fuel=Paliwo
 gui.solarGenerator.sun=Słońce
-gui.bioGenerator.bioFuel=Biopaliwo
 gui.electrolyticSeparator.dump=Wycofaj
-
-gui.passive=Chłodzony powietrzem
-gui.active=Chłodzony wodą
-
-gui.minInject=Min. szybk. wtrysku
-gui.ignition=Temp. zapłonu
-gui.maxPlasma=Maks. temp. plazmy
-gui.maxCasing=Maks. temp. obudowy
-gui.passiveGeneration=Generowanie pasywne
-gui.steamProduction=Produkcja pary

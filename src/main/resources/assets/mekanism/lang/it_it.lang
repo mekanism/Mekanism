@@ -340,7 +340,6 @@ entity.Robit.name=Robit
 gui.remove=Rimuovi
 gui.condensentrating=Condensando
 gui.decondensentrating=Decondensando
-gui.power=Corrente
 gui.confirm=Conferma
 gui.open=Apri
 gui.allOK=Tutto OK
@@ -355,7 +354,6 @@ gui.autoEject=Auto-espelli
 gui.itemstack=ItemStack
 gui.oredict=OreDict
 gui.material=Materiale
-gui.out=Fuori
 gui.noFluid=Nessun fluido
 gui.empty=Vuoto
 gui.volume=Volume
@@ -390,14 +388,11 @@ gui.min=Min
 gui.max=Max
 gui.delay=Ritardo
 gui.noDelay=No ritardo
-gui.fuel=Carburante
-gui.heat=Calore
 gui.formed=Formato
 gui.incomplete=Incompleto
 gui.inductionMatrix=Matrix di induzione
 gui.matrixStats=Statistiche del Matrix
 gui.main=Principale
-gui.outputting=In uscita
 gui.dimensions=Dimensione
 gui.constituents=Constituenti
 gui.cells=celle
@@ -415,10 +410,8 @@ gui.set=Imposta
 gui.freq=Freq
 gui.security=Sicurezza
 gui.index=Indice
-gui.producing=Producendo
 gui.maxOutput=Max uscita
 gui.storing=Contenedo
-gui.skyBlocked=Cielo bloccato
 gui.using=Usando
 gui.needed=Richiede
 gui.noRecipe=Nessuna ricetta
@@ -431,14 +424,9 @@ gui.abundancy=Abbondanza
 gui.nextItem=Prossimo oggetto
 gui.lastItem=Ultimo oggetto
 gui.oreDictCompat=Parola chiave OreDict compatibile
-gui.toggleCooling=Scambia misura di raffreddamento
-gui.coolingMeasurements=Raffreddamento attivo
-gui.redstoneOutputMode=Modalità pietrarossa
 gui.entityDetection=Rilevamento entità
 gui.moveUp=Muovi in su
 gui.moveDown=Muovi in giù
-
-gui.reactor.injectionRate=Ritmo di iniezione
 
 gui.upgrades=Potenziamenti
 gui.upgrades.supported=Supportati
@@ -615,8 +603,6 @@ tooltip.noKey=Nessuna parola chiave
 tooltip.hp=HP
 mekanism.tooltip.configureState=Configura stato è ora %s
 tooltip.outputRate=Ritmo di uscita
-tooltip.insufficientFuel=Carburante insufficiente
-tooltip.readyForReaction=Pronto per Reazione
 
 mekanism.tooltip.portableTank.bucketMode=Modalità secchio: %s
 
@@ -663,20 +649,6 @@ tooltip.LaserAmplifier=Un blocco che può convergere, indirizzare !ne amplificar
 tooltip.LaserTractorBeam=Un blocco che può convergere e !nindirizzare raggi laser. Colleziona !ni drop dei blocchi che rompe.
 tooltip.SolarNeutronActivator=Un macchinario che indirizza le radiazioni n!di neutroni del sole in un recipiente interno, !npermettendo la lenta creazione di vari isotopi.
 tooltip.Oredictionificator=Un blocco usato per unificare e trasformare vari !noggetti e blocchi usando il Ore Dictionary.
-
-tooltip.HeatGenerator=Un generatore che usa il calore della !nlava o di altre risorse bruciabili !nper produrre energia.
-tooltip.SolarGenerator=Un generatore che usa il potere !ndel sole per produrre energia.
-tooltip.GasGenerator=Un generatore che sfrutta le molecole !nvariabili dei gas per produrre corrente.
-tooltip.BioGenerator=Un generatore che brucia materiali !norganici per produrre energia.
-tooltip.AdvancedSolarGenerator=Un generatore avanzato che assorbe !ndirettamente i raggi solari per produrre !nenergia con una perdita minima.
-
-tooltip.ReactorGlass=Vetro rinforzato che può essere usato !nnella costruzione di un Reattore a fusione.
-tooltip.ReactorLaserFocusMatrix=Un pannello del Reattore a fusione che è !ncapace di assorbire energia ottica con !nil quale riscaldare il reattore.
-tooltip.ReactorController=Il blocco di controllo dell'intera !nstruttura del Reattore a fusione.
-tooltip.ReactorFrame=Telaio rinforzato che può essere usato !nnella costruzione di un Reattore a fusione.
-tooltip.ReactorNeutronCapturePlate=Un blocco che può essere usato sia per !nassorbire le radiazioni del Reattore !na fusione che assistere nella produzione di trizio.
-tooltip.ReactorPort=Un blocco di telaio rinforzato capace !ndi controllare il trasporto di sia gas che !nenergia del Reattore a fusione.
-tooltip.ReactorLogicAdapter=Un blocco che può essere usato !nper monitorare un Reattore !nusando la pietrarossa.
 
 tooltip.OsmiumOre=Un forte minerale che può essere trovato !na quasi tutte le altezze nel mondo. !nE' conosciuto per avere molti usi !nnella costruzione di macchinari.
 tooltip.CopperOre=Un materiale comune e conduttivo che !npuò essere usato nella produzione di !ncavi. La sua abilità nel resistere a !nmolto calore lo rende essenziale !nin macchinari avanzati.
@@ -727,16 +699,6 @@ color.white=Bianco
 color.brown=Marrone
 color.brightPink=Rosa acceso
 
-# Reactor Logic modes
-reactor.disabled=Disabilitato
-reactor.disabled.desc=Non emetterà un segnale di pietrarossa
-reactor.ready=Pronto per accensione
-reactor.ready.desc=Il reattore ha raggiunto il livello di calore richiesto per accendersi
-reactor.capacity=Capacità di calore raggiunto
-reactor.capacity.desc=La capacità di calore del nocciolo del reattore è stata raggiunta
-reactor.depleted=Carburante insufficiente
-reactor.depleted.desc=Il reattore non ha carburante sufficiente per sostenere una reazione
-
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -744,39 +706,6 @@ itemGroup.tabMekanism=Mekanism
 # GENERATORS
 #############
 
-# Items
-item.SolarPanel.name=Pannello solare
-item.Hohlraum.name=Hohlraum
-
-# Generators
-tile.Generator.HeatGenerator.name=Generatore a calore
-tile.Generator.SolarGenerator.name=Generatore solare
-tile.Generator.GasGenerator.name=Generatore a gas
-tile.Generator.BioGenerator.name=Bio-generatore
-tile.Generator.AdvancedSolarGenerator.name=Generatore solare avanzato
-tile.Generator.WindGenerator.name=Turbina eolica
-
-tile.Reactor.ReactorController.name=Regolatore del reattore
-tile.Reactor.ReactorFrame.name=Struttura del reattore
-tile.Reactor.ReactorNeutronCapturePlate.name=Piastra di cattura dei neutroni
-tile.Reactor.ReactorPort.name=Porta del reattore
-tile.Reactor.ReactorLogicAdapter.name=Adattatore logico del reattore
-
-tile.ReactorGlass.ReactorGlass.name=Vetro del reattore
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Matrice concentrante per laser
-
 # Gui text
-gui.heatGenerator.fuel=Carburante
 gui.solarGenerator.sun=Sole
-gui.bioGenerator.bioFuel=Biocarburante
 gui.electrolyticSeparator.dump=Scarico
-
-gui.passive=Raffreddato ad aria
-gui.active=Raffreddato ad acqua
-
-gui.minInject=Min. ritmo di iniezione
-gui.ignition=Temp di accensione
-gui.maxPlasma=Max. temp del plasma
-gui.maxCasing=Max. temp del telaio
-gui.passiveGeneration=Generazione passiva
-gui.steamProduction=Produzione di vapore

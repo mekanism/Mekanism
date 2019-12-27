@@ -393,7 +393,6 @@ entity.Robit.name=Робит
 # Gui text
 gui.condensentrating=Конденсация
 gui.decondensentrating=Деконденсация
-gui.power=Энергия
 gui.confirm=Подтвердить
 gui.open=Открыть
 gui.allOK=Всё ок
@@ -408,7 +407,6 @@ gui.autoEject=Авто-выброс
 gui.itemstack=Стопка предметов
 gui.oredict=Словарь руд
 gui.material=Материал
-gui.out=Выход
 gui.noFluid=Нет жидкости
 gui.empty=Пусто
 gui.volume=Звук
@@ -443,16 +441,12 @@ gui.min=Мин.
 gui.max=Макс.
 gui.delay=Задержка
 gui.noDelay=Без задержки
-gui.fuel=Топливо
-gui.heat=Нагрев
 gui.formed=Сформировано
 gui.incomplete=Незавершенно
 gui.inductionMatrix=Индукционная матрица
 gui.matrixStats=Статистика матрицы
-gui.turbineStats=Статистика турбины
 gui.boilerStats=Статистика бойлера
 gui.main=Главное
-gui.outputting=Выход
 gui.receiving=Вход
 gui.dimensions=Измерения
 gui.constituents=Составляющие
@@ -460,7 +454,6 @@ gui.cells=ячеек
 gui.providers=поставщики
 gui.structure=Структура
 gui.dynamicTank=Динамический резервуар
-gui.industrialTurbine=Промышленная турбина
 gui.thermoelectricBoiler=Термоэлектрический бойлер
 gui.visuals=Маркеры
 gui.noEject=Нет выброса
@@ -473,10 +466,8 @@ gui.set=Установить
 gui.freq=Частота
 gui.security=Безопасность
 gui.index=Содержание
-gui.producing=Производится
 gui.maxOutput=Макс. выход
 gui.storing=Накапливается
-gui.skyBlocked=Не видно неба
 gui.using=Используется
 gui.needed=Нужно
 mekanism.gui.bufferfree=Свободно
@@ -491,28 +482,11 @@ gui.abundancy=Избыток
 gui.nextItem=След. предмет
 gui.lastItem=Послед. предмет
 gui.oreDictCompat=Совместимый OreDict ключ
-gui.toggleCooling=Переключить измерение охлаждения
-gui.coolingMeasurements=Активное охлаждение
-gui.redstoneOutputMode=Режим редстоуна
 gui.moveUp=Двигаться вверх
 gui.moveDown=Двигаться вниз
-gui.flowRate=Поток
-gui.maxFlow=Макс. поток
-gui.tankVolume=Вместимость бака
-gui.steamFlow=Поток пара
-gui.production=Генерация
-gui.blades=Лезвий
-gui.coils=Катушек
-gui.dispersers=Распылителей
-gui.vents=Вентилей
-gui.maxProduction=Макс. генерация
-gui.limiting=Ограничение
-gui.steamInput=Вход пара
-gui.capacity=Ёмкость
 gui.unit=Единица
 gui.temp=Температура
 gui.usage=Использование
-gui.transferred=Передано
 gui.dissipated=Рассеяно
 gui.boilRate=Скорость нагревания
 gui.maxBoil=Макс. нагрев
@@ -539,16 +513,12 @@ gui.overridden=Перезаписано
 gui.nowOwn=Теперь вы - владелец.
 gui.frequency=Частота
 gui.mode=Режим
-gui.burnRate=Скорость горения
 gui.entityDetection=Обнаружение сущностей
 gui.energyContents=Энергия
 gui.redstoneOutput=Выход редстоуна
-gui.maxWaterOutput=Макс. выход воды
 gui.stockControl=Складской учет
 gui.allowDefault=Разрешить по умолчанию
 gui.sizeMode=Режим размера
-
-gui.reactor.injectionRate=Скорость инъекции
 
 gui.upgrades=Улучшения
 gui.upgrades.supported=Работает с
@@ -691,7 +661,6 @@ tooltip.configurator.plenisherReset=Сбросить расчёт жидкост
 tooltip.configurator.inductionPortMode=Режим передачи индукционного порта переключен на
 tooltip.configurator.toggleColor=Цвет изменён на
 tooltip.configurator.viewColor=Текущий цвет
-tooltip.configurator.reactorPortEject=Режим передачи порта реактора переключен на
 tooltip.configurator.modeChange=Тип подключения изменён на
 mekanism.pipe.connectiontype.normal=Обычный
 mekanism.pipe.connectiontype.push=Выброс
@@ -738,8 +707,6 @@ tooltip.noKey=Нет ключа
 tooltip.hp=Прочность
 mekanism.tooltip.configureState=Настраивает состояние: %s
 tooltip.outputRate=Скорость выхода
-tooltip.insufficientFuel=Недостаточно топлива
-tooltip.readyForReaction=Готово к реакции
 tooltip.speed=Скорость
 tooltip.and=и
 tooltip.heat=Нагрев
@@ -835,28 +802,6 @@ tooltip.FormulaicAssemblicator=Машина, которая использует
 tooltip.FuelwoodHeater=Механизм, производящий большое кол-во тепла сжиганием различных горючих предметов.
 tooltip.QuantumEntangloporter=Продвинутый блок, способный передавать любые ресурсы на большие расстояния и в другие измерения.
 
-tooltip.HeatGenerator=Генератор, который использует тепло лавы или другие горючие ресурсы для производства энергии. Также может работать от тепла.
-tooltip.SolarGenerator=Генератор, который использует энергию солнца для производства энергии.
-tooltip.GasGenerator=Генератор, который использует молекулы различных газов для производства энергии.
-tooltip.BioGenerator=Генератор, который сжигает органические материалы мира для производства энергии.
-tooltip.AdvancedSolarGenerator=Продвинутый генератор, который напрямую поглощает солнечные лучи с небольшой потерей, для производства энергии.
-tooltip.WindGenerator=Генератор, который использует силу ветра для производства энергии, с большей эффективностью на большой высоте.
-tooltip.TurbineRotor=Стальной стержень изнутри промышленной турбины, к которому крепятся лезвия ротора.
-tooltip.RotationalComplex=Блок, помещаемый на верхний ротор турбины, передающий кинетическую энергию к электромагнитным катушкам.
-tooltip.ElectromagneticCoil=Блок, превращающий кинетическую энергию от вращательного комплекса в электроэнергию.
-tooltip.TurbineCasing=Устойчивая к давлению обшивка для создания промышленной турбины.
-tooltip.TurbineValve=Обшивка турбины с портом для передачи пара и энергии.
-tooltip.TurbineVent=Обшивка турбины с вентилем для выпуска пара, должна быть выше вращательного комплекса.
-tooltip.SaturatingCondenser=Блок, конденсирующий пар, использованный промышленной турбиной, обратно в воду. Размещаются в любом месте над вращательным комплексом.
-
-tooltip.ReactorGlass=Укреплённое стекло, которое используется при строительстве термоядерного реактора.
-tooltip.ReactorLaserFocusMatrix=Панель из реакторного стекла, которая способна поглощать оптическую энергию, нагревая термоядерный реактор.
-tooltip.ReactorController=Блок управления для всего термоядерного реактора.
-tooltip.ReactorFrame=Укреплённый каркас, который используется при строительстве термоядерного реактора.
-tooltip.ReactorNeutronCapturePlate=Блок, который используется как для блокирования излучения термоядерного реактора, так и для получения трития.
-tooltip.ReactorPort=Блок укреплённого каркаса, который способен управлять передачей газа и энергии термоядерного реактора.
-tooltip.ReactorLogicAdapter=Блок, который может быть использован для мониторинга основных функций реактора с помощью редстоуна.
-
 tooltip.OsmiumOre=Крепкий минерал, который можно найти почти на любой высоте в мире. Он, как известно, имеет множество применений в производстве механизмов.
 tooltip.CopperOre=Общий проводящий материал, который может быть использован при производстве проводов. Способность выдерживать высокие температуры делает его незаменимым в современном оборудовании.
 tooltip.TinOre=Лёгкий, но крепкий проводящий материал, который встречается немного реже, чем медь.
@@ -910,16 +855,6 @@ color.white=Белый
 color.brown=Коричневый
 color.brightPink=Светло-Розовый
 
-# Reactor Logic modes
-reactor.disabled=Отключен
-reactor.disabled.desc=Не излучает редстоун сигнал
-reactor.ready=Реактор вот-вот взорвется
-reactor.ready.desc=Реактор сильно перегрелся и скоро взорвется
-reactor.capacity=Перегрев
-reactor.capacity.desc=Ядро реактора перегрелось
-reactor.depleted=Недостаточно топлива
-reactor.depleted.desc=Реактору не хватает топлива для поддержания реакции
-
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -927,47 +862,6 @@ itemGroup.tabMekanism=Mekanism
 # GENERATORS
 #############
 
-# Items
-item.SolarPanel.name=Солнечная панель
-item.Hohlraum.name=Реакционная камера
-item.TurbineBlade.name=Лезвие турбины
-
-# Generators
-tile.Generator.HeatGenerator.name=Тепловой генератор
-tile.Generator.SolarGenerator.name=Солнечный генератор
-tile.Generator.GasGenerator.name=Газовый генератор
-tile.Generator.BioGenerator.name=Биогенератор
-tile.Generator.AdvancedSolarGenerator.name=Продвинутый солнечный генератор
-tile.Generator.WindGenerator.name=Ветровая турбина
-tile.Generator.TurbineRotor.name=Ротор турбины
-tile.Generator.RotationalComplex.name=Вращательный комплекс
-tile.Generator.ElectromagneticCoil.name=Электромагнитная катушка
-tile.Generator.TurbineCasing.name=Обшивка турбины
-tile.Generator.TurbineValve.name=Порт турбины
-tile.Generator.TurbineVent.name=Вентиль турбины
-tile.Generator.SaturatingCondenser.name=Насыщающий конденсатор
-
-tile.Reactor.ReactorController.name=Панель управления реактором
-tile.Reactor.ReactorFrame.name=Каркас реактора
-tile.Reactor.ReactorNeutronCapturePlate.name=Пластина нейтронного захвата
-tile.Reactor.ReactorPort.name=Порт реактора
-tile.Reactor.ReactorLogicAdapter.name=Логический адаптер реактора
-
-tile.ReactorGlass.ReactorGlass.name=Стекло реактора
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Матрица лазерного фокуса
-
 # Gui text
-gui.heatGenerator.fuel=Топливо
 gui.solarGenerator.sun=Солнце
-gui.bioGenerator.bioFuel=Биотопливо
 gui.electrolyticSeparator.dump=Сброс
-
-gui.passive=Воздушное охлаждение
-gui.active=Водяное охлаждение
-
-gui.minInject=Мин. скорость инъекции
-gui.ignition=Температура воспламенения
-gui.maxPlasma=Макс. темп. плазмы
-gui.maxCasing=Макс. темп. корпуса
-gui.passiveGeneration=Пассивное генерирование
-gui.steamProduction=Производство пара

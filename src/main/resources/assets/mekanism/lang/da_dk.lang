@@ -366,7 +366,6 @@ entity.Robit.name=Robit
 # Gui text
 gui.condensentrating=Condensentrating
 gui.decondensentrating=Decondensentrating
-gui.power=Strøm
 gui.confirm=Bekræft
 gui.open=Åbn
 gui.allOK=Alt OK
@@ -381,7 +380,6 @@ gui.autoEject=Auto-udstød
 gui.itemstack=ItemStack
 gui.oredict=OreDict
 gui.material=Materiale
-gui.out=Ud
 gui.noFluid=Ingen væske
 gui.empty=Tom
 gui.volume=Volume
@@ -416,14 +414,11 @@ gui.min=Min
 gui.max=Maks
 gui.delay=Forsinkelse
 gui.noDelay=Ingen forsinkelse
-gui.fuel=Brændstof
-gui.heat=Varme
 gui.formed=Formet
 gui.incomplete=Ufuldstændig
 gui.inductionMatrix=Induktionsmatrice
 gui.matrixStats=Matrice-statistik
 gui.main=Hoved
-gui.outputting=Outputting
 gui.receiving=Modtager
 gui.dimensions=Dimensioner
 gui.constituents=Bestanddele
@@ -431,7 +426,6 @@ gui.cells=celler
 gui.providers=providers
 gui.structure=Struktur
 gui.dynamicTank=Dynamisk Tank
-gui.industrialTurbine=Industriel Turbine
 gui.thermoelectricBoiler=Termoelektrisk Kedel
 gui.visuals=Visuelle
 gui.noEject=Kan ikke udstøde
@@ -444,10 +438,8 @@ gui.set=Sæt
 gui.freq=Frek.
 gui.security=Sikkerhed
 gui.index=Indeks
-gui.producing=Producerer
 gui.maxOutput=Maks Output
 gui.storing=Opbevarer
-gui.skyBlocked=Himmel blokeret
 gui.using=Bruger
 gui.needed=Behøvet
 gui.noRecipe=Ingen opskrift
@@ -460,29 +452,12 @@ gui.abundancy=Overflod
 gui.nextItem=Næste Genstand
 gui.lastItem=Sidste Genstand
 gui.oreDictCompat=Kompatibel OreDict-nøgle
-gui.toggleCooling=Skift Kølemålinger
-gui.coolingMeasurements=Aktiv Køling
-gui.redstoneOutputMode=Redstone-modus
 gui.entityDetection=Entity Detection
 gui.moveUp=Flyt Op
 gui.moveDown=Flyt Ned
-gui.flowRate=Strømningshastighed
-gui.maxFlow=Maks sats
-gui.tankVolume=Tankrumfang
-gui.steamFlow=Dampstrøm
-gui.production=Produktion
-gui.blades=Blade
-gui.coils=Spoler
-gui.dispersers=Spredere
-gui.vents=Ventilatorer
-gui.maxProduction=Maks Produktion
-gui.limiting=Begrænsende
-gui.steamInput=Damp-input
-gui.capacity=Kapacitet
 gui.unit=Enhed
 gui.temp=Temp
 gui.usage=Forbrug
-gui.transferred=Overført
 gui.dissipated=Spredt
 gui.boilRate=Kogehastighed
 gui.maxBoil=Maks Kogning
@@ -506,8 +481,6 @@ gui.trustedMode=Betroede Modus
 gui.securityOffline=Sikkerhed Offline
 gui.noAccessDesc=Du har ikke adgang til denne blok.
 gui.overridden=Overriden
-
-gui.reactor.injectionRate=Injektionssats
 
 gui.upgrades=Opgraderinger
 gui.upgrades.supported=Støttet
@@ -689,8 +662,6 @@ tooltip.noKey=Ingen tast
 tooltip.hp=HP
 mekanism.tooltip.configureState=Konfigurér tilstand: %s
 tooltip.outputRate=Output Sats
-tooltip.insufficientFuel=Utilstrækkelig Brændsel
-tooltip.readyForReaction=Klar til Reaktion
 tooltip.speed=Fart
 tooltip.and=og
 tooltip.heat=Varme
@@ -773,25 +744,6 @@ tooltip.LaserTractorBeam=En blok brugt til at forene ogomdirigere laserstråler.
 tooltip.SolarNeutronActivator=En maskine der dirigerer neutronstrålingen fra solen om til sin interne reserve, hvilket tillader en langsom dannelse af forskelige isotoper.
 tooltip.Oredictionificator=En maskine brugt til at forene og oversætte mellem forskellige ting og blokke vha. Ore Dictionaryen.
 
-tooltip.HeatGenerator=En generator der bruger lavaens varme eller andre brændbare ressourcer til at producere energi.
-tooltip.SolarGenerator=En generator der bruger solens kraft til producere energi.
-tooltip.GasGenerator=En generator der udnytter de molekulært variende gasser til producere energi.
-tooltip.BioGenerator=En generator der brænder organisk materiale i verdenen til producere energi.
-tooltip.AdvancedSolarGenerator=En avanceret generator der direkte absorberer solens stråler med lille tab til at producere energi.
-tooltip.TurbineRotor=Stålstangen, der bruges til at huse Turbineblad indeni en Industriel Turbine.
-tooltip.RotationalComplex=En connector, der er placeret på den højeste Turbinerotor på en Industriel Turbine til at bære kinetisk energi ind i sine Elektromagnetiske Spoler.
-tooltip.ElectromagneticCoil=En blok, der konverterer kinetisk energi fra et Rotationskompleks omtil brugbar elektricitet. Disse kan placeres på hvilken som helst måde ovenpå dit Rotationscompleks, så længe de alle stadig rør hinanden og complekset sig selv.
-tooltip.TurbineValve=Et slags Turbinekabinet, der inkluderer en port til overførsel af energi og damp.
-tooltip.TurbineVent=Et slags Turbinekabinet med en integreret ventilator til udledningen af damp. Disse bør placeres på samme niveau som eller over turbinens Rotationscompleks.
-
-tooltip.ReactorGlass=Forstærket glas, der kan bruges i Fusionsreaktor-multiblokken.
-tooltip.ReactorLaserFocusMatrix=Et panel af Reaktorglas i stand til at absorbere optisk energi og derved opvarme Fusionsreaktoren.
-tooltip.ReactorController=Den kotrollerende blok til hele Fusionsreaktorens struktur.
-tooltip.ReactorFrame=Forstærket indramning, der kan bruges i Fusionsreaktor-multiblokken.
-tooltip.ReactorNeutronCapturePlate=En blok, der kan bruges til både at blokere Fusionsreaktorstråling og assistere i produktionen af Tritium.
-tooltip.ReactorPort=En blok forstærket indramning i stand til at håndtere både gas- og energioverførslen af Fusionsreaktoren.
-tooltip.ReactorLogicAdapter=En blok der kan bruges til at tillade basal overvågning af en reaktor vha. rødsten.
-
 tooltip.OsmiumOre=Et stærkt mineral der kan findes på enhver højde i verdenen. Den erkendt for at have mange anvendelser i konstruktionen af maskineri.
 tooltip.CopperOre=Et almindeligt, ledende materiale der kan bruges i produktionen af ledninger. Dets evne til at modstå høj varme gør den også essential til avanceret maskineri.
 tooltip.TinOre=Et letvægts, dog stadig robust, ledende materiale, der er en smule mindre sjælden end Kobber.
@@ -845,16 +797,6 @@ color.white=Hvid
 color.brown=Brun
 color.brightPink=Lyserød
 
-# Reactor Logic modes
-reactor.disabled=Deaktiveret
-reactor.disabled.desc=Vil ikke udgive et rødstenssignal
-reactor.ready=Klar til at tænde
-reactor.ready.desc=Reaktoren er nået det nødvendige varmeniveau til at tænde
-reactor.capacity=Varmekapacitet mødt
-reactor.capacity.desc=Reaktorens kernevarmekapacitet er blevet mødt
-reactor.depleted=Utilstrækkelig Brændstof
-reactor.depleted.desc=Reaktoren har utilstrækkelig brændstof til at vedligeholde en reaktion
-
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -862,45 +804,6 @@ itemGroup.tabMekanism=Mekanism
 # GENERATORS
 #############
 
-# Items
-item.SolarPanel.name=Solpanel
-item.Hohlraum.name=Hohlraum
-item.TurbineBlade.name=Turbineblad
-
-# Generators
-tile.Generator.HeatGenerator.name=Varmegenerator
-tile.Generator.SolarGenerator.name=Solgenerator
-tile.Generator.GasGenerator.name=Gasbrændende Generator
-tile.Generator.BioGenerator.name=Bio-generator
-tile.Generator.AdvancedSolarGenerator.name=Avanceret Solgenerator
-tile.Generator.WindGenerator.name=Vindgenerator
-tile.Generator.TurbineRotor.name=Turbinerotor
-tile.Generator.RotationalComplex.name=Rotationskompleks
-tile.Generator.ElectromagneticCoil.name=Elektromagnetiskspole
-tile.Generator.TurbineCasing.name=Turbinekabinet
-tile.Generator.TurbineValve.name=Turbineventil
-tile.Generator.TurbineVent.name=Turbineventilator
-
-tile.Reactor.ReactorController.name=Reaktor-controller
-tile.Reactor.ReactorFrame.name=Reaktorindramning
-tile.Reactor.ReactorNeutronCapturePlate.name=Neutronfanger-plade
-tile.Reactor.ReactorLogicAdapter.name=Reaktorlogiks-adapter
-
-tile.ReactorGlass.ReactorGlass.name=Reaktorglas
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laserfokus-matrice
-
 # Gui text
-gui.heatGenerator.fuel=Brændstof
 gui.solarGenerator.sun=Sol
-gui.bioGenerator.bioFuel=Biobrændsel
 gui.electrolyticSeparator.dump=Udstød
-
-gui.passive=Luftkølet
-gui.active=Vandkølet
-
-gui.minInject=Min. injektionssats
-gui.ignition=Tændingstemp.
-gui.maxPlasma=Maks. Plasma-temp.
-gui.maxCasing=Maks. Casing-temp.
-gui.passiveGeneration=Passiv Generering
-gui.steamProduction=Dampproduktion

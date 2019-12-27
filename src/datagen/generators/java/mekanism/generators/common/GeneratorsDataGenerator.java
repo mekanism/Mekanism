@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import mekanism.generators.client.GeneratorsLangGenerator;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -14,6 +15,7 @@ public class GeneratorsDataGenerator {
         DataGenerator gen = event.getGenerator();
         if (event.includeClient()) {
             //Client side data generators
+            gen.addProvider(new GeneratorsLangGenerator(gen));
         }
         if (event.includeServer()) {
             //Server side data generators

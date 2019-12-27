@@ -276,21 +276,10 @@ itemGroup.tabMekanism=Mekanism [메카니즘]
 
 # Items
 item.BioFuel.name=바이오연료
-item.SolarPanel.name=태양열 패널
 
 # Infuse types
 infuse.bio=바이오매스
 
-# Generators
-tile.Generator.HeatGenerator.name=지열 발전기
-tile.Generator.SolarGenerator.name=태양열 발전기
-tile.Generator.GasGenerator.name=가스 발전기
-tile.Generator.BioGenerator.name=바이오연료 발전기
-tile.Generator.AdvancedSolarGenerator.name=고급 태양열 발전기
-tile.Generator.WindGenerator.name=풍력 발전기
-
 # Gui text
-gui.heatGenerator.fuel=연료
 gui.solarGenerator.sun=태양
-gui.bioGenerator.bioFuel=바이오연료
 gui.electrolyticSeparator.dump=버리기

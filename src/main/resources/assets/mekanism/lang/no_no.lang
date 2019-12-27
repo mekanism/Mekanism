@@ -275,7 +275,6 @@ mekanism.key.mode=Endre modus
 mekanism.key.voice=Stemme
 
 # Gui text
-gui.power=Kraft
 gui.confirm=Bekreft
 gui.open=Åpne
 gui.allOK=Alt OK
@@ -290,7 +289,6 @@ gui.autoEject=Auto-utløs
 gui.itemstack=ItemStack
 gui.oredict=OreDict
 gui.material=Material
-gui.out=Ut
 gui.noFluid=Ingen veske
 gui.empty=Tom
 gui.volume=Volum
@@ -325,14 +323,11 @@ gui.min=Min
 gui.max=Maks
 gui.delay=Forsinkelse
 gui.noDelay=Ingen forsinkelse
-gui.fuel=Brensel
-gui.heat=Varme
 gui.formed=Formet
 gui.incomplete=Ufullstendig
 gui.inductionMatrix=Induction Matrix
 gui.matrixStats=Matrix Statistikk
 gui.main=Hoved
-gui.outputting=Outputting
 gui.dimensions=dimensjoner
 gui.constituents=Bestanddeler
 gui.cells=celler
@@ -350,8 +345,6 @@ gui.set=Sett
 gui.freq=Freq
 gui.security=Sikkerhet
 gui.index=Indeks
-
-gui.reactor.injectionRate=Injeksjons Sats
 
 gui.upgrades=Oppgraderinger
 gui.upgrades.supported=Støttet
@@ -497,8 +490,6 @@ tooltip.noKey=Ingen tast
 tooltip.hp=HP
 mekanism.tooltip.configureState=Konfigurer tilstand: %s
 tooltip.outputRate=Utgans Sats
-tooltip.insufficientFuel=Utilstrekkelig Brensel
-tooltip.readyForReaction=Klar for Reaksjon
 
 mekanism.tooltip.portableTank.bucketMode=Bøttemodus: %s
 
@@ -544,17 +535,6 @@ tooltip.LaserAmplifier=En blokk som kan bli brukt til å slå sammen, !nomdirige
 tooltip.LaserTractorBeam=En blokk brukt til å slå sammen og !nomdirigere laser stråler. Samler !nting fra blokker den har ødelagt.
 tooltip.SolarNeutronActivator=En maskin som dirigerer nøytronstråling !nfra sola til dens interne reservoar, !nsom tillater sakte produksjon av forskjellige isotoper.
 tooltip.Oredictionificator=En maskin brukt til å forene og oversette mellom forskjellige gjenstander !nog blokker ved hjelp av Ore Dictionary.
-tooltip.HeatGenerator=En generator som bruker varme fra lava eller !nandre brennbare ressurser til å produsere energi.
-tooltip.SolarGenerator=En generator som utnytter energi !nfra solen til å produsere energi.
-tooltip.GasGenerator=En generator som utnytter molekylære !nvarierende gasser å produsere energi.
-tooltip.BioGenerator=En generator som produserer energi !nved å brenne organisk materiale.
-tooltip.AdvancedSolarGenerator=En avansert generator som direkte absorberer solens stråler med lite tap !nfor produsere energi.
-tooltip.ReactorGlass=Forsterket glass som kan anvendes !ni fusjonsreaktor multiblokken.
-tooltip.ReactorLaserFocusMatrix=Et panel av Reaktor Glass som er !ni stand til å absorbere optisk energi, og !ndermed varme opp fusjonsreaktoren.
-tooltip.ReactorController=Den kontrollerende blokken for hele !nfusjonsreaktor strukturen.
-tooltip.ReactorFrame=Forsterket utforming som kan brukes i !nfusjonsreaktor multiblokken.
-tooltip.ReactorNeutronCapturePlate=En blokk som kan brukes til !nbåde blokkere fusjonsreaktor stråling og hjelpe til !ni fremstilling av Tritium.
-tooltip.ReactorPort=En blokk av armert utforming som er i stand til !nå styre både gass og energi overføringen av fusjonsreaktoren.
 
 tooltip.OsmiumOre=En sterk mineral som kan bli funnet !nved nesten hvilken som helst høyde i verden. !nDen er kjent for å ha mange bruksområder !ni bygging av maskiner.
 tooltip.CopperOre=Et felles, ledende materiale som !nkan brukes i produksjon av !nkabler. Dens evne til å tåle !nhøy varme gjør den også viktig !nfor avanserte maskiner.
@@ -612,36 +592,6 @@ itemGroup.tabMekanism=Mekanism
 # GENERATORS
 #############
 
-# Items
-item.SolarPanel.name=Solcellepanel
-item.Hohlraum.name=Hohlraum
-
-# Generators
-tile.Generator.HeatGenerator.name=Varme Generator
-tile.Generator.SolarGenerator.name=Solcelle Generator
-tile.Generator.GasGenerator.name=Brensel-Brennende Generator
-tile.Generator.AdvancedSolarGenerator.name=Avansert Solcelle Generator
-tile.Generator.WindGenerator.name=Vind Turbin
-
-tile.Reactor.ReactorController.name=Reaktor Kontroller
-tile.Reactor.ReactorFrame.name=Reaktor Ramme
-tile.Reactor.ReactorNeutronCapturePlate.name=Nøytron Fange Plate
-
-tile.ReactorGlass.ReactorGlass.name=Reaktor Glass
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser Fokus Matrix
-
 # Gui text
-gui.heatGenerator.fuel=Brensel
 gui.solarGenerator.sun=Sol
-gui.bioGenerator.bioFuel=Biobrensel
 gui.electrolyticSeparator.dump=Kast
-
-gui.passive=Luft-Kjølt
-gui.active=Vann-Kjølt
-
-gui.minInject=Min. Injisere Sats
-gui.ignition=Tenning Temp
-gui.maxPlasma=Maks. Plasma Temp
-gui.maxCasing=Maks. Kasse Temp
-gui.passiveGeneration=Passiv Generering
-gui.steamProduction=Dampproduksjon

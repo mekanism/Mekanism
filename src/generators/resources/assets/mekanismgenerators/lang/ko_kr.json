@@ -1,0 +1,11 @@
+{
+  "block.mekanismgenerators.advanced_solar_generator": "고급 태양열 발전기",
+  "block.mekanismgenerators.bio_generator": "바이오연료 발전기",
+  "block.mekanismgenerators.gas_burning_generator": "가스 발전기",
+  "block.mekanismgenerators.heat_generator": "지열 발전기",
+  "block.mekanismgenerators.solar_generator": "태양열 발전기",
+  "block.mekanismgenerators.wind_generator": "풍력 발전기",
+  "gui.mekanismgenerators.bio_generator.bio_fuel": "바이오연료: %s",
+  "item.mekanismgenerators.solar_panel": "태양열 패널",
+  "reactor.mekanismgenerators.fuel": "연료"
+}

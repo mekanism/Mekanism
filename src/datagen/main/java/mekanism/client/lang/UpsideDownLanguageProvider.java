@@ -25,7 +25,7 @@ public class UpsideDownLanguageProvider extends ConvertibleLanguageProvider {
                                          "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
                                          "0123456789" +
                                          ",.?!;\"'`&_^()[]{}<>";
-    private static final char[] upside_down = ("\u0250q\u0254p\u01dd\u025f\u0183\u0265\u1d09\u027e\u029e\ua781\u026fuodb\u0279s\u0287n\u028c\u028dx\u028ez" +
+    private static final char[] upside_down = ("\u0250q\u0254p\u01dd\u025f\u1d77\u0265\u1d09\u027e\u029e\ua781\u026fuodb\u0279s\u0287n\u028c\u028dx\u028ez" +
                                                "\u2c6f\u15fa\u0186\u15e1\u018e\u2132\u2141HI\u0550\ua7b0\ua780WNO\u0500\ua779\u1d1aS\u27d8\u2229\u039bMX\u2144Z" +
                                                "0\u295d\u1614\u0190\u07c8\u03db9\u312586" +
                                                "'\u02d9\u00bf\u00a1\u061b\u201e,,\u214b\u203ev)(][}{><").toCharArray();

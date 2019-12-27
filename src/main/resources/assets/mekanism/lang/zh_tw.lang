@@ -310,7 +310,6 @@ entity.Robit.name=機器人
 # Gui text
 gui.condensentrating=凝聚液體中...
 gui.decondensentrating=生成氣體中...
-gui.power=功率
 gui.confirm=確認
 gui.open=開啟
 gui.allOK=全部OK
@@ -325,7 +324,6 @@ gui.autoEject=自動彈射
 gui.itemstack=物品棧
 gui.oredict=礦物辭典
 gui.material=材料
-gui.out=出口
 gui.noFluid=無流體
 gui.empty=空
 gui.volume=體積
@@ -360,14 +358,11 @@ gui.min=最小
 gui.max=最大
 gui.delay=延時
 gui.noDelay=無延時
-gui.fuel=燃料
-gui.heat=熱量
 gui.formed=已成型
 gui.incomplete=未完成
 gui.inductionMatrix=輸導矩陣
 gui.matrixStats=矩陣統計
 gui.main=主
-gui.outputting=輸出
 gui.dimensions=世界
 gui.constituents=成分
 gui.cells=元件
@@ -385,8 +380,6 @@ gui.set=設定
 gui.freq=頻率
 gui.security=安全性
 gui.index=Index
-
-gui.reactor.injectionRate=輸入速率
 
 gui.upgrades=升級
 gui.upgrades.supported=負載
@@ -546,8 +539,6 @@ tooltip.noKey=無關鍵字
 tooltip.hp=HP
 mekanism.tooltip.configureState=配置狀態%s
 tooltip.outputRate=輸出速率
-tooltip.insufficientFuel=燃料不足
-tooltip.readyForReaction=已準備好反應
 
 mekanism.tooltip.portableTank.bucketMode=水桶模式: %s
 
@@ -593,19 +584,6 @@ tooltip.LaserAmplifier=一個能用于合并,轉向和!n增幅激光的方塊,�
 tooltip.LaserTractorBeam=一個用于合并和轉向激!n光的方塊.會收集它所破!n壞方塊的掉落物.
 tooltip.SolarNeutronActivator=一個將太陽的中子輻射!n引入自身腔體的機器,可!n緩慢制造各種同位素.
 tooltip.Oredictionificator=一個使用礦典統一并翻譯!n各種物品和方塊的機器.
-
-tooltip.HeatGenerator=一臺使用巖漿熱量或者!n其它可燃資源產生能量的發電機.
-tooltip.SolarGenerator=一臺使用!n太陽能量發電的發電機.
-tooltip.GasGenerator=一臺利用!n不同的氣體供能的發電機.
-tooltip.BioGenerator=一臺利用燃燒!n有機材料產生能量的發電機.
-tooltip.AdvancedSolarGenerator=一臺直接!n吸收大部分太陽光!n產生能量的高級發電機.
-
-tooltip.ReactorGlass=能用于聚變反應結構的!n強化玻璃.
-tooltip.ReactorLaserFocusMatrix=一個可吸收光能并加熱!n聚變反應堆的強化玻璃!n板.
-tooltip.ReactorController=整個聚變反應結構的控!n制方塊.
-tooltip.ReactorFrame=能用于聚變反映結構的!n強化框架.
-tooltip.ReactorNeutronCapturePlate=一個能用于阻隔聚變輻!n射或協助氚生成的方塊.
-tooltip.ReactorPort=一個強化的框架方塊,能!n處理聚變反應堆中氣體!n和能量的輸送.
 
 tooltip.OsmiumOre=一種牢固的材料,它能夠在!n這個世界任何高度被發現. !n它因經常用于!n機器建造而聞名.
 tooltip.CopperOre=一種常見的導電材料,能夠!n用于線纜的!n產出. 它耐高溫的特性!n也使它成為生成!n高級機械的重要材料.
@@ -663,37 +641,6 @@ itemGroup.tabMekanism=通用機械
 # GENERATORS
 #############
 
-# Items
-item.SolarPanel.name=太陽能板
-item.Hohlraum.name=黑體輻射腔
-
-# Generators
-tile.Generator.HeatGenerator.name=熱力發電機
-tile.Generator.SolarGenerator.name=太陽能發電機
-tile.Generator.GasGenerator.name=燃氣發電機
-tile.Generator.BioGenerator.name=生物能發電機
-tile.Generator.AdvancedSolarGenerator.name=高級太陽能發電機
-tile.Generator.WindGenerator.name=風力渦輪機
-
-tile.Reactor.ReactorController.name=反應控制器
-tile.Reactor.ReactorFrame.name=反應器框架
-tile.Reactor.ReactorNeutronCapturePlate.name=中子吸收板
-
-tile.ReactorGlass.ReactorGlass.name=強化玻璃
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=激光聚焦矩陣
-
 # Gui text
-gui.heatGenerator.fuel=燃料
 gui.solarGenerator.sun=太陽
-gui.bioGenerator.bioFuel=生物燃料
 gui.electrolyticSeparator.dump=導出
-
-gui.passive=氣冷
-gui.active=水冷
-
-gui.minInject=最小輸入率
-gui.ignition=引燃溫度
-gui.maxPlasma=等離子體最高溫度
-gui.maxCasing=殼體最高溫度
-gui.passiveGeneration=被動產能
-gui.steamProduction=蒸汽產量

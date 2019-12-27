@@ -371,7 +371,6 @@ entity.Robit.name=Robit
 # Gui text
 gui.condensentrating=Condensentrando
 gui.decondensentrating=Descondensentrando
-gui.power=Energia
 gui.confirm=Confirmar
 gui.open=Abrir
 gui.allOK=Tudo OK
@@ -386,7 +385,6 @@ gui.autoEject=Autoejetar
 gui.itemstack=ItemStack
 gui.oredict=OreDict
 gui.material=Material
-gui.out=Saída
 gui.noFluid=Sem Fluidos
 gui.empty=Vazio
 gui.volume=Volume
@@ -421,16 +419,12 @@ gui.min=Min
 gui.max=Máx
 gui.delay=Atraso
 gui.noDelay=Sem atraso
-gui.fuel=Combustível
-gui.heat=Calor
 gui.formed=Formado
 gui.incomplete=Incompleto
 gui.inductionMatrix=Matriz de Indução
 gui.matrixStats=Estatísticas da Matriz
-gui.turbineStats=Estatísticas da Turbina
 gui.boilerStats=Estatísticas da Caldeira
 gui.main=Principal
-gui.outputting=Emitindo
 gui.receiving=Recebendo
 gui.dimensions=Dimensões
 gui.constituents=Componentes
@@ -438,7 +432,6 @@ gui.cells=células
 gui.providers=provedores
 gui.structure=Estrutura
 gui.dynamicTank=Tanque Dinâmico
-gui.industrialTurbine=Turbina Industrial
 gui.thermoelectricBoiler=Caldeira Termoelétrica
 gui.visuals=Aparência
 gui.noEject=Não Ejeta
@@ -451,10 +444,8 @@ gui.set=Definir
 gui.freq=Freq
 gui.security=Segurança
 gui.index=Índice
-gui.producing=Produzindo
 gui.maxOutput=Saída Máx.
 gui.storing=Armazenando
-gui.skyBlocked=Céu obstruído
 gui.using=Usando
 gui.needed=Necessário
 gui.noRecipe=Sem receita
@@ -467,29 +458,12 @@ gui.abundancy=Abundância
 gui.nextItem=Próximo Item
 gui.lastItem=Último Item
 gui.oreDictCompat=Chave OreDict Compatível
-gui.toggleCooling=Alternar Medições de Refrigeração
-gui.coolingMeasurements=Resfriamento Ativo
-gui.redstoneOutputMode=Modo Redstone
 gui.entityDetection=Detecção de Entidades
 gui.moveUp=Subir
 gui.moveDown=Descer
-gui.flowRate=Fluxo
-gui.maxFlow=Fluxo máximo
-gui.tankVolume=Volume do Tanque
-gui.steamFlow=Fluxo de Vapor
-gui.production=Produção
-gui.blades=Hélices
-gui.coils=Bobinas
-gui.dispersers=Dispersores
-gui.vents=Saídas de ventilação
-gui.maxProduction=Produção máxima
-gui.limiting=Limitando
-gui.steamInput=Saída de Vapor
-gui.capacity=Capacidade
 gui.unit=Unidade
 gui.temp=Temp
 gui.usage=Uso
-gui.transferred=Transferido
 gui.dissipated=Dissipado
 gui.boilRate=Taxa de ebulição
 gui.maxBoil=Ebulição máxima
@@ -516,9 +490,6 @@ gui.overridden=Sobreposto
 gui.nowOwn=Você é o novo dono
 gui.frequency=Frequência
 gui.mode=Modo
-gui.burnRate=Taxa de queima
-
-gui.reactor.injectionRate=Taxa de Injeção
 
 gui.upgrades=Aprimorações
 gui.upgrades.supported=Suportado
@@ -699,8 +670,6 @@ tooltip.noKey=Sem chave
 tooltip.hp=HP
 mekanism.tooltip.configureState=Configurar Estado: %s
 tooltip.outputRate=Taxa de Emissão
-tooltip.insufficientFuel=Pouco Combustível
-tooltip.readyForReaction=Pronto para Reação
 tooltip.speed=Velocidade
 tooltip.and=e
 tooltip.heat=Calor
@@ -789,27 +758,6 @@ tooltip.FormulaicAssemblicator=Uma máquina que usa energia para rapidamente mon
 tooltip.FuelwoodHeater=Uma máquina que produz calor através de combustíveis sólidos.
 tooltip.QuantumEntangloporter=Uma máquina altamente avançada que transporta virtualmente qualquer recurso através de longas distâncias ou dimensões.
 
-tooltip.HeatGenerator=Um gerador que usa o calor da lava ou outros recursos combustíveis para produzir energia.
-tooltip.SolarGenerator=Um gerador que usa o poder do sol para produzir energia.
-tooltip.GasGenerator=Um gerador que se aproveita dos gases molecularmente variantes para produzir energia.
-tooltip.BioGenerator=Um gerador que queima materiais orgânicos do mundo para produzir energia.
-tooltip.AdvancedSolarGenerator=Um gerador que diretamente absorve os raios solares com pequena perda para produzir energia
-tooltip.WindGenerator=Um gerador que usa a força do vento para produzir energia, com eficiência maior em locais mais altos.
-tooltip.TurbineRotor=Haste de aço usada para segurar Hélices de Turbina na Turbina Industrial.
-tooltip.RotationalComplex=Conector colocado na Hélice mais alta da Turbina Industrial para transportar energia cinética para Bobinas Eletromagnéticas.
-tooltip.ElectromagneticCoil=Bloco que converte energia cinética em energia usável. Podem ser colocadas em qualquer forma acima do Complexo Rotacional, desde que todos se conectem.
-tooltip.TurbineCasing=Moldura resistente à pressão usada na construção da Turbina Industrial.
-tooltip.TurbineValve=Moldura de turbina que possui portas de transferência de energia e vapor.
-tooltip.TurbineVent=Moldura de turbina com uma porta de ventilação. Deve ser colocada no mesmo nível ou no nível acima do Complexo Rotacional.
-
-tooltip.ReactorGlass=Vidro Reforçado que pode ser utilizado no multibloco do Reator de Fusão.
-tooltip.ReactorLaserFocusMatrix=Um painel do Vidro do Reator que é capaz de absorver energia óptica e dessa forma aquecendo o Reator de Fusão.
-tooltip.ReactorController=O bloco controlador para a Estrutura Reator de Fusão toda.
-tooltip.ReactorFrame=Armação reforçada que pode ser utilizada no multibloco do Reator de Fusão.
-tooltip.ReactorNeutronCapturePlate=Um bloco que pode ser usado para bloquear a radiação do Reator de Fusão e para ajudar na produção de Trítio.
-tooltip.ReactorPort=Um bloco de armação reforçada que é capaz de gerenciar a transferência de gás e de energia do Reator de Fusão.
-tooltip.ReactorLogicAdapter=Um bloco que pode ser usado para permitir monitoramento básico de um reactor usando redstone.
-
 tooltip.OsmiumOre=Um mineral forte que pode ser achado em quase qualquer altura do mundo. É conhecido por ter muitos usos na construção de maquinaria.
 tooltip.CopperOre=Um material condutivo e comum que pode ser usado na produção de fios. Sua habilidade de suportar altas temperaturas também o faz importante em maquinaria avançada.
 tooltip.TinOre=Um material condutivo leve, porém resistente, que é encontrado com um pouco menos de frequência que Cobre.
@@ -863,16 +811,6 @@ color.white=Branco
 color.brown=Marrom
 color.brightPink=Rosa
 
-# Reactor Logic modes
-reactor.disabled=Desativado
-reactor.disabled.desc=Não irá emitir sinal de redstone
-reactor.ready=Pronto para ignição
-reactor.ready.desc=Reactor atingiu o nível necessário de calor para ignição
-reactor.capacity=Capacidade de calor atendida
-reactor.capacity.desc=A capacidade de calor do núcleo do reator foi atendida
-reactor.depleted=Pouco Combustível
-reactor.depleted.desc=O reator tem combustível insuficiente para manter uma reação
-
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -880,46 +818,6 @@ itemGroup.tabMekanism=Mekanism
 # GENERATORS
 #############
 
-# Items
-item.SolarPanel.name=Painel Solar
-item.Hohlraum.name=Hohlraum
-item.TurbineBlade.name=Hélice de Turbina
-
-# Generators
-tile.Generator.HeatGenerator.name=Gerador a Calor
-tile.Generator.SolarGenerator.name=Gerador a Energia Solar
-tile.Generator.GasGenerator.name=Gerador a Queima de Gás
-tile.Generator.BioGenerator.name=Biogerador
-tile.Generator.AdvancedSolarGenerator.name=Gerador a Energia Solar Avançado
-tile.Generator.WindGenerator.name=Gerador Eólico
-tile.Generator.TurbineRotor.name=Rotor de Turbina
-tile.Generator.RotationalComplex.name=Complexo Rotacional
-tile.Generator.ElectromagneticCoil.name=Bobina Eletromagnética
-tile.Generator.TurbineCasing.name=Moldura de Turbina
-tile.Generator.TurbineValve.name=Válvula de Turbina
-tile.Generator.TurbineVent.name=Respiradouro de Turbine
-
-tile.Reactor.ReactorController.name=Controlador do Reator
-tile.Reactor.ReactorFrame.name=Armação do Reator
-tile.Reactor.ReactorNeutronCapturePlate.name=Placa de Captura de Nêutrons
-tile.Reactor.ReactorPort.name=Porta do Reator
-tile.Reactor.ReactorLogicAdapter.name=Adaptador Lógica do Reator
-
-tile.ReactorGlass.ReactorGlass.name=Vidro do Reator
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Matriz Focal do Laser
-
 # Gui text
-gui.heatGenerator.fuel=Combustível
 gui.solarGenerator.sun=Sol
-gui.bioGenerator.bioFuel=Biocombustível
 gui.electrolyticSeparator.dump=Despejar
-
-gui.passive=Refrigerado a Ar
-gui.active=Refrigerado a Água 
-
-gui.minInject=Taxa Min. de Injeção
-gui.ignition=Temp de Ignição
-gui.maxPlasma=Temp. Máx. do Plasma
-gui.maxCasing=Temp. Máx. da Carcaça
-gui.passiveGeneration=Geração Passiva
-gui.steamProduction=Produção de Vapor

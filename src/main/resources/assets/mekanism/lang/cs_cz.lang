@@ -371,7 +371,6 @@ entity.Robit.name=Robit
 # Gui text
 gui.condensentrating=Kondenzace
 gui.decondensentrating=Dekondenzace
-gui.power=Energie
 gui.confirm=Potvrdit
 gui.open=Otevřít
 gui.allOK=Vše je OK
@@ -386,7 +385,6 @@ gui.autoEject=Auto-vyhazování
 gui.itemstack=ItemStack
 gui.oredict=Rudo-Slovník
 gui.material=Materiál
-gui.out=Ven
 gui.noFluid=Žádná kapalina
 gui.empty=Prázdný
 gui.volume=Objem
@@ -420,16 +418,12 @@ gui.min=Min
 gui.max=Max
 gui.delay=Prodleva
 gui.noDelay=Bez Prodlevy
-gui.fuel=Palivo
-gui.heat=Teplo
 gui.formed=Postaven
 gui.incomplete=Nedokončen
 gui.inductionMatrix=Indukční Matice
 gui.matrixStats=Statistiky Matice
-gui.turbineStats=Statistiky Turbíny
 gui.boilerStats=Statistiky Bojleru
 gui.main=Hlavní
-gui.outputting=Výstup
 gui.receiving=Příjem
 gui.dimensions=Dimenze
 gui.constituents=Složky
@@ -437,7 +431,6 @@ gui.cells=články
 gui.providers=poskytovatelé
 gui.structure=Struktura
 gui.dynamicTank=Dynamická Nádrž
-gui.industrialTurbine=Průmyslová Turbína
 gui.thermoelectricBoiler=Termoelektrický Bojler
 gui.visuals=Vizuály
 gui.noEject=Nelze Vyhodit
@@ -450,10 +443,8 @@ gui.set=Nastavit
 gui.freq=Frekv
 gui.security=Bezpečnost
 gui.index=Index
-gui.producing=Vyrábí
 gui.maxOutput=Max Výstup
 gui.storing=Skladuje
-gui.skyBlocked=Obloha zablokována
 gui.using=Využívá
 gui.needed=Potřebuje
 gui.noRecipe=Žádný recept
@@ -466,29 +457,12 @@ gui.abundancy=Hojnost
 gui.nextItem=Další Předmět
 gui.lastItem=Poslední Předmět
 gui.oreDictCompat=Kompatibilní Rudo-Slovníkový Klíč
-gui.toggleCooling=Sepnout Výpočty Chlazení
-gui.coolingMeasurements=Aktivní chlazení
-gui.redstoneOutputMode=Ruditový mód
 gui.entityDetection=Detekce Entit
 gui.moveUp=Pohnout Nahoru
 gui.moveDown=Pohnout Dolů
-gui.flowRate=Rychlost průtoku
-gui.maxFlow=Max průtok
-gui.tankVolume=Objem nádrže
-gui.steamFlow=Průtok Páry
-gui.production=Produkce
-gui.blades=Lopatky
-gui.coils=Cívky
-gui.dispersers=Rozprašovač
-gui.vents=Ventily
-gui.maxProduction=Max Produkce
-gui.limiting=Limitace
-gui.steamInput=Vstup Páry
-gui.capacity=Kapacita
 gui.unit=Jednotka
 gui.temp=Tepl
 gui.usage=Využití
-gui.transferred=Přeneseno
 gui.dissipated=Rozptýleno
 gui.boilRate=Rychlost Varu
 gui.maxBoil=Max Var
@@ -515,9 +489,6 @@ gui.overridden=Přepsáno
 gui.nowOwn=Nyní vlastníš tento předmět.
 gui.frequency=Frekvence
 gui.mode=Mód
-gui.burnRate=Rychlost Spalování
-
-gui.reactor.injectionRate=Rychlost Vstřikování
 
 gui.upgrades=Vylepšení
 gui.upgrades.supported=Podporováno
@@ -704,11 +675,8 @@ tooltip.noKey=Žádný klíč
 tooltip.hp=HP
 mekanism.tooltip.configureState=Konfigurovat Stav: %s
 tooltip.outputRate=Rychlost Výstupu
-tooltip.insufficientFuel=Nedostatek Paliva
-tooltip.readyForReaction=Připraven na Reakci
 tooltip.speed=Rychlost
 tooltip.and=a
-tooltip.heat=Teplota
 tooltip.itemAmount=Množství položek
 tooltip.invalid=Neplatný
 tooltip.encoded=Zakódovaný
@@ -794,27 +762,6 @@ tooltip.FormulaicAssemblicator=Stroj využívající energii pro rychlou výrobu
 tooltip.FuelwoodHeater=Stroj schopný generovat hodně energie spalováním hořlavých předmětů.
 tooltip.QuantumEntangloporter=Velmi pokročilý blok schopný přenášet jakýkoli zdroj napříč velkými vzdálenostmi a dimenzemi.
 
-tooltip.HeatGenerator=Generátor využívající teplo lávy nebo jiného spalovatelného zdroje k výrobě energie.
-tooltip.SolarGenerator=Generátor využívající energie Slunce k výrobě energie.
-tooltip.GasGenerator=Generátor využívající různorodost plynů k výrobě energie.
-tooltip.BioGenerator=Generátor spalující organické materiály ze světa k výrobě energie.
-tooltip.AdvancedSolarGenerator=Pokročilý generátor který přímo pohlcuje sluneční paprsky s minimální ztrátou k výrobě energie.
-tooltip.WindGenerator=Generátor využívající sílu větru k výrobě energie. Efektivita se zvyšuje úměrně s výškou.
-tooltip.TurbineRotor=Ocelová tyč použitá k udržení Turbínových Lopatek v Průmyslové Turbíně.
-tooltip.RotationalComplex=Konektor který je položen na nejvyšší Turbínový Rotor Průmyslové Turbíny pro přenášení kinetické energie do jeho Elektromagnetických Cívek.
-tooltip.ElectromagneticCoil=Blok konvertující energii z Rotačního Komplexu do využitelné energie. Tyto mohou být položeny do jakéhokoli uspořádání nad Rotačním Komplexem, pakliže se stále dotýkají jeden druhého a samotného komplexu.
-tooltip.TurbineCasing=Tlakuvzdorný plášť využitý k výrobě Průmyslové Turbíny.
-tooltip.TurbineValve=Typ Turbínového Pláště zahrnující port na přenos energie a páry.
-tooltip.TurbineVent=Typ Turbínového Pláště s integrovaným ventilem pro vypouštění páry. Tyto by měly být umístěny na úrovni nebo výše Turbínového Rotačního Komplexu.
-
-tooltip.ReactorGlass=Tvrzené sklo které může být použito v multibloku Fúzní Reaktor.
-tooltip.ReactorLaserFocusMatrix=Panel Reaktorového Skla který je schopný absorbovat optickou energii a tím zahřívat Fúzní Reaktor.
-tooltip.ReactorController=Kontrolní blok pro celou strukturu Fúzního Reaktoru.
-tooltip.ReactorFrame=Tvrzený rám který může být využit v multibloku Fúzní Reaktor.
-tooltip.ReactorNeutronCapturePlate=Blok který může být využit jak k zablokování radiace Fúzního Reaktoru tak k asistenci u produkce Trinia.
-tooltip.ReactorPort=Blok tvrzeného rámu který je schopen zpracovávat zároveň plyn i energii z a do Fúzního Reaktoru.
-tooltip.ReactorLogicAdapter=Blok který umožňuje základní sledování stavu reaktoru pomocí ruditu.
-
 tooltip.OsmiumOre=Silný minerál který lze nalézt v jakékoli hloubce. Je znám pro své využití v konstrukci strojů.
 tooltip.CopperOre=Běžný, vodivý materiál který se využívá k výrobě kabelů. Jeho schopnost vydržet velké teploty ho činí podstatným pro pokročilé stroje.
 tooltip.TinOre=Lehký, ale tvrdý, vodivý materiál který je o trochu vzácnější než Měď.
@@ -868,16 +815,6 @@ color.white=Bílá
 color.brown=Hnědá
 color.brightPink=Světle Růžová
 
-# Reactor Logic modes
-reactor.disabled=Deaktivovaný
-reactor.disabled.desc=Nebude vysílat ruditový signál
-reactor.ready=Připraven na Zážeh
-reactor.ready.desc=Reaktor dosáhl potřebné teploty pro zážeh
-reactor.capacity=Dosažena Tepelná Kapacita
-reactor.capacity.desc=Tepelná kapacita jádra reaktoru byla dosažena
-reactor.depleted=Nedostatek Paliva
-reactor.depleted.desc=Reaktor má nedostatek paliva k udržení reakce
-
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -885,46 +822,6 @@ itemGroup.tabMekanism=Mekanism
 # GENERATORS
 #############
 
-# Items
-item.SolarPanel.name=Solární Panel
-item.Hohlraum.name=Hohlraum
-item.TurbineBlade.name=Turbínová Lopatka
-
-# Generators
-tile.Generator.HeatGenerator.name=Tepelný Generátor
-tile.Generator.SolarGenerator.name=Solární Generátor
-tile.Generator.GasGenerator.name=Plyno-Spalovací Generátor
-tile.Generator.BioGenerator.name=Bio-Generátor
-tile.Generator.AdvancedSolarGenerator.name=Pokročilý Solární Generátor
-tile.Generator.WindGenerator.name=Větrný Generátor
-tile.Generator.TurbineRotor.name=Turbínový Rotor
-tile.Generator.RotationalComplex.name=Rotační Komplex
-tile.Generator.ElectromagneticCoil.name=Elektromagnetická Cívka
-tile.Generator.TurbineCasing.name=Plášť Turbíny
-tile.Generator.TurbineValve.name=Turbínový Ventil
-tile.Generator.TurbineVent.name=Turbínový Průduch
-
-tile.Reactor.ReactorController.name=Kontroler Reaktoru
-tile.Reactor.ReactorFrame.name=Rám Reaktoru
-tile.Reactor.ReactorNeutronCapturePlate.name=Neutronový Zachytávací Plát
-tile.Reactor.ReactorPort.name=Port Reaktoru
-tile.Reactor.ReactorLogicAdapter.name=Logický Adaptér Reaktoru
-
-tile.ReactorGlass.ReactorGlass.name=Sklo Reaktoru
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laserová Zaměřovací Matice
-
 # Gui text
-gui.heatGenerator.fuel=Palivo
 gui.solarGenerator.sun=Slunce
-gui.bioGenerator.bioFuel=Bio Palivo
 gui.electrolyticSeparator.dump=Vyhodit
-
-gui.passive=Chlazen vzduchem
-gui.active=Chalzen vodou
-
-gui.minInject=Min. Rychlost Vstřikování
-gui.ignition=Zážehová Teplota
-gui.maxPlasma=Max. Teplota Plasmy
-gui.maxCasing=Max. Teplota Pláště
-gui.passiveGeneration=Pasivní Generace
-gui.steamProduction=Produkce Páry

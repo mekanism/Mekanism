@@ -378,7 +378,6 @@ entity.Robit.name=Robit
 # Gui text
 gui.condensentrating=Kondensentrieren
 gui.decondensentrating=Dekondensentrieren
-gui.power=Energie
 gui.confirm=Bestätigen
 gui.open=Öffnen
 gui.allOK=Alles OK
@@ -393,7 +392,6 @@ gui.autoEject=Auto-Auswerfen
 gui.itemstack=ItemStack
 gui.oredict=OreDict
 gui.material=Material
-gui.out=Out
 gui.noFluid=Keine Flüssigk.
 gui.empty=Leer
 gui.volume=Volumen
@@ -428,16 +426,12 @@ gui.min=Min
 gui.max=Max
 gui.delay=Verzögerung
 gui.noDelay=Keine Verzögerung
-gui.fuel=Treibstoff
-gui.heat=Wärme
 gui.formed=Vollständig
 gui.incomplete=Unvollständig
 gui.inductionMatrix=Induktionsmatrix
 gui.matrixStats=Matrixstatistik
-gui.turbineStats=Turbinenstatistik
 gui.boilerStats=Dampfkesselstatistik
 gui.main=Kern
-gui.outputting=Output
 gui.receiving=Empfängt
 gui.dimensions=Maße
 gui.constituents=Bestandteile
@@ -445,7 +439,6 @@ gui.cells=Zellen
 gui.providers=Provider
 gui.structure=Struktur
 gui.dynamicTank=Dynamischer Tank
-gui.industrialTurbine=Industrieturbine
 gui.thermoelectricBoiler=Thermoelektrischer Dampfkessel
 gui.visuals=Visuelles
 gui.noEject=Kein Auswerfen möglich
@@ -458,10 +451,8 @@ gui.set=Setzen
 gui.freq=Freq
 gui.security=Sicherheit
 gui.index=Index
-gui.producing=Produziert
 gui.maxOutput=Max-Output
 gui.storing=Speichert
-gui.skyBlocked=Himmel nicht sichtbar
 gui.using=Verbraucht
 gui.needed=Benötigt
 gui.noRecipe=Kein Rezept
@@ -474,29 +465,12 @@ gui.abundancy=Fülle
 gui.nextItem=Nächstes Item
 gui.lastItem=Vorheriges Item
 gui.oreDictCompat=Kompatibler OreDict-Key
-gui.toggleCooling=Kühlmessungen umschalten
-gui.coolingMeasurements=Aktive Kühlung
-gui.redstoneOutputMode=Redstone-Modus
 gui.entityDetection=Entity-Erkennung
 gui.moveUp=Nach oben
 gui.moveDown=Nach unten
-gui.flowRate=Fließgeschw.
-gui.maxFlow=Max. Fluss
-gui.tankVolume=Tankvolumen
-gui.steamFlow=Dampffluss
-gui.production=Produktion
-gui.blades=Blätter
-gui.coils=Spulen
-gui.dispersers=Ventile
-gui.vents=Abzüge
-gui.maxProduction=Max. Produktion
-gui.limiting=Grenze
-gui.steamInput=Dampf-Input
-gui.capacity=Kapazität
 gui.unit=Einheit
 gui.temp=Temp
 gui.usage=Verbrauch
-gui.transferred=Übertragen
 gui.dissipated=Dissipation
 gui.boilRate=Siederate
 gui.maxBoil=Max. Sieden
@@ -523,9 +497,6 @@ gui.overridden=Übergangen
 gui.nowOwn=Die gehört dieses Item nicht
 gui.frequency=Frequenz
 gui.mode=Modus
-gui.burnRate=Brennrate
-
-gui.reactor.injectionRate=Injektionsrate
 
 gui.upgrades=Upgrades
 gui.upgrades.supported=Unterstützt
@@ -708,8 +679,6 @@ tooltip.noKey=Kein key
 tooltip.hp=HP
 mekanism.tooltip.configureState=Status Konfigurieren: %s
 tooltip.outputRate=Output-Rate
-tooltip.insufficientFuel=Nicht genügend Treibstoff
-tooltip.readyForReaction=Bereit für Reaktion
 tooltip.speed=Geschwindigkeit
 tooltip.and=und
 tooltip.heat=Wärme
@@ -796,27 +765,6 @@ tooltip.ResistiveHeater=Ein dichter, gewundener Widerstand, der elektrische Ener
 tooltip.FormulaicAssemblicator=Eine Maschine, die mithilfe von Energie mit hohem Tempo Items und Blöcke nach Fertigungsformeln fertigt. Fungiert auch als Werkbank.
 tooltip.FuelwoodHeater=Eine Maschine, die große Mengen an Wärmeenergie durch das Verbrennen brennbarer Dinge erzeugt.
 
-tooltip.HeatGenerator=Ein Generator, der die Wärme aus Lava oder anderen Brennstoffen zur Energieerzeugung nutzt.
-tooltip.SolarGenerator=Ein Generator, der die Energie der Sonne zur Energieerzeugung nutzt.
-tooltip.GasGenerator=Ein Generator, der molekular unterschiedliche Gase zur Energieerzeugung nutzt.
-tooltip.BioGenerator=Ein Generator, der organische Materialien dieser Welt zur Energieerzeugung nutzt.
-tooltip.AdvancedSolarGenerator=Ein fortgeschrittener Generator, der Sonnenstrahlung direkt und verlustarm zur Energieerzeugung absorbiert.
-tooltip.WindGenerator=Ein Generator, der Windbewegung in Energie umwandelt; die Effizienz steigt mit zunehmender Höhe.
-tooltip.TurbineRotor=Der Stahlstab, mit dem Rotorblätter in einer Industrieturbine gehalten werden.
-tooltip.RotationalComplex=Ein Element, das am höchsten Rotor einer Industrieturbine platziert wird, um kinetische Energie in die Spulen zu übertragen.
-tooltip.ElectromagneticCoil=Ein Block, der kinetische energie in elektrischen Strom umwandelt. Er kann in jeglicher Form oberhalb eines Rotationskomplexes platziert werden, solang alle von ihnen einander und den Komplex berühren.
-tooltip.TurbineCasing=Druckresistentes Gehäuse für die Industrieturbine.
-tooltip.TurbineValve=Gehäuseart für die Industrieturbine, die Energie- und Dampftransfer ermöglicht.
-tooltip.TurbineVent=Gehäuseart für die Industrieturbine mit integriertem Dampfabzug. Sie sollte auf Höhe oder oberhalb des Rotationskomplexes platziert sein.
-
-tooltip.ReactorGlass=Verstärktes Glas, welches im Fusionsreaktor-Multiblock verwendet werden kann.
-tooltip.ReactorLaserFocusMatrix=Eine Scheibe aus Reaktorglas, welche fähig ist, optische Energy zu absorbieren, und so den Fusionsreaktor aufheizt.
-tooltip.ReactorController=Der alles kontrollierende Block für den gesamten Fusionsreaktor.
-tooltip.ReactorFrame=Verstärkte Hülle, welche im Fusionsreaktor-Multiblock verwendet werden kann.
-tooltip.ReactorNeutronCapturePlate=Ein Block, der zum Blockieren der Strahlung aus einem Fusionsreaktors verwendet werden kann und bei der Produktion von Tritium hilft.
-tooltip.ReactorPort=Ein Block aus verstärktem Material, welcher sowohl den Gas- als auch den Energietransfer des Fusionsreaktors regeln kann.
-tooltip.ReactorLogicAdapter=Ein Block, welcher verwendet werden kann, um einen Reaktor mit Redstone zu überwachen.
-
 tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder Höhenlage der Welt gefunden werden kann. Es ist für seine zahlreichen Verwendungszwecke in der Konstruktion von Maschinen bekannt.
 tooltip.CopperOre=Ein häufig vorkommendes, leitfähiges Material, dass für die Produktion von Kabeln verwendet werden kann. Seine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
 tooltip.TinOre=Ein leiches, jedoch robustes und leitfähiges Material, dass etwas schwieriger zu finden ist als Kupfer.
@@ -870,16 +818,6 @@ color.white=Weiß
 color.brown=Braun
 color.brightPink=Hellrosa
 
-# Reactor Logic modes
-reactor.disabled=Deaktiviert
-reactor.disabled.desc=Wird kein Redstone-Signal aussenden
-reactor.ready=Bereit für Zündung
-reactor.ready.desc=Reaktor hat die für Zündung erforderliche Temperatur erreicht
-reactor.capacity=Wärmekapazität erreicht
-reactor.capacity.desc=Die Wärmekapazität des Reaktorkrns ist erreicht worden
-reactor.depleted=Nicht genug Treibstoff
-reactor.depleted.desc=Der Reaktor hat nicht genügend Treibstoff, um eine Reaktion instandzuhalten
-
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -887,46 +825,6 @@ itemGroup.tabMekanism=Mekanism
 # GENERATORS
 #############
 
-# Items
-item.SolarPanel.name=Solarmodul
-item.Hohlraum.name=Hohlraum
-item.TurbineBlade.name=Rotorblatt
-
-# Generators
-tile.Generator.HeatGenerator.name=Hitzegenerator
-tile.Generator.SolarGenerator.name=Solargenerator
-tile.Generator.GasGenerator.name=Gasverbrennender Generator
-tile.Generator.BioGenerator.name=Bio-Generator
-tile.Generator.AdvancedSolarGenerator.name=Fortgeschrittener Solargenerator
-tile.Generator.WindGenerator.name=Windgenerator
-tile.Generator.TurbineRotor.name=Turbinenrotor
-tile.Generator.RotationalComplex.name=Rotationskomplex
-tile.Generator.ElectromagneticCoil.name=Elektromagnetische Spule
-tile.Generator.TurbineCasing.name=Turbinengehäuse
-tile.Generator.TurbineValve.name=Turbinenventil
-tile.Generator.TurbineVent.name=Turbinenabzug
-
-tile.Reactor.ReactorController.name=Reaktor-Controller
-tile.Reactor.ReactorFrame.name=Reaktorrahmen
-tile.Reactor.ReactorNeutronCapturePlate.name=Neutronenauffangplatte
-tile.Reactor.ReactorPort.name=Reaktorport
-tile.Reactor.ReactorLogicAdapter.name=Reaktor-Logikadapter
-
-tile.ReactorGlass.ReactorGlass.name=Reaktorglas
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laser-Fokusmatrix
-
 # Gui text
-gui.heatGenerator.fuel=Brennstoff
 gui.solarGenerator.sun=Sonne
-gui.bioGenerator.bioFuel=Biomasse
 gui.electrolyticSeparator.dump=Entsorge
-
-gui.passive=Luftgekühlt
-gui.active=Wassergekühlt
-
-gui.minInject=Min. Injektionsrate
-gui.ignition=Zündtemp
-gui.maxPlasma=Max. Plasmatemp
-gui.maxCasing=Max. Hüllentemp
-gui.passiveGeneration=Passive Generierung
-gui.steamProduction=Dampfproduktion

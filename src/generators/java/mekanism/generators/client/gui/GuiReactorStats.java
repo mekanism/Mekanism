@@ -30,7 +30,7 @@ public class GuiReactorStats extends GuiReactorInfo<ReactorStatsContainer> {
         super.init();
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              GeneratorsLang.PRODUCING.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
+              GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
               this, resource));
         addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT, resource));
         addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL, resource));

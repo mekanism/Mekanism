@@ -42,7 +42,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return GeneratorsLang.STEAM_INPUT_RATE.translate(tile.structure == null ? 0 : tile.structure.lastSteamInput);
+                return GeneratorsLang.TURBINE_STEAM_INPUT_RATE.translate(tile.structure == null ? 0 : tile.structure.lastSteamInput);
             }
 
             @Override
@@ -62,7 +62,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             double producing = tile.structure == null ? 0 : tile.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                                             Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-                  GeneratorsLang.PRODUCING.translate(EnergyDisplay.of(producing)));
+                  GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(producing)));
         }, this, resource));
         addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tile.structure == null ? GasMode.IDLE : tile.structure.dumpMode,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
@@ -77,7 +77,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
                                       Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             double rate = tile.structure.lowerVolume * (tile.structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
             rate = Math.min(rate, tile.structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-            renderScaledText(GeneratorsLang.PRODUCTION_AMOUNT.translate(EnergyDisplay.of(tile.structure.clientFlow * energyMultiplier)),
+            renderScaledText(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(tile.structure.clientFlow * energyMultiplier)),
                   53, 26, 0x00CD00, 106);
             renderScaledText(GeneratorsLang.TURBINE_FLOW_RATE.translate(tile.structure.clientFlow), 53, 35, 0x00CD00, 106);
             renderScaledText(GeneratorsLang.TURBINE_CAPACITY.translate(tile.structure.getFluidCapacity()), 53, 44, 0x00CD00, 106);

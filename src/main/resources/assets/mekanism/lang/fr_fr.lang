@@ -369,7 +369,6 @@ entity.Robit.name=Robit
 # Gui text
 gui.condensentrating=Condensation
 gui.decondensentrating=Décondensation
-gui.power=Alimenté
 gui.confirm=Confirmer
 gui.open=Ouvrir
 gui.allOK=Tout est OK
@@ -384,7 +383,6 @@ gui.autoEject=Auto-éjecter
 gui.itemstack=ItemStack
 gui.oredict=OreDict
 gui.material=Matériaux
-gui.out=Sort
 gui.noFluid=Pas de fluide
 gui.empty=Vide
 gui.volume=Volume
@@ -419,16 +417,12 @@ gui.min=Mini
 gui.max=Maxi
 gui.delay=Délai
 gui.noDelay=Pas de délai
-gui.fuel=Carburant
-gui.heat=Chaleur
 gui.formed=Formé
 gui.incomplete=Incomplet
 gui.inductionMatrix=Matrice d'induction
 gui.matrixStats=Statistiques de la matrice
-gui.turbineStats=Statistiques de la turbine
 gui.boilerStats=Statistiques de la chaudière
 gui.main=Principal
-gui.outputting=Envoie
 gui.receiving=Reçoit
 gui.dimensions=Dimensions
 gui.constituents=Constituants
@@ -436,7 +430,6 @@ gui.cells=cellules
 gui.providers=fournissuers
 gui.structure=Structure
 gui.dynamicTank=Réservoir dynamique
-gui.industrialTurbine=Turbine Industrielle
 gui.thermoelectricBoiler=Chaudière Thermoélectrique
 gui.visuals=Visuels
 gui.noEject=Impossible d'éjecter
@@ -449,10 +442,8 @@ gui.set=Mettre
 gui.freq=Freq.
 gui.security=Securité
 gui.index=Index
-gui.producing=Production
 gui.maxOutput=Sortie maxi
 gui.storing=Stokage
-gui.skyBlocked=Ciel bloqué
 gui.using=Utilisé
 gui.needed=Réclamé
 gui.noRecipe=Pas de recette
@@ -465,29 +456,12 @@ gui.abundancy=Abondance
 gui.nextItem=Elément suivant
 gui.lastItem=Elément précédent
 gui.oreDictCompat=Clé compatible OreDict
-gui.toggleCooling=Basculer le mesures de refroidissement
-gui.coolingMeasurements=Activer le refroidissement
-gui.redstoneOutputMode=Signal Redstone
 gui.entityDetection=Détection d'entité
 gui.moveUp=Monter
 gui.moveDown=Descendre
-gui.flowRate=Débit
-gui.maxFlow=Débit Max
-gui.tankVolume=Volume du Réservoir
-gui.steamFlow=Débit de Vapeur
-gui.production=Production
-gui.blades=Lames
-gui.coils=Bobines
-gui.dispersers=Disperseurs
-gui.vents=Ventilateurs
-gui.maxProduction=Production Max
-gui.limiting=Restrictif
-gui.steamInput=Entrée de Vapeur
-gui.capacity=Capacité
 gui.unit=Unité
 gui.temp=Temp
 gui.usage=Usage
-gui.transferred=Transféré
 gui.dissipated=Dissipé
 gui.boilRate=Vitesse de chauffe
 gui.maxBoil=Chauffe Max
@@ -511,8 +485,6 @@ gui.trustedMode=Mode Confiance
 gui.securityOffline=Securité Désactivée
 gui.noAccessDesc=Vous n'avez pas accès à ce bloc.
 gui.overridden=Outrepassé
-
-gui.reactor.injectionRate=Taux d'injection
 
 gui.upgrades=Améliorations
 gui.upgrades.supported=Supporté
@@ -693,8 +665,6 @@ tooltip.noKey=Pas de clef
 tooltip.hp=HP
 mekanism.tooltip.configureState=Configurer l'état
 tooltip.outputRate=Taux de sortie: %s
-tooltip.insufficientFuel=Carburant insufisant
-tooltip.readyForReaction=Prêt pour la réaction
 tooltip.speed=Vitesse
 tooltip.and=et
 tooltip.heat=Chaleur
@@ -753,18 +723,6 @@ tooltip.Combiner=Une machine utilisée pour combiner les poussières !net les pa
 tooltip.Crusher=Une machine utilisée pour broyer les lingots en poussières, !naussi bien qu'exécutez beaucoup d'autres opérations.
 tooltip.DigitalMiner=Un hautement-advancé avec filtrage mineur automatique !nqui peut miner quelque soit le bloc que vous lui demandiez !nDans un rayon de 32 blocs maxi.
 
-tooltip.HeatGenerator=Générateur qui utilise la chaleur de !nla lave ou d'autres ressources pour produire !nde l'énergie.
-tooltip.SolarGenerator=Générateur qui utilise la puissance  !nsolaire pour produire de l'énergie.
-tooltip.GasGenerator=Générateur qui exploite le changement !nmoléculaire des gaz pour produire de l'énergie.
-tooltip.BioGenerator=Générateur qui brule les matériaux organiques !ndu monde pour produire de l'énergie.
-tooltip.AdvancedSolarGenerator=Générateur avancé qui absorbe directement !nles rayons solaire avec peu de pertes !npour produire de l'énergie..
-tooltip.TurbineRotor=La barre d'acier utilisée pour loger les Lames de Turbine dans une Turbine Industrielle.
-tooltip.RotationalComplex=Un connecteur qui est placé sur le plus Rotor d'une Turbine Industrielle pour quider l'énergie kinétique dans ses Bobines Electromagnétiques.
-tooltip.ElectromagneticCoil=Un bloc qui transforme l'énergie kinétique d'un Complexe Rotatif en électricité. Ils peuvent être placés dans n'importe quel agencement au-dessus de votre Complexe Rotatif , tant qu'ils se touchent tous entre eux et le Complexe lui-même.
-tooltip.TurbineCasing=Encadrement résistant à la pression utilisé dans la construction d'une Turbine Industrielle.
-tooltip.TurbineValve=Un type d'encadrement de Turbine qui inclu un port pour le transfert d'énergie et de vapeur.
-tooltip.TurbineVent=Un type d'encadrement de Turbine avec une aération intégrée pour libérer la vapeur. Il doit être placésur le niveau ou au-dessus du Complexe Rotatif.
-
 # Side data
 sideData.None=Aucune
 sideData.Input=Entrée
@@ -814,16 +772,6 @@ color.white=Blanc
 color.brown=Marron
 color.brightPink=Rose clair
 
-# Reactor Logic modes
-reactor.disabled=Désactivé
-reactor.disabled.desc=N'émettera pas de signal redstone
-reactor.ready=Pret pour la mise à feu
-reactor.ready.desc=Le réacteur a atteint le niveau de chaleur requit pour s'enflammer
-reactor.capacity=Capacité de chaleur respecté
-reactor.capacity.desc=La capacité de chaleur principale du réacteur a été respectée
-reactor.depleted=Carburant insuffisant
-reactor.depleted.desc=Le réacteur manque de carburant pour maintenir la réaction
-
 # Creative tab
 itemGroup.tabMekanism=Mekanism
 
@@ -831,45 +779,6 @@ itemGroup.tabMekanism=Mekanism
 # GENERATORS
 ##############
 
-# Items
-item.SolarPanel.name=Panneau Solaire
-item.Hohlraum.name=Hohlraum
-item.TurbineBlade.name=Lame de Turbine
-
-# Generators
-tile.Generator.HeatGenerator.name=Générateur thermique
-tile.Generator.SolarGenerator.name=Générateur solaire
-tile.Generator.BioGenerator.name=Bio-Générateur
-tile.Generator.AdvancedSolarGenerator.name=Générateur solaire avancé
-tile.Generator.WindGenerator.name=Éolienne
-tile.Generator.TurbineRotor.name=Rotor de Turbine
-tile.Generator.RotationalComplex.name=Complexe Rotatif
-tile.Generator.ElectromagneticCoil.name=Bobine Electromagnétique
-tile.Generator.TurbineCasing.name=Encadrement de Turbine
-tile.Generator.TurbineValve.name=Valve de Turbine
-tile.Generator.TurbineVent.name=Ventilateur de Turbine
-
-tile.Reactor.ReactorController.name=Contrôleur de réacteur
-tile.Reactor.ReactorFrame.name=Cadre de réacteur
-tile.Reactor.ReactorNeutronCapturePlate.name=Plaque de capture de neutron
-tile.Reactor.ReactorPort.name=Port de réacteur
-tile.Reactor.ReactorLogicAdapter.name=Adaptateur logique de réacteur
-
-tile.ReactorGlass.ReactorGlass.name=Verre de réacteur
-tile.ReactorGlass.ReactorLaserFocusMatrix.name=Matrice de foyer du laser
-
 # Gui text
-gui.heatGenerator.fuel=Carburant
 gui.solarGenerator.sun=Soleil
-gui.bioGenerator.bioFuel=Biocarburant
 gui.electrolyticSeparator.dump=Décharge
-
-gui.passive=Refroidissement aérien
-gui.active=Refroidissement par eau
-
-gui.minInject=Taux d'injection mini
-gui.ignition=Temp. d'ignition
-gui.maxPlasma=Temp. plasma maxi
-gui.maxCasing=Temp. enveloppe maxi
-gui.passiveGeneration=Génération passive
-gui.steamProduction=Production de vapeur

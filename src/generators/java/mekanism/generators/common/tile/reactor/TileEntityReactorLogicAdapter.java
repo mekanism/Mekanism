@@ -168,10 +168,10 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     }
 
     public enum ReactorLogic implements IHasTranslationKey {
-        DISABLED(GeneratorsLang.REACTOR_DISABLED, GeneratorsLang.REACTOR_DISABLED_DESCRIPTION, new ItemStack(Items.GUNPOWDER)),
-        READY(GeneratorsLang.REACTOR_READY, GeneratorsLang.REACTOR_READY_DESCRIPTION, new ItemStack(Items.REDSTONE)),
-        CAPACITY(GeneratorsLang.REACTOR_CAPACITY, GeneratorsLang.REACTOR_CAPACITY_DESCRIPTION, new ItemStack(Items.REDSTONE)),
-        DEPLETED(GeneratorsLang.REACTOR_DEPLETED, GeneratorsLang.REACTOR_DEPLETED_DESCRIPTION, new ItemStack(Items.REDSTONE));
+        DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER)),
+        READY(GeneratorsLang.REACTOR_LOGIC_READY, GeneratorsLang.DESCRIPTION_REACTOR_READY, new ItemStack(Items.REDSTONE)),
+        CAPACITY(GeneratorsLang.REACTOR_LOGIC_CAPACITY, GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, new ItemStack(Items.REDSTONE)),
+        DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, new ItemStack(Items.REDSTONE));
 
         private final ILangEntry name;
         private final ILangEntry description;

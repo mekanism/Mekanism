@@ -14,4 +14,16 @@ public class MekanismLangGenerator extends BaseLanguageProvider {
     protected void addTranslations() {
         //TODO: Add things
     }
+
+    private void addItems() {
+
+    }
+
+    private void addBlocks() {
+
+    }
+
+    private void addMisc() {
+
+    }
 }

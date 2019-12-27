@@ -6,7 +6,7 @@ import net.minecraft.util.Util;
 public enum AdditionsLang implements ILangEntry {
     CHANNEL("tooltip", "channel"),
     WALKIE_DISABLED("tooltip", "walkie_disabled"),
-    KEY_VOICE("mekanismadditions.key.voice");
+    KEY_VOICE("key", "voice");
 
     private final String key;
 
