@@ -94,7 +94,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
                     flamethrower.incrementMode(toolStack);
                     Mekanism.packetHandler.sendToServer(PacketFlamethrowerData.MODE_CHANGE(Hand.MAIN_HAND));
                     player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                          MekanismLang.FLAME_THROWER_MODE_BUMP.translateColored(EnumColor.GRAY, flamethrower.getMode(toolStack))));
+                          MekanismLang.FLAMETHROWER_MODE_BUMP.translateColored(EnumColor.GRAY, flamethrower.getMode(toolStack))));
                 }
             }
         } else if (kb == armorModeSwitchKey) {

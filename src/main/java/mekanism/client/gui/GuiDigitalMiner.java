@@ -58,9 +58,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
             ret.add(MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(tile.getMaxEnergy())));
             ret.add(MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(perTick)));
             if (perTick > tile.getMaxEnergy()) {
-                ret.add(MekanismLang.INSUFFICIENT_BUFFER.translateColored(EnumColor.RED));
+                ret.add(MekanismLang.MINER_INSUFFICIENT_BUFFER.translateColored(EnumColor.RED));
             }
-            ret.add(MekanismLang.BUFFER_FREE.translate(EnergyDisplay.of(tile.getNeededEnergy())));
+            ret.add(MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(tile.getNeededEnergy())));
             return ret;
         }, this, resource));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));

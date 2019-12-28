@@ -119,7 +119,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.FILTER), 0, xSize, 6, 0x404040);
-        drawString(MekanismLang.INDEX.translate(filter.index), 79, 23, 0x404040);
+        drawString(MekanismLang.FILTER_INDEX.translate(filter.index), 79, 23, 0x404040);
         if (filter.hasFilter()) {
             renderScaledText(filter.getFilterText(), 32, 38, 0x404040, 111);
         }

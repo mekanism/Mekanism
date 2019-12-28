@@ -162,9 +162,9 @@ public class ItemFlamethrower extends Item implements IGasItem {
     }
 
     public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasTextComponent {
-        COMBAT(MekanismLang.FLAME_THROWER_COMBAT, EnumColor.YELLOW),
-        HEAT(MekanismLang.FLAME_THROWER_HEAT, EnumColor.ORANGE),
-        INFERNO(MekanismLang.FLAME_THROWER_INFERNO, EnumColor.DARK_RED);
+        COMBAT(MekanismLang.FLAMETHROWER_COMBAT, EnumColor.YELLOW),
+        HEAT(MekanismLang.FLAMETHROWER_HEAT, EnumColor.ORANGE),
+        INFERNO(MekanismLang.FLAMETHROWER_INFERNO, EnumColor.DARK_RED);
 
         private static final FlamethrowerMode[] MODES = values();
         private final ILangEntry langEntry;

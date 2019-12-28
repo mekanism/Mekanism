@@ -59,7 +59,7 @@ public class ClientProxy extends CommonProxy {
             if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
                 anim.run();
             } else {
-                player.sendStatusMessage(MekanismLang.CHAT_MULTIBLOCK_FORMED.translateColored(EnumColor.INDIGO), true);
+                player.sendStatusMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO), true);
             }
         }
     }

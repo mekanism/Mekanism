@@ -362,7 +362,7 @@ upgrade.speed.desc=Erhöht Maschineriegeschwindigkeit.
 upgrade.filter=Filter
 upgrade.filter.desc=Ein Filter, welcher Schweres Wasser von regulärem Wasser trennt.
 upgrade.gas=Gas
-upgrade.gas.desc=Erhöht die Effizienz von !ngasverwendenden Maschinen.
+upgrade.gas.desc=Erhöht die Effizienz von gasverwendenden Maschinen.
 upgrade.muffling=Dämpfung
 upgrade.muffling.desc=Verringert den von Maschinen produzierten Schall.
 
@@ -766,7 +766,7 @@ tooltip.FormulaicAssemblicator=Eine Maschine, die mithilfe von Energie mit hohem
 tooltip.FuelwoodHeater=Eine Maschine, die große Mengen an Wärmeenergie durch das Verbrennen brennbarer Dinge erzeugt.
 
 tooltip.OsmiumOre=Ein hartes Mineral, dass in fast jeder Höhenlage der Welt gefunden werden kann. Es ist für seine zahlreichen Verwendungszwecke in der Konstruktion von Maschinen bekannt.
-tooltip.CopperOre=Ein häufig vorkommendes, leitfähiges Material, dass für die Produktion von Kabeln verwendet werden kann. Seine Fähigkeit, großer Hitze zu widerstehen, !nmacht es auch essentiell für fortgeschrittene Maschinen.
+tooltip.CopperOre=Ein häufig vorkommendes, leitfähiges Material, dass für die Produktion von Kabeln verwendet werden kann. Seine Fähigkeit, großer Hitze zu widerstehen, macht es auch essentiell für fortgeschrittene Maschinen.
 tooltip.TinOre=Ein leiches, jedoch robustes und leitfähiges Material, dass etwas schwieriger zu finden ist als Kupfer.
 
 # Side data

@@ -58,7 +58,7 @@ public class ItemCraftingFormula extends Item {
             }
             tooltip.add(MekanismLang.INGREDIENTS.translateColored(EnumColor.GRAY));
             for (ItemStack stack : stacks) {
-                tooltip.add(MekanismLang.INGREDIENT.translateColored(EnumColor.GRAY, stack, stack.getCount()));
+                tooltip.add(MekanismLang.GENERIC_TRANSFER.translateColored(EnumColor.GRAY, stack, stack.getCount()));
             }
         }
     }

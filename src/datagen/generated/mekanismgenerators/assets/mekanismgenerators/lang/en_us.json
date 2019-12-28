@@ -65,6 +65,7 @@
   "reactor.mekanismgenerators.logic.ready": "Ready for Ignition",
   "reactor.mekanismgenerators.logic.redstone_output_mode": "Redstone mode: %s",
   "reactor.mekanismgenerators.logic.toggle_cooling": "Toggle Cooling Measurements",
+  "reactor.mekanismgenerators.stats": "Stats",
   "reactor.mekanismgenerators.stats.active": "Water-Cooled",
   "reactor.mekanismgenerators.stats.ignition": "Ignition Temp: %s",
   "reactor.mekanismgenerators.stats.max_casing": "Max. Casing Temp: %s",

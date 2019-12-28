@@ -22,10 +22,10 @@ public abstract class GuiOreDictFilter<FILTER extends IOreDictFilter<FILTER>, TI
     protected void setText() {
         String name = text.getText();
         if (name.isEmpty()) {
-            status = MekanismLang.TAG_FILTER_NO_KEY.translateColored(EnumColor.DARK_RED);
+            status = MekanismLang.TAG_FILTER_NO_TAG.translateColored(EnumColor.DARK_RED);
             return;
         } else if (name.equals(filter.getOreDictName())) {
-            status = MekanismLang.TAG_FILTER_SAME_KEY.translateColored(EnumColor.DARK_RED);
+            status = MekanismLang.TAG_FILTER_SAME_TAG.translateColored(EnumColor.DARK_RED);
             return;
         }
         updateStackList(name);

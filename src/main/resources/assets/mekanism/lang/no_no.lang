@@ -264,11 +264,11 @@ update.outdated=Du bruker en utdatert versjon på en eller flere moduler
 
 # Upgrades
 upgrade.energy=Energi
-upgrade.energy.desc=Øker energi effektivitet !nog kapasitet på maskinen.
+upgrade.energy.desc=Øker energi effektivitet og kapasitet på maskinen.
 upgrade.speed=Hastighet
 upgrade.speed.desc=Øker hastighet på maskinen.
 upgrade.filter=Filter
-upgrade.filter.desc=Et filer som separerer !ntungtvann fra vanlig vann.
+upgrade.filter.desc=Et filer som separerer tungtvann fra vanlig vann.
 
 # Key description text
 mekanism.key.mode=Endre modus
@@ -506,39 +506,39 @@ tooltip.jetpack.disabled=Deaktivert
 tooltip.seismicReader.needsEnergy=Ikke nok energi til å Not enough energy tolke vibrasjon
 tooltip.seismicReader.noVibrations=Ikke i stand til å oppdage Unable to discover noen vibrasjoner
 
-tooltip.EnrichmentChamber=En enkel maskin bruk til å berike malm !ntil støv, og kan !nutføre mange andre operasjoner.
-tooltip.OsmiumCompressor=En rimelig avansert maskin brukt til å komprimere !nosmium til støv for å kunne lage !nderes tilsvarende barrer.
+tooltip.EnrichmentChamber=En enkel maskin bruk til å berike malm til støv, og kan utføre mange andre operasjoner.
+tooltip.OsmiumCompressor=En rimelig avansert maskin brukt til å komprimere osmium til støv for å kunne lage deres tilsvarende barrer.
 tooltip.Combiner=En maskin bruk til å combinere støv og cobblestone !for å lage tilsvarnde malm.
-tooltip.Crusher=En maskin bruk til å knuse barrer til støv, !nog utføre mange andre operasjoner.
-tooltip.DigitalMiner=En meget avansert, filer-basert, auto-graver !nsom kan grave hvilken som helst blokk du ber den om !ninnenfor en 32 blokkers (maks) radius.
-tooltip.MetallurgicInfuser=En maskin brukt til å sette materialer !nmot (generellt) metaller for å lage metall legeringer !nog andre forbindelser.
-tooltip.PurificationChamber=En avansert maskin i stand til å prosessere en !nmalm til tree klumper, fungerer som den første !nsteget i 300% malm prosessering.
-tooltip.EnergizedSmelter=En enkel maskin som fungerer som en Mekanism-basert !novn som kjører på energi.
-tooltip.Teleporter=En maskin som er i stand til å teleportere spillere til forskjellige !nsteder definert av en annen teleportør.
-tooltip.ElectricPump=En avansert pumpe som er i stand til å pumpe !nopp en hel lava sjø.
-tooltip.Chargepad=En universal ladepad som kan lade !nalle energi baserte ting fra alle modder.
-tooltip.LogisticalSorter=En filter-basert, avansert sorterings maskin som !kan auto-utløse spesifiserte ting ut av seg og inn i !ntilstøtende inventarer and Logistical Transporters.
-tooltip.RotaryCondensentrator=En maskin i stand til å convertere gasser til !nderes flytende form og omvendt.
-tooltip.ChemicalInjectionChamber=En elite maskin i stand til å prossessere !malm til fire shards, fungerer som det første !nsteget i 400% malm prosessering.
-tooltip.ElectrolyticSeparator=En maskin som bruker prosessen !nelektrolyse til å splitte !ngasser til andre gasser.
-tooltip.PrecisionSawmill=En maskin brukt til å prossessere ved og andre !ntre-baserte ting mer effektivt, og for !nå lage sagflis.
-tooltip.ChemicalDissolutionChamber=En ultimat maskin vrukt til å kjemisk !noppløse alle urenheter i malm, !nså bare en uprosessert slurry gjenstår.
-tooltip.ChemicalWasher=En ultimat maskin som renser uprosessert !nslurry og forbereder den for and prepares it for krystallisering.
-tooltip.ChemicalCrystallizer=En ultimat maskin bruk til å krystallisere ! An ultimate machine used to crystallize !nrenset malm slurry til malm krystaller.
+tooltip.Crusher=En maskin bruk til å knuse barrer til støv, og utføre mange andre operasjoner.
+tooltip.DigitalMiner=En meget avansert, filer-basert, auto-graver som kan grave hvilken som helst blokk du ber den om innenfor en 32 blokkers (maks) radius.
+tooltip.MetallurgicInfuser=En maskin brukt til å sette materialer mot (generellt) metaller for å lage metall legeringer og andre forbindelser.
+tooltip.PurificationChamber=En avansert maskin i stand til å prosessere en malm til tree klumper, fungerer som den første steget i 300% malm prosessering.
+tooltip.EnergizedSmelter=En enkel maskin som fungerer som en Mekanism-basert ovn som kjører på energi.
+tooltip.Teleporter=En maskin som er i stand til å teleportere spillere til forskjellige steder definert av en annen teleportør.
+tooltip.ElectricPump=En avansert pumpe som er i stand til å pumpe opp en hel lava sjø.
+tooltip.Chargepad=En universal ladepad som kan lade alle energi baserte ting fra alle modder.
+tooltip.LogisticalSorter=En filter-basert, avansert sorterings maskin som !kan auto-utløse spesifiserte ting ut av seg og inn i tilstøtende inventarer and Logistical Transporters.
+tooltip.RotaryCondensentrator=En maskin i stand til å convertere gasser til deres flytende form og omvendt.
+tooltip.ChemicalInjectionChamber=En elite maskin i stand til å prossessere !malm til fire shards, fungerer som det første steget i 400% malm prosessering.
+tooltip.ElectrolyticSeparator=En maskin som bruker prosessen elektrolyse til å splitte gasser til andre gasser.
+tooltip.PrecisionSawmill=En maskin brukt til å prossessere ved og andre tre-baserte ting mer effektivt, og for å lage sagflis.
+tooltip.ChemicalDissolutionChamber=En ultimat maskin vrukt til å kjemisk oppløse alle urenheter i malm, så bare en uprosessert slurry gjenstår.
+tooltip.ChemicalWasher=En ultimat maskin som renser uprosessert slurry og forbereder den for and prepares it for krystallisering.
+tooltip.ChemicalCrystallizer=En ultimat maskin bruk til å krystallisere ! An ultimate machine used to crystallize renset malm slurry til malm krystaller.
 tooltip.ChemicalOxidizer=En maskin i stand til å oxidere !solide materialer til gass form.
-tooltip.ChemicalInfuser=En maskin som produserer en ny !ngass ved å infusere to andre gasser.
-tooltip.SeismicVibrator=En maskin som bruker seismiske vibrasjoner til å !ngi informasjon om ulike lag !nav verden.
-tooltip.PressurizedReactionChamber=En avansert maskin som prosseserer en !nsolid, flytende og gass blanding og !nlager både en gass og et solid produkt.
-tooltip.FluidicPlenisher=En maskin som lar deg lage hele !nsjøer ved å fylle raviner med vesker.
-tooltip.Laser=En avansert form for linær energi !noverføring som bruker en ekstremt !nkollimert lysstråle.
-tooltip.LaserAmplifier=En blokk som kan bli brukt til å slå sammen, !nomdirigere og forsterke laser stråler,!nmed kontroll over når den skal avfyre.
-tooltip.LaserTractorBeam=En blokk brukt til å slå sammen og !nomdirigere laser stråler. Samler !nting fra blokker den har ødelagt.
-tooltip.SolarNeutronActivator=En maskin som dirigerer nøytronstråling !nfra sola til dens interne reservoar, !nsom tillater sakte produksjon av forskjellige isotoper.
-tooltip.Oredictionificator=En maskin brukt til å forene og oversette mellom forskjellige gjenstander !nog blokker ved hjelp av Ore Dictionary.
+tooltip.ChemicalInfuser=En maskin som produserer en ny gass ved å infusere to andre gasser.
+tooltip.SeismicVibrator=En maskin som bruker seismiske vibrasjoner til å gi informasjon om ulike lag av verden.
+tooltip.PressurizedReactionChamber=En avansert maskin som prosseserer en solid, flytende og gass blanding og lager både en gass og et solid produkt.
+tooltip.FluidicPlenisher=En maskin som lar deg lage hele sjøer ved å fylle raviner med vesker.
+tooltip.Laser=En avansert form for linær energi overføring som bruker en ekstremt kollimert lysstråle.
+tooltip.LaserAmplifier=En blokk som kan bli brukt til å slå sammen, omdirigere og forsterke laser stråler,med kontroll over når den skal avfyre.
+tooltip.LaserTractorBeam=En blokk brukt til å slå sammen og omdirigere laser stråler. Samler ting fra blokker den har ødelagt.
+tooltip.SolarNeutronActivator=En maskin som dirigerer nøytronstråling fra sola til dens interne reservoar, som tillater sakte produksjon av forskjellige isotoper.
+tooltip.Oredictionificator=En maskin brukt til å forene og oversette mellom forskjellige gjenstander og blokker ved hjelp av Ore Dictionary.
 
-tooltip.OsmiumOre=En sterk mineral som kan bli funnet !nved nesten hvilken som helst høyde i verden. !nDen er kjent for å ha mange bruksområder !ni bygging av maskiner.
-tooltip.CopperOre=Et felles, ledende materiale som !nkan brukes i produksjon av !nkabler. Dens evne til å tåle !nhøy varme gjør den også viktig !nfor avanserte maskiner.
-tooltip.TinOre=En lett, men likevel solid, ledende !nmateriale som er funnet litt !nmindre enn Kobber.
+tooltip.OsmiumOre=En sterk mineral som kan bli funnet ved nesten hvilken som helst høyde i verden. Den er kjent for å ha mange bruksområder i bygging av maskiner.
+tooltip.CopperOre=Et felles, ledende materiale som kan brukes i produksjon av kabler. Dens evne til å tåle høy varme gjør den også viktig for avanserte maskiner.
+tooltip.TinOre=En lett, men likevel solid, ledende materiale som er funnet litt mindre enn Kobber.
 
 # Side data
 sideData.None=Ingen

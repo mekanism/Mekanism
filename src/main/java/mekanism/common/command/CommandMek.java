@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
+import mekanism.common.MekanismLang;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -26,7 +28,6 @@ public class CommandMek {
     public static ArgumentBuilder<CommandSource, ?> register() {
         //TODO: Check permission levels for everything, also see if this is proper way to ensure only players use it and if so should all of the commands be like this
         // or should we allow some to be used from console
-        //TODO: Add messages to the commands that print to sender saying what was done
         return Commands.literal("mek")
               .requires(cs -> cs.getEntity() instanceof ServerPlayerEntity)
               .then(DebugCommand.register())
@@ -43,6 +44,7 @@ public class CommandMek {
                   .requires(cs -> cs.hasPermissionLevel(4))
                   .executes(ctx -> {
                       MekanismAPI.debug = !MekanismAPI.debug;
+                      ctx.getSource().sendFeedback(MekanismLang.COMMAND_DEBUG.translate(OnOff.of(MekanismAPI.debug)), true);
                       return 0;
                   });
         }
@@ -61,6 +63,7 @@ public class CommandMek {
                       rules.get(GameRules.DO_DAYLIGHT_CYCLE).set(false, server);
                       rules.get(GameRules.DO_WEATHER_CYCLE).set(false, server);
                       source.asPlayer().getEntityWorld().setDayTime(2_000);
+                      source.sendFeedback(MekanismLang.COMMAND_TEST_RULES.translate(), true);
                       return 0;
                   });
         }
@@ -85,6 +88,7 @@ public class CommandMek {
                             Vec3d position = location.getPosition(source);
                             // Teleport user to new location
                             teleport(entity, position.getX(), position.getY(), position.getZ());
+                            source.sendFeedback(MekanismLang.COMMAND_TP.translate(position.getX(), position.getY(), position.getZ()), true);
                             return 0;
                         }));
         }
@@ -102,10 +106,13 @@ public class CommandMek {
                       // Get stack of locations for the user; if there's at least one entry, pop it off
                       // and send the user back there
                       Stack<BlockPos> playerLocations = tpStack.getOrDefault(player, new Stack<>());
-                      if (!playerLocations.isEmpty()) {
+                      if (playerLocations.isEmpty()) {
+                          source.sendFeedback(MekanismLang.COMMAND_TPOP_EMPTY.translate(), true);
+                      } else {
                           BlockPos lastPos = playerLocations.pop();
                           tpStack.put(player, playerLocations);
                           teleport(source.getEntity(), lastPos.getX(), lastPos.getY(), lastPos.getZ());
+                          source.sendFeedback(MekanismLang.COMMAND_TPOP.translate(lastPos.getX(), lastPos.getY(), lastPos.getZ(), playerLocations.size()), true);
                       }
                       return 0;
                   });

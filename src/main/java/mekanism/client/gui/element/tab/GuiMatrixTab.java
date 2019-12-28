@@ -21,7 +21,7 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
 
     public enum MatrixTab implements TabType<TileEntityInductionCasing> {
         MAIN("energy.png", MekanismLang.MAIN_TAB, ClickedTileButton.TAB_MAIN),
-        STAT("stats.png", MekanismLang.STATS_TAB, ClickedTileButton.TAB_STATS);
+        STAT("stats.png", MekanismLang.MATRIX_STATS, ClickedTileButton.TAB_STATS);
 
         private final ClickedTileButton button;
         private final ILangEntry description;

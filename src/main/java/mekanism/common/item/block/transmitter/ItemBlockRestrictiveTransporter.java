@@ -30,7 +30,7 @@ public class ItemBlockRestrictiveTransporter extends ItemBlockMultipartAble<Bloc
             tooltip.add(MekanismLang.CAPABLE_OF_TRANSFERRING.translateColored(EnumColor.DARK_GRAY));
             tooltip.add(MekanismLang.ITEMS.translateColored(EnumColor.PURPLE, MekanismLang.UNIVERSAL));
             tooltip.add(MekanismLang.BLOCKS.translateColored(EnumColor.PURPLE, MekanismLang.UNIVERSAL));
-            tooltip.add(MekanismLang.RESTRICTIVE_DESCRIPTION.translateColored(EnumColor.DARK_RED));
+            tooltip.add(MekanismLang.DESCRIPTION_RESTRICTIVE.translateColored(EnumColor.DARK_RED));
         }
     }
 }

@@ -40,12 +40,12 @@ public class ItemDictionary extends Item {
                 ItemStack testStack = new ItemStack(block);
                 List<String> names = OreDictCache.getOreDictName(testStack);
                 if (!names.isEmpty()) {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.KEYS_FOUND.translateColored(EnumColor.GRAY)));
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_KEYS_FOUND.translateColored(EnumColor.GRAY)));
                     for (String name : names) {
                         player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, name));
                     }
                 } else {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_KEY.translateColored(EnumColor.GRAY)));
+                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_NO_KEY.translateColored(EnumColor.GRAY)));
                 }
             }
             return ActionResultType.SUCCESS;

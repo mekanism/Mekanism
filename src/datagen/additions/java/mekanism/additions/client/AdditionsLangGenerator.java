@@ -32,17 +32,15 @@ public class AdditionsLangGenerator extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
-        add(AdditionsLang.CHANNEL, "Channel: %s");
-        add(AdditionsLang.WALKIE_DISABLED, "Voice server disabled.");
-        add(AdditionsLang.KEY_VOICE, "Voice");
-        //Entity types
-        add(AdditionsEntityType.BABY_SKELETON, "Baby Skeleton");
-        add(AdditionsEntityType.BALLOON, "Balloon");
-        add(AdditionsEntityType.OBSIDIAN_TNT, "Obsidian TNT");
-        //Items and blocks
+        addItems();
+        addBlocks();
+        addEntities();
+        addMisc();
+    }
+
+    private void addItems() {
         add(AdditionsItem.BABY_SKELETON_SPAWN_EGG, "Baby Skeleton Spawn Egg");
         add(AdditionsItem.WALKIE_TALKIE, "Walkie-Talkie");
-        add(AdditionsBlock.OBSIDIAN_TNT, "Obsidian TNT");
         //Balloons
         addBalloon(AdditionsItem.BLACK_BALLOON);
         addBalloon(AdditionsItem.RED_BALLOON);
@@ -60,6 +58,10 @@ public class AdditionsLangGenerator extends BaseLanguageProvider {
         addBalloon(AdditionsItem.MAGENTA_BALLOON);
         addBalloon(AdditionsItem.ORANGE_BALLOON);
         addBalloon(AdditionsItem.WHITE_BALLOON);
+    }
+
+    private void addBlocks() {
+        add(AdditionsBlock.OBSIDIAN_TNT, "Obsidian TNT");
         //Glow Panels
         addGlowPanel(AdditionsBlock.BLACK_GLOW_PANEL);
         addGlowPanel(AdditionsBlock.RED_GLOW_PANEL);
@@ -230,6 +232,18 @@ public class AdditionsLangGenerator extends BaseLanguageProvider {
         addPlasticFenceGate(AdditionsBlock.MAGENTA_PLASTIC_FENCE_GATE);
         addPlasticFenceGate(AdditionsBlock.ORANGE_PLASTIC_FENCE_GATE);
         addPlasticFenceGate(AdditionsBlock.WHITE_PLASTIC_FENCE_GATE);
+    }
+
+    private void addEntities() {
+        add(AdditionsEntityType.BABY_SKELETON, "Baby Skeleton");
+        add(AdditionsEntityType.BALLOON, "Balloon");
+        add(AdditionsEntityType.OBSIDIAN_TNT, "Obsidian TNT");
+    }
+
+    private void addMisc() {
+        add(AdditionsLang.CHANNEL, "Channel: %s");
+        add(AdditionsLang.WALKIE_DISABLED, "Voice server disabled.");
+        add(AdditionsLang.KEY_VOICE, "Voice");
     }
 
     private void addGlowPanel(BlockRegistryObject<BlockGlowPanel, ItemBlockColoredName> glowPanel) {

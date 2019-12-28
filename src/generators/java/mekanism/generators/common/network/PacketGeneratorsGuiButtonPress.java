@@ -2,7 +2,6 @@ package mekanism.generators.common.network;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-import mekanism.common.MekanismLang;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -99,7 +98,7 @@ public class PacketGeneratorsGuiButtonPress {
             if (tile instanceof TileEntityTurbineCasing) {
                 return new ContainerProvider(GeneratorsLang.TURBINE_STATS, (i, inv, player) -> new TurbineStatsContainer(i, inv, (TileEntityTurbineCasing) tile));
             } else if (tile instanceof TileEntityReactorController) {
-                return new ContainerProvider(MekanismLang.STATS_TAB, (i, inv, player) -> new ReactorStatsContainer(i, inv, (TileEntityReactorController) tile));
+                return new ContainerProvider(GeneratorsLang.STATS_TAB, (i, inv, player) -> new ReactorStatsContainer(i, inv, (TileEntityReactorController) tile));
             }
             return null;
         });

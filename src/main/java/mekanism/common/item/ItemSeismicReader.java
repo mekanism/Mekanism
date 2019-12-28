@@ -43,7 +43,7 @@ public class ItemSeismicReader extends ItemEnergized {
         } else if (!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.modeSwitchKey)) {
             super.addInformation(stack, world, tooltip, flag);
         } else {
-            tooltip.add(MekanismLang.SEISMIC_READER_DESCRIPTION.translate());
+            tooltip.add(MekanismLang.DESCRIPTION_SEISMIC_READER.translate());
         }
     }
 

@@ -15,7 +15,11 @@ public class ToolsLangGenerator extends BaseLanguageProvider {
 
     @Override
     protected void addTranslations() {
-        add(ToolsLang.HP, "HP: %s");
+        addItems();
+        addMisc();
+    }
+
+    private void addItems() {
         //Vanilla Paxels
         add(ToolsItem.WOOD_PAXEL, "Wood Paxel");
         add(ToolsItem.STONE_PAXEL, "Stone Paxel");
@@ -38,6 +42,10 @@ public class ToolsLangGenerator extends BaseLanguageProvider {
               ToolsItem.REFINED_OBSIDIAN_SHOVEL, ToolsItem.REFINED_OBSIDIAN_HOE, ToolsItem.REFINED_OBSIDIAN_PAXEL);
         addSet("Steel", ToolsItem.STEEL_HELMET, ToolsItem.STEEL_CHESTPLATE, ToolsItem.STEEL_LEGGINGS, ToolsItem.STEEL_BOOTS, ToolsItem.STEEL_SWORD,
               ToolsItem.STEEL_PICKAXE, ToolsItem.STEEL_AXE, ToolsItem.STEEL_SHOVEL, ToolsItem.STEEL_HOE, ToolsItem.STEEL_PAXEL);
+    }
+
+    private void addMisc() {
+        add(ToolsLang.HP, "HP: %s");
     }
 
     private void addSet(String type, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings, IItemProvider boots, IItemProvider sword,

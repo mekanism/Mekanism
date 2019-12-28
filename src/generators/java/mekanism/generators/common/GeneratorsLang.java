@@ -24,6 +24,7 @@ public enum GeneratorsLang implements ILangEntry {
     REACTOR_STEAM_PRODUCTION("reactor", "stats.steam_production"),
     REACTOR_ACTIVE("reactor", "stats.active"),
     HEAT_TAB("reactor", "heat"),
+    STATS_TAB("reactor", "stats"),
     REACTOR_PLASMA("reactor", "heat.plasma"),
     REACTOR_CASE("reactor", "heat.case"),
     FUEL_TAB("reactor", "fuel"),

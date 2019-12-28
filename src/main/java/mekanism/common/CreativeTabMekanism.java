@@ -8,12 +8,18 @@ public class CreativeTabMekanism extends ItemGroup {
 
     public CreativeTabMekanism() {
         //TODO: I think this is lang string so rename it to a better format
-        super("tabMekanism");
+        super(Mekanism.MODID);
     }
 
     @Nonnull
     @Override
     public ItemStack createIcon() {
         return MekanismItem.ATOMIC_ALLOY.getItemStack();
+    }
+
+    @Nonnull
+    @Override
+    public String getTranslationKey() {
+        return MekanismLang.MEKANISM.getTranslationKey();
     }
 }

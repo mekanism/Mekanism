@@ -109,6 +109,13 @@ public enum EnumColor {//TODO: Maybe rename some of these or their lang keys
     }
 
     /**
+     * @apiNote For use by the data generators.
+     */
+    public APILang getLangEntry() {
+        return langEntry;
+    }
+
+    /**
      * Gets the 0-1 of this color's RGB value by dividing by 255 (used for OpenGL coloring).
      *
      * @param index - R:0, G:1, B:2

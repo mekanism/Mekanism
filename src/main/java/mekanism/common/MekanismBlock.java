@@ -129,7 +129,6 @@ import mekanism.common.item.block.transmitter.ItemBlockUniversalCable;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.resource.BlockResourceInfo;
-import mekanism.common.resource.INamedResource;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
@@ -158,6 +157,8 @@ public class MekanismBlock {
     public static final BlockRegistryObject<BlockResource, ItemBlockResource> CHARCOAL_BLOCK = registerResourceBlock(BlockResourceInfo.CHARCOAL);
     public static final BlockRegistryObject<BlockResource, ItemBlockResource> REFINED_GLOWSTONE_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_GLOWSTONE);
     public static final BlockRegistryObject<BlockResource, ItemBlockResource> STEEL_BLOCK = registerResourceBlock(BlockResourceInfo.STEEL);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> COPPER_BLOCK = registerResourceBlock(BlockResourceInfo.COPPER);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> TIN_BLOCK = registerResourceBlock(BlockResourceInfo.TIN);
 
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> BASIC_BIN = registerBin(BinTier.BASIC);
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> ADVANCED_BIN = registerBin(BinTier.ADVANCED);
@@ -170,11 +171,8 @@ public class MekanismBlock {
     public static final BlockRegistryObject<BlockDynamicTank, ItemBlockTooltip<BlockDynamicTank>> DYNAMIC_TANK = registerBlock("dynamic_tank", BlockDynamicTank::new);
     public static final BlockRegistryObject<BlockStructuralGlass, ItemBlockTooltip<BlockStructuralGlass>> STRUCTURAL_GLASS = registerBlock("structural_glass", BlockStructuralGlass::new);
     public static final BlockRegistryObject<BlockDynamicValve, ItemBlockTooltip<BlockDynamicValve>> DYNAMIC_VALVE = registerBlock("dynamic_valve", BlockDynamicValve::new);
-    public static final BlockRegistryObject<BlockResource, ItemBlockResource> COPPER_BLOCK = registerResourceBlock(BlockResourceInfo.COPPER);
-    public static final BlockRegistryObject<BlockResource, ItemBlockResource> TIN_BLOCK = registerResourceBlock(BlockResourceInfo.TIN);
     public static final BlockRegistryObject<BlockThermalEvaporationController, ItemBlockTooltip<BlockThermalEvaporationController>> THERMAL_EVAPORATION_CONTROLLER = registerBlock("thermal_evaporation_controller", BlockThermalEvaporationController::new);
     public static final BlockRegistryObject<BlockThermalEvaporationValve, ItemBlockTooltip<BlockThermalEvaporationValve>> THERMAL_EVAPORATION_VALVE = registerBlock("thermal_evaporation_valve", BlockThermalEvaporationValve::new);
-
     public static final BlockRegistryObject<BlockThermalEvaporation, ItemBlockTooltip<BlockThermalEvaporation>> THERMAL_EVAPORATION_BLOCK = registerBlock("thermal_evaporation_block", BlockThermalEvaporation::new);
     public static final BlockRegistryObject<BlockInductionCasing, ItemBlockTooltip<BlockInductionCasing>> INDUCTION_CASING = registerBlock("induction_casing", BlockInductionCasing::new);
     public static final BlockRegistryObject<BlockInductionPort, ItemBlockTooltip<BlockInductionPort>> INDUCTION_PORT = registerBlock("induction_port", BlockInductionPort::new);

@@ -42,7 +42,7 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
                 }
                 sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
             } else {
-                status = MekanismLang.TAG_FILTER_NO_KEY.translateColored(EnumColor.DARK_RED);
+                status = MekanismLang.TAG_FILTER_NO_TAG.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
             }
         }));

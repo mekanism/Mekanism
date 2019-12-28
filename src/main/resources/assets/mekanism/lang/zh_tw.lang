@@ -294,11 +294,11 @@ update.outdated=正在使用過期版本的一兩個模塊
 
 # Upgrades
 upgrade.energy=能量
-upgrade.energy.desc=提升能源效率!n以及機器性能.
+upgrade.energy.desc=提升能源效率以及機器性能.
 upgrade.speed=速度
 upgrade.speed.desc=提升機器的速度.
 upgrade.filter=過濾
-upgrade.filter.desc=將重水從普通水中!n分離出來的過濾器.
+upgrade.filter.desc=將重水從普通水中分離出來的過濾器.
 
 # Key description text
 mekanism.key.mode=模式切換
@@ -555,39 +555,39 @@ tooltip.jetpack.disabled=禁用
 tooltip.seismicReader.needsEnergy=能量不足無法詮釋振動
 tooltip.seismicReader.noVibrations=未能發現任何振動
 
-tooltip.EnrichmentChamber=一臺能將礦石磨成兩份粉末的機器, !n也可以進行一些其他操作.
-tooltip.OsmiumCompressor=一臺非常高級的設備,能夠將鋨礦石壓縮成 !n多種粉末以制造相應金屬錠.
+tooltip.EnrichmentChamber=一臺能將礦石磨成兩份粉末的機器, 也可以進行一些其他操作.
+tooltip.OsmiumCompressor=一臺非常高級的設備,能夠將鋨礦石壓縮成 多種粉末以制造相應金屬錠.
 tooltip.Combiner=A machine 一臺用來將粉末與圓石融合為相應礦石的機器.
-tooltip.Crusher=一臺用來將金屬錠磨成相應粉末的機器, !n也可以進行一些其他操作.
-tooltip.DigitalMiner=一臺高度先進,以過濾為基礎功能的自動采礦機, !n它可以挖掉指定的32格范圍(最大)內的所有方塊.
-tooltip.MetallurgicInfuser=一臺用來將多種材料的金屬熔煉成!n合金或其他化合物的設備.
-tooltip.PurificationChamber=一臺能夠將礦石加工成三塊礦石疙瘩的高級設備,!n能夠提供300%的礦石加工效率.
+tooltip.Crusher=一臺用來將金屬錠磨成相應粉末的機器, 也可以進行一些其他操作.
+tooltip.DigitalMiner=一臺高度先進,以過濾為基礎功能的自動采礦機, 它可以挖掉指定的32格范圍(最大)內的所有方塊.
+tooltip.MetallurgicInfuser=一臺用來將多種材料的金屬熔煉成合金或其他化合物的設備.
+tooltip.PurificationChamber=一臺能夠將礦石加工成三塊礦石疙瘩的高級設備,能夠提供300%的礦石加工效率.
 tooltip.EnergizedSmelter=一臺簡單的消耗通用機器能量的熔爐.
 tooltip.Teleporter=一臺能夠將玩家傳送到其他傳送器標定的各種位置的設備.
 tooltip.ElectricPump=能夠抽干巖漿湖的高級泵.
 tooltip.Chargepad=通用充能板,能夠為各種模組中的物品補充能量.
-tooltip.LogisticalSorter=一臺以過濾為基礎功能的高級整理機器, !n能夠自動將指定物品彈射到依附的物品欄或物流管道中.
-tooltip.RotaryCondensentrator=一臺能夠將氣體和其液態形式,!n相互轉化的機器.
-tooltip.ChemicalInjectionChamber=一臺能夠將!n礦物處理成4個碎片的精英機器, 是400%量產礦物的!n第一步.
-tooltip.ElectrolyticSeparator=一臺使用!n電解將特定氣體 !n分離成兩種不同氣體的機器.
-tooltip.PrecisionSawmill=一臺更有效地處理原木和!n木制品的機器, 同時!n也能獲得鋸屑.
-tooltip.ChemicalDissolutionChamber=一臺能夠通過化學手段溶解!n礦石里的所有雜質, !n從而得到未經處理的礦物漿液的終極機器.
-tooltip.ChemicalWasher=一臺能夠清理未經處理的!n漿液,為結晶作準備的終極機器.
-tooltip.ChemicalCrystallizer=一臺用于結晶!n凈化過的礦物漿液的終極機器.
-tooltip.ChemicalOxidizer=一臺能夠將!n固態材料氧化成氣態產物的機器.
-tooltip.ChemicalInfuser=一臺能夠通過注入其它兩種!n氣體產生新的氣體的機器.
-tooltip.SeismicVibrator=一臺能夠利用地震震動!n提供關于這個世界!n地質結構的機器.
-tooltip.PressurizedReactionChamber=一臺能夠處理!n固體,液體和氣體混合物,并且能!n產生氣態和固態產物的高級機器.
-tooltip.FluidicPlenisher=一臺能夠用液體填充溝壑!n從而產生一整個湖的機器.
-tooltip.Laser=一種高級的能量傳輸形式!n,利用平行光線實現能量!n的直線傳輸.
-tooltip.LaserAmplifier=一個能用于合并,轉向和!n增幅激光的方塊,易于控!n制.
-tooltip.LaserTractorBeam=一個用于合并和轉向激!n光的方塊.會收集它所破!n壞方塊的掉落物.
-tooltip.SolarNeutronActivator=一個將太陽的中子輻射!n引入自身腔體的機器,可!n緩慢制造各種同位素.
-tooltip.Oredictionificator=一個使用礦典統一并翻譯!n各種物品和方塊的機器.
+tooltip.LogisticalSorter=一臺以過濾為基礎功能的高級整理機器, 能夠自動將指定物品彈射到依附的物品欄或物流管道中.
+tooltip.RotaryCondensentrator=一臺能夠將氣體和其液態形式,相互轉化的機器.
+tooltip.ChemicalInjectionChamber=一臺能夠將礦物處理成4個碎片的精英機器, 是400%量產礦物的第一步.
+tooltip.ElectrolyticSeparator=一臺使用電解將特定氣體 分離成兩種不同氣體的機器.
+tooltip.PrecisionSawmill=一臺更有效地處理原木和木制品的機器, 同時也能獲得鋸屑.
+tooltip.ChemicalDissolutionChamber=一臺能夠通過化學手段溶解礦石里的所有雜質, 從而得到未經處理的礦物漿液的終極機器.
+tooltip.ChemicalWasher=一臺能夠清理未經處理的漿液,為結晶作準備的終極機器.
+tooltip.ChemicalCrystallizer=一臺用于結晶凈化過的礦物漿液的終極機器.
+tooltip.ChemicalOxidizer=一臺能夠將固態材料氧化成氣態產物的機器.
+tooltip.ChemicalInfuser=一臺能夠通過注入其它兩種氣體產生新的氣體的機器.
+tooltip.SeismicVibrator=一臺能夠利用地震震動提供關于這個世界地質結構的機器.
+tooltip.PressurizedReactionChamber=一臺能夠處理固體,液體和氣體混合物,并且能產生氣態和固態產物的高級機器.
+tooltip.FluidicPlenisher=一臺能夠用液體填充溝壑從而產生一整個湖的機器.
+tooltip.Laser=一種高級的能量傳輸形式,利用平行光線實現能量的直線傳輸.
+tooltip.LaserAmplifier=一個能用于合并,轉向和增幅激光的方塊,易于控制.
+tooltip.LaserTractorBeam=一個用于合并和轉向激光的方塊.會收集它所破壞方塊的掉落物.
+tooltip.SolarNeutronActivator=一個將太陽的中子輻射引入自身腔體的機器,可緩慢制造各種同位素.
+tooltip.Oredictionificator=一個使用礦典統一并翻譯各種物品和方塊的機器.
 
-tooltip.OsmiumOre=一種牢固的材料,它能夠在!n這個世界任何高度被發現. !n它因經常用于!n機器建造而聞名.
-tooltip.CopperOre=一種常見的導電材料,能夠!n用于線纜的!n產出. 它耐高溫的特性!n也使它成為生成!n高級機械的重要材料.
-tooltip.TinOre=一種輕盈, 但牢固的導電!n材料, 比銅要!n略微稀有點.
+tooltip.OsmiumOre=一種牢固的材料,它能夠在這個世界任何高度被發現. 它因經常用于機器建造而聞名.
+tooltip.CopperOre=一種常見的導電材料,能夠用于線纜的產出. 它耐高溫的特性也使它成為生成高級機械的重要材料.
+tooltip.TinOre=一種輕盈, 但牢固的導電材料, 比銅要略微稀有點.
 
 # Side data
 sideData.None=無

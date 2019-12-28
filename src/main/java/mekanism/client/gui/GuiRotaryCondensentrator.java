@@ -75,7 +75,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             }
         }, ProgressBar.LARGE_LEFT, this, resource, 62, 38));
         addButton(new MekanismImageButton(this, guiLeft + 4, guiTop + 4, 18, getButtonLocation("toggle"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))), getOnHover(MekanismLang.TOGGLE_CONDENSENTRATOR)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }
 
     @Override

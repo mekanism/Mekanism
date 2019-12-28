@@ -43,7 +43,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return MekanismLang.OUTPUTTING_RATE.translate(EnergyDisplay.of(tile.getLastOutput()));
+                return MekanismLang.MATRIX_OUTPUTTING_RATE.translate(EnergyDisplay.of(tile.getLastOutput()));
             }
 
             @Override
@@ -52,23 +52,23 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
             }
         }, resource, 38, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              MekanismLang.INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
-              MekanismLang.OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))),
+              MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
+              MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))),
               this, resource));
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText(MekanismLang.MATRIX_STATS.translate(), 0, xSize, 6, 0x404040);
-        drawString(MekanismLang.INPUT_AMOUNT.translate(), 53, 26, 0x797979);
+        drawString(MekanismLang.MATRIX_INPUT_AMOUNT.translate(), 53, 26, 0x797979);
         drawString(EnergyDisplay.of(tile.getLastInput(), tile.getTransferCap()).getTextComponent(), 59, 35, 0x404040);
-        drawString(MekanismLang.OUTPUT_AMOUNT.translate(), 53, 46, 0x797979);
+        drawString(MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(), 53, 46, 0x797979);
         drawString(EnergyDisplay.of(tile.getLastOutput(), tile.getTransferCap()).getTextComponent(), 59, 55, 0x404040);
-        drawString(MekanismLang.DIMENSIONS.translate(), 8, 82, 0x797979);
+        drawString(MekanismLang.MATRIX_DIMENSIONS.translate(), 8, 82, 0x797979);
         if (tile.structure != null) {
-            drawString(MekanismLang.DIMENSION_REPRESENTATION.translate(tile.structure.volWidth, tile.structure.volHeight, tile.structure.volLength), 14, 91, 0x404040);
+            drawString(MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(tile.structure.volWidth, tile.structure.volHeight, tile.structure.volLength), 14, 91, 0x404040);
         }
-        drawString(MekanismLang.CONSTITUENTS.translate(), 8, 102, 0x797979);
+        drawString(MekanismLang.MATRIX_CONSTITUENTS.translate(), 8, 102, 0x797979);
         drawString(MekanismLang.MATRIX_CELLS.translate(tile.getCellCount()), 14, 111, 0x404040);
         drawString(MekanismLang.MATRIX_PROVIDERS.translate(tile.getProviderCount()), 14, 120, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

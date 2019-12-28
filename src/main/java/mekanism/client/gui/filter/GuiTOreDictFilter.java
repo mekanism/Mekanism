@@ -47,7 +47,7 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
                 }
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             } else {
-                status = MekanismLang.TAG_FILTER_NO_KEY.translateColored(EnumColor.DARK_RED);
+                status = MekanismLang.TAG_FILTER_NO_TAG.translateColored(EnumColor.DARK_RED);
                 ticker = 20;
             }
         }));
@@ -58,7 +58,7 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
         addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
               () -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
         addButton(new MekanismImageButton(this, guiLeft + 11, guiTop + 64, 11, getButtonLocation("default"),
-              () -> filter.allowDefault = !filter.allowDefault, getOnHover(MekanismLang.ALLOW_DEFAULT)));
+              () -> filter.allowDefault = !filter.allowDefault, getOnHover(MekanismLang.FILTER_ALLOW_DEFAULT)));
         addButton(checkboxButton = new MekanismImageButton(this, guiLeft + 131, guiTop + 47, 12, getButtonLocation("checkmark"),
               this::setText));
         addButton(new ColorButton(this, guiLeft + 12, guiTop + 44, 16, 16, () -> filter.color,

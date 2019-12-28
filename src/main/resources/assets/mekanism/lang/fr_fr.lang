@@ -348,13 +348,13 @@ update.outdated=Vous utilisez d'anciennes versions d'un ou plusieurs modules
 
 # Upgrades
 upgrade.energy=Energie
-upgrade.energy.desc=Augmente l'efficacité energétique !net la capacité de la machine.
+upgrade.energy.desc=Augmente l'efficacité energétique et la capacité de la machine.
 upgrade.speed=Vitesse
 upgrade.speed.desc=Augmente la vitesse de la machine.
 upgrade.filter=Filtre
-upgrade.filter.desc=Un filtre qui separe l'eau !nlourde de l'eau normale.
+upgrade.filter.desc=Un filtre qui separe l'eau lourde de l'eau normale.
 upgrade.gas=Gaz
-upgrade.gas.desc=Augmente l'efficacité !ndes machines consommant du gaz.
+upgrade.gas.desc=Augmente l'efficacité des machines consommant du gaz.
 upgrade.muffling=Insonorisant
 upgrade.muffling.desc=Reduit le bruit généré par la machine.
 
@@ -717,11 +717,11 @@ tooltip.BoilerCasing=Un dense encadrement résistant à la pression utilisé dan
 tooltip.BoilerValve=Une valve qui peut être placée sur une Chaudière Thermoélectrique multiblocs, permettant l'insertion d'énergie et d'eau iansi que l'extraction de la vapeur produite.
 tooltip.SecurityDesk=Un centre de contrôle pour gérer la sécurité de toutes vos machines.
 
-tooltip.EnrichmentChamber=Une machine simple utilisée pour enrichir !nles minerais dans deux de leurs équivalents !nen poussière, aussi bien qu'exécuter beaucoup !nd'autres opérations.
-tooltip.OsmiumCompressor=Une machine assez avancée utilisée pour !ncomprimer l'osmium dans diverses poussières pour !ncréer leurs équivalents en lingot.
-tooltip.Combiner=Une machine utilisée pour combiner les poussières !net les pavés pour former leurs équivalents minerais.
-tooltip.Crusher=Une machine utilisée pour broyer les lingots en poussières, !naussi bien qu'exécutez beaucoup d'autres opérations.
-tooltip.DigitalMiner=Un hautement-advancé avec filtrage mineur automatique !nqui peut miner quelque soit le bloc que vous lui demandiez !nDans un rayon de 32 blocs maxi.
+tooltip.EnrichmentChamber=Une machine simple utilisée pour enrichir les minerais dans deux de leurs équivalents en poussière, aussi bien qu'exécuter beaucoup d'autres opérations.
+tooltip.OsmiumCompressor=Une machine assez avancée utilisée pour comprimer l'osmium dans diverses poussières pour créer leurs équivalents en lingot.
+tooltip.Combiner=Une machine utilisée pour combiner les poussières et les pavés pour former leurs équivalents minerais.
+tooltip.Crusher=Une machine utilisée pour broyer les lingots en poussières, aussi bien qu'exécutez beaucoup d'autres opérations.
+tooltip.DigitalMiner=Un hautement-advancé avec filtrage mineur automatique qui peut miner quelque soit le bloc que vous lui demandiez Dans un rayon de 32 blocs maxi.
 
 # Side data
 sideData.None=Aucune

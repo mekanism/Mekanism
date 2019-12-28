@@ -4,7 +4,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.tab.GuiTabElementType;
 import mekanism.client.gui.element.tab.TabType;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -25,7 +24,7 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
     public enum ReactorTab implements TabType<TileEntityReactorController> {
         HEAT("heat.png", GeneratorsLang.HEAT_TAB, 6, ClickedGeneratorsTileButton.TAB_HEAT),
         FUEL("fuel.png", GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL),
-        STAT("stats.png", MekanismLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS);
+        STAT("stats.png", GeneratorsLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS);
 
         private final ClickedGeneratorsTileButton button;
         private final ILangEntry description;

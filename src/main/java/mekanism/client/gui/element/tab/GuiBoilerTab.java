@@ -21,7 +21,7 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
 
     public enum BoilerTab implements TabType<TileEntityBoilerCasing> {
         MAIN("gases.png", MekanismLang.MAIN_TAB, ClickedTileButton.TAB_MAIN),
-        STAT("stats.png", MekanismLang.STATS_TAB, ClickedTileButton.TAB_STATS);
+        STAT("stats.png", MekanismLang.BOILER_STATS, ClickedTileButton.TAB_STATS);
 
         private final ClickedTileButton button;
         private final ILangEntry description;

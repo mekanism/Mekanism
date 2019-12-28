@@ -28,8 +28,8 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         ResourceLocation resource = getGuiLocation();
         addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT, resource));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              MekanismLang.INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
-              MekanismLang.OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))
+              MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
+              MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))
         ), this, resource));
     }
 
@@ -37,9 +37,9 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 94) + 2, 0x404040);
-        drawString(MekanismLang.INPUT_AMOUNT.translate(), 53, 26, 0x00CD00);
+        drawString(MekanismLang.MATRIX_INPUT_AMOUNT.translate(), 53, 26, 0x00CD00);
         drawString(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastInput())), 53, 35, 0x00CD00);
-        drawString(MekanismLang.OUTPUT_AMOUNT.translate(), 53, 44, 0x00CD00);
+        drawString(MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(), 53, 44, 0x00CD00);
         drawString(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastOutput())), 53, 53, 0x00CD00);
         //TODO: 1.14 Convert to GuiElement
         int xAxis = mouseX - guiLeft;

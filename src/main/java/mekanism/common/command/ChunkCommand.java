@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import java.util.HashSet;
 import java.util.Set;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.ILangEntry;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.entity.Entity;
@@ -37,6 +38,7 @@ public class ChunkCommand {
                       Entity entity = source.getEntity();
                       ChunkPos cpos = new ChunkPos(entity.getPosition());
                       chunkWatchers.add(ChunkPos.asLong(cpos.x, cpos.z));
+                      source.sendFeedback(MekanismLang.COMMAND_CHUNK_WATCH.translate(cpos.x, cpos.z), true);
                       return 0;
                   });
         }
@@ -52,6 +54,7 @@ public class ChunkCommand {
                       Entity entity = source.getEntity();
                       ChunkPos cpos = new ChunkPos(entity.getPosition());
                       chunkWatchers.remove(ChunkPos.asLong(cpos.x, cpos.z));
+                      source.sendFeedback(MekanismLang.COMMAND_CHUNK_UNWATCH.translate(cpos.x, cpos.z), true);
                       return 0;
                   });
         }
@@ -65,7 +68,7 @@ public class ChunkCommand {
                   .executes(ctx -> {
                       int count = chunkWatchers.size();
                       chunkWatchers.clear();
-                      //TODO: Print number cleared
+                      ctx.getSource().sendFeedback(MekanismLang.COMMAND_CHUNK_CLEAR.translate(count), true);
                       return 0;
                   });
         }
@@ -85,6 +88,7 @@ public class ChunkCommand {
                       //TODO: Check this
                       //sp.queueUnloadAll();
                       sp.tick(() -> false);
+                      ctx.getSource().sendFeedback(MekanismLang.COMMAND_CHUNK_FLUSH.translate(startCount - sp.getLoadedChunkCount()), true);
                       return 0;
                   });
         }
@@ -92,22 +96,22 @@ public class ChunkCommand {
 
     @SubscribeEvent
     public static void onChunkLoad(ChunkEvent.Load event) {
-        handleChunkEvent(event, "Loaded");
+        handleChunkEvent(event, MekanismLang.COMMAND_CHUNK_LOADED);
     }
 
     @SubscribeEvent
     public static void onChunkUnload(ChunkEvent.Unload event) {
-        handleChunkEvent(event, "Unloaded");
+        handleChunkEvent(event, MekanismLang.COMMAND_CHUNK_UNLOADED);
     }
 
-    private static void handleChunkEvent(ChunkEvent event, String direction) {
+    private static void handleChunkEvent(ChunkEvent event, ILangEntry direction) {
         if (event.getWorld() == null || event.getWorld().isRemote()) {
             return;
         }
         ChunkPos pos = event.getChunk().getPos();
         long key = ChunkPos.asLong(pos.x, pos.z);
         if (chunkWatchers.contains(key)) {
-            ITextComponent message = MekanismLang.CHUNK_COMMAND.translate(direction, pos.x, pos.z);
+            ITextComponent message = MekanismLang.COMMAND_CHUNK.translate(direction, pos.x, pos.z);
             event.getWorld().getPlayers().forEach(player -> player.sendMessage(message));
         }
     }
