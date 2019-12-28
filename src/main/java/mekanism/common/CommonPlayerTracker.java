@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import mekanism.api.text.EnumColor;
 import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketFlamethrowerData;
@@ -11,6 +12,11 @@ import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.ClickEvent.Action;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -18,6 +24,13 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonPlayerTracker {
+
+    private static final ITextComponent ALPHA_WARNING;
+    static {
+        TranslationTextComponent hereComponent = MekanismLang.ALPHA_WARNING_HERE.translate();
+        hereComponent.getStyle().setUnderlined(true).setColor(TextFormatting.BLUE).setClickEvent(new ClickEvent(Action.OPEN_URL, "https://github.com/mekanism/Mekanism#alpha-status"));
+        ALPHA_WARNING = MekanismLang.LOG_FORMAT.translateColored(EnumColor.RED, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.ALPHA_WARNING.translate(hereComponent));
+    }
 
     public CommonPlayerTracker() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -38,6 +51,7 @@ public class CommonPlayerTracker {
 
             Mekanism.packetHandler.sendTo(new PacketMekanismTags(Mekanism.instance.getTagManager()), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketClearRecipeCache(), (ServerPlayerEntity) event.getPlayer());
+            event.getPlayer().sendMessage(ALPHA_WARNING);
         }
     }
 

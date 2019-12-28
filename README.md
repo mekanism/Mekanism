@@ -1,9 +1,7 @@
 
 [![Build Status](https://travis-ci.org/aidancbrady/Mekanism.svg?branch=master)](https://travis-ci.org/aidancbrady/Mekanism)
 
-# Mekanism for Minecraft 1.14 #
-
-There will be no official release of Mekanism for Minecraft 1.14, as we plan to skip to Minecraft 1.15. A partial list of things that need to be done can be found [here](https://github.com/mekanism/Mekanism/projects/3). However, there is lots of internal code refactoring/rewriting that is not included there.
+# Mekanism for Minecraft 1.15 #
 
 Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
 armor, and weapons. You can find more detail on the features at the [**Official Website**](http://aidancbrady.com/mekanism/).
@@ -21,6 +19,19 @@ for the next upgrade.
 By the time you've been using Mekanism for a while, you'll have a near-instructible suit of Obsidian 
 Armor, be obtaining four ingots for each ore you mine, have the ability to fly wherever you want with 
 the hydrogen-powered jetpacks, and have a cute robotic friend following you around while you mine. :)
+
+# Alpha Status #
+
+Mekanism for 1.15 is currently in a pre-alpha state. Once we finish work on adapting to all the rendering
+changes that vanilla made in 1.15 we will release an alpha. More information about how Mekanism will be
+once it reaches an alpha state are as follows. The majority of basic features are working properly, while
+other things like inventories for multiblocks are in a more broken state. We are currently working on
+refactoring multiple large portions of the code to make Mekanism easier to maintain and add new features
+to. Because of this, the internals are in flux and may be changed greatly so we may also make breaking
+changes to our API while Mekanism is in alpha. We also are making sure to keep the “alpha” state during
+this time so that we don’t have to spend extra time worrying about if the world doesn’t lose any data
+from one commit to the next, and for this reason we do not recommend including Mekanism in any "large"
+packs that players may expect things to work properly/upgrade safely from one version to the next.
 
 # Discord #
 

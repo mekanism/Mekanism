@@ -448,11 +448,19 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             println "Changelog generated"
         }
 
-        //TODO: If the release type is alpha make it auto include a header stating that it is unstable etc
         def releaseNotesFile = project.file("docs/release_${mod_version}.html")
         if (releaseNotesFile.exists()) {
+            //Add any version specific changelog stuff
             def releaseNotes = releaseNotesFile.getText()
             generatedChangelog = "$releaseNotes<br> $generatedChangelog"
+        }
+
+        if (curse_release_type == "alpha") {
+            //Add a warning at the top about what an alpha build means
+            generatedChangelog = "Warning: Mekanism is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, " +
+                    "and updating from one alpha to the next may cause various mekanism blocks to disappear/void their contents. While we will try to not have this happen/keep " +
+                    "it to a minimum make sure to make backups. You can read more about the alpha state of this project <a href=\"https://github.com/mekanism/Mekanism#alpha-status\">here</a>." +
+                    "<br> $generatedChangelog"
         }
 
         //Core

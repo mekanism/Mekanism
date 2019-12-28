@@ -3,7 +3,6 @@ package mekanism.common;
 import mekanism.common.base.ILangEntry;
 import net.minecraft.util.Util;
 
-//TODO: 1.15 make the alpha message display
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy pasted all over the place
     INVENTORY("container.inventory"),
