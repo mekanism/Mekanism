@@ -289,31 +289,12 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
 
+        //TODO: 1.15 Double check render layer stuff given by the time we are ready for the first 1.15 alpha we should know the states better of the remaining things
         //Block render layers
-        //TODO: Re-evaluate the different layers things are set to, as most things are set to cutout, but I believe a good number of these
-        // can be solid (so not listed here at all) and some maybe translucent
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.STRUCTURAL_GLASS, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.COMBINER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.CRUSHER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELECTRIC_PUMP, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELECTROLYTIC_SEPARATOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ENERGIZED_SMELTER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ENRICHMENT_CHAMBER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.FLUIDIC_PLENISHER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.FUELWOOD_HEATER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LASER, RenderType.func_228643_e_());
+        //TODO: Verify these at some point
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LASER_AMPLIFIER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LASER_TRACTOR_BEAM, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LOGISTICAL_SORTER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.METALLURGIC_INFUSER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.OREDICTIONIFICATOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.OSMIUM_COMPRESSOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.PERSONAL_CHEST, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.PRECISION_SAWMILL, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.PURIFICATION_CHAMBER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ROTARY_CONDENSENTRATOR, RenderType.func_228643_e_());
         //Fluid Tanks
         //TODO: Remove??
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_FLUID_TANK, RenderType.func_228643_e_());
@@ -323,6 +304,8 @@ public class ClientRegistration {
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.CREATIVE_FLUID_TANK, RenderType.func_228643_e_());
         //Transmitters
         //TODO: Is this even the proper way to convert the canRenderInLayer the transmitters used to use
+        //TODO: The transmitters can probably be removed from here given setRenderLayer is only needed for blocks and not TERs
+        // though I am leaving it for now in case we decide to make transmitters use both
         //Logistical transporters
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.RESTRICTIVE_TRANSPORTER, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.DIVERSION_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
@@ -350,7 +333,6 @@ public class ClientRegistration {
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
-
         //Fluids
         ClientRegistrationUtil.setRenderLayer(MekanismFluids.HYDROGEN, RenderType.func_228645_f_());
         ClientRegistrationUtil.setRenderLayer(MekanismFluids.OXYGEN, RenderType.func_228645_f_());
