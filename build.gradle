@@ -87,16 +87,15 @@ def setupSourceSet(SourceSet sourceSet, String name) {
 
 //This method sets up a source set in datagen/$name and adds the api, main mekanism module and an optional
 // base module to the dependencies of the data generators source set that we are setting up
-// Note: While IntelliJ claims this can be made static it really cannot
 def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, String name) {
     datagenSourceSet.java.srcDirs = ['src/datagen/' + name + '/java']
     datagenSourceSet.resources.srcDirs = ['src/datagen/' + name + '/resources']
-    datagenSourceSet.compileClasspath += sourceSets.api.output
-    datagenSourceSet.compileClasspath += sourceSets.main.output
+    datagenSourceSet.compileClasspath += project.sourceSets.api.output
+    datagenSourceSet.compileClasspath += project.sourceSets.main.output
     if (baseSourceSet != null) {
         //Only case it is null is when we are doing datagenmain so other cases also add access to the stuff
         // in datagenmain so we can add helper classes
-        datagenSourceSet.compileClasspath += sourceSets.datagenmain.output
+        datagenSourceSet.compileClasspath += project.sourceSets.datagenmain.output
         datagenSourceSet.compileClasspath += baseSourceSet.output
     }
 }
