@@ -4,8 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
@@ -14,9 +13,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class ModelBioGenerator extends Model {
 
-    private static final ResourceLocation CRYSTALLIZER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "bio_generator.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(CRYSTALLIZER_TEXTURE);
-    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(CRYSTALLIZER_TEXTURE);
+    private static final ResourceLocation GENERATOR_TEXTURE = MekanismGenerators.rl("render/bio_generator.png");
+    private final RenderType RENDER_TYPE = func_228282_a_(GENERATOR_TEXTURE);
+    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(GENERATOR_TEXTURE);
 
     private final ModelRenderer base;
     private final ModelRenderer sideRight;

@@ -3,8 +3,7 @@ package mekanism.generators.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
@@ -14,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class ModelTurbine extends Model {
 
-    private static final ResourceLocation TURBINE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "turbine.png");
+    private static final ResourceLocation TURBINE_TEXTURE = MekanismGenerators.rl("render/turbine.png");
     private static float BLADE_ROTATE = 0.418879F;
 
     private final RenderType RENDER_TYPE = func_228282_a_(TURBINE_TEXTURE);

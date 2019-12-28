@@ -14,9 +14,9 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.inventory.container.WindGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
@@ -74,6 +74,6 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "wind_generator.png");
+        return MekanismGenerators.rl("gui/wind_generator.png");
     }
 }

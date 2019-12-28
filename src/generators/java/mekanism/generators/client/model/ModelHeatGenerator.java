@@ -6,8 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
@@ -16,9 +15,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class ModelHeatGenerator extends Model {
 
-    private static final ResourceLocation GENERATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator.png");
-    private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_on.png");
-    private static final ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "heat_generator_overlay_off.png");
+    private static final ResourceLocation GENERATOR_TEXTURE = MekanismGenerators.rl("render/heat_generator.png");
+    private static final ResourceLocation OVERLAY_ON = MekanismGenerators.rl("render/heat_generator_overlay_on.png");
+    private static final ResourceLocation OVERLAY_OFF = MekanismGenerators.rl("render/heat_generator_overlay_off.png");
     private static final RenderType RENDER_TYPE_ON = MekanismRenderType.mekStandard(OVERLAY_ON);
     private static final RenderType RENDER_TYPE_OFF = MekanismRenderType.mekStandard(OVERLAY_OFF);
 

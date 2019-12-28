@@ -10,10 +10,9 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.inventory.container.BioGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
@@ -60,6 +59,6 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Bio
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "bio_generator.png");
+        return MekanismGenerators.rl("gui/bio_generator.png");
     }
 }

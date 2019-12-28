@@ -3,11 +3,8 @@ package mekanism.generators.client.render.item;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.client.Minecraft;
@@ -48,7 +45,6 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
             matrix.func_227861_a_(0, 0.4, 0);
         }
 
-        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "wind_generator.png"));
         float renderPartialTicks = Minecraft.getInstance().getRenderPartialTicks();
         if (lastTicksUpdated != renderPartialTicks) {
             //Only update the angle if we are in a world and that world is not blacklisted

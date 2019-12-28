@@ -9,6 +9,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress.ClickedGeneratorsTileButton;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
@@ -22,16 +23,16 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
     }
 
     public enum ReactorTab implements TabType<TileEntityReactorController> {
-        HEAT("heat.png", GeneratorsLang.HEAT_TAB, 6, ClickedGeneratorsTileButton.TAB_HEAT),
-        FUEL("fuel.png", GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL),
-        STAT("stats.png", GeneratorsLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS);
+        HEAT(MekanismGenerators.rl("gui/elements/heat.png"), GeneratorsLang.HEAT_TAB, 6, ClickedGeneratorsTileButton.TAB_HEAT),
+        FUEL(MekanismGenerators.rl("gui/elements/fuel.png"), GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL),
+        STAT(MekanismUtils.getResource(ResourceType.GUI_ELEMENT,"stats.png"), GeneratorsLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS);
 
         private final ClickedGeneratorsTileButton button;
         private final ILangEntry description;
-        private final String path;
+        private final ResourceLocation path;
         private final int yPos;
 
-        ReactorTab(String path, ILangEntry description, int y, ClickedGeneratorsTileButton button) {
+        ReactorTab(ResourceLocation path, ILangEntry description, int y, ClickedGeneratorsTileButton button) {
             this.path = path;
             this.description = description;
             yPos = y;
@@ -40,7 +41,7 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
 
         @Override
         public ResourceLocation getResource() {
-            return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, path);
+            return path;
         }
 
         @Override
