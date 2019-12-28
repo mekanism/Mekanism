@@ -3,10 +3,10 @@ package mekanism.additions.common.entity;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
-import mekanism.common.registries.MekanismSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -219,7 +219,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     private void pop() {
-        playSound(MekanismSounds.POP.getSoundEvent(), 1, 1);
+        playSound(AdditionsSounds.POP.getSoundEvent(), 1, 1);
         if (world.isRemote) {
             for (int i = 0; i < 10; i++) {
                 try {

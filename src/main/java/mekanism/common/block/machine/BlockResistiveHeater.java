@@ -9,7 +9,6 @@ import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsRedstone;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
@@ -22,6 +21,7 @@ import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ResistiveHeaterContainer;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -58,7 +58,6 @@ import net.minecraft.world.World;
 public class BlockResistiveHeater extends BlockMekanism implements IBlockElectric, IHasGui<TileEntityResistiveHeater>, IStateFacing, IStateActive, IHasInventory,
       IHasSecurity, IHasTileEntity<TileEntityResistiveHeater>, IBlockSound, ISupportsRedstone, IStateWaterLogged, IHasDescription {
 
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.resistiveheater"));
     private static final VoxelShape boundsZAxis = VoxelShapeUtils.combine(
           makeCuboidShape(0, 0, 0, 16, 7, 16),//base
           makeCuboidShape(5, 6.5, 7.5, 11, 12.5, 8.5),//center
@@ -190,7 +189,7 @@ public class BlockResistiveHeater extends BlockMekanism implements IBlockElectri
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return SOUND_EVENT;
+        return MekanismSounds.RESISTIVE_HEATER.getSoundEvent();
     }
 
     @Override

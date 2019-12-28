@@ -25,21 +25,13 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
-import mekanism.common.block.machine.BlockChemicalInjectionChamber;
-import mekanism.common.block.machine.BlockCombiner;
-import mekanism.common.block.machine.BlockCrusher;
-import mekanism.common.block.machine.BlockEnergizedSmelter;
-import mekanism.common.block.machine.BlockEnrichmentChamber;
-import mekanism.common.block.machine.BlockMetallurgicInfuser;
-import mekanism.common.block.machine.BlockOsmiumCompressor;
-import mekanism.common.block.machine.BlockPrecisionSawmill;
-import mekanism.common.block.machine.BlockPurificationChamber;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.FactoryContainer;
 import mekanism.common.item.block.machine.factory.ItemBlockFactory;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -203,24 +195,24 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
     public SoundEvent getSoundEvent() {
         switch (type) {
             case ENRICHING:
-                return BlockEnrichmentChamber.SOUND_EVENT;
+                return MekanismSounds.ENRICHMENT_CHAMBER.getSoundEvent();
             case CRUSHING:
-                return BlockCrusher.SOUND_EVENT;
+                return MekanismSounds.CRUSHER.getSoundEvent();
             case COMPRESSING:
-                return BlockOsmiumCompressor.SOUND_EVENT;
+                return MekanismSounds.COMPRESSOR.getSoundEvent();
             case COMBINING:
-                return BlockCombiner.SOUND_EVENT;
+                return MekanismSounds.COMBINER.getSoundEvent();
             case PURIFYING:
-                return BlockPurificationChamber.SOUND_EVENT;
+                return MekanismSounds.PURIFICATION_CHAMBER.getSoundEvent();
             case INJECTING:
-                return BlockChemicalInjectionChamber.SOUND_EVENT;
+                return MekanismSounds.CHEMICAL_INJECTION_CHAMBER.getSoundEvent();
             case INFUSING:
-                return BlockMetallurgicInfuser.SOUND_EVENT;
+                return MekanismSounds.METALLURGIC_INFUSER.getSoundEvent();
             case SAWING:
-                return BlockPrecisionSawmill.SOUND_EVENT;
+                return MekanismSounds.PRECISION_SAWMILL.getSoundEvent();
             case SMELTING:
             default:
-                return BlockEnergizedSmelter.SOUND_EVENT;
+                return MekanismSounds.ENERGIZED_SMELTER.getSoundEvent();
         }
     }
 

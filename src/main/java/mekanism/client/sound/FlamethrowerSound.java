@@ -2,19 +2,15 @@ package mekanism.client.sound;
 
 import javax.annotation.Nonnull;
 import mekanism.client.ClientTickHandler;
-import mekanism.common.Mekanism;
+import mekanism.common.registries.MekanismSounds;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
 
 public class FlamethrowerSound extends PlayerSound {
-
-    private static final ResourceLocation IDLE_SOUND = Mekanism.rl("item.flamethrower.idle");
-    private static final ResourceLocation ON_SOUND = Mekanism.rl("item.flamethrower.active");
 
     private boolean active;
 
     private FlamethrowerSound(@Nonnull PlayerEntity player, boolean active) {
-        super(player, active ? ON_SOUND : IDLE_SOUND);
+        super(player, (active ? MekanismSounds.FLAMETHROWER_ACTIVE : MekanismSounds.FLAMETHROWER_IDLE).getSoundEvent());
         this.active = active;
     }
 

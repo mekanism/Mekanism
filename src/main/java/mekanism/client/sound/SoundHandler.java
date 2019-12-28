@@ -111,22 +111,26 @@ public class SoundHandler {
     public static void playSound(SoundEvent sound) {
         //TODO: this previously was called getRecord, but it seems to match up closer param wise to master than record
         // this should be double checked this works properly
-        playSound(SimpleSound.master(sound, 1.0F, MekanismConfig.client.baseSoundVolume.get()));
+        playSound(SimpleSound.master(sound, 1, MekanismConfig.client.baseSoundVolume.get()));
     }
 
     public static void playSound(ISound sound) {
         Minecraft.getInstance().getSoundHandler().play(sound);
     }
 
-    public static ISound startTileSound(ResourceLocation soundLoc, float volume, BlockPos pos) {
+    public static ISound startTileSound(SoundEvent soundEvent, float volume, BlockPos pos) {
+        return startTileSound(soundEvent, SoundCategory.BLOCKS, volume, pos);
+    }
+
+    //TODO: Use this more directly allowing for block's to declare different sound categories (previously was the wind generator and it used the weather sound category)
+    public static ISound startTileSound(SoundEvent soundEvent, SoundCategory category, float volume, BlockPos pos) {
+        ResourceLocation soundLoc = soundEvent.getName();
         // First, check to see if there's already a sound playing at the desired location
         ISound s = soundMap.get(pos.toLong());
         if (s == null || !Minecraft.getInstance().getSoundHandler().isPlaying(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
-            //TODO: 1.14 Fix config interaction with floats
-            s = new SimpleSound(soundLoc, SoundCategory.BLOCKS, volume * MekanismConfig.client.baseSoundVolume.get(), 1.0f,
-                  true, 0, ISound.AttenuationType.LINEAR, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f,
-                  false) {
+            s = new SimpleSound(soundLoc, category, volume * MekanismConfig.client.baseSoundVolume.get(), 1, true, 0,
+                  ISound.AttenuationType.LINEAR, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, false) {
                 @Override
                 public float getVolume() {
                     if (this.sound == null) {
@@ -143,7 +147,6 @@ public class SoundHandler {
             // and dealt with any muting interceptions and, CRITICALLY, updated the soundMap with the final ISound.
             s = soundMap.get(pos.toLong());
         }
-
         return s;
     }
 
@@ -170,12 +173,8 @@ public class SoundHandler {
         // instead of packing them in the main module
         // Ignore any sound event outside this mod namespace
         ResourceLocation soundLoc = event.getSound().getSoundLocation();
-        if (!soundLoc.getNamespace().equals(Mekanism.MODID)) {
-            return;
-        }
-
-        // Ignore any non-tile Mek sounds
-        if (event.getName().startsWith("etc.")) {
+        //If it is mekanism or one of the sub modules let continue
+        if (!soundLoc.getNamespace().startsWith(Mekanism.MODID)) {
             return;
         }
 
@@ -187,17 +186,20 @@ public class SoundHandler {
             return;
         }
 
-        // At this point, we've got a known block Mekanism sound. We want to re-wrap the original
-        // using the (possibly) muffled sound as the initial volume. The TileSound will then periodically poll
-        // to see if the volume should be adjusted
-        resultSound = new TileSound(event.getSound(), resultSound.getVolume());
-        event.setResultSound(resultSound);
+        //Ignore any non-tile Mek sounds
+        if (event.getName().startsWith("tile.")) {
+            //At this point, we've got a known block Mekanism sound. We want to re-wrap the original
+            // using the (possibly) muffled sound as the initial volume. The TileSound will then periodically poll
+            // to see if the volume should be adjusted
+            resultSound = new TileSound(event.getSound(), resultSound.getVolume());
+            event.setResultSound(resultSound);
 
-        // Finally, update our soundMap so that we can actually have a shot at stopping this sound; note that we also
-        // need to "unoffset" the sound position so that we build the correct key for the sound map
-        // Aside: I really, really, wish Forge returned the final result sound as part of playSound :/
-        BlockPos pos = new BlockPos(resultSound.getX() - 0.5f, resultSound.getY() - 0.5f, resultSound.getZ() - 0.5);
-        soundMap.put(pos.toLong(), resultSound);
+            //Finally, update our soundMap so that we can actually have a shot at stopping this sound; note that we also
+            // need to "unoffset" the sound position so that we build the correct key for the sound map
+            // Aside: I really, really, wish Forge returned the final result sound as part of playSound :/
+            BlockPos pos = new BlockPos(resultSound.getX() - 0.5, resultSound.getY() - 0.5, resultSound.getZ() - 0.5);
+            soundMap.put(pos.toLong(), resultSound);
+        }
     }
 
     private static class TileSound implements ITickableSound {

@@ -7,8 +7,8 @@ import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.LocatableSound;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 
 public abstract class PlayerSound extends LocatableSound implements ITickableSound {
 
@@ -23,7 +23,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
 
     private boolean donePlaying = false;
 
-    public PlayerSound(@Nonnull PlayerEntity player, @Nonnull ResourceLocation sound) {
+    public PlayerSound(@Nonnull PlayerEntity player, @Nonnull SoundEvent sound) {
         super(sound, SoundCategory.PLAYERS);
         this.playerReference = new WeakReference<>(player);
         this.lastX = (float) player.func_226277_ct_();

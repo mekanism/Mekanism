@@ -15,7 +15,6 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
@@ -28,6 +27,7 @@ import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ElectrolyticSeparatorContainer;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -65,7 +65,6 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
       IStateFacing, IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityElectrolyticSeparator>, IBlockSound, ISupportsRedstone, ISupportsComparator,
       IStateWaterLogged, IHasDescription {
 
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.electrolyticseparator"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
@@ -206,7 +205,7 @@ public class BlockElectrolyticSeparator extends BlockMekanism implements IBlockE
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return SOUND_EVENT;
+        return MekanismSounds.ELECTROLYTIC_SEPARATOR.getSoundEvent();
     }
 
     @Override

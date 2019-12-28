@@ -1,0 +1,45 @@
+{
+  "tile.machine.fusion_reactor": {
+    "sounds": [
+      {
+        "name": "mekanismgenerators:fusion_reactor"
+      }
+    ]
+  },
+  "tile.generator.bio": {
+    "sounds": [
+      {
+        "name": "mekanismgenerators:generator/bio"
+      }
+    ]
+  },
+  "tile.generator.gas": {
+    "sounds": [
+      {
+        "name": "mekanismgenerators:generator/gas_burning"
+      }
+    ]
+  },
+  "tile.generator.heat": {
+    "sounds": [
+      {
+        "name": "mekanismgenerators:generator/heat"
+      }
+    ]
+  },
+  "tile.generator.solar": {
+    "sounds": [
+      {
+        "name": "mekanismgenerators:generator/solar"
+      }
+    ]
+  },
+  "tile.generator.wind": {
+    "category": "weather",
+    "sounds": [
+      {
+        "name": "mekanismgenerators:generator/wind"
+      }
+    ]
+  }
+}

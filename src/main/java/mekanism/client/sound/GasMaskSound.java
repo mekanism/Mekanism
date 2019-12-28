@@ -2,16 +2,13 @@ package mekanism.client.sound;
 
 import javax.annotation.Nonnull;
 import mekanism.client.ClientTickHandler;
-import mekanism.common.Mekanism;
+import mekanism.common.registries.MekanismSounds;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
 
 public class GasMaskSound extends PlayerSound {
 
-    private static final ResourceLocation SOUND = Mekanism.rl("item.gas_mask");
-
     public GasMaskSound(@Nonnull PlayerEntity player) {
-        super(player, SOUND);
+        super(player, MekanismSounds.GAS_MASK.getSoundEvent());
     }
 
     @Override

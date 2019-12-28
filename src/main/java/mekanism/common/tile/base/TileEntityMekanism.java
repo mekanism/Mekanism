@@ -979,7 +979,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
             // play it
             if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundHandler().isPlaying(activeSound))) {
-                activeSound = SoundHandler.startTileSound(soundEvent.getName(), getInitialVolume(), getPos());
+                activeSound = SoundHandler.startTileSound(soundEvent, getInitialVolume(), getPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again

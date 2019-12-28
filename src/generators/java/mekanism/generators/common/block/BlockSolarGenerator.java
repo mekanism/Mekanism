@@ -6,7 +6,6 @@ import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
@@ -20,6 +19,7 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
+import mekanism.generators.common.registries.GeneratorsSounds;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.block.Block;
@@ -41,7 +41,6 @@ import net.minecraft.world.World;
 public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEntitySolarGenerator>, IBlockElectric, IHasInventory, IHasSecurity, IBlockSound,
       IHasTileEntity<TileEntitySolarGenerator>, IStateWaterLogged, IHasDescription {
 
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.gen.solar"));
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel
           makeCuboidShape(1, 8, 1, 15, 9, 15),//solarPanelBottom
@@ -105,7 +104,7 @@ public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEn
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return SOUND_EVENT;
+        return GeneratorsSounds.SOLAR_GENERATOR.getSoundEvent();
     }
 
     @Override

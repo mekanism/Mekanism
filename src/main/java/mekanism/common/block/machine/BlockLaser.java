@@ -7,7 +7,6 @@ import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
@@ -18,6 +17,7 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityLaser;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -54,7 +54,6 @@ import net.minecraft.world.World;
 public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasModel, IStateFacing, IHasTileEntity<TileEntityLaser>, IBlockSound, IStateActive,
       IStateWaterLogged, IHasDescription {
 
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.laser"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
     static {
@@ -203,7 +202,7 @@ public class BlockLaser extends BlockMekanism implements IBlockElectric, IHasMod
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return SOUND_EVENT;
+        return MekanismSounds.LASER.getSoundEvent();
     }
 
     @Override

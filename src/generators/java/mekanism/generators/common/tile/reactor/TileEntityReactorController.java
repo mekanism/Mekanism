@@ -11,12 +11,14 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.nbt.CompoundNBT;
@@ -49,7 +51,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public AxisAlignedBB box;
     public double clientTemp = 0;
     public boolean clientBurning = false;
-    private SoundEvent soundEvent = new SoundEvent(Mekanism.rl("tile.machine.fusionreactor"));
+    private SoundEventRegistryObject<SoundEvent> soundEvent = GeneratorsSounds.FUSION_REACTOR;
     /**
      * Only used by the client
      */
@@ -137,7 +139,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 return;
             }
             if (activeSound == null || !Minecraft.getInstance().getSoundHandler().isPlaying(activeSound)) {
-                activeSound = SoundHandler.startTileSound(soundEvent.getName(), 1.0f, getPos());
+                activeSound = SoundHandler.startTileSound(soundEvent.getSoundEvent(), 1.0f, getPos());
                 playSoundCooldown = 20;
             }
         } else if (activeSound != null) {

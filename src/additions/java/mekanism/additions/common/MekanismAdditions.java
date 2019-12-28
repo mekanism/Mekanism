@@ -7,6 +7,7 @@ import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
+import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
@@ -63,6 +64,7 @@ public class MekanismAdditions implements IModule {
         AdditionsItems.ITEMS.register(modEventBus);
         AdditionsBlocks.BLOCKS.register(modEventBus);
         AdditionsEntityTypes.ENTITY_TYPES.register(modEventBus);
+        AdditionsSounds.SOUND_EVENTS.register(modEventBus);
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());

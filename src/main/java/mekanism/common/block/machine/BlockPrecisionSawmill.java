@@ -16,7 +16,6 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
@@ -28,6 +27,7 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.PrecisionSawmillContainer;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -58,8 +58,6 @@ import net.minecraft.world.World;
 
 public class BlockPrecisionSawmill extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityPrecisionSawmill>, IStateFacing, IStateActive,
       IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPrecisionSawmill>, IBlockSound, ISupportsRedstone, ISupportsComparator, IHasDescription {
-
-    public static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.sawmill"));
 
     public BlockPrecisionSawmill() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -172,7 +170,7 @@ public class BlockPrecisionSawmill extends BlockMekanism implements IBlockElectr
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return SOUND_EVENT;
+        return MekanismSounds.PRECISION_SAWMILL.getSoundEvent();
     }
 
     @Override

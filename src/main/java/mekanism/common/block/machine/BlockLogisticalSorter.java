@@ -15,7 +15,6 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
@@ -30,6 +29,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.filter.list.LogisticalSorterContainer;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -67,8 +67,6 @@ import net.minecraft.world.World;
 
 public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, IHasGui<TileEntityLogisticalSorter>, ISupportsUpgrades, IStateFacing, IStateActive,
       IBlockSound, IHasInventory, ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter>, ISupportsComparator, IHasSecurity, IStateWaterLogged, IHasDescription {
-
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.machine.logisticalsorter"));
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 
@@ -273,7 +271,7 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return SOUND_EVENT;
+        return MekanismSounds.LOGISTICAL_SORTER.getSoundEvent();
     }
 
     @Override
