@@ -7,11 +7,11 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -24,7 +24,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     public int[] modes = {0, 0, 0, 0, 0, 0};
 
     public TileEntityDiversionTransporter() {
-        super(MekanismBlock.DIVERSION_TRANSPORTER);
+        super(MekanismBlocks.DIVERSION_TRANSPORTER);
     }
 
     @Override

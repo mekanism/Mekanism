@@ -3,9 +3,9 @@ package mekanism.common.recipe.impl;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -33,12 +33,12 @@ public class FluidToFluidIRecipe extends FluidToFluidRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlock.THERMAL_EVAPORATION_CONTROLLER.getName();
+        return MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlock.THERMAL_EVAPORATION_CONTROLLER.getItemStack();
+        return MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getItemStack();
     }
 }

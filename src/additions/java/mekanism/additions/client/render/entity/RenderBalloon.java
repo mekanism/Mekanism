@@ -29,12 +29,12 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
         if (balloon.isLatchedToEntity()) {
             //Shift the rendering of the balloon to be over the entity
             double x = balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.func_226277_ct_() - balloon.latchedEntity.lastTickPosX) * partialTick
-                - (balloon.lastTickPosX + (balloon.func_226277_ct_() - balloon.lastTickPosX) * partialTick);
+                       - (balloon.lastTickPosX + (balloon.func_226277_ct_() - balloon.lastTickPosX) * partialTick);
             double y = balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.func_226278_cu_() - balloon.latchedEntity.lastTickPosY) * partialTick
-                - (balloon.lastTickPosY + (balloon.func_226278_cu_() - balloon.lastTickPosY) * partialTick)
-                + balloon.getAddedHeight();
+                       - (balloon.lastTickPosY + (balloon.func_226278_cu_() - balloon.lastTickPosY) * partialTick)
+                       + balloon.getAddedHeight();
             double z = balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.func_226281_cx_() - balloon.latchedEntity.lastTickPosZ) * partialTick
-                - (balloon.lastTickPosZ + (balloon.func_226281_cx_() - balloon.lastTickPosZ) * partialTick);
+                       - (balloon.lastTickPosZ + (balloon.func_226281_cx_() - balloon.lastTickPosZ) * partialTick);
             matrix.func_227861_a_(x, y, z);
         }
         model.render(matrix, renderer, light, balloon.color);

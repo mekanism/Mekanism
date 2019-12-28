@@ -3,7 +3,6 @@ package mekanism.generators.common.tile.turbine;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.common.MekanismFluids;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
@@ -12,13 +11,14 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineFluidTank;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -37,7 +37,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     private int currentRedstoneLevel;
 
     public TileEntityTurbineValve() {
-        super(GeneratorsBlock.TURBINE_VALVE);
+        super(GeneratorsBlocks.TURBINE_VALVE);
         fluidTank = new TurbineFluidTank(this);
     }
 

@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container.tile.filter;
 
 import mekanism.common.content.transporter.TItemStackFilter;
-import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;

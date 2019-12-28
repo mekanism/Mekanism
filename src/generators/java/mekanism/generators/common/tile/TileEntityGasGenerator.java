@@ -26,7 +26,7 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
-import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -56,7 +56,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     private EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator() {
-        super(GeneratorsBlock.GAS_BURNING_GENERATOR, MekanismConfig.general.FROM_H2.get() * 2);
+        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, MekanismConfig.general.FROM_H2.get() * 2);
     }
 
     @Override

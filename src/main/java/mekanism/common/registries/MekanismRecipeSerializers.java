@@ -1,4 +1,4 @@
-package mekanism.common.recipe;
+package mekanism.common.registries;
 
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.CombinerRecipe;

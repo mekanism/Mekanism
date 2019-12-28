@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Upgrade;
 import mekanism.api.Upgrade.IUpgradeInfoHandler;
-import mekanism.common.MekanismItem;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismItems;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
@@ -17,17 +17,17 @@ public class UpgradeUtils {
     public static ItemStack getStack(Upgrade upgrade) {
         switch (upgrade) {
             case SPEED:
-                return MekanismItem.SPEED_UPGRADE.getItemStack();
+                return MekanismItems.SPEED_UPGRADE.getItemStack();
             case ENERGY:
-                return MekanismItem.ENERGY_UPGRADE.getItemStack();
+                return MekanismItems.ENERGY_UPGRADE.getItemStack();
             case FILTER:
-                return MekanismItem.FILTER_UPGRADE.getItemStack();
+                return MekanismItems.FILTER_UPGRADE.getItemStack();
             case MUFFLING:
-                return MekanismItem.MUFFLING_UPGRADE.getItemStack();
+                return MekanismItems.MUFFLING_UPGRADE.getItemStack();
             case GAS:
-                return MekanismItem.GAS_UPGRADE.getItemStack();
+                return MekanismItems.GAS_UPGRADE.getItemStack();
             case ANCHOR:
-                return MekanismItem.ANCHOR_UPGRADE.getItemStack();
+                return MekanismItems.ANCHOR_UPGRADE.getItemStack();
         }
         return ItemStack.EMPTY;
     }

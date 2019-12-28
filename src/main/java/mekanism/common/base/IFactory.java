@@ -6,8 +6,8 @@ import javax.annotation.Nullable;
 import mekanism.api.block.FactoryType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.IHasTranslationKey;
-import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismLang;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
@@ -54,15 +54,15 @@ public interface IFactory {
     }
 
     enum RecipeType implements IStringSerializable, IHasTranslationKey {
-        SMELTING(MekanismLang.SMELTING, MekanismBlock.ENERGIZED_SMELTER, MachineFuelType.BASIC, false),
-        ENRICHING(MekanismLang.ENRICHING, MekanismBlock.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false),
-        CRUSHING(MekanismLang.CRUSHING, MekanismBlock.CRUSHER, MachineFuelType.BASIC, false),
-        COMPRESSING(MekanismLang.COMPRESSING, MekanismBlock.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false),
-        COMBINING(MekanismLang.COMBINING, MekanismBlock.COMBINER, MachineFuelType.DOUBLE, false),
-        PURIFYING(MekanismLang.PURIFYING, MekanismBlock.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true),
-        INJECTING(MekanismLang.INJECTING, MekanismBlock.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true),
-        INFUSING(MekanismLang.INFUSING, MekanismBlock.METALLURGIC_INFUSER, MachineFuelType.BASIC, false),
-        SAWING(MekanismLang.SAWING, MekanismBlock.PRECISION_SAWMILL, MachineFuelType.CHANCE, false);
+        SMELTING(MekanismLang.SMELTING, MekanismBlocks.ENERGIZED_SMELTER, MachineFuelType.BASIC, false),
+        ENRICHING(MekanismLang.ENRICHING, MekanismBlocks.ENRICHMENT_CHAMBER, MachineFuelType.BASIC, false),
+        CRUSHING(MekanismLang.CRUSHING, MekanismBlocks.CRUSHER, MachineFuelType.BASIC, false),
+        COMPRESSING(MekanismLang.COMPRESSING, MekanismBlocks.OSMIUM_COMPRESSOR, MachineFuelType.ADVANCED, false),
+        COMBINING(MekanismLang.COMBINING, MekanismBlocks.COMBINER, MachineFuelType.DOUBLE, false),
+        PURIFYING(MekanismLang.PURIFYING, MekanismBlocks.PURIFICATION_CHAMBER, MachineFuelType.ADVANCED, true),
+        INJECTING(MekanismLang.INJECTING, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, MachineFuelType.ADVANCED, true),
+        INFUSING(MekanismLang.INFUSING, MekanismBlocks.METALLURGIC_INFUSER, MachineFuelType.BASIC, false),
+        SAWING(MekanismLang.SAWING, MekanismBlocks.PRECISION_SAWMILL, MachineFuelType.CHANCE, false);
 
         private final ILangEntry langEntry;
         private final IBlockProvider type;

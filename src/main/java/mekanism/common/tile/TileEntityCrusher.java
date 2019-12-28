@@ -2,14 +2,14 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
-import mekanism.common.MekanismBlock;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 
 public class TileEntityCrusher extends TileEntityElectricMachine {
 
     public TileEntityCrusher() {
-        super(MekanismBlock.CRUSHER, 200);
+        super(MekanismBlocks.CRUSHER, 200);
     }
 
     @Nonnull

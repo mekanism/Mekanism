@@ -10,10 +10,10 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
-import mekanism.generators.common.GeneratorsItem;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.item.ItemTurbineBlade;
-import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
+import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -63,7 +63,7 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
                 //TODO: Evaluate
                 int amount = tile.getHousedBlades();
                 if (amount > 0) {
-                    spawnAsEntity(world, pos, GeneratorsItem.TURBINE_BLADE.getItemStack(amount));
+                    spawnAsEntity(world, pos, GeneratorsItems.TURBINE_BLADE.getItemStack(amount));
                 }
             }
         }
@@ -99,7 +99,7 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
         } else if (stack.isEmpty()) {
             if (rod.removeBlade()) {
                 if (!player.isCreative()) {
-                    player.setHeldItem(hand, GeneratorsItem.TURBINE_BLADE.getItemStack());
+                    player.setHeldItem(hand, GeneratorsItems.TURBINE_BLADE.getItemStack());
                     player.inventory.markDirty();
                 }
             }

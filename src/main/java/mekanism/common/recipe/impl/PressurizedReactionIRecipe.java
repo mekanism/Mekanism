@@ -6,9 +6,9 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -36,12 +36,12 @@ public class PressurizedReactionIRecipe extends PressurizedReactionRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlock.PRESSURIZED_REACTION_CHAMBER.getName();
+        return MekanismBlocks.PRESSURIZED_REACTION_CHAMBER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlock.PRESSURIZED_REACTION_CHAMBER.getItemStack();
+        return MekanismBlocks.PRESSURIZED_REACTION_CHAMBER.getItemStack();
     }
 }

@@ -3,8 +3,8 @@ package mekanism.common.world;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.MekanismBlock;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.world.biome.Biome;
@@ -33,11 +33,11 @@ public class GenHandler {
     }
 
     private static void addGeneration(Biome biome) {
-        addOreGeneration(biome, MekanismBlock.COPPER_ORE, MekanismConfig.general.copperPerChunk, MekanismConfig.general.copperMaxVeinSize, 0, 0, 60);
-        addOreGeneration(biome, MekanismBlock.TIN_ORE, MekanismConfig.general.tinPerChunk, MekanismConfig.general.tinMaxVeinSize, 0, 0, 60);
-        addOreGeneration(biome, MekanismBlock.OSMIUM_ORE, MekanismConfig.general.osmiumPerChunk, MekanismConfig.general.osmiumMaxVeinSize, 0, 0, 60);
+        addOreGeneration(biome, MekanismBlocks.COPPER_ORE, MekanismConfig.general.copperPerChunk, MekanismConfig.general.copperMaxVeinSize, 0, 0, 60);
+        addOreGeneration(biome, MekanismBlocks.TIN_ORE, MekanismConfig.general.tinPerChunk, MekanismConfig.general.tinMaxVeinSize, 0, 0, 60);
+        addOreGeneration(biome, MekanismBlocks.OSMIUM_ORE, MekanismConfig.general.osmiumPerChunk, MekanismConfig.general.osmiumMaxVeinSize, 0, 0, 60);
         //TODO: Add proper values for this
-        addSaltGeneration(biome, MekanismBlock.SALT_BLOCK, MekanismConfig.general.saltPerChunk, MekanismConfig.general.saltMaxVeinSize, 4, 1, 6);
+        addSaltGeneration(biome, MekanismBlocks.SALT_BLOCK, MekanismConfig.general.saltPerChunk, MekanismConfig.general.saltMaxVeinSize, 4, 1, 6);
     }
 
     private static void addOreGeneration(Biome biome, IBlockProvider blockProvider, IntValue maxVeinSize, IntValue veinsPerChunk, int minHeight, int topOffset, int maxHeight) {

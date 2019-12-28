@@ -1,6 +1,7 @@
-package mekanism.additions.common;
+package mekanism.additions.common.registries;
 
 import java.util.function.Function;
+import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.BlockGlowPanel;
 import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.block.plastic.BlockPlastic;
@@ -21,7 +22,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 
-public class AdditionsBlock {
+public class AdditionsBlocks {
 
     public static BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismAdditions.MODID);
 

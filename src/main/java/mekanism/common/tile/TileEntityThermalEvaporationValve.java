@@ -3,11 +3,11 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
@@ -28,7 +28,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     private int currentRedstoneLevel;
 
     public TileEntityThermalEvaporationValve() {
-        super(MekanismBlock.THERMAL_EVAPORATION_VALVE);
+        super(MekanismBlocks.THERMAL_EVAPORATION_VALVE);
     }
 
     @Override

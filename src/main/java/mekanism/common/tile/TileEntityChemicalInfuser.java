@@ -21,7 +21,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -29,6 +28,7 @@ import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ItemDataUtils;
@@ -63,7 +63,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalInfuser() {
-        super(MekanismBlock.CHEMICAL_INFUSER);
+        super(MekanismBlocks.CHEMICAL_INFUSER);
         leftInputHandler = InputHelper.getInputHandler(leftTank);
         rightInputHandler = InputHelper.getInputHandler(rightTank);
         outputHandler = OutputHelper.getOutputHandler(centerTank);

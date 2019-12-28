@@ -2,8 +2,8 @@ package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
-import mekanism.additions.common.AdditionsBlock;
 import mekanism.additions.common.entity.EntityObsidianTNT;
+import mekanism.additions.common.registries.AdditionsBlocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -36,7 +36,7 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
         matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-90.0F));
         matrix.func_227861_a_(-0.5, -0.5, 0.5);
         matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90.0F));
-        TNTMinecartRenderer.func_229127_a_(AdditionsBlock.OBSIDIAN_TNT.getBlock().getDefaultState(), matrix, renderer, light, tnt.getFuse() / 5 % 2 == 0);
+        TNTMinecartRenderer.func_229127_a_(AdditionsBlocks.OBSIDIAN_TNT.getBlock().getDefaultState(), matrix, renderer, light, tnt.getFuse() / 5 % 2 == 0);
         matrix.func_227865_b_();
         super.func_225623_a_(tnt, entityYaw, partialTick, matrix, renderer, light);
     }

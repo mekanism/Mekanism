@@ -1,6 +1,7 @@
 package mekanism.common;
 
 import javax.annotation.Nonnull;
+import mekanism.common.registries.MekanismItems;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
@@ -14,7 +15,7 @@ public class CreativeTabMekanism extends ItemGroup {
     @Nonnull
     @Override
     public ItemStack createIcon() {
-        return MekanismItem.ATOMIC_ALLOY.getItemStack();
+        return MekanismItems.ATOMIC_ALLOY.getItemStack();
     }
 
     @Nonnull

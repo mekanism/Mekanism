@@ -5,13 +5,13 @@ import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
@@ -36,7 +36,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     private EnergyInventorySlot energySlot;
 
     public TileEntityResistiveHeater() {
-        super(MekanismBlock.RESISTIVE_HEATER);
+        super(MekanismBlocks.RESISTIVE_HEATER);
     }
 
     @Nonnull

@@ -22,7 +22,6 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -36,6 +35,7 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -81,7 +81,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     public TileComponentChunkLoader chunkLoaderComponent;
 
     public TileEntityQuantumEntangloporter() {
-        super(MekanismBlock.QUANTUM_ENTANGLOPORTER);
+        super(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ENERGY, TransmissionType.HEAT);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

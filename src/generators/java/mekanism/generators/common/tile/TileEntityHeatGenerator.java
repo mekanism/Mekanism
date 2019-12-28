@@ -25,8 +25,8 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
@@ -66,7 +66,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     private EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator() {
-        super(GeneratorsBlock.HEAT_GENERATOR, MekanismGeneratorsConfig.generators.heatGeneration.get() * 2);
+        super(GeneratorsBlocks.HEAT_GENERATOR, MekanismGeneratorsConfig.generators.heatGeneration.get() * 2);
     }
 
     @Nonnull

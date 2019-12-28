@@ -1,10 +1,11 @@
-package mekanism.generators.common;
+package mekanism.generators.common.registries;
 
 import java.util.function.Supplier;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.BlockAdvancedSolarGenerator;
 import mekanism.generators.common.block.BlockBioGenerator;
 import mekanism.generators.common.block.BlockGasBurningGenerator;
@@ -35,7 +36,7 @@ import mekanism.generators.common.item.generator.ItemBlockTurbineVent;
 import mekanism.generators.common.item.generator.ItemBlockWindGenerator;
 import net.minecraft.block.Block;
 
-public class GeneratorsBlock {
+public class GeneratorsBlocks {
 
     //TODO: Lang files had a string for a Neutron Capture Plate with the description:
     // A block that can be used to both block Fusion Reactor radiation and assist in the production of Tritium.

@@ -3,12 +3,12 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
@@ -22,7 +22,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     private EnergyInventorySlot energySlot;
 
     public TileEntitySeismicVibrator() {
-        super(MekanismBlock.SEISMIC_VIBRATOR);
+        super(MekanismBlocks.SEISMIC_VIBRATOR);
     }
 
     @Nonnull

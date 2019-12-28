@@ -1,6 +1,7 @@
 package mekanism.generators.common.inventory.container;
 
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;

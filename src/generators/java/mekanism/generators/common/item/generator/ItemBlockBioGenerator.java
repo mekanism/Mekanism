@@ -17,7 +17,6 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.client.render.item.RenderBioGeneratorItem;
 import mekanism.generators.common.block.BlockBioGenerator;
 import net.minecraft.client.Minecraft;

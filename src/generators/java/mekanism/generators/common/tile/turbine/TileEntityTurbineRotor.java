@@ -5,7 +5,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -25,7 +25,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     public float rotationUpper;
 
     public TileEntityTurbineRotor() {
-        super(GeneratorsBlock.TURBINE_ROTOR);
+        super(GeneratorsBlocks.TURBINE_ROTOR);
     }
 
     @Override

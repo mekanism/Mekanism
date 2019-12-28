@@ -21,7 +21,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -35,6 +34,7 @@ import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
@@ -108,7 +108,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     private EnergyInventorySlot energySlot;
 
     public TileEntityElectrolyticSeparator() {
-        super(MekanismBlock.ELECTROLYTIC_SEPARATOR);
+        super(MekanismBlocks.ELECTROLYTIC_SEPARATOR);
         BASE_ENERGY_PER_TICK = super.getBaseUsage();
 
         inputHandler = InputHelper.getInputHandler(fluidTank, 0);

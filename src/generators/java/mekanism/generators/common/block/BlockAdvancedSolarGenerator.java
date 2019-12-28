@@ -22,7 +22,7 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
-import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
+import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

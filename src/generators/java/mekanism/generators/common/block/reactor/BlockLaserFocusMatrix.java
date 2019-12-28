@@ -9,7 +9,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
+import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLaserFocusMatrix;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

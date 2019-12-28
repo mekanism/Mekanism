@@ -7,8 +7,8 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,7 +26,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     private EnergyInventorySlot energySlot;
 
     public TileEntityWindGenerator() {
-        super(GeneratorsBlock.WIND_GENERATOR, MekanismGeneratorsConfig.generators.windGenerationMax.get() * 2);
+        super(GeneratorsBlocks.WIND_GENERATOR, MekanismGeneratorsConfig.generators.windGenerationMax.get() * 2);
     }
 
     @Nonnull

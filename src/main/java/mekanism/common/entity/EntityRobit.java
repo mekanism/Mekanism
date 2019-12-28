@@ -26,10 +26,8 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismItem;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
-import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
@@ -40,6 +38,9 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedEntityButton;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismEntityTypes;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.CreatureEntity;
@@ -387,7 +388,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public void drop() {
         //TODO: Move this to loot table?
-        ItemEntity entityItem = new ItemEntity(world, func_226277_ct_(), func_226278_cu_() + 0.3, func_226281_cx_(), MekanismItem.ROBIT.getItemStack());
+        ItemEntity entityItem = new ItemEntity(world, func_226277_ct_(), func_226278_cu_() + 0.3, func_226281_cx_(), MekanismItems.ROBIT.getItemStack());
         ItemRobit item = (ItemRobit) entityItem.getItem().getItem();
         item.setEnergy(entityItem.getItem(), getEnergy());
         item.setInventory(((ISustainedInventory) this).getInventory(), entityItem.getItem());

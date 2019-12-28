@@ -16,7 +16,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.LazyOptionalHelper;
@@ -28,6 +27,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -99,7 +99,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     private OutputInventorySlot outputOutputSlot;
 
     public TileEntityThermalEvaporationController() {
-        super(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER);
+        super(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
         inputHandler = InputHelper.getInputHandler(inputTank, 0);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }

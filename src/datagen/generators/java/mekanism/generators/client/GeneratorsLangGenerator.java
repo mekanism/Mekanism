@@ -1,10 +1,10 @@
 package mekanism.generators.client;
 
 import mekanism.client.lang.BaseLanguageProvider;
-import mekanism.generators.common.GeneratorsBlock;
-import mekanism.generators.common.GeneratorsItem;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.data.DataGenerator;
 
 public class GeneratorsLangGenerator extends BaseLanguageProvider {
@@ -21,31 +21,31 @@ public class GeneratorsLangGenerator extends BaseLanguageProvider {
     }
 
     private void addItems() {
-        add(GeneratorsItem.SOLAR_PANEL, "Solar Panel");
-        add(GeneratorsItem.HOHLRAUM, "Hohlraum");
-        add(GeneratorsItem.TURBINE_BLADE, "Turbine Blade");
+        add(GeneratorsItems.SOLAR_PANEL, "Solar Panel");
+        add(GeneratorsItems.HOHLRAUM, "Hohlraum");
+        add(GeneratorsItems.TURBINE_BLADE, "Turbine Blade");
     }
 
     private void addBlocks() {
-        add(GeneratorsBlock.ADVANCED_SOLAR_GENERATOR, "Advanced Solar Generator");
-        add(GeneratorsBlock.BIO_GENERATOR, "Bio-Generator");
-        add(GeneratorsBlock.ELECTROMAGNETIC_COIL, "Electromagnetic Coil");
-        add(GeneratorsBlock.GAS_BURNING_GENERATOR, "Gas-Burning Generator");
-        add(GeneratorsBlock.HEAT_GENERATOR, "Heat Generator");
-        add(GeneratorsBlock.LASER_FOCUS_MATRIX, "Laser Focus Matrix");
-        add(GeneratorsBlock.REACTOR_CONTROLLER, "Reactor Controller");
-        add(GeneratorsBlock.REACTOR_FRAME, "Reactor Frame");
-        add(GeneratorsBlock.REACTOR_GLASS, "Reactor Glass");
-        add(GeneratorsBlock.REACTOR_LOGIC_ADAPTER, "Reactor Logic Adapter");
-        add(GeneratorsBlock.REACTOR_PORT, "Reactor Port");
-        add(GeneratorsBlock.ROTATIONAL_COMPLEX, "Rotational Complex");
-        add(GeneratorsBlock.SATURATING_CONDENSER, "Saturating Condenser");
-        add(GeneratorsBlock.SOLAR_GENERATOR, "Solar Generator");
-        add(GeneratorsBlock.TURBINE_CASING, "Turbine Casing");
-        add(GeneratorsBlock.TURBINE_ROTOR, "Turbine Rotor");
-        add(GeneratorsBlock.TURBINE_VALVE, "Turbine Valve");
-        add(GeneratorsBlock.TURBINE_VENT, "Turbine Vent");
-        add(GeneratorsBlock.WIND_GENERATOR, "Wind Generator");
+        add(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, "Advanced Solar Generator");
+        add(GeneratorsBlocks.BIO_GENERATOR, "Bio-Generator");
+        add(GeneratorsBlocks.ELECTROMAGNETIC_COIL, "Electromagnetic Coil");
+        add(GeneratorsBlocks.GAS_BURNING_GENERATOR, "Gas-Burning Generator");
+        add(GeneratorsBlocks.HEAT_GENERATOR, "Heat Generator");
+        add(GeneratorsBlocks.LASER_FOCUS_MATRIX, "Laser Focus Matrix");
+        add(GeneratorsBlocks.REACTOR_CONTROLLER, "Reactor Controller");
+        add(GeneratorsBlocks.REACTOR_FRAME, "Reactor Frame");
+        add(GeneratorsBlocks.REACTOR_GLASS, "Reactor Glass");
+        add(GeneratorsBlocks.REACTOR_LOGIC_ADAPTER, "Reactor Logic Adapter");
+        add(GeneratorsBlocks.REACTOR_PORT, "Reactor Port");
+        add(GeneratorsBlocks.ROTATIONAL_COMPLEX, "Rotational Complex");
+        add(GeneratorsBlocks.SATURATING_CONDENSER, "Saturating Condenser");
+        add(GeneratorsBlocks.SOLAR_GENERATOR, "Solar Generator");
+        add(GeneratorsBlocks.TURBINE_CASING, "Turbine Casing");
+        add(GeneratorsBlocks.TURBINE_ROTOR, "Turbine Rotor");
+        add(GeneratorsBlocks.TURBINE_VALVE, "Turbine Valve");
+        add(GeneratorsBlocks.TURBINE_VENT, "Turbine Vent");
+        add(GeneratorsBlocks.WIND_GENERATOR, "Wind Generator");
     }
 
     private void addMisc() {

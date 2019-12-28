@@ -7,7 +7,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.FluidSlot;
-import mekanism.common.MekanismItem;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -15,12 +14,13 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.GeneratorTags;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -50,7 +50,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     private EnergyInventorySlot energySlot;
 
     public TileEntityBioGenerator() {
-        super(GeneratorsBlock.BIO_GENERATOR, MekanismGeneratorsConfig.generators.bioGeneration.get() * 2);
+        super(GeneratorsBlocks.BIO_GENERATOR, MekanismGeneratorsConfig.generators.bioGeneration.get() * 2);
     }
 
     @Nonnull
@@ -137,7 +137,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     }
 
     public int getFuel(ItemStack stack) {
-        return MekanismItem.BIO_FUEL.itemMatches(stack) ? 200 : 0;
+        return MekanismItems.BIO_FUEL.itemMatches(stack) ? 200 : 0;
     }
 
     /**

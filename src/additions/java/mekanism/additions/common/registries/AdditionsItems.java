@@ -1,5 +1,6 @@
-package mekanism.additions.common;
+package mekanism.additions.common.registries;
 
+import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.item.BabySkeletonSpawnEggItem;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.item.ItemWalkieTalkie;
@@ -8,7 +9,7 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.item.SpawnEggItem;
 
-public class AdditionsItem {
+public class AdditionsItems {
 
     public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismAdditions.MODID);
 

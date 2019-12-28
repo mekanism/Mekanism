@@ -2,9 +2,9 @@ package mekanism.common.inventory.container.item;
 
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.inventory.container.slot.SlotPersonalChest;
 import mekanism.common.item.block.machine.ItemBlockPersonalChest;
+import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;

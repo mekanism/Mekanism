@@ -5,9 +5,9 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -34,12 +34,12 @@ public class FluidGasToGasIRecipe extends FluidGasToGasRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlock.CHEMICAL_WASHER.getName();
+        return MekanismBlocks.CHEMICAL_WASHER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlock.CHEMICAL_WASHER.getItemStack();
+        return MekanismBlocks.CHEMICAL_WASHER.getItemStack();
     }
 }

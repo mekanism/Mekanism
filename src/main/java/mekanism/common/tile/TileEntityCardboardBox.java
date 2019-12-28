@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.block.BlockCardboardBox.BlockData;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 

@@ -12,13 +12,13 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -44,7 +44,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
     public double diggingProgress;
 
     public TileEntityLaserTractorBeam() {
-        super(MekanismBlock.LASER_TRACTOR_BEAM);
+        super(MekanismBlocks.LASER_TRACTOR_BEAM);
     }
 
     @Nonnull

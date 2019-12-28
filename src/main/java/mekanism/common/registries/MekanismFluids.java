@@ -1,6 +1,8 @@
-package mekanism.common;
+package mekanism.common.registries;
 
 import java.util.function.UnaryOperator;
+import mekanism.common.ChemicalConstants;
+import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.block.FlowingFluidBlock;

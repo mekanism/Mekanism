@@ -1,8 +1,6 @@
-package mekanism.common.inventory.container;
+package mekanism.common.registries;
 
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismItem;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
@@ -79,9 +77,9 @@ public class MekanismContainerTypes {
     public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister(Mekanism.MODID);
 
     //Items
-    public static final ContainerTypeRegistryObject<DictionaryContainer> DICTIONARY = CONTAINER_TYPES.register(MekanismItem.DICTIONARY, DictionaryContainer::new);
-    public static final ContainerTypeRegistryObject<PortableTeleporterContainer> PORTABLE_TELEPORTER = CONTAINER_TYPES.register(MekanismItem.PORTABLE_TELEPORTER, PortableTeleporterContainer::new);
-    public static final ContainerTypeRegistryObject<SeismicReaderContainer> SEISMIC_READER = CONTAINER_TYPES.register(MekanismItem.SEISMIC_READER, SeismicReaderContainer::new);
+    public static final ContainerTypeRegistryObject<DictionaryContainer> DICTIONARY = CONTAINER_TYPES.register(MekanismItems.DICTIONARY, DictionaryContainer::new);
+    public static final ContainerTypeRegistryObject<PortableTeleporterContainer> PORTABLE_TELEPORTER = CONTAINER_TYPES.register(MekanismItems.PORTABLE_TELEPORTER, PortableTeleporterContainer::new);
+    public static final ContainerTypeRegistryObject<SeismicReaderContainer> SEISMIC_READER = CONTAINER_TYPES.register(MekanismItems.SEISMIC_READER, SeismicReaderContainer::new);
 
     //Entity
     public static final ContainerTypeRegistryObject<MainRobitContainer> MAIN_ROBIT = CONTAINER_TYPES.register("main_robit", MainRobitContainer::new);
@@ -92,39 +90,39 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<RepairRobitContainer> REPAIR_ROBIT = CONTAINER_TYPES.register("repair_robit", RepairRobitContainer::new);
 
     //Blocks
-    public static final ContainerTypeRegistryObject<ChemicalCrystallizerContainer> CHEMICAL_CRYSTALLIZER = CONTAINER_TYPES.register(MekanismBlock.CHEMICAL_CRYSTALLIZER, ChemicalCrystallizerContainer::new);
-    public static final ContainerTypeRegistryObject<ChemicalDissolutionChamberContainer> CHEMICAL_DISSOLUTION_CHAMBER = CONTAINER_TYPES.register(MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, ChemicalDissolutionChamberContainer::new);
-    public static final ContainerTypeRegistryObject<ChemicalInfuserContainer> CHEMICAL_INFUSER = CONTAINER_TYPES.register(MekanismBlock.CHEMICAL_INFUSER, ChemicalInfuserContainer::new);
-    public static final ContainerTypeRegistryObject<ChemicalInjectionChamberContainer> CHEMICAL_INJECTION_CHAMBER = CONTAINER_TYPES.register(MekanismBlock.CHEMICAL_INJECTION_CHAMBER, ChemicalInjectionChamberContainer::new);
-    public static final ContainerTypeRegistryObject<ChemicalOxidizerContainer> CHEMICAL_OXIDIZER = CONTAINER_TYPES.register(MekanismBlock.CHEMICAL_OXIDIZER, ChemicalOxidizerContainer::new);
-    public static final ContainerTypeRegistryObject<ChemicalWasherContainer> CHEMICAL_WASHER = CONTAINER_TYPES.register(MekanismBlock.CHEMICAL_WASHER, ChemicalWasherContainer::new);
-    public static final ContainerTypeRegistryObject<CombinerContainer> COMBINER = CONTAINER_TYPES.register(MekanismBlock.COMBINER, CombinerContainer::new);
-    public static final ContainerTypeRegistryObject<CrusherContainer> CRUSHER = CONTAINER_TYPES.register(MekanismBlock.CRUSHER, CrusherContainer::new);
-    public static final ContainerTypeRegistryObject<DigitalMinerContainer> DIGITAL_MINER = CONTAINER_TYPES.register(MekanismBlock.DIGITAL_MINER, DigitalMinerContainer::new);
-    public static final ContainerTypeRegistryObject<DynamicTankContainer> DYNAMIC_TANK = CONTAINER_TYPES.register(MekanismBlock.DYNAMIC_TANK, DynamicTankContainer::new);
-    public static final ContainerTypeRegistryObject<ElectricPumpContainer> ELECTRIC_PUMP = CONTAINER_TYPES.register(MekanismBlock.ELECTRIC_PUMP, ElectricPumpContainer::new);
-    public static final ContainerTypeRegistryObject<ElectrolyticSeparatorContainer> ELECTROLYTIC_SEPARATOR = CONTAINER_TYPES.register(MekanismBlock.ELECTROLYTIC_SEPARATOR, ElectrolyticSeparatorContainer::new);
-    public static final ContainerTypeRegistryObject<EnergizedSmelterContainer> ENERGIZED_SMELTER = CONTAINER_TYPES.register(MekanismBlock.ENERGIZED_SMELTER, EnergizedSmelterContainer::new);
-    public static final ContainerTypeRegistryObject<EnrichmentChamberContainer> ENRICHMENT_CHAMBER = CONTAINER_TYPES.register(MekanismBlock.ENRICHMENT_CHAMBER, EnrichmentChamberContainer::new);
-    public static final ContainerTypeRegistryObject<FluidicPlenisherContainer> FLUIDIC_PLENISHER = CONTAINER_TYPES.register(MekanismBlock.FLUIDIC_PLENISHER, FluidicPlenisherContainer::new);
-    public static final ContainerTypeRegistryObject<FormulaicAssemblicatorContainer> FORMULAIC_ASSEMBLICATOR = CONTAINER_TYPES.register(MekanismBlock.FORMULAIC_ASSEMBLICATOR, FormulaicAssemblicatorContainer::new);
-    public static final ContainerTypeRegistryObject<FuelwoodHeaterContainer> FUELWOOD_HEATER = CONTAINER_TYPES.register(MekanismBlock.FUELWOOD_HEATER, FuelwoodHeaterContainer::new);
-    public static final ContainerTypeRegistryObject<LaserAmplifierContainer> LASER_AMPLIFIER = CONTAINER_TYPES.register(MekanismBlock.LASER_AMPLIFIER, LaserAmplifierContainer::new);
-    public static final ContainerTypeRegistryObject<LaserTractorBeamContainer> LASER_TRACTOR_BEAM = CONTAINER_TYPES.register(MekanismBlock.LASER_TRACTOR_BEAM, LaserTractorBeamContainer::new);
-    public static final ContainerTypeRegistryObject<MetallurgicInfuserContainer> METALLURGIC_INFUSER = CONTAINER_TYPES.register(MekanismBlock.METALLURGIC_INFUSER, MetallurgicInfuserContainer::new);
-    public static final ContainerTypeRegistryObject<OredictionificatorContainer> OREDICTIONIFICATOR = CONTAINER_TYPES.register(MekanismBlock.OREDICTIONIFICATOR, OredictionificatorContainer::new);
-    public static final ContainerTypeRegistryObject<OsmiumCompressorContainer> OSMIUM_COMPRESSOR = CONTAINER_TYPES.register(MekanismBlock.OSMIUM_COMPRESSOR, OsmiumCompressorContainer::new);
-    public static final ContainerTypeRegistryObject<PrecisionSawmillContainer> PRECISION_SAWMILL = CONTAINER_TYPES.register(MekanismBlock.PRECISION_SAWMILL, PrecisionSawmillContainer::new);
-    public static final ContainerTypeRegistryObject<PressurizedReactionChamberContainer> PRESSURIZED_REACTION_CHAMBER = CONTAINER_TYPES.register(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, PressurizedReactionChamberContainer::new);
-    public static final ContainerTypeRegistryObject<PurificationChamberContainer> PURIFICATION_CHAMBER = CONTAINER_TYPES.register(MekanismBlock.PURIFICATION_CHAMBER, PurificationChamberContainer::new);
-    public static final ContainerTypeRegistryObject<QuantumEntangloporterContainer> QUANTUM_ENTANGLOPORTER = CONTAINER_TYPES.register(MekanismBlock.QUANTUM_ENTANGLOPORTER, QuantumEntangloporterContainer::new);
-    public static final ContainerTypeRegistryObject<ResistiveHeaterContainer> RESISTIVE_HEATER = CONTAINER_TYPES.register(MekanismBlock.RESISTIVE_HEATER, ResistiveHeaterContainer::new);
-    public static final ContainerTypeRegistryObject<RotaryCondensentratorContainer> ROTARY_CONDENSENTRATOR = CONTAINER_TYPES.register(MekanismBlock.ROTARY_CONDENSENTRATOR, RotaryCondensentratorContainer::new);
-    public static final ContainerTypeRegistryObject<SecurityDeskContainer> SECURITY_DESK = CONTAINER_TYPES.register(MekanismBlock.SECURITY_DESK, SecurityDeskContainer::new);
-    public static final ContainerTypeRegistryObject<SeismicVibratorContainer> SEISMIC_VIBRATOR = CONTAINER_TYPES.register(MekanismBlock.SEISMIC_VIBRATOR, SeismicVibratorContainer::new);
-    public static final ContainerTypeRegistryObject<SolarNeutronActivatorContainer> SOLAR_NEUTRON_ACTIVATOR = CONTAINER_TYPES.register(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR, SolarNeutronActivatorContainer::new);
-    public static final ContainerTypeRegistryObject<TeleporterContainer> TELEPORTER = CONTAINER_TYPES.register(MekanismBlock.TELEPORTER, TeleporterContainer::new);
-    public static final ContainerTypeRegistryObject<ThermalEvaporationControllerContainer> THERMAL_EVAPORATION_CONTROLLER = CONTAINER_TYPES.register(MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, ThermalEvaporationControllerContainer::new);
+    public static final ContainerTypeRegistryObject<ChemicalCrystallizerContainer> CHEMICAL_CRYSTALLIZER = CONTAINER_TYPES.register(MekanismBlocks.CHEMICAL_CRYSTALLIZER, ChemicalCrystallizerContainer::new);
+    public static final ContainerTypeRegistryObject<ChemicalDissolutionChamberContainer> CHEMICAL_DISSOLUTION_CHAMBER = CONTAINER_TYPES.register(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, ChemicalDissolutionChamberContainer::new);
+    public static final ContainerTypeRegistryObject<ChemicalInfuserContainer> CHEMICAL_INFUSER = CONTAINER_TYPES.register(MekanismBlocks.CHEMICAL_INFUSER, ChemicalInfuserContainer::new);
+    public static final ContainerTypeRegistryObject<ChemicalInjectionChamberContainer> CHEMICAL_INJECTION_CHAMBER = CONTAINER_TYPES.register(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, ChemicalInjectionChamberContainer::new);
+    public static final ContainerTypeRegistryObject<ChemicalOxidizerContainer> CHEMICAL_OXIDIZER = CONTAINER_TYPES.register(MekanismBlocks.CHEMICAL_OXIDIZER, ChemicalOxidizerContainer::new);
+    public static final ContainerTypeRegistryObject<ChemicalWasherContainer> CHEMICAL_WASHER = CONTAINER_TYPES.register(MekanismBlocks.CHEMICAL_WASHER, ChemicalWasherContainer::new);
+    public static final ContainerTypeRegistryObject<CombinerContainer> COMBINER = CONTAINER_TYPES.register(MekanismBlocks.COMBINER, CombinerContainer::new);
+    public static final ContainerTypeRegistryObject<CrusherContainer> CRUSHER = CONTAINER_TYPES.register(MekanismBlocks.CRUSHER, CrusherContainer::new);
+    public static final ContainerTypeRegistryObject<DigitalMinerContainer> DIGITAL_MINER = CONTAINER_TYPES.register(MekanismBlocks.DIGITAL_MINER, DigitalMinerContainer::new);
+    public static final ContainerTypeRegistryObject<DynamicTankContainer> DYNAMIC_TANK = CONTAINER_TYPES.register(MekanismBlocks.DYNAMIC_TANK, DynamicTankContainer::new);
+    public static final ContainerTypeRegistryObject<ElectricPumpContainer> ELECTRIC_PUMP = CONTAINER_TYPES.register(MekanismBlocks.ELECTRIC_PUMP, ElectricPumpContainer::new);
+    public static final ContainerTypeRegistryObject<ElectrolyticSeparatorContainer> ELECTROLYTIC_SEPARATOR = CONTAINER_TYPES.register(MekanismBlocks.ELECTROLYTIC_SEPARATOR, ElectrolyticSeparatorContainer::new);
+    public static final ContainerTypeRegistryObject<EnergizedSmelterContainer> ENERGIZED_SMELTER = CONTAINER_TYPES.register(MekanismBlocks.ENERGIZED_SMELTER, EnergizedSmelterContainer::new);
+    public static final ContainerTypeRegistryObject<EnrichmentChamberContainer> ENRICHMENT_CHAMBER = CONTAINER_TYPES.register(MekanismBlocks.ENRICHMENT_CHAMBER, EnrichmentChamberContainer::new);
+    public static final ContainerTypeRegistryObject<FluidicPlenisherContainer> FLUIDIC_PLENISHER = CONTAINER_TYPES.register(MekanismBlocks.FLUIDIC_PLENISHER, FluidicPlenisherContainer::new);
+    public static final ContainerTypeRegistryObject<FormulaicAssemblicatorContainer> FORMULAIC_ASSEMBLICATOR = CONTAINER_TYPES.register(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, FormulaicAssemblicatorContainer::new);
+    public static final ContainerTypeRegistryObject<FuelwoodHeaterContainer> FUELWOOD_HEATER = CONTAINER_TYPES.register(MekanismBlocks.FUELWOOD_HEATER, FuelwoodHeaterContainer::new);
+    public static final ContainerTypeRegistryObject<LaserAmplifierContainer> LASER_AMPLIFIER = CONTAINER_TYPES.register(MekanismBlocks.LASER_AMPLIFIER, LaserAmplifierContainer::new);
+    public static final ContainerTypeRegistryObject<LaserTractorBeamContainer> LASER_TRACTOR_BEAM = CONTAINER_TYPES.register(MekanismBlocks.LASER_TRACTOR_BEAM, LaserTractorBeamContainer::new);
+    public static final ContainerTypeRegistryObject<MetallurgicInfuserContainer> METALLURGIC_INFUSER = CONTAINER_TYPES.register(MekanismBlocks.METALLURGIC_INFUSER, MetallurgicInfuserContainer::new);
+    public static final ContainerTypeRegistryObject<OredictionificatorContainer> OREDICTIONIFICATOR = CONTAINER_TYPES.register(MekanismBlocks.OREDICTIONIFICATOR, OredictionificatorContainer::new);
+    public static final ContainerTypeRegistryObject<OsmiumCompressorContainer> OSMIUM_COMPRESSOR = CONTAINER_TYPES.register(MekanismBlocks.OSMIUM_COMPRESSOR, OsmiumCompressorContainer::new);
+    public static final ContainerTypeRegistryObject<PrecisionSawmillContainer> PRECISION_SAWMILL = CONTAINER_TYPES.register(MekanismBlocks.PRECISION_SAWMILL, PrecisionSawmillContainer::new);
+    public static final ContainerTypeRegistryObject<PressurizedReactionChamberContainer> PRESSURIZED_REACTION_CHAMBER = CONTAINER_TYPES.register(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, PressurizedReactionChamberContainer::new);
+    public static final ContainerTypeRegistryObject<PurificationChamberContainer> PURIFICATION_CHAMBER = CONTAINER_TYPES.register(MekanismBlocks.PURIFICATION_CHAMBER, PurificationChamberContainer::new);
+    public static final ContainerTypeRegistryObject<QuantumEntangloporterContainer> QUANTUM_ENTANGLOPORTER = CONTAINER_TYPES.register(MekanismBlocks.QUANTUM_ENTANGLOPORTER, QuantumEntangloporterContainer::new);
+    public static final ContainerTypeRegistryObject<ResistiveHeaterContainer> RESISTIVE_HEATER = CONTAINER_TYPES.register(MekanismBlocks.RESISTIVE_HEATER, ResistiveHeaterContainer::new);
+    public static final ContainerTypeRegistryObject<RotaryCondensentratorContainer> ROTARY_CONDENSENTRATOR = CONTAINER_TYPES.register(MekanismBlocks.ROTARY_CONDENSENTRATOR, RotaryCondensentratorContainer::new);
+    public static final ContainerTypeRegistryObject<SecurityDeskContainer> SECURITY_DESK = CONTAINER_TYPES.register(MekanismBlocks.SECURITY_DESK, SecurityDeskContainer::new);
+    public static final ContainerTypeRegistryObject<SeismicVibratorContainer> SEISMIC_VIBRATOR = CONTAINER_TYPES.register(MekanismBlocks.SEISMIC_VIBRATOR, SeismicVibratorContainer::new);
+    public static final ContainerTypeRegistryObject<SolarNeutronActivatorContainer> SOLAR_NEUTRON_ACTIVATOR = CONTAINER_TYPES.register(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, SolarNeutronActivatorContainer::new);
+    public static final ContainerTypeRegistryObject<TeleporterContainer> TELEPORTER = CONTAINER_TYPES.register(MekanismBlocks.TELEPORTER, TeleporterContainer::new);
+    public static final ContainerTypeRegistryObject<ThermalEvaporationControllerContainer> THERMAL_EVAPORATION_CONTROLLER = CONTAINER_TYPES.register(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, ThermalEvaporationControllerContainer::new);
 
     //TODO: Decide if tiered ones should be done differently/evaluate how their container name is done
     //Named
@@ -144,7 +142,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<TransporterConfigurationContainer> TRANSPORTER_CONFIGURATION = CONTAINER_TYPES.register("transporter_configuration", TransporterConfigurationContainer::new);
 
     public static final ContainerTypeRegistryObject<DigitalMinerConfigContainer> DIGITAL_MINER_CONFIG = CONTAINER_TYPES.register("digital_miner_config", DigitalMinerConfigContainer::new);
-    public static final ContainerTypeRegistryObject<LogisticalSorterContainer> LOGISTICAL_SORTER = CONTAINER_TYPES.register(MekanismBlock.LOGISTICAL_SORTER, LogisticalSorterContainer::new);
+    public static final ContainerTypeRegistryObject<LogisticalSorterContainer> LOGISTICAL_SORTER = CONTAINER_TYPES.register(MekanismBlocks.LOGISTICAL_SORTER, LogisticalSorterContainer::new);
     public static final ContainerTypeRegistryObject<DMFilterSelectContainer> DM_FILTER_SELECT = CONTAINER_TYPES.register("digital_miner_filter_select", DMFilterSelectContainer::new);
     public static final ContainerTypeRegistryObject<LSFilterSelectContainer> LS_FILTER_SELECT = CONTAINER_TYPES.register("logistical_sorter_filter_select", LSFilterSelectContainer::new);
 

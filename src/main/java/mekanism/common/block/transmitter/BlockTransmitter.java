@@ -2,10 +2,10 @@ package mekanism.common.block.transmitter;
 
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
-import mekanism.common.MekanismItem;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
@@ -86,7 +86,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateWa
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
-        if (!context.hasItem(MekanismItem.CONFIGURATOR.getItem())) {
+        if (!context.hasItem(MekanismItems.CONFIGURATOR.getItem())) {
             return getRealShape(state, world, pos);
         }
         //Get the partial selection box if we are holding a configurator

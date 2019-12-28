@@ -17,7 +17,6 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
@@ -29,6 +28,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -67,7 +67,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     private EnergyInventorySlot energySlot;
 
     public TileEntityMetallurgicInfuser() {
-        super(MekanismBlock.METALLURGIC_INFUSER, 200);
+        super(MekanismBlocks.METALLURGIC_INFUSER, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -137,7 +137,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             return false;
         }
         world.removeBlock(getPos(), false);
-        world.setBlockState(getPos(), MekanismBlock.BASIC_INFUSING_FACTORY.getBlock().getDefaultState());
+        world.setBlockState(getPos(), MekanismBlocks.BASIC_INFUSING_FACTORY.getBlock().getDefaultState());
 
         //TODO: How much of this can be removed if we chance TileEntityMetallurgicInfuser to extending TileEntityUpgradeableMachine
         //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)

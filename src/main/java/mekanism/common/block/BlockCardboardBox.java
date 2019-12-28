@@ -3,11 +3,11 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
-import mekanism.common.MekanismBlock;
 import mekanism.common.block.states.IStateStorage;
 import mekanism.common.item.block.ItemBlockCardboardBox;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityCardboardBox;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -71,7 +71,7 @@ public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStat
                 if (data.block != null) {
                     data.block.onBlockPlacedBy(world, pos, data.block.getDefaultState(), player, new ItemStack(data.block));
                 }
-                spawnAsEntity(world, pos, MekanismBlock.CARDBOARD_BOX.getItemStack());
+                spawnAsEntity(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
             }
         }
         return player.func_225608_bj_() ? ActionResultType.SUCCESS : ActionResultType.PASS;

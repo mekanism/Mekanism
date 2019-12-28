@@ -1,7 +1,7 @@
 package mekanism.common.inventory.container.entity.robit;
 
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 

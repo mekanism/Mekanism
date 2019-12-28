@@ -9,14 +9,14 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismFluids;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -45,7 +45,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public float prevWaterScale;
 
     public TileEntityBoilerCasing() {
-        this(MekanismBlock.BOILER_CASING);
+        this(MekanismBlocks.BOILER_CASING);
     }
 
     public TileEntityBoilerCasing(IBlockProvider blockProvider) {

@@ -3,9 +3,9 @@ package mekanism.common.recipe.impl;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -32,12 +32,12 @@ public class CombinerIRecipe extends CombinerRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlock.COMBINER.getName();
+        return MekanismBlocks.COMBINER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlock.COMBINER.getItemStack();
+        return MekanismBlocks.COMBINER.getItemStack();
     }
 }

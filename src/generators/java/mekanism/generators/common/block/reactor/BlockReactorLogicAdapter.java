@@ -12,7 +12,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.reactor.ReactorLogicAdapterContainer;
-import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
+import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

@@ -10,7 +10,6 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.Finder;
@@ -26,6 +25,7 @@ import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
@@ -62,7 +62,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     private int currentRedstoneLevel;
 
     public TileEntityLogisticalSorter() {
-        super(MekanismBlock.LOGISTICAL_SORTER);
+        super(MekanismBlocks.LOGISTICAL_SORTER);
         rapidChangeThreshold = 3;
         doAutoSync = false;
     }

@@ -21,7 +21,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -35,6 +34,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ItemDataUtils;
@@ -80,7 +80,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalWasher() {
-        super(MekanismBlock.CHEMICAL_WASHER);
+        super(MekanismBlocks.CHEMICAL_WASHER);
         fluidInputHandler = InputHelper.getInputHandler(fluidTank, 0);
         gasInputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);

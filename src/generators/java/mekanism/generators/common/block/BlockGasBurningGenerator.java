@@ -24,7 +24,7 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.GasBurningGeneratorContainer;
-import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
+import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -46,7 +46,7 @@ import net.minecraft.world.World;
 public class BlockGasBurningGenerator extends BlockMekanism implements IHasGui<TileEntityGasGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity,
       IBlockSound, IHasTileEntity<TileEntityGasGenerator>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
-    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl( "tile.gen.gas"));
+    private static final SoundEvent SOUND_EVENT = new SoundEvent(Mekanism.rl("tile.gen.gas"));
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {

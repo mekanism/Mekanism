@@ -1,7 +1,7 @@
 package mekanism.common.tile.transmitter;
 
-import mekanism.common.MekanismBlock;
 import mekanism.common.block.states.TransmitterType;
+import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -9,7 +9,7 @@ import net.minecraft.util.Direction;
 public class TileEntityRestrictiveTransporter extends TileEntityLogisticalTransporter {
 
     public TileEntityRestrictiveTransporter() {
-        super(MekanismBlock.RESTRICTIVE_TRANSPORTER);
+        super(MekanismBlocks.RESTRICTIVE_TRANSPORTER);
     }
 
     @Override

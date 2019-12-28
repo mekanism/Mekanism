@@ -13,7 +13,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
-import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
@@ -26,6 +25,7 @@ import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -74,7 +74,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     private EnergyInventorySlot energySlot;
 
     public TileEntityFluidicPlenisher() {
-        super(MekanismBlock.FLUIDIC_PLENISHER);
+        super(MekanismBlocks.FLUIDIC_PLENISHER);
         //TODO: Upgrade slot index: 3
     }
 

@@ -8,7 +8,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
-import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -23,7 +23,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
 
     public TileEntityReactorBlock() {
         //TODO: Does hierarchy have to be done this way
-        this(GeneratorsBlock.REACTOR_FRAME);
+        this(GeneratorsBlocks.REACTOR_FRAME);
     }
 
     public TileEntityReactorBlock(IBlockProvider blockProvider) {

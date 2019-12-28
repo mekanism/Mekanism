@@ -1,9 +1,9 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,7 +24,7 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismBlock.PERSONAL_CHEST.getTextComponent(), 8, 6, 0x404040);
+        drawString(MekanismBlocks.PERSONAL_CHEST.getTextComponent(), 8, 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }

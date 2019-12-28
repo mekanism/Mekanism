@@ -13,12 +13,12 @@ import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismFluids;
-import mekanism.common.MekanismGases;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
@@ -26,8 +26,8 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
@@ -49,7 +49,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     public boolean fluidEject;
 
     public TileEntityReactorPort() {
-        super(GeneratorsBlock.REACTOR_PORT);
+        super(GeneratorsBlocks.REACTOR_PORT);
     }
 
     @Override

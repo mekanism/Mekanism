@@ -6,6 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.tools.common.config.MekanismToolsConfig;
+import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
@@ -16,6 +17,8 @@ import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismTools.MODID)
@@ -35,23 +38,26 @@ public class MekanismTools implements IModule {
         MekanismToolsConfig.registerConfigs(ModLoadingContext.get());
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        //modEventBus.addListener((FMLModIdMappingEvent event) -> ToolsItem.remapItems());
+        modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::onConfigReload);
+        //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
         modEventBus.addListener(this::onLivingSpecialSpawn);
 
-        ToolsItem.ITEMS.register(modEventBus);
-
-        //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
-        //TODO: Is the modEventBus stuff above used instead of this
-        //MinecraftForge.EVENT_BUS.register(this);
-
+        ToolsItems.ITEMS.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
-
-        Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(MekanismTools.MODID, path);
+    }
+
+    private void onConfigReload(ModConfig.ConfigReloading configEvent) {
+        //TODO: Handle reloading
+    }
+
+    private void commonSetup(FMLCommonSetupEvent event) {
+        Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
     }
 
     private void setStackIfEmpty(LivingEntity entity, EquipmentSlotType slot, ItemStack item) {
@@ -87,20 +93,20 @@ public class MekanismTools implements IModule {
             if (chance < MekanismToolsConfig.tools.armorSpawnRate.get()) {
                 int armorType = random.nextInt(5);
                 if (armorType == 0) {
-                    setEntityArmorWithChance(random, entity, ToolsItem.REFINED_GLOWSTONE_SWORD, ToolsItem.REFINED_GLOWSTONE_HELMET, ToolsItem.REFINED_GLOWSTONE_CHESTPLATE,
-                          ToolsItem.REFINED_GLOWSTONE_LEGGINGS, ToolsItem.REFINED_GLOWSTONE_BOOTS);
+                    setEntityArmorWithChance(random, entity, ToolsItems.REFINED_GLOWSTONE_SWORD, ToolsItems.REFINED_GLOWSTONE_HELMET, ToolsItems.REFINED_GLOWSTONE_CHESTPLATE,
+                          ToolsItems.REFINED_GLOWSTONE_LEGGINGS, ToolsItems.REFINED_GLOWSTONE_BOOTS);
                 } else if (armorType == 1) {
-                    setEntityArmorWithChance(random, entity, ToolsItem.LAPIS_LAZULI_SWORD, ToolsItem.LAPIS_LAZULI_HELMET, ToolsItem.LAPIS_LAZULI_CHESTPLATE,
-                          ToolsItem.LAPIS_LAZULI_LEGGINGS, ToolsItem.LAPIS_LAZULI_BOOTS);
+                    setEntityArmorWithChance(random, entity, ToolsItems.LAPIS_LAZULI_SWORD, ToolsItems.LAPIS_LAZULI_HELMET, ToolsItems.LAPIS_LAZULI_CHESTPLATE,
+                          ToolsItems.LAPIS_LAZULI_LEGGINGS, ToolsItems.LAPIS_LAZULI_BOOTS);
                 } else if (armorType == 2) {
-                    setEntityArmorWithChance(random, entity, ToolsItem.REFINED_OBSIDIAN_SWORD, ToolsItem.REFINED_OBSIDIAN_HELMET, ToolsItem.REFINED_OBSIDIAN_CHESTPLATE,
-                          ToolsItem.REFINED_OBSIDIAN_LEGGINGS, ToolsItem.REFINED_OBSIDIAN_BOOTS);
+                    setEntityArmorWithChance(random, entity, ToolsItems.REFINED_OBSIDIAN_SWORD, ToolsItems.REFINED_OBSIDIAN_HELMET, ToolsItems.REFINED_OBSIDIAN_CHESTPLATE,
+                          ToolsItems.REFINED_OBSIDIAN_LEGGINGS, ToolsItems.REFINED_OBSIDIAN_BOOTS);
                 } else if (armorType == 3) {
-                    setEntityArmorWithChance(random, entity, ToolsItem.STEEL_SWORD, ToolsItem.STEEL_HELMET, ToolsItem.STEEL_CHESTPLATE,
-                          ToolsItem.STEEL_LEGGINGS, ToolsItem.STEEL_BOOTS);
+                    setEntityArmorWithChance(random, entity, ToolsItems.STEEL_SWORD, ToolsItems.STEEL_HELMET, ToolsItems.STEEL_CHESTPLATE,
+                          ToolsItems.STEEL_LEGGINGS, ToolsItems.STEEL_BOOTS);
                 } else if (armorType == 4) {
-                    setEntityArmorWithChance(random, entity, ToolsItem.BRONZE_SWORD, ToolsItem.BRONZE_HELMET, ToolsItem.BRONZE_CHESTPLATE,
-                          ToolsItem.BRONZE_LEGGINGS, ToolsItem.BRONZE_BOOTS);
+                    setEntityArmorWithChance(random, entity, ToolsItems.BRONZE_SWORD, ToolsItems.BRONZE_HELMET, ToolsItems.BRONZE_CHESTPLATE,
+                          ToolsItems.BRONZE_LEGGINGS, ToolsItems.BRONZE_BOOTS);
                 }
             }
         }
@@ -116,24 +122,7 @@ public class MekanismTools implements IModule {
         return "Tools";
     }
 
-    /*@Override
-    public void writeConfig(PacketBuffer dataStream, MekanismConfig config) {
-        config.tools.write(dataStream);
-    }
-
-    @Override
-    public void readConfig(PacketBuffer dataStream, MekanismConfig destConfig) {
-        destConfig.tools.read(dataStream);
-    }*/
-
     @Override
     public void resetClient() {
     }
-
-    //TODO
-    /*private void onConfigChanged(OnConfigChangedEvent event) {
-        if (event.getModID().equals(MekanismTools.MODID) || event.getModID().equalsIgnoreCase(Mekanism.MODID)) {
-            proxy.loadConfiguration();
-        }
-    }*/
 }

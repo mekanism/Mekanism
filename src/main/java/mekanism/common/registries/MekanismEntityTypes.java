@@ -1,6 +1,8 @@
-package mekanism.common.entity;
+package mekanism.common.registries;
 
 import mekanism.common.Mekanism;
+import mekanism.common.entity.EntityFlame;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.registration.impl.EntityTypeDeferredRegister;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import net.minecraft.entity.EntityClassification;

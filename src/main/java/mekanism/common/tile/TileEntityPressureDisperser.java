@@ -1,12 +1,12 @@
 package mekanism.common.tile;
 
-import mekanism.common.MekanismBlock;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 
 public class TileEntityPressureDisperser extends TileEntityMekanism {
 
     public TileEntityPressureDisperser() {
-        super(MekanismBlock.PRESSURE_DISPERSER);
+        super(MekanismBlocks.PRESSURE_DISPERSER);
     }
 
     @Override

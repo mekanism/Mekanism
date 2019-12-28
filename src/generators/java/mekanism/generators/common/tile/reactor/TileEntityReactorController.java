@@ -6,17 +6,17 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismGases;
 import mekanism.common.base.IActiveState;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import mekanism.generators.common.FusionReactor;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.item.ItemHohlraum;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.nbt.CompoundNBT;
@@ -59,7 +59,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     private IInventorySlot reactorSlot;
 
     public TileEntityReactorController() {
-        super(GeneratorsBlock.REACTOR_CONTROLLER);
+        super(GeneratorsBlocks.REACTOR_CONTROLLER);
     }
 
     @Nonnull

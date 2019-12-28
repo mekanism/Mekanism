@@ -1,11 +1,13 @@
-package mekanism.common.particle;
+package mekanism.common.registries;
 
 import mekanism.common.Mekanism;
+import mekanism.common.particle.LaserParticleData;
+import mekanism.common.particle.LaserParticleType;
 import mekanism.common.registration.impl.ParticleTypeDeferredRegister;
 import mekanism.common.registration.impl.ParticleTypeRegistryObject;
 import net.minecraft.particles.BasicParticleType;
 
-public class MekanismParticleType {
+public class MekanismParticleTypes {
 
     public static final ParticleTypeDeferredRegister PARTICLE_TYPES = new ParticleTypeDeferredRegister(Mekanism.MODID);
 

@@ -7,8 +7,8 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -28,7 +28,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     private EnergyInventorySlot energySlot;
 
     public TileEntitySolarGenerator() {
-        this(GeneratorsBlock.SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.solarGeneration.get() * 2);
+        this(GeneratorsBlocks.SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.solarGeneration.get() * 2);
     }
 
     public TileEntitySolarGenerator(IBlockProvider blockProvider, double output) {
@@ -134,11 +134,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     //Vanilla copy of ClientWorld#func_228326_g_ used to be World#getSunBrightness
     private float getSunBrightness(World world, float partialTicks) {
         float f = world.getCelestialAngle(partialTicks);
-        float f1 = 1.0F - (MathHelper.cos(f * ((float)Math.PI * 2F)) * 2.0F + 0.2F);
+        float f1 = 1.0F - (MathHelper.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.2F);
         f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
-        f1 = (float)((double)f1 * (1.0D - (double)(world.getRainStrength(partialTicks) * 5.0F) / 16.0D));
-        f1 = (float)((double)f1 * (1.0D - (double)(world.getThunderStrength(partialTicks) * 5.0F) / 16.0D));
+        f1 = (float) ((double) f1 * (1.0D - (double) (world.getRainStrength(partialTicks) * 5.0F) / 16.0D));
+        f1 = (float) ((double) f1 * (1.0D - (double) (world.getThunderStrength(partialTicks) * 5.0F) / 16.0D));
         return f1 * 0.8F + 0.2F;
     }
 

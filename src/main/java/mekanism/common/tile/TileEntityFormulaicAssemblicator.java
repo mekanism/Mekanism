@@ -13,7 +13,6 @@ import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
@@ -25,6 +24,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.item.ItemCraftingFormula;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -86,7 +86,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     private EnergyInventorySlot energySlot;
 
     public TileEntityFormulaicAssemblicator() {
-        super(MekanismBlock.FORMULAIC_ASSEMBLICATOR);
+        super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

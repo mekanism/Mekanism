@@ -10,7 +10,6 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.basic.BlockTeleporterFrame;
@@ -25,6 +24,7 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketEntityMove;
 import mekanism.common.network.PacketPortalFX;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.util.MekanismUtils;
@@ -69,7 +69,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     private EnergyInventorySlot energySlot;
 
     public TileEntityTeleporter() {
-        super(MekanismBlock.TELEPORTER);
+        super(MekanismBlocks.TELEPORTER);
         chunkLoaderComponent = new TileComponentChunkLoader(this);
     }
 

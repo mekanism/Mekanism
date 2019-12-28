@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.frequency.Frequency;
@@ -15,6 +14,7 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.security.SecurityData;
@@ -41,7 +41,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     private SecurityInventorySlot lockSlot;
 
     public TileEntitySecurityDesk() {
-        super(MekanismBlock.SECURITY_DESK);
+        super(MekanismBlocks.SECURITY_DESK);
     }
 
     @Nonnull

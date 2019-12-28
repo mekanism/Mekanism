@@ -4,6 +4,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import mekanism.common.registries.MekanismParticleTypes;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
@@ -24,7 +25,7 @@ public class LaserParticleData implements IParticleData {
     @Nonnull
     @Override
     public ParticleType<?> getType() {
-        return MekanismParticleType.LASER.getParticleType();
+        return MekanismParticleTypes.LASER.getParticleType();
     }
 
     @Override

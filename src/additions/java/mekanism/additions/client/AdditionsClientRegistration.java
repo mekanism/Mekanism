@@ -2,11 +2,11 @@ package mekanism.additions.client;
 
 import mekanism.additions.client.render.entity.RenderBalloon;
 import mekanism.additions.client.render.entity.RenderObsidianTNTPrimed;
-import mekanism.additions.common.AdditionsBlock;
-import mekanism.additions.common.AdditionsItem;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.entity.AdditionsEntityType;
 import mekanism.additions.common.item.ItemBalloon;
+import mekanism.additions.common.registries.AdditionsBlocks;
+import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.block.IColoredBlock;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.render.MekanismRenderer;
@@ -28,9 +28,9 @@ public class AdditionsClientRegistration {
         new AdditionsKeyHandler();
 
         //Register entity rendering handlers
-        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityType.OBSIDIAN_TNT, RenderObsidianTNTPrimed::new);
-        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityType.BALLOON, RenderBalloon::new);
-        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityType.BABY_SKELETON, SkeletonRenderer::new);
+        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.OBSIDIAN_TNT, RenderObsidianTNTPrimed::new);
+        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BALLOON, RenderBalloon::new);
+        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_SKELETON, SkeletonRenderer::new);
     }
 
     @SubscribeEvent
@@ -52,59 +52,59 @@ public class AdditionsClientRegistration {
                   return -1;
               },
               //Plastic Blocks
-              AdditionsBlock.BLACK_PLASTIC_BLOCK, AdditionsBlock.RED_PLASTIC_BLOCK, AdditionsBlock.GREEN_PLASTIC_BLOCK, AdditionsBlock.BROWN_PLASTIC_BLOCK,
-              AdditionsBlock.BLUE_PLASTIC_BLOCK, AdditionsBlock.PURPLE_PLASTIC_BLOCK, AdditionsBlock.CYAN_PLASTIC_BLOCK, AdditionsBlock.LIGHT_GRAY_PLASTIC_BLOCK,
-              AdditionsBlock.GRAY_PLASTIC_BLOCK, AdditionsBlock.PINK_PLASTIC_BLOCK, AdditionsBlock.LIME_PLASTIC_BLOCK, AdditionsBlock.YELLOW_PLASTIC_BLOCK,
-              AdditionsBlock.LIGHT_BLUE_PLASTIC_BLOCK, AdditionsBlock.MAGENTA_PLASTIC_BLOCK, AdditionsBlock.ORANGE_PLASTIC_BLOCK, AdditionsBlock.WHITE_PLASTIC_BLOCK,
+              AdditionsBlocks.BLACK_PLASTIC_BLOCK, AdditionsBlocks.RED_PLASTIC_BLOCK, AdditionsBlocks.GREEN_PLASTIC_BLOCK, AdditionsBlocks.BROWN_PLASTIC_BLOCK,
+              AdditionsBlocks.BLUE_PLASTIC_BLOCK, AdditionsBlocks.PURPLE_PLASTIC_BLOCK, AdditionsBlocks.CYAN_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_GRAY_PLASTIC_BLOCK,
+              AdditionsBlocks.GRAY_PLASTIC_BLOCK, AdditionsBlocks.PINK_PLASTIC_BLOCK, AdditionsBlocks.LIME_PLASTIC_BLOCK, AdditionsBlocks.YELLOW_PLASTIC_BLOCK,
+              AdditionsBlocks.LIGHT_BLUE_PLASTIC_BLOCK, AdditionsBlocks.MAGENTA_PLASTIC_BLOCK, AdditionsBlocks.ORANGE_PLASTIC_BLOCK, AdditionsBlocks.WHITE_PLASTIC_BLOCK,
               //Slick Plastic Blocks
-              AdditionsBlock.BLACK_SLICK_PLASTIC_BLOCK, AdditionsBlock.RED_SLICK_PLASTIC_BLOCK, AdditionsBlock.GREEN_SLICK_PLASTIC_BLOCK,
-              AdditionsBlock.BROWN_SLICK_PLASTIC_BLOCK, AdditionsBlock.BLUE_SLICK_PLASTIC_BLOCK, AdditionsBlock.PURPLE_SLICK_PLASTIC_BLOCK, AdditionsBlock.CYAN_SLICK_PLASTIC_BLOCK,
-              AdditionsBlock.LIGHT_GRAY_SLICK_PLASTIC_BLOCK, AdditionsBlock.GRAY_SLICK_PLASTIC_BLOCK, AdditionsBlock.PINK_SLICK_PLASTIC_BLOCK,
-              AdditionsBlock.LIME_SLICK_PLASTIC_BLOCK, AdditionsBlock.YELLOW_SLICK_PLASTIC_BLOCK, AdditionsBlock.LIGHT_BLUE_SLICK_PLASTIC_BLOCK,
-              AdditionsBlock.MAGENTA_SLICK_PLASTIC_BLOCK, AdditionsBlock.ORANGE_SLICK_PLASTIC_BLOCK, AdditionsBlock.WHITE_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.BLACK_SLICK_PLASTIC_BLOCK, AdditionsBlocks.RED_SLICK_PLASTIC_BLOCK, AdditionsBlocks.GREEN_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.BROWN_SLICK_PLASTIC_BLOCK, AdditionsBlocks.BLUE_SLICK_PLASTIC_BLOCK, AdditionsBlocks.PURPLE_SLICK_PLASTIC_BLOCK, AdditionsBlocks.CYAN_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.LIGHT_GRAY_SLICK_PLASTIC_BLOCK, AdditionsBlocks.GRAY_SLICK_PLASTIC_BLOCK, AdditionsBlocks.PINK_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.LIME_SLICK_PLASTIC_BLOCK, AdditionsBlocks.YELLOW_SLICK_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_BLUE_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.MAGENTA_SLICK_PLASTIC_BLOCK, AdditionsBlocks.ORANGE_SLICK_PLASTIC_BLOCK, AdditionsBlocks.WHITE_SLICK_PLASTIC_BLOCK,
               //Plastic Glow Blocks
-              AdditionsBlock.BLACK_PLASTIC_GLOW_BLOCK, AdditionsBlock.RED_PLASTIC_GLOW_BLOCK, AdditionsBlock.GREEN_PLASTIC_GLOW_BLOCK, AdditionsBlock.BROWN_PLASTIC_GLOW_BLOCK,
-              AdditionsBlock.BLUE_PLASTIC_GLOW_BLOCK, AdditionsBlock.PURPLE_PLASTIC_GLOW_BLOCK, AdditionsBlock.CYAN_PLASTIC_GLOW_BLOCK, AdditionsBlock.LIGHT_GRAY_PLASTIC_GLOW_BLOCK,
-              AdditionsBlock.GRAY_PLASTIC_GLOW_BLOCK, AdditionsBlock.PINK_PLASTIC_GLOW_BLOCK, AdditionsBlock.LIME_PLASTIC_GLOW_BLOCK, AdditionsBlock.YELLOW_PLASTIC_GLOW_BLOCK,
-              AdditionsBlock.LIGHT_BLUE_PLASTIC_GLOW_BLOCK, AdditionsBlock.MAGENTA_PLASTIC_GLOW_BLOCK, AdditionsBlock.ORANGE_PLASTIC_GLOW_BLOCK, AdditionsBlock.WHITE_PLASTIC_GLOW_BLOCK,
+              AdditionsBlocks.BLACK_PLASTIC_GLOW_BLOCK, AdditionsBlocks.RED_PLASTIC_GLOW_BLOCK, AdditionsBlocks.GREEN_PLASTIC_GLOW_BLOCK, AdditionsBlocks.BROWN_PLASTIC_GLOW_BLOCK,
+              AdditionsBlocks.BLUE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.PURPLE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.CYAN_PLASTIC_GLOW_BLOCK, AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_BLOCK,
+              AdditionsBlocks.GRAY_PLASTIC_GLOW_BLOCK, AdditionsBlocks.PINK_PLASTIC_GLOW_BLOCK, AdditionsBlocks.LIME_PLASTIC_GLOW_BLOCK, AdditionsBlocks.YELLOW_PLASTIC_GLOW_BLOCK,
+              AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.MAGENTA_PLASTIC_GLOW_BLOCK, AdditionsBlocks.ORANGE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.WHITE_PLASTIC_GLOW_BLOCK,
               //Reinforced Plastic Blocks
-              AdditionsBlock.BLACK_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.RED_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.GREEN_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlock.BROWN_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.BLUE_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.PURPLE_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlock.CYAN_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.GRAY_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlock.PINK_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.LIME_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.YELLOW_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlock.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.MAGENTA_REINFORCED_PLASTIC_BLOCK, AdditionsBlock.ORANGE_REINFORCED_PLASTIC_BLOCK,
-              AdditionsBlock.WHITE_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.BLACK_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.RED_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.GREEN_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.BROWN_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.BLUE_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.PURPLE_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.CYAN_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.GRAY_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.PINK_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.LIME_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.YELLOW_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.MAGENTA_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.ORANGE_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.WHITE_REINFORCED_PLASTIC_BLOCK,
               //Plastic Road
-              AdditionsBlock.BLACK_PLASTIC_ROAD, AdditionsBlock.RED_PLASTIC_ROAD, AdditionsBlock.GREEN_PLASTIC_ROAD, AdditionsBlock.BROWN_PLASTIC_ROAD,
-              AdditionsBlock.BLUE_PLASTIC_ROAD, AdditionsBlock.PURPLE_PLASTIC_ROAD, AdditionsBlock.CYAN_PLASTIC_ROAD, AdditionsBlock.LIGHT_GRAY_PLASTIC_ROAD,
-              AdditionsBlock.GRAY_PLASTIC_ROAD, AdditionsBlock.PINK_PLASTIC_ROAD, AdditionsBlock.LIME_PLASTIC_ROAD, AdditionsBlock.YELLOW_PLASTIC_ROAD,
-              AdditionsBlock.LIGHT_BLUE_PLASTIC_ROAD, AdditionsBlock.MAGENTA_PLASTIC_ROAD, AdditionsBlock.ORANGE_PLASTIC_ROAD, AdditionsBlock.WHITE_PLASTIC_ROAD,
+              AdditionsBlocks.BLACK_PLASTIC_ROAD, AdditionsBlocks.RED_PLASTIC_ROAD, AdditionsBlocks.GREEN_PLASTIC_ROAD, AdditionsBlocks.BROWN_PLASTIC_ROAD,
+              AdditionsBlocks.BLUE_PLASTIC_ROAD, AdditionsBlocks.PURPLE_PLASTIC_ROAD, AdditionsBlocks.CYAN_PLASTIC_ROAD, AdditionsBlocks.LIGHT_GRAY_PLASTIC_ROAD,
+              AdditionsBlocks.GRAY_PLASTIC_ROAD, AdditionsBlocks.PINK_PLASTIC_ROAD, AdditionsBlocks.LIME_PLASTIC_ROAD, AdditionsBlocks.YELLOW_PLASTIC_ROAD,
+              AdditionsBlocks.LIGHT_BLUE_PLASTIC_ROAD, AdditionsBlocks.MAGENTA_PLASTIC_ROAD, AdditionsBlocks.ORANGE_PLASTIC_ROAD, AdditionsBlocks.WHITE_PLASTIC_ROAD,
               //Plastic Fences
-              AdditionsBlock.BLACK_PLASTIC_FENCE, AdditionsBlock.RED_PLASTIC_FENCE, AdditionsBlock.GREEN_PLASTIC_FENCE, AdditionsBlock.BROWN_PLASTIC_FENCE,
-              AdditionsBlock.BLUE_PLASTIC_FENCE, AdditionsBlock.PURPLE_PLASTIC_FENCE, AdditionsBlock.CYAN_PLASTIC_FENCE, AdditionsBlock.LIGHT_GRAY_PLASTIC_FENCE,
-              AdditionsBlock.GRAY_PLASTIC_FENCE, AdditionsBlock.PINK_PLASTIC_FENCE, AdditionsBlock.LIME_PLASTIC_FENCE, AdditionsBlock.YELLOW_PLASTIC_FENCE,
-              AdditionsBlock.LIGHT_BLUE_PLASTIC_FENCE, AdditionsBlock.MAGENTA_PLASTIC_FENCE, AdditionsBlock.ORANGE_PLASTIC_FENCE, AdditionsBlock.WHITE_PLASTIC_FENCE,
+              AdditionsBlocks.BLACK_PLASTIC_FENCE, AdditionsBlocks.RED_PLASTIC_FENCE, AdditionsBlocks.GREEN_PLASTIC_FENCE, AdditionsBlocks.BROWN_PLASTIC_FENCE,
+              AdditionsBlocks.BLUE_PLASTIC_FENCE, AdditionsBlocks.PURPLE_PLASTIC_FENCE, AdditionsBlocks.CYAN_PLASTIC_FENCE, AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE,
+              AdditionsBlocks.GRAY_PLASTIC_FENCE, AdditionsBlocks.PINK_PLASTIC_FENCE, AdditionsBlocks.LIME_PLASTIC_FENCE, AdditionsBlocks.YELLOW_PLASTIC_FENCE,
+              AdditionsBlocks.LIGHT_BLUE_PLASTIC_FENCE, AdditionsBlocks.MAGENTA_PLASTIC_FENCE, AdditionsBlocks.ORANGE_PLASTIC_FENCE, AdditionsBlocks.WHITE_PLASTIC_FENCE,
               //Plastic Fence Gates
-              AdditionsBlock.BLACK_PLASTIC_FENCE_GATE, AdditionsBlock.RED_PLASTIC_FENCE_GATE, AdditionsBlock.GREEN_PLASTIC_FENCE_GATE, AdditionsBlock.BROWN_PLASTIC_FENCE_GATE,
-              AdditionsBlock.BLUE_PLASTIC_FENCE_GATE, AdditionsBlock.PURPLE_PLASTIC_FENCE_GATE, AdditionsBlock.CYAN_PLASTIC_FENCE_GATE,
-              AdditionsBlock.LIGHT_GRAY_PLASTIC_FENCE_GATE, AdditionsBlock.GRAY_PLASTIC_FENCE_GATE, AdditionsBlock.PINK_PLASTIC_FENCE_GATE,
-              AdditionsBlock.LIME_PLASTIC_FENCE_GATE, AdditionsBlock.YELLOW_PLASTIC_FENCE_GATE, AdditionsBlock.LIGHT_BLUE_PLASTIC_FENCE_GATE,
-              AdditionsBlock.MAGENTA_PLASTIC_FENCE_GATE, AdditionsBlock.ORANGE_PLASTIC_FENCE_GATE, AdditionsBlock.WHITE_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.BLACK_PLASTIC_FENCE_GATE, AdditionsBlocks.RED_PLASTIC_FENCE_GATE, AdditionsBlocks.GREEN_PLASTIC_FENCE_GATE, AdditionsBlocks.BROWN_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.BLUE_PLASTIC_FENCE_GATE, AdditionsBlocks.PURPLE_PLASTIC_FENCE_GATE, AdditionsBlocks.CYAN_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE_GATE, AdditionsBlocks.GRAY_PLASTIC_FENCE_GATE, AdditionsBlocks.PINK_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.LIME_PLASTIC_FENCE_GATE, AdditionsBlocks.YELLOW_PLASTIC_FENCE_GATE, AdditionsBlocks.LIGHT_BLUE_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.MAGENTA_PLASTIC_FENCE_GATE, AdditionsBlocks.ORANGE_PLASTIC_FENCE_GATE, AdditionsBlocks.WHITE_PLASTIC_FENCE_GATE,
               //Plastic Slabs
-              AdditionsBlock.BLACK_PLASTIC_SLAB, AdditionsBlock.RED_PLASTIC_SLAB, AdditionsBlock.GREEN_PLASTIC_SLAB, AdditionsBlock.BROWN_PLASTIC_SLAB,
-              AdditionsBlock.BLUE_PLASTIC_SLAB, AdditionsBlock.PURPLE_PLASTIC_SLAB, AdditionsBlock.CYAN_PLASTIC_SLAB, AdditionsBlock.LIGHT_GRAY_PLASTIC_SLAB,
-              AdditionsBlock.GRAY_PLASTIC_SLAB, AdditionsBlock.PINK_PLASTIC_SLAB, AdditionsBlock.LIME_PLASTIC_SLAB, AdditionsBlock.YELLOW_PLASTIC_SLAB,
-              AdditionsBlock.LIGHT_BLUE_PLASTIC_SLAB, AdditionsBlock.MAGENTA_PLASTIC_SLAB, AdditionsBlock.ORANGE_PLASTIC_SLAB, AdditionsBlock.WHITE_PLASTIC_SLAB,
+              AdditionsBlocks.BLACK_PLASTIC_SLAB, AdditionsBlocks.RED_PLASTIC_SLAB, AdditionsBlocks.GREEN_PLASTIC_SLAB, AdditionsBlocks.BROWN_PLASTIC_SLAB,
+              AdditionsBlocks.BLUE_PLASTIC_SLAB, AdditionsBlocks.PURPLE_PLASTIC_SLAB, AdditionsBlocks.CYAN_PLASTIC_SLAB, AdditionsBlocks.LIGHT_GRAY_PLASTIC_SLAB,
+              AdditionsBlocks.GRAY_PLASTIC_SLAB, AdditionsBlocks.PINK_PLASTIC_SLAB, AdditionsBlocks.LIME_PLASTIC_SLAB, AdditionsBlocks.YELLOW_PLASTIC_SLAB,
+              AdditionsBlocks.LIGHT_BLUE_PLASTIC_SLAB, AdditionsBlocks.MAGENTA_PLASTIC_SLAB, AdditionsBlocks.ORANGE_PLASTIC_SLAB, AdditionsBlocks.WHITE_PLASTIC_SLAB,
               //Plastic Fence Gates
-              AdditionsBlock.BLACK_PLASTIC_STAIRS, AdditionsBlock.RED_PLASTIC_STAIRS, AdditionsBlock.GREEN_PLASTIC_STAIRS, AdditionsBlock.BROWN_PLASTIC_STAIRS,
-              AdditionsBlock.BLUE_PLASTIC_STAIRS, AdditionsBlock.PURPLE_PLASTIC_STAIRS, AdditionsBlock.CYAN_PLASTIC_STAIRS, AdditionsBlock.LIGHT_GRAY_PLASTIC_STAIRS,
-              AdditionsBlock.GRAY_PLASTIC_STAIRS, AdditionsBlock.PINK_PLASTIC_STAIRS, AdditionsBlock.LIME_PLASTIC_STAIRS, AdditionsBlock.YELLOW_PLASTIC_STAIRS,
-              AdditionsBlock.LIGHT_BLUE_PLASTIC_STAIRS, AdditionsBlock.MAGENTA_PLASTIC_STAIRS, AdditionsBlock.ORANGE_PLASTIC_STAIRS, AdditionsBlock.WHITE_PLASTIC_STAIRS,
+              AdditionsBlocks.BLACK_PLASTIC_STAIRS, AdditionsBlocks.RED_PLASTIC_STAIRS, AdditionsBlocks.GREEN_PLASTIC_STAIRS, AdditionsBlocks.BROWN_PLASTIC_STAIRS,
+              AdditionsBlocks.BLUE_PLASTIC_STAIRS, AdditionsBlocks.PURPLE_PLASTIC_STAIRS, AdditionsBlocks.CYAN_PLASTIC_STAIRS, AdditionsBlocks.LIGHT_GRAY_PLASTIC_STAIRS,
+              AdditionsBlocks.GRAY_PLASTIC_STAIRS, AdditionsBlocks.PINK_PLASTIC_STAIRS, AdditionsBlocks.LIME_PLASTIC_STAIRS, AdditionsBlocks.YELLOW_PLASTIC_STAIRS,
+              AdditionsBlocks.LIGHT_BLUE_PLASTIC_STAIRS, AdditionsBlocks.MAGENTA_PLASTIC_STAIRS, AdditionsBlocks.ORANGE_PLASTIC_STAIRS, AdditionsBlocks.WHITE_PLASTIC_STAIRS,
               //Glow Panels
-              AdditionsBlock.BLACK_GLOW_PANEL, AdditionsBlock.RED_GLOW_PANEL, AdditionsBlock.GREEN_GLOW_PANEL, AdditionsBlock.BROWN_GLOW_PANEL,
-              AdditionsBlock.BLUE_GLOW_PANEL, AdditionsBlock.PURPLE_GLOW_PANEL, AdditionsBlock.CYAN_GLOW_PANEL, AdditionsBlock.LIGHT_GRAY_GLOW_PANEL,
-              AdditionsBlock.GRAY_GLOW_PANEL, AdditionsBlock.PINK_GLOW_PANEL, AdditionsBlock.LIME_GLOW_PANEL, AdditionsBlock.YELLOW_GLOW_PANEL,
-              AdditionsBlock.LIGHT_BLUE_GLOW_PANEL, AdditionsBlock.MAGENTA_GLOW_PANEL, AdditionsBlock.ORANGE_GLOW_PANEL, AdditionsBlock.WHITE_GLOW_PANEL);
+              AdditionsBlocks.BLACK_GLOW_PANEL, AdditionsBlocks.RED_GLOW_PANEL, AdditionsBlocks.GREEN_GLOW_PANEL, AdditionsBlocks.BROWN_GLOW_PANEL,
+              AdditionsBlocks.BLUE_GLOW_PANEL, AdditionsBlocks.PURPLE_GLOW_PANEL, AdditionsBlocks.CYAN_GLOW_PANEL, AdditionsBlocks.LIGHT_GRAY_GLOW_PANEL,
+              AdditionsBlocks.GRAY_GLOW_PANEL, AdditionsBlocks.PINK_GLOW_PANEL, AdditionsBlocks.LIME_GLOW_PANEL, AdditionsBlocks.YELLOW_GLOW_PANEL,
+              AdditionsBlocks.LIGHT_BLUE_GLOW_PANEL, AdditionsBlocks.MAGENTA_GLOW_PANEL, AdditionsBlocks.ORANGE_GLOW_PANEL, AdditionsBlocks.WHITE_GLOW_PANEL);
 
         ClientRegistrationUtil.registerItemColorHandler(event.getItemColors(), (stack, tintIndex) -> {
                   Item item = stack.getItem();
@@ -113,9 +113,9 @@ public class AdditionsClientRegistration {
                       return MekanismRenderer.getColorARGB(balloon.getColor(), 1);
                   }
                   return -1;
-              }, AdditionsItem.BLACK_BALLOON, AdditionsItem.RED_BALLOON, AdditionsItem.GREEN_BALLOON, AdditionsItem.BROWN_BALLOON, AdditionsItem.BLUE_BALLOON,
-              AdditionsItem.PURPLE_BALLOON, AdditionsItem.CYAN_BALLOON, AdditionsItem.LIGHT_GRAY_BALLOON, AdditionsItem.GRAY_BALLOON, AdditionsItem.PINK_BALLOON,
-              AdditionsItem.LIME_BALLOON, AdditionsItem.YELLOW_BALLOON, AdditionsItem.LIGHT_BLUE_BALLOON, AdditionsItem.MAGENTA_BALLOON, AdditionsItem.ORANGE_BALLOON,
-              AdditionsItem.WHITE_BALLOON);
+              }, AdditionsItems.BLACK_BALLOON, AdditionsItems.RED_BALLOON, AdditionsItems.GREEN_BALLOON, AdditionsItems.BROWN_BALLOON, AdditionsItems.BLUE_BALLOON,
+              AdditionsItems.PURPLE_BALLOON, AdditionsItems.CYAN_BALLOON, AdditionsItems.LIGHT_GRAY_BALLOON, AdditionsItems.GRAY_BALLOON, AdditionsItems.PINK_BALLOON,
+              AdditionsItems.LIME_BALLOON, AdditionsItems.YELLOW_BALLOON, AdditionsItems.LIGHT_BLUE_BALLOON, AdditionsItems.MAGENTA_BALLOON, AdditionsItems.ORANGE_BALLOON,
+              AdditionsItems.WHITE_BALLOON);
     }
 }

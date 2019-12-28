@@ -16,7 +16,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -24,6 +23,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
@@ -60,7 +60,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     private OutputInventorySlot outputSlot;
 
     public TileEntityOredictionificator() {
-        super(MekanismBlock.OREDICTIONIFICATOR);
+        super(MekanismBlocks.OREDICTIONIFICATOR);
         doAutoSync = false;
     }
 

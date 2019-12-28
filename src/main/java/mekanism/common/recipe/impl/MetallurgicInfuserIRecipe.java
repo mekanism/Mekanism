@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -33,12 +33,12 @@ public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlock.METALLURGIC_INFUSER.getName();
+        return MekanismBlocks.METALLURGIC_INFUSER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlock.METALLURGIC_INFUSER.getItemStack();
+        return MekanismBlocks.METALLURGIC_INFUSER.getItemStack();
     }
 }

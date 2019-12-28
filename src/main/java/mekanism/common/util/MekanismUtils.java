@@ -15,8 +15,6 @@ import mekanism.api.Upgrade;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IRedstoneControl;
@@ -27,6 +25,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
 import mekanism.common.item.block.ItemBlockGasTank;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -94,15 +94,15 @@ public final class MekanismUtils {
     public static ItemStack getEmptyGasTank(GasTankTier tier) {
         switch (tier) {
             case BASIC:
-                return MekanismBlock.BASIC_GAS_TANK.getItemStack();
+                return MekanismBlocks.BASIC_GAS_TANK.getItemStack();
             case ADVANCED:
-                return MekanismBlock.ADVANCED_GAS_TANK.getItemStack();
+                return MekanismBlocks.ADVANCED_GAS_TANK.getItemStack();
             case ELITE:
-                return MekanismBlock.ELITE_GAS_TANK.getItemStack();
+                return MekanismBlocks.ELITE_GAS_TANK.getItemStack();
             case ULTIMATE:
-                return MekanismBlock.ULTIMATE_GAS_TANK.getItemStack();
+                return MekanismBlocks.ULTIMATE_GAS_TANK.getItemStack();
             case CREATIVE:
-                return MekanismBlock.CREATIVE_GAS_TANK.getItemStack();
+                return MekanismBlocks.CREATIVE_GAS_TANK.getItemStack();
         }
         return ItemStack.EMPTY;
     }
@@ -365,7 +365,7 @@ public final class MekanismUtils {
         if (world == null) {
             return;
         }
-        BlockBounding boundingBlock = MekanismBlock.BOUNDING_BLOCK.getBlock();
+        BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.getBlock();
         BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null);
         world.setBlockState(boundingLocation, newState, 3);
         if (!world.isRemote()) {
@@ -386,7 +386,7 @@ public final class MekanismUtils {
      * @param orig             - original block position
      */
     public static void makeAdvancedBoundingBlock(IWorld world, BlockPos boundingLocation, BlockPos orig) {
-        BlockBounding boundingBlock = MekanismBlock.ADVANCED_BOUNDING_BLOCK.getBlock();
+        BlockBounding boundingBlock = MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock();
         BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null);
         world.setBlockState(boundingLocation, newState, 3);
         if (!world.isRemote()) {

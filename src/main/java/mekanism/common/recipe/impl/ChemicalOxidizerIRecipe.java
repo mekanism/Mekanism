@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -33,12 +33,12 @@ public class ChemicalOxidizerIRecipe extends ItemStackToGasRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlock.CHEMICAL_OXIDIZER.getName();
+        return MekanismBlocks.CHEMICAL_OXIDIZER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlock.CHEMICAL_OXIDIZER.getItemStack();
+        return MekanismBlocks.CHEMICAL_OXIDIZER.getItemStack();
     }
 }

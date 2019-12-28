@@ -8,7 +8,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.content.tank.SynchronizedTankData;
@@ -16,6 +15,7 @@ import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
@@ -46,7 +46,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     public float prevScale;
 
     public TileEntityDynamicTank() {
-        this(MekanismBlock.DYNAMIC_TANK);
+        this(MekanismBlocks.DYNAMIC_TANK);
     }
 
     public TileEntityDynamicTank(IBlockProvider blockProvider) {

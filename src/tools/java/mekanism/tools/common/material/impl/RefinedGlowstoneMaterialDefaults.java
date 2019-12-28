@@ -1,7 +1,7 @@
 package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.common.MekanismItem;
+import mekanism.common.registries.MekanismItems;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.crafting.Ingredient;
@@ -148,7 +148,7 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
     @Nonnull
     @Override
     public Ingredient getCommonRepairMaterial() {
-        return Ingredient.fromItems(MekanismItem.REFINED_GLOWSTONE_INGOT);
+        return Ingredient.fromItems(MekanismItems.REFINED_GLOWSTONE_INGOT);
     }
 
     @Nonnull

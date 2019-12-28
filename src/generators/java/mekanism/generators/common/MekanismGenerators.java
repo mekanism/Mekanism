@@ -3,16 +3,18 @@ package mekanism.generators.common;
 import mekanism.api.MekanismAPI;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismGases;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
-import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
 import mekanism.generators.common.network.PacketGeneratorsGuiButtonPress;
-import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
+import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsContainerTypes;
+import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -44,8 +46,8 @@ public class MekanismGenerators implements IModule {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigReload);
 
-        GeneratorsItem.ITEMS.register(modEventBus);
-        GeneratorsBlock.BLOCKS.register(modEventBus);
+        GeneratorsItems.ITEMS.register(modEventBus);
+        GeneratorsBlocks.BLOCKS.register(modEventBus);
         GeneratorsContainerTypes.CONTAINER_TYPES.register(modEventBus);
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
 
@@ -100,7 +102,7 @@ public class MekanismGenerators implements IModule {
 
     private void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event) {
         // Mekanism Generators multiblock structures
-        MekanismAPI.addBoxBlacklist(GeneratorsBlock.ADVANCED_SOLAR_GENERATOR);
-        MekanismAPI.addBoxBlacklist(GeneratorsBlock.WIND_GENERATOR);
+        MekanismAPI.addBoxBlacklist(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR);
+        MekanismAPI.addBoxBlacklist(GeneratorsBlocks.WIND_GENERATOR);
     }
 }

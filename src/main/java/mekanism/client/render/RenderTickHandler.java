@@ -7,7 +7,6 @@ import mekanism.api.Pos3D;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.ColourRGBA;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismGases;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator;
@@ -15,7 +14,8 @@ import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.particle.MekanismParticleType;
+import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.block.Block;
@@ -133,16 +133,16 @@ public class RenderTickHandler {
                     mRight = mRight.translate(rRight);
 
                     Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.getMotion()));
-                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 
                     v = playerPos.translate(vRight).translate(new Pos3D(p.getMotion()));
-                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 
                     v = playerPos.translate(vCenter).translate(new Pos3D(p.getMotion()));
-                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
-                    world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
                 }
 
                 // Traverse a copy of gasmask state and do animations
@@ -159,7 +159,7 @@ public class RenderTickHandler {
                         Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.getMotion()));
 
                         Pos3D v = playerPos.translate(vec);
-                        world.addParticle((BasicParticleType) MekanismParticleType.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+                        world.addParticle((BasicParticleType) MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                     }
                 }
 
@@ -192,7 +192,7 @@ public class RenderTickHandler {
                                 }
                                 Pos3D mergedVec = playerPos.translate(flameVec);
                                 //TODO: The particle is a bit offset
-                                world.addParticle((BasicParticleType) MekanismParticleType.JETPACK_FLAME.getParticleType(),
+                                world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
                                       mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
                             }
                         }

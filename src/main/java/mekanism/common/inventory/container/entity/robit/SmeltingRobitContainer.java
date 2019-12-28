@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.entity.robit;
 
 import javax.annotation.Nonnull;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.network.PacketBuffer;

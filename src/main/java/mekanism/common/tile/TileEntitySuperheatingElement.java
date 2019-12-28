@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.ITickableTileEntity;
 
@@ -12,7 +12,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     public boolean prevHot;
 
     public TileEntitySuperheatingElement() {
-        super(MekanismBlock.SUPERHEATING_ELEMENT);
+        super(MekanismBlocks.SUPERHEATING_ELEMENT);
     }
 
     @Override

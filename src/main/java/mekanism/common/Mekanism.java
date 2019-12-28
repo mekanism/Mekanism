@@ -28,22 +28,28 @@ import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
-import mekanism.common.entity.MekanismEntityTypes;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
-import mekanism.common.inventory.container.MekanismContainerTypes;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
-import mekanism.common.particle.MekanismParticleType;
-import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.RecipeCacheManager;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismEntityTypes;
+import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismInfuseTypes;
+import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.registries.MekanismSounds;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tags.MekanismTagManager;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
@@ -79,8 +85,6 @@ public class Mekanism {
 
     public static final String MODID = MekanismAPI.MEKANISM_MODID;
     public static final String MOD_NAME = "Mekanism";
-    //TODO: Do this somehow better for auto colored + with space?
-    // maybe make a lang string entry for it?
     public static final String LOG_TAG = '[' + MOD_NAME + ']';
     public static final PlayerState playerState = new PlayerState();
     public static final Set<UUID> freeRunnerOn = new HashSet<>();
@@ -183,14 +187,14 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
 
-        MekanismItem.ITEMS.register(modEventBus);
-        MekanismBlock.BLOCKS.register(modEventBus);
+        MekanismItems.ITEMS.register(modEventBus);
+        MekanismBlocks.BLOCKS.register(modEventBus);
         MekanismFluids.FLUIDS.register(modEventBus);
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MekanismEntityTypes.ENTITY_TYPES.register(modEventBus);
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MekanismSounds.SOUND_EVENTS.register(modEventBus);
-        MekanismParticleType.PARTICLE_TYPES.register(modEventBus);
+        MekanismParticleTypes.PARTICLE_TYPES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         //Delay adding the deferred registers for infuse types and gases until after their registries are actually assigned
         modEventBus.addListener(EventPriority.LOW, this::addCustomRegistryDeferredRegisters);
@@ -390,15 +394,15 @@ public class Mekanism {
     }
 
     private void onBlacklistUpdate(BoxBlacklistEvent event) {
-        event.blacklist(MekanismBlock.CARDBOARD_BOX);
+        event.blacklist(MekanismBlocks.CARDBOARD_BOX);
 
         // Mekanism multiblock structures
-        event.blacklist(MekanismBlock.BOUNDING_BLOCK);
-        event.blacklist(MekanismBlock.ADVANCED_BOUNDING_BLOCK);
-        event.blacklist(MekanismBlock.SECURITY_DESK);
-        event.blacklist(MekanismBlock.DIGITAL_MINER);
-        event.blacklist(MekanismBlock.SEISMIC_VIBRATOR);
-        event.blacklist(MekanismBlock.SOLAR_NEUTRON_ACTIVATOR);
+        event.blacklist(MekanismBlocks.BOUNDING_BLOCK);
+        event.blacklist(MekanismBlocks.ADVANCED_BOUNDING_BLOCK);
+        event.blacklist(MekanismBlocks.SECURITY_DESK);
+        event.blacklist(MekanismBlocks.DIGITAL_MINER);
+        event.blacklist(MekanismBlocks.SEISMIC_VIBRATOR);
+        event.blacklist(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
 
         // Minecraft unobtainable
         event.blacklist(Blocks.BEDROCK);

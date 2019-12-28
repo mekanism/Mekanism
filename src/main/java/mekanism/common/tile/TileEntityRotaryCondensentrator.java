@@ -22,7 +22,6 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -36,6 +35,7 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.FluidContainerUtils;
@@ -89,7 +89,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     private EnergyInventorySlot energySlot;
 
     public TileEntityRotaryCondensentrator() {
-        super(MekanismBlock.ROTARY_CONDENSENTRATOR);
+        super(MekanismBlocks.ROTARY_CONDENSENTRATOR);
         gasInputHandler = InputHelper.getInputHandler(gasTank);
         fluidInputHandler = InputHelper.getInputHandler(fluidTank, 0);
         gasOutputHandler = OutputHelper.getOutputHandler(gasTank);

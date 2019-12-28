@@ -2,8 +2,8 @@ package mekanism.client;
 
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
-import mekanism.common.MekanismSounds;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;

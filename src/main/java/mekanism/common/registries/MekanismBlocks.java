@@ -1,10 +1,12 @@
-package mekanism.common;
+package mekanism.common.registries;
 
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.block.FactoryType;
+import mekanism.common.Mekanism;
+import mekanism.common.Resource;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockEnergyCube;
@@ -147,7 +149,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 
 //TODO: Ensure all IBlockMekanism's set the required information
-public class MekanismBlock {
+public class MekanismBlocks {
 
     public static BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);
 

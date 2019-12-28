@@ -2,8 +2,8 @@ package mekanism.common.tile;
 
 import java.util.List;
 import java.util.Random;
-import mekanism.common.MekanismBlock;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.LivingEntity;
@@ -21,7 +21,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
     public Random random = new Random();
 
     public TileEntityChargepad() {
-        super(MekanismBlock.CHARGEPAD);
+        super(MekanismBlocks.CHARGEPAD);
     }
 
     @Override

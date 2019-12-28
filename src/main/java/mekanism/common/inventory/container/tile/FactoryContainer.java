@@ -1,6 +1,6 @@
 package mekanism.common.inventory.container.tile;
 
-import mekanism.common.inventory.container.MekanismContainerTypes;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;

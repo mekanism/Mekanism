@@ -4,10 +4,10 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
-import mekanism.common.MekanismBlock;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.item.ItemStack;
@@ -24,7 +24,7 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
     public float prevLidAngle;
 
     public TileEntityPersonalChest() {
-        super(MekanismBlock.PERSONAL_CHEST);
+        super(MekanismBlocks.PERSONAL_CHEST);
     }
 
     @Nonnull

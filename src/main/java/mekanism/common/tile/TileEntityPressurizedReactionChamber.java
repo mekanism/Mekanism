@@ -23,7 +23,6 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
@@ -34,6 +33,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -80,7 +80,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     private EnergyInventorySlot energySlot;
 
     public TileEntityPressurizedReactionChamber() {
-        super(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, 100, Mekanism.rl("gui/gui_pressurized_reaction_chamber.png"));
+        super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 100, Mekanism.rl("gui/gui_pressurized_reaction_chamber.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

@@ -12,12 +12,12 @@ import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -28,7 +28,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage {
 
     public TileEntityTurbineCasing() {
-        this(GeneratorsBlock.TURBINE_CASING);
+        this(GeneratorsBlocks.TURBINE_CASING);
     }
 
     public TileEntityTurbineCasing(IBlockProvider blockProvider) {

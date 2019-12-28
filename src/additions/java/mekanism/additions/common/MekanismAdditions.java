@@ -4,7 +4,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
-import mekanism.additions.common.entity.AdditionsEntityType;
+import mekanism.additions.common.registries.AdditionsBlocks;
+import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
@@ -58,9 +60,9 @@ public class MekanismAdditions implements IModule {
         modEventBus.addListener(this::serverStopping);
         modEventBus.addListener(this::onConfigReload);
 
-        AdditionsItem.ITEMS.register(modEventBus);
-        AdditionsBlock.BLOCKS.register(modEventBus);
-        AdditionsEntityType.ENTITY_TYPES.register(modEventBus);
+        AdditionsItems.ITEMS.register(modEventBus);
+        AdditionsBlocks.BLOCKS.register(modEventBus);
+        AdditionsEntityTypes.ENTITY_TYPES.register(modEventBus);
 
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
@@ -92,7 +94,7 @@ public class MekanismAdditions implements IModule {
         }
         //Add baby skeleton to spawn table
         if (MekanismAdditionsConfig.additions.spawnBabySkeletons.get()) {
-            SpawnListEntry spawnListEntry = new SpawnListEntry(AdditionsEntityType.BABY_SKELETON.get(), 40, 1, 3);
+            SpawnListEntry spawnListEntry = new SpawnListEntry(AdditionsEntityTypes.BABY_SKELETON.get(), 40, 1, 3);
             for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
                 List<SpawnListEntry> monsterSpawns = biome.getSpawns(EntityClassification.MONSTER);
                 if (!monsterSpawns.isEmpty()) {
@@ -102,7 +104,7 @@ public class MekanismAdditions implements IModule {
         }
 
         //TODO: Remove this when we can, for now just lazy add the dispense behavior
-        DispenserBlock.registerDispenseBehavior(AdditionsItem.BABY_SKELETON_SPAWN_EGG, new DefaultDispenseItemBehavior() {
+        DispenserBlock.registerDispenseBehavior(AdditionsItems.BABY_SKELETON_SPAWN_EGG, new DefaultDispenseItemBehavior() {
             @Nonnull
             @Override
             public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {

@@ -1,7 +1,6 @@
 package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelSecurityDesk;
 import mekanism.client.render.item.ItemLayerWrapper;

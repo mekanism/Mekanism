@@ -1,12 +1,15 @@
-package mekanism.additions.common.entity;
+package mekanism.additions.common.registries;
 
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.entity.EntityBabySkeleton;
+import mekanism.additions.common.entity.EntityBalloon;
+import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.common.registration.impl.EntityTypeDeferredRegister;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 
-public class AdditionsEntityType {
+public class AdditionsEntityTypes {
 
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(MekanismAdditions.MODID);
 

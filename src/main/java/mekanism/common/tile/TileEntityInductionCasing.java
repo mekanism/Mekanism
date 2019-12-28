@@ -8,7 +8,6 @@ import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
@@ -16,6 +15,7 @@ import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -30,7 +30,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
 
     public TileEntityInductionCasing() {
-        this(MekanismBlock.INDUCTION_CASING);
+        this(MekanismBlocks.INDUCTION_CASING);
     }
 
     public TileEntityInductionCasing(IBlockProvider blockProvider) {

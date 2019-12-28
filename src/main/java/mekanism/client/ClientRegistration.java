@@ -120,12 +120,12 @@ import mekanism.client.render.transmitter.RenderPressurizedTube;
 import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismFluids;
-import mekanism.common.entity.MekanismEntityTypes;
-import mekanism.common.inventory.container.MekanismContainerTypes;
-import mekanism.common.particle.MekanismParticleType;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismEntityTypes;
+import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -292,64 +292,64 @@ public class ClientRegistration {
         //Block render layers
         //TODO: Re-evaluate the different layers things are set to, as most things are set to cutout, but I believe a good number of these
         // can be solid (so not listed here at all) and some maybe translucent
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.STRUCTURAL_GLASS, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.COMBINER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CRUSHER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELECTRIC_PUMP, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELECTROLYTIC_SEPARATOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ENERGIZED_SMELTER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ENRICHMENT_CHAMBER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.FLUIDIC_PLENISHER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.FORMULAIC_ASSEMBLICATOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.FUELWOOD_HEATER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.LASER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.LASER_AMPLIFIER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.LASER_TRACTOR_BEAM, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.LOGISTICAL_SORTER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.METALLURGIC_INFUSER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.OREDICTIONIFICATOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.OSMIUM_COMPRESSOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.PERSONAL_CHEST, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.PRECISION_SAWMILL, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.PRESSURIZED_REACTION_CHAMBER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.PURIFICATION_CHAMBER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ROTARY_CONDENSENTRATOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.STRUCTURAL_GLASS, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.COMBINER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.CRUSHER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELECTRIC_PUMP, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELECTROLYTIC_SEPARATOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ENERGIZED_SMELTER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ENRICHMENT_CHAMBER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.FLUIDIC_PLENISHER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.FUELWOOD_HEATER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LASER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LASER_AMPLIFIER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LASER_TRACTOR_BEAM, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LOGISTICAL_SORTER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.METALLURGIC_INFUSER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.OREDICTIONIFICATOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.OSMIUM_COMPRESSOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.PERSONAL_CHEST, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.PRECISION_SAWMILL, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.PURIFICATION_CHAMBER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ROTARY_CONDENSENTRATOR, RenderType.func_228643_e_());
         //Fluid Tanks
         //TODO: Remove??
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_FLUID_TANK, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_FLUID_TANK, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_FLUID_TANK, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_FLUID_TANK, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.CREATIVE_FLUID_TANK, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_FLUID_TANK, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_FLUID_TANK, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_FLUID_TANK, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_FLUID_TANK, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.CREATIVE_FLUID_TANK, RenderType.func_228643_e_());
         //Transmitters
         //TODO: Is this even the proper way to convert the canRenderInLayer the transmitters used to use
         //Logistical transporters
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.RESTRICTIVE_TRANSPORTER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.DIVERSION_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.RESTRICTIVE_TRANSPORTER, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.DIVERSION_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
         //Mechanical Pipes
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_MECHANICAL_PIPE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_MECHANICAL_PIPE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_MECHANICAL_PIPE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_MECHANICAL_PIPE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_MECHANICAL_PIPE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_MECHANICAL_PIPE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_MECHANICAL_PIPE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_MECHANICAL_PIPE, RenderType.func_228643_e_());
         //Pressurized Tubes
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_PRESSURIZED_TUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_PRESSURIZED_TUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_PRESSURIZED_TUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_PRESSURIZED_TUBE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_PRESSURIZED_TUBE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_PRESSURIZED_TUBE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_PRESSURIZED_TUBE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE, RenderType.func_228643_e_());
         //Universal Cables
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_UNIVERSAL_CABLE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_UNIVERSAL_CABLE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_UNIVERSAL_CABLE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_UNIVERSAL_CABLE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_UNIVERSAL_CABLE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_UNIVERSAL_CABLE, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, RenderType.func_228643_e_());
         //Thermodynamic Conductors
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.BASIC_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ADVANCED_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ELITE_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlock.ULTIMATE_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
 
         //Fluids
         ClientRegistrationUtil.setRenderLayer(MekanismFluids.HYDROGEN, RenderType.func_228645_f_());
@@ -487,10 +487,10 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.LASER.getParticleType(), LaserParticle.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.JETPACK_FLAME.getParticleType(), JetpackFlameParticle.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.JETPACK_SMOKE.getParticleType(), JetpackSmokeParticle.Factory::new);
-        Minecraft.getInstance().particles.registerFactory(MekanismParticleType.SCUBA_BUBBLE.getParticleType(), ScubaBubbleParticle.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MekanismParticleTypes.LASER.getParticleType(), LaserParticle.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MekanismParticleTypes.JETPACK_FLAME.getParticleType(), JetpackFlameParticle.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), JetpackSmokeParticle.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), ScubaBubbleParticle.Factory::new);
     }
 
     @SubscribeEvent
@@ -512,7 +512,7 @@ public class ClientRegistration {
                   return -1;
               },
               //Fluid Tank
-              MekanismBlock.BASIC_FLUID_TANK, MekanismBlock.ADVANCED_FLUID_TANK, MekanismBlock.ELITE_FLUID_TANK, MekanismBlock.ULTIMATE_FLUID_TANK,
-              MekanismBlock.CREATIVE_FLUID_TANK);
+              MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
+              MekanismBlocks.CREATIVE_FLUID_TANK);
     }
 }

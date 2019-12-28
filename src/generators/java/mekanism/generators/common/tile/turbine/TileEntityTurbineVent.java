@@ -8,7 +8,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -24,7 +24,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     public IFluidTank fakeInfo = new FluidTank(1000);
 
     public TileEntityTurbineVent() {
-        super(GeneratorsBlock.TURBINE_VENT);
+        super(GeneratorsBlocks.TURBINE_VENT);
     }
 
     @Override

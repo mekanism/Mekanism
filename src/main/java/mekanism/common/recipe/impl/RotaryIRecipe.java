@@ -5,10 +5,10 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.common.MekanismBlock;
-import mekanism.common.recipe.MekanismRecipeSerializers;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -44,13 +44,13 @@ public class RotaryIRecipe extends RotaryRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlock.ROTARY_CONDENSENTRATOR.getName();
+        return MekanismBlocks.ROTARY_CONDENSENTRATOR.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlock.ROTARY_CONDENSENTRATOR.getItemStack();
+        return MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack();
     }
 
     public static class Factory implements RotaryRecipeSerializer.IFactory<RotaryRecipe> {

@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.MekanismBlock;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -24,7 +24,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
     public boolean attempted;
 
     public TileEntityThermalEvaporationBlock() {
-        this(MekanismBlock.THERMAL_EVAPORATION_BLOCK);
+        this(MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
     }
 
     public TileEntityThermalEvaporationBlock(IBlockProvider provider) {

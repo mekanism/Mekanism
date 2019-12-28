@@ -5,7 +5,7 @@ import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;

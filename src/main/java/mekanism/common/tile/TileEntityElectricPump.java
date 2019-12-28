@@ -14,8 +14,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
-import mekanism.common.MekanismBlock;
-import mekanism.common.MekanismFluids;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
@@ -29,6 +27,8 @@ import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
@@ -93,7 +93,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     private EnergyInventorySlot energySlot;
 
     public TileEntityElectricPump() {
-        super(MekanismBlock.ELECTRIC_PUMP);
+        super(MekanismBlocks.ELECTRIC_PUMP);
     }
 
     @Override

@@ -9,8 +9,8 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.DynamicTankContainer;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 

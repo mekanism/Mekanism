@@ -1,9 +1,10 @@
-package mekanism.tools.common;
+package mekanism.tools.common.registries;
 
 import java.util.Locale;
 import java.util.function.Function;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.item.ItemMekanismArmor;
 import mekanism.tools.common.item.ItemMekanismAxe;
@@ -17,7 +18,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
 
-public class ToolsItem {
+public class ToolsItems {
 
     public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismTools.MODID);
 

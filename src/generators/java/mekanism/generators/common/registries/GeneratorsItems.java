@@ -1,12 +1,13 @@
-package mekanism.generators.common;
+package mekanism.generators.common.registries;
 
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.item.ItemTurbineBlade;
 import net.minecraft.item.Item;
 
-public class GeneratorsItem {
+public class GeneratorsItems {
 
     public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismGenerators.MODID);
 

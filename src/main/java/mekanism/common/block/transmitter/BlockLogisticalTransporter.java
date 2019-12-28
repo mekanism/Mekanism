@@ -2,8 +2,8 @@ package mekanism.common.block.transmitter;
 
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.TransporterTier;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import net.minecraft.tileentity.TileEntityType;
 

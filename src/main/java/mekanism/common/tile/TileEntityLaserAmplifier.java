@@ -12,13 +12,13 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -52,7 +52,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     public RedstoneOutput outputMode = RedstoneOutput.OFF;
 
     public TileEntityLaserAmplifier() {
-        super(MekanismBlock.LASER_AMPLIFIER);
+        super(MekanismBlocks.LASER_AMPLIFIER);
     }
 
     @Override

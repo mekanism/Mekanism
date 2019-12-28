@@ -2,11 +2,11 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
@@ -27,7 +27,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
     private int currentRedstoneLevel;
 
     public TileEntityDynamicValve() {
-        super(MekanismBlock.DYNAMIC_VALVE);
+        super(MekanismBlocks.DYNAMIC_VALVE);
         fluidTank = new DynamicFluidTank(this);
     }
 

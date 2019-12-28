@@ -555,7 +555,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             refreshConnections();
             notifyTileChange();
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.REDSTONE_SENSITIVITY.translateColored(EnumColor.GRAY,EnumColor.INDIGO, OnOff.of(redstoneReactive))));
+                  MekanismLang.REDSTONE_SENSITIVITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, OnOff.of(redstoneReactive))));
         }
         return ActionResultType.SUCCESS;
     }

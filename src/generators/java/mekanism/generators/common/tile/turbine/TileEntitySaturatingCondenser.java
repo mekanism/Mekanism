@@ -1,12 +1,12 @@
 package mekanism.generators.common.tile.turbine;
 
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.generators.common.GeneratorsBlock;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 
 public class TileEntitySaturatingCondenser extends TileEntityMekanism {
 
     public TileEntitySaturatingCondenser() {
-        super(GeneratorsBlock.SATURATING_CONDENSER);
+        super(GeneratorsBlocks.SATURATING_CONDENSER);
     }
 
     @Override

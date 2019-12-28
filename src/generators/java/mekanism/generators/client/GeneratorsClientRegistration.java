@@ -29,10 +29,10 @@ import mekanism.generators.client.render.item.RenderBioGeneratorItem;
 import mekanism.generators.client.render.item.RenderGasGeneratorItem;
 import mekanism.generators.client.render.item.RenderHeatGeneratorItem;
 import mekanism.generators.client.render.item.RenderWindGeneratorItem;
-import mekanism.generators.common.GeneratorsBlock;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.inventory.container.GeneratorsContainerTypes;
-import mekanism.generators.common.tile.GeneratorsTileEntityTypes;
+import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsContainerTypes;
+import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
@@ -62,9 +62,9 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR, new RenderWindGenerator());
         //Block render layers
         //TODO: Re-evaluate the different layers things are set to
-        ClientRegistrationUtil.setRenderLayer(GeneratorsBlock.BIO_GENERATOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(GeneratorsBlock.LASER_FOCUS_MATRIX, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(GeneratorsBlock.REACTOR_GLASS, RenderType.func_228645_f_());
+        ClientRegistrationUtil.setRenderLayer(GeneratorsBlocks.BIO_GENERATOR, RenderType.func_228643_e_());
+        ClientRegistrationUtil.setRenderLayer(GeneratorsBlocks.LASER_FOCUS_MATRIX, RenderType.func_228645_f_());
+        ClientRegistrationUtil.setRenderLayer(GeneratorsBlocks.REACTOR_GLASS, RenderType.func_228645_f_());
     }
 
     @SubscribeEvent

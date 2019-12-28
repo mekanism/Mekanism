@@ -4,9 +4,9 @@ import mekanism.api.Coord4D;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -22,7 +22,7 @@ public class TileEntityLaser extends TileEntityMekanism {
     public double diggingProgress;
 
     public TileEntityLaser() {
-        super(MekanismBlock.LASER);
+        super(MekanismBlocks.LASER);
     }
 
     @Override

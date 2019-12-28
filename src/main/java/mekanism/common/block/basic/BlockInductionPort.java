@@ -11,8 +11,8 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.InductionMatrixContainer;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityInductionPort;
-import mekanism.common.tile.base.MekanismTileEntityTypes;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 

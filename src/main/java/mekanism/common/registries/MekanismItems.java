@@ -1,7 +1,9 @@
-package mekanism.common;
+package mekanism.common.registries;
 
 import java.util.Locale;
 import mekanism.api.Upgrade;
+import mekanism.common.Mekanism;
+import mekanism.common.Resource;
 import mekanism.common.item.ItemAlloy;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -33,7 +35,7 @@ import mekanism.common.tier.AlloyTier;
 import mekanism.common.tier.BaseTier;
 import net.minecraft.item.Item;
 
-public class MekanismItem {
+public class MekanismItems {
 
     public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
 

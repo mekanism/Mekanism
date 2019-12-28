@@ -25,7 +25,6 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.capabilities.Capabilities;
@@ -46,6 +45,7 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketTileEntity;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
@@ -140,7 +140,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     private EnergyInventorySlot energySlot;
 
     public TileEntityDigitalMiner() {
-        super(MekanismBlock.DIGITAL_MINER);
+        super(MekanismBlocks.DIGITAL_MINER);
         radius = 10;
     }
 

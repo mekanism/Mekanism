@@ -3,6 +3,7 @@ package mekanism.additions.common.entity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
+import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.TNTEntity;
@@ -47,7 +48,7 @@ public class EntityObsidianTNT extends TNTEntity {
     @Nonnull
     @Override
     public EntityType<?> getType() {
-        return AdditionsEntityType.OBSIDIAN_TNT.getEntityType();
+        return AdditionsEntityTypes.OBSIDIAN_TNT.getEntityType();
     }
 
     @Nonnull
