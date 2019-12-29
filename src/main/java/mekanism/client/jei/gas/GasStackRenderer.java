@@ -1,5 +1,6 @@
-/*package mekanism.client.jei.gas;
+package mekanism.client.jei.gas;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,19 +10,18 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextComponentUtil;
-import mekanism.common.util.text.Translation;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
 import org.lwjgl.opengl.GL11;
@@ -56,26 +56,13 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         this.overlay = overlay;
     }
 
-    private static TextureAtlasSprite getStillGasSprite(@Nonnull Gas gas) {
-        AtlasTexture textureMapBlocks = Minecraft.getInstance().getTextureMap();
-        ResourceLocation gasStill = gas.getIcon();
-        TextureAtlasSprite gasStillSprite = null;
-        if (gasStill != null) {
-            gasStillSprite = textureMapBlocks.getSprite(gasStill);
-        }
-        if (gasStillSprite == null) {
-            gasStillSprite = MekanismRenderer.missingIcon;
-        }
-        return gasStillSprite;
-    }
-
     private static void drawTextureWithMasking(double xCoord, double yCoord, TextureAtlasSprite textureSprite, int maskTop, int maskRight, double zLevel) {
-        double uMin = textureSprite.getMinU();
-        double uMax = textureSprite.getMaxU();
-        double vMin = textureSprite.getMinV();
-        double vMax = textureSprite.getMaxV();
-        uMax = uMax - (maskRight / 16.0 * (uMax - uMin));
-        vMax = vMax - (maskTop / 16.0 * (vMax - vMin));
+        float uMin = textureSprite.getMinU();
+        float uMax = textureSprite.getMaxU();
+        float vMin = textureSprite.getMinV();
+        float vMax = textureSprite.getMaxV();
+        uMax = (float) (uMax - (maskRight / 16.0 * (uMax - uMin)));
+        vMax = (float) (vMax - (maskTop / 16.0 * (vMax - vMin)));
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuffer();
@@ -117,7 +104,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
             scaledAmount = height;
         }
         Gas gas = gasStack.getType();
-        drawTiledSprite(xPosition, yPosition, width, height, gas, scaledAmount, getStillGasSprite(gas));
+        drawTiledSprite(xPosition, yPosition, width, height, gas, scaledAmount, MekanismRenderer.getSprite(gas.getIcon()));
     }
 
     private void drawTiledSprite(int xPosition, int yPosition, int tiledWidth, int tiledHeight, @Nonnull Gas gas, int scaledAmount, TextureAtlasSprite sprite) {
@@ -178,4 +165,4 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         SHOW_AMOUNT_AND_CAPACITY,
         ITEM_LIST
     }
-}*/
+}

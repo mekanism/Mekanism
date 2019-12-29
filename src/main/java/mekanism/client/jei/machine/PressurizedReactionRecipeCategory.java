@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +17,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.MekanismBlock;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
@@ -33,7 +33,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
 
     public PressurizedReactionRecipeCategory(IGuiHelper helper) {
         //TODO: Had a lang key for shorter name
-        super(helper, "mekanism:gui/nei/pressurized_reaction_chamber.png", MekanismBlock.PRESSURIZED_REACTION_CHAMBER, ProgressBar.MEDIUM, 3, 11, 170, 68);
+        super(helper, "mekanism:gui/nei/pressurized_reaction_chamber.png", MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, ProgressBar.MEDIUM, 3, 11, 170, 68);
     }
 
     @Override
@@ -85,4 +85,4 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, recipe.getInputGas().getRepresentations(), true);
         initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, outputDefinition.getRight(), true);
     }
-}*/
+}

@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import mekanism.api.gas.GasStack;
@@ -12,7 +12,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.MekanismBlock;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -23,7 +23,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ItemStackToGasRecipeCategory extends BaseRecipeCategory<ItemStackToGasRecipe> {
 
     public ItemStackToGasRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/blank.png", MekanismBlock.CHEMICAL_OXIDIZER, ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
+        super(helper, "mekanism:gui/blank.png", MekanismBlocks.CHEMICAL_OXIDIZER, ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
     }
 
     @Override
@@ -57,4 +57,4 @@ public class ItemStackToGasRecipeCategory extends BaseRecipeCategory<ItemStackTo
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getOutputDefinition(), true);
     }
-}*/
+}

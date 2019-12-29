@@ -1,4 +1,4 @@
-/*package mekanism.client.jei;
+package mekanism.client.jei;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,7 +32,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
-    private static final GuiDummy gui = new GuiDummy();
+    private static final AbstractGui gui = new AbstractGui() {
+    };
 
     private IGuiHelper guiHelper;
     protected ResourceLocation guiLocation;
@@ -101,7 +102,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height) {
-        gui.blit(x, y, icon, width, height);
+        AbstractGui.blit(x, y, gui.getBlitOffset(), width, height, icon);
     }
 
     @Override
@@ -173,13 +174,4 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         group.init(slot, input, renderer, x, y, width, height, 0, 0);
         group.set(slot, stack);
     }
-
-    public static class GuiDummy extends AbstractGui {
-
-        public void blit(int x, int y, TextureAtlasSprite sprite, int width, int height) {
-            //Have this helper method as blitOffset is protected
-            //TODO: 1.15 there is a getter, use it directly instead
-            blit(x, y, getBlitOffset(), width, height, sprite);
-        }
-    }
-}*/
+}

@@ -1,11 +1,11 @@
-/*package mekanism.client.jei;
+package mekanism.client.jei;
 
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.gui.GuiEnergizedSmelter;
 import mekanism.client.gui.GuiRotaryCondensentrator;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -25,7 +25,7 @@ public class GuiHandlerRegistryHelper {
     }
 
     public static void registerSmelter(IGuiHandlerRegistration registry) {
-        IBlockProvider mekanismBlock = MekanismBlock.ENERGIZED_SMELTER;
+        IBlockProvider mekanismBlock = MekanismBlocks.ENERGIZED_SMELTER;
         if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added
             registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, mekanismBlock.getRegistryName());
         } else if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasAddedRecipe()) {// Added but not removed
@@ -35,4 +35,4 @@ public class GuiHandlerRegistryHelper {
             registry.addRecipeClickArea(GuiEnergizedSmelter.class, 79, 40, 24, 7, VanillaRecipeCategoryUid.FURNACE);
         }
     }
-}*/
+}

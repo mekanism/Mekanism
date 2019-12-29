@@ -1,4 +1,4 @@
-/*package mekanism.tools.client.jei;
+package mekanism.tools.client.jei;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.MekanismTools;
-import mekanism.tools.common.ToolsItem;
+import mekanism.tools.common.registries.ToolsItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -30,7 +30,7 @@ public class ToolsJEI implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registry) {
         IVanillaRecipeFactory factory = registry.getVanillaRecipeFactory();
         //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
-        for (IItemProvider toolsItem : ToolsItem.ITEMS.getAllItems()) {
+        for (IItemProvider toolsItem : ToolsItems.ITEMS.getAllItems()) {
             //Based off of how JEI adds for Vanilla items: https://github.com/mezz/JustEnoughItems/blob/1.14/src/main/java/mezz/jei/plugins/vanilla/anvil/AnvilRecipeMaker.java#L185
             ItemStack damaged2 = toolsItem.getItemStack();
             damaged2.setDamage(damaged2.getMaxDamage() * 3 / 4);
@@ -53,4 +53,4 @@ public class ToolsJEI implements IModPlugin {
             }
         }
     }
-}*/
+}

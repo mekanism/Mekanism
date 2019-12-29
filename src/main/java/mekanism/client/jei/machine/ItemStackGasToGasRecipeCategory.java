@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,7 +8,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.MekanismBlock;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -21,7 +21,7 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
 
     public ItemStackGasToGasRecipeCategory(IGuiHelper helper) {
         //TODO: previously had a lang entry for a shorter path
-        super(helper, "mekanism:gui/nei/chemical_dissolution_chamber.png", MekanismBlock.CHEMICAL_DISSOLUTION_CHAMBER, null, 3, 3, 170, 79);
+        super(helper, "mekanism:gui/nei/chemical_dissolution_chamber.png", MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, null, 3, 3, 170, 79);
     }
 
     @Override
@@ -59,4 +59,4 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
         initGas(gasStacks, 0, true, 6 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);
         initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getOutputDefinition(), true);
     }
-}*/
+}

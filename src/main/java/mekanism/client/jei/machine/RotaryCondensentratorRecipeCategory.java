@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,8 +8,8 @@ import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
-import mekanism.common.util.text.Translation;
+import mekanism.common.MekanismLang;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
@@ -27,7 +27,7 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         //We override the things that reference the provider
-        super(helper, "mekanism:gui/nei/rotary_condensentrator.png", MekanismBlock.ROTARY_CONDENSENTRATOR, null, 3, 12, 170, 71);
+        super(helper, "mekanism:gui/nei/rotary_condensentrator.png", MekanismBlocks.ROTARY_CONDENSENTRATOR, null, 3, 12, 170, 71);
         this.condensentrating = condensentrating;
         uid = new ResourceLocation(Mekanism.MODID, condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating");
         this.title = (condensentrating ? MekanismLang.CONDENSENTRATING : MekanismLang.DECONDENSENTRATING).translate().getFormattedText();
@@ -92,4 +92,4 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
             gasStacks.set(0, recipe.getGasOutputRepresentation());
         }
     }
-}*/
+}

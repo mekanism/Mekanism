@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,7 +18,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.MekanismBlock;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
@@ -30,7 +30,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisRecipe> {
 
     public ElectrolysisRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/blank.png", MekanismBlock.ELECTROLYTIC_SEPARATOR, ProgressBar.BI, 4, 9, 167, 62);
+        super(helper, "mekanism:gui/blank.png", MekanismBlocks.ELECTROLYTIC_SEPARATOR, ProgressBar.BI, 4, 9, 167, 62);
     }
 
     @Override
@@ -73,4 +73,4 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
         initGas(gasStacks, 0, false, 59 - xOffset, 19 - yOffset, 16, 28, recipe.getLeftGasOutputRepresentation(), true);
         initGas(gasStacks, 1, false, 101 - xOffset, 19 - yOffset, 16, 28, recipe.getRightGasOutputRepresentation(), true);
     }
-}*/
+}

@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -68,4 +68,4 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
             getFont().drawString(Math.round(secondaryChance * 100) + "%", 104, 41, 0x404040);
         }
     }
-}*/
+}

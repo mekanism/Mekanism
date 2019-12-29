@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +24,9 @@ import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
 import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvider;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.common.MekanismBlock;
+import mekanism.common.MekanismLang;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.text.TextComponentUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -43,12 +44,12 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     private GuiVerticalChemicalBar<InfuseType> infuseBar;
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/blank.png", MekanismBlock.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
+        super(helper, "mekanism:gui/blank.png", MekanismBlocks.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
     }
 
     /**
      * Helper method for JEI to get the stacks to display for a specific infusion ingredient
-     *
+     */
     private static List<ItemStack> getInfuseStacks(@NonNull InfusionIngredient infusionIngredient) {
         World world = Minecraft.getInstance().world;
         if (world == null) {
@@ -173,4 +174,4 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
             return 1;
         }
     }
-}*/
+}

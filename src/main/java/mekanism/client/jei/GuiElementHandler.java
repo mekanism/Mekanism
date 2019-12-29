@@ -1,4 +1,4 @@
-/*package mekanism.client.jei;
+package mekanism.client.jei;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,4 +38,4 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism> {
         //TODO: If we can offload this to the elements get it from there that would be ideal
         return Collections.emptyList();
     }
-}*/
+}

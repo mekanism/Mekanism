@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +7,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.MekanismBlock;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
@@ -19,7 +19,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGasRecipe> {
 
     public FluidGasToGasRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/chemical_washer.png", MekanismBlock.CHEMICAL_WASHER, null, 3, 3, 170, 70);
+        super(helper, "mekanism:gui/nei/chemical_washer.png", MekanismBlocks.CHEMICAL_WASHER, null, 3, 3, 170, 70);
     }
 
     @Override
@@ -51,4 +51,4 @@ public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGa
         initGas(gasStacks, 0, true, 27 - xOffset, 14 - yOffset, 16, 58, recipe.getGasInput().getRepresentations(), true);
         initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getOutputRepresentation(), true);
     }
-}*/
+}

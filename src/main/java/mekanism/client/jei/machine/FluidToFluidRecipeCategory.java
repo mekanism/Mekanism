@@ -1,11 +1,11 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.client.jei.BaseRecipeCategory;
-import mekanism.common.MekanismBlock;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidRecipe> {
 
     public FluidToFluidRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/thermal_evaporation_controller.png", MekanismBlock.THERMAL_EVAPORATION_CONTROLLER, null, 3, 12, 170, 62);
+        super(helper, "mekanism:gui/nei/thermal_evaporation_controller.png", MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, null, 3, 12, 170, 62);
     }
 
     @Override
@@ -47,4 +47,4 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
         fluidStacks.set(0, fluidInputs);
         fluidStacks.set(1, recipe.getOutputRepresentation());
     }
-}*/
+}

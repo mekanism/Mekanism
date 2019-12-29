@@ -1,4 +1,4 @@
-/*package mekanism.client.jei.machine;
+package mekanism.client.jei.machine;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
-import mekanism.common.MekanismBlock;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -15,7 +15,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory<ChemicalInfuserRecipe> {
 
     public ChemicalInfuserRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/chemical_infuser.png", MekanismBlock.CHEMICAL_INFUSER, null, 3, 3, 170, 80);
+        super(helper, "mekanism:gui/nei/chemical_infuser.png", MekanismBlocks.CHEMICAL_INFUSER, null, 3, 3, 170, 80);
     }
 
     @Override
@@ -43,4 +43,4 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory<ChemicalIn
         initGas(gasStacks, 1, true, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getRightInput().getRepresentations(), true);
         initGas(gasStacks, 2, false, 80 - xOffset, 5 - yOffset, 16, 58, recipe.getOutputDefinition(), true);
     }
-}*/
+}

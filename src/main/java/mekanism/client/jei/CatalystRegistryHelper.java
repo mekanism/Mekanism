@@ -1,10 +1,10 @@
-/*package mekanism.client.jei;
+package mekanism.client.jei;
 
 import mekanism.api.block.FactoryType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismBlock;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -20,14 +20,14 @@ public class CatalystRegistryHelper {
     public static void registerCondensentrator(IRecipeCatalystRegistration registry) {
         ResourceLocation condensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_condensentrating");
         ResourceLocation decondensentrating = new ResourceLocation(Mekanism.MODID, "rotary_condensentrator_decondensentrating");
-        registry.addRecipeCatalyst(MekanismBlock.ROTARY_CONDENSENTRATOR.getItemStack(), condensentrating, decondensentrating);
+        registry.addRecipeCatalyst(MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack(), condensentrating, decondensentrating);
     }
 
     public static void registerSmelter(IRecipeCatalystRegistration registry) {
-        register(registry, MekanismBlock.ENERGIZED_SMELTER);
+        register(registry, MekanismBlocks.ENERGIZED_SMELTER);
         if (!Mekanism.hooks.CraftTweakerLoaded || !EnergizedSmelter.hasRemovedRecipe()) {
             //Vanilla catalyst
-            registerRecipeItem(registry, MekanismBlock.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
+            registerRecipeItem(registry, MekanismBlocks.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
         }
     }
 
@@ -36,8 +36,8 @@ public class CatalystRegistryHelper {
         FactoryType factoryType = mekanismBlock.getFactoryType();
         if (factoryType != null) {
             for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-                registry.addRecipeCatalyst(MekanismBlock.getFactory(tier, factoryType).getItemStack(), category);
+                registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, factoryType).getItemStack(), category);
             }
         }
     }
-}*/
+}
