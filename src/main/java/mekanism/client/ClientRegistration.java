@@ -104,7 +104,6 @@ import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDynamicTank;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.client.render.tileentity.RenderFluidTank;
-import mekanism.client.render.tileentity.RenderGasTank;
 import mekanism.client.render.tileentity.RenderPersonalChest;
 import mekanism.client.render.tileentity.RenderQuantumEntangloporter;
 import mekanism.client.render.tileentity.RenderResistiveHeater;
@@ -153,141 +152,74 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerEntityRenderingHandler(MekanismEntityTypes.ROBIT, RenderRobit::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(MekanismEntityTypes.FLAME, RenderFlame::new);
 
-        //TODO: Evaluate extending TileEntityRendererAnimation instead of TileEntityRenderer
         //Register TileEntityRenderers
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BOILER_CASING, new RenderThermoelectricBoiler());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BOILER_VALVE, new RenderThermoelectricBoiler());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_CRYSTALLIZER, new RenderChemicalCrystallizer());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER, new RenderChemicalDissolutionChamber());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_INJECTION_CHAMBER, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.COMBINER, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CRUSHER, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DIGITAL_MINER, new RenderDigitalMiner());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DYNAMIC_TANK, new RenderDynamicTank());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DYNAMIC_VALVE, new RenderDynamicTank());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ENERGIZED_SMELTER, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ENRICHMENT_CHAMBER, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.METALLURGIC_INFUSER, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.OSMIUM_COMPRESSOR, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.PERSONAL_CHEST, new RenderPersonalChest());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.PRECISION_SAWMILL, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.PURIFICATION_CHAMBER, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, new RenderQuantumEntangloporter());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.RESISTIVE_HEATER, new RenderResistiveHeater());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SECURITY_DESK, new RenderSecurityDesk());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SEISMIC_VIBRATOR, new RenderSeismicVibrator());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, new RenderSolarNeutronActivator());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.TELEPORTER, new RenderTeleporter());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, new RenderThermalEvaporationController());
-        //Bins
-        RenderBin binRenderer = new RenderBin();
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_BIN, binRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_BIN, binRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_BIN, binRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_BIN, binRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_BIN, binRenderer);
-        //Gas tanks
-        RenderGasTank gasTankRenderer = new RenderGasTank();
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_GAS_TANK, gasTankRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_GAS_TANK, gasTankRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_GAS_TANK, gasTankRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_GAS_TANK, gasTankRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_GAS_TANK, gasTankRenderer);
-        //Energy Cubes
-        RenderEnergyCube energyCubeRenderer = new RenderEnergyCube();
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_ENERGY_CUBE, energyCubeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_ENERGY_CUBE, energyCubeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_ENERGY_CUBE, energyCubeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_ENERGY_CUBE, energyCubeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_ENERGY_CUBE, energyCubeRenderer);
-        //Fluid Tanks
-        RenderFluidTank fluidTankRenderer = new RenderFluidTank();
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_FLUID_TANK, fluidTankRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_FLUID_TANK, fluidTankRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_FLUID_TANK, fluidTankRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_FLUID_TANK, fluidTankRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CREATIVE_FLUID_TANK, fluidTankRenderer);
-        //Factories
-        //Combining
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_COMBINING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_COMBINING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_COMBINING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_COMBINING_FACTORY, new RenderConfigurableMachine<>());
-        //Compressing
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_COMPRESSING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_COMPRESSING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_COMPRESSING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_COMPRESSING_FACTORY, new RenderConfigurableMachine<>());
-        //Crushing
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_CRUSHING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_CRUSHING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_CRUSHING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_CRUSHING_FACTORY, new RenderConfigurableMachine<>());
-        //Enriching
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_ENRICHING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_ENRICHING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_ENRICHING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_ENRICHING_FACTORY, new RenderConfigurableMachine<>());
-        //Infusing
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_INFUSING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_INFUSING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_INFUSING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_INFUSING_FACTORY, new RenderConfigurableMachine<>());
-        //Injecting
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_INJECTING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_INJECTING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_INJECTING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_INJECTING_FACTORY, new RenderConfigurableMachine<>());
-        //Purifying
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_PURIFYING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_PURIFYING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_PURIFYING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_PURIFYING_FACTORY, new RenderConfigurableMachine<>());
-        //Sawing
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_SAWING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_SAWING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_SAWING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_SAWING_FACTORY, new RenderConfigurableMachine<>());
-        //Smelting
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_SMELTING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_SMELTING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_SMELTING_FACTORY, new RenderConfigurableMachine<>());
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_SMELTING_FACTORY, new RenderConfigurableMachine<>());
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderThermoelectricBoiler::new, MekanismTileEntityTypes.BOILER_CASING, MekanismTileEntityTypes.BOILER_VALVE);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_CRYSTALLIZER, RenderChemicalCrystallizer::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.CHEMICAL_DISSOLUTION_CHAMBER, RenderChemicalDissolutionChamber::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DIGITAL_MINER, RenderDigitalMiner::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderDynamicTank::new, MekanismTileEntityTypes.DYNAMIC_TANK, MekanismTileEntityTypes.DYNAMIC_VALVE);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.PERSONAL_CHEST, RenderPersonalChest::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, RenderQuantumEntangloporter::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.RESISTIVE_HEATER, RenderResistiveHeater::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SECURITY_DESK, RenderSecurityDesk::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SEISMIC_VIBRATOR, RenderSeismicVibrator::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, RenderSolarNeutronActivator::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.TELEPORTER, RenderTeleporter::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, RenderThermalEvaporationController::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderBin::new, MekanismTileEntityTypes.BASIC_BIN, MekanismTileEntityTypes.ADVANCED_BIN, MekanismTileEntityTypes.ELITE_BIN,
+              MekanismTileEntityTypes.ULTIMATE_BIN, MekanismTileEntityTypes.CREATIVE_BIN);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderEnergyCube::new, MekanismTileEntityTypes.BASIC_ENERGY_CUBE, MekanismTileEntityTypes.ADVANCED_ENERGY_CUBE,
+              MekanismTileEntityTypes.ELITE_ENERGY_CUBE, MekanismTileEntityTypes.ULTIMATE_ENERGY_CUBE, MekanismTileEntityTypes.CREATIVE_ENERGY_CUBE);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderFluidTank::new, MekanismTileEntityTypes.BASIC_FLUID_TANK, MekanismTileEntityTypes.ADVANCED_FLUID_TANK,
+              MekanismTileEntityTypes.ELITE_FLUID_TANK, MekanismTileEntityTypes.ULTIMATE_FLUID_TANK, MekanismTileEntityTypes.CREATIVE_FLUID_TANK);
         //Transmitters
-        //Logistical transporters
-        RenderLogisticalTransporter logisticalTransporterRenderer = new RenderLogisticalTransporter();
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER, logisticalTransporterRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DIVERSION_TRANSPORTER, logisticalTransporterRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER, logisticalTransporterRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER, logisticalTransporterRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER, logisticalTransporterRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER, logisticalTransporterRenderer);
-        //Mechanical Pipes
-        RenderMechanicalPipe mechanicalPipeRenderer = new RenderMechanicalPipe();
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE, mechanicalPipeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE, mechanicalPipeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE, mechanicalPipeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE, mechanicalPipeRenderer);
-        //Pressurized Tubes
-        RenderPressurizedTube pressurizedTubeRenderer = new RenderPressurizedTube();
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE, pressurizedTubeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE, pressurizedTubeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE, pressurizedTubeRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE, pressurizedTubeRenderer);
-        //Universal Cables
-        RenderUniversalCable universalCableRenderer = new RenderUniversalCable();
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE, universalCableRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE, universalCableRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE, universalCableRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE, universalCableRenderer);
-        //Thermodynamic Conductors
-        RenderThermodynamicConductor thermodynamicConductorRenderer = new RenderThermodynamicConductor();
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
-        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR, thermodynamicConductorRenderer);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderLogisticalTransporter::new, MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER,
+              MekanismTileEntityTypes.DIVERSION_TRANSPORTER, MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER, MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER,
+              MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER, MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderMechanicalPipe::new, MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE,
+              MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE, MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE, MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderPressurizedTube::new, MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE,
+              MekanismTileEntityTypes.ADVANCED_PRESSURIZED_TUBE, MekanismTileEntityTypes.ELITE_PRESSURIZED_TUBE, MekanismTileEntityTypes.ULTIMATE_PRESSURIZED_TUBE);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderUniversalCable::new, MekanismTileEntityTypes.BASIC_UNIVERSAL_CABLE,
+              MekanismTileEntityTypes.ADVANCED_UNIVERSAL_CABLE, MekanismTileEntityTypes.ELITE_UNIVERSAL_CABLE, MekanismTileEntityTypes.ULTIMATE_UNIVERSAL_CABLE);
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderThermodynamicConductor::new, MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR,
+              MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
+        //TERs that are just the configurable machine renderer
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderConfigurableMachine::new, MekanismTileEntityTypes.CHEMICAL_INJECTION_CHAMBER, MekanismTileEntityTypes.COMBINER,
+              MekanismTileEntityTypes.CRUSHER, MekanismTileEntityTypes.ENERGIZED_SMELTER, MekanismTileEntityTypes.ENRICHMENT_CHAMBER,
+              MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, MekanismTileEntityTypes.METALLURGIC_INFUSER, MekanismTileEntityTypes.OSMIUM_COMPRESSOR,
+              MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismTileEntityTypes.PURIFICATION_CHAMBER,
+              //Gas tanks
+              MekanismTileEntityTypes.BASIC_GAS_TANK, MekanismTileEntityTypes.ADVANCED_GAS_TANK, MekanismTileEntityTypes.ELITE_GAS_TANK,
+              MekanismTileEntityTypes.ULTIMATE_GAS_TANK, MekanismTileEntityTypes.CREATIVE_GAS_TANK,
+              //Factories
+              //Combining
+              MekanismTileEntityTypes.BASIC_COMBINING_FACTORY, MekanismTileEntityTypes.ADVANCED_COMBINING_FACTORY,
+              MekanismTileEntityTypes.ELITE_COMBINING_FACTORY, MekanismTileEntityTypes.ULTIMATE_COMBINING_FACTORY,
+              //Compressing
+              MekanismTileEntityTypes.BASIC_COMPRESSING_FACTORY, MekanismTileEntityTypes.ADVANCED_COMPRESSING_FACTORY,
+              MekanismTileEntityTypes.ELITE_COMPRESSING_FACTORY, MekanismTileEntityTypes.ULTIMATE_COMPRESSING_FACTORY,
+              //Crushing
+              MekanismTileEntityTypes.BASIC_CRUSHING_FACTORY, MekanismTileEntityTypes.ADVANCED_CRUSHING_FACTORY,
+              MekanismTileEntityTypes.ELITE_CRUSHING_FACTORY, MekanismTileEntityTypes.ULTIMATE_CRUSHING_FACTORY,
+              //Enriching
+              MekanismTileEntityTypes.BASIC_ENRICHING_FACTORY, MekanismTileEntityTypes.ADVANCED_ENRICHING_FACTORY,
+              MekanismTileEntityTypes.ELITE_ENRICHING_FACTORY, MekanismTileEntityTypes.ULTIMATE_ENRICHING_FACTORY,
+              //Infusing
+              MekanismTileEntityTypes.BASIC_INFUSING_FACTORY, MekanismTileEntityTypes.ADVANCED_INFUSING_FACTORY,
+              MekanismTileEntityTypes.ELITE_INFUSING_FACTORY, MekanismTileEntityTypes.ULTIMATE_INFUSING_FACTORY,
+              //Injecting
+              MekanismTileEntityTypes.BASIC_INJECTING_FACTORY, MekanismTileEntityTypes.ADVANCED_INJECTING_FACTORY,
+              MekanismTileEntityTypes.ELITE_INJECTING_FACTORY, MekanismTileEntityTypes.ULTIMATE_INJECTING_FACTORY,
+              //Purifying
+              MekanismTileEntityTypes.BASIC_PURIFYING_FACTORY, MekanismTileEntityTypes.ADVANCED_PURIFYING_FACTORY,
+              MekanismTileEntityTypes.ELITE_PURIFYING_FACTORY, MekanismTileEntityTypes.ULTIMATE_PURIFYING_FACTORY,
+              //Sawing
+              MekanismTileEntityTypes.BASIC_SAWING_FACTORY, MekanismTileEntityTypes.ADVANCED_SAWING_FACTORY,
+              MekanismTileEntityTypes.ELITE_SAWING_FACTORY, MekanismTileEntityTypes.ULTIMATE_SAWING_FACTORY,
+              //Smelting
+              MekanismTileEntityTypes.BASIC_SMELTING_FACTORY, MekanismTileEntityTypes.ADVANCED_SMELTING_FACTORY,
+              MekanismTileEntityTypes.ELITE_SMELTING_FACTORY, MekanismTileEntityTypes.ULTIMATE_SMELTING_FACTORY);
 
         //TODO: 1.15 Double check render layer stuff given by the time we are ready for the first 1.15 alpha we should know the states better of the remaining things
         //Block render layers

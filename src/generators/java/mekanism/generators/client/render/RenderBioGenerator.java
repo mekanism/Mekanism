@@ -6,18 +6,23 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
-import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelBioGenerator;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 
-public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBioGenerator> {
+public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerator> {
 
     private static final int stages = 40;
     private ModelBioGenerator model = new ModelBioGenerator();
     private Map<Direction, DisplayInteger[]> energyDisplays = new EnumMap<>(Direction.class);
+
+    public RenderBioGenerator(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityBioGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {

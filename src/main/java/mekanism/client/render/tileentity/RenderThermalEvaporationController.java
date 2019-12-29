@@ -4,8 +4,14 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderThermalEvaporationController extends MekanismTileEntityRenderer<TileEntityThermalEvaporationController> {
+public class RenderThermalEvaporationController extends TileEntityRenderer<TileEntityThermalEvaporationController> {
+
+    public RenderThermalEvaporationController(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityThermalEvaporationController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {

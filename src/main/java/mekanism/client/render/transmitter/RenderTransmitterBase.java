@@ -2,7 +2,6 @@ package mekanism.client.render.transmitter;
 
 import java.util.HashMap;
 import java.util.Map;
-import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.ColourRGBA;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.block.BlockState;
@@ -10,12 +9,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel;
 
 //TODO: 1.15
 //@Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends MekanismTileEntityRenderer<T> {
+public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends TileEntityRenderer<T> {
 
     /* Credit to Eternal Energy */
     //TODO: 1.15
@@ -23,6 +24,10 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
     private static OBJModel contentsModel;
     private static Map<String, IBakedModel> contentsMap = new HashMap<>();
     protected Minecraft minecraft = Minecraft.getInstance();
+
+    public RenderTransmitterBase(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     //TODO: 1.15
     /*@SubscribeEvent

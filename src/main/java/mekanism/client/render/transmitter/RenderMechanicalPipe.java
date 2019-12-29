@@ -8,6 +8,7 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe> {
 
@@ -16,6 +17,10 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final double offset = 0.015;
     //TODO this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support. 6 is used for null side
     private static Int2ObjectMap<FluidRenderMap<DisplayInteger[]>> cachedLiquids = new Int2ObjectArrayMap<>(7);
+
+    public RenderMechanicalPipe(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     public static void onStitch() {
         cachedLiquids.clear();

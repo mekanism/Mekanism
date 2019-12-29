@@ -90,7 +90,6 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     @Override
     protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         int newMode = (modes[side.ordinal()] + 1) % 3;
-        //TODO: 1.15 make this instead be an ITranslationHelper or MekanismLang
         ILangEntry langEntry;
         modes[side.ordinal()] = newMode;
         switch (newMode) {

@@ -7,10 +7,16 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderResistiveHeater extends MekanismTileEntityRenderer<TileEntityResistiveHeater> {
+public class RenderResistiveHeater extends TileEntityRenderer<TileEntityResistiveHeater> {
 
     private ModelResistiveHeater model = new ModelResistiveHeater();
+
+    public RenderResistiveHeater(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityResistiveHeater tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,

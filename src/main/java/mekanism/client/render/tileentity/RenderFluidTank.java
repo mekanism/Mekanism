@@ -6,14 +6,20 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank> {
+public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
 
     private static FluidRenderMap<DisplayInteger[]> cachedCenterFluids = new FluidRenderMap<>();
     private static FluidRenderMap<DisplayInteger[]> cachedValveFluids = new FluidRenderMap<>();
 
     private static int stages = 1400;
+
+    public RenderFluidTank(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     public static void resetDisplayInts() {
         cachedCenterFluids.clear();

@@ -2,19 +2,24 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
-import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.Mekanism;
 import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTurbineRotor> {
+public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRotor> {
 
     private static final float BASE_SPEED = 512F;
     public static boolean internalRender = false;
     private ModelTurbine model = new ModelTurbine();
+
+    public RenderTurbineRotor(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityTurbineRotor tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {

@@ -7,10 +7,16 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<TileEntitySolarNeutronActivator> {
+public class RenderSolarNeutronActivator extends TileEntityRenderer<TileEntitySolarNeutronActivator> {
 
     private ModelSolarNeutronActivator model = new ModelSolarNeutronActivator();
+
+    public RenderSolarNeutronActivator(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntitySolarNeutronActivator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,

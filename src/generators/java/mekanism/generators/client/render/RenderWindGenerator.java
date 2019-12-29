@@ -3,15 +3,20 @@ package mekanism.generators.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelWindGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWindGenerator> {
+public class RenderWindGenerator extends TileEntityRenderer<TileEntityWindGenerator> {
 
     private static final ModelWindGenerator model = new ModelWindGenerator();
+
+    public RenderWindGenerator(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityWindGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,

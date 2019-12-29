@@ -50,16 +50,16 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.ADVANCED_SOLAR_GENERATOR, new RenderAdvancedSolarGenerator());
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.BIO_GENERATOR, new RenderBioGenerator());
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, new RenderGasGenerator());
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.HEAT_GENERATOR, new RenderHeatGenerator());
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.REACTOR_CONTROLLER, new RenderReactor());
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_CASING, new RenderIndustrialTurbine());
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_ROTOR, new RenderTurbineRotor());
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VALVE, new RenderIndustrialTurbine());
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VENT, new RenderIndustrialTurbine());
-        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR, new RenderWindGenerator());
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.ADVANCED_SOLAR_GENERATOR, RenderAdvancedSolarGenerator::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.BIO_GENERATOR, RenderBioGenerator::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, RenderGasGenerator::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.HEAT_GENERATOR, RenderHeatGenerator::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.REACTOR_CONTROLLER, RenderReactor::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_CASING, RenderIndustrialTurbine::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_ROTOR, RenderTurbineRotor::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VALVE, RenderIndustrialTurbine::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VENT, RenderIndustrialTurbine::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR, RenderWindGenerator::new);
         //Block render layers
         ClientRegistrationUtil.setRenderLayer(GeneratorsBlocks.LASER_FOCUS_MATRIX, RenderType.func_228645_f_());
         ClientRegistrationUtil.setRenderLayer(GeneratorsBlocks.REACTOR_GLASS, RenderType.func_228645_f_());

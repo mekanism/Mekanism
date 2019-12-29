@@ -7,10 +7,16 @@ import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter> {
+public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
 
     private Map<Integer, DisplayInteger> cachedOverlays = new HashMap<>();
+
+    public RenderTeleporter(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityTeleporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {

@@ -20,6 +20,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.Direction;
@@ -34,6 +35,10 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static TextureAtlasSprite torchOnIcon;
     private ModelTransporterBox modelBox = new ModelTransporterBox();
     private ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
+
+    public RenderLogisticalTransporter(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
     //TODO: 1.15
     //private EntityRenderer<ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(ItemEntity.class);
 

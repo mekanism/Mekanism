@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -64,7 +65,7 @@ public class MekanismRenderer {
     public static void init(FMLClientSetupEvent event) {
         //Note: We set the machine renderer in a FMLClientSetupEvent, to make sure that it does not get set at the
         // wrong time when running the data generators and thus cause a crash
-        machineRenderer = new RenderConfigurableMachine<>();
+        machineRenderer = new RenderConfigurableMachine<>(TileEntityRendererDispatcher.instance);
     }
 
     @SuppressWarnings("unchecked")

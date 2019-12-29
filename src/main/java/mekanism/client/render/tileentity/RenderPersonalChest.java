@@ -4,8 +4,14 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderPersonalChest extends MekanismTileEntityRenderer<TileEntityPersonalChest> {
+public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalChest> {
+
+    public RenderPersonalChest(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     //TODO: 1.15
     //private ChestModel model = new ChestModel();

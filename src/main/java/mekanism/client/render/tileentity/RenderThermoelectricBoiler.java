@@ -4,15 +4,21 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileEntityBoilerCasing> {
+public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {
 
     @Nonnull
     private static FluidStack STEAM = FluidStack.EMPTY;
     @Nonnull
     private static final FluidStack WATER = new FluidStack(Fluids.WATER, 1);
+
+    public RenderThermoelectricBoiler(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityBoilerCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {

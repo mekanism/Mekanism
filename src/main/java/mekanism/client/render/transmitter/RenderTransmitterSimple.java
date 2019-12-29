@@ -10,10 +10,15 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
 
 public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter<?, ?, ?>> extends RenderTransmitterBase<T> {
+
+    public RenderTransmitterSimple(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     protected abstract void renderSide(BufferBuilder renderer, Direction side, T transmitter);
 

@@ -8,10 +8,16 @@ import mekanism.client.render.MinerVisualRenderer;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDigitalMiner> {
+public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMiner> {
 
     private ModelDigitalMiner model = new ModelDigitalMiner();
+
+    public RenderDigitalMiner(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityDigitalMiner tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {

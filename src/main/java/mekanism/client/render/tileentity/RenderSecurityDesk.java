@@ -7,10 +7,16 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderSecurityDesk extends MekanismTileEntityRenderer<TileEntitySecurityDesk> {
+public class RenderSecurityDesk extends TileEntityRenderer<TileEntitySecurityDesk> {
 
     private ModelSecurityDesk model = new ModelSecurityDesk();
+
+    public RenderSecurityDesk(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntitySecurityDesk tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,

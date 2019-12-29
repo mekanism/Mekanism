@@ -4,8 +4,14 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDynamicTank> {
+public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank> {
+
+    public RenderDynamicTank(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityDynamicTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {

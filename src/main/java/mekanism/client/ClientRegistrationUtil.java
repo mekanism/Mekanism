@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.BucketItem;
@@ -38,8 +39,18 @@ public class ClientRegistrationUtil {
         RenderingRegistry.registerEntityRenderingHandler(entityTypeRO.getEntityType(), renderFactory);
     }
 
-    public static <T extends TileEntity> void bindTileEntityRenderer(TileEntityTypeRegistryObject<T> tileTypeRO, TileEntityRenderer<? super T> specialRenderer) {
-        ClientRegistry.bindTileEntityRenderer(tileTypeRO.getTileEntityType(), specialRenderer);
+    public static synchronized <T extends TileEntity> void bindTileEntityRenderer(TileEntityTypeRegistryObject<T> tileTypeRO,
+          Function<TileEntityRendererDispatcher, TileEntityRenderer<? super T>> renderFactory) {
+        ClientRegistry.bindTileEntityRenderer(tileTypeRO.getTileEntityType(), renderFactory);
+    }
+
+    @SafeVarargs
+    public static synchronized <T extends TileEntity> void bindTileEntityRenderer(Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> rendererFactory,
+          TileEntityTypeRegistryObject<? extends T>... tileEntityTypeROs) {
+        TileEntityRenderer<T> renderer = rendererFactory.apply(TileEntityRendererDispatcher.instance);
+        for (TileEntityTypeRegistryObject<? extends T> tileTypeRO : tileEntityTypeROs) {
+            ClientRegistry.bindTileEntityRenderer(tileTypeRO.getTileEntityType(), constant -> renderer);
+        }
     }
 
     public static <C extends Container, U extends Screen & IHasContainer<C>> void registerScreen(ContainerTypeRegistryObject<C> type, IScreenFactory<C, U> factory) {
@@ -57,9 +68,9 @@ public class ClientRegistrationUtil {
     }
 
     public static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, IBlockColor blockColor, IItemColor itemColor, IBlockProvider... blocks) {
-        for (IBlockProvider additionsBlock : blocks) {
-            blockColors.register(blockColor, additionsBlock.getBlock());
-            itemColors.register(itemColor, additionsBlock.getItem());
+        for (IBlockProvider blockProvider : blocks) {
+            blockColors.register(blockColor, blockProvider.getBlock());
+            itemColors.register(itemColor, blockProvider.getItem());
         }
     }
 

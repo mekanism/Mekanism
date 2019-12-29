@@ -7,10 +7,16 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntitySeismicVibrator;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntitySeismicVibrator> {
+public class RenderSeismicVibrator extends TileEntityRenderer<TileEntitySeismicVibrator> {
 
     private ModelSeismicVibrator model = new ModelSeismicVibrator();
+
+    public RenderSeismicVibrator(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntitySeismicVibrator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,

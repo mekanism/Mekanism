@@ -6,9 +6,14 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 
 public class RenderUniversalCable extends RenderTransmitterSimple<TileEntityUniversalCable> {
+
+    public RenderUniversalCable(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityUniversalCable cable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,

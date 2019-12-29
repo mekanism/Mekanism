@@ -12,9 +12,14 @@ import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.transmitters.grid.GasNetwork;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 
 public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPressurizedTube> {
+
+    public RenderPressurizedTube(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityPressurizedTube tube, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,

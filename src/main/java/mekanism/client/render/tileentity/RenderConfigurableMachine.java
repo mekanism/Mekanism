@@ -8,12 +8,18 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.common.base.ISideConfiguration;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 
-public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends MekanismTileEntityRenderer<S> {
+public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntityRenderer<S> {
 
     private Map<Direction, Map<TransmissionType, DisplayInteger>> cachedOverlays = new EnumMap<>(Direction.class);
+
+    public RenderConfigurableMachine(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull S configurable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {

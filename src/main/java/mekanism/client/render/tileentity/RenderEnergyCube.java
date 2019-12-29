@@ -13,13 +13,19 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 
-public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube> {
+public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
 
     public static final Vector3f coreVec = new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO);
     private ModelEnergyCube model = new ModelEnergyCube();
     private ModelEnergyCore core = new ModelEnergyCore();
+
+    public RenderEnergyCube(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {

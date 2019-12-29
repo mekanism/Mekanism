@@ -6,15 +6,20 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorController> {
+public class RenderReactor extends TileEntityRenderer<TileEntityReactorController> {
 
     private ModelEnergyCore core = new ModelEnergyCore();
+
+    public RenderReactor(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityReactorController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,

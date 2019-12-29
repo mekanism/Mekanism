@@ -7,10 +7,16 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
-public class RenderChemicalCrystallizer extends MekanismTileEntityRenderer<TileEntityChemicalCrystallizer> {
+public class RenderChemicalCrystallizer extends TileEntityRenderer<TileEntityChemicalCrystallizer> {
 
     private ModelChemicalCrystallizer model = new ModelChemicalCrystallizer();
+
+    public RenderChemicalCrystallizer(TileEntityRendererDispatcher renderer) {
+        super(renderer);
+    }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityChemicalCrystallizer tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
