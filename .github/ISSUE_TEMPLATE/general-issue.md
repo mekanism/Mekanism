@@ -24,4 +24,4 @@ assignees: ''
 
 #### If a (crash)log is relevant for this issue, link it here: (_It's almost always relevant_)
 
-[gist/pastebin/etc link here]
+[[gist](https://gist.github.com/) / [pastebin](https://pastebin.com/) / etc link here. Please make sure that it isn't set to expire.]
