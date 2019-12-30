@@ -27,7 +27,7 @@ public class CommonPlayerTickHandler {
 
     public static boolean isOnGround(PlayerEntity player) {
         int x = MathHelper.floor(player.func_226277_ct_());
-        int y = MathHelper.floor(player.func_226277_ct_() - 0.01);
+        int y = MathHelper.floor(player.func_226278_cu_() - 0.01);
         int z = MathHelper.floor(player.func_226281_cx_());
         BlockPos pos = new BlockPos(x, y, z);
         BlockState s = player.world.getBlockState(pos);

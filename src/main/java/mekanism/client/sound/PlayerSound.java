@@ -27,7 +27,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
         super(sound, SoundCategory.PLAYERS);
         this.playerReference = new WeakReference<>(player);
         this.lastX = (float) player.func_226277_ct_();
-        this.lastY = (float) player.func_226277_ct_();
+        this.lastY = (float) player.func_226278_cu_();
         this.lastZ = (float) player.func_226281_cx_();
         this.repeat = true;
         this.repeatDelay = 0;
@@ -57,7 +57,7 @@ public abstract class PlayerSound extends LocatableSound implements ITickableSou
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
-            this.lastY = (float) player.func_226277_ct_();
+            this.lastY = (float) player.func_226278_cu_();
         }
         return this.lastY;
     }

@@ -28,8 +28,8 @@ public class RobitAIPickup extends RobitAIBase {
             return true;
         }
         List<ItemEntity> items = theRobit.world.getEntitiesWithinAABB(ItemEntity.class,
-              new AxisAlignedBB(theRobit.func_226277_ct_() - 10, theRobit.func_226277_ct_() - 10, theRobit.func_226281_cx_() - 10,
-                    theRobit.func_226277_ct_() + 10, theRobit.func_226277_ct_() + 10, theRobit.func_226281_cx_() + 10));
+              new AxisAlignedBB(theRobit.func_226277_ct_() - 10, theRobit.func_226278_cu_() - 10, theRobit.func_226281_cx_() - 10,
+                    theRobit.func_226277_ct_() + 10, theRobit.func_226278_cu_() + 10, theRobit.func_226281_cx_() + 10));
         Iterator<ItemEntity> iter = items.iterator();
         //Cached for slight performance
         double closestDistance = -1;

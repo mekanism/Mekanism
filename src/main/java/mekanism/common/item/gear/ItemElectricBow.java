@@ -90,7 +90,7 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
                     world.addEntity(entityarrow);
                 }
 
-                world.playSound(null, player.func_226277_ct_(), player.func_226277_ct_(), player.func_226281_cx_(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL,
+                world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL,
                       1.0F, 1.0F / (random.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
                 if (!noConsume) {

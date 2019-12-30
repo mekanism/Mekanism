@@ -73,10 +73,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         this(AdditionsEntityTypes.BALLOON, entity.world);
         latchedEntity = entity;
         float height = latchedEntity.getSize(latchedEntity.getPose()).height;
-        setPosition(latchedEntity.func_226277_ct_(), latchedEntity.func_226277_ct_() + height + 1.7F, latchedEntity.func_226281_cx_());
+        setPosition(latchedEntity.func_226277_ct_(), latchedEntity.func_226278_cu_() + height + 1.7F, latchedEntity.func_226281_cx_());
 
         prevPosX = func_226277_ct_();
-        prevPosY = func_226277_ct_();
+        prevPosY = func_226278_cu_();
         prevPosZ = func_226281_cx_();
 
         color = c;
@@ -90,7 +90,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         setPosition(latched.x + 0.5F, latched.y + 1.9F, latched.z + 0.5F);
 
         prevPosX = func_226277_ct_();
-        prevPosY = func_226277_ct_();
+        prevPosY = func_226278_cu_();
         prevPosZ = func_226281_cx_();
 
         color = c;
@@ -103,10 +103,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     @Override
     public void tick() {
         prevPosX = func_226277_ct_();
-        prevPosY = func_226277_ct_();
+        prevPosY = func_226278_cu_();
         prevPosZ = func_226281_cx_();
 
-        if (func_226277_ct_() > 255) {
+        if (func_226278_cu_() > 255) {
             pop();
             return;
         }
@@ -181,14 +181,14 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         } else if (latchedEntity != null && latchedEntity.getHealth() > 0) {
             int floor = getFloor(latchedEntity);
             Vec3d motion = latchedEntity.getMotion();
-            if (latchedEntity.func_226277_ct_() - (floor + 1) < -0.1) {
+            if (latchedEntity.func_226278_cu_() - (floor + 1) < -0.1) {
                 latchedEntity.setMotion(motion.getX(), Math.max(0.04, motion.getY() * 1.015), motion.getZ());
-            } else if (latchedEntity.func_226277_ct_() - (floor + 1) > 0.1) {
+            } else if (latchedEntity.func_226278_cu_() - (floor + 1) > 0.1) {
                 latchedEntity.setMotion(motion.getX(), Math.min(-0.04, motion.getY() * 1.015), motion.getZ());
             } else {
                 latchedEntity.setMotion(motion.getX(), 0, motion.getZ());
             }
-            setPosition(latchedEntity.func_226277_ct_(), latchedEntity.func_226277_ct_() + getAddedHeight(), latchedEntity.func_226281_cx_());
+            setPosition(latchedEntity.func_226277_ct_(), latchedEntity.func_226278_cu_() + getAddedHeight(), latchedEntity.func_226281_cx_());
         }
     }
 

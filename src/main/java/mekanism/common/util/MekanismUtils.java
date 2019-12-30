@@ -593,7 +593,7 @@ public final class MekanismUtils {
      */
     private static Vec3d getHeadVec(PlayerEntity player) {
         double posX = player.func_226277_ct_();
-        double posY = player.func_226277_ct_();
+        double posY = player.func_226278_cu_();
         double posZ = player.func_226281_cx_();
         if (!player.world.isRemote) {
             posY += player.getEyeHeight();
