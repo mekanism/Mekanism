@@ -1,11 +1,41 @@
 # Blender MTL File: 'transmitter_small.blend'
-# Material Count: 4
+# Material Count: 9
 
-newmtl CentreMaterial
+newmtl CentreMaterialUp
 Ka 1.000000 1.000000 1.000000
 Kd 0.8 0.8 0.8
 d 1
-map_Kd #center
+map_Kd #center_up
+
+newmtl CentreMaterialDown
+Ka 1.000000 1.000000 1.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_down
+
+newmtl CentreMaterialNorth
+Ka 1.000000 1.000000 1.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_north
+
+newmtl CentreMaterialSouth
+Ka 1.000000 1.000000 1.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_south
+
+newmtl CentreMaterialEast
+Ka 1.000000 1.000000 1.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_east
+
+newmtl CentreMaterialWest
+Ka 1.000000 1.000000 1.000000
+Kd 0.8 0.8 0.8
+d 1
+map_Kd #center_west
 
 newmtl None
 Ka 0.000000 0.000000 0.000000

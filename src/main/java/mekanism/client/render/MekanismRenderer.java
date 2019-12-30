@@ -373,10 +373,6 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("block/liquid/liquid_energy"));
         event.addSprite(Mekanism.rl("block/liquid/liquid_heat"));
 
-        //TODO: Figure out why this sometimes causes crashes during startup
-        //TODO: 1.15
-        //TransmitterModel.addIcons(event);
-
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
             event.addSprite(gas.getIcon());
         }

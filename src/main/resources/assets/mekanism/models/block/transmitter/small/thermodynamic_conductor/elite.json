@@ -1,0 +1,9 @@
+{
+  "parent": "mekanism:block/transmitter/small/small",
+  "textures": {
+    "side": "mekanism:block/models/multipart/elite_thermodynamic_conductor_vertical",
+    "center_down": "mekanism:block/models/multipart/elite_thermodynamic_conductor",
+    "side_opaque": "mekanism:block/models/multipart/opaque/elite_thermodynamic_conductor_vertical",
+    "center_opaque": "mekanism:block/models/multipart/elite_thermodynamic_conductor"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanism:block/nothing"
+      "model": "mekanism:block/transmitter/small/pressurized_tube/ultimate"
     }
   }
 }
