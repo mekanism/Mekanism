@@ -28,19 +28,29 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
         this.color = color;
     }
 
+    @Nullable
+    private static Direction directionForPiece(@Nonnull String piece) {
+        switch (piece) {
+            case "#center_down":
+                return Direction.DOWN;
+            case "#center_up":
+                return Direction.UP;
+            case "#center_north":
+                return Direction.NORTH;
+            case "#center_south":
+                return Direction.SOUTH;
+            case "#center_east":
+                return Direction.EAST;
+            case "#center_west":
+                return Direction.WEST;
+        }
+        return null;
+    }
+
     private String adjustTextureName(String name) {
-        if (name.equals("#center_down")) {
-            return getOverrideTexture(name, Direction.DOWN);
-        } else if (name.equals("#center_up")) {
-            return getOverrideTexture(name, Direction.UP);
-        } else if (name.equals("#center_north")) {
-            return getOverrideTexture(name, Direction.NORTH);
-        } else if (name.equals("#center_south")) {
-            return getOverrideTexture(name, Direction.SOUTH);
-        } else if (name.equals("#center_east")) {
-            return getOverrideTexture(name, Direction.EAST);
-        } else if (name.equals("#center_west")) {
-            return getOverrideTexture(name, Direction.WEST);
+        Direction dir = directionForPiece(name);
+        if (dir != null) {
+            return getOverrideTexture(name, dir);
         } else if (MekanismConfig.client.opaqueTransmitters.get() && name.equals("#side")) {
             //If we have opaque transmitters set to true, then replace our texture with the given reference
             return "#side_opaque";
@@ -85,7 +95,6 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
         return name;
     }
 
-    //TODO: 1.15 - We need to somehow declare some pieces/textures as rotated
     public boolean shouldRotate(Direction direction) {
         return getIconStatus(direction) == 2;
     }

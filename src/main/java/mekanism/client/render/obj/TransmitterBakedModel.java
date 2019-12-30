@@ -33,9 +33,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 import net.minecraftforge.client.model.obj.OBJModel;
 
 public class TransmitterBakedModel implements IBakedModel {
@@ -106,7 +108,6 @@ public class TransmitterBakedModel implements IBakedModel {
                 if (color != null) {
                     hash = hash * 31 + color.ordinal();
                 }
-
                 if (!modelCache.containsKey(hash)) {
                     List<String> visible = new ArrayList<>();
                     visible.add(Direction.DOWN.getName() + down.getName().toUpperCase());
@@ -115,9 +116,7 @@ public class TransmitterBakedModel implements IBakedModel {
                     visible.add(Direction.SOUTH.getName() + south.getName().toUpperCase());
                     visible.add(Direction.WEST.getName() + west.getName().toUpperCase());
                     visible.add(Direction.EAST.getName() + east.getName().toUpperCase());
-                    TransmitterModelConfiguration configuration =  new TransmitterModelConfiguration(owner, visible, extraData, color);
-                    IBakedModel bakedCache = internal.bake(configuration, bakery, spriteGetter, modelTransform, overrides, modelLocation);
-                    List<BakedQuad> result = bakedCache.getQuads(state, side, rand, extraData);
+                    List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData, color)).getQuads(state, side, rand, extraData);
                     modelCache.put(hash, result);
                     return result;
                 }
@@ -127,6 +126,49 @@ public class TransmitterBakedModel implements IBakedModel {
         }
         return bakedVariant.getQuads(state, side, rand, extraData);
     }
+
+    /**
+     * Rotates the pieces that need rotating.
+     */
+    private IBakedModel bake(TransmitterModelConfiguration configuration) {
+        TextureAtlasSprite particle = spriteGetter.apply(configuration.resolveTexture("particle"));
+        IModelBuilder<?> builder = IModelBuilder.of(configuration, overrides, particle);
+        for (IModelGeometryPart part : internal.getParts()) {
+            if (configuration.getPartVisibility(part)) {
+                String name = part.name();
+                IModelTransform transform = modelTransform;
+                if (name.endsWith("NONE")) {
+                    Direction dir = directionForPiece(name);
+                    //We should not have been able to get here if dir was null but check just in case
+                    if (dir != null && configuration.shouldRotate(dir)) {
+                        //If the part should be rotated, then we need to use a custom IModelTransform
+                        transform = new TransmitterModelTransform(transform, dir);
+                    }
+                }
+                part.addQuads(configuration, builder, bakery, spriteGetter, transform, modelLocation);
+            }
+        }
+        return builder.build();
+    }
+
+    @Nullable
+    private static Direction directionForPiece(@Nonnull String piece) {
+        if (piece.startsWith("down")) {
+            return Direction.DOWN;
+        } else if (piece.startsWith("up")) {
+            return Direction.UP;
+        } else if (piece.startsWith("north")) {
+            return Direction.NORTH;
+        } else if (piece.startsWith("south")) {
+            return Direction.SOUTH;
+        } else if (piece.startsWith("east")) {
+            return Direction.EAST;
+        } else if (piece.startsWith("west")) {
+            return Direction.WEST;
+        }
+        return null;
+    }
+
 
     @Override
     public boolean isAmbientOcclusion() {
