@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.IModelTransform;
 import net.minecraft.client.renderer.model.IUnbakedModel;
@@ -22,9 +23,12 @@ import net.minecraftforge.client.model.obj.OBJModel;
 public class TransmitterModel implements IMultipartModelGeometry<TransmitterModel> {
 
     private final OBJModel internal;
+    @Nullable
+    private final OBJModel glass;
 
-    public TransmitterModel(OBJModel internalModel) {
+    public TransmitterModel(OBJModel internalModel, @Nullable OBJModel glass) {
         this.internal = internalModel;
+        this.glass = glass;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class TransmitterModel implements IMultipartModelGeometry<TransmitterMode
     @Override
     public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
           ItemOverrideList overrides, ResourceLocation modelLocation) {
-        return new TransmitterBakedModel(internal, owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
+        return new TransmitterBakedModel(internal, glass, owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
     }
 
     @Override
@@ -51,6 +55,13 @@ public class TransmitterModel implements IMultipartModelGeometry<TransmitterMode
             combined.addAll(part.getTextures(owner, modelGetter, missingTextureErrors));
             //Add the opaque versions of the textures as well
             combined.addAll(part.getTextures(configuration, modelGetter, missingTextureErrors));
+        }
+        if (glass != null) {
+            for (IModelGeometryPart part : glass.getParts()) {
+                combined.addAll(part.getTextures(owner, modelGetter, missingTextureErrors));
+                //Add the opaque versions of the textures as well
+                combined.addAll(part.getTextures(configuration, modelGetter, missingTextureErrors));
+            }
         }
         return combined;
     }

@@ -12,10 +12,10 @@ public class OpaqueModelConfiguration extends WrapperModelConfiguration {
 
     private String adjustTextureName(String name) {
         //Always opaque to ensure that we load the textures regardless
-        if (name.equals("#side")) {
-            return "#side_opaque";
+        if (name.startsWith("#side")) {
+            return name + "_opaque";
         } else if (name.startsWith("#center")) {
-            return "#center_opaque";
+            return name.contains("glass") ? "#center_glass_opaque" : "#center_opaque";
         }
         return name;
     }

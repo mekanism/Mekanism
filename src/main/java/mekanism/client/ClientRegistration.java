@@ -3,6 +3,7 @@ package mekanism.client;
 import java.util.Map;
 import java.util.function.Function;
 import mekanism.api.block.IColoredBlock;
+import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiCrusher;
@@ -126,6 +127,8 @@ import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -238,11 +241,9 @@ public class ClientRegistration {
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_FLUID_TANK, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.CREATIVE_FLUID_TANK, RenderType.func_228643_e_());
         //Transmitters
-        //TODO: Is this even the proper way to convert the canRenderInLayer the transmitters used to use
-        //TODO: The transmitters can probably be removed from here given setRenderLayer is only needed for blocks and not TERs
-        // though I am leaving it for now in case we decide to make transmitters use both
         //Logistical transporters
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.RESTRICTIVE_TRANSPORTER, RenderType.func_228643_e_());
+        //TODO: Does the diversion transporter actually need to be in multiple
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.DIVERSION_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
@@ -412,7 +413,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
-        ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, worldIn, pos, tintIndex) -> {
+        ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), event.getItemColors(), (state, world, pos, tintIndex) -> {
                   Block block = state.getBlock();
                   if (block instanceof IColoredBlock) {
                       return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
@@ -431,6 +432,19 @@ public class ClientRegistration {
               //Fluid Tank
               MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
+        //TODO: 1.15 other transporters also
+        event.getBlockColors().register((state, world, pos, tintIndex) -> {
+            if (tintIndex == 1 && pos != null) {
+                TileEntityLogisticalTransporter transporter = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, world, pos);
+                if (transporter != null) {
+                    EnumColor renderColor = transporter.getRenderColor();
+                    if (renderColor != null) {
+                        return MekanismRenderer.getColorARGB(renderColor, 1);
+                    }
+                }
+            }
+            return -1;
+        }, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER.getBlock());
     }
 
     @SubscribeEvent

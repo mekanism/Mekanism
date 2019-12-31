@@ -156,23 +156,6 @@ public class MekanismRenderer {
         }
 
         return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), format);
-    }
-
-    public static BakedQuad rotate(BakedQuad quad, int amount) {
-        int[] vertices = new int[quad.getVertexData().length];
-        System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
-
-        for (int i = 0; i < 4; i++) {
-            int nextIndex = (i + amount) % 4;
-            int quadSize = quad.getFormat().getIntegerSize();
-            int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
-            if (i + uvIndex + 1 < vertices.length) {
-                vertices[quadSize * i + uvIndex] = quad.getVertexData()[quadSize * nextIndex + uvIndex];
-                vertices[quadSize * i + uvIndex + 1] = quad.getVertexData()[quadSize * nextIndex + uvIndex + 1];
-            }
-        }
-
-        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
     }*/
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
@@ -399,9 +382,6 @@ public class MekanismRenderer {
         whiteIcon = map.getSprite(Mekanism.rl("block/overlay/overlay_white"));
         energyIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_energy"));
         heatIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_heat"));
-
-        //TODO: 1.15
-        //TransmitterModel.getIcons(map);
 
         initFluidTextures(map);
 

@@ -43,6 +43,8 @@ import net.minecraftforge.client.model.obj.OBJModel;
 public class TransmitterBakedModel implements IBakedModel {
 
     private final OBJModel internal;
+    @Nullable
+    private final OBJModel glass;
     private final IModelConfiguration owner;
     private final ModelBakery bakery;
     private final Function<Material, TextureAtlasSprite> spriteGetter;
@@ -53,9 +55,10 @@ public class TransmitterBakedModel implements IBakedModel {
 
     private Map<Integer, List<BakedQuad>> modelCache = new Int2ObjectOpenHashMap<>();
 
-    public TransmitterBakedModel(OBJModel internal, IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-          IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+    public TransmitterBakedModel(OBJModel internal, @Nullable OBJModel glass, IModelConfiguration owner, ModelBakery bakery,
+          Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
         this.internal = internal;
+        this.glass = glass;
         this.owner = owner;
         this.bakery = bakery;
         this.spriteGetter = spriteGetter;
@@ -105,6 +108,7 @@ public class TransmitterBakedModel implements IBakedModel {
                 hash = hash * 31 + south.ordinal();
                 hash = hash * 31 + west.ordinal();
                 hash = hash * 31 + east.ordinal();
+                //TODO: Just hash if there is a color or not? Given we are doing tint index
                 if (color != null) {
                     hash = hash * 31 + color.ordinal();
                 }
@@ -116,7 +120,7 @@ public class TransmitterBakedModel implements IBakedModel {
                     visible.add(Direction.SOUTH.getName() + south.getName().toUpperCase());
                     visible.add(Direction.WEST.getName() + west.getName().toUpperCase());
                     visible.add(Direction.EAST.getName() + east.getName().toUpperCase());
-                    List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData, color)).getQuads(state, side, rand, extraData);
+                    List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), color).getQuads(state, side, rand, extraData);
                     modelCache.put(hash, result);
                     return result;
                 }
@@ -130,10 +134,18 @@ public class TransmitterBakedModel implements IBakedModel {
     /**
      * Rotates the pieces that need rotating.
      */
-    private IBakedModel bake(TransmitterModelConfiguration configuration) {
+    private IBakedModel bake(TransmitterModelConfiguration configuration, @Nullable EnumColor color) {
         TextureAtlasSprite particle = spriteGetter.apply(configuration.resolveTexture("particle"));
         IModelBuilder<?> builder = IModelBuilder.of(configuration, overrides, particle);
-        for (IModelGeometryPart part : internal.getParts()) {
+        addPartQuads(configuration, builder, internal);
+        if (glass != null && color != null && MinecraftForgeClient.getRenderLayer() == RenderType.func_228645_f_()) {
+            addPartQuads(configuration, builder, glass);
+        }
+        return builder.build();
+    }
+
+    private void addPartQuads(TransmitterModelConfiguration configuration, IModelBuilder<?> builder, OBJModel glass) {
+        for (IModelGeometryPart part : glass.getParts()) {
             if (configuration.getPartVisibility(part)) {
                 String name = part.name();
                 IModelTransform transform = modelTransform;
@@ -148,7 +160,6 @@ public class TransmitterBakedModel implements IBakedModel {
                 part.addQuads(configuration, builder, bakery, spriteGetter, transform, modelLocation);
             }
         }
-        return builder.build();
     }
 
     @Nullable
@@ -168,7 +179,6 @@ public class TransmitterBakedModel implements IBakedModel {
         }
         return null;
     }
-
 
     @Override
     public boolean isAmbientOcclusion() {

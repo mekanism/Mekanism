@@ -5,7 +5,9 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.model.obj.OBJModel;
 
 public class TransmitterLoader implements IModelLoader<TransmitterModel> {
 
@@ -23,6 +25,12 @@ public class TransmitterLoader implements IModelLoader<TransmitterModel> {
     @Override
     public TransmitterModel read(@Nonnull JsonDeserializationContext deserializationContext, @Nonnull JsonObject modelContents) {
         //Wrap the Obj loader to read our file
-        return new TransmitterModel(OBJLoader.INSTANCE.read(deserializationContext, modelContents));
+        OBJModel model = OBJLoader.INSTANCE.read(deserializationContext, modelContents);
+        OBJModel glass = null;
+        if (modelContents.has("glass")) {
+            //TODO: Look into if there is a way to make the obj.mek file be the same and just change the mtl
+            glass = (OBJModel) ModelLoaderRegistry.deserializeGeometry(deserializationContext, modelContents.get("glass").getAsJsonObject());
+        }
+        return new TransmitterModel(model, glass);
     }
 }
