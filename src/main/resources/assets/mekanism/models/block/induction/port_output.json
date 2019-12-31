@@ -1,0 +1,6 @@
+{
+  "parent": "mekanism:block/induction/port",
+  "textures": {
+    "all": "mekanism:block/induction_port_output"
+  }
+}

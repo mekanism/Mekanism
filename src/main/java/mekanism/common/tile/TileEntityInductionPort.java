@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
-import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -22,8 +21,6 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
@@ -35,10 +32,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     private int currentRedstoneLevel;
 
-    /**
-     * false = input, true = output
-     */
-    public boolean mode;
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
     public TileEntityInductionPort() {
@@ -49,7 +42,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public void onUpdate() {
         super.onUpdate();
         if (!isRemote()) {
-            if (structure != null && mode) {
+            if (structure != null && getActive()) {
                 CableUtils.emit(this);
             }
             World world = getWorld();
@@ -65,7 +58,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public boolean canOutputEnergy(Direction side) {
-        if (structure != null && mode) {
+        if (structure != null && getActive()) {
             return !structure.locations.contains(Coord4D.get(this).offset(side));
         }
         return false;
@@ -73,45 +66,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public boolean canReceiveEnergy(Direction side) {
-        return (structure != null && !mode);
+        return (structure != null && !getActive());
     }
 
     @Override
     public double getMaxOutput() {
         return structure != null ? structure.getRemainingOutput() : 0;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            boolean prevMode = mode;
-            mode = dataStream.readBoolean();
-            if (prevMode != mode) {
-                MekanismUtils.updateBlock(getWorld(), getPos());
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(mode);
-        return data;
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        mode = nbtTags.getBoolean("mode");
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putBoolean("mode", mode);
-        return nbtTags;
     }
 
     @Override
@@ -127,9 +87,10 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
-            mode = !mode;
+            boolean oldMode = getActive();
+            setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(!mode, true))));
+                  MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }
@@ -139,16 +100,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
-    }
-
-    @Override
-    public boolean getActive() {
-        return mode;
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        mode = active;
     }
 
     @Override
@@ -187,7 +138,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return Collections.emptyList();
         }
         //TODO: Cache this??
-        return Collections.singletonList(structure.getInventorySlots().get(mode ? 0 : 1));
+        return Collections.singletonList(structure.getInventorySlots().get(getActive() ? 0 : 1));
     }
 
     @Override

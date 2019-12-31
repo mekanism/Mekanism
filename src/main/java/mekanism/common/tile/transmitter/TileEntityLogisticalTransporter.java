@@ -179,13 +179,15 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
                 super.handlePacketData(dataStream);
                 int c = dataStream.readInt();
                 EnumColor prev = getTransmitter().getColor();
-                if (c != -1) {
-                    getTransmitter().setColor(TransporterUtils.colors.get(c));
-                } else {
+                if (c == -1) {
                     getTransmitter().setColor(null);
+                } else {
+                    getTransmitter().setColor(TransporterUtils.colors.get(c));
                 }
                 if (prev != getTransmitter().getColor()) {
                     //TODO: Only make it so it needs to request an update once instead of potentially doing it in the super as well
+                    //We update the model data regardless of if it changed from one color to the next
+                    // because even though it is a boolean, we also may have side/connection data that changed
                     requestModelDataUpdate();
                     MekanismUtils.updateBlock(getWorld(), pos);
                 }
@@ -209,10 +211,10 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         data.add(0);
         super.getNetworkedData(data);
-        if (getTransmitter().getColor() != null) {
-            data.add(TransporterUtils.colors.indexOf(getTransmitter().getColor()));
-        } else {
+        if (getTransmitter().getColor() == null) {
             data.add(-1);
+        } else {
+            data.add(TransporterUtils.colors.indexOf(getTransmitter().getColor()));
         }
 
         // Serialize all the in-flight stacks (this includes their ID)
@@ -367,7 +369,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         TransmitterModelData modelData = getModelData();
         if (modelData instanceof TransmitterModelData.Colorable) {
             TransmitterModelData.Colorable colorable = (TransmitterModelData.Colorable) modelData;
-            colorable.setColor(getRenderColor());
+            colorable.setColor(getRenderColor() != null);
         }
     }
 

@@ -3,7 +3,6 @@ package mekanism.client.model.data;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nullable;
-import mekanism.api.text.EnumColor;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.data.IModelData;
@@ -70,17 +69,16 @@ public class TransmitterModelData implements IModelData {
 
     public static class Colorable extends TransmitterModelData {
 
-        @Nullable
-        private EnumColor color;
+        private Boolean hasColor;
 
-        public void setColor(@Nullable EnumColor color) {
-            this.color = color;
+        public void setColor(boolean hasColor) {
+            this.hasColor = hasColor;
         }
 
         @Override
         public boolean hasProperty(ModelProperty<?> prop) {
             if (prop == ModelProperties.COLOR) {
-                return color != null;
+                return hasColor != null;
             }
             return super.hasProperty(prop);
         }
@@ -89,7 +87,7 @@ public class TransmitterModelData implements IModelData {
         @Override
         public <T> T getData(ModelProperty<T> prop) {
             if (prop == ModelProperties.COLOR) {
-                return (T) color;
+                return (T) hasColor;
             }
             return super.getData(prop);
         }
@@ -98,7 +96,7 @@ public class TransmitterModelData implements IModelData {
         @Override
         public <T> T setData(ModelProperty<T> prop, T data) {
             if (prop == ModelProperties.COLOR) {
-                color = (EnumColor) data;
+                hasColor = (Boolean) data;
                 return data;
             }
             return super.setData(prop, data);

@@ -7,7 +7,7 @@ import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 
 public class VisibleModelConfiguration extends WrapperModelConfiguration {
 
-    protected final List<String> visibleGroups;
+    private final List<String> visibleGroups;
 
     public VisibleModelConfiguration(IModelConfiguration internal, List<String> visibleGroups) {
         super(internal);

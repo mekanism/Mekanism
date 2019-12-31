@@ -4,10 +4,7 @@
       "model": "mekanism:block/induction/port"
     },
     "active=true": {
-      "model": "mekanism:block/induction/port",
-      "textures": {
-        "all": "mekanism:block/induction_port_output"
-      }
+      "model": "mekanism:block/induction/port_output"
     }
   }
 }

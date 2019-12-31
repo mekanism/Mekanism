@@ -241,9 +241,13 @@ public class ClientRegistration {
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_FLUID_TANK, RenderType.func_228643_e_());
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.CREATIVE_FLUID_TANK, RenderType.func_228643_e_());
         //Transmitters
+        //TODO: Check for various things that the main part of the rendering is in the TER if we even need
+        // the different types. We may only need to set the render layer for transporters.
+        //TODO: Also maybe look into make it so we can see the back edges of the transmitters when looking through them
         //Logistical transporters
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.RESTRICTIVE_TRANSPORTER, RenderType.func_228643_e_());
-        //TODO: Does the diversion transporter actually need to be in multiple
+        //TODO: Does the diversion transporter actually need to be in multiple render types
+        // Also can we move the overlay from the TER to being part of the baked model
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.DIVERSION_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
         ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
@@ -432,8 +436,7 @@ public class ClientRegistration {
               //Fluid Tank
               MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
-        //TODO: 1.15 other transporters also
-        event.getBlockColors().register((state, world, pos, tintIndex) -> {
+        ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), (state, world, pos, tintIndex) -> {
             if (tintIndex == 1 && pos != null) {
                 TileEntityLogisticalTransporter transporter = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, world, pos);
                 if (transporter != null) {
@@ -444,7 +447,8 @@ public class ClientRegistration {
                 }
             }
             return -1;
-        }, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER.getBlock());
+        }, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
+              MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
     }
 
     @SubscribeEvent

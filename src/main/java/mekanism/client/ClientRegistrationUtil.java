@@ -74,6 +74,12 @@ public class ClientRegistrationUtil {
         }
     }
 
+    public static void registerBlockColorHandler(BlockColors blockColors, IBlockColor blockColor, IBlockProvider... blocks) {
+        for (IBlockProvider blockProvider : blocks) {
+            blockColors.register(blockColor, blockProvider.getBlock());
+        }
+    }
+
     public static void setRenderLayer(IBlockProvider block, RenderType type) {
         RenderTypeLookup.setRenderLayer(block.getBlock(), type);
     }

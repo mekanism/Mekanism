@@ -509,6 +509,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 Direction hitSide = sideHit(result.hit.subHit + 1);
                 if (hitSide == null) {
                     if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == ActionResultType.SUCCESS) {
+                        //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
+                        refreshConnections();
+                        notifyTileChange();
                         return ActionResultType.SUCCESS;
                     }
                     hitSide = side;

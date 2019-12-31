@@ -12,7 +12,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.text.EnumColor;
 import mekanism.client.model.data.ModelProperties;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.util.EnumUtils;
@@ -94,23 +93,22 @@ public class TransmitterBakedModel implements IBakedModel {
                 ConnectionType east = extraData.getData(ModelProperties.EAST_CONNECTION);
 
                 RenderType layer = MinecraftForgeClient.getRenderLayer();
-                EnumColor color = null;
+                boolean hasColor = false;
                 if (extraData.hasProperty(ModelProperties.COLOR) && layer == RenderType.func_228645_f_()) {
                     //Only try getting the color property for ones that will have a color
-                    color = extraData.getData(ModelProperties.COLOR);
+                    Boolean color = extraData.getData(ModelProperties.COLOR);
+                    hasColor = color != null && color;
                 }
 
                 int hash = 1;
-                hash = hash * 31 + layer.hashCode();
                 hash = hash * 31 + down.ordinal();
                 hash = hash * 31 + up.ordinal();
                 hash = hash * 31 + north.ordinal();
                 hash = hash * 31 + south.ordinal();
                 hash = hash * 31 + west.ordinal();
                 hash = hash * 31 + east.ordinal();
-                //TODO: Just hash if there is a color or not? Given we are doing tint index
-                if (color != null) {
-                    hash = hash * 31 + color.ordinal();
+                if (hasColor) {
+                    hash = hash * 31 + 1;
                 }
                 if (!modelCache.containsKey(hash)) {
                     List<String> visible = new ArrayList<>();
@@ -120,7 +118,7 @@ public class TransmitterBakedModel implements IBakedModel {
                     visible.add(Direction.SOUTH.getName() + south.getName().toUpperCase());
                     visible.add(Direction.WEST.getName() + west.getName().toUpperCase());
                     visible.add(Direction.EAST.getName() + east.getName().toUpperCase());
-                    List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), color).getQuads(state, side, rand, extraData);
+                    List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), hasColor).getQuads(state, side, rand, extraData);
                     modelCache.put(hash, result);
                     return result;
                 }
@@ -134,11 +132,11 @@ public class TransmitterBakedModel implements IBakedModel {
     /**
      * Rotates the pieces that need rotating.
      */
-    private IBakedModel bake(TransmitterModelConfiguration configuration, @Nullable EnumColor color) {
+    private IBakedModel bake(TransmitterModelConfiguration configuration, boolean hasColor) {
         TextureAtlasSprite particle = spriteGetter.apply(configuration.resolveTexture("particle"));
         IModelBuilder<?> builder = IModelBuilder.of(configuration, overrides, particle);
         addPartQuads(configuration, builder, internal);
-        if (glass != null && color != null && MinecraftForgeClient.getRenderLayer() == RenderType.func_228645_f_()) {
+        if (glass != null && hasColor && MinecraftForgeClient.getRenderLayer() == RenderType.func_228645_f_()) {
             addPartQuads(configuration, builder, glass);
         }
         return builder.build();
