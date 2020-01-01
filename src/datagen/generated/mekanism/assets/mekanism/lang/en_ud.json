@@ -487,6 +487,7 @@
   "generic.mekanism.stored": "%2$s :%1$s",
   "generic.mekanism.stored.mb": "\u15FA\u026F %2$s :%1$s",
   "generic.mekanism.transfer": "(%2$s) %1$s -",
+  "generic.mekanism.with_parenthesis": "(%2$s) %1$s",
   "gui.mekanism.chemical_dissolution_chamber.short": "\u0279\u01DDq\u026F\u0250\u0265\u0186 uo\u1D09\u0287n\uA781oss\u1D09\u15E1 \u02D9\u0186",
   "gui.mekanism.chemical_infuser.short": "\u0279\u01DDsn\u025FuI \u02D9\u0186",
   "gui.mekanism.delay": "\u0287%s :\u028E\u0250\uA781\u01DD\u15E1",

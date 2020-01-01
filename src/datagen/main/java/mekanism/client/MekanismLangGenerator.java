@@ -339,6 +339,7 @@ public class MekanismLangGenerator extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_PRE_COLON, "%s:");
         add(MekanismLang.GENERIC_SQUARE_BRACKET, "[%s]");
         add(MekanismLang.GENERIC_PARENTHESIS, "(%s)");
+        add(MekanismLang.GENERIC_WITH_PARENTHESIS, "%s (%s)");
         add(MekanismLang.GENERIC_FRACTION, "%s/%s");
         add(MekanismLang.GENERIC_TRANSFER, "- %s (%s)");
         add(MekanismLang.GENERIC_PER_TICK, "%s/t");

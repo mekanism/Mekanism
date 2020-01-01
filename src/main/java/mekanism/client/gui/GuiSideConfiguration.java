@@ -83,7 +83,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
             if (onHover instanceof SideDataButton) {
                 DataType dataType = ((SideDataButton) onHover).getDataType();
                 if (dataType != null) {
-                    displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(dataType.getColor(), dataType.getColor().getName()), xAxis, yAxis);
+                    displayTooltip(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(dataType.getColor(), dataType, dataType.getColor().getName()), xAxis, yAxis);
                 }
             }
         };

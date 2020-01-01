@@ -6,7 +6,8 @@
   "ambientToFullbright": false,
   "glass": {
     "loader": "forge:obj",
-    "model": "mekanism:models/block/transmitter_glass_large.obj.mek",
+    "model": "mekanism:models/block/transmitter_large.obj.mek",
+    "materialLibraryOverride": "mekanism:models/block/transmitter_glass_large.mtl",
     "flip-v": true,
     "ambientToFullbright": false
   },

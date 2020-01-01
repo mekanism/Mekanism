@@ -19,6 +19,7 @@ import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
+import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.tier.BaseTier;
@@ -41,7 +42,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.model.obj.OBJLoader.ModelSettings;
+import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
@@ -54,6 +59,7 @@ public class MekanismRenderer {
     public static final GlowInfo NO_GLOW = new GlowInfo(0, 0, false);
     public static final int FULL_LIGHT = 0xF000F0;
 
+    public static OBJModel contentsModel;
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
@@ -185,20 +191,24 @@ public class MekanismRenderer {
         RenderSystem.color4f(1, 1, 1, 1);
     }
 
-    private static float getRed(int color) {
+    public static float getRed(int color) {
         return (color >> 16 & 0xFF) / 255.0F;
     }
 
-    private static float getGreen(int color) {
+    public static float getGreen(int color) {
         return (color >> 8 & 0xFF) / 255.0F;
     }
 
-    private static float getBlue(int color) {
+    public static float getBlue(int color) {
         return (color & 0xFF) / 255.0F;
     }
 
+    public static float getAlpha(int color) {
+        return (color >> 24 & 0xFF) / 255.0F;
+    }
+
     public static void color(int color) {
-        RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255.0F);
+        RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
     }
 
     public static void color(@Nonnull FluidStack fluid, float fluidScale) {
@@ -339,6 +349,15 @@ public class MekanismRenderer {
             case EAST:
                 matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(east));
                 break;
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModelBake(ModelBakeEvent event) {
+        try {
+            contentsModel = OBJLoader.INSTANCE.loadModel(new ModelSettings(RenderTransmitterBase.MODEL_LOCATION, true, false, true, true, null));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

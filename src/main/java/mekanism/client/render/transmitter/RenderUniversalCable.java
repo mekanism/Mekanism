@@ -1,13 +1,13 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
 
 public class RenderUniversalCable extends RenderTransmitterSimple<TileEntityUniversalCable> {
 
@@ -19,15 +19,12 @@ public class RenderUniversalCable extends RenderTransmitterSimple<TileEntityUniv
     public void func_225616_a_(@Nonnull TileEntityUniversalCable cable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
           int otherLight) {
         if (!MekanismConfig.client.opaqueTransmitters.get() && cable.currentPower > 0) {
-            //TODO: 1.15
-            //render(cable, x, y, z, 15);
+            render(cable, matrix, renderer, light, otherLight, 15);
         }
     }
 
     @Override
-    protected void renderSide(BufferBuilder renderer, Direction side, @Nonnull TileEntityUniversalCable cable) {
-        //TODO: 1.15
-        /*renderTransparency(renderer, MekanismRenderer.energyIcon, getModelForSide(cable, side), new ColourRGBA(1.0, 1.0, 1.0, cable.currentPower),
-              cable.getBlockState(), cable.getModelData());*/
+    protected void renderContents(MatrixStack matrix, IVertexBuilder renderer, @Nonnull TileEntityUniversalCable cable, int light, int overlayLight) {
+        renderModel(cable, matrix, renderer, 1, 1, 1, (float) cable.currentPower, light, overlayLight, MekanismRenderer.energyIcon);
     }
 }

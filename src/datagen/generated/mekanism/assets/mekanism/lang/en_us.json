@@ -487,6 +487,7 @@
   "generic.mekanism.stored": "%s: %s",
   "generic.mekanism.stored.mb": "%s: %s mB",
   "generic.mekanism.transfer": "- %s (%s)",
+  "generic.mekanism.with_parenthesis": "%s (%s)",
   "gui.mekanism.chemical_dissolution_chamber.short": "C. Dissolution Chamber",
   "gui.mekanism.chemical_infuser.short": "C. Infuser",
   "gui.mekanism.delay": "Delay: %st",
