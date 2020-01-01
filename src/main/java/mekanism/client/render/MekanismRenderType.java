@@ -14,8 +14,6 @@ public class MekanismRenderType extends RenderType {
     }
 
     public static RenderType mekStandard(ResourceLocation resourceLocation) {
-        //TODO: Make a "state" piece for the glow? If so it would need to be a separate "render type", due to only working for full glow
-        // .func_228719_a_(field_228529_u_)
         RenderType.State state = RenderType.State.func_228694_a_()
               .func_228724_a_(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .func_228723_a_(field_228520_l_)//shadeModel(GL11.GL_SMOOTH)
@@ -35,15 +33,19 @@ public class MekanismRenderType extends RenderType {
         return func_228633_a_("transmitter_contents", DefaultVertexFormats.field_227849_i_, 7, 256, true, false, state);
     }
 
-    public static RenderType configurableMachine(ResourceLocation resourceLocation) {
-        RenderType.State state = RenderType.State.func_228694_a_()
+    public static RenderType.State.Builder configurableMachineState(ResourceLocation resourceLocation) {
+        return RenderType.State.func_228694_a_()
               .func_228724_a_(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .func_228714_a_(field_228534_z_)//enableCull
               .func_228719_a_(field_228529_u_)//disableLighting
               .func_228723_a_(field_228520_l_)//shadeModel(GL11.GL_SMOOTH)
               .func_228713_a_(field_228516_h_)//disableAlphaTest
-              .func_228726_a_(field_228515_g_)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-              .func_228728_a_(true);
-        return func_228633_a_("mek_configurable_machine", DefaultVertexFormats.field_227849_i_, 7, 256, true, false, state);
+              .func_228726_a_(field_228515_g_);//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+    }
+
+    public static RenderType resizableCuboid(RenderType.State.Builder stateBuilder, VertexFormat format) {
+        stateBuilder.func_228713_a_(new RenderState.AlphaState(0.5F))//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
+              .func_228719_a_(field_228529_u_);//disableLighting
+        return func_228633_a_("resizable_cuboid", format, 7, 256, true, false, stateBuilder.func_228728_a_(true));
     }
 }

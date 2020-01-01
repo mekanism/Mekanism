@@ -28,6 +28,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -170,15 +172,13 @@ public class MekanismRenderer {
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
     }
 
-    public static void renderObject(Model3D object) {
-        if (object == null) {
-            return;
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder) {
+        if (object != null) {
+            matrix.func_227860_a_();
+            matrix.func_227861_a_(object.minX, object.minY, object.minZ);
+            RenderResizableCuboid.INSTANCE.renderCube(object, renderer, stateBuilder);
+            matrix.func_227865_b_();
         }
-
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef((float) object.minX, (float) object.minY, (float) object.minZ);
-        RenderResizableCuboid.INSTANCE.renderCube(object);
-        RenderSystem.popMatrix();
     }
 
     public static void bindTexture(ResourceLocation texture) {
@@ -363,7 +363,6 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
-        //TODO: 1.15 if this is broken try printing all the paths
         if (!event.getMap().func_229223_g_().equals(PlayerContainer.field_226615_c_)) {
             return;
         }
@@ -390,7 +389,6 @@ public class MekanismRenderer {
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Post event) {
         AtlasTexture map = event.getMap();
-        //TODO: 1.15 if this is broken try printing all the paths
         if (!map.func_229223_g_().equals(PlayerContainer.field_226615_c_)) {
             return;
         }
@@ -484,7 +482,8 @@ public class MekanismRenderer {
         }
     }
 
-    //TODO: RenderSystem.glGenBuffers or maybe RenderSystem.recordRenderCall
+    //TODO: 1.15 remove this
+    @Deprecated
     public static class DisplayInteger {
 
         public int display;
