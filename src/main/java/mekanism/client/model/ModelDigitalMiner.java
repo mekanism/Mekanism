@@ -427,76 +427,76 @@ public class ModelDigitalMiner extends Model {
         setRotation(monitor3, 0.0872665F, 0.2094395F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, boolean on) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean on) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
         matrix.func_227860_a_();
         matrix.func_227862_a_(1.001F, 1.001F, 1.001F);
         matrix.func_227861_a_(-0.0011, -0.0011, -0.0011);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        func_225598_a_(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, otherLight, 1, 1, 1, 1);
+        func_225598_a_(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, overlayLight, 1, 1, 1, 1);
         MekanismRenderer.disableGlow(glowInfo);
         matrix.func_227865_b_();
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue,
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
           float alpha) {
-        keyboard.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        keyboardBottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        keyboardSupportExt1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        keyboardSupportExt2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        keyboardSupport1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        keyboardSupport2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitor1back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitor2back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitor3back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitorBar1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitorBar2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        led1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        led2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        led3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitor1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitor2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitor3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitorMount1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        monitorMount2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        plate5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracket1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracket2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracket3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracket4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracket5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracket6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracket7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracket8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracketPlate1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracketPlate2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracketPlate3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bracketPlate4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        supportBeam1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        supportBeam2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        supportBeam3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        supportBeam4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        foot1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        foot2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        foot3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        foot4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        core.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        powerCable1a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        powerCable1b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        powerCable2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        powerCable3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        powerConnector1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        powerConnector2a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        powerConnector2b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        powerCpnnector3a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        powerConnector3b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame2a.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame2b.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame2c.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame2d.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        keyboard.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        keyboardBottom.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        keyboardSupportExt1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        keyboardSupportExt2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        keyboardSupport1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        keyboardSupport2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitor1back.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitor2back.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitor3back.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitorBar1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitorBar2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        led1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        led2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        led3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitor1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitor2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitor3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitorMount1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        monitorMount2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        plate5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracket1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracket2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracket3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracket4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracket5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracket6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracket7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracket8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracketPlate1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracketPlate2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracketPlate3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bracketPlate4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        supportBeam1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        supportBeam2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        supportBeam3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        supportBeam4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        foot1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        foot2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        foot3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        foot4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        core.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        powerCable1a.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        powerCable1b.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        powerCable2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        powerCable3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        powerConnector1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        powerConnector2a.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        powerConnector2b.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        powerCpnnector3a.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        powerConnector3b.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame2a.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame2b.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame2c.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame2d.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

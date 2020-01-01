@@ -26,8 +26,8 @@ public class ModelTransporterBox extends Model {
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        box.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        box.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

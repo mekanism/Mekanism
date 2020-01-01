@@ -99,28 +99,28 @@ public class ModelFluidTank extends Model {
         setRotation(LeftGlass, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, FluidTankTier tier) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, FluidTankTier tier) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
         EnumColor color = tier.getBaseTier().getColor();
         //TODO: Try to make it so the lines can still show up on the back walls of the tank in first person
-        renderGlass(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, otherLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+        renderGlass(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        Base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        PoleFL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        PoleLB.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        PoleBR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        PoleRF.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        Base.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        PoleFL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        PoleLB.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        PoleBR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        PoleRF.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Top.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        FrontGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        BackGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        RightGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        LeftGlass.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    private void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        FrontGlass.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        BackGlass.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        RightGlass.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        LeftGlass.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

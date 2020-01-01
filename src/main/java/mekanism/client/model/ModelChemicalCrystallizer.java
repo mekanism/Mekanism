@@ -145,31 +145,31 @@ public class ModelChemicalCrystallizer extends Model {
         setRotation(glass, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
         //Render the glass on a more translucent layer
         //Note: The glass makes water, ice etc behind it invisible. This is due to an engine limitation
-        glass.func_228309_a_(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        glass.func_228309_a_(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        tray.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        support4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rimBack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        portRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rimRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rimLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rimFront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        portLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        support3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        support2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        support1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tank.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rod1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rod2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rod3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        tray.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        support4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rimBack.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        portRight.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rimRight.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rimLeft.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rimFront.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        portLeft.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        support3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        support2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        support1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tank.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rod1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rod2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rod3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

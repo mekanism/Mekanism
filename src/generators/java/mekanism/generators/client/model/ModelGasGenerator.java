@@ -156,31 +156,31 @@ public class ModelGasGenerator extends Model {
         setRotation(connector1, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        port4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        baseStand.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pillar4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        port3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        port2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        connectorAngle1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pillar3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pillar2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pillar1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        center.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        connector3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        port1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        connector4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        connectorAngle4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        connectorAngle3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        connector2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        connectorAngle2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        connector1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        port4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        baseStand.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pillar4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        port3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        port2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        connectorAngle1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pillar3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pillar2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pillar1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        center.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        connector3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        port1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        connector4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        connectorAngle4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        connectorAngle3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        connector2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        connectorAngle2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        connector1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

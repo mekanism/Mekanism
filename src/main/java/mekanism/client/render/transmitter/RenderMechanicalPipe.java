@@ -28,7 +28,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityMechanicalPipe pipe, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int otherLight) {
+          int overlayLight) {
         //TODO: 1.15
         /*if (MekanismConfig.client.opaqueTransmitters.get()) {
             return;

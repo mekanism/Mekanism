@@ -88,21 +88,21 @@ public class ModelScubaTank extends Model {
         setRotation(tankbackbrace, 0.2443461F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        tankL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tankR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tankdock.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        capL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        capR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tankbridge.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tankpipelower.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tankpipeupper.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tankbackbrace.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        tankL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankdock.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        capL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        capR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankbridge.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankpipelower.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankpipeupper.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tankbackbrace.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

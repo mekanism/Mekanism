@@ -22,7 +22,7 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityTurbineRotor tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull TileEntityTurbineRotor tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         if (tile.getMultiblock() != null && !internalRender) {
             return;
         }
@@ -45,7 +45,7 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
             matrix.func_227860_a_();
             matrix.func_227861_a_(0.5, -1, 0.5);
             matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(tile.rotationLower));
-            model.render(matrix, renderer, light, otherLight, baseIndex);
+            model.render(matrix, renderer, light, overlayLight, baseIndex);
             matrix.func_227865_b_();
         }
 
@@ -53,7 +53,7 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
             matrix.func_227860_a_();
             matrix.func_227861_a_(0.5, -0.5, 0.5);
             matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(tile.rotationUpper));
-            model.render(matrix, renderer, light, otherLight, baseIndex + 1);
+            model.render(matrix, renderer, light, overlayLight, baseIndex + 1);
             matrix.func_227865_b_();
         }
         matrix.func_227865_b_();

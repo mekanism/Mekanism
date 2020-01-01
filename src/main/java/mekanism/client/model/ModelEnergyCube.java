@@ -354,67 +354,67 @@ public class ModelEnergyCube extends Model {
         connectors = new ModelRenderer[]{connectorBottomToggle, connectorTopToggle, connectorFrontToggle, connectorBackToggle, connectorLeftToggle, connectorRightToggle};
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, EnergyCubeTier tier, boolean renderMain) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, EnergyCubeTier tier, boolean renderMain) {
         if (renderMain) {
-            func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+            func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
         }
         EnumColor color = tier.getBaseTier().getColor();
-        renderCorners(matrix, renderer.getBuffer(RENDER_TYPE_BASE), MekanismRenderer.FULL_LIGHT, otherLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+        renderCorners(matrix, renderer.getBuffer(RENDER_TYPE_BASE), MekanismRenderer.FULL_LIGHT, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        frame12.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame11.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame10.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frame1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        frame12.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame11.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame10.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame9.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frame1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
 
-        corner8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderCorners(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+    private void renderCorners(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         matrix.func_227860_a_();
         matrix.func_227862_a_(1.001F, 1.005F, 1.001F);
         matrix.func_227861_a_(0, -0.0061, 0);
-        corner8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        corner1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        corner8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        corner1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         matrix.func_227865_b_();
     }
 
-    public void renderSide(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, Direction side, boolean canInput, boolean canOutput) {
+    public void renderSide(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, Direction side, boolean canInput, boolean canOutput) {
         if (canInput || canOutput) {
             IVertexBuilder buffer = renderer.getBuffer(RENDER_TYPE);
-            connectors[side.ordinal()].func_228309_a_(matrix, buffer, light, otherLight, 1, 1, 1, 1);
-            ports[side.ordinal()].func_228309_a_(matrix, buffer, light, otherLight, 1, 1, 1, 1);
+            connectors[side.ordinal()].func_228309_a_(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+            ports[side.ordinal()].func_228309_a_(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
         }
         if (canOutput) {
             light = MekanismRenderer.FULL_LIGHT;
-            ports[side.ordinal()].func_228309_a_(matrix, renderer.getBuffer(RENDER_TYPE_BASE), light, otherLight, 1, 1, 1, 1);
+            ports[side.ordinal()].func_228309_a_(matrix, renderer.getBuffer(RENDER_TYPE_BASE), light, overlayLight, 1, 1, 1, 1);
         }
         IVertexBuilder ledBuffer = renderer.getBuffer(canOutput ? RENDER_TYPE_ON : RENDER_TYPE_OFF);
-        leds1[side.ordinal()].func_228309_a_(matrix, ledBuffer, light, otherLight, 1, 1, 1, 1);
-        leds2[side.ordinal()].func_228309_a_(matrix, ledBuffer, light, otherLight, 1, 1, 1, 1);
+        leds1[side.ordinal()].func_228309_a_(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
+        leds2[side.ordinal()].func_228309_a_(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
@@ -442,15 +442,15 @@ public class ModelEnergyCube extends Model {
             cube.mirror = true;
         }
 
-        public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, EnumColor color, float energyPercentage) {
-            cube.func_228309_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, color.getColor(0), color.getColor(1), color.getColor(2),
+        public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, EnumColor color, float energyPercentage) {
+            cube.func_228309_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2),
                   energyPercentage);
         }
 
         @Override
-        public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue,
+        public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
               float alpha) {
-            cube.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+            cube.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         }
     }
 }

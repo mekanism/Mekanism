@@ -22,13 +22,13 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityPressurizedTube tube, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int otherLight) {
+          int overlayLight) {
         if (!MekanismConfig.client.opaqueTransmitters.get()) {
             TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
             if (transmitter.hasTransmitterNetwork()) {
                 GasNetwork transmitterNetwork = transmitter.getTransmitterNetwork();
                 if (!transmitterNetwork.buffer.isEmpty() && transmitterNetwork.gasScale > 0) {
-                    render(tube, matrix, renderer, light, otherLight, 0);
+                    render(tube, matrix, renderer, light, overlayLight, 0);
                 }
             }
         }

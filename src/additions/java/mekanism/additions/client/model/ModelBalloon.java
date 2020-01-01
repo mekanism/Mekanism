@@ -71,20 +71,20 @@ public class ModelBalloon extends Model {
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         matrix.func_227860_a_();
         matrix.func_227862_a_(1.5F, 1.5F, 1.5F);
         matrix.func_227861_a_(0, -0.07, 0);
 
-        Balloon2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Balloon1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Balloon3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Balloonnub.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Balloon2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Balloon1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Balloon3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Balloonnub.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         matrix.func_227865_b_();
 
         matrix.func_227860_a_();
         matrix.func_227862_a_(0.2F, 1, 0.2F);
-        String.func_228309_a_(matrix, vertexBuilder, light, otherLight, 1, 1, 1, 1);
+        String.func_228309_a_(matrix, vertexBuilder, light, overlayLight, 1, 1, 1, 1);
         matrix.func_227865_b_();
     }
 

@@ -137,33 +137,33 @@ public class ModelAtomicDisassembler extends Model {
         setRotation(Shape8, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         IVertexBuilder vertexBuilder = renderer.getBuffer(RENDER_TYPE);
-        renderBlade(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, otherLight, 1, 1, 1, 1);
-        func_225598_a_(matrix, vertexBuilder, light, otherLight, 1, 1, 1, 1);
+        renderBlade(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 1);
+        func_225598_a_(matrix, vertexBuilder, light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        Shape1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape13.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape10.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape11.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape12.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape15.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        Shape1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape13.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape10.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape11.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape12.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape15.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderBlade(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        Shape3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape16.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Shape14.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    private void renderBlade(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        Shape3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape9.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape16.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Shape14.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -226,47 +226,47 @@ public class ModelGasMask extends Model {
         setRotation(lightR, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
-        renderGlass(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), MekanismRenderer.FULL_LIGHT, otherLight, 1, 1, 1, 0.3F);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+        renderGlass(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.3F);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        helmetfeed.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tubeback.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tubeL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tubeR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        tubefront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        mouthintake.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        finupperR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        finupperL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        finmidR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        finmidL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        finback.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        topplate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        filterL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        filterR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        filterpipelower.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        filterpipeupper.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        helmetfeed.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tubeback.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tubeL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tubeR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        tubefront.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        mouthintake.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        finupperR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        finupperL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        finmidR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        finmidL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        finback.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        topplate.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        filterL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        filterR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        filterpipelower.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        filterpipeupper.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
 
-        pipecornerFL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pipecornerFR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pipecornerBR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pipecornerBL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        pipecornerFL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pipecornerFR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pipecornerBR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pipecornerBL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
 
         //These should be full bright
-        lightL.func_228309_a_(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, otherLight, red, green, blue, alpha);
-        lightR.func_228309_a_(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, otherLight, red, green, blue, alpha);
+        lightL.func_228309_a_(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+        lightR.func_228309_a_(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        glasstop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        glassfront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        glassR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        glassL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        glassbackR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        glassbackL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    private void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        glasstop.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        glassfront.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        glassR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        glassL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        glassbackR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        glassbackL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -14,10 +14,10 @@ import net.minecraft.item.ItemStack;
 //TODO: 1.15 Declare the transformations via json and that they are "built in renderers", instead of messing around with the ItemLayerWrapper stuff?
 public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRenderer {
 
-    protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType);
 
-    protected abstract void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    protected abstract void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType);
 
     @Nonnull
@@ -27,13 +27,13 @@ public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRende
         return false;
     }
 
-    protected void renderWithTransform(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    protected void renderWithTransform(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         TransformType transformType = getTransform(stack);
         if (transformType == TransformType.GUI) {
             matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180));
         }
 
-        renderBlockSpecific(stack, matrix, renderer, light, otherLight, transformType);
+        renderBlockSpecific(stack, matrix, renderer, light, overlayLight, transformType);
 
         if (!earlyExit()) {
             if (transformType == TransformType.GUI) {
@@ -41,16 +41,16 @@ public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRende
             } else {
                 matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180));
             }
-            renderItemSpecific(stack, matrix, renderer, light, otherLight, transformType);
+            renderItemSpecific(stack, matrix, renderer, light, overlayLight, transformType);
         }
     }
 
     @Override
-    public void func_228364_a_(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_228364_a_(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         matrix.func_227860_a_();
         matrix.func_227861_a_(0.5, 0.5, 0.5);
         matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180));
-        renderWithTransform(stack, matrix, renderer, light, otherLight);
+        renderWithTransform(stack, matrix, renderer, light, overlayLight);
         matrix.func_227865_b_();
     }
 }

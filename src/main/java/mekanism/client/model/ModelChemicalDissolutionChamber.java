@@ -236,44 +236,44 @@ public class ModelChemicalDissolutionChamber extends Model {
         setRotation(portToggle2, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
         //Render the glass on a more translucent layer
         //Note: The glass makes water, ice etc behind it invisible. This is due to an engine limitation
-        glass.func_228309_a_(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        glass.func_228309_a_(matrix, renderer.getBuffer(GLASS_RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        support2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vat5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        top2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vat2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vat3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vat6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vat9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vat8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vat7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vat4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        backEdge2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        backEdge1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vents.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        support1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        vat1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        nozzle8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        nozzle5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        nozzle7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        nozzle4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        nozzle9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        nozzle6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        nozzle3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        nozzle2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        nozzle1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        portToggle1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        portToggle2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        support2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vat5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        top2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        top.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vat2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vat3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vat6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vat9.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vat8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vat7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vat4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        backEdge2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        back.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        backEdge1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vents.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        support1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        vat1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        nozzle8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        nozzle5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        nozzle7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        nozzle4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        nozzle9.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        nozzle6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        nozzle3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        nozzle2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        nozzle1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        portToggle1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        portToggle2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

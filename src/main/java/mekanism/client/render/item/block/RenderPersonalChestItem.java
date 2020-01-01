@@ -15,7 +15,7 @@ public class RenderPersonalChestItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         //TODO: 1.15
         /*RenderSystem.pushMatrix();
@@ -29,7 +29,7 @@ public class RenderPersonalChestItem extends MekanismItemStackRenderer {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
     }
 

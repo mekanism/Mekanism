@@ -18,12 +18,12 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         matrix.func_227860_a_();
         matrix.func_227862_a_(1.4F, 1.4F, 1.4F);
@@ -48,7 +48,7 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
             matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(45));
             matrix.func_227861_a_(0, -0.7, 0);
         }
-        atomicDisassembler.render(matrix, renderer, light, otherLight);
+        atomicDisassembler.render(matrix, renderer, light, overlayLight);
         matrix.func_227865_b_();
     }
 

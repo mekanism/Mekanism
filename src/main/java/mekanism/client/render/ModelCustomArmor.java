@@ -166,7 +166,7 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
         }
 
         @Override
-        public void func_228309_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue,
+        public void func_228309_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
               float alpha) {
             if (ModelCustomArmor.this.modelType != null) {
                 matrix.func_227860_a_();
@@ -175,25 +175,25 @@ public class ModelCustomArmor extends BipedModel<LivingEntity> {
                 if (useModel(biped.modelType, partRender, biped)) {
                     if (biped.modelType == ArmorModel.JETPACK) {
                         //TODO: 1.15
-                        //ArmorModel.jetpackModel.render(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+                        //ArmorModel.jetpackModel.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
                     } else if (biped.modelType == ArmorModel.ARMOREDJETPACK) {
                         //TODO: 1.15
-                        //ArmorModel.armoredJetpackModel.render(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+                        //ArmorModel.armoredJetpackModel.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
                     } else if (biped.modelType == ArmorModel.SCUBATANK) {
                         //TODO: 1.15
-                        //ArmorModel.scubaTankModel.render(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+                        //ArmorModel.scubaTankModel.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
                     } else if (biped.modelType == ArmorModel.GASMASK) {
                         matrix.func_227861_a_(0, 0, -0.05);
                         //TODO: 1.15
-                        //ArmorModel.gasMaskModel.render(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+                        //ArmorModel.gasMaskModel.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
                     } else if (biped.modelType == ArmorModel.FREERUNNERS) {
                         matrix.func_227862_a_(1.02F, 1.02F, 1.02F);
                         if (partRender == biped.bipedLeftLeg) {
                             matrix.func_227861_a_(-0.1375, -0.75, -0.0625);
-                            ArmorModel.freeRunnersModel.renderLeft(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+                            ArmorModel.freeRunnersModel.renderLeft(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
                         } else if (partRender == biped.bipedRightLeg) {
                             matrix.func_227861_a_(0.1375, -0.75, -0.0625);
-                            ArmorModel.freeRunnersModel.renderRight(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+                            ArmorModel.freeRunnersModel.renderRight(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
                         }
                     }
                 }

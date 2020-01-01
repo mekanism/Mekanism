@@ -22,7 +22,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
     }
 
     @Override
-    public void func_225616_a_(@Nonnull S configurable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull S configurable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         //TODO: 1.15
         /*ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
         Item item = itemStack.getItem();

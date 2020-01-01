@@ -21,7 +21,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityBoilerCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull TileEntityBoilerCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         //TODO: 1.15
         /*if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null &&
             tile.structure.upperRenderLocation != null) {

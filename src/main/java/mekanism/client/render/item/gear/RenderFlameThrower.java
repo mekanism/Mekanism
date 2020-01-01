@@ -16,12 +16,12 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         matrix.func_227860_a_();
         matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(160));
@@ -48,7 +48,7 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
             matrix.func_227861_a_(-0.6, 0, 0);
             matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(45));
         }
-        flamethrower.render(matrix, renderer, light, otherLight);
+        flamethrower.render(matrix, renderer, light, overlayLight);
         matrix.func_227865_b_();
     }
 

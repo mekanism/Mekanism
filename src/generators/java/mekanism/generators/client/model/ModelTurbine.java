@@ -69,35 +69,35 @@ public class ModelTurbine extends Model {
         setRotateAngle(blade_west, BLADE_ROTATE, 0.0F, 0.0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, int index) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, int index) {
         matrix.func_227860_a_();
         matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(index * 5));
         float scale = index * 0.5F;
         float widthDiv = 16;
         IVertexBuilder vertexBuilder = renderer.getBuffer(RENDER_TYPE);
-        renderBlade(matrix, vertexBuilder, light, otherLight, blade_west, scale, scale / widthDiv, -0.25, 0);
-        renderBlade(matrix, vertexBuilder, light, otherLight, blade_east, scale, scale / widthDiv, 0.25, 0);
-        renderBlade(matrix, vertexBuilder, light, otherLight, blade_north, scale / widthDiv, scale, 0, -0.25);
-        renderBlade(matrix, vertexBuilder, light, otherLight, blade_south, scale / widthDiv, scale, 0, 0.25);
+        renderBlade(matrix, vertexBuilder, light, overlayLight, blade_west, scale, scale / widthDiv, -0.25, 0);
+        renderBlade(matrix, vertexBuilder, light, overlayLight, blade_east, scale, scale / widthDiv, 0.25, 0);
+        renderBlade(matrix, vertexBuilder, light, overlayLight, blade_north, scale / widthDiv, scale, 0, -0.25);
+        renderBlade(matrix, vertexBuilder, light, overlayLight, blade_south, scale / widthDiv, scale, 0, 0.25);
         matrix.func_227865_b_();
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue,
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
           float alpha) {
-        extension_south.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        extension_west.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        extension_east.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        extension_north.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        extension_south.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        extension_west.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        extension_east.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        extension_north.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderBlade(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, ModelRenderer blade, float scaleX,
+    private void renderBlade(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, ModelRenderer blade, float scaleX,
           float scaleZ, double transX, double transZ) {
         matrix.func_227860_a_();
         matrix.func_227861_a_(transX, 0, transZ);
         matrix.func_227862_a_(1.0F + scaleX, 1.0F, 1.0F + scaleZ);
         matrix.func_227861_a_(-transX, 0, -transZ);
-        blade.func_228309_a_(matrix, vertexBuilder, light, otherLight, 1, 1, 1, 1);
+        blade.func_228309_a_(matrix, vertexBuilder, light, overlayLight, 1, 1, 1, 1);
         matrix.func_227865_b_();
     }
 

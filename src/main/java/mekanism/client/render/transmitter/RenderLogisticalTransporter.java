@@ -52,7 +52,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityLogisticalTransporter transporter, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
-          int light, int otherLight) {
+          int light, int overlayLight) {
         //TODO: 1.15
         /*if (MekanismConfig.client.opaqueTransmitters.get()) {
             return;

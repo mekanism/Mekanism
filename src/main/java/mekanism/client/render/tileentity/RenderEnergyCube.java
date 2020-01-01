@@ -28,7 +28,8 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+          int overlayLight) {
         matrix.func_227860_a_();
         matrix.func_227861_a_(0.5, 1.5, 0.5);
 
@@ -49,7 +50,7 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         }
 
         matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-        model.render(matrix, renderer, light, otherLight, tile.tier, false);
+        model.render(matrix, renderer, light, overlayLight, tile.tier, false);
 
         for (Direction side : EnumUtils.DIRECTIONS) {
             ISlotInfo slotInfo = tile.configComponent.getSlotInfo(TransmissionType.ENERGY, side);
@@ -60,7 +61,7 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
                 canInput = slotInfo.canInput();
                 canOutput = slotInfo.canOutput();
             }
-            model.renderSide(matrix, renderer, light, otherLight, side, canInput, canOutput);
+            model.renderSide(matrix, renderer, light, overlayLight, side, canInput, canOutput);
         }
         matrix.func_227865_b_();
 
@@ -72,9 +73,9 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
             matrix.func_227861_a_(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(4 * ticks));
             matrix.func_227863_a_(coreVec.func_229187_a_(36F + 4 * ticks));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, otherLight, tile.tier.getBaseTier().getColor(), (float) energyPercentage);
+            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), (float) energyPercentage);
         }
         matrix.func_227865_b_();
-        MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, otherLight);
+        MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, overlayLight);
     }
 }

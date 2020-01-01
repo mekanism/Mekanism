@@ -17,9 +17,9 @@ public class RenderUniversalCable extends RenderTransmitterSimple<TileEntityUniv
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityUniversalCable cable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int otherLight) {
+          int overlayLight) {
         if (!MekanismConfig.client.opaqueTransmitters.get() && cable.currentPower > 0) {
-            render(cable, matrix, renderer, light, otherLight, 15);
+            render(cable, matrix, renderer, light, overlayLight, 15);
         }
     }
 

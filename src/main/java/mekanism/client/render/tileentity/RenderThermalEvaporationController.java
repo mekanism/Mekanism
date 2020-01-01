@@ -14,7 +14,8 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityThermalEvaporationController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull TileEntityThermalEvaporationController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
+          int light, int overlayLight) {
         //TODO: 1.15
         /*if (tile.structured && tile.height - 2 >= 1 && tile.inputTank.getFluidAmount() > 0) {
             RenderData data = new RenderData();

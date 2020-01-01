@@ -23,7 +23,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityBin tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull TileEntityBin tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         Direction facing = tile.getDirection();
         //position of the block covering the front side
         BlockPos coverPos = tile.getPos().offset(facing);
@@ -59,14 +59,14 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             matrix.func_227861_a_(8, 8, 3);
             matrix.func_227862_a_(16, -16, 16);
             //TODO: The lighting seems a bit off but it is close enough for now
-            Minecraft.getInstance().getItemRenderer().func_229110_a_(tile.clientStack, TransformType.GUI, MekanismRenderer.FULL_LIGHT, otherLight, matrix, renderer);
+            Minecraft.getInstance().getItemRenderer().func_229110_a_(tile.clientStack, TransformType.GUI, MekanismRenderer.FULL_LIGHT, overlayLight, matrix, renderer);
             matrix.func_227865_b_();
-            renderText(matrix, renderer, otherLight, amount, facing, 0.02F);
+            renderText(matrix, renderer, overlayLight, amount, facing, 0.02F);
         }
     }
 
     @SuppressWarnings("incomplete-switch")
-    private void renderText(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int otherLight, String text, Direction side, float maxScale) {
+    private void renderText(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int overlayLight, String text, Direction side, float maxScale) {
         matrix.func_227860_a_();
         matrix.func_227861_a_(0, -0.3725, 0);
         switch (side) {
@@ -113,7 +113,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
         //font.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
-        font.func_228079_a_("\u00a7f" + text, offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, otherLight,
+        font.func_228079_a_("\u00a7f" + text, offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
               false, matrix.func_227866_c_().func_227870_a_(), renderer, false, 0, MekanismRenderer.FULL_LIGHT);
         matrix.func_227865_b_();
     }

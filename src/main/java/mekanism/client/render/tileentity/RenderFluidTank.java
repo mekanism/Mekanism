@@ -27,7 +27,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityFluidTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull TileEntityFluidTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         FluidStack fluid = tile.fluidTank.getFluid();
         //TODO: 1.15
         //render(tile.tier, fluid, tile.prevScale, tile.valve > 0 ? tile.valveFluid : FluidStack.EMPTY, x, y, z);

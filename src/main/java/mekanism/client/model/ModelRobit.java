@@ -153,22 +153,22 @@ public class ModelRobit extends EntityModel<EntityRobit> {
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        Body.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Bottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        RightTrack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        LeftTrack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Neck.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Head.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Backpack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        headback.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rightarn.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        leftarm.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        righthand.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        lefthand.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        backLight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        eyeRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        eyeLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        Body.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Bottom.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        RightTrack.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        LeftTrack.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Neck.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Head.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Backpack.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        headback.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rightarn.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        leftarm.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        righthand.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        lefthand.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        backLight.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        eyeRight.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        eyeLeft.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

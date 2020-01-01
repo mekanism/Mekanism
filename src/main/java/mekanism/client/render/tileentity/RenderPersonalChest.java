@@ -17,7 +17,8 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
     //private ChestModel model = new ChestModel();
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityPersonalChest tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull TileEntityPersonalChest tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+          int overlayLight) {
         //TODO: 1.15
         /*RenderSystem.pushMatrix();
         RenderSystem.translatef((float) x, (float) y + 1F, (float) z);

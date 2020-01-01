@@ -146,38 +146,38 @@ public class ModelHeatGenerator extends Model {
         setRotation(base, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, boolean on) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean on) {
         //Render the main model
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
         //Adjust size/positioning slightly and render the overlay
         matrix.func_227860_a_();
         matrix.func_227862_a_(1.001F, 1.001F, 1.001F);
         matrix.func_227861_a_(0, -0.0011, 0);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        func_225598_a_(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, otherLight, 1, 1, 1, 1);
+        func_225598_a_(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, overlayLight, 1, 1, 1, 1);
         MekanismRenderer.disableGlow(glowInfo);
         matrix.func_227865_b_();
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue,
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
           float alpha) {
-        drum.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        ring1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        ring2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        back.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bar1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        bar2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        plate.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        fin8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        fin7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        fin1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        fin2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        fin3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        fin4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        fin5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        fin6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        base.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        drum.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        ring1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        ring2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        back.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bar1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        bar2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        plate.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        fin8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        fin7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        fin1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        fin2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        fin3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        fin4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        fin5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        fin6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        base.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

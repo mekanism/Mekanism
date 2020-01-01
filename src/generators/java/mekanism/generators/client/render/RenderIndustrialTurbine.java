@@ -18,7 +18,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityTurbineCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull TileEntityTurbineCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         //TODO: 1.15
         //renderAModelAt(tile, x, y, z, partialTick, destroyStage);
     }

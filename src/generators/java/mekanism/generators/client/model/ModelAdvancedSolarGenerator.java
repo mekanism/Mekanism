@@ -137,28 +137,28 @@ public class ModelAdvancedSolarGenerator extends Model {
         setRotation(base2, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        crossBar.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        panel1Bottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        panel1Top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        portBase.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        verticalBar.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        sideBar1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        wire1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        sideBar2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        jointBox.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        wire2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        panel2Top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        panel2Bottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        base1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        port.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        base3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        base2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        crossBar.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        panel1Bottom.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        panel1Top.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        portBase.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        verticalBar.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        sideBar1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        wire1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        sideBar2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        jointBox.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        wire2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        panel2Top.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        panel2Bottom.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        base1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        port.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        base3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        base2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

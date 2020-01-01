@@ -30,7 +30,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         //TODO: 1.15
         EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier(stack);
@@ -42,7 +42,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         matrix.func_227860_a_();
         matrix.func_227861_a_(0, -1, 0);
         //TODO: Instead of having this be a thing, make it do it from model like the block does?
-        energyCube.render(matrix, renderer, light, otherLight, tier, true);
+        energyCube.render(matrix, renderer, light, overlayLight, tier, true);
 
         CompoundNBT configData = ItemDataUtils.getDataMapIfPresent(stack);
         if (configData != null && configData.getBoolean("sideDataStored")) {
@@ -51,11 +51,11 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             for (RelativeSide side : EnumUtils.SIDES) {
                 DataType dataType = DataType.byIndexStatic(sideConfig.getInt("side" + side.ordinal()));
                 //TODO: Improve on the check compared to just directly comparing the data type?
-                energyCube.renderSide(matrix, renderer, light, otherLight, side.getDirection(Direction.NORTH), dataType.equals(DataType.INPUT), dataType.equals(DataType.OUTPUT));
+                energyCube.renderSide(matrix, renderer, light, overlayLight, side.getDirection(Direction.NORTH), dataType.equals(DataType.INPUT), dataType.equals(DataType.OUTPUT));
             }
         } else {
             for (Direction side : EnumUtils.DIRECTIONS) {
-                energyCube.renderSide(matrix, renderer, light, otherLight, side, true, true);
+                energyCube.renderSide(matrix, renderer, light, overlayLight, side, true, true);
             }
         }
 
@@ -66,13 +66,13 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             matrix.func_227861_a_(0, Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
             matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(4 * MekanismClient.ticksPassed));
             matrix.func_227863_a_(RenderEnergyCube.coreVec.func_229187_a_(36F + 4 * MekanismClient.ticksPassed));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, otherLight, tier.getBaseTier().getColor(), (float) energyPercentage);
+            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tier.getBaseTier().getColor(), (float) energyPercentage);
         }
         matrix.func_227865_b_();
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
     }
 

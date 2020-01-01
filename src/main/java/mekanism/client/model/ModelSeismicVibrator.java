@@ -339,60 +339,60 @@ public class ModelSeismicVibrator extends Model {
         setRotation(rivet9, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight, float piston) {
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float piston) {
         shaft1.rotationPointY = 6 - (piston * 12);
         plate2.rotationPointY = 21 - (piston * 12);
         plate3.rotationPointY = 22 - (piston * 12);
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        plate3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        baseBack.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        motor.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        port.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pole4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        shaft2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        shaft1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        arm3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        plate2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        arm2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        arm1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        top.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameBack5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pole3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameRight5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        baseRight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        baseFront.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        baseLeft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameRight3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pole1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameRight4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameRight1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameRight2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameLeft5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameLeft4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameBack3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameLeft2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameLeft1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        pole2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameBack1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameBack2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameBack4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        frameLeft3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        conduit.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        plate1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet10.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet5.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet6.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet7.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet8.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet4.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        rivet9.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        plate3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        baseBack.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        motor.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        port.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pole4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        shaft2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        shaft1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        arm3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        plate2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        arm2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        arm1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        top.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameBack5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pole3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameRight5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        baseRight.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        baseFront.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        baseLeft.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameRight3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pole1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameRight4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameRight1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameRight2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameLeft5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameLeft4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameBack3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameLeft2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameLeft1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        pole2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameBack1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameBack2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameBack4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        frameLeft3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        conduit.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        plate1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet10.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        rivet9.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

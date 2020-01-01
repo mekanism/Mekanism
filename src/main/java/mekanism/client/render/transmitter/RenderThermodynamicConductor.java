@@ -18,9 +18,9 @@ public class RenderThermodynamicConductor extends RenderTransmitterSimple<TileEn
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityThermodynamicConductor transmitter, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
-          int light, int otherLight) {
+          int light, int overlayLight) {
         if (!MekanismConfig.client.opaqueTransmitters.get()) {
-            render(transmitter, matrix, renderer, light, otherLight, 15);
+            render(transmitter, matrix, renderer, light, overlayLight, 15);
         }
     }
 

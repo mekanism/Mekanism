@@ -17,15 +17,15 @@ public class RenderResistiveHeaterItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
         matrix.func_227861_a_(0.05, -0.96, 0.05);
-        resistiveHeater.render(matrix, renderer, light, otherLight, ItemDataUtils.getDouble(stack, "energyStored") > 0);
+        resistiveHeater.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, "energyStored") > 0);
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
     }
 

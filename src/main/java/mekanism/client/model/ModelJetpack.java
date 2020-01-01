@@ -174,45 +174,45 @@ public class ModelJetpack extends Model {
         setRotation(light3, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, otherLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
         //TODO: Should our wing render type have cull enabled? It previously was enabled
-        renderWings(matrix, renderer.getBuffer(WING_RENDER_TYPE), MekanismRenderer.FULL_LIGHT, otherLight, 1, 1, 1, 0.2F);
+        renderWings(matrix, renderer.getBuffer(WING_RENDER_TYPE), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        Packtop.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Packbottom.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Thrusterleft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Thrusterright.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Fueltuberight.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Fueltubeleft.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Packmid.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        Packtop.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Packbottom.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Thrusterleft.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Thrusterright.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Fueltuberight.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Fueltubeleft.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Packmid.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
 
-        WingsupportL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        WingsupportR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Packtoprear.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        ExtendosupportL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        ExtendosupportR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        WingsupportL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        WingsupportR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Packtoprear.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        ExtendosupportL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        ExtendosupportR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
 
-        Packdoodad2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Packdoodad3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Bottomthruster.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Packdoodad2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Packdoodad3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Bottomthruster.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
 
         //Stuff below here uses full bright for the lighting
         light = MekanismRenderer.FULL_LIGHT;
-        Packcore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        Packcore.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
 
-        light1.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        light2.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        light3.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        Packcore.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+        light1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        light2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        light3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        Packcore.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderWings(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int otherLight, float red, float green, float blue, float alpha) {
-        WingbladeL.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
-        WingbladeR.func_228309_a_(matrix, vertexBuilder, light, otherLight, red, green, blue, alpha);
+    private void renderWings(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        WingbladeL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        WingbladeR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

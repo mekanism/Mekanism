@@ -16,18 +16,18 @@ public class RenderArmoredJetpack extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         matrix.func_227860_a_();
         matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
         matrix.func_227863_a_(Vector3f.field_229180_c_.func_229187_a_(90));
         matrix.func_227861_a_(0.2, -0.35, 0);
-        armoredJetpack.render(matrix, renderer, light, otherLight);
+        armoredJetpack.render(matrix, renderer, light, overlayLight);
         matrix.func_227865_b_();
     }
 

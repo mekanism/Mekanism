@@ -20,7 +20,7 @@ public class RenderWindGenerator extends TileEntityRenderer<TileEntityWindGenera
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityWindGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int otherLight) {
+          int overlayLight) {
         matrix.func_227860_a_();
         matrix.func_227861_a_(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
@@ -29,7 +29,7 @@ public class RenderWindGenerator extends TileEntityRenderer<TileEntityWindGenera
         if (tile.getActive()) {
             angle = (tile.getAngle() + ((tile.getPos().getY() + 4F) / TileEntityWindGenerator.SPEED_SCALED) * partialTick) % 360;
         }
-        model.render(matrix, renderer, angle, light, otherLight);
+        model.render(matrix, renderer, angle, light, overlayLight);
         matrix.func_227865_b_();
     }
 

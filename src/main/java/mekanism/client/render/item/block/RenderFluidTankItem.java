@@ -23,7 +23,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
     private static int stages = 1400;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         ItemBlockFluidTank itemFluidTank = (ItemBlockFluidTank) stack.getItem();
         FluidTankTier tier = itemFluidTank.getTier(stack);
@@ -72,7 +72,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         matrix.func_227862_a_(0.9F, 0.8F, 0.9F);
         //Scale to to size of item
         matrix.func_227862_a_(1.168F, 1.168F, 1.168F);
-        fluidTank.render(matrix, renderer, light, otherLight, tier);
+        fluidTank.render(matrix, renderer, light, overlayLight, tier);
         matrix.func_227865_b_();
     }
 
@@ -111,7 +111,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
     }*/
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight,
+    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
     }
 

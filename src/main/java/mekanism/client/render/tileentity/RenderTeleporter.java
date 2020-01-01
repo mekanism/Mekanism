@@ -19,7 +19,7 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityTeleporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int otherLight) {
+    public void func_225616_a_(@Nonnull TileEntityTeleporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         //TODO: Figure out why it always renders in one direction even if the teleporter is assembled along the other axis
         //TODO: 1.15
         /*if (tile.shouldRender) {
