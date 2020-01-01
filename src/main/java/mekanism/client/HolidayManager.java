@@ -166,7 +166,7 @@ public final class HolidayManager {
             //TODO: Decide if this should be display name instead of name
             player.sendMessage(MekanismLang.NEW_YEAR_LINE_ONE.translateColored(EnumColor.AQUA, EnumColor.DARK_BLUE, player.getName()));
             player.sendMessage(MekanismLang.NEW_YEAR_LINE_TWO.translateColored(EnumColor.AQUA));
-            player.sendMessage(MekanismLang.NEW_YEAR_LINE_TWO.translateColored(EnumColor.AQUA, calendar.get(Calendar.YEAR)));
+            player.sendMessage(MekanismLang.NEW_YEAR_LINE_THREE.translateColored(EnumColor.AQUA, calendar.get(Calendar.YEAR)));
             player.sendMessage(MekanismLang.HOLIDAY_SIGNATURE.translateColored(EnumColor.DARK_GRAY));
             player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"));
         }

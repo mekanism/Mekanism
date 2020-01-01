@@ -44,7 +44,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     public static void onStitch(AtlasTexture map) {
         cachedOverlays.clear();
-
+        //TODO: 1.15, can we move overlaying this onto the diversion transporter into the baked model?
         gunpowderIcon = map.getSprite(new ResourceLocation("minecraft", "item/gunpowder"));
         torchOffIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_off"));
         torchOnIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_on"));

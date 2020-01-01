@@ -3,13 +3,11 @@
   "loader": "mekanism:transmitter",
   "model": "mekanism:models/block/transmitter_large.obj.mek",
   "flip-v": true,
-  "ambientToFullbright": false,
   "glass": {
     "loader": "forge:obj",
     "model": "mekanism:models/block/transmitter_large.obj.mek",
     "materialLibraryOverride": "mekanism:models/block/transmitter_glass_large.mtl",
-    "flip-v": true,
-    "ambientToFullbright": false
+    "flip-v": true
   },
   "textures": {
     "particle": "#center_down",

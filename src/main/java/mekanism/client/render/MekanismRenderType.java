@@ -14,7 +14,7 @@ public class MekanismRenderType extends RenderType {
     }
 
     public static RenderType mekStandard(ResourceLocation resourceLocation) {
-        //TODO: Make a "state" piece for the glow?
+        //TODO: Make a "state" piece for the glow? If so it would need to be a separate "render type", due to only working for full glow
         // .func_228719_a_(field_228529_u_)
         RenderType.State state = RenderType.State.func_228694_a_()
               .func_228724_a_(new RenderState.TextureState(resourceLocation, false, false))//Texture state
@@ -23,6 +23,16 @@ public class MekanismRenderType extends RenderType {
               .func_228726_a_(field_228515_g_)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
               .func_228728_a_(true);
         return func_228633_a_("mek_standard", DefaultVertexFormats.field_227849_i_, 7, 256, true, false, state);
+    }
+
+    public static RenderType transmitterContents(ResourceLocation resourceLocation) {
+        RenderType.State state = RenderType.State.func_228694_a_()
+              .func_228724_a_(new RenderState.TextureState(resourceLocation, false, false))//Texture state
+              .func_228714_a_(field_228534_z_)//enableCull
+              .func_228726_a_(field_228515_g_)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+              .func_228719_a_(field_228529_u_)//disableLighting
+              .func_228728_a_(true);
+        return func_228633_a_("transmitter_contents", DefaultVertexFormats.field_227849_i_, 7, 256, true, false, state);
     }
 
     public static RenderType configurableMachine(ResourceLocation resourceLocation) {

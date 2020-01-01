@@ -3,7 +3,6 @@
   "loader": "mekanism:transmitter",
   "model": "mekanism:models/block/transmitter_large.obj.mek",
   "flip-v": true,
-  "ambientToFullbright": false,
   "textures": {
     "particle": "#center_down",
     "center_up": "#center_down",

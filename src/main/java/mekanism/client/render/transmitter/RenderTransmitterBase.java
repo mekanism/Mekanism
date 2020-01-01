@@ -26,6 +26,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoader;
 
+//TODO: Contents don't fully render properly if you are standing directly under it and
+// look at a slight angle. (Has to do with it not being directly in view)
 public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?, ?>> extends TileEntityRenderer<T> {
 
     public static final ResourceLocation MODEL_LOCATION = MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj");
