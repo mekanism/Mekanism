@@ -8,7 +8,6 @@ import net.minecraft.item.ItemStack;
 public class CreativeTabMekanism extends ItemGroup {
 
     public CreativeTabMekanism() {
-        //TODO: I think this is lang string so rename it to a better format
         super(Mekanism.MODID);
     }
 
@@ -21,6 +20,7 @@ public class CreativeTabMekanism extends ItemGroup {
     @Nonnull
     @Override
     public String getTranslationKey() {
+        //Overwrite the lang key to match the one representing Mekanism
         return MekanismLang.MEKANISM.getTranslationKey();
     }
 }

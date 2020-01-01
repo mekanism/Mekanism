@@ -229,67 +229,35 @@ public class ClientRegistration {
 
         //TODO: 1.15 Double check render layer stuff given by the time we are ready for the first 1.15 alpha we should know the states better of the remaining things
         //Block render layers
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.STRUCTURAL_GLASS, RenderType.func_228643_e_());
-        //TODO: Verify these at some point
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LASER_AMPLIFIER, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.LASER_TRACTOR_BEAM, RenderType.func_228643_e_());
-        //Fluid Tanks
-        //TODO: Remove??
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_FLUID_TANK, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_FLUID_TANK, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_FLUID_TANK, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_FLUID_TANK, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.CREATIVE_FLUID_TANK, RenderType.func_228643_e_());
-        //Transmitters
-        //TODO: Check for various things that the main part of the rendering is in the TER if we even need
-        // the different types. We may only need to set the render layer for transporters.
-        //TODO: Also maybe look into make it so we can see the back edges of the transmitters when looking through them
-        //Logistical transporters
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.RESTRICTIVE_TRANSPORTER, RenderType.func_228643_e_());
+        //Cutout
+        ClientRegistrationUtil.setRenderLayer(RenderType.func_228643_e_(), MekanismBlocks.STRUCTURAL_GLASS, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
+              //Fluid Tanks
+              MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
+              MekanismBlocks.CREATIVE_FLUID_TANK,
+              //Transmitters
+              //TODO: Look into make it so we can see the back edges of the transmitters when looking through them
+              //Restrictive Transporter
+              MekanismBlocks.RESTRICTIVE_TRANSPORTER,
+              //Mechanical Pipes
+              MekanismBlocks.BASIC_MECHANICAL_PIPE, MekanismBlocks.ADVANCED_MECHANICAL_PIPE, MekanismBlocks.ELITE_MECHANICAL_PIPE, MekanismBlocks.ULTIMATE_MECHANICAL_PIPE,
+              //Pressurized Tubes
+              MekanismBlocks.BASIC_PRESSURIZED_TUBE, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE, MekanismBlocks.ELITE_PRESSURIZED_TUBE, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE,
+              //Universal Cables
+              MekanismBlocks.BASIC_UNIVERSAL_CABLE, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, MekanismBlocks.ELITE_UNIVERSAL_CABLE, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE,
+              //Thermodynamic Conductors
+              MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR,
+              MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
         //TODO: Does the diversion transporter actually need to be in multiple render types
         // Also can we move the overlay from the TER to being part of the baked model
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.DIVERSION_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER, renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()));
-        //Mechanical Pipes
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_MECHANICAL_PIPE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_MECHANICAL_PIPE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_MECHANICAL_PIPE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_MECHANICAL_PIPE, RenderType.func_228643_e_());
-        //Pressurized Tubes
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_PRESSURIZED_TUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_PRESSURIZED_TUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_PRESSURIZED_TUBE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE, RenderType.func_228643_e_());
-        //Universal Cables
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_UNIVERSAL_CABLE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_UNIVERSAL_CABLE, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, RenderType.func_228643_e_());
-        //Thermodynamic Conductors
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
-        ClientRegistrationUtil.setRenderLayer(MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR, RenderType.func_228643_e_());
-        //Fluids
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.HYDROGEN, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.OXYGEN, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.CHLORINE, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.SULFUR_DIOXIDE, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.SULFUR_TRIOXIDE, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.SULFURIC_ACID, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.HYDROGEN_CHLORIDE, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.ETHENE, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.SODIUM, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.BRINE, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.DEUTERIUM, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.TRITIUM, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.FUSION_FUEL, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.LITHIUM, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.STEAM, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(MekanismFluids.HEAVY_WATER, RenderType.func_228645_f_());
+        //Logistical Transporter
+        ClientRegistrationUtil.setRenderLayer(renderType -> renderType.equals(RenderType.func_228643_e_()) || renderType.equals(RenderType.func_228645_f_()),
+              MekanismBlocks.DIVERSION_TRANSPORTER, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER,
+              MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
+        //Fluids (translucent)
+        ClientRegistrationUtil.setRenderLayer(RenderType.func_228645_f_(), MekanismFluids.HYDROGEN, MekanismFluids.OXYGEN, MekanismFluids.CHLORINE,
+              MekanismFluids.SULFUR_DIOXIDE, MekanismFluids.SULFUR_TRIOXIDE, MekanismFluids.SULFURIC_ACID, MekanismFluids.HYDROGEN_CHLORIDE, MekanismFluids.ETHENE,
+              MekanismFluids.SODIUM, MekanismFluids.BRINE, MekanismFluids.DEUTERIUM, MekanismFluids.TRITIUM, MekanismFluids.FUSION_FUEL, MekanismFluids.LITHIUM,
+              MekanismFluids.STEAM, MekanismFluids.HEAVY_WATER);
     }
 
     @SubscribeEvent
@@ -437,17 +405,17 @@ public class ClientRegistration {
               MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
         ClientRegistrationUtil.registerBlockColorHandler(event.getBlockColors(), (state, world, pos, tintIndex) -> {
-            if (tintIndex == 1 && pos != null) {
-                TileEntityLogisticalTransporter transporter = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, world, pos);
-                if (transporter != null) {
-                    EnumColor renderColor = transporter.getRenderColor();
-                    if (renderColor != null) {
-                        return MekanismRenderer.getColorARGB(renderColor, 1);
-                    }
-                }
-            }
-            return -1;
-        }, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
+                  if (tintIndex == 1 && pos != null) {
+                      TileEntityLogisticalTransporter transporter = MekanismUtils.getTileEntity(TileEntityLogisticalTransporter.class, world, pos);
+                      if (transporter != null) {
+                          EnumColor renderColor = transporter.getRenderColor();
+                          if (renderColor != null) {
+                              return MekanismRenderer.getColorARGB(renderColor, 1);
+                          }
+                      }
+                  }
+                  return -1;
+              }, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
     }
 

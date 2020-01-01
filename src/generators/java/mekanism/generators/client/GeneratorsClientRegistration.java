@@ -61,8 +61,7 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.TURBINE_VENT, RenderIndustrialTurbine::new);
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR, RenderWindGenerator::new);
         //Block render layers
-        ClientRegistrationUtil.setRenderLayer(GeneratorsBlocks.LASER_FOCUS_MATRIX, RenderType.func_228645_f_());
-        ClientRegistrationUtil.setRenderLayer(GeneratorsBlocks.REACTOR_GLASS, RenderType.func_228645_f_());
+        ClientRegistrationUtil.setRenderLayer(RenderType.func_228645_f_(), GeneratorsBlocks.LASER_FOCUS_MATRIX, GeneratorsBlocks.REACTOR_GLASS);
     }
 
     @SubscribeEvent

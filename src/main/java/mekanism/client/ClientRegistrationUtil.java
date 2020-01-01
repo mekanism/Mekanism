@@ -67,6 +67,12 @@ public class ClientRegistrationUtil {
         }
     }
 
+    public static void registerBlockColorHandler(BlockColors blockColors, IBlockColor blockColor, IBlockProvider... blocks) {
+        for (IBlockProvider blockProvider : blocks) {
+            blockColors.register(blockColor, blockProvider.getBlock());
+        }
+    }
+
     public static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, IBlockColor blockColor, IItemColor itemColor, IBlockProvider... blocks) {
         for (IBlockProvider blockProvider : blocks) {
             blockColors.register(blockColor, blockProvider.getBlock());
@@ -74,29 +80,33 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void registerBlockColorHandler(BlockColors blockColors, IBlockColor blockColor, IBlockProvider... blocks) {
-        for (IBlockProvider blockProvider : blocks) {
-            blockColors.register(blockColor, blockProvider.getBlock());
+    public static void setRenderLayer(RenderType type, IBlockProvider... blockProviders) {
+        for (IBlockProvider blockProvider : blockProviders) {
+            RenderTypeLookup.setRenderLayer(blockProvider.getBlock(), type);
         }
     }
 
-    public static void setRenderLayer(IBlockProvider block, RenderType type) {
-        RenderTypeLookup.setRenderLayer(block.getBlock(), type);
+    public static synchronized void setRenderLayer(Predicate<RenderType> predicate, IBlockProvider... blockProviders) {
+        for (IBlockProvider blockProvider : blockProviders) {
+            RenderTypeLookup.setRenderLayer(blockProvider.getBlock(), predicate);
+        }
     }
 
-    public static void setRenderLayer(IBlockProvider block, Predicate<RenderType> predicate) {
-        RenderTypeLookup.setRenderLayer(block.getBlock(), predicate);
+    @SafeVarargs
+    public static void setRenderLayer(RenderType type, FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem>... fluidROs) {
+        for (FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO : fluidROs) {
+            RenderTypeLookup.setRenderLayer(fluidRO.getStillFluid(), type);
+            RenderTypeLookup.setRenderLayer(fluidRO.getFlowingFluid(), type);
+            //TODO: Do we need to set the block as well?
+        }
     }
 
-    public static void setRenderLayer(FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO, RenderType type) {
-        RenderTypeLookup.setRenderLayer(fluidRO.getStillFluid(), type);
-        RenderTypeLookup.setRenderLayer(fluidRO.getFlowingFluid(), type);
-        //TODO: Do we need to set the block as well?
-    }
-
-    public static synchronized void setRenderLayer(FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO, Predicate<RenderType> predicate) {
-        RenderTypeLookup.setRenderLayer(fluidRO.getStillFluid(), predicate);
-        RenderTypeLookup.setRenderLayer(fluidRO.getFlowingFluid(), predicate);
-        //TODO: Do we need to set the block as well?
+    @SafeVarargs
+    public static synchronized void setRenderLayer(Predicate<RenderType> predicate, FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem>... fluidROs) {
+        for (FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO : fluidROs) {
+            RenderTypeLookup.setRenderLayer(fluidRO.getStillFluid(), predicate);
+            RenderTypeLookup.setRenderLayer(fluidRO.getFlowingFluid(), predicate);
+            //TODO: Do we need to set the block as well?
+        }
     }
 }
