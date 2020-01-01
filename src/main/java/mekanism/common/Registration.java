@@ -1,6 +1,5 @@
 package mekanism.common;
 
-import mekanism.common.block.PortalHelper;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.gear.ItemGasMask;
@@ -8,7 +7,6 @@ import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.tags.MekanismTagManager;
-import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -28,11 +26,6 @@ public class Registration {
     public static void buildRegistry(RegistryEvent.NewRegistry event) {
         //TODO: Come up with a better way than just doing it on low to make sure this happens AFTER the registries are initialized?
         Mekanism.instance.setTagManager(new MekanismTagManager());
-    }
-
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> event) {
-        event.getRegistry().register(PortalHelper.BlockPortalOverride.instance);
     }
 
     @SubscribeEvent

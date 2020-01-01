@@ -7,10 +7,11 @@ public enum BlockResourceInfo implements INamedResource {
     CHARCOAL("charcoal", 5.0F, 10.0F, 0, false),
     BRONZE("bronze", 5.0F, 15.0F),
     STEEL("steel", 5.0F, 15.0F),
-    REFINED_OBSIDIAN("refined_obsidian", 50.0F, 4000.0F, 8),
+    REFINED_OBSIDIAN("refined_obsidian", 50.0F, 4000.0F, 8, true, true),
     REFINED_GLOWSTONE("refined_glowstone", 5.0F, 10.0F, 15);
 
     private final String registrySuffix;
+    private final boolean portalFrame;
     private final boolean beaconBase;
     private final float resistance;
     private final float hardness;
@@ -26,7 +27,12 @@ public enum BlockResourceInfo implements INamedResource {
     }
 
     BlockResourceInfo(String registrySuffix, float hardness, float resistance, int lightValue, boolean beaconBase) {
+        this(registrySuffix, hardness, resistance, lightValue, beaconBase, false);
+    }
+
+    BlockResourceInfo(String registrySuffix, float hardness, float resistance, int lightValue, boolean beaconBase, boolean portalFrame) {
         this.registrySuffix = registrySuffix;
+        this.portalFrame = portalFrame;
         this.beaconBase = beaconBase;
         this.lightValue = lightValue;
         this.resistance = resistance;
@@ -52,5 +58,9 @@ public enum BlockResourceInfo implements INamedResource {
 
     public boolean isBeaconBase() {
         return beaconBase;
+    }
+
+    public boolean isPortalFrame() {
+        return portalFrame;
     }
 }

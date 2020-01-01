@@ -3,17 +3,13 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import mekanism.api.block.IHasModel;
 import mekanism.common.block.BlockMekanism;
-import mekanism.common.block.PortalHelper.BlockPortalOverride;
 import mekanism.common.resource.BlockResourceInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FireBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
 
-//TODO: Should we even be extending BlockTileDrops for BlockResource (probably not), as it doesn't have a tile
 public class BlockResource extends BlockMekanism implements IHasModel {
 
     @Nonnull
@@ -35,14 +31,8 @@ public class BlockResource extends BlockMekanism implements IHasModel {
         return resource.isBeaconBase();
     }
 
-    @Override
-    @Deprecated
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
-        if (!world.isRemote) {
-            Block newBlock = world.getBlockState(neighborPos).getBlock();
-            if (resource == BlockResourceInfo.REFINED_OBSIDIAN && newBlock instanceof FireBlock) {
-                BlockPortalOverride.instance.trySpawnPortal(world, neighborPos);
-            }
-        }
+    //TODO: 1.15 - Add an @Override annotation once https://github.com/MinecraftForge/MinecraftForge/pull/6389 gets merged
+    public boolean isPortalFrame(BlockState state, IWorldReader world, BlockPos pos) {
+        return resource.isPortalFrame();
     }
 }

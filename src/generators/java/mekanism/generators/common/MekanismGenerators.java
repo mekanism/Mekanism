@@ -72,7 +72,7 @@ public class MekanismGenerators implements IModule {
         registerPackets();
 
         //Finalization
-        Mekanism.logger.info("Loaded MekanismGenerators module.");
+        Mekanism.logger.info("Loaded 'Mekanism Generators' module.");
     }
 
     private void registerPackets() {
