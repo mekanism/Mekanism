@@ -1,49 +1,59 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.common.tile.TileEntityPersonalChest;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.ResourceLocation;
 
 public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalChest> {
 
+    private static final ResourceLocation texture = MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "models/personal_chest.png");
+
+    private final ModelRenderer lid;
+    private final ModelRenderer base;
+    private final ModelRenderer latch;
+
     public RenderPersonalChest(TileEntityRendererDispatcher renderer) {
         super(renderer);
+        this.base = new ModelRenderer(64, 64, 0, 19);
+        this.base.func_228301_a_(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
+        this.lid = new ModelRenderer(64, 64, 0, 0);
+        this.lid.func_228301_a_(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
+        this.lid.rotationPointY = 9.0F;
+        this.lid.rotationPointZ = 1.0F;
+        this.latch = new ModelRenderer(64, 64, 0, 0);
+        this.latch.func_228301_a_(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
+        this.latch.rotationPointY = 8.0F;
     }
-
-    //TODO: 1.15
-    //private ChestModel model = new ChestModel();
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityPersonalChest tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
           int overlayLight) {
-        //TODO: 1.15
-        /*RenderSystem.pushMatrix();
-        RenderSystem.translatef((float) x, (float) y + 1F, (float) z);
-        RenderSystem.rotatef(90, 0, 1, 0);
-        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "personal_chest.png"));
-
-        MekanismRenderer.rotate(tile.getDirection(), 270, 90, 0, 180);
-        switch (tile.getDirection()) {
-            case NORTH:
-                RenderSystem.translatef(1.0F, 0, 0);
-                break;
-            case SOUTH:
-                RenderSystem.translatef(0, 0, -1.0F);
-                break;
-            case EAST:
-                RenderSystem.translatef(1.0F, 0, -1.0F);
-                break;
+        matrix.func_227860_a_();
+        if (tile.getWorld() != null && !tile.isRemoved()) {
+            matrix.func_227861_a_(0.5D, 0.5D, 0.5D);
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-tile.getWorld().getBlockState(tile.getPos()).get(BlockStateProperties.HORIZONTAL_FACING).getHorizontalAngle()));
+            matrix.func_227861_a_(-0.5D, -0.5D, -0.5D);
         }
-
-        float lidangle = tile.prevLidAngle + (tile.lidAngle - tile.prevLidAngle) * partialTick;
-        lidangle = 1.0F - lidangle;
-        lidangle = 1.0F - lidangle * lidangle * lidangle;
-        model.getLid().rotateAngleX = -((lidangle * 3.141593F) / 2.0F);
-        RenderSystem.rotatef(180, 0, 0, 1);
-        model.renderAll();
-        RenderSystem.popMatrix();*/
+        float lidAngle = tile.prevLidAngle + (tile.lidAngle - tile.prevLidAngle) * partialTick;
+        lidAngle = 1.0F - lidAngle;
+        lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
+        IVertexBuilder builder = renderer.getBuffer(RenderType.func_228638_b_(texture));
+        lid.rotateAngleX = -(lidAngle * ((float) Math.PI / 2F));
+        latch.rotateAngleX = lid.rotateAngleX;
+        lid.func_228308_a_(matrix, builder, light, overlayLight);
+        latch.func_228308_a_(matrix, builder, light, overlayLight);
+        base.func_228308_a_(matrix, builder, light, overlayLight);
+        matrix.func_227865_b_();
     }
 }
