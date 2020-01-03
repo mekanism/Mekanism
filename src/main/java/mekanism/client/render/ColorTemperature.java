@@ -3,20 +3,20 @@ package mekanism.client.render;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mekanism.api.IHeatTransfer;
-import mekanism.common.ColourRGBA;
+import mekanism.common.ColorRGBA;
 
-public class ColourTemperature extends ColourRGBA {
+public class ColorTemperature extends ColorRGBA {
 
-    public static Int2ObjectMap<ColourTemperature> cache = new Int2ObjectOpenHashMap<>();
+    public static Int2ObjectMap<ColorTemperature> cache = new Int2ObjectOpenHashMap<>();
 
     public double temp;
 
-    public ColourTemperature(double r, double g, double b, double a, double t) {
+    public ColorTemperature(double r, double g, double b, double a, double t) {
         super(r, g, b, a);
         temp = t;
     }
 
-    public static ColourTemperature fromTemperature(double temperature, ColourRGBA baseColour) {
+    public static ColorTemperature fromTemperature(double temperature, ColorRGBA baseColor) {
         if (temperature < 0) {
             double alphaBlend = -temperature / IHeatTransfer.AMBIENT_TEMP;
             if (alphaBlend < 0) {
@@ -25,14 +25,14 @@ public class ColourTemperature extends ColourRGBA {
             if (alphaBlend > 1) {
                 alphaBlend = 1;
             }
-            return new ColourTemperature(1, 1, 1, alphaBlend, temperature).blendOnto(baseColour);
+            return new ColorTemperature(1, 1, 1, alphaBlend, temperature).blendOnto(baseColor);
         }
 
         double absTemp = temperature + IHeatTransfer.AMBIENT_TEMP;
         absTemp /= 100;
 
         if (cache.containsKey((int) absTemp)) {
-            return cache.get((int) absTemp).blendOnto(baseColour);
+            return cache.get((int) absTemp).blendOnto(baseColor);
         }
 
         double tmpCalc;
@@ -82,19 +82,19 @@ public class ColourTemperature extends ColourRGBA {
         blue = Math.min(Math.max(blue, 0), 1);
         alpha = Math.min(Math.max(alpha, 0), 1);
 
-        ColourTemperature colourTemperature = new ColourTemperature(red, green, blue, alpha, temperature);
-        cache.put((int) absTemp, colourTemperature);
-        return colourTemperature.blendOnto(baseColour);
+        ColorTemperature colorTemperature = new ColorTemperature(red, green, blue, alpha, temperature);
+        cache.put((int) absTemp, colorTemperature);
+        return colorTemperature.blendOnto(baseColor);
     }
 
-    public ColourTemperature blendOnto(ColourRGBA baseColour) {
+    public ColorTemperature blendOnto(ColorRGBA baseColor) {
         double sR = (valR & 0xFF) / 255D, sG = (valG & 0xFF) / 255D, sB = (valB & 0xFF) / 255D, sA = (valA & 0xFF) / 255D;
-        double dR = (baseColour.valR & 0xFF) / 255D, dG = (baseColour.valG & 0xFF) / 255D, dB = (baseColour.valB & 0xFF) / 255D, dA = (baseColour.valA & 0xFF) / 255D;
+        double dR = (baseColor.valR & 0xFF) / 255D, dG = (baseColor.valG & 0xFF) / 255D, dB = (baseColor.valB & 0xFF) / 255D, dA = (baseColor.valA & 0xFF) / 255D;
 
         double rR = sR * sA + dR * (1 - sA);
         double rG = sG * sA + dG * (1 - sA);
         double rB = sB * sA + dB * (1 - sA);
         double rA = dA * 1D + sA * (1 - dA);
-        return new ColourTemperature(rR, rG, rB, rA, temp);
+        return new ColorTemperature(rR, rG, rB, rA, temp);
     }
 }

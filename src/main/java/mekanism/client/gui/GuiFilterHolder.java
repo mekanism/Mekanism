@@ -134,7 +134,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         for (int i = 0; i < 4; i++) {
             FILTER filter = filters.get(getFilterIndex() + i);
             if (filter != null) {
-                // Change colour based on filter type
+                // Change color based on filter type
                 if (filter instanceof IItemStackFilter) {
                     MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
                 } else if (filter instanceof IOreDictFilter) {

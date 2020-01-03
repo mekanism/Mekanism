@@ -173,10 +173,15 @@ public class MekanismRenderer {
     }
 
     public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder) {
+        renderObject(object, matrix, renderer, stateBuilder, -1);
+    }
+
+    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder,
+          int argb) {
         if (object != null) {
             matrix.func_227860_a_();
             matrix.func_227861_a_(object.minX, object.minY, object.minZ);
-            RenderResizableCuboid.INSTANCE.renderCube(object, renderer, stateBuilder);
+            RenderResizableCuboid.INSTANCE.renderCube(object, matrix, renderer, stateBuilder, argb);
             matrix.func_227865_b_();
         }
     }

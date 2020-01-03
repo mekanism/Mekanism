@@ -15,6 +15,7 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -130,19 +131,19 @@ public class RenderResizableCuboid {//TODO: 1.15 - FIXME something about this do
     /**
      * This will render a cuboid from its middle.
      */
-    public void renderCubeFromCentre(Model3D cuboid, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder) {
+    public void renderCubeFromCentre(Model3D cuboid, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, int argb) {
         matrix.func_227860_a_();
         matrix.func_227861_a_(-cuboid.sizeX() / 2D, -cuboid.sizeY() / 2D, -cuboid.sizeZ() / 2D);
-        renderCube(cuboid, renderer, stateBuilder, EnumShadeArgument.NONE, null, null, null);
+        renderCube(cuboid, matrix, renderer, stateBuilder, argb, EnumShadeArgument.NONE, null, null, null);
         matrix.func_227865_b_();
     }
 
-    public void renderCube(Model3D cuboid, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder) {
-        renderCube(cuboid, renderer, stateBuilder, EnumShadeArgument.NONE, null, null, null);
+    public void renderCube(Model3D cuboid, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, int argb) {
+        renderCube(cuboid, matrix, renderer, stateBuilder, argb, EnumShadeArgument.NONE, null, null, null);
     }
 
-    public void renderCube(Model3D cube, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, EnumShadeArgument shadeTypes, IBlockLocation formula,
-          IFacingLocation faceFormula, ILightReader world) {
+    public void renderCube(Model3D cube, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, int argb, EnumShadeArgument shadeTypes,
+          IBlockLocation formula, IFacingLocation faceFormula, ILightReader world) {
         if (faceFormula == null) {
             faceFormula = DefaultFacingLocation.INSTANCE;
         }
@@ -155,18 +156,16 @@ public class RenderResizableCuboid {//TODO: 1.15 - FIXME something about this do
         Vec3d textureSize = new Vec3d(cube.textureSizeX / 16D, cube.textureSizeY / 16D, cube.textureSizeZ / 16D);
         Vec3d textureOffset = new Vec3d(cube.textureOffsetX / 16D, cube.textureOffsetY / 16D, cube.textureOffsetZ / 16D);
         Vec3d size = new Vec3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
-        //TODO: 1.15 - evaluate, currently the state builder needs to be passed in with this as the texture
-        //manager.textureManager.bindTexture(PlayerContainer.field_226615_c_);
         IVertexBuilder builder = renderer.getBuffer(MekanismRenderType.resizableCuboid(stateBuilder, shadeTypes.vertexFormat));
         for (Direction face : EnumUtils.DIRECTIONS) {
             if (cube.shouldSideRender(face)) {
-                renderCuboidFace(builder, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
+                renderCuboidFace(matrix, builder, argb, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
             }
         }
     }
 
-    private void renderCuboidFace(IVertexBuilder builder, Direction face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
-          Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula, ILightReader access) {
+    private void renderCuboidFace(MatrixStack matrix, IVertexBuilder builder, int argb, Direction face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart,
+          Vec3d textureSize, Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula, ILightReader access) {
         int ordinal = face.ordinal();
         if (sprites[ordinal] == null) {
             return;
@@ -184,22 +183,27 @@ public class RenderResizableCuboid {//TODO: 1.15 - FIXME something about this do
          * light it properly this way */
         face = face.getAxisDirection() == AxisDirection.NEGATIVE ? face : face.getOpposite();
 
+        float red = MekanismRenderer.getRed(argb);
+        float green = MekanismRenderer.getGreen(argb);
+        float blue = MekanismRenderer.getBlue(argb);
+        float alpha = MekanismRenderer.getAlpha(argb);
         Direction opposite = face.getOpposite();
+        Matrix4f matrix4f = matrix.func_227866_c_().func_227870_a_();
         for (RenderInfo ri : renderInfoList) {
-            renderPoint(builder, face, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes);
-            renderPoint(builder, face, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes);
-            renderPoint(builder, face, u, v, other, ri, false, true, locationFormula, faceFormula, access, shadeTypes);
-            renderPoint(builder, face, u, v, other, ri, false, false, locationFormula, faceFormula, access, shadeTypes);
+            renderPoint(matrix4f, builder, face, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
+            renderPoint(matrix4f, builder, face, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
+            renderPoint(matrix4f, builder, face, u, v, other, ri, false, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
+            renderPoint(matrix4f, builder, face, u, v, other, ri, false, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
 
-            renderPoint(builder, opposite, u, v, other, ri, false, false, locationFormula, faceFormula, access, shadeTypes);
-            renderPoint(builder, opposite, u, v, other, ri, false, true, locationFormula, faceFormula, access, shadeTypes);
-            renderPoint(builder, opposite, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes);
-            renderPoint(builder, opposite, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes);
+            renderPoint(matrix4f, builder, opposite, u, v, other, ri, false, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
+            renderPoint(matrix4f, builder, opposite, u, v, other, ri, false, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
+            renderPoint(matrix4f, builder, opposite, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
+            renderPoint(matrix4f, builder, opposite, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
         }
     }
 
-    private void renderPoint(IVertexBuilder builder, Direction face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV, IBlockLocation locationFormula,
-          IFacingLocation faceFormula, ILightReader access, EnumShadeArgument shadeTypes) {
+    private void renderPoint(Matrix4f matrix4f, IVertexBuilder builder, Direction face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV,
+          IBlockLocation locationFormula, IFacingLocation faceFormula, ILightReader access, EnumShadeArgument shadeTypes, float red, float green, float blue, float alpha) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
 
@@ -207,8 +211,9 @@ public class RenderResizableCuboid {//TODO: 1.15 - FIXME something about this do
         vertex = withValue(vertex, v, ri.xyz[V_ARRAY]);
         vertex = withValue(vertex, face.getAxis(), other);
 
-        builder.func_225582_a_(vertex.x, vertex.y, vertex.z)
-              .func_225583_a_(ri.uv[U_ARRAY], ri.uv[V_ARRAY]);
+        builder.func_227888_a_(matrix4f, (float) vertex.x, (float) vertex.y, (float) vertex.z)
+              .func_225583_a_(ri.uv[U_ARRAY], ri.uv[V_ARRAY])
+              .func_227885_a_(red, green, blue, alpha);
         if (shadeTypes.isEnabled(EnumShadeType.FACE)) {
             setWorldRendererRGB(builder, aoMap.get(faceFormula.transformToWorld(face)));
         }
@@ -606,6 +611,8 @@ public class RenderResizableCuboid {//TODO: 1.15 - FIXME something about this do
             List<VertexFormatElement> elements = new ArrayList<>();
             elements.add(DefaultVertexFormats.POSITION_3F);
             elements.add(DefaultVertexFormats.TEX_2F);
+            //TODO: 1.15 Evaluate if we want to actually always have color enabled?
+            elements.add(DefaultVertexFormats.COLOR_4UB);
             for (EnumShadeType type : types) {
                 if (!elements.contains(type.element)) {
                     elements.add(type.element);

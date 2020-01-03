@@ -559,19 +559,16 @@ public final class MekanismUtils {
     /**
      * Ray-traces what block a player is looking at.
      *
-     * @param world  - world the player is in
      * @param player - player to raytrace
      *
      * @return raytraced value
      */
-    public static BlockRayTraceResult rayTrace(World world, PlayerEntity player) {
+    public static BlockRayTraceResult rayTrace(PlayerEntity player) {
         double reach = Mekanism.proxy.getReach(player);
         Vec3d headVec = getHeadVec(player);
         Vec3d lookVec = player.getLook(1);
         Vec3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
-        //TODO: I am unsure if this is correct so probably needs to be fixed
-        RayTraceContext rayTraceContext = new RayTraceContext(headVec, endVec, BlockMode.COLLIDER, FluidMode.NONE, player);
-        return world.rayTraceBlocks(rayTraceContext);
+        return player.getEntityWorld().rayTraceBlocks(new RayTraceContext(headVec, endVec, BlockMode.OUTLINE, FluidMode.NONE, player));
     }
 
     /**
@@ -582,16 +579,11 @@ public final class MekanismUtils {
      * @return head location
      */
     private static Vec3d getHeadVec(PlayerEntity player) {
-        double posX = player.func_226277_ct_();
-        double posY = player.func_226278_cu_();
-        double posZ = player.func_226281_cx_();
-        if (!player.world.isRemote) {
-            posY += player.getEyeHeight();
-            if (player instanceof ServerPlayerEntity && player.func_225608_bj_()) {
-                posY -= 0.08;
-            }
+        double posY = player.func_226278_cu_() + player.getEyeHeight();
+        if (player.isCrouching()) {
+            posY -= 0.08;
         }
-        return new Vec3d(posX, posY, posZ);
+        return new Vec3d(player.func_226277_ct_(), posY, player.func_226281_cx_());
     }
 
     public static ITextComponent getEnergyDisplayShort(double energy) {

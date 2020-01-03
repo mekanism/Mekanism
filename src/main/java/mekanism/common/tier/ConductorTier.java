@@ -1,16 +1,16 @@
 package mekanism.common.tier;
 
-import mekanism.common.ColourRGBA;
+import mekanism.common.ColorRGBA;
 import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum ConductorTier implements ITier {
-    BASIC(BaseTier.BASIC, 5, 1, 10, new ColourRGBA(0.2, 0.2, 0.2, 1)),
-    ADVANCED(BaseTier.ADVANCED, 5, 1, 400, new ColourRGBA(0.2, 0.2, 0.2, 1)),
-    ELITE(BaseTier.ELITE, 5, 1, 8_000, new ColourRGBA(0.2, 0.2, 0.2, 1)),
-    ULTIMATE(BaseTier.ULTIMATE, 5, 1, 100_000, new ColourRGBA(0.2, 0.2, 0.2, 1));
+    BASIC(BaseTier.BASIC, 5, 1, 10, new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ADVANCED(BaseTier.ADVANCED, 5, 1, 400, new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ELITE(BaseTier.ELITE, 5, 1, 8_000, new ColorRGBA(0.2, 0.2, 0.2, 1)),
+    ULTIMATE(BaseTier.ULTIMATE, 5, 1, 100_000, new ColorRGBA(0.2, 0.2, 0.2, 1));
 
-    private final ColourRGBA baseColour;
+    private final ColorRGBA baseColor;
     private final double baseConduction;
     private final double baseHeatCapacity;
     private final double baseConductionInsulation;
@@ -19,12 +19,12 @@ public enum ConductorTier implements ITier {
     private DoubleValue capacityReference;
     private DoubleValue insulationReference;
 
-    ConductorTier(BaseTier tier, double inversek, double inverseC, double insulationInversek, ColourRGBA colour) {
+    ConductorTier(BaseTier tier, double inversek, double inverseC, double insulationInversek, ColorRGBA color) {
         baseConduction = inversek;
         baseHeatCapacity = inverseC;
         baseConductionInsulation = insulationInversek;
 
-        baseColour = colour;
+        baseColor = color;
         baseTier = tier;
     }
 
@@ -54,8 +54,8 @@ public enum ConductorTier implements ITier {
         return capacityReference == null ? getBaseHeatCapacity() : capacityReference.get();
     }
 
-    public ColourRGBA getBaseColour() {
-        return baseColour;
+    public ColorRGBA getBaseColor() {
+        return baseColor;
     }
 
     public double getBaseConduction() {

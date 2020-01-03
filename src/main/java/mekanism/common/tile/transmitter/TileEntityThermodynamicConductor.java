@@ -8,7 +8,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.ColourRGBA;
+import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockThermodynamicConductor;
@@ -127,8 +127,8 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         return data;
     }
 
-    public ColourRGBA getBaseColour() {
-        return tier.getBaseColour();
+    public ColorRGBA getBaseColor() {
+        return tier.getBaseColor();
     }
 
     @Override

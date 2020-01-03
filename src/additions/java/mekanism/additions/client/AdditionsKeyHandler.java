@@ -1,6 +1,7 @@
 package mekanism.additions.client;
 
 import java.util.Collections;
+import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -19,7 +20,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class AdditionsKeyHandler extends MekKeyHandler {
 
-    public static KeyBinding voiceKey = new KeyBinding("mekanismadditions.key.voice", GLFW.GLFW_KEY_U, MekanismKeyHandler.keybindCategory);
+    public static KeyBinding voiceKey = new KeyBinding(AdditionsLang.KEY_VOICE.getTranslationKey(), GLFW.GLFW_KEY_U, MekanismKeyHandler.keybindCategory);
 
     private static Builder BINDINGS = new Builder()
           .addBinding(voiceKey, true);

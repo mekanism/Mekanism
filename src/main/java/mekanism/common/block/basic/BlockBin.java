@@ -89,7 +89,7 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
             if (bin == null) {
                 return;
             }
-            BlockRayTraceResult mop = MekanismUtils.rayTrace(world, player);
+            BlockRayTraceResult mop = MekanismUtils.rayTrace(player);
             if (mop.getType() != Type.MISS && mop.getFace() == bin.getDirection()) {
                 BinInventorySlot binSlot = bin.getBinSlot();
                 if (!binSlot.isEmpty()) {

@@ -8,6 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 
 //TODO: Re-evaluate how we do colors, given for say energy as the transmission type it makes more sense to have input be green?
+// Maybe we should make some way to specify a color override?
 public enum DataType implements IIncrementalEnum<DataType>, IHasTranslationKey {
     NONE(MekanismLang.SIDE_DATA_NONE, EnumColor.GRAY),
     INPUT(MekanismLang.SIDE_DATA_INPUT, EnumColor.DARK_RED),

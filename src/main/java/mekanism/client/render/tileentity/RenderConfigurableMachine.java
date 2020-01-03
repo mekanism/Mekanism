@@ -14,6 +14,7 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.config.DataType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -26,7 +27,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 
 public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntityRenderer<S> {
@@ -42,14 +42,8 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
         if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
-            BlockRayTraceResult pos = null;
-            //TODO: 1.15 - There is probably a better way to do this than just using the object mouse over
-            // previously used: minecraft.player.rayTrace(8.0D, 1.0F);
-            RayTraceResult objectMouseOver = Minecraft.getInstance().objectMouseOver;
-            if (objectMouseOver instanceof BlockRayTraceResult) {
-                pos = (BlockRayTraceResult) objectMouseOver;
-            }
-            if (pos != null && !pos.getType().equals(Type.MISS)) {
+            BlockRayTraceResult pos = MekanismUtils.rayTrace(Minecraft.getInstance().player);
+            if (!pos.getType().equals(Type.MISS)) {
                 BlockPos bp = pos.getPos();
                 TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
                 if (configurable.getConfig().supports(type)) {
@@ -58,12 +52,9 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                         if (dataType != null) {
                             matrix.func_227860_a_();
                             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-                            //TODO: 1.15 - Fix how it is being colored?? to not use GL?
-                            MekanismRenderer.color(dataType.getColor(), 0.6F);
                             Model3D overlayModel = getOverlayModel(pos.getFace(), type);
-                            MekanismRenderer.renderObject(overlayModel, matrix, renderer, MekanismRenderType.configurableMachineState(PlayerContainer.field_226615_c_));
-                            //TODO: Remove having to reset color when we improve how we color it in the first place
-                            MekanismRenderer.resetColor();
+                            MekanismRenderer.renderObject(overlayModel, matrix, renderer, MekanismRenderType.configurableMachineState(PlayerContainer.field_226615_c_),
+                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F));
                             MekanismRenderer.disableGlow(glowInfo);
                             matrix.func_227865_b_();
                         }
@@ -73,7 +64,6 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         }
     }
 
-    //TODO: 1.15
     private Model3D getOverlayModel(Direction side, TransmissionType type) {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type)) {
             return cachedOverlays.get(side).get(type);

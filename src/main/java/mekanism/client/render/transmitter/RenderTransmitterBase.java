@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.obj.ContentsModelConfiguration;
 import mekanism.client.render.obj.VisibleModelConfiguration;
-import mekanism.common.ColourRGBA;
+import mekanism.common.ColorRGBA;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -37,7 +37,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
         super(renderer);
     }
 
-    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, int light, int overlayLight, TextureAtlasSprite icon, ColourRGBA color) {
+    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, int light, int overlayLight, TextureAtlasSprite icon, ColorRGBA color) {
         int argb = color.argb();
         float red = MekanismRenderer.getRed(argb);
         float green = MekanismRenderer.getGreen(argb);

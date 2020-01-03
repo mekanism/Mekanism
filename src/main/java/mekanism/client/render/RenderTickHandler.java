@@ -5,7 +5,7 @@ import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.client.ClientTickHandler;
-import mekanism.common.ColourRGBA;
+import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -83,7 +83,7 @@ public class RenderTickHandler {
                     int y = minecraft.func_228018_at_().getScaledHeight();
                     //TODO: Check this, though if we use vanilla status bar text it may be a lot simpler instead
                     String text = mode.getTextComponent().getFormattedText();
-                    int color = new ColourRGBA(1, 1, 1, (float) modeSwitchTimer / 100F).argb();
+                    int color = new ColorRGBA(1, 1, 1, (float) modeSwitchTimer / 100F).argb();
                     font.drawString(text, x / 2 - font.getStringWidth(text) / 2, y - 60, color);
                 }
 

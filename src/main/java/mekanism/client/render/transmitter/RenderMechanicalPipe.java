@@ -210,7 +210,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
             TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(fn.buffer, FluidType.STILL);
             int color = fn.buffer.getFluid().getAttributes().getColor(fn.buffer);
-            ColourRGBA c = new ColourRGBA(1.0, 1.0, 1.0, pipe.currentScale);
+            ColorRGBA c = new ColorRGBA(1.0, 1.0, 1.0, pipe.currentScale);
             if (color != 0xFFFFFFFF) {
                 c.setRGBFromInt(color);
             }
