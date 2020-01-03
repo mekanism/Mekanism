@@ -31,7 +31,11 @@ import net.minecraft.util.math.RayTraceResult.Type;
 
 public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntityRenderer<S> {
 
-    private Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+    private static Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+
+    public static void resetCachedOverlays() {
+        cachedOverlays.clear();
+    }
 
     public RenderConfigurableMachine(TileEntityRendererDispatcher renderer) {
         super(renderer);

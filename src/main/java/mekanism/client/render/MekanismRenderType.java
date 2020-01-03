@@ -18,7 +18,7 @@ public class MekanismRenderType extends RenderType {
               .func_228724_a_(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .func_228723_a_(field_228520_l_)//shadeModel(GL11.GL_SMOOTH)
               .func_228713_a_(field_228516_h_)//disableAlphaTest
-              .func_228726_a_(field_228515_g_)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+              .func_228726_a_(field_228515_g_)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
               .func_228728_a_(true);
         return func_228633_a_("mek_standard", DefaultVertexFormats.field_227849_i_, 7, 256, true, false, state);
     }
@@ -27,10 +27,20 @@ public class MekanismRenderType extends RenderType {
         RenderType.State state = RenderType.State.func_228694_a_()
               .func_228724_a_(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .func_228714_a_(field_228534_z_)//enableCull
-              .func_228726_a_(field_228515_g_)//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+              .func_228726_a_(field_228515_g_)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
               .func_228719_a_(field_228529_u_)//disableLighting
               .func_228728_a_(true);
         return func_228633_a_("transmitter_contents", DefaultVertexFormats.field_227849_i_, 7, 256, true, false, state);
+    }
+
+    public static RenderType.State.Builder renderFluidState(ResourceLocation resourceLocation) {
+        return RenderType.State.func_228694_a_()
+              .func_228724_a_(new RenderState.TextureState(resourceLocation, false, false))//Texture state
+              .func_228714_a_(field_228534_z_)//enableCull
+              .func_228719_a_(field_228529_u_)//disableLighting
+              .func_228723_a_(field_228520_l_)//shadeModel(GL11.GL_SMOOTH)
+              .func_228713_a_(field_228516_h_)//disableAlphaTest
+              .func_228726_a_(field_228515_g_);//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
     }
 
     public static RenderType.State.Builder configurableMachineState(ResourceLocation resourceLocation) {
@@ -40,7 +50,7 @@ public class MekanismRenderType extends RenderType {
               .func_228719_a_(field_228529_u_)//disableLighting
               .func_228723_a_(field_228520_l_)//shadeModel(GL11.GL_SMOOTH)
               .func_228713_a_(field_228516_h_)//disableAlphaTest
-              .func_228726_a_(field_228515_g_);//enableBled/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
+              .func_228726_a_(field_228515_g_);//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
     }
 
     public static RenderType resizableCuboid(RenderType.State.Builder stateBuilder, VertexFormat format) {

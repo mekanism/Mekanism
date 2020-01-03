@@ -54,7 +54,6 @@ public class MekanismFluids {
     }
 
     private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(String name, UnaryOperator<Builder> fluidAttributes) {
-        return FLUIDS.register(name, fluidAttributes.apply(FluidAttributes.builder(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid"),
-              new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_flow"))));
+        return FLUIDS.register(name, fluidAttributes.apply(FluidAttributes.builder(Mekanism.rl("block/liquid/liquid"), Mekanism.rl("block/liquid/liquid_flow"))));
     }
 }

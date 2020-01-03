@@ -1,19 +1,28 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidType;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
 
-    private static FluidRenderMap<DisplayInteger[]> cachedCenterFluids = new FluidRenderMap<>();
-    private static FluidRenderMap<DisplayInteger[]> cachedValveFluids = new FluidRenderMap<>();
+    private static FluidRenderMap<Map<Integer, Model3D>> cachedCenterFluids = new FluidRenderMap<>();
+    private static FluidRenderMap<Map<Integer, Model3D>> cachedValveFluids = new FluidRenderMap<>();
 
     private static int stages = 1400;
 
@@ -21,7 +30,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
         super(renderer);
     }
 
-    public static void resetDisplayInts() {
+    public static void resetCachedModels() {
         cachedCenterFluids.clear();
         cachedValveFluids.clear();
     }
@@ -29,124 +38,86 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
     @Override
     public void func_225616_a_(@Nonnull TileEntityFluidTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         FluidStack fluid = tile.fluidTank.getFluid();
-        //TODO: 1.15
-        //render(tile.tier, fluid, tile.prevScale, tile.valve > 0 ? tile.valveFluid : FluidStack.EMPTY, x, y, z);
-    }
-
-    //TODO: 1.15
-    /*public void render(FluidTankTier tier, @Nonnull FluidStack fluid, float fluidScale, @Nonnull FluidStack valveFluid, double x, double y, double z) {
-        boolean glChanged = false;
+        float fluidScale = tile.prevScale;
+        FluidStack valveFluid = tile.valve > 0 ? tile.valveFluid : FluidStack.EMPTY;
         if (!fluid.isEmpty() && fluidScale > 0) {
-            RenderSystem.pushMatrix();
-            glChanged = enableGL();
-            field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
-            RenderSystem.translatef((float) x, (float) y, (float) z);
-            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
-
-            DisplayInteger[] displayList = getListAndRender(fluid);
-            if (tier == FluidTankTier.CREATIVE) {
+            if (tile.tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
-            MekanismRenderer.color(fluid, fluidScale);
+            matrix.func_227860_a_();
+            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
+            int modelNumber;
             if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
-                displayList[stages - 1].render();
+                modelNumber = stages - 1;
             } else {
-                displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
+                modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
             }
-            MekanismRenderer.resetColor();
+            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                  MekanismRenderer.getColorARGB(fluid));
             MekanismRenderer.disableGlow(glowInfo);
-            RenderSystem.popMatrix();
+            matrix.func_227865_b_();
         }
 
         if (!valveFluid.isEmpty() && !valveFluid.getFluid().getAttributes().isGaseous(valveFluid)) {
-            RenderSystem.pushMatrix();
-            glChanged = enableGL();
-            field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
-            RenderSystem.translatef((float) x, (float) y, (float) z);
+            matrix.func_227860_a_();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(valveFluid);
-            MekanismRenderer.color(valveFluid);
-            DisplayInteger[] valveList = getValveRender(valveFluid);
-            valveList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
-            MekanismRenderer.resetColor();
+            Model3D valveModel = getValveModel(valveFluid, Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1))));
+            MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                  MekanismRenderer.getColorARGB(valveFluid));
             MekanismRenderer.disableGlow(glowInfo);
-            RenderSystem.popMatrix();
-        }
-
-        if (glChanged) {
-            RenderSystem.disableBlend();
-            RenderSystem.enableAlphaTest();
-            RenderSystem.enableLighting();
-            RenderSystem.disableCull();
+            matrix.func_227865_b_();
         }
     }
 
-    private boolean enableGL() {
-        RenderSystem.enableCull();
-        RenderSystem.disableLighting();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        return true;
-    }
+    private Model3D getValveModel(@Nonnull FluidStack fluid, int stage) {
+        if (cachedValveFluids.containsKey(fluid) && cachedValveFluids.get(fluid).containsKey(stage)) {
+            return cachedValveFluids.get(fluid).get(stage);
+        }
+        Model3D model = new Model3D();
+        model.baseBlock = Blocks.WATER;
+        MekanismRenderer.prepFlowing(model, fluid);
+        if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
+            model.minX = 0.3125 + .01;
+            model.minY = 0.0625 + ((float) stage / (float) stages) * 0.875;
+            model.minZ = 0.3125 + .01;
 
-    private DisplayInteger[] getValveRender(@Nonnull FluidStack fluid) {
+            model.maxX = 0.6875 - .01;
+            model.maxY = 0.9375 - .01;
+            model.maxZ = 0.6875 - .01;
+        }
         if (cachedValveFluids.containsKey(fluid)) {
-            return cachedValveFluids.get(fluid);
+            cachedValveFluids.get(fluid).put(stage, model);
+        } else {
+            Map<Integer, Model3D> map = new Int2ObjectOpenHashMap<>();
+            map.put(stage, model);
+            cachedValveFluids.put(fluid, map);
         }
-
-        Model3D toReturn = new Model3D();
-        toReturn.baseBlock = Blocks.WATER;
-        MekanismRenderer.prepFlowing(toReturn, fluid);
-
-        DisplayInteger[] displays = new DisplayInteger[stages];
-        cachedValveFluids.put(fluid, displays);
-
-        for (int i = 0; i < stages; i++) {
-            displays[i] = DisplayInteger.createAndStart();
-            if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
-                toReturn.minX = 0.3125 + .01;
-                toReturn.minY = 0.0625 + ((float) i / (float) stages) * 0.875;
-                toReturn.minZ = 0.3125 + .01;
-
-                toReturn.maxX = 0.6875 - .01;
-                toReturn.maxY = 0.9375 - .01;
-                toReturn.maxZ = 0.6875 - .01;
-
-                MekanismRenderer.renderObject(toReturn);
-            }
-            GlStateManager.endList();
-        }
-        return displays;
+        return model;
     }
 
-    private DisplayInteger[] getListAndRender(@Nonnull FluidStack fluid) {
+    private Model3D getFluidModel(@Nonnull FluidStack fluid, int stage) {
+        if (cachedCenterFluids.containsKey(fluid) && cachedCenterFluids.get(fluid).containsKey(stage)) {
+            return cachedCenterFluids.get(fluid).get(stage);
+        }
+        Model3D model = new Model3D();
+        model.baseBlock = Blocks.WATER;
+        model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
+        if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
+            model.minX = 0.125 + .01;
+            model.minY = 0.0625 + .01;
+            model.minZ = 0.125 + .01;
+
+            model.maxX = 0.875 - .01;
+            model.maxY = 0.0625 + ((float) stage / (float) stages) * 0.875 - .01;
+            model.maxZ = 0.875 - .01;
+        }
         if (cachedCenterFluids.containsKey(fluid)) {
-            return cachedCenterFluids.get(fluid);
+            cachedCenterFluids.get(fluid).put(stage, model);
+        } else {
+            Map<Integer, Model3D> map = new Int2ObjectOpenHashMap<>();
+            map.put(stage, model);
+            cachedCenterFluids.put(fluid, map);
         }
-
-        Model3D toReturn = new Model3D();
-        toReturn.baseBlock = Blocks.WATER;
-        toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
-
-        DisplayInteger[] displays = new DisplayInteger[stages];
-        cachedCenterFluids.put(fluid, displays);
-
-        for (int i = 0; i < stages; i++) {
-            displays[i] = DisplayInteger.createAndStart();
-            if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
-                toReturn.minX = 0.125 + .01;
-                toReturn.minY = 0.0625 + .01;
-                toReturn.minZ = 0.125 + .01;
-
-                toReturn.maxX = 0.875 - .01;
-                toReturn.maxY = 0.0625 + ((float) i / (float) stages) * 0.875 - .01;
-                toReturn.maxZ = 0.875 - .01;
-
-                MekanismRenderer.renderObject(toReturn);
-            }
-            GlStateManager.endList();
-        }
-        return displays;
-    }*/
+        return model;
+    }
 }

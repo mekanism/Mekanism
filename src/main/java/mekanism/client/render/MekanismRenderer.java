@@ -15,6 +15,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
@@ -67,7 +68,6 @@ public class MekanismRenderer {
     public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
     private static RenderConfigurableMachine<?> machineRenderer;
-    private static AtlasTexture texMap = null;
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
@@ -79,10 +79,6 @@ public class MekanismRenderer {
     @SuppressWarnings("unchecked")
     public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {
         return (RenderConfigurableMachine<S>) machineRenderer;
-    }
-
-    public static void initFluidTextures(AtlasTexture map) {
-        texMap = map;
     }
 
     /**
@@ -120,7 +116,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
-        return texMap.getSprite(spriteLocation);
+        return Minecraft.getInstance().func_228015_a_(PlayerContainer.field_226615_c_).apply(spriteLocation);
     }
 
     public static RenderState pauseRenderer(Tessellator tess) {
@@ -271,15 +267,23 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(EnumColor color, float alpha) {
+        return getColorARGB(color.rgbCode[0], color.rgbCode[1], color.rgbCode[2], alpha);
+    }
+
+    public static int getColorARGB(@Nonnull FluidStack fluidStack) {
+        return fluidStack.getFluid().getAttributes().getColor(fluidStack);
+    }
+
+    public static int getColorARGB(int red, int green, int blue, float alpha) {
         if (alpha < 0) {
             alpha = 0;
         } else if (alpha > 1) {
             alpha = 1;
         }
         int argb = (int) (255 * alpha) << 24;
-        argb |= color.rgbCode[0] << 16;
-        argb |= color.rgbCode[1] << 8;
-        argb |= color.rgbCode[2];
+        argb |= red << 16;
+        argb |= green << 8;
+        argb |= blue;
         return argb;
     }
 
@@ -388,7 +392,9 @@ public class MekanismRenderer {
         }
 
         FluidRenderer.resetDisplayInts();
-        RenderFluidTank.resetDisplayInts();
+        RenderFluidTank.resetCachedModels();
+        RenderFluidTankItem.resetCachedModels();
+        RenderConfigurableMachine.resetCachedOverlays();
     }
 
     @SubscribeEvent
@@ -404,8 +410,6 @@ public class MekanismRenderer {
         whiteIcon = map.getSprite(Mekanism.rl("block/overlay/overlay_white"));
         energyIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_energy"));
         heatIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_heat"));
-
-        initFluidTextures(map);
 
         RenderLogisticalTransporter.onStitch(map);
         RenderMechanicalPipe.onStitch();
