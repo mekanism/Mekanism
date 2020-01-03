@@ -53,7 +53,7 @@ public class MekanismRenderType extends RenderType {
     }
 
     public static RenderType resizableCuboid(RenderType.State.Builder stateBuilder, VertexFormat format) {
-        stateBuilder.func_228713_a_(new RenderState.AlphaState(0.5F))//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
+        stateBuilder.func_228713_a_(new RenderState.AlphaState(0.1F))//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
               .func_228719_a_(field_228529_u_);//disableLighting
         return func_228633_a_("resizable_cuboid", format, 7, 256, true, false, stateBuilder.func_228728_a_(true));
     }

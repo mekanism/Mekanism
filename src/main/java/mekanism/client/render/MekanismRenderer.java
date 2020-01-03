@@ -281,9 +281,7 @@ public class MekanismRenderer {
         int color = getColorARGB(fluidStack);
         if (fluidStack.getFluid().getAttributes().isGaseous(fluidStack)) {
             //TODO: We probably want to factor in the fluid's alpha value somehow
-            //TODO: 1.15 - Re-evaluate this as it seems to behave oddly with the new system that is used for coloring
-            // I think we need to overlay the color with alpha onto the RenderResizableCuboid
-            //return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+            return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
         }
         return color;
     }

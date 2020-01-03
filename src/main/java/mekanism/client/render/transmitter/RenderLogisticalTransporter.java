@@ -109,8 +109,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             ItemStack itemStack = minecraft.player.inventory.getCurrentItem();
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
                 //TODO: Properly figure out which one the player is looking at
-                BlockRayTraceResult pos = null;//minecraft.player.rayTrace(8.0D, 1.0F);
-                if (pos != null && pos.getFace() != null && pos.getPos().equals(transporter.getPos())) {
+                BlockRayTraceResult pos = MekanismUtils.rayTrace(minecraft.player);
+                if (!pos.getType().equals(Type.MISS) && pos.getFace() != null && pos.getPos().equals(transporter.getPos())) {
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.getFace().ordinal()];
                     RenderSystem.pushMatrix();
                     RenderSystem.enableCull();
