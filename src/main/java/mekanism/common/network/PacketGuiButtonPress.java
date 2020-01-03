@@ -17,6 +17,7 @@ import mekanism.common.inventory.container.tile.BoilerStatsContainer;
 import mekanism.common.inventory.container.tile.InductionMatrixContainer;
 import mekanism.common.inventory.container.tile.MatrixStatsContainer;
 import mekanism.common.inventory.container.tile.SideConfigurationContainer;
+import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
@@ -220,7 +221,7 @@ public class PacketGuiButtonPress {
             if (tile instanceof TileEntityInductionCasing) {
                 return new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new InductionMatrixContainer(i, inv, (TileEntityInductionCasing) tile));
             } else if (tile instanceof TileEntityBoilerCasing) {
-                return new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new BoilerStatsContainer(i, inv, (TileEntityBoilerCasing) tile));
+                return new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile));
             }
             return null;
         }),

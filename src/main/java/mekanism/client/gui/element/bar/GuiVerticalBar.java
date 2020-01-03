@@ -18,7 +18,6 @@ public abstract class GuiVerticalBar<INFO extends IBarInfoHandler> extends GuiBa
     @Override
     public void renderBar() {
         minecraft.textureManager.bindTexture(BAR);
-        //TODO: Should this be made so texture height is 54
-        guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, 6, 54);
+        guiObj.drawModalRectWithCustomSizedTexture(x, y, width, height, 0, 0, 6, 54, 6, 54);
     }
 }

@@ -274,6 +274,24 @@ public class MekanismRenderer {
         return fluidStack.getFluid().getAttributes().getColor(fluidStack);
     }
 
+    public static int getColorARGB(@Nonnull FluidStack fluidStack, float fluidScale) {
+        if (fluidStack.isEmpty()) {
+            return -1;
+        }
+        int color = getColorARGB(fluidStack);
+        if (fluidStack.getFluid().getAttributes().isGaseous(fluidStack)) {
+            //TODO: We probably want to factor in the fluid's alpha value somehow
+            //TODO: 1.15 - Re-evaluate this as it seems to behave oddly with the new system that is used for coloring
+            // I think we need to overlay the color with alpha onto the RenderResizableCuboid
+            //return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+        }
+        return color;
+    }
+
+    public static int getColorARGB(float red, float green, float blue, float alpha) {
+        return getColorARGB((int) (255 * red), (int) (255 * green), (int) (255 * blue), alpha);
+    }
+
     public static int getColorARGB(int red, int green, int blue, float alpha) {
         if (alpha < 0) {
             alpha = 0;
@@ -391,7 +409,7 @@ public class MekanismRenderer {
             event.addSprite(type.getIcon());
         }
 
-        FluidRenderer.resetDisplayInts();
+        FluidRenderer.resetCachedModels();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
         RenderConfigurableMachine.resetCachedOverlays();

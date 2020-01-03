@@ -26,6 +26,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public FluidStack waterStored = FluidStack.EMPTY;
     @Nonnull
     public FluidStack prevWater = FluidStack.EMPTY;
+    //TODO: Do we want to make the boiler have steam be a gas instead of a fluid?
     @Nonnull
     public FluidStack steamStored = FluidStack.EMPTY;
     @Nonnull

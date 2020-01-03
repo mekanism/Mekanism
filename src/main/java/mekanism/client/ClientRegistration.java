@@ -226,7 +226,6 @@ public class ClientRegistration {
               MekanismTileEntityTypes.BASIC_SMELTING_FACTORY, MekanismTileEntityTypes.ADVANCED_SMELTING_FACTORY,
               MekanismTileEntityTypes.ELITE_SMELTING_FACTORY, MekanismTileEntityTypes.ULTIMATE_SMELTING_FACTORY);
 
-        //TODO: 1.15 Double check render layer stuff given by the time we are ready for the first 1.15 alpha we should know the states better of the remaining things
         //Block render layers
         //Cutout
         ClientRegistrationUtil.setRenderLayer(RenderType.func_228643_e_(), MekanismBlocks.STRUCTURAL_GLASS, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,

@@ -17,7 +17,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.inventory.container.turbine.TurbineContainer;
@@ -114,6 +113,8 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismGenerators.rl("gui/industrial_turbine.png");
+        //Note: This texture is also used for the boiler, for the gauge
+        // TODO: Look at the texture at some point maybe we can split it up
+        return Mekanism.rl("gui/industrial_turbine.png");
     }
 }

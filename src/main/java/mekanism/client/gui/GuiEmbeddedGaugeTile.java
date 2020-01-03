@@ -28,11 +28,13 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
         if (fluid.isEmpty()) {
             return;
         }
-        int start = 0;
         MekanismRenderer.color(fluid);
         TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
         minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
-        while (true) {
+        int start = 0;
+        int x = guiLeft + xPos;
+        int y = guiTop + yPos;
+        while (scale > 0) {
             int renderRemaining;
             if (scale > 16) {
                 renderRemaining = 16;
@@ -41,14 +43,11 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
                 renderRemaining = scale;
                 scale = 0;
             }
-            drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos + 58 - renderRemaining - start, fluidTexture, 16, renderRemaining);
+            drawTexturedRectFromIcon(x, y + 58 - renderRemaining - start, fluidTexture, 16, renderRemaining);
             start += 16;
-            if (renderRemaining == 0 || scale == 0) {
-                break;
-            }
         }
         MekanismRenderer.resetColor();
         minecraft.textureManager.bindTexture(getGaugeResource());
-        drawTexturedRect(guiLeft + xPos, guiTop + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+        drawTexturedRect(x, y, 176, side == 0 ? 0 : 54, 16, 54);
     }
 }

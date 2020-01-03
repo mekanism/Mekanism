@@ -21,8 +21,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
 
-    private static FluidRenderMap<Map<Integer, Model3D>> cachedCenterFluids = new FluidRenderMap<>();
-    private static FluidRenderMap<Map<Integer, Model3D>> cachedValveFluids = new FluidRenderMap<>();
+    private static final FluidRenderMap<Map<Integer, Model3D>> cachedCenterFluids = new FluidRenderMap<>();
+    private static final FluidRenderMap<Map<Integer, Model3D>> cachedValveFluids = new FluidRenderMap<>();
 
     private static int stages = 1400;
 
@@ -52,8 +52,8 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             } else {
                 modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
             }
-            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
-                  MekanismRenderer.getColorARGB(fluid));
+            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidTankState(PlayerContainer.field_226615_c_),
+                  MekanismRenderer.getColorARGB(fluid, fluidScale));
             MekanismRenderer.disableGlow(glowInfo);
             matrix.func_227865_b_();
         }
@@ -62,7 +62,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             matrix.func_227860_a_();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(valveFluid);
             Model3D valveModel = getValveModel(valveFluid, Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1))));
-            MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+            MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidTankState(PlayerContainer.field_226615_c_),
                   MekanismRenderer.getColorARGB(valveFluid));
             MekanismRenderer.disableGlow(glowInfo);
             matrix.func_227865_b_();

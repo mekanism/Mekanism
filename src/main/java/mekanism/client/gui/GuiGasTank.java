@@ -95,9 +95,6 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
                 }
                 drawTexturedRectFromIcon(x + 72 - renderRemaining - start, y, icon, renderRemaining, 10);
                 start += 16;
-                if (scale == 0) {
-                    break;
-                }
             }
             MekanismRenderer.resetColor();
             //Reset the texture location, even though it technically isn't needed

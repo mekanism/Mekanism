@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 //TODO: Make some item models that just have straight edges be gotten via JSON instead of using a TEISR
 // Maybe we can even clean up some of the things currently using TESRs instead of using json.
 // For example the normal solar panel block
-//TODO: 1.15 Declare the transformations via json and that they are "built in renderers", instead of messing around with the ItemLayerWrapper stuff?
+//TODO: Declare the transformations via json and that they are "built in renderers", instead of messing around with the ItemLayerWrapper stuff?
 public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRenderer {
 
     protected abstract void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,

@@ -32,7 +32,6 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
-        //TODO: 1.15
         EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier(stack);
         if (tier == null) {
             return;

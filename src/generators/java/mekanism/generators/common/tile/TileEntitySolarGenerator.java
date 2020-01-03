@@ -130,7 +130,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return production;
     }
 
-    //TODO: 1.15 re-evaluate
+    //TODO: re-evaluate
     //Vanilla copy of ClientWorld#func_228326_g_ used to be World#getSunBrightness
     private float getSunBrightness(World world, float partialTicks) {
         float f = world.getCelestialAngle(partialTicks);

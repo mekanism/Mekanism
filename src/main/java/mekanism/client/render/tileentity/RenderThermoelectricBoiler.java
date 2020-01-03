@@ -2,11 +2,22 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.client.render.FluidRenderer;
+import mekanism.client.render.FluidRenderer.RenderData;
+import mekanism.client.render.FluidRenderer.ValveRenderData;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoilerCasing> {
@@ -21,12 +32,12 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityBoilerCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        //TODO: 1.15
-        /*if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null &&
+    public void func_225616_a_(@Nonnull TileEntityBoilerCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+          int overlayLight) {
+        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null &&
             tile.structure.upperRenderLocation != null) {
             FluidStack waterStored = tile.structure.waterStored;
-            boolean glChanged = false;
+            BlockPos pos = tile.getPos();
             if (waterStored.getAmount() > 0) {
                 RenderData data = new RenderData();
                 data.location = tile.structure.renderLocation;
@@ -35,29 +46,25 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 data.width = tile.structure.volWidth;
                 data.fluidType = WATER;
 
-                if (data.height >= 1 && waterStored.getFluid() != Fluids.EMPTY) {
-                    field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
-                    RenderSystem.pushMatrix();
-                    glChanged = makeGLChanges(glChanged);
-                    FluidRenderer.translateToOrigin(data.location);
+                if (data.height >= 1 && !waterStored.isEmpty()) {
+                    matrix.func_227860_a_();
+                    matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
-                    MekanismRenderer.color(waterStored, (float) waterStored.getAmount() / (float) tile.clientWaterCapacity);
-                    if (waterStored.getFluid().getAttributes().isGaseous(waterStored)) {
-                        FluidRenderer.getTankDisplay(data).render();
-                    } else {
-                        FluidRenderer.getTankDisplay(data, tile.prevWaterScale).render();
-                    }
-                    MekanismRenderer.resetColor();
+                    Model3D fluidModel = FluidRenderer.getFluidModel(data, tile.prevWaterScale);
+                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                          MekanismRenderer.getColorARGB(data.fluidType, (float) waterStored.getAmount() / (float) tile.clientWaterCapacity));
                     MekanismRenderer.disableGlow(glowInfo);
-                    RenderSystem.popMatrix();
+                    matrix.func_227865_b_();
 
                     for (ValveData valveData : tile.valveViewing) {
-                        RenderSystem.pushMatrix();
-                        FluidRenderer.translateToOrigin(valveData.location);
+                        matrix.func_227860_a_();
+                        matrix.func_227861_a_(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
                         GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(waterStored);
-                        FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
+                        Model3D valveModel = FluidRenderer.getValveModel(ValveRenderData.get(data, valveData));
+                        MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                              MekanismRenderer.getColorARGB(data.fluidType));
                         MekanismRenderer.disableGlow(valveGlowInfo);
-                        RenderSystem.popMatrix();
+                        matrix.func_227865_b_();
                     }
                 }
             }
@@ -72,42 +79,19 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 data.length = tile.structure.volLength;
                 data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
-
-                if (data.height >= 1 && tile.structure.steamStored.getFluid() != Fluids.EMPTY) {
-                    field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
-                    RenderSystem.pushMatrix();
-                    glChanged = makeGLChanges(glChanged);
-                    FluidRenderer.translateToOrigin(data.location);
+                if (data.height >= 1 && !tile.structure.steamStored.isEmpty()) {
+                    matrix.func_227860_a_();
+                    matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.steamStored);
-
-                    DisplayInteger display = FluidRenderer.getTankDisplay(data);
-                    MekanismRenderer.color(tile.structure.steamStored, (float) tile.structure.steamStored.getAmount() / (float) tile.clientSteamCapacity);
-                    display.render();
-                    MekanismRenderer.resetColor();
+                    Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
+                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                          MekanismRenderer.getColorARGB(tile.structure.steamStored, (float) tile.structure.steamStored.getAmount() / (float) tile.clientSteamCapacity));
                     MekanismRenderer.disableGlow(glowInfo);
-                    RenderSystem.popMatrix();
+                    matrix.func_227865_b_();
                 }
             }
-            if (glChanged) {
-                setLightmapDisabled(false);
-                RenderSystem.enableLighting();
-                RenderSystem.disableBlend();
-                RenderSystem.disableCull();
-            }
-        }*/
-    }
-
-    //TODO: 1.15
-    /*private boolean makeGLChanges(boolean glChanged) {
-        if (!glChanged) {
-            RenderSystem.enableCull();
-            RenderSystem.enableBlend();
-            RenderSystem.disableLighting();
-            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-            setLightmapDisabled(true);
         }
-        return true;
-    }*/
+    }
 
     @Override
     public boolean isGlobalRenderer(TileEntityBoilerCasing tile) {

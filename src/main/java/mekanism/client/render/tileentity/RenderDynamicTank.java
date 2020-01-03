@@ -2,10 +2,20 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.client.render.FluidRenderer;
+import mekanism.client.render.FluidRenderer.RenderData;
+import mekanism.client.render.FluidRenderer.ValveRenderData;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.util.math.BlockPos;
 
 public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank> {
 
@@ -15,8 +25,7 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityDynamicTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        //TODO: 1.15
-        /*if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.fluidStored.getAmount() > 0) {
+        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.fluidStored.getAmount() > 0) {
             RenderData data = new RenderData();
             data.location = tile.structure.renderLocation;
             data.height = tile.structure.volHeight - 2;
@@ -25,42 +34,28 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
             data.fluidType = tile.structure.fluidStored;
 
             if (data.location != null && data.height >= 1) {
-                field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
-                RenderSystem.pushMatrix();
-                RenderSystem.enableCull();
-                RenderSystem.enableBlend();
-                RenderSystem.disableLighting();
-                RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-                setLightmapDisabled(true);
-                FluidRenderer.translateToOrigin(data.location);
+                matrix.func_227860_a_();
+                BlockPos pos = tile.getPos();
+                matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                 GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
-                MekanismRenderer.color(data.fluidType, (float) data.fluidType.getAmount() / (float) tile.clientCapacity);
-                if (data.fluidType.getFluid().getAttributes().isGaseous(data.fluidType)) {
-                    FluidRenderer.getTankDisplay(data).render();
-                } else {
-                    FluidRenderer.getTankDisplay(data, tile.prevScale).render();
-                }
-
-                MekanismRenderer.resetColor();
+                Model3D fluidModel = FluidRenderer.getFluidModel(data, tile.prevScale);
+                MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                      MekanismRenderer.getColorARGB(data.fluidType, (float) data.fluidType.getAmount() / (float) tile.clientCapacity));
                 MekanismRenderer.disableGlow(glowInfo);
-                RenderSystem.popMatrix();
+                matrix.func_227865_b_();
 
                 for (ValveData valveData : tile.valveViewing) {
-                    RenderSystem.pushMatrix();
-                    FluidRenderer.translateToOrigin(valveData.location);
+                    matrix.func_227860_a_();
+                    matrix.func_227861_a_(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
                     GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(data.fluidType);
-                    MekanismRenderer.color(data.fluidType);
-                    FluidRenderer.getValveDisplay(ValveRenderData.get(data, valveData)).render();
+                    Model3D valveModel = FluidRenderer.getValveModel(ValveRenderData.get(data, valveData));
+                    MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                          MekanismRenderer.getColorARGB(data.fluidType));
                     MekanismRenderer.disableGlow(valveGlowInfo);
-                    RenderSystem.popMatrix();
+                    matrix.func_227865_b_();
                 }
-                MekanismRenderer.resetColor();
-                setLightmapDisabled(false);
-                RenderSystem.enableLighting();
-                RenderSystem.disableBlend();
-                RenderSystem.disableCull();
             }
-        }*/
+        }
     }
 
     @Override

@@ -15,7 +15,6 @@ public class GuiVerticalRateBar extends GuiVerticalBar<IBarInfoHandler> {
 
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
-        //TODO: Check all of this
         int displayInt = (int) (getHandler().getLevel() * 58);
         guiObj.drawModalRectWithCustomSizedTexture(x + 1, y + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, 6, 58);
     }

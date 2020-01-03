@@ -3,6 +3,8 @@ package mekanism.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -122,7 +124,7 @@ public class ModelRobit extends EntityModel<EntityRobit> {
     }
 
     @Override
-    public void func_225597_a_(EntityRobit entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void func_225597_a_(@Nonnull EntityRobit entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         //public void render(EntityRobit entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         //super.func_225597_a_(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         //TODO: 1.15
@@ -166,9 +168,11 @@ public class ModelRobit extends EntityModel<EntityRobit> {
         leftarm.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         righthand.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         lefthand.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
         backLight.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         eyeRight.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         eyeLeft.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        MekanismRenderer.disableGlow(glowInfo);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

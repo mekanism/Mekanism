@@ -79,9 +79,6 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                     guiObj.drawTexturedRectFromIcon(x + 16 * i + 1, y + height - renderRemaining - start - 1, icon, 16, renderRemaining);
                 }
                 start += 16;
-                if (scale == 0) {
-                    break;
-                }
             }
             MekanismRenderer.resetColor();
             minecraft.textureManager.bindTexture(getResource());

@@ -40,8 +40,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Boil
         }, this, resource));
         addButton(boilGraph = new GuiGraph(this, resource, 8, 83, 160, 36, MekanismLang.BOIL_RATE::translate));
         addButton(maxGraph = new GuiGraph(this, resource, 8, 122, 160, 36, MekanismLang.MAX_BOIL_RATE::translate));
-        maxGraph.enableFixedScale((int) ((tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get()) /
-                                         SynchronizedBoilerData.getHeatEnthalpy()));
+        maxGraph.enableFixedScale((int) ((tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get()) / SynchronizedBoilerData.getHeatEnthalpy()));
     }
 
     @Override

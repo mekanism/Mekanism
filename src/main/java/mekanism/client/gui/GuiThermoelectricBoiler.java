@@ -19,6 +19,7 @@ import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fluids.FluidStack;
 
 public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoilerCasing, ThermoelectricBoilerContainer> {
 
@@ -68,6 +69,24 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 43, 30, 0x00CD00, 90);
         renderScaledText(MekanismLang.BOIL_RATE.translate(tile.getLastBoilRate()), 43, 39, 0x00CD00, 90);
         renderScaledText(MekanismLang.MAX_BOIL_RATE.translate(tile.getLastMaxBoil()), 43, 48, 0x00CD00, 90);
+        //TODO: 1.14 Convert to GuiElement
+        int xAxis = mouseX - guiLeft;
+        int yAxis = mouseY - guiTop;
+        if (xAxis >= 7 && xAxis <= 23 && yAxis >= 14 && yAxis <= 72) {
+            FluidStack waterStored = tile.structure == null ? FluidStack.EMPTY : tile.structure.waterStored;
+            if (waterStored.isEmpty()) {
+                displayTooltip(MekanismLang.EMPTY.translate(), xAxis, yAxis);
+            } else {
+                displayTooltip(MekanismLang.GENERIC_STORED_MB.translate(waterStored, waterStored.getAmount()), xAxis, yAxis);
+            }
+        } else if (xAxis >= 153 && xAxis <= 169 && yAxis >= 14 && yAxis <= 72) {
+            FluidStack steamStored = tile.structure == null ? FluidStack.EMPTY : tile.structure.steamStored;
+            if (steamStored.isEmpty()) {
+                displayTooltip(MekanismLang.EMPTY.translate(), xAxis, yAxis);
+            } else {
+                displayTooltip(MekanismLang.GENERIC_STORED_MB.translate(steamStored, steamStored.getAmount()), xAxis, yAxis);
+            }
+        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

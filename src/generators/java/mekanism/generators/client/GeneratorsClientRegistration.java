@@ -40,6 +40,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -93,5 +94,10 @@ public class GeneratorsClientRegistration {
     private static void registerItemStackModel(Map<ResourceLocation, IBakedModel> modelRegistry, String type, Function<ItemLayerWrapper, IBakedModel> setModel) {
         ModelResourceLocation resourceLocation = ClientRegistrationUtil.getInventoryMRL(MekanismGenerators::rl, type);
         modelRegistry.put(resourceLocation, setModel.apply(new ItemLayerWrapper(modelRegistry.get(resourceLocation))));
+    }
+
+    @SubscribeEvent
+    public static void onStitch(TextureStitchEvent.Pre event) {
+        RenderBioGenerator.resetCachedModels();
     }
 }
