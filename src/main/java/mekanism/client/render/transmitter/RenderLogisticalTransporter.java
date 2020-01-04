@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -11,138 +12,105 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
-import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import mekanism.client.render.MekanismRenderType;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.TransporterStack;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.TransporterUtils;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
-    private static Map<Direction, Map<Integer, DisplayInteger>> cachedOverlays = new EnumMap<>(Direction.class);
-    private final static ResourceLocation transporterBox = MekanismUtils.getResource(ResourceType.RENDER, "transporter_box.png");
+    private static Map<Direction, Map<Integer, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static TextureAtlasSprite gunpowderIcon;
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;
     private ModelTransporterBox modelBox = new ModelTransporterBox();
     private ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
+    private EntityRenderer<? super ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(entityItem);
 
     public RenderLogisticalTransporter(TileEntityRendererDispatcher renderer) {
         super(renderer);
+        entityItem.setNoDespawn();
     }
-    //TODO: 1.15
-    //private EntityRenderer<ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(ItemEntity.class);
 
     public static void onStitch(AtlasTexture map) {
         cachedOverlays.clear();
-        //TODO: 1.15, can we move overlaying this onto the diversion transporter into the baked model?
         gunpowderIcon = map.getSprite(new ResourceLocation("minecraft", "item/gunpowder"));
         torchOffIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_off"));
-        torchOnIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_on"));
+        torchOnIcon = map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch"));
     }
 
     @Override
     public void func_225616_a_(@Nonnull TileEntityLogisticalTransporter transporter, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
           int light, int overlayLight) {
-        //TODO: 1.15
-        /*if (MekanismConfig.client.opaqueTransmitters.get()) {
+        if (MekanismConfig.client.opaqueTransmitters.get()) {
             return;
         }
-        //Keep track of if we had to push. Makes it so that we don't have to push and pop if we end up doing no rendering
-        boolean pushed = false;
         Collection<TransporterStack> inTransit = transporter.getTransmitter().getTransit();
+        BlockPos pos = transporter.getPos();
         if (!inTransit.isEmpty()) {
-            RenderSystem.pushMatrix();
-            pushed = true;
-
+            matrix.func_227860_a_();
             //TODO: Do we have to make a new entity item each time we render
-            entityItem.setNoDespawn();
             //entityItem.hoverStart = 0;
-            entityItem.setPosition(transporter.getPos().getX() + 0.5, transporter.getPos().getY() + 0.5, transporter.getPos().getZ() + 0.5);
+            entityItem.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
             entityItem.world = transporter.getWorld();
 
             float partial = partialTick * transporter.tier.getSpeed();
             Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
             for (TransporterStack stack : reducedTransit) {
                 entityItem.setItem(stack.itemStack);
-                float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
-                float xShifted = (float) x + pos[0];
-                float yShifted = (float) y + pos[1];
-                float zShifted = (float) z + pos[2];
-
-                RenderSystem.pushMatrix();
-                RenderSystem.translatef(xShifted, yShifted, zShifted);
-                RenderSystem.scalef(0.75F, 0.75F, 0.75F);
-                renderer.doRender(entityItem, 0, 0, 0, 0, 0);
-                RenderSystem.popMatrix();
-
+                float[] stackPos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
+                matrix.func_227860_a_();
+                matrix.func_227861_a_(stackPos[0], stackPos[1], stackPos[2]);
+                matrix.func_227862_a_(0.75F, 0.75F, 0.75F);
+                this.renderer.func_225623_a_(entityItem, 0, 0, matrix, renderer, MekanismRenderer.FULL_LIGHT);
+                matrix.func_227865_b_();
                 if (stack.color != null) {
-                    bindTexture(transporterBox);
-                    RenderSystem.pushMatrix();
-                    GlowInfo glowInfo = MekanismRenderer.enableGlow();
-                    RenderSystem.disableCull();
-                    MekanismRenderer.color(stack.color);
-                    RenderSystem.translatef(xShifted, yShifted, zShifted);
-                    modelBox.render(0.0625F);
-                    MekanismRenderer.resetColor();
-                    RenderSystem.enableCull();
-                    MekanismRenderer.disableGlow(glowInfo);
-                    RenderSystem.popMatrix();
+                    modelBox.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
                 }
             }
+            matrix.func_227865_b_();
         }
-
         if (transporter instanceof TileEntityDiversionTransporter) {
-            if (!pushed) {
-                RenderSystem.pushMatrix();
-                pushed = true;
-            }
-            ItemStack itemStack = minecraft.player.inventory.getCurrentItem();
+            ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
-                //TODO: Properly figure out which one the player is looking at
-                BlockRayTraceResult pos = MekanismUtils.rayTrace(minecraft.player);
-                if (!pos.getType().equals(Type.MISS) && pos.getFace() != null && pos.getPos().equals(transporter.getPos())) {
-                    int mode = ((TileEntityDiversionTransporter) transporter).modes[pos.getFace().ordinal()];
-                    RenderSystem.pushMatrix();
-                    RenderSystem.enableCull();
-                    RenderSystem.disableLighting();
+                BlockRayTraceResult rayTraceResult = MekanismUtils.rayTrace(Minecraft.getInstance().player);
+                if (!rayTraceResult.getType().equals(Type.MISS) && rayTraceResult.getPos().equals(pos)) {
+                    matrix.func_227860_a_();
+                    matrix.func_227862_a_(0.5F, 0.5F, 0.5F);
+                    matrix.func_227861_a_(0.5, 0.5, 0.5);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow();
-                    RenderSystem.shadeModel(GL11.GL_SMOOTH);
-                    RenderSystem.disableAlphaTest();
-                    RenderSystem.enableBlend();
-                    RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-                    RenderSystem.color4f(1, 1, 1, 0.8F);
-                    field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
-                    RenderSystem.translatef((float) x, (float) y, (float) z);
-                    RenderSystem.scalef(0.5F, 0.5F, 0.5F);
-                    RenderSystem.translatef(0.5F, 0.5F, 0.5F);
-
-                    int display = getOverlayDisplay(pos.getFace(), mode).display;
-                    GlStateManager.callList(display);
-
-                    MekanismRenderer.resetColor();
-                    RenderSystem.disableBlend();
-                    RenderSystem.enableAlphaTest();
+                    int mode = ((TileEntityDiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
+                    MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer,
+                          MekanismRenderType.configurableMachineState(PlayerContainer.field_226615_c_), MekanismRenderer.getColorARGB(255, 255, 255, 0.8F));
                     MekanismRenderer.disableGlow(glowInfo);
-                    RenderSystem.enableLighting();
-                    RenderSystem.disableCull();
-                    RenderSystem.popMatrix();
+                    matrix.func_227865_b_();
                 }
             }
         }
-        if (pushed) {
-            //If we did anything we need to pop the matrix we pushed
-            RenderSystem.popMatrix();
-        }*/
     }
 
     /**
@@ -161,12 +129,10 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         return reducedTransit;
     }
 
-    //TODO: 1.15
-    /*private DisplayInteger getOverlayDisplay(Direction side, int mode) {
+    private Model3D getOverlayModel(Direction side, int mode) {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(mode)) {
             return cachedOverlays.get(side).get(mode);
         }
-
         TextureAtlasSprite icon = null;
         switch (mode) {
             case 0:
@@ -179,83 +145,76 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 icon = torchOffIcon;
                 break;
         }
-
-        Model3D toReturn = new Model3D();
-        toReturn.baseBlock = Blocks.STONE;
-        toReturn.setTexture(icon);
-
-        DisplayInteger display = DisplayInteger.createAndStart();
-
-        if (cachedOverlays.containsKey(side)) {
-            cachedOverlays.get(side).put(mode, display);
-        } else {
-            Map<Integer, DisplayInteger> map = new HashMap<>();
-            map.put(mode, display);
-            cachedOverlays.put(side, map);
-        }
-
+        Model3D model = new Model3D();
+        model.baseBlock = Blocks.STONE;
+        model.setTexture(icon);
         switch (side) {
             case DOWN:
-                toReturn.minY = -0.01;
-                toReturn.maxY = 0;
+                model.minY = -0.01;
+                model.maxY = 0;
 
-                toReturn.minX = 0;
-                toReturn.minZ = 0;
-                toReturn.maxX = 1;
-                toReturn.maxZ = 1;
+                model.minX = 0;
+                model.minZ = 0;
+                model.maxX = 1;
+                model.maxZ = 1;
                 break;
             case UP:
-                toReturn.minY = 1;
-                toReturn.maxY = 1.01;
+                model.minY = 1;
+                model.maxY = 1.01;
 
-                toReturn.minX = 0;
-                toReturn.minZ = 0;
-                toReturn.maxX = 1;
-                toReturn.maxZ = 1;
+                model.minX = 0;
+                model.minZ = 0;
+                model.maxX = 1;
+                model.maxZ = 1;
                 break;
             case NORTH:
-                toReturn.minZ = -0.01;
-                toReturn.maxZ = 0;
+                model.minZ = -0.01;
+                model.maxZ = 0;
 
-                toReturn.minX = 0;
-                toReturn.minY = 0;
-                toReturn.maxX = 1;
-                toReturn.maxY = 1;
+                model.minX = 0;
+                model.minY = 0;
+                model.maxX = 1;
+                model.maxY = 1;
                 break;
             case SOUTH:
-                toReturn.minZ = 1;
-                toReturn.maxZ = 1.01;
+                model.minZ = 1;
+                model.maxZ = 1.01;
 
-                toReturn.minX = 0;
-                toReturn.minY = 0;
-                toReturn.maxX = 1;
-                toReturn.maxY = 1;
+                model.minX = 0;
+                model.minY = 0;
+                model.maxX = 1;
+                model.maxY = 1;
                 break;
             case WEST:
-                toReturn.minX = -0.01;
-                toReturn.maxX = 0;
+                model.minX = -0.01;
+                model.maxX = 0;
 
-                toReturn.minY = 0;
-                toReturn.minZ = 0;
-                toReturn.maxY = 1;
-                toReturn.maxZ = 1;
+                model.minY = 0;
+                model.minZ = 0;
+                model.maxY = 1;
+                model.maxZ = 1;
                 break;
             case EAST:
-                toReturn.minX = 1;
-                toReturn.maxX = 1.01;
+                model.minX = 1;
+                model.maxX = 1.01;
 
-                toReturn.minY = 0;
-                toReturn.minZ = 0;
-                toReturn.maxY = 1;
-                toReturn.maxZ = 1;
+                model.minY = 0;
+                model.minZ = 0;
+                model.maxY = 1;
+                model.maxZ = 1;
                 break;
             default:
                 break;
         }
-        MekanismRenderer.renderObject(toReturn);
-        GlStateManager.endList();
-        return display;
-    }*/
+        if (cachedOverlays.containsKey(side)) {
+            cachedOverlays.get(side).put(mode, model);
+        } else {
+            Map<Integer, Model3D> map = new HashMap<>();
+            map.put(mode, model);
+            cachedOverlays.put(side, map);
+        }
+        return model;
+    }
 
     private static class TransportInformation {
 

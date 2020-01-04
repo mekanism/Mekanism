@@ -442,28 +442,6 @@ public class MekanismRenderer {
         }
     }
 
-    //TODO: 1.15 remove this
-    @Deprecated
-    public static class DisplayInteger {
-
-        public int display;
-
-        @Override
-        public int hashCode() {
-            int code = 1;
-            code = 31 * code + display;
-            return code;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof DisplayInteger && ((DisplayInteger) obj).display == display;
-        }
-
-        public void render() {
-        }
-    }
-
     public static class GlowInfo {
 
         private final boolean glowEnabled;
