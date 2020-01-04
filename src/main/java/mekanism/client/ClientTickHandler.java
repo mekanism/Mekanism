@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -10,19 +11,24 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.IClientTicker;
 import mekanism.api.gas.GasStack;
+import mekanism.client.render.RenderTickHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.network.PacketFreeRunnerData;
+import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -31,6 +37,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -46,7 +53,7 @@ public class ClientTickHandler {
     public static Random rand = new Random();
     public static Set<IClientTicker> tickingSet = new HashSet<>();
     public static Map<PlayerEntity, TeleportData> portableTeleports = new HashMap<>();
-    public static int wheelStatus = 0;
+    public static double wheelStatus = 0;
     public boolean initHoliday = false;
     public boolean shouldReset = false;
 
@@ -264,34 +271,30 @@ public class ClientTickHandler {
         }
     }
 
-    //TODO: I believe this requires https://github.com/MinecraftForge/MinecraftForge/pull/6037
-    /*@SubscribeEvent
-    public void onMouseEvent(InputEvent.MouseInputEvent event) {
+    @SubscribeEvent
+    public void onMouseEvent(MouseScrollEvent event) {
         if (MekanismConfig.client.allowConfiguratorModeScroll.get() && minecraft.player != null && minecraft.player.func_225608_bj_()) {
             ItemStack stack = minecraft.player.getHeldItemMainhand();
-            int delta = event.getDwheel();
-
-            if (stack.getItem() instanceof ItemConfigurator && delta != 0) {
-                ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
-                RenderTickHandler.modeSwitchTimer = 100;
-
-                wheelStatus += event.getDwheel();
-                int scaledDelta = wheelStatus / 120;
-                wheelStatus = wheelStatus % 120;
-                int newVal = configurator.getState(stack).ordinal() + (scaledDelta % EnumUtils.CONFIGURATOR_MODES.length);
-
-                if (newVal > 0) {
-                    newVal = newVal % EnumUtils.CONFIGURATOR_MODES.length;
-                } else if (newVal < 0) {
-                    newVal = EnumUtils.CONFIGURATOR_MODES.length + newVal;
+            if (stack.getItem() instanceof ItemConfigurator) {
+                double delta = event.getScrollDelta();
+                if (delta != 0) {
+                    ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
+                    RenderTickHandler.modeSwitchTimer = 100;
+                    wheelStatus += delta;
+                    int newVal = configurator.getState(stack).ordinal() + ((int) wheelStatus) % EnumUtils.CONFIGURATOR_MODES.length;
+                    if (newVal > 0) {
+                        newVal = newVal % EnumUtils.CONFIGURATOR_MODES.length;
+                    } else if (newVal < 0) {
+                        newVal = EnumUtils.CONFIGURATOR_MODES.length + newVal;
+                    }
+                    ConfiguratorMode newMode = ConfiguratorMode.byIndexStatic(newVal);
+                    configurator.setState(stack, newMode);
+                    Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newMode)));
+                    event.setCanceled(true);
                 }
-                ConfiguratorMode newMode = EnumUtils.CONFIGURATOR_MODES[newVal];
-                configurator.setState(stack, newMode);
-                Mekanism.packetHandler.sendToServer(new PacketItemStack(Hand.MAIN_HAND, Collections.singletonList(newMode)));
-                event.setCanceled(true);
             }
         }
-    }*/
+    }
 
     private static class TeleportData {
 

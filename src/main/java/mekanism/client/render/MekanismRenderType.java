@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class MekanismRenderType extends RenderType {
 
@@ -20,7 +21,7 @@ public class MekanismRenderType extends RenderType {
               .func_228713_a_(field_228516_h_)//disableAlphaTest
               .func_228726_a_(field_228515_g_)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
               .func_228728_a_(true);
-        return func_228633_a_("mek_standard", DefaultVertexFormats.field_227849_i_, 7, 256, true, false, state);
+        return func_228633_a_("mek_standard", DefaultVertexFormats.field_227849_i_, GL11.GL_QUADS, 256, true, false, state);
     }
 
     public static RenderType renderFlame(ResourceLocation resourceLocation) {
@@ -30,11 +31,11 @@ public class MekanismRenderType extends RenderType {
               .func_228713_a_(field_228516_h_)//disableAlphaTest
               .func_228726_a_(field_228515_g_)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
               .func_228728_a_(true);
-        return func_228633_a_("mek_flame", DefaultVertexFormats.POSITION_TEX_COLOR, 7, 256, true, false, state);
+        return func_228633_a_("mek_flame", DefaultVertexFormats.POSITION_TEX_COLOR, GL11.GL_QUADS, 256, true, false, state);
     }
 
     public static RenderType transmitterContents(ResourceLocation resourceLocation) {
-        return func_228633_a_("transmitter_contents", DefaultVertexFormats.field_227849_i_, 7, 256, true, false,
+        return func_228633_a_("transmitter_contents", DefaultVertexFormats.field_227849_i_, GL11.GL_QUADS, 256, true, false,
               renderFluidState(resourceLocation).func_228728_a_(true));
     }
 
@@ -72,6 +73,6 @@ public class MekanismRenderType extends RenderType {
     public static RenderType resizableCuboid(RenderType.State.Builder stateBuilder, VertexFormat format) {
         stateBuilder.func_228713_a_(new RenderState.AlphaState(0.1F))//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
               .func_228719_a_(field_228529_u_);//disableLighting
-        return func_228633_a_("resizable_cuboid", format, 7, 256, true, false, stateBuilder.func_228728_a_(true));
+        return func_228633_a_("resizable_cuboid", format, GL11.GL_QUADS, 256, true, false, stateBuilder.func_228728_a_(true));
     }
 }

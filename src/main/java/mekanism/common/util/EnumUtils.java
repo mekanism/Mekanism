@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
@@ -117,4 +118,9 @@ public class EnumUtils {
      * Cached value of {@link FactoryTier#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final FactoryTier[] FACTORY_TIERS = FactoryTier.values();
+
+    /**
+     * Cached value of {@link ConfiguratorMode#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final ConfiguratorMode[] CONFIGURATOR_MODES = ConfiguratorMode.values();
 }

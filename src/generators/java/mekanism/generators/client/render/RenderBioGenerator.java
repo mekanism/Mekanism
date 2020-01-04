@@ -38,8 +38,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
         if (tile.bioFuelSlot.fluidStored > 0) {
             matrix.func_227860_a_();
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-            //TODO: 1.15 FIXME, you can see through the back. Might have to make the main "model" into json and then just render the fluid as a TER
-            // Maybe look at what things translucent sets?
+            //TODO: FIXME, you can see through the back. Might have to make the main "model" into json and then just render the fluid as a TER
             MekanismRenderer.renderObject(getModel(tile.getDirection(), tile.getScaledFuelLevel(stages - 1)), matrix, renderer,
                   MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_), -1);
             MekanismRenderer.disableGlow(glowInfo);
