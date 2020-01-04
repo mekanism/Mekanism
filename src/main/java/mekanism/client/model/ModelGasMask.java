@@ -260,7 +260,7 @@ public class ModelGasMask extends Model {
         lightR.func_228309_a_(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         glasstop.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         glassfront.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         glassR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);

@@ -84,7 +84,7 @@ public class ItemScubaTank extends ArmorItem implements IGasItem {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return "mekanism:render/null_armor.png";
+        return "mekanism:render/scuba_set.png";
     }
 
     @Override

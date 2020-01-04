@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.client.render.ModelCustomArmor;
 import mekanism.common.registration.impl.ItemDeferredRegister;
+import mekanism.tools.client.GlowArmor;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.material.BaseMekanismMaterial;
@@ -47,7 +47,7 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType {
     public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default) {
         if (itemStack.getItem() == ToolsItems.REFINED_GLOWSTONE_HELMET.getItem() || itemStack.getItem() == ToolsItems.REFINED_GLOWSTONE_CHESTPLATE.getItem()
             || itemStack.getItem() == ToolsItems.REFINED_GLOWSTONE_LEGGINGS.getItem() || itemStack.getItem() == ToolsItems.REFINED_GLOWSTONE_BOOTS.getItem()) {
-            return ModelCustomArmor.getGlow(armorSlot);
+            return GlowArmor.getGlow(armorSlot);
         }
         return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
     }

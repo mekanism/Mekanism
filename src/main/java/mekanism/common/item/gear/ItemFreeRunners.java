@@ -63,7 +63,7 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return "mekanism:render/null_armor.png";
+        return "mekanism:render/free_runners.png";
     }
 
     @Override

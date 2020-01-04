@@ -210,7 +210,7 @@ public class ModelJetpack extends Model {
         Packcore.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderWings(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderWings(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         WingbladeL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         WingbladeR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
