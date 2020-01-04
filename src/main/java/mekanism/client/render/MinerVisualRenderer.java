@@ -1,97 +1,63 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import mekanism.api.Coord4D;
-import mekanism.client.render.MekanismRenderer.DisplayInteger;
+import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.inventory.container.PlayerContainer;
 
 public final class MinerVisualRenderer {
 
-    private static final double offset = 0.01;
-    private static Minecraft minecraft = Minecraft.getInstance();
-    private static Map<MinerRenderData, DisplayInteger> cachedVisuals = new HashMap<>();
+    private static Map<MinerRenderData, List<Model3D>> cachedVisuals = new HashMap<>();
 
-    public static void render(TileEntityDigitalMiner miner) {
-        //TODO: 1.15 - note light map would be disabled by digital miner previously
-        /*RenderSystem.pushMatrix();
-        RenderSystem.translatef((float) getX(miner.getPos().getX()), (float) getY(miner.getPos().getY()), (float) getZ(miner.getPos().getZ()));
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.disableAlphaTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        RenderSystem.enableCull();
-        RenderSystem.color4f(1, 1, 1, 0.8F);
-        minecraft.getTextureManager().bindTexture(PlayerContainer.field_226615_c_);
-        getList(new MinerRenderData(miner)).render();
-        MekanismRenderer.resetColor();
-        RenderSystem.disableCull();
-        MekanismRenderer.disableGlow(glowInfo);
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.popMatrix();*/
+    public static void resetCachedVisuals() {
+        cachedVisuals.clear();
     }
 
-    //TODO: 1.15
-    /*private static DisplayInteger getList(MinerRenderData data) {
+    public static void render(@Nonnull TileEntityDigitalMiner miner, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer) {
+        matrix.func_227860_a_();
+        List<Model3D> models = getModels(new MinerRenderData(miner));
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
+        RenderType.State.Builder stateBuilder = MekanismRenderType.configurableMachineState(PlayerContainer.field_226615_c_);
+        //TODO: Rendering the visuals drops FPS by a good bit, can we at least batch getting the vertex builder
+        // Or maybe we should just make one large square?
+        for (Model3D model : models) {
+            MekanismRenderer.renderObject(model, matrix, renderer, stateBuilder, MekanismRenderer.getColorARGB(1, 1, 1, 0.8F));
+        }
+        MekanismRenderer.disableGlow(glowInfo);
+        matrix.func_227865_b_();
+    }
+
+    private static List<Model3D> getModels(MinerRenderData data) {
         if (cachedVisuals.containsKey(data)) {
             return cachedVisuals.get(data);
         }
-
-        DisplayInteger display = DisplayInteger.createAndStart();
-        cachedVisuals.put(data, display);
-
         List<Model3D> models = new ArrayList<>();
-
+        cachedVisuals.put(data, models);
         if (data.radius <= 64) {
             for (int x = -data.radius; x <= data.radius; x++) {
                 for (int y = data.minY - data.yCoord; y <= data.maxY - data.yCoord; y++) {
                     for (int z = -data.radius; z <= data.radius; z++) {
                         if (x == -data.radius || x == data.radius || y == data.minY - data.yCoord || y == data.maxY - data.yCoord || z == -data.radius || z == data.radius) {
-                            models.add(createModel(new Coord4D(x, y, z, minecraft.world.getDimension().getType())));
+                            Model3D model = new Model3D();
+                            model.setBlockBounds(x + 0.4, y + 0.4, z + 0.4, x + 0.6, y + 0.6, z + 0.6);
+                            model.baseBlock = Blocks.WATER;
+                            model.setTexture(MekanismRenderer.whiteIcon);
+                            models.add(model);
                         }
                     }
                 }
             }
         }
-
-        for (Model3D model : models) {
-            MekanismRenderer.renderObject(model);
-        }
-
-        GlStateManager.endList();
-
-        return display;
-    }*/
-
-    private static Model3D createModel(Coord4D rel) {
-        Model3D toReturn = new Model3D();
-
-        toReturn.setBlockBounds(rel.x + 0.4, rel.y + 0.4, rel.z + 0.4, rel.x + 0.6, rel.y + 0.6, rel.z + 0.6);
-        toReturn.baseBlock = Blocks.WATER;
-        toReturn.setTexture(MekanismRenderer.whiteIcon);
-
-        return toReturn;
-    }
-
-    private static double getX(int x) {
-        //TODO: 1.15 - check this
-        return x - TileEntityRendererDispatcher.instance.renderInfo.getProjectedView().getX();//TileEntityRendererDispatcher.staticPlayerX;
-    }
-
-    private static double getY(int y) {
-        //TODO: 1.15 - check this
-        return y - TileEntityRendererDispatcher.instance.renderInfo.getProjectedView().getY();//TileEntityRendererDispatcher.staticPlayerY;
-    }
-
-    private static double getZ(int z) {
-        //TODO: 1.15 - check this
-        return z - TileEntityRendererDispatcher.instance.renderInfo.getProjectedView().getZ();//TileEntityRendererDispatcher.staticPlayerZ;
+        return models;
     }
 
     public static class MinerRenderData {

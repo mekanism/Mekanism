@@ -125,33 +125,6 @@ public class ModelRobit extends EntityModel<EntityRobit> {
 
     @Override
     public void func_225597_a_(@Nonnull EntityRobit entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        //public void render(EntityRobit entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-        //super.func_225597_a_(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        //TODO: 1.15
-        /*setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-
-        RenderSystem.pushMatrix();
-        RenderSystem.rotatef(180, 0, 1, 0);
-
-        Body.render(scale);
-        Bottom.render(scale);
-        RightTrack.render(scale);
-        LeftTrack.render(scale);
-        Neck.render(scale);
-        Head.render(scale);
-        Backpack.render(scale);
-        headback.render(scale);
-        rightarn.render(scale);
-        leftarm.render(scale);
-        righthand.render(scale);
-        lefthand.render(scale);
-
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        backLight.render(scale);
-        eyeRight.render(scale);
-        eyeLeft.render(scale);
-        MekanismRenderer.disableGlow(glowInfo);
-        RenderSystem.popMatrix();*/
     }
 
     @Override

@@ -28,9 +28,8 @@ public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMine
         matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
         model.render(matrix, renderer, light, overlayLight, tile.getActive());
         matrix.func_227865_b_();
-
         if (tile.clientRendering) {
-            MinerVisualRenderer.render(tile);
+            MinerVisualRenderer.render(tile, matrix, renderer);
         }
     }
 

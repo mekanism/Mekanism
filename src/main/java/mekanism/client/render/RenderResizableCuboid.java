@@ -35,7 +35,7 @@ import net.minecraft.world.ILightReader;
 /*
  * Adapted from BuildCraft
  */
-public class RenderResizableCuboid {//TODO: 1.15 - FIXME something about this doesn't seem to work properly
+public class RenderResizableCuboid {
 
     public static final Vec3d VEC_ONE = vec3(1);
     public static final Vec3d VEC_ZERO = vec3(0);
@@ -611,7 +611,6 @@ public class RenderResizableCuboid {//TODO: 1.15 - FIXME something about this do
             List<VertexFormatElement> elements = new ArrayList<>();
             elements.add(DefaultVertexFormats.POSITION_3F);
             elements.add(DefaultVertexFormats.TEX_2F);
-            //TODO: 1.15 Evaluate if we want to actually always have color enabled?
             elements.add(DefaultVertexFormats.COLOR_4UB);
             for (EnumShadeType type : types) {
                 if (!elements.contains(type.element)) {

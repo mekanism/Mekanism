@@ -37,9 +37,6 @@ public class MekanismClient {
         ClientTickHandler.tickingSet.clear();
         ClientTickHandler.portableTeleports.clear();
 
-        //TODO: 1.15
-        //TransmitterModel.clearCache();
-
         MekanismAPI.getBoxIgnore().clear();
         MekanismAPI.getBoxModIgnore().clear();
         MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());

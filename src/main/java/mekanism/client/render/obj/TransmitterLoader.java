@@ -18,7 +18,8 @@ public class TransmitterLoader implements IModelLoader<TransmitterModel> {
 
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
-        //TODO: 1.15 We want to make sure to clear the cache
+        //TODO: Check if we need to clear the cache, given each is cached in their own model,
+        // and when it reloads it should theoretically allow GC to then clear those instances
     }
 
     @Nonnull
@@ -28,7 +29,6 @@ public class TransmitterLoader implements IModelLoader<TransmitterModel> {
         OBJModel model = OBJLoader.INSTANCE.read(deserializationContext, modelContents);
         OBJModel glass = null;
         if (modelContents.has("glass")) {
-            //TODO: Look into if there is a way to make the obj.mek file be the same and just change the mtl
             glass = (OBJModel) ModelLoaderRegistry.deserializeGeometry(deserializationContext, modelContents.get("glass").getAsJsonObject());
         }
         return new TransmitterModel(model, glass);

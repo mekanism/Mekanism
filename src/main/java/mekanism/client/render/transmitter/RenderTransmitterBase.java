@@ -48,8 +48,13 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
 
     protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, float red, float green, float blue, float alpha, int light, int overlayLight,
           TextureAtlasSprite icon) {
-        //TODO: Can we somehow cache any of this method
         List<String> visible = Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + transmitter.getConnectionType(side).getName().toUpperCase()).collect(Collectors.toList());
+        renderModel(transmitter, matrix, builder, red, green, blue, alpha, light, overlayLight, icon, visible);
+    }
+
+    protected void renderModel(T transmitter, MatrixStack matrix, IVertexBuilder builder, float red, float green, float blue, float alpha, int light, int overlayLight,
+          TextureAtlasSprite icon, List<String> visible) {
+        //TODO: Can we somehow cache any of this method
         IBakedModel bakedModel = MekanismRenderer.contentsModel.bake(new VisibleModelConfiguration(contentsConfiguration, visible), ModelLoader.instance(),
               material -> icon, ModelRotation.X0_Y0, ItemOverrideList.EMPTY, MODEL_LOCATION);
         Entry entry = matrix.func_227866_c_();

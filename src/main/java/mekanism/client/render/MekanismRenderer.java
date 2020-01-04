@@ -18,6 +18,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderFluidTank;
+import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
@@ -28,19 +29,15 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -119,49 +116,6 @@ public class MekanismRenderer {
         return Minecraft.getInstance().func_228015_a_(PlayerContainer.field_226615_c_).apply(spriteLocation);
     }
 
-    public static RenderState pauseRenderer(Tessellator tess) {
-        RenderState state = null;
-        //TODO: 1.15
-        /*if (MekanismRenderer.isDrawing(tess)) {
-            state = new RenderState(tess.getBuffer().getVertexFormat(), tess.getBuffer().getDrawMode());
-            tess.draw();
-        }*/
-        return state;
-    }
-
-    public static void resumeRenderer(Tessellator tess, RenderState renderState) {
-        if (renderState != null) {
-            tess.getBuffer().begin(renderState.prevMode, renderState.prevFormat);
-        }
-    }
-
-    public static boolean isDrawing(Tessellator tess) {
-        return isDrawing(tess.getBuffer());
-    }
-
-    public static boolean isDrawing(BufferBuilder buffer) {
-        return buffer.isDrawing;
-    }
-
-    //TODO: 1.15
-    /*public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite) {
-        int[] vertexData = quad.getVertexData();
-        int[] vertices = new int[vertexData.length];
-        System.arraycopy(vertexData, 0, vertices, 0, vertices.length);
-
-        VertexFormat format = quad.getFormat();
-        for (int i = 0; i < 4; ++i) {
-            int j = format.getIntegerSize() * i;
-            int uvIndex = format.getUvOffsetById(0) / 4;
-            if (j + uvIndex + 1 < vertices.length) {
-                vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(quad.getSprite().getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
-                vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(quad.getSprite().getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
-            }
-        }
-
-        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), format);
-    }*/
-
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
         TextureAtlasSprite still = getFluidTexture(fluid, FluidType.STILL);
         TextureAtlasSprite flowing = getFluidTexture(fluid, FluidType.FLOWING);
@@ -212,26 +166,9 @@ public class MekanismRenderer {
         RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
     }
 
-    public static void color(@Nonnull FluidStack fluid, float fluidScale) {
-        if (!fluid.isEmpty()) {
-            int color = fluid.getFluid().getAttributes().getColor(fluid);
-            if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
-                RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
-            } else {
-                color(color);
-            }
-        }
-    }
-
     public static void color(@Nonnull FluidStack fluid) {
         if (!fluid.isEmpty()) {
             color(fluid.getFluid().getAttributes().getColor(fluid));
-        }
-    }
-
-    public static void color(@Nonnull Fluid fluid) {
-        if (fluid != Fluids.EMPTY) {
-            color(fluid.getAttributes().getColor());
         }
     }
 
@@ -411,6 +348,8 @@ public class MekanismRenderer {
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
         RenderConfigurableMachine.resetCachedOverlays();
+        MinerVisualRenderer.resetCachedVisuals();
+        RenderTeleporter.resetCachedModels();
     }
 
     @SubscribeEvent
@@ -427,6 +366,7 @@ public class MekanismRenderer {
         energyIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_energy"));
         heatIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_heat"));
 
+        //TODO: Why are these reset in post and the rest reset in Pre?
         RenderLogisticalTransporter.onStitch(map);
         RenderMechanicalPipe.onStitch();
     }
@@ -434,11 +374,6 @@ public class MekanismRenderer {
     public enum FluidType {
         STILL,
         FLOWING
-    }
-
-    public interface ICustomBlockIcon {
-
-        ResourceLocation getIcon(ItemStack stack, int side);
     }
 
     public static class Model3D {
@@ -513,14 +448,6 @@ public class MekanismRenderer {
 
         public int display;
 
-        public static DisplayInteger createAndStart() {
-            DisplayInteger newInteger = new DisplayInteger();
-            //TODO: 1.15
-            /*newInteger.display = GLAllocation.generateDisplayLists(1);
-            GlStateManager.newList(newInteger.display, GL11.GL_COMPILE);*/
-            return newInteger;
-        }
-
         @Override
         public int hashCode() {
             int code = 1;
@@ -534,19 +461,6 @@ public class MekanismRenderer {
         }
 
         public void render() {
-            //TODO: 1.15
-            //GlStateManager.callList(display);
-        }
-    }
-
-    public static class RenderState {
-
-        private final VertexFormat prevFormat;
-        private final int prevMode;
-
-        private RenderState(VertexFormat prevFormat, int prevMode) {
-            this.prevFormat = prevFormat;
-            this.prevMode = prevMode;
         }
     }
 
