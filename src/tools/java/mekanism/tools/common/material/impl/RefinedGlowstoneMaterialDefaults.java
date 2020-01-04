@@ -11,28 +11,8 @@ import net.minecraft.util.SoundEvents;
 public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
-    public int getSwordDamage() {
-        return 3;
-    }
-
-    @Override
-    public float getSwordAtkSpeed() {
-        return -2.4F;
-    }
-
-    @Override
-    public float getShovelDamage() {
-        return 1.5F;
-    }
-
-    @Override
-    public float getShovelAtkSpeed() {
-        return -3.0F;
-    }
-
-    @Override
     public float getAxeDamage() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -41,28 +21,8 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getPickaxeDamage() {
-        return 1;
-    }
-
-    @Override
-    public float getPickaxeAtkSpeed() {
-        return -2.8F;
-    }
-
-    @Override
-    public float getHoeAtkSpeed() {
-        return getAttackDamage() - 3.0F;
-    }
-
-    @Override
     public float getPaxelDamage() {
         return 4;
-    }
-
-    @Override
-    public float getPaxelAtkSpeed() {
-        return -2.4F;
     }
 
     @Override
@@ -71,20 +31,28 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
+    public int getPaxelMaxUses() {
+        return 450;
+    }
+
+    @Override
+    public float getPaxelEfficiency() {
+        return 18;
+    }
+
+    @Override
     public int getMaxUses() {
-        //TODO: Used to be 450 for paxel
         return 300;
     }
 
     @Override
     public float getEfficiency() {
-        //TODO: Used to be 18 for paxel
         return 14;
     }
 
     @Override
     public float getAttackDamage() {
-        return 6;
+        return 5;
     }
 
     @Override
@@ -94,7 +62,6 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getCommonEnchantability() {
-        //TODO: Used to be 22 for paxel
         return 18;
     }
 
@@ -139,6 +106,11 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
         return "refined_glowstone";
     }
 
+    @Override
+    public int getPaxelEnchantability() {
+        return 22;
+    }
+
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -149,11 +121,5 @@ public class RefinedGlowstoneMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.fromItems(MekanismItems.REFINED_GLOWSTONE_INGOT);
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return getRegistryPrefix();
     }
 }

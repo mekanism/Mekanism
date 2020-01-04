@@ -26,6 +26,9 @@ public class MaterialCreator extends BaseMekanismMaterial {
     private final ConfigValue<Integer> paxelHarvestLevel;
     private final FloatValue paxelDamage;
     private final FloatValue paxelAtkSpeed;
+    private final FloatValue paxelEfficiency;
+    private final ConfigValue<Integer> paxelEnchantability;
+    private final ConfigValue<Integer> paxelMaxUses;
     private final ConfigValue<Integer> toolMaxUses;
     private final FloatValue efficiency;
     private final FloatValue attackDamage;
@@ -45,7 +48,8 @@ public class MaterialCreator extends BaseMekanismMaterial {
         fallBack = materialDefaults;
         String toolKey = materialDefaults.getRegistryPrefix();
         builder.comment(" Material Settings for " + toolKey).push(toolKey);
-
+        //TODO: Do we want to remove the requires world restart given they actually seem to sync properly and fine without
+        // a world restart. Though if other mods cache any values then they would not necessarily behave properly
         swordDamage = builder.comment("Attack damage modifier of " + toolKey + " swords.").worldRestart()
               .define(toolKey + "SwordDamage", materialDefaults.getSwordDamage());
         swordAtkSpeed = FloatValue.of(builder.comment("Attack speed of " + toolKey + " swords.").worldRestart()
@@ -64,16 +68,22 @@ public class MaterialCreator extends BaseMekanismMaterial {
               .define(toolKey + "PickaxeAtkSpeed", (double) materialDefaults.getPickaxeAtkSpeed()));
         hoeAtkSpeed = FloatValue.of(builder.comment("Attack speed of " + toolKey + " hoes.").worldRestart()
               .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.getHoeAtkSpeed()));
+        toolMaxUses = builder.comment("Maximum durability of " + toolKey + " tools.").worldRestart()
+              .define(toolKey + "ToolMaxUses", materialDefaults.getMaxUses());
+        efficiency = FloatValue.of(builder.comment("Efficiency of " + toolKey + " tools.").worldRestart()
+              .define(toolKey + "Efficiency", (double) materialDefaults.getEfficiency()));
         paxelHarvestLevel = builder.comment("Harvest level of " + toolKey + " paxels.").worldRestart()
               .define(toolKey + "PaxelHarvestLevel", materialDefaults.getPaxelHarvestLevel());
         paxelDamage = FloatValue.of(builder.comment("Attack damage modifier of " + toolKey + " paxels.").worldRestart()
               .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage()));
         paxelAtkSpeed = FloatValue.of(builder.comment("Attack speed of " + toolKey + " paxels.").worldRestart()
               .define(toolKey + "PaxelAtkSpeed", (double) materialDefaults.getPaxelAtkSpeed()));
-        toolMaxUses = builder.comment("Maximum durability of " + toolKey + " tools.").worldRestart()
-              .define(toolKey + "ToolMaxUses", materialDefaults.getMaxUses());
-        efficiency = FloatValue.of(builder.comment("Efficiency of " + toolKey + " tools.").worldRestart()
-              .define(toolKey + "Efficiency", (double) materialDefaults.getEfficiency()));
+        paxelEfficiency = FloatValue.of(builder.comment("Efficiency of " + toolKey + " paxels.").worldRestart()
+              .define(toolKey + "PaxelEfficiency", (double) materialDefaults.getPaxelEfficiency()));
+        paxelEnchantability = builder.comment("Natural enchantability factor of " + toolKey + " paxels.").worldRestart()
+              .define(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability());
+        paxelMaxUses = builder.comment("Maximum durability of " + toolKey + " paxels.").worldRestart()
+              .define(toolKey + "PaxelMaxUses", materialDefaults.getPaxelMaxUses());
         attackDamage = FloatValue.of(builder.comment("Base attack damage of " + toolKey + " items.").worldRestart()
               .define(toolKey + "AttackDamage", (double) materialDefaults.getAttackDamage()));
         harvestLevel = builder.comment("Harvest level of " + toolKey + " tools.").worldRestart()
@@ -98,7 +108,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
               .define(toolKey + "ChestplateArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.CHEST));
         helmetArmor = builder.comment("Protection value of " + toolKey + " helmets.").worldRestart()
               .define(toolKey + "HelmetArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.HEAD));
-
         builder.pop();
     }
 
@@ -150,6 +159,16 @@ public class MaterialCreator extends BaseMekanismMaterial {
     @Override
     public int getPaxelHarvestLevel() {
         return paxelHarvestLevel == null ? fallBack.getPaxelHarvestLevel() : paxelHarvestLevel.get();
+    }
+
+    @Override
+    public int getPaxelMaxUses() {
+        return paxelMaxUses == null ? fallBack.getPaxelMaxUses() : paxelMaxUses.get();
+    }
+
+    @Override
+    public float getPaxelEfficiency() {
+        return paxelEfficiency == null ? fallBack.getPaxelEfficiency() : paxelEfficiency.get();
     }
 
     @Override
@@ -247,5 +266,10 @@ public class MaterialCreator extends BaseMekanismMaterial {
     @Override
     public String getRegistryPrefix() {
         return fallBack.getRegistryPrefix();
+    }
+
+    @Override
+    public int getPaxelEnchantability() {
+        return paxelEnchantability == null ? fallBack.getPaxelEnchantability() : paxelEnchantability.get();
     }
 }

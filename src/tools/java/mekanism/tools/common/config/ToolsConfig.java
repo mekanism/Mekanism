@@ -31,9 +31,6 @@ public class ToolsConfig implements IMekanismConfig {
 
         armorSpawnRate = builder.comment("The chance that Mekanism Armor can spawn on mobs.").defineInRange("mobArmorSpawnRate", 0.03D, 0, 1);
 
-        //TODO: Go through and re-evaluate the different defaults given once everything actually compiles so it is easier to see the numbers we are getting
-        // Also should we give the ability again for the paxel to have a different durability, etc.
-        // All we would need to do is modify the MaterialCreator to return itself and have it store a different "material" for each tool type
         bronze = new MaterialCreator(builder, new BronzeMaterialDefaults());
         lapisLazuli = new MaterialCreator(builder, new LapisLazuliMaterialDefaults());
         osmium = new MaterialCreator(builder, new OsmiumMaterialDefaults());

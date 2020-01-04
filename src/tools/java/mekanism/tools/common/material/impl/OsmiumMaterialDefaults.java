@@ -11,26 +11,6 @@ import net.minecraft.util.SoundEvents;
 public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
-    public int getSwordDamage() {
-        return 3;
-    }
-
-    @Override
-    public float getSwordAtkSpeed() {
-        return -2.4F;
-    }
-
-    @Override
-    public float getShovelDamage() {
-        return 1.5F;
-    }
-
-    @Override
-    public float getShovelAtkSpeed() {
-        return -3.0F;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 4;
     }
@@ -41,28 +21,8 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getPickaxeDamage() {
-        return 1;
-    }
-
-    @Override
-    public float getPickaxeAtkSpeed() {
-        return -2.8F;
-    }
-
-    @Override
-    public float getHoeAtkSpeed() {
-        return getAttackDamage() - 3.0F;
-    }
-
-    @Override
     public float getPaxelDamage() {
-        return 4;
-    }
-
-    @Override
-    public float getPaxelAtkSpeed() {
-        return -2.4F;
+        return 5;
     }
 
     @Override
@@ -71,14 +31,22 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
+    public int getPaxelMaxUses() {
+        return 700;
+    }
+
+    @Override
+    public float getPaxelEfficiency() {
+        return 12;
+    }
+
+    @Override
     public int getMaxUses() {
-        //TODO: Used to be 700 for paxel
         return 500;
     }
 
     @Override
     public float getEfficiency() {
-        //TODO: Used to be 12 for paxel
         return 10;
     }
 
@@ -94,7 +62,6 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getCommonEnchantability() {
-        //TODO: Used to be 16 for paxel
         return 12;
     }
 
@@ -139,6 +106,11 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
         return "osmium";
     }
 
+    @Override
+    public int getPaxelEnchantability() {
+        return 16;
+    }
+
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -149,11 +121,5 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.fromItems(MekanismItems.OSMIUM_INGOT);
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return getRegistryPrefix();
     }
 }

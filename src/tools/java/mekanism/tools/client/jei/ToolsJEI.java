@@ -23,7 +23,7 @@ public class ToolsJEI implements IModPlugin {
     @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(MekanismTools.MODID, "jei_plugin");
+        return MekanismTools.rl("jei_plugin");
     }
 
     @Override

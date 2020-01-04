@@ -11,26 +11,6 @@ import net.minecraft.util.SoundEvents;
 public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
-    public int getSwordDamage() {
-        return 3;
-    }
-
-    @Override
-    public float getSwordAtkSpeed() {
-        return -2.4F;
-    }
-
-    @Override
-    public float getShovelDamage() {
-        return 1.5F;
-    }
-
-    @Override
-    public float getShovelAtkSpeed() {
-        return -3.0F;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 6;
     }
@@ -41,28 +21,8 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getPickaxeDamage() {
-        return 1;
-    }
-
-    @Override
-    public float getPickaxeAtkSpeed() {
-        return -2.8F;
-    }
-
-    @Override
-    public float getHoeAtkSpeed() {
-        return getAttackDamage() - 3.0F;
-    }
-
-    @Override
     public float getPaxelDamage() {
         return 6;
-    }
-
-    @Override
-    public float getPaxelAtkSpeed() {
-        return -2.4F;
     }
 
     @Override
@@ -71,14 +31,22 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
+    public int getPaxelMaxUses() {
+        return 250;
+    }
+
+    @Override
+    public float getPaxelEfficiency() {
+        return 6;
+    }
+
+    @Override
     public int getMaxUses() {
-        //TODO: Used to be 250 for paxel
         return 200;
     }
 
     @Override
     public float getEfficiency() {
-        //TODO: Used to be 6 for paxel
         return 5;
     }
 
@@ -94,7 +62,6 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getCommonEnchantability() {
-        //TODO: Used to be 10 for paxel
         return 8;
     }
 
@@ -139,6 +106,11 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
         return "lapis_lazuli";
     }
 
+    @Override
+    public int getPaxelEnchantability() {
+        return 10;
+    }
+
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -149,11 +121,5 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.fromItems(Items.LAPIS_LAZULI);
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return getRegistryPrefix();
     }
 }

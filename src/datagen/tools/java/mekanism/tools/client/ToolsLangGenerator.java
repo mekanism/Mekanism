@@ -51,7 +51,7 @@ public class ToolsLangGenerator extends BaseLanguageProvider {
     private void addSet(String type, IItemProvider helmet, IItemProvider chestplate, IItemProvider leggings, IItemProvider boots, IItemProvider sword,
           IItemProvider pickaxe, IItemProvider axe, IItemProvider shovel, IItemProvider hoe, IItemProvider paxel) {
         add(helmet, type + " Helmet");
-        add(chestplate, " Chestplate");
+        add(chestplate, type + " Chestplate");
         add(leggings, type + " Leggings");
         add(boots, type + " Boots");
         add(sword, type + " Sword");

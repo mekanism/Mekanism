@@ -11,26 +11,6 @@ import net.minecraft.util.SoundEvents;
 public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
-    public int getSwordDamage() {
-        return 3;
-    }
-
-    @Override
-    public float getSwordAtkSpeed() {
-        return -2.4F;
-    }
-
-    @Override
-    public float getShovelDamage() {
-        return 1.5F;
-    }
-
-    @Override
-    public float getShovelAtkSpeed() {
-        return -3.0F;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 2;
     }
@@ -41,28 +21,8 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getPickaxeDamage() {
-        return 1;
-    }
-
-    @Override
-    public float getPickaxeAtkSpeed() {
-        return -2.8F;
-    }
-
-    @Override
-    public float getHoeAtkSpeed() {
-        return getAttackDamage() - 3.0F;
-    }
-
-    @Override
     public float getPaxelDamage() {
         return 4;
-    }
-
-    @Override
-    public float getPaxelAtkSpeed() {
-        return -2.4F;
     }
 
     @Override
@@ -71,14 +31,22 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
+    public int getPaxelMaxUses() {
+        return 3_000;
+    }
+
+    @Override
+    public float getPaxelEfficiency() {
+        return 25;
+    }
+
+    @Override
     public int getMaxUses() {
-        //TODO: Used to be 3000 for paxel
         return 2_500;
     }
 
     @Override
     public float getEfficiency() {
-        //TODO: Used to be 25 for paxel
         return 20;
     }
 
@@ -94,7 +62,6 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getCommonEnchantability() {
-        //TODO: Used to be 50 for paxel
         return 40;
     }
 
@@ -139,6 +106,11 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
         return "refined_obsidian";
     }
 
+    @Override
+    public int getPaxelEnchantability() {
+        return 50;
+    }
+
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -149,11 +121,5 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.fromItems(MekanismItems.REFINED_OBSIDIAN_INGOT);
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return getRegistryPrefix();
     }
 }

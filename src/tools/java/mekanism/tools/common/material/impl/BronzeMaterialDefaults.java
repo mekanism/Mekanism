@@ -11,26 +11,6 @@ import net.minecraft.util.SoundEvents;
 public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
-    public int getSwordDamage() {
-        return 3;
-    }
-
-    @Override
-    public float getSwordAtkSpeed() {
-        return -2.4F;
-    }
-
-    @Override
-    public float getShovelDamage() {
-        return 1.5F;
-    }
-
-    @Override
-    public float getShovelAtkSpeed() {
-        return -3.0F;
-    }
-
-    @Override
     public float getAxeDamage() {
         return 2;
     }
@@ -41,28 +21,8 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getPickaxeDamage() {
-        return 1;
-    }
-
-    @Override
-    public float getPickaxeAtkSpeed() {
-        return -2.8F;
-    }
-
-    @Override
-    public float getHoeAtkSpeed() {
-        return getAttackDamage() - 3.0F;
-    }
-
-    @Override
     public float getPaxelDamage() {
-        return 4;
-    }
-
-    @Override
-    public float getPaxelAtkSpeed() {
-        return -2.4F;
+        return 8;
     }
 
     @Override
@@ -71,14 +31,22 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
+    public int getPaxelMaxUses() {
+        return 1100;
+    }
+
+    @Override
+    public float getPaxelEfficiency() {
+        return 16;
+    }
+
+    @Override
     public int getMaxUses() {
-        //TODO: Used to be 1100 for paxel
         return 800;
     }
 
     @Override
     public float getEfficiency() {
-        //TODO: Used to be 16 for paxel
         return 14;
     }
 
@@ -94,7 +62,6 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getCommonEnchantability() {
-        //TODO: Used to be 14 for paxel
         return 10;
     }
 
@@ -139,6 +106,11 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
         return "bronze";
     }
 
+    @Override
+    public int getPaxelEnchantability() {
+        return 14;
+    }
+
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
@@ -149,11 +121,5 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public Ingredient getCommonRepairMaterial() {
         return Ingredient.fromItems(MekanismItems.BRONZE_INGOT);
-    }
-
-    @Nonnull
-    @Override
-    public String getName() {
-        return getRegistryPrefix();
     }
 }

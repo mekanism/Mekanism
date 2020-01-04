@@ -130,7 +130,7 @@ public class PacketHandler {
 
     public static String readString(PacketBuffer buffer) {
         //TODO: Re-evaluate, this method is currently used because buffer.readString() is clientside only, so it mimics its behaviour so that servers don't crash
-        return buffer.readString(32767);
+        return buffer.readString(Short.MAX_VALUE);
     }
 
     public static void log(String log) {

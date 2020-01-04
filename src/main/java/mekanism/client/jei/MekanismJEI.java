@@ -61,7 +61,7 @@ public class MekanismJEI implements IModPlugin {
     @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
-        return new ResourceLocation(Mekanism.MODID, "jei_plugin");
+        return Mekanism.rl("jei_plugin");
     }
 
     @Override

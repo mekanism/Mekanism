@@ -1,39 +1,59 @@
 package mekanism.tools.common.material;
 
 import javax.annotation.Nonnull;
+import mekanism.tools.common.MekanismTools;
 import net.minecraft.item.crafting.Ingredient;
 
-//TODO: Set the proper defaults, as I think some numbers changed in 1.14
-//TODO: Both IItemTier and IArmorMaterial have get getEnchantability and getRepairMaterial
-// This makes it not work properly outside of a dev environment as they have different obfuscated names
 public abstract class BaseMekanismMaterial extends IItemTierHelper implements IArmorMaterialHelper {
 
-    public abstract int getSwordDamage();
+    public int getSwordDamage() {
+        return 3;
+    }
 
-    public abstract float getSwordAtkSpeed();
+    public float getSwordAtkSpeed() {
+        return -2.4F;
+    }
 
-    public abstract float getShovelDamage();
+    public float getShovelDamage() {
+        return 1.5F;
+    }
 
-    public abstract float getShovelAtkSpeed();
+    public float getShovelAtkSpeed() {
+        return -3.0F;
+    }
 
     public abstract float getAxeDamage();
 
     public abstract float getAxeAtkSpeed();
 
-    public abstract int getPickaxeDamage();
+    public int getPickaxeDamage() {
+        return 1;
+    }
 
-    public abstract float getPickaxeAtkSpeed();
+    public float getPickaxeAtkSpeed() {
+        return -2.8F;
+    }
 
-    public abstract float getHoeAtkSpeed();
+    public float getHoeAtkSpeed() {
+        return getAttackDamage() - 3.0F;
+    }
 
     public abstract float getPaxelDamage();
 
-    public abstract float getPaxelAtkSpeed();
+    public float getPaxelAtkSpeed() {
+        return -2.4F;
+    }
 
     public abstract int getPaxelHarvestLevel();
 
+    public abstract int getPaxelMaxUses();
+
+    public abstract float getPaxelEfficiency();
+
     @Nonnull
     public abstract String getRegistryPrefix();
+
+    public abstract int getPaxelEnchantability();
 
     //Recombine the methods that are split in such a way as to make it so the compiler can reobfuscate them properly
     public abstract int getCommonEnchantability();
@@ -61,5 +81,11 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
     @Override
     public Ingredient getArmorRepairMaterial() {
         return getCommonRepairMaterial();
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return MekanismTools.MODID + ":" + getRegistryPrefix();
     }
 }

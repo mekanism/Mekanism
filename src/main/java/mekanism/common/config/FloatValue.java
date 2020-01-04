@@ -24,8 +24,10 @@ public class FloatValue {
         }
         if (val > Float.MAX_VALUE) {
             return Float.MAX_VALUE;
-        } else if (val < Float.MIN_VALUE) {
-            return Float.MIN_VALUE;
+        } else if (val < -Float.MAX_VALUE) {
+            //Note: Float.MIN_VALUE is the smallest positive value a float can represent
+            // the smallest value a float can represent overall is -Float.MAX_VALUE
+            return -Float.MAX_VALUE;
         }
         return val.floatValue();
     }
