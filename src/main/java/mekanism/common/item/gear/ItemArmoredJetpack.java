@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.client.render.ModelCustomArmor;
+import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.common.config.MekanismConfig;
@@ -30,7 +30,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ModelCustomArmor getGearModel() {
+    public CustomArmor getGearModel() {
         return JetpackArmor.ARMORED_JETPACK;
     }
 

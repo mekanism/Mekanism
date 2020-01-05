@@ -14,7 +14,7 @@ public class GuiRobitInventory extends GuiRobit<InventoryRobitContainer> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(MekanismLang.ROBIT_INVENTORY.translate(), 8, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, ySize - 93, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

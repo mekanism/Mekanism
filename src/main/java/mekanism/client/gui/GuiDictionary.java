@@ -37,7 +37,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(MekanismItems.DICTIONARY.getTextComponent(), 64, 5, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, ySize - 96 + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 96 + 2, 0x404040);
         renderItem(itemType, 6, 6);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
@@ -46,8 +46,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
-            int x = guiLeft + 6;
-            int y = guiTop + 6;
+            int x = getGuiLeft() + 6;
+            int y = getGuiTop() + 6;
             fill(x, y, x + 16, y + 16, 0x80FFFFFF);
             MekanismRenderer.resetColor();
         }
@@ -60,8 +60,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        double xAxis = mouseX - guiLeft;
-        double yAxis = mouseY - guiTop;
+        double xAxis = mouseX - getGuiLeft();
+        double yAxis = mouseY - getGuiTop();
         if (button == 0) {
             if (InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 Slot hovering = null;

@@ -57,7 +57,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         }, ProgressBar.LARGE_RIGHT, this, resource, 62, 118));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 114));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 133, 114));
-        addButton(new TranslationButton(this, guiLeft + 10, guiTop + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile.getPos(), 0))));
     }
 
@@ -76,8 +76,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         HashList<OredictionificatorFilter> filters = tile.getFilters();
         for (int i = 0; i < 3; i++) {
             if (filters.get(getFilterIndex() + i) != null) {
@@ -97,7 +97,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 154, guiTop + 18 + getScroll(), 232, 0, 12, 15);
+        drawTexturedRect(getGuiLeft() + 154, getGuiTop() + 18 + getScroll(), 232, 0, 12, 15);
         HashList<OredictionificatorFilter> filters = tile.getFilters();
         for (int i = 0; i < 3; i++) {
             if (filters.get(getFilterIndex() + i) != null) {
@@ -106,7 +106,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 if (mouseOver) {
                     MekanismRenderer.color(EnumColor.GRAY);
                 }
-                drawTexturedRect(guiLeft + 10, guiTop + yStart, 0, 230, 142, 22);
+                drawTexturedRect(getGuiLeft() + 10, getGuiTop() + yStart, 0, 230, 142, 22);
                 if (mouseOver) {
                     MekanismRenderer.resetColor();
                 }
@@ -118,8 +118,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            double xAxis = mouseX - guiLeft;
-            double yAxis = mouseY - guiTop;
+            double xAxis = mouseX - getGuiLeft();
+            double yAxis = mouseY - getGuiTop();
             HashList<OredictionificatorFilter> filters = tile.getFilters();
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (filters.size() > 3) {
@@ -145,7 +145,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         if (isDragging) {
-            double yAxis = mouseY - (height - ySize) / 2D;
+            double yAxis = mouseY - (height - getYSize()) / 2D;
             scroll = Math.min(Math.max((yAxis - 18 - dragOffset) / 73F, 0), 1);
         }
         return true;

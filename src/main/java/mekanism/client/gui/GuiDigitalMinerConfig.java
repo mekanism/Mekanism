@@ -51,8 +51,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            double xAxis = mouseX - guiLeft;
-            double yAxis = mouseY - guiTop;
+            double xAxis = mouseX - getGuiLeft();
+            double yAxis = mouseY - getGuiTop();
 
             if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
                 if (needsScrollBars()) {
@@ -115,29 +115,29 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     @Override
     public void init() {
         super.init();
-        addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, getGuiLeft() + filterX, getGuiTop() + 136, filterW, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tile.getPos()))));
-        addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
-        addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 67, 11, 12, getButtonLocation("checkmark"), this::setRadius));
-        addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 92, 11, 12, getButtonLocation("checkmark"), this::setMinY));
-        addButton(new MekanismImageButton(this, guiLeft + 39, guiTop + 117, 11, 12, getButtonLocation("checkmark"), this::setMaxY));
-        addButton(new MekanismImageButton(this, guiLeft + 11, guiTop + 141, 14, getButtonLocation("strict_input"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 67, 11, 12, getButtonLocation("checkmark"), this::setRadius));
+        addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 92, 11, 12, getButtonLocation("checkmark"), this::setMinY));
+        addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 117, 11, 12, getButtonLocation("checkmark"), this::setMaxY));
+        addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 141, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(10))), getOnHover(MekanismLang.MINER_INVERSE)));
 
         String prevRad = radiusField != null ? radiusField.getText() : "";
         String prevMin = minField != null ? minField.getText() : "";
         String prevMax = maxField != null ? maxField.getText() : "";
 
-        addButton(radiusField = new TextFieldWidget(font, guiLeft + 12, guiTop + 67, 26, 11, ""));
+        addButton(radiusField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 67, 26, 11, ""));
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.digitalMinerMaxRadius.get()).length());
         radiusField.setText(prevRad);
 
-        addButton(minField = new TextFieldWidget(font, guiLeft + 12, guiTop + 92, 26, 11, ""));
+        addButton(minField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 92, 26, 11, ""));
         minField.setMaxStringLength(3);
         minField.setText(prevMin);
 
-        addButton(maxField = new TextFieldWidget(font, guiLeft + 12, guiTop + 117, 26, 11, ""));
+        addButton(maxField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 117, 26, 11, ""));
         maxField.setMaxStringLength(3);
         maxField.setText(prevMax);
     }

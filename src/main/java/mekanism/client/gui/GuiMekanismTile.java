@@ -43,7 +43,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
                     if (isMouseOverSlot(slot, mouseX, mouseY)) {
                         DataType data = getFromSlot(slot);
                         if (data != null) {
-                            displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(data.getColor(), data.getColor().getName()), mouseX - guiLeft, mouseY - guiTop);
+                            displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(data.getColor(), data.getColor().getName()), mouseX - getGuiLeft(), mouseY - getGuiTop());
                         }
                         break;
                     }

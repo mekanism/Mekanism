@@ -26,8 +26,8 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 94) + 2, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
         drawString(MekanismLang.VOLUME.translate(tile.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK), 53, 26, 0x00CD00);
         //TODO: 1.14 Convert to GuiElement
         FluidStack fluidStored = tile.structure != null ? tile.structure.fluidStored : FluidStack.EMPTY;
@@ -37,8 +37,8 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
             renderScaledText(MekanismLang.GENERIC_PRE_COLON.translate(fluidStored), 53, 44, 0x00CD00, 74);
             drawString(MekanismLang.GENERIC_MB.translate(fluidStored.getAmount()), 53, 53, 0x00CD00);
         }
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
             if (fluidStored.isEmpty()) {
                 displayTooltip(MekanismLang.EMPTY.translate(), xAxis, yAxis);

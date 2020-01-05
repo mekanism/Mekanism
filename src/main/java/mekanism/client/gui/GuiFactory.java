@@ -69,7 +69,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryCon
         addButton(new GuiSideConfigurationTab(this, tile, resource));
         addButton(new GuiTransporterConfigTab(this, tile, resource));
         addButton(new GuiSortingTab(this, tile, resource));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, xSize - 12, 16));
+        addButton(new GuiVerticalPowerBar(this, tile, resource, getXSize() - 12, 16));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.lastUsage)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
 
@@ -130,7 +130,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryCon
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), tile.tier == FactoryTier.ULTIMATE ? 26 : 8,
               tile.hasSecondaryResourceBar() ? 85 : tile instanceof TileEntitySawingFactory ? 95 : 75, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -140,8 +140,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryCon
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (tile.hasSecondaryResourceBar()) {
             if (button == 0 || InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                double xAxis = mouseX - guiLeft;
-                double yAxis = mouseY - guiTop;
+                double xAxis = mouseX - getGuiLeft();
+                double yAxis = mouseY - getGuiTop();
                 //TODO: Hovering over the secondary bar??
                 if (xAxis > 8 && xAxis < 168 && yAxis > 78 && yAxis < 83) {
                     ItemStack stack = minecraft.player.inventory.getItemStack();
@@ -173,6 +173,6 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryCon
 
     @Override
     public int getWidth() {
-        return xSize;
+        return getXSize();
     }
 }

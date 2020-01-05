@@ -28,12 +28,12 @@ public abstract class GuiTypeFilter<FILTER extends IFilter<FILTER>, TILE extends
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tile instanceof TileEntityDigitalMiner && overReplaceOutput(xAxis, yAxis)) {
-            fill(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);
+            fill(getGuiLeft() + 149, getGuiTop() + 19, getGuiLeft() + 165, getGuiTop() + 35, 0x80FFFFFF);
         } else if (tile instanceof TileEntityLogisticalSorter) {
             drawItemStackBackground(xAxis, yAxis);
         }
         if (overTypeInput(xAxis, yAxis)) {
-            fill(guiLeft + 12, guiTop + 19, guiLeft + 28, guiTop + 35, 0x80FFFFFF);
+            fill(getGuiLeft() + 12, getGuiTop() + 19, getGuiLeft() + 28, getGuiTop() + 35, 0x80FFFFFF);
         }
         MekanismRenderer.resetColor();
     }

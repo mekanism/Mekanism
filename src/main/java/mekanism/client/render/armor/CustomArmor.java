@@ -1,4 +1,4 @@
-package mekanism.client.render;
+package mekanism.client.render.armor;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
@@ -6,9 +6,9 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 
-public abstract class ModelCustomArmor extends BipedModel<LivingEntity> {
+public abstract class CustomArmor extends BipedModel<LivingEntity> {
 
-    protected ModelCustomArmor(float size) {
+    protected CustomArmor(float size) {
         super(size);
     }
 

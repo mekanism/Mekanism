@@ -38,7 +38,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator,
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), tile instanceof TileEntityAdvancedSolarGenerator ? 30 : 45, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         //TODO: Make this look better, it previously was split on two lines, but now the lang string includes the stuff for per tick
         drawCenteredText(GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProduction())), 48, 80, 28, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
@@ -47,7 +47,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator,
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 20, guiTop + 37, 176, tile.canSeeSun() ? 52 : 64, 12, 12);
+        drawTexturedRect(getGuiLeft() + 20, getGuiTop() + 37, 176, tile.canSeeSun() ? 52 : 64, 12, 12);
     }
 
     @Override

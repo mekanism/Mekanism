@@ -3,10 +3,9 @@ package mekanism.client.render.armor;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.render.ModelCustomArmor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
-public class ScubaTankArmor extends ModelCustomArmor {
+public class ScubaTankArmor extends CustomArmor {
 
     public static final ScubaTankArmor SCUBA_TANK = new ScubaTankArmor(0.5F);
     private static final ModelScubaTank model = new ModelScubaTank();

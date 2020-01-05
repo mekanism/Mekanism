@@ -64,13 +64,13 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
         }
         updateTabs();
 
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
-        addButton(new MekanismImageButton(this, guiLeft + 156, guiTop + 6, 14, getButtonLocation("auto_eject"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 156, getGuiTop() + 6, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, Coord4D.get(tile), 0, 0, currentType)),
               getOnHover(MekanismLang.AUTO_EJECT)));
         for (GuiPos guiPos : slotPosList) {
-            addButton(new SideDataButton(this, guiLeft + guiPos.xPos, guiTop + guiPos.yPos, guiPos.relativeSide.ordinal(),
+            addButton(new SideDataButton(this, getGuiLeft() + guiPos.xPos, getGuiTop() + guiPos.yPos, guiPos.relativeSide.ordinal(),
                   () -> getTile().getConfig().getDataType(currentType, guiPos.relativeSide), () -> {
                 DataType dataType = getTile().getConfig().getDataType(currentType, guiPos.relativeSide);
                 return dataType == null ? EnumColor.GRAY : dataType.getColor();
@@ -106,7 +106,7 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Si
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(MekanismLang.CONFIG_TYPE.translate(currentType), 0, xSize, 5, 0x404040);
+        drawCenteredText(MekanismLang.CONFIG_TYPE.translate(currentType), 0, getXSize(), 5, 0x404040);
         //TODO: 1.14 Convert to GuiElement
         ConfigInfo config = getTile().getConfig().getConfig(currentType);
         if (config != null && config.canEject()) {

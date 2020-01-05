@@ -57,7 +57,7 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
         addButton(new GuiReactorTab(this, tile, ReactorTab.STAT, resource));
 
         String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
-        addButton(injectionRateField = new TextFieldWidget(font, guiLeft + 98, guiTop + 115, 26, 11, ""));
+        addButton(injectionRateField = new TextFieldWidget(font, getGuiLeft() + 98, getGuiTop() + 115, 26, 11, ""));
         injectionRateField.setMaxStringLength(2);
         injectionRateField.setText(prevRad);
     }
@@ -67,7 +67,7 @@ public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         drawString(tile.getName(), 46, 6, 0x404040);
         drawCenteredText(GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getReactor() == null ? MekanismLang.NONE : tile.getReactor().getInjectionRate()),
-              0, xSize, 35, 0x404040);
+              0, getXSize(), 35, 0x404040);
         drawString(GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, 0x404040);
     }
 

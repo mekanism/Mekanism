@@ -66,19 +66,19 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));
         addButton(new GuiSlot(SlotType.NORMAL, this, resource, 143, 26));
 
-        addButton(startButton = new TranslationButton(this, guiLeft + 69, guiTop + 17, 60, 20, MekanismLang.BUTTON_START,
+        addButton(startButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 17, 60, 20, MekanismLang.BUTTON_START,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3)))));
-        addButton(stopButton = new TranslationButton(this, guiLeft + 69, guiTop + 37, 60, 20, MekanismLang.BUTTON_STOP,
+        addButton(stopButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 37, 60, 20, MekanismLang.BUTTON_STOP,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(4)))));
-        addButton(configButton = new TranslationButton(this, guiLeft + 69, guiTop + 57, 60, 20, MekanismLang.BUTTON_CONFIG,
+        addButton(configButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 57, 60, 20, MekanismLang.BUTTON_CONFIG,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tile.getPos()))));
-        addButton(new MekanismImageButton(this, guiLeft + 131, guiTop + 47, 14, getButtonLocation("reset"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 131, getGuiTop() + 47, 14, getButtonLocation("reset"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(5))), getOnHover(MekanismLang.MINER_RESET)));
-        addButton(new MekanismImageButton(this, guiLeft + 131, guiTop + 63, 14, getButtonLocation("silk_touch"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 131, getGuiTop() + 63, 14, getButtonLocation("silk_touch"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(9))), getOnHover(MekanismLang.MINER_SILK)));
-        addButton(new MekanismImageButton(this, guiLeft + 147, guiTop + 47, 14, getButtonLocation("auto_eject"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 147, getGuiTop() + 47, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))), getOnHover(MekanismLang.AUTO_EJECT)));
-        addButton(new MekanismImageButton(this, guiLeft + 147, guiTop + 63, 14, getButtonLocation("auto_pull"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 147, getGuiTop() + 63, 14, getButtonLocation("auto_pull"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))), getOnHover(MekanismLang.AUTO_PULL)));
         updateEnabledButtons();
     }
@@ -98,7 +98,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), 69, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         ILangEntry runningType;
         if (tile.getPerTick() > tile.getMaxEnergy()) {
             runningType = MekanismLang.MINER_LOW_POWER;
@@ -123,8 +123,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
             drawTexturedRect(143, 26, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
         }
 
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
         if (xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77) {
             displayTooltip(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
         } else if (xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43) {
@@ -141,7 +141,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = tile.getScaledEnergyLevel(52);
-        drawTexturedRect(guiLeft + 164, guiTop + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+        drawTexturedRect(getGuiLeft() + 164, getGuiTop() + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
     }
 
     @Override

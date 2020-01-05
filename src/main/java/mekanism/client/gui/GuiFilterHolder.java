@@ -127,7 +127,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         // Draw scrollbar
-        drawTexturedRect(guiLeft + 154, guiTop + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
+        drawTexturedRect(getGuiLeft() + 154, getGuiTop() + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
 
         HashList<FILTER> filters = tile.getFilters();
         // Draw filter backgrounds
@@ -147,18 +147,18 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                 int yStart = i * filterH + filterY;
                 // Flag for mouse over this filter
                 boolean mouseOver = xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
-                drawTexturedRect(guiLeft + filterX, guiTop + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
+                drawTexturedRect(getGuiLeft() + filterX, getGuiTop() + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
                 MekanismRenderer.resetColor();
 
                 // Draw sort buttons
                 int arrowX = filterX + filterW - 12;
                 if (getFilterIndex() + i > 0) {
                     mouseOver = xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20;
-                    drawTexturedRect(guiLeft + arrowX, guiTop + yStart + 14, 190, mouseOver ? 143 : 115, 11, 7);
+                    drawTexturedRect(getGuiLeft() + arrowX, getGuiTop() + yStart + 14, 190, mouseOver ? 143 : 115, 11, 7);
                 }
                 if (getFilterIndex() + i < filters.size() - 1) {
                     mouseOver = xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27;
-                    drawTexturedRect(guiLeft + arrowX, guiTop + yStart + 21, 190, mouseOver ? 157 : 129, 11, 7);
+                    drawTexturedRect(getGuiLeft() + arrowX, getGuiTop() + yStart + 21, 190, mouseOver ? 157 : 129, 11, 7);
                 }
             }
         }
@@ -194,7 +194,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         if (isDragging) {
             // Get mouse position relative to gui
-            double yAxis = mouseY - guiTop;
+            double yAxis = mouseY - getGuiTop();
             scroll = Math.min(Math.max((yAxis - 18 - dragOffset) / 123F, 0), 1);
         }
         return true;

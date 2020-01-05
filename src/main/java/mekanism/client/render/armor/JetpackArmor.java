@@ -4,10 +4,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelJetpack;
-import mekanism.client.render.ModelCustomArmor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
-public class JetpackArmor extends ModelCustomArmor {
+public class JetpackArmor extends CustomArmor {
 
     public static final JetpackArmor JETPACK = new JetpackArmor(0.5F, false);
     public static final JetpackArmor ARMORED_JETPACK = new JetpackArmor(0.5F, true);

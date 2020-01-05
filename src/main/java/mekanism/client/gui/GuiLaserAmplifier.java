@@ -64,22 +64,22 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         addButton(new GuiAmplifierTab(this, tile, resource));
 
         String prevTime = timerField != null ? timerField.getText() : "";
-        addButton(timerField = new TextFieldWidget(font, guiLeft + 96, guiTop + 28, 36, 11, prevTime));
+        addButton(timerField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 28, 36, 11, prevTime));
         timerField.setMaxStringLength(4);
 
         String prevMin = minField != null ? minField.getText() : "";
-        addButton(minField = new TextFieldWidget(font, guiLeft + 96, guiTop + 43, 72, 11, prevMin));
+        addButton(minField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 43, 72, 11, prevMin));
         minField.setMaxStringLength(10);
 
         String prevMax = maxField != null ? maxField.getText() : "";
-        addButton(maxField = new TextFieldWidget(font, guiLeft + 96, guiTop + 58, 72, 11, prevMax));
+        addButton(maxField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 58, 72, 11, prevMax));
         maxField.setMaxStringLength(10);
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), 55, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         if (tile.time > 0) {
             drawString(MekanismLang.DELAY.translate(tile.time), 26, 30, 0x404040);
         } else {

@@ -13,7 +13,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.client.render.ModelCustomArmor;
+import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.common.MekanismLang;
@@ -97,7 +97,7 @@ public class ItemJetpack extends ArmorItem implements IGasItem, ISpecialGear {
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ModelCustomArmor getGearModel() {
+    public CustomArmor getGearModel() {
         return JetpackArmor.JETPACK;
     }
 

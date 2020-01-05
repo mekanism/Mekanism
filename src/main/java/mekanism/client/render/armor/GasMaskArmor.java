@@ -3,10 +3,9 @@ package mekanism.client.render.armor;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelGasMask;
-import mekanism.client.render.ModelCustomArmor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
-public class GasMaskArmor extends ModelCustomArmor {
+public class GasMaskArmor extends CustomArmor {
 
     public static final GasMaskArmor GAS_MASK = new GasMaskArmor(0.5F);
     private static final ModelGasMask model = new ModelGasMask();

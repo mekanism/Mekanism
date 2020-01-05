@@ -37,7 +37,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
 
     @Override
     protected TextFieldWidget createTextField() {
-        return new TextFieldWidget(font, guiLeft + 35, guiTop + 47, 95, 12, "");
+        return new TextFieldWidget(font, getGuiLeft() + 35, getGuiTop() + 47, 95, 12, "");
     }
 
     @Override
@@ -71,7 +71,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         text.renderButton(0, 0, 0);
         if (tile instanceof TileEntityDigitalMiner) {
             if (overReplaceOutput(xAxis, yAxis)) {
-                fill(guiLeft + 149, guiTop + 19, guiLeft + 165, guiTop + 35, 0x80FFFFFF);
+                fill(getGuiLeft() + 149, getGuiTop() + 19, getGuiLeft() + 165, getGuiTop() + 35, 0x80FFFFFF);
             }
         }
         //This is needed here and not just inside the if statements due to the text box drawing
@@ -93,7 +93,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && tile instanceof TileEntityDigitalMiner && filter instanceof MinerFilter) {
-            minerFilterClickCommon(mouseX - guiLeft, mouseY - guiTop, (MinerFilter<?>) filter);
+            minerFilterClickCommon(mouseX - getGuiLeft(), mouseY - getGuiTop(), (MinerFilter<?>) filter);
         }
         return true;
     }

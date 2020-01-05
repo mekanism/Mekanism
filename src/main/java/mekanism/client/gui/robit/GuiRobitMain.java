@@ -53,36 +53,36 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(confirmName = new TranslationButton(this, guiLeft + 58, guiTop + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
+        addButton(confirmName = new TranslationButton(this, getGuiLeft() + 58, getGuiTop() + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
         confirmName.visible = false;
 
-        addButton(nameChangeField = new TextFieldWidget(font, guiLeft + 48, guiTop + 21, 80, 12, ""));
+        addButton(nameChangeField = new TextFieldWidget(font, getGuiLeft() + 48, getGuiTop() + 21, 80, 12, ""));
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setFocused2(true);
         nameChangeField.visible = false;
 
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 16, 18, getButtonLocation("home"), () -> {
+        addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 16, 18, getButtonLocation("home"), () -> {
             Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.GO_HOME, robit.getEntityId()));
             minecraft.displayGuiScreen(null);
         }, getOnHover(MekanismLang.ROBIT_TELEPORT)));
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 35, 18, getButtonLocation("drop"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 35, 18, getButtonLocation("drop"),
               () -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getEntityId())),
               getOnHover(MekanismLang.ROBIT_TOGGLE_PICKUP)));
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 54, 18, getButtonLocation("rename"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 54, 18, getButtonLocation("rename"),
               this::toggleNameChange, getOnHover(MekanismLang.ROBIT_RENAME)));
-        addButton(new MekanismImageButton(this, guiLeft + 152, guiTop + 54, 18, getButtonLocation("follow"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 152, getGuiTop() + 54, 18, getButtonLocation("follow"),
               () -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.FOLLOW, robit.getEntityId())),
               getOnHover(MekanismLang.ROBIT_TOGGLE_FOLLOW)));
-        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 10, 18, getButtonLocation("main"), () -> {
+        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 10, 18, getButtonLocation("main"), () -> {
             //Clicking main button doesn't do anything while already on the main GUI
         }));
-        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 30, 18, getButtonLocation("crafting"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 30, 18, getButtonLocation("crafting"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit.getEntityId()))));
-        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 50, 18, getButtonLocation("inventory"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 50, 18, getButtonLocation("inventory"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit.getEntityId()))));
-        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 70, 18, getButtonLocation("smelting"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 70, 18, getButtonLocation("smelting"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit.getEntityId()))));
-        addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 90, 18, getButtonLocation("repair"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 90, 18, getButtonLocation("repair"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit.getEntityId()))));
     }
 
@@ -115,8 +115,8 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
             drawString(MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, 0x00CD00);
         }
         //TODO: 1.14 Convert to GuiElement
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
         if (xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79) {
             displayTooltip(EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY).getTextComponent(), xAxis, yAxis);
         }
@@ -126,9 +126,9 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 28, guiTop + 75, 0, 166, getScaledEnergyLevel(120), 4);
+        drawTexturedRect(getGuiLeft() + 28, getGuiTop() + 75, 0, 166, getScaledEnergyLevel(120), 4);
         if (nameChangeField.visible) {
-            drawTexturedRect(guiLeft + 28, guiTop + 17, 0, 166 + 4, 120, 54);
+            drawTexturedRect(getGuiLeft() + 28, getGuiTop() + 17, 0, 166 + 4, 120, 54);
             MekanismRenderer.resetColor();
         }
     }

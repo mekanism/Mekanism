@@ -37,7 +37,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
-        addButton(saveButton = new TranslationButton(this, guiLeft + 31, guiTop + 62, 54, 20, MekanismLang.BUTTON_SAVE, () -> {
+        addButton(saveButton = new TranslationButton(this, getGuiLeft() + 31, getGuiTop() + 62, 54, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
                 setText();
             }
@@ -50,13 +50,13 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 sendPacketToServer(ClickedTileButton.BACK_BUTTON);
             }
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 62, 54, 20, MekanismLang.BUTTON_DELETE, () -> {
+        addButton(deleteButton = new TranslationButton(this, getGuiLeft() + 89, getGuiTop() + 62, 54, 20, MekanismLang.BUTTON_DELETE, () -> {
             Mekanism.packetHandler.sendToServer(new PacketEditFilter(Coord4D.get(tile), true, origFilter, null));
             sendPacketToServer(ClickedTileButton.BACK_BUTTON);
         }));
-        addButton(new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
               () -> sendPacketToServer(ClickedTileButton.BACK_BUTTON)));
-        addButton(new MekanismImageButton(this, guiLeft + 31, guiTop + 21, 12, getButtonLocation("left"), () -> {
+        addButton(new MekanismImageButton(this, getGuiLeft() + 31, getGuiTop() + 21, 12, getButtonLocation("left"), () -> {
             if (filter.hasFilter()) {
                 List<Item> matchingItems = filter.getMatchingItems();
                 if (filter.index > 0) {
@@ -67,7 +67,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 updateRenderStack();
             }
         }));
-        addButton(new MekanismImageButton(this, guiLeft + 63, guiTop + 21, 12, getButtonLocation("right"), () -> {
+        addButton(new MekanismImageButton(this, getGuiLeft() + 63, getGuiTop() + 21, 12, getButtonLocation("right"), () -> {
             if (filter.hasFilter()) {
                 List<Item> matchingItems = filter.getMatchingItems();
                 if (filter.index < matchingItems.size() - 1) {
@@ -78,7 +78,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 updateRenderStack();
             }
         }));
-        addButton(new MekanismImageButton(this, guiLeft + 130, guiTop + 48, 12, getButtonLocation("checkmark"), this::setText));
+        addButton(new MekanismImageButton(this, getGuiLeft() + 130, getGuiTop() + 48, 12, getButtonLocation("checkmark"), this::setText));
     }
 
     @Override
@@ -107,7 +107,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected TextFieldWidget createTextField() {
-        return new TextFieldWidget(font, guiLeft + 33, guiTop + 48, 96, 12, "");
+        return new TextFieldWidget(font, getGuiLeft() + 33, getGuiTop() + 48, 96, 12, "");
     }
 
     @Override
@@ -118,15 +118,15 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.FILTER), 0, xSize, 6, 0x404040);
+        drawCenteredText((isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(MekanismLang.FILTER), 0, getXSize(), 6, 0x404040);
         drawString(MekanismLang.FILTER_INDEX.translate(filter.index), 79, 23, 0x404040);
         if (filter.hasFilter()) {
             renderScaledText(filter.getFilterText(), 32, 38, 0x404040, 111);
         }
         renderItem(renderStack, 45, 19);
         //TODO: 1.14 Convert to GuiElement
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
         if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
             displayTooltip(MekanismLang.LAST_ITEM.translate(), xAxis, yAxis);
         } else if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {

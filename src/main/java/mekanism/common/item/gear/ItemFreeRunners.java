@@ -10,7 +10,7 @@ import mekanism.api.IIncrementalEnum;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.client.render.ModelCustomArmor;
+import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.common.MekanismLang;
@@ -67,7 +67,7 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpeci
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ModelCustomArmor getGearModel() {
+    public CustomArmor getGearModel() {
         return FreeRunnerArmor.FREE_RUNNERS;
     }
 

@@ -2,7 +2,7 @@ package mekanism.client.render.layer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
-import mekanism.client.render.ModelCustomArmor;
+import mekanism.client.render.armor.CustomArmor;
 import mekanism.common.item.gear.ISpecialGear;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
@@ -38,7 +38,7 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
         if (item instanceof ISpecialGear && item instanceof ArmorItem) {
             ArmorItem armorItem = (ArmorItem) item;
             if (armorItem.getEquipmentSlot() == slot) {
-                ModelCustomArmor model = ((ISpecialGear) item).getGearModel();
+                CustomArmor model = ((ISpecialGear) item).getGearModel();
                 getEntityModel().func_217148_a((BipedModel<T>) model);
                 model.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTick);
                 setModelSlotVisible((A) model, slot);
@@ -48,7 +48,7 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
         }
     }
 
-    private void renderArmor(MatrixStack matrix, IRenderTypeBuffer renderer, int light, boolean hasEffect, ModelCustomArmor model) {
+    private void renderArmor(MatrixStack matrix, IRenderTypeBuffer renderer, int light, boolean hasEffect, CustomArmor model) {
         model.render(matrix, renderer, light, OverlayTexture.field_229196_a_, hasEffect);
     }
 

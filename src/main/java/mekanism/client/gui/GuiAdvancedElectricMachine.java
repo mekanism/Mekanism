@@ -63,11 +63,11 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         //TODO: 1.14 Convert to GuiElement
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
         if (xAxis >= 61 && xAxis <= 67 && yAxis >= 37 && yAxis <= 49) {
             GasStack gasStack = tile.gasTank.getStack();
             if (gasStack.isEmpty()) {
@@ -97,7 +97,7 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
         if (!gas.isEmpty()) {
             minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             MekanismRenderer.color(gas);
-            drawTexturedRectFromIcon(guiLeft + xPos, guiTop + yPos, MekanismRenderer.getChemicalTexture(gas.getType()), sizeX, sizeY);
+            drawTexturedRectFromIcon(getGuiLeft() + xPos, getGuiTop() + yPos, MekanismRenderer.getChemicalTexture(gas.getType()), sizeX, sizeY);
             MekanismRenderer.resetColor();
         }
     }

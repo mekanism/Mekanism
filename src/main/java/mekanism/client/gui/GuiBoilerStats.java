@@ -45,7 +45,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Boil
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawCenteredText(MekanismLang.BOILER_STATS.translate(), 0, xSize, 6, 0x404040);
+        drawCenteredText(MekanismLang.BOILER_STATS.translate(), 0, getXSize(), 6, 0x404040);
         drawString(MekanismLang.BOILER_MAX_WATER.translate(tile.clientWaterCapacity), 8, 26, 0x404040);
         drawString(MekanismLang.BOILER_MAX_STEAM.translate(tile.clientSteamCapacity), 8, 35, 0x404040);
         drawString(MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, 0x797979);

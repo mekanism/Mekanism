@@ -41,9 +41,9 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     @Override
     public void init() {
         super.init();
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
-        addButton(removeButton = new MekanismImageButton(this, guiLeft + 136, guiTop + 57, 12, getButtonLocation("remove_upgrade"), () -> {
+        addButton(removeButton = new MekanismImageButton(this, getGuiLeft() + 136, getGuiTop() + 57, 12, getButtonLocation("remove_upgrade"), () -> {
             if (selectedType != null) {
                 Mekanism.packetHandler.sendToServer(new PacketRemoveUpgrade(Coord4D.get(tile), selectedType));
             }
@@ -75,7 +75,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         minecraft.textureManager.bindTexture(getGuiLocation());
         drawTexturedRect(84, 8 + getScroll(), 202, 0, 4, 4);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         drawString(MekanismLang.UPGRADES_SUPPORTED.translate(), 26, 59, 0x404040);
         if (selectedType == null) {
             renderText(MekanismLang.UPGRADE_NO_SELECTION.translate(), 92, 8, 0.8F);
@@ -97,8 +97,8 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
             }
         }
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
         for (int i = 0; i < 4; i++) {
             int index = getUpgradeIndex() + i;
             if (index > upgrades.length - 1) {
@@ -132,7 +132,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = tile.getComponent().getScaledUpgradeProgress(14);
-        drawTexturedRect(guiLeft + 154, guiTop + 26, 176, 28, 10, displayInt);
+        drawTexturedRect(getGuiLeft() + 154, getGuiTop() + 26, 176, 28, 10, displayInt);
         if (selectedType != null && tile.getComponent().getUpgrades(selectedType) == 0) {
             selectedType = null;
         }
@@ -154,7 +154,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
                 yRender = 166 + 12;
             }
             MekanismRenderer.color(upgrade.getColor(), 1.0F, 2.5F);
-            drawTexturedRect(guiLeft + xPos, guiTop + yPos, 0, yRender, 58, 12);
+            drawTexturedRect(getGuiLeft() + xPos, getGuiTop() + yPos, 0, yRender, 58, 12);
             MekanismRenderer.resetColor();
         }
     }
@@ -179,7 +179,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
         //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         if (isDragging) {
-            double yAxis = mouseY - (height - ySize) / 2D;
+            double yAxis = mouseY - (height - getYSize()) / 2D;
             scroll = Math.min(Math.max((yAxis - 8 - dragOffset) / 42F, 0), 1);
         }
         return true;
@@ -204,8 +204,8 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            double xAxis = mouseX - guiLeft;
-            double yAxis = mouseY - guiTop;
+            double xAxis = mouseX - getGuiLeft();
+            double yAxis = mouseY - getGuiTop();
             if (xAxis >= 84 && xAxis <= 88 && yAxis >= getScroll() + 8 && yAxis <= getScroll() + 8 + 4) {
                 if (getCurrentUpgrades().size() > 4) {
                     dragOffset = yAxis - (getScroll() + 8);

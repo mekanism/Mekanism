@@ -45,18 +45,18 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         addButton(new GuiUpgradeTab(this, tile, resource));
         addButton(new GuiSecurityTab<>(this, tile, resource));
 
-        addButton(new TranslationButton(this, guiLeft + filterX, guiTop + 136, filterW, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, getGuiLeft() + filterX, getGuiTop() + 136, filterW, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tile.getPos()))));
-        addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 58, 14, getButtonLocation("single"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 58, 14, getButtonLocation("single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(5))),
               getOnHover(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION)));
-        addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 84, 14, getButtonLocation("round_robin"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 84, 14, getButtonLocation("round_robin"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(2))),
               getOnHover(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION)));
-        addButton(new MekanismImageButton(this, guiLeft + 12, guiTop + 110, 14, getButtonLocation("auto_eject"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 110, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),
               getOnHover(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION)));
-        addButton(new ColorButton(this, guiLeft + 13, guiTop + 137, 16, 16, () -> tile.color,
+        addButton(new ColorButton(this, getGuiLeft() + 13, getGuiTop() + 137, 16, 16, () -> tile.color,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(),
                     GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0))),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, 1)))));
@@ -75,8 +75,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         super.mouseClicked(mouseX, mouseY, button);
 
         // Get mouse position relative to gui
-        double xAxis = mouseX - guiLeft;
-        double yAxis = mouseY - guiTop;
+        double xAxis = mouseX - getGuiLeft();
+        double yAxis = mouseY - getGuiTop();
 
         if (button == 0) {
             // Check for scrollbar interaction
@@ -137,8 +137,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         // Get mouse position relative to gui
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
 
         HashList<TransporterFilter<?>> filters = tile.getFilters();
         // Write to info display

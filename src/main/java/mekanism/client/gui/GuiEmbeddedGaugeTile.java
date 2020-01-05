@@ -32,8 +32,8 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
         TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
         minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
         int start = 0;
-        int x = guiLeft + xPos;
-        int y = guiTop + yPos;
+        int x = getGuiLeft() + xPos;
+        int y = getGuiTop() + yPos;
         while (scale > 0) {
             int renderRemaining;
             if (scale > 16) {

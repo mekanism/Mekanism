@@ -114,8 +114,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
         //TODO: Does color need to be reset before this
         for (Widget widget : this.buttons) {
             if (widget.isMouseOver(mouseX, mouseY)) {//.isHovered()) {
@@ -139,9 +139,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // it in an unexpected state.
         MekanismRenderer.resetColor();
         minecraft.textureManager.bindTexture(getGuiLocation());
-        drawTexturedRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        drawTexturedRect(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
     }
 

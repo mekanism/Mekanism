@@ -46,7 +46,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         //TODO: 1.14 Convert to GuiElement
         ITextComponent component;
         if (tile.gasTank.getStored() == Integer.MAX_VALUE) {
@@ -63,7 +63,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
         } else {
             renderScaledText(MekanismLang.GAS.translate(MekanismLang.NONE), 45, 49, 0x404040, 112);
         }
-        drawString(MekanismLang.INVENTORY.translate(), 8, ySize - 96 + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 96 + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -80,10 +80,10 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(tile.gasTank.getType());
             minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
             MekanismRenderer.color(tile.gasTank.getStack());
-            drawTexturedRectFromIcon(guiLeft + 65, guiTop + 17, icon, scale, 10);
+            drawTexturedRectFromIcon(getGuiLeft() + 65, getGuiTop() + 17, icon, scale, 10);
             int start = 0;
-            int x = guiLeft + 65;
-            int y = guiTop + 17;
+            int x = getGuiLeft() + 65;
+            int y = getGuiTop() + 17;
             while (scale > 0) {
                 int renderRemaining;
                 if (scale > 16) {

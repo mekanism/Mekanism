@@ -48,7 +48,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), 45, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 2, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         drawString(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         //TODO: Why is this different from how all the other ones do it
         drawString(GeneratorsLang.POWER.translate(powerFormat.format(MekanismUtils.convertToDisplay(
@@ -69,7 +69,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, W
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 20, guiTop + 37, 176, tile.getActive() ? 52 : 64, 12, 12);
+        drawTexturedRect(getGuiLeft() + 20, getGuiTop() + 37, 176, tile.getActive() ? 52 : 64, 12, 12);
     }
 
     @Override

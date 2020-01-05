@@ -39,15 +39,15 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(MekanismLang.INVENTORY.translate(), 8, (ySize - 96) + 4, 0x404040);
-        drawString(tile.getName(), (xSize / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 4, 0x404040);
+        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 4, 0x404040);
         drawString(getStruct().translate(), 50, 21, 0x00CD00);
         drawString(MekanismLang.HEIGHT.translate(tile.height), 50, 30, 0x00CD00);
         drawString(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
         renderScaledText(MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.lastGain * 100D) / 100D), 50, 48, 0x00CD00, 76);
         //TODO: 1.14 Convert to GuiElement
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - getGuiLeft();
+        int yAxis = mouseY - getGuiTop();
         if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
             displayTooltip(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT), xAxis, yAxis);
         }
@@ -66,7 +66,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 49, guiTop + 64, 176, 59, tile.getScaledTempLevel(78), 8);
+        drawTexturedRect(getGuiLeft() + 49, getGuiTop() + 64, 176, 59, tile.getScaledTempLevel(78), 8);
     }
 
     @Override

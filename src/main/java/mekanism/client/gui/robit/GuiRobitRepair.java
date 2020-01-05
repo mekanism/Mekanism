@@ -25,7 +25,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     public void init() {
         super.init();
         minecraft.keyboardListener.enableRepeatEvents(true);
-        addButton(itemNameField = new TextFieldWidget(font, guiLeft + 62, guiTop + 24, 103, 12, ""));
+        addButton(itemNameField = new TextFieldWidget(font, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, ""));
         itemNameField.setTextColor(-1);
         itemNameField.setDisabledTextColour(-1);
         itemNameField.setEnableBackgroundDrawing(false);
@@ -62,8 +62,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
             }
 
             if (flag) {
-                int width = this.xSize - 8 - getStringWidth(component) - 2;
-                fill(width - 2, 67, this.xSize - 8, 79, 0x4F000000);
+                int width = getXSize() - 8 - getStringWidth(component) - 2;
+                fill(width - 2, 67, getXSize() - 8, 79, 0x4F000000);
                 font.drawStringWithShadow(component.getFormattedText(), (float) width, 69.0F, k);
             }
         }
@@ -94,9 +94,9 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(guiLeft + 59, guiTop + 20, 0, ySize + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
+        drawTexturedRect(getGuiLeft() + 59, getGuiTop() + 20, 0, getYSize() + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
         if ((container.getSlot(0).getHasStack() || container.getSlot(1).getHasStack()) && !container.getSlot(2).getHasStack()) {
-            drawTexturedRect(guiLeft + 99, guiTop + 45, xSize + 18, 36, 28, 21);
+            drawTexturedRect(getGuiLeft() + 99, getGuiTop() + 45, getXSize() + 18, 36, 28, 21);
         }
     }
 

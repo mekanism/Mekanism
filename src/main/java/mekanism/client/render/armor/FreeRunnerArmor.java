@@ -3,10 +3,9 @@ package mekanism.client.render.armor;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFreeRunners;
-import mekanism.client.render.ModelCustomArmor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 
-public class FreeRunnerArmor extends ModelCustomArmor {
+public class FreeRunnerArmor extends CustomArmor {
 
     public static final FreeRunnerArmor FREE_RUNNERS = new FreeRunnerArmor(0.5F);
     private static final ModelFreeRunners model = new ModelFreeRunners();

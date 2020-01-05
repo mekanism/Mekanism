@@ -26,7 +26,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(MekanismLang.ROBIT_SMELTING.translate(), 8, 6, 0x404040);
-        drawString(MekanismLang.INVENTORY.translate(), 8, ySize - 93, 0x404040);
+        drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -41,10 +41,10 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
         int displayInt;
         if (robit.furnaceBurnTime > 0) {
             displayInt = getBurnTimeRemainingScaled(12);
-            drawTexturedRect(guiLeft + 56, guiTop + 36 + 12 - displayInt, 176 + 25 + 18, 36 + 12 - displayInt, 14, displayInt + 2);
+            drawTexturedRect(getGuiLeft() + 56, getGuiTop() + 36 + 12 - displayInt, 176 + 25 + 18, 36 + 12 - displayInt, 14, displayInt + 2);
         }
         displayInt = getCookProgressScaled(24);
-        drawTexturedRect(guiLeft + 79, guiTop + 34, 176 + 25 + 18, 36 + 14, displayInt + 1, 16);
+        drawTexturedRect(getGuiLeft() + 79, getGuiTop() + 34, 176 + 25 + 18, 36 + 14, displayInt + 1, 16);
     }
 
     @Override

@@ -23,11 +23,11 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
 
     @Override
     protected void addButtons() {
-        addButton(itemStackButton = new TranslationButton(this, guiLeft + 24, guiTop + 32, 128, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER, onItemStackButton()));
-        addButton(oredictButton = new TranslationButton(this, guiLeft + 24, guiTop + 52, 128, 20, MekanismLang.BUTTON_TAG_FILTER, onTagButton()));
-        addButton(materialButton = new TranslationButton(this, guiLeft + 24, guiTop + 72, 128, 20, MekanismLang.BUTTON_MATERIAL_FILTER, onMaterialButton()));
-        addButton(modIDButton = new TranslationButton(this, guiLeft + 24, guiTop + 92, 128, 20, MekanismLang.BUTTON_MODID_FILTER, onModIDButton()));
-        addButton(backButton = new MekanismImageButton(this, guiLeft + 5, guiTop + 5, 11, 14, getButtonLocation("back"), onBackButton()));
+        addButton(itemStackButton = new TranslationButton(this, getGuiLeft() + 24, getGuiTop() + 32, 128, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER, onItemStackButton()));
+        addButton(oredictButton = new TranslationButton(this, getGuiLeft() + 24, getGuiTop() + 52, 128, 20, MekanismLang.BUTTON_TAG_FILTER, onTagButton()));
+        addButton(materialButton = new TranslationButton(this, getGuiLeft() + 24, getGuiTop() + 72, 128, 20, MekanismLang.BUTTON_MATERIAL_FILTER, onMaterialButton()));
+        addButton(modIDButton = new TranslationButton(this, getGuiLeft() + 24, getGuiTop() + 92, 128, 20, MekanismLang.BUTTON_MODID_FILTER, onModIDButton()));
+        addButton(backButton = new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"), onBackButton()));
     }
 
     protected abstract Runnable onItemStackButton();

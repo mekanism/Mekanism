@@ -10,7 +10,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.ModelCustomArmor;
+import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.MekanismLang;
@@ -88,7 +88,7 @@ public class ItemScubaTank extends ArmorItem implements IGasItem, ISpecialGear {
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ModelCustomArmor getGearModel() {
+    public CustomArmor getGearModel() {
         return ScubaTankArmor.SCUBA_TANK;
     }
 

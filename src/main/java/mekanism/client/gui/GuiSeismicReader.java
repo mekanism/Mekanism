@@ -50,11 +50,11 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(upButton = new SeismicReaderButton(this, guiLeft + 70, guiTop + 75, 13, 13, 137, 0, getGuiLocation(),
+        addButton(upButton = new SeismicReaderButton(this, getGuiLeft() + 70, getGuiTop() + 75, 13, 13, 137, 0, getGuiLocation(),
               () -> currentLayer++));
-        addButton(downButton = new SeismicReaderButton(this, guiLeft + 70, guiTop + 92, 13, 13, 150, 0, getGuiLocation(),
+        addButton(downButton = new SeismicReaderButton(this, getGuiLeft() + 70, getGuiTop() + 92, 13, 13, 150, 0, getGuiLocation(),
               () -> currentLayer--));
-        //tooltip = new Rectangle(guiLeft + 30, guiTop + 82, 16, 16);
+        //tooltip = new Rectangle(getGuiLeft() + 30, getGuiTop() + 82, 16, 16);
         updateEnabledButtons();
     }
 
@@ -72,10 +72,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     //TODO: Rewrite this to properly use foreground and background, as well as, not have so many GL calls
     @Override
     public void render(int mouseX, int mouseY, float partialTick) {
-        int guiLeft = (width - xSize) / 2;
-        int guiTop = (height - ySize) / 2;
+        int guiLeft = (width - getXSize()) / 2;
+        int guiTop = (height - getYSize()) / 2;
         minecraft.textureManager.bindTexture(getGuiLocation());
-        blit(guiLeft, guiTop, 0, 0, xSize, ySize);
+        blit(guiLeft, guiTop, 0, 0, getXSize(), getYSize());
 
         // Fix the overlapping if > 100
         RenderSystem.pushMatrix();
