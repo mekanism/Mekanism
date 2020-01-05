@@ -34,6 +34,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -237,7 +238,7 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
 
     @Override
     public INamedContainerProvider getProvider(TileEntityQuantumEntangloporter tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new QuantumEntangloporterContainer(i, inv, tile));
     }
 
     @Override

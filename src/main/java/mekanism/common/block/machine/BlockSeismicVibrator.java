@@ -29,6 +29,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -214,7 +215,7 @@ public class BlockSeismicVibrator extends BlockMekanism implements IBlockElectri
 
     @Override
     public INamedContainerProvider getProvider(TileEntitySeismicVibrator tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new SeismicVibratorContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new SeismicVibratorContainer(i, inv, tile));
     }
 
     @Override

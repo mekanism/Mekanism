@@ -21,6 +21,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.GasBurningGeneratorContainer;
 import mekanism.generators.common.registries.GeneratorsSounds;
@@ -133,7 +134,7 @@ public class BlockGasBurningGenerator extends BlockMekanism implements IHasGui<T
 
     @Override
     public INamedContainerProvider getProvider(TileEntityGasGenerator tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new GasBurningGeneratorContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new GasBurningGeneratorContainer(i, inv, tile));
     }
 
     @Override

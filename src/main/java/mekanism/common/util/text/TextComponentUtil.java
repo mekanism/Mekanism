@@ -7,7 +7,6 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
 import net.minecraft.block.Block;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -43,11 +42,8 @@ public class TextComponentUtil {
                 current = (ITextComponent) component;
             } else if (component instanceof TextFormatting) {
                 cachedFormat = (TextFormatting) component;
-            } else if (component instanceof InputMappings.Input) {
-                //Helper for key bindings to not have to get the translation key directly and then pass that as a Translation object
-                current = translate(((InputMappings.Input) component).getTranslationKey());
             } else if (component instanceof Block) {
-                current = ((Block) component).getNameTextComponent();
+                current = translate(((Block) component).getTranslationKey());
             } else if (component instanceof Item) {
                 current = translate(((Item) component).getTranslationKey());
             } else if (component instanceof ItemStack) {
@@ -111,11 +107,8 @@ public class TextComponentUtil {
                 current = ((IHasTextComponent) component).getTextComponent();
             } else if (component instanceof IHasTranslationKey) {
                 current = translate(((IHasTranslationKey) component).getTranslationKey());
-            } else if (component instanceof InputMappings.Input) {
-                //Helper for key bindings to not have to get the translation key directly and then pass that as a Translation object
-                current = translate(((InputMappings.Input) component).getTranslationKey());
             } else if (component instanceof Block) {
-                current = ((Block) component).getNameTextComponent();
+                current = translate(((Block) component).getTranslationKey());
             } else if (component instanceof Item) {
                 current = translate(((Item) component).getTranslationKey());
             } else if (component instanceof ItemStack) {

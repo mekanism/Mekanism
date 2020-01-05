@@ -33,6 +33,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -242,7 +243,7 @@ public class BlockSolarNeutronActivator extends BlockMekanism implements IHasMod
 
     @Override
     public INamedContainerProvider getProvider(TileEntitySolarNeutronActivator tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new SolarNeutronActivatorContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new SolarNeutronActivatorContainer(i, inv, tile));
     }
 
     @Override

@@ -18,6 +18,7 @@ import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -75,7 +76,7 @@ public class BlockThermalEvaporationController extends BlockMekanism implements 
 
     @Override
     public INamedContainerProvider getProvider(TileEntityThermalEvaporationController tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new ThermalEvaporationControllerContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new ThermalEvaporationControllerContainer(i, inv, tile));
     }
 
     @Override

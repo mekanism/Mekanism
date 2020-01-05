@@ -23,6 +23,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -141,7 +142,7 @@ public class BlockFuelwoodHeater extends BlockMekanism implements IHasGui<TileEn
 
     @Override
     public INamedContainerProvider getProvider(TileEntityFuelwoodHeater tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new FuelwoodHeaterContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new FuelwoodHeaterContainer(i, inv, tile));
     }
 
     @Override

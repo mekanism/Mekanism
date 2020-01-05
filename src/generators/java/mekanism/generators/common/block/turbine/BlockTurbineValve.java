@@ -10,6 +10,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.turbine.TurbineContainer;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
@@ -38,7 +39,7 @@ public class BlockTurbineValve extends BlockBasicMultiblock implements IHasTileE
 
     @Override
     public INamedContainerProvider getProvider(TileEntityTurbineValve tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new TurbineContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new TurbineContainer(i, inv, tile));
     }
 
     @Override

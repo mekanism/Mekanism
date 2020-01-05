@@ -10,6 +10,7 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.reactor.ReactorLogicAdapterContainer;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
@@ -79,7 +80,7 @@ public class BlockReactorLogicAdapter extends BlockMekanism implements IHasGui<T
 
     @Override
     public INamedContainerProvider getProvider(TileEntityReactorLogicAdapter tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new ReactorLogicAdapterContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new ReactorLogicAdapterContainer(i, inv, tile));
     }
 
     @Override

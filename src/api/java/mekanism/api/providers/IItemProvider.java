@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
 
 public interface IItemProvider extends IBaseProvider, net.minecraft.util.IItemProvider {
 
@@ -38,11 +37,6 @@ public interface IItemProvider extends IBaseProvider, net.minecraft.util.IItemPr
     @Override
     default ResourceLocation getRegistryName() {
         return getItem().getRegistryName();
-    }
-
-    @Override
-    default ITextComponent getTextComponent() {
-        return getItem().getName();
     }
 
     @Override

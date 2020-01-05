@@ -28,6 +28,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -143,7 +144,7 @@ public class BlockTeleporter extends BlockMekanism implements IBlockElectric, IH
 
     @Override
     public INamedContainerProvider getProvider(TileEntityTeleporter tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new TeleporterContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new TeleporterContainer(i, inv, tile));
     }
 
     @Override

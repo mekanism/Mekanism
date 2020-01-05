@@ -22,6 +22,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.HeatGeneratorContainer;
 import mekanism.generators.common.registries.GeneratorsSounds;
@@ -160,7 +161,7 @@ public class BlockHeatGenerator extends BlockMekanism implements IHasGui<TileEnt
 
     @Override
     public INamedContainerProvider getProvider(TileEntityHeatGenerator tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new HeatGeneratorContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new HeatGeneratorContainer(i, inv, tile));
     }
 
     @Override

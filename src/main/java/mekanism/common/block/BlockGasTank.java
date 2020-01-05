@@ -25,6 +25,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -129,7 +130,7 @@ public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGas
 
     @Override
     public INamedContainerProvider getProvider(TileEntityGasTank tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new GasTankContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new GasTankContainer(i, inv, tile));
     }
 
     @Override

@@ -17,6 +17,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
 import mekanism.generators.common.registries.GeneratorsSounds;
@@ -109,7 +110,7 @@ public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEn
 
     @Override
     public INamedContainerProvider getProvider(TileEntitySolarGenerator tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new SolarGeneratorContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new SolarGeneratorContainer(i, inv, tile));
     }
 
     @Override

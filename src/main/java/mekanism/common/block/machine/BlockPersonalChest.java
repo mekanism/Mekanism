@@ -28,6 +28,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -173,7 +174,7 @@ public class BlockPersonalChest extends BlockMekanism implements IBlockElectric,
 
     @Override
     public INamedContainerProvider getProvider(TileEntityPersonalChest tile) {
-        return new ContainerProvider(getNameTextComponent(), (i, inv, player) -> new PersonalChestTileContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new PersonalChestTileContainer(i, inv, tile));
     }
 
     @Override
