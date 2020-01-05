@@ -216,18 +216,18 @@ public class ClientProxy extends CommonProxy
 	{
 		super.loadConfiguration();
 
-		client.enablePlayerSounds = Mekanism.configuration.get("client", "EnablePlayerSounds", true).getBoolean(true);
-		client.enableMachineSounds = Mekanism.configuration.get("client", "EnableMachineSounds", true).getBoolean(true);
-		client.fancyUniversalCableRender = Mekanism.configuration.get("client", "FancyUniversalCableRender", true).getBoolean(true);
-		client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean(true);
-		client.baseSoundVolume = (float)Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble(1D);
-		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean(true);
+		client.enablePlayerSounds = Mekanism.configuration.get("client", "EnablePlayerSounds", true).getBoolean();
+		client.enableMachineSounds = Mekanism.configuration.get("client", "EnableMachineSounds", true).getBoolean();
+		client.holidays = Mekanism.configuration.get("client", "Holidays", true).getBoolean();
+		client.baseSoundVolume = (float)Mekanism.configuration.get("client", "SoundVolume", 1D).getDouble();
+		client.machineEffects = Mekanism.configuration.get("client", "MachineEffects", true).getBoolean();
 		client.oldTransmitterRender = Mekanism.configuration.get("client", "OldTransmitterRender", false).getBoolean();
 		client.replaceSoundsWhenResuming = Mekanism.configuration.get("client", "ReplaceSoundsWhenResuming", true,
 				"If true, will reduce lagging between player sounds. Setting to false will reduce GC load").getBoolean();
 		client.renderCTM = Mekanism.configuration.get("client", "CTMRenderer", true).getBoolean();
-		client.enableAmbientLighting = Mekanism.configuration.get("general", "EnableAmbientLighting", true).getBoolean();
-		client.ambientLightingLevel = Mekanism.configuration.get("general", "AmbientLightingLevel", 15).getInt();
+		client.enableAmbientLighting = Mekanism.configuration.get("client", "EnableAmbientLighting", true).getBoolean();
+		client.ambientLightingLevel = Mekanism.configuration.get("client", "AmbientLightingLevel", 15).getInt();
+		client.opaqueTransmitters = Mekanism.configuration.get("client", "OpaqueTransmitterRender", false).getBoolean();
 
 		if(Mekanism.configuration.hasChanged())
 		{
@@ -430,23 +430,33 @@ public class ClientProxy extends CommonProxy
 					return new GuiRobitMain(player.inventory, robit);
 				}
 			case 22:
-				return new GuiRobitCrafting(player.inventory, world, x);
-			case 23:
-				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				robit = (EntityRobit)world.getEntityByID(x);
 
-				if(robit1 != null)
+				if(robit != null)
 				{
-					return new GuiRobitInventory(player.inventory, robit1);
+					return new GuiRobitCrafting(player.inventory, robit);
+				}
+			case 23:
+				robit = (EntityRobit)world.getEntityByID(x);
+
+				if(robit != null)
+				{
+					return new GuiRobitInventory(player.inventory, robit);
 				}
 			case 24:
-				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				robit = (EntityRobit)world.getEntityByID(x);
 
-				if(robit2 != null)
+				if(robit != null)
 				{
-					return new GuiRobitSmelting(player.inventory, robit2);
+					return new GuiRobitSmelting(player.inventory, robit);
 				}
 			case 25:
-				return new GuiRobitRepair(player.inventory, world, x);
+				robit = (EntityRobit)world.getEntityByID(x);
+
+				if(robit != null)
+				{
+					return new GuiRobitRepair(player.inventory, robit);
+				}
 			case 29:
 				return new GuiChemicalOxidizer(player.inventory, (TileEntityChemicalOxidizer)tileEntity);
 			case 30:

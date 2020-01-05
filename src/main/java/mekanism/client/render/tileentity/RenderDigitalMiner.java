@@ -29,7 +29,7 @@ public class RenderDigitalMiner extends TileEntitySpecialRenderer
 		GL11.glPushMatrix();
 		GL11.glTranslatef((float)x + 0.5F, (float)y + 1.5F, (float)z + 0.5F);
 
-		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner" + (tileEntity.isActive ? "On" : "") + ".png"));
+		bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "DigitalMiner.png"));
 
 		switch(tileEntity.facing)
 		{

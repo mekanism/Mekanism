@@ -4,8 +4,10 @@ import io.netty.buffer.ByteBuf;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -18,6 +20,10 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class FrequencyManager
 {
+	public static final int MAX_FREQ_LENGTH = 16;
+	public static final List<Character> SPECIAL_CHARS = Arrays.asList('-', ' ', '|', '\'', '\"', '_', '+', ':', '(', ')', 
+			'?', '!', '/', '@', '$', '`', '~', ',', '.', '#');
+
 	public static boolean loaded;
 	
 	private static Set<FrequencyManager> managers = new HashSet<FrequencyManager>();
@@ -147,6 +153,7 @@ public class FrequencyManager
 		if(user.equals(freq.owner))
 		{
 			freq.activeCoords.add(coord);
+			freq.valid = true;
 			frequencies.add(freq);
 			dataHandler.markDirty();
 			

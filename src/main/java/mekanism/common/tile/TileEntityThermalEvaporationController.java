@@ -65,6 +65,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public boolean structured = false;
 	public boolean controllerConflict = false;
 	public boolean isLeftOnFace;
+	public int renderY;
 	
 	public boolean updatedThisTick = false;
 
@@ -110,10 +111,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			{
 				int outputNeeded = outputTank.getCapacity()-outputTank.getFluidAmount();
 				int inputStored = inputTank.getFluidAmount();
+				double outputRatio = (double)recipe.recipeOutput.output.amount/(double)recipe.recipeInput.ingredient.amount;
 				
 				double tempMult = Math.max(0, getTemperature())*general.evaporationTempMultiplier;
 				double inputToUse = (tempMult*recipe.recipeInput.ingredient.amount)*((float)height/(float)MAX_HEIGHT);
 				inputToUse = Math.min(inputTank.getFluidAmount(), inputToUse);
+				inputToUse = Math.min(inputToUse, outputNeeded/outputRatio);
 				
 				lastGain = (float)inputToUse/(float)recipe.recipeInput.ingredient.amount;
 				partialInput += inputToUse;
@@ -370,6 +373,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			middlePointer = middlePointer.getFromSide(ForgeDirection.DOWN);
 		}
 		
+		renderY = middlePointer.yCoord+1;
+		
 		if(height < 3 || height > MAX_HEIGHT)
 		{
 			height = 0;
@@ -570,7 +575,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		startPoint = isLeftOnFace ? startPoint.getFromSide(right) : startPoint;
 		
 		startPoint = startPoint.getFromSide(right.getOpposite()).getFromSide(MekanismUtils.getBack(facing));
-		startPoint.translate(0, -(height-2), 0);
+		startPoint.yCoord = renderY;
 		
 		return startPoint;
 	}
@@ -609,6 +614,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 			isLeftOnFace = dataStream.readBoolean();
 			lastGain = dataStream.readFloat();
 			totalLoss = dataStream.readFloat();
+			renderY = dataStream.readInt();
 			
 			if(structured != prev)
 			{
@@ -665,6 +671,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 		data.add(isLeftOnFace);
 		data.add(lastGain);
 		data.add(totalLoss);
+		data.add(renderY);
 		
 		return data;
 	}
@@ -701,6 +708,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 	public boolean canSetFacing(int side)
 	{
 		return side != 0 && side != 1;
+	}
+	
+	@Override
+	public TileEntityThermalEvaporationController getController()
+	{
+		return structured ? this : null;
 	}
 
 	public void clearStructure()

@@ -30,11 +30,13 @@ import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.PacketHandler;
 import mekanism.common.SideData;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FactoryTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.base.SoundWrapper;
 import mekanism.common.block.BlockMachine.MachineType;
@@ -52,16 +54,18 @@ import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.ChargeUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection, ISpecialConfigData, ISecurityTile
+public class TileEntityFactory extends TileEntityNoisyElectricBlock implements IComputerIntegration, ISideConfiguration, IUpgradeTile, IRedstoneControl, IGasHandler, ITubeConnection, ISpecialConfigData, ISecurityTile, ITierUpgradeable
 {
 	/** This Factory's tier. */
 	public FactoryTier tier;
@@ -174,8 +178,14 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		maxInfuse = BASE_MAX_INFUSE*tier.processes;
 	}
 	
-	public void upgrade()
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
 	{
+		if(upgradeTier.ordinal() != tier.ordinal()+1 || tier == FactoryTier.ELITE)
+		{
+			return false;
+		}
+		
 		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5+tier.ordinal()+1, 3);
 		
@@ -244,6 +254,8 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 		
 		factory.markDirty();
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(factory), factory.getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(factory)));
+		
+		return true;
 	}
 
 	@Override
@@ -913,6 +925,11 @@ public class TileEntityFactory extends TileEntityNoisyElectricBlock implements I
 	@Override
 	public String getInventoryName()
 	{
+		if(StatCollector.canTranslate("tile." + tier.getBaseTier().getName() + recipeType.getUnlocalizedName() + "Factory"))
+		{
+			return LangUtils.localize("tile." + tier.getBaseTier().getName() + recipeType.getUnlocalizedName() + "Factory");
+		}
+		
 		return tier.getBaseTier().getLocalizedName() + " " + recipeType.getLocalizedName() + " " + super.getInventoryName();
 	}
 

@@ -281,7 +281,7 @@ public class CommonProxy implements IGuiProvider
 		general.armoredJetpackDamageRatio = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ArmoredJetpackDamageRatio", 0.8).getDouble();
 		general.armoredJetpackDamageMax = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ArmoredJepackDamageMax", 115).getInt();
 		general.aestheticWorldDamage = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AestheticWorldDamage", true).getBoolean();
-		general.opsBypassRestrictions = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OpsBypassRestrictions", true).getBoolean();
+		general.opsBypassRestrictions = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "OpsBypassRestrictions", false).getBoolean();
 		general.thermalEvaporationSpeed = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "ThermalEvaporationSpeed", 1.0D).getDouble();
 		general.maxJetpackGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxJetpackGas", 24000).getInt();
 		general.maxScubaGas = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxScubaGas", 24000).getInt();
@@ -297,6 +297,8 @@ public class CommonProxy implements IGuiProvider
 		general.maxEnergyPerSteam = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "MaxEnergyPerSteam", 100D).getDouble();
 		general.superheatingHeatTransfer = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "SuperheatingHeatTransfer", 10000D).getDouble();
 		general.heatPerFuelTick = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "HeatPerFuelTick", 4D).getDouble();
+		general.allowTransmitterAlloyUpgrade = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowTransmitterAlloyUpgrade", true).getBoolean();
+		general.allowProtection = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "AllowProtection", true).getBoolean();
 		
 		general.blacklistIC2 = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistIC2Power", false).getBoolean();
 		general.blacklistRF = Mekanism.configuration.get(Configuration.CATEGORY_GENERAL, "BlacklistRFPower", false).getBoolean();
@@ -486,23 +488,33 @@ public class CommonProxy implements IGuiProvider
 					return new ContainerRobitMain(player.inventory, robit);
 				}
 			case 22:
-				return new ContainerRobitCrafting(player.inventory, world);
-			case 23:
-				EntityRobit robit1 = (EntityRobit)world.getEntityByID(x);
+				robit = (EntityRobit)world.getEntityByID(x);
 
-				if(robit1 != null)
+				if(robit != null)
 				{
-					return new ContainerRobitInventory(player.inventory, robit1);
+					return new ContainerRobitCrafting(player.inventory, robit);
+				}
+			case 23:
+				robit = (EntityRobit)world.getEntityByID(x);
+
+				if(robit != null)
+				{
+					return new ContainerRobitInventory(player.inventory, robit);
 				}
 			case 24:
-				EntityRobit robit2 = (EntityRobit)world.getEntityByID(x);
+				robit = (EntityRobit)world.getEntityByID(x);
 
-				if(robit2 != null)
+				if(robit != null)
 				{
-					return new ContainerRobitSmelting(player.inventory, robit2);
+					return new ContainerRobitSmelting(player.inventory, robit);
 				}
 			case 25:
-				return new ContainerRobitRepair(player.inventory, world);
+				robit = (EntityRobit)world.getEntityByID(x);
+
+				if(robit != null)
+				{
+					return new ContainerRobitRepair(player.inventory, robit);
+				}
 			case 26:
 				return new ContainerNull(player, (TileEntityContainerBlock)tileEntity);
 			case 27:

@@ -184,10 +184,10 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 
 	public static void registerIcons(IIconRegister register)
 	{
-		cableIcons.registerCenterIcons(register, new String[] {"UniversalCableBasic", "UniversalCableAdvanced",
-				"UniversalCableElite", "UniversalCableUltimate"});
-		cableIcons.registerSideIcons(register, new String[] {"UniversalCableVerticalBasic", "UniversalCableVerticalAdvanced", "UniversalCableVerticalElite", "UniversalCableVerticalUltimate",
-				"UniversalCableHorizontalBasic", "UniversalCableHorizontalAdvanced", "UniversalCableHorizontalElite", "UniversalCableHorizontalUltimate"});
+        cableIcons.registerCenterIcons(register, new String[]{"UniversalCableBasic", "UniversalCableAdvanced",
+            "UniversalCableElite", "UniversalCableUltimate"});
+        cableIcons.registerSideIcons(register, new String[]{"UniversalCableVerticalBasic", "UniversalCableVerticalAdvanced", "UniversalCableVerticalElite", "UniversalCableVerticalUltimate",
+            "UniversalCableHorizontalBasic", "UniversalCableHorizontalAdvanced", "UniversalCableHorizontalElite", "UniversalCableHorizontalUltimate"});
 	}
 
 	@Override
@@ -230,7 +230,7 @@ public class PartUniversalCable extends PartTransmitter<EnergyAcceptorWrapper, E
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float frame, int pass)
 	{
-		if(pass == 0 && client.fancyUniversalCableRender)
+		if(pass == 0 && !client.opaqueTransmitters)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

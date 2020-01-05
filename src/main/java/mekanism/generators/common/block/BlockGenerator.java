@@ -22,6 +22,7 @@ import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityBasicBlock;
 import mekanism.common.tile.TileEntityContainerBlock;
 import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -36,6 +37,7 @@ import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
 import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
+import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
@@ -77,6 +79,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 10: Turbine Casing
  * 11: Turbine Valve
  * 12: Turbine Vent
+ * 13: Saturating Condenser
  * @author AidanBrady
  *
  */
@@ -108,6 +111,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		ctms[10] = new CTMData("ctm/TurbineCasing", this, Arrays.asList(10, 11, 12)).registerIcons(register);
 		ctms[11] = new CTMData("ctm/TurbineValve", this, Arrays.asList(10, 11, 12)).registerIcons(register);
 		ctms[12] = new CTMData("ctm/TurbineVent", this, Arrays.asList(10, 11, 12)).registerIcons(register);
+		ctms[13] = new CTMData("ctm/SaturatingCondenser", this, Arrays.asList(13)).registerIcons(register);
 		
 		icons[7][0] = register.registerIcon("mekanism:TurbineRod");
 		icons[8][0] = register.registerIcon("mekanism:RotationalComplexSide");
@@ -117,6 +121,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		icons[10][0] = ctms[10].mainTextureData.icon;
 		icons[11][0] = ctms[11].mainTextureData.icon;
 		icons[12][0] = ctms[12].mainTextureData.icon;
+		icons[13][0] = ctms[13].mainTextureData.icon;
 	}
 	
 	@Override
@@ -665,7 +670,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		TileEntityBasicBlock tileEntity = (TileEntityBasicBlock)world.getTileEntity(x, y, z);
 		ItemStack itemStack = new ItemStack(GeneratorsBlocks.Generator, 1, world.getBlockMetadata(x, y, z));
 
-		if(itemStack.stackTagCompound == null)
+		if(itemStack.stackTagCompound == null && !(tileEntity instanceof TileEntityMultiblock))
 		{
 			itemStack.setTagCompound(new NBTTagCompound());
 		}
@@ -692,7 +697,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 			electricItem.setEnergy(itemStack, ((TileEntityElectricBlock)tileEntity).electricityStored);
 		}
 
-		if(tileEntity instanceof TileEntityContainerBlock)
+		if(tileEntity instanceof TileEntityContainerBlock && ((TileEntityContainerBlock)tileEntity).handleInventory())
 		{
 			ISustainedInventory inventory = (ISustainedInventory)itemStack.getItem();
 			inventory.setInventory(((TileEntityContainerBlock)tileEntity).getInventory(), itemStack);
@@ -767,7 +772,8 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 		ELECTROMAGNETIC_COIL(9, "ElectromagneticCoil", -1, -1, TileEntityElectromagneticCoil.class, false),
 		TURBINE_CASING(10, "TurbineCasing", -1, -1, TileEntityTurbineCasing.class, false),
 		TURBINE_VALVE(11, "TurbineValve", -1, -1, TileEntityTurbineValve.class, false),
-		TURBINE_VENT(12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false);
+		TURBINE_VENT(12, "TurbineVent", -1, -1, TileEntityTurbineVent.class, false),
+		SATURATING_CONDENSER(13, "SaturatingCondenser", -1, -1, TileEntitySaturatingCondenser.class, false);
 
 		public int meta;
 		public String name;

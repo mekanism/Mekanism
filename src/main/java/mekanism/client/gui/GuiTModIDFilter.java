@@ -112,7 +112,7 @@ public class GuiTModIDFilter extends GuiMekanism
 			return;
 		}
 
-		if(Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isLetter(c) || Character.isDigit(c) || TransporterFilter.SPECIAL_CHARS.contains(c) || isTextboxKey(c, i))
 		{
 			modIDText.textboxKeyTyped(c, i);
 		}

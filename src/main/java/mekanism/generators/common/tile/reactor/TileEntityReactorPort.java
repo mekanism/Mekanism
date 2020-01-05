@@ -1,35 +1,67 @@
 package mekanism.generators.common.tile.reactor;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
 import java.util.EnumSet;
 
 import mekanism.api.Coord4D;
+import mekanism.api.EnumColor;
+import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.Range4D;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasRegistry;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.ITubeConnection;
 import mekanism.api.reactor.IReactorBlock;
+import mekanism.common.Mekanism;
+import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.LangUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.item.ItemHohlraum;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 
-public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler, ITubeConnection, IHeatTransfer
+public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandler, IGasHandler, ITubeConnection, IHeatTransfer, IConfigurable
 {
+	public boolean fluidEject;
+	
 	public TileEntityReactorPort()
 	{
 		super("name", 1);
 		
 		inventory = new ItemStack[0];
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound nbtTags)
+	{
+		super.readFromNBT(nbtTags);
+
+		fluidEject = nbtTags.getBoolean("fluidEject");
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbtTags)
+	{
+		super.writeToNBT(nbtTags);
+
+		nbtTags.setBoolean("fluidEject", fluidEject);
 	}
 
 	@Override
@@ -48,13 +80,34 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 		
 		super.onUpdate();
 
-		CableUtils.emit(this);
+		if(!worldObj.isRemote)
+		{
+			CableUtils.emit(this);
+			
+			if(fluidEject && getReactor() != null && getReactor().getSteamTank().getFluid() != null)
+			{
+				IFluidTank tank = getReactor().getSteamTank();
+				
+				for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+				{
+					TileEntity tile = Coord4D.get(this).getFromSide(side).getTileEntity(worldObj);
+					
+					if(tile instanceof IFluidHandler && !(tile instanceof TileEntityReactorPort))
+					{
+						if(((IFluidHandler)tile).canFill(side.getOpposite(), tank.getFluid().getFluid()))
+						{
+							tank.drain(((IFluidHandler)tile).fill(side.getOpposite(), tank.getFluid(), true), true);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill)
 	{
-		if(resource.getFluid() == FluidRegistry.WATER && getReactor() != null)
+		if(resource.getFluid() == FluidRegistry.WATER && getReactor() != null && !fluidEject)
 		{
 			return getReactor().getWaterTank().fill(resource, doFill);
 		}
@@ -87,13 +140,13 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid)
 	{
-		return (getReactor() != null && fluid == FluidRegistry.WATER);
+		return (getReactor() != null && fluid == FluidRegistry.WATER && !fluidEject);
 	}
 
 	@Override
 	public boolean canDrain(ForgeDirection from, Fluid fluid)
 	{
-		return (getReactor() != null && fluid == FluidRegistry.WATER);
+		return (getReactor() != null && fluid == FluidRegistry.getFluid("steam"));
 	}
 
 	@Override
@@ -361,6 +414,51 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 			return hohlraum.getGas(itemstack) == null;
 		}
 		
+		return false;
+	}
+	
+	@Override
+	public void handlePacketData(ByteBuf dataStream)
+	{
+		super.handlePacketData(dataStream);
+		
+		if(worldObj.isRemote)
+		{
+			fluidEject = dataStream.readBoolean();
+			
+			MekanismUtils.updateBlock(worldObj, xCoord, yCoord, zCoord);
+		}
+	}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+		
+		data.add(fluidEject);
+		
+		return data;
+	}
+
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side)
+	{
+		if(!worldObj.isRemote)
+		{
+			fluidEject = !fluidEject;
+			String modeText = " " + (fluidEject ? EnumColor.DARK_RED : EnumColor.DARK_GREEN) + LangUtils.transOutputInput(fluidEject) + ".";
+			player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("tooltip.configurator.reactorPortEject") + modeText));
+			
+			Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+			markDirty();
+		}
+		
+		return true;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side)
+	{
 		return false;
 	}
 }

@@ -66,11 +66,9 @@ public class ClientTickHandler
 
 	public static Minecraft mc = FMLClientHandler.instance().getClient();
 
-	public static final String MIKE_CAPE = "https://dl.dropboxusercontent.com/s/ji06yflixnszcby/cape.png";
-	public static final String DONATE_CAPE = "https://dl.dropboxusercontent.com/u/90411166/donate.png";
-	public static final String AIDAN_CAPE = "https://dl.dropboxusercontent.com/u/90411166/aidan.png";
+	public static final String DONATE_CAPE = "http://aidancbrady.com/data/capes/donate.png";
+	public static final String AIDAN_CAPE = "http://aidancbrady.com/data/capes/aidan.png";
 
-	private Map<String, CapeBufferDownload> mikeDownload = new HashMap<String, CapeBufferDownload>();
 	private Map<String, CapeBufferDownload> donateDownload = new HashMap<String, CapeBufferDownload>();
 	private Map<String, CapeBufferDownload> aidanDownload = new HashMap<String, CapeBufferDownload>();
 
@@ -137,27 +135,7 @@ public class ClientTickHandler
 
 					if(player != null)
 					{
-						if(StringUtils.stripControlCodes(player.getCommandSenderName()).equals("mikeacttck"))
-						{
-							CapeBufferDownload download = mikeDownload.get(player.getCommandSenderName());
-
-							if(download == null)
-							{
-								download = new CapeBufferDownload(player.getCommandSenderName(), MIKE_CAPE);
-								mikeDownload.put(player.getCommandSenderName(), download);
-
-								download.start();
-							}
-							else {
-								if(!download.downloaded)
-								{
-									continue;
-								}
-
-								player.func_152121_a(MinecraftProfileTexture.Type.CAPE, download.getResourceLocation());
-							}
-						}
-						else if(StringUtils.stripControlCodes(player.getCommandSenderName()).equals("aidancbrady"))
+						if(StringUtils.stripControlCodes(player.getCommandSenderName()).equals("aidancbrady"))
 						{
 							CapeBufferDownload download = aidanDownload.get(player.getCommandSenderName());
 

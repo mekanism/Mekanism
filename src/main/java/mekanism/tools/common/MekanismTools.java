@@ -29,7 +29,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = "MekanismTools", name = "MekanismTools", version = "9.0.2", dependencies = "required-after:Mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
+@Mod(modid = "MekanismTools", name = "MekanismTools", version = "9.1.1", dependencies = "required-after:Mekanism", guiFactory = "mekanism.tools.client.gui.ToolsGuiFactory")
 public class MekanismTools implements IModule
 {
 	@SidedProxy(clientSide = "mekanism.tools.client.ToolsClientProxy", serverSide = "mekanism.tools.common.ToolsCommonProxy")
@@ -39,7 +39,7 @@ public class MekanismTools implements IModule
 	public static MekanismTools instance;
 	
 	/** MekanismTools version number */
-	public static Version versionNumber = new Version(9, 0, 2);
+	public static Version versionNumber = new Version(9, 1, 1);
 
 	//Enums: Tools
 	public static ToolMaterial toolOBSIDIAN;

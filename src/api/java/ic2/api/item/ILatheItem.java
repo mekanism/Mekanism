@@ -6,6 +6,9 @@ import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Interface used for Items that can be processed in the Turning Table
+ */
 public interface ILatheItem {
 
 	/**
@@ -43,5 +46,25 @@ public interface ILatheItem {
 	 */
 	@SideOnly(Side.CLIENT)
 	ResourceLocation getTexture(ItemStack stack);
+
+	/**
+	 * This is similar to the Block HarvestLevel. Requires a different tool for a different hardness
+	 * for ex. the Iron Turning Blank has a Hardness  of 2 (Like Iron Ore (Harvest Level)).
+	 * In this case however it requires a Tool hardness of one above (3)
+	 */
+	int getHardness(ItemStack stack);
+
+	/**
+	 * Interface used for Tools that can be used to modify {@link ILatheItem}
+	 */
+	public static interface ILatheTool extends ICustomDamageItem {
+
+		/**
+		 * This is similar to the Tool HarvestLevel. Requires a different tool for a different hardness
+		 * for ex. the Iron Turning Blank has a Hardness  of 2 (Like Iron Ore (Harvest Level)).
+		 * The tool requires a hardness of one level above (in this case 3)
+		 */
+		int getHardness(ItemStack stack);
+	}
 
 }

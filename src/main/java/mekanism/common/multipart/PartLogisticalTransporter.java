@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.Range4D;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
@@ -94,7 +95,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0)
+		if(pass == 0 && !client.opaqueTransmitters)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, f, pos);
 		}
@@ -383,8 +384,7 @@ public class PartLogisticalTransporter extends PartTransmitter<IInventory, Inven
 	protected boolean onConfigure(EntityPlayer player, int part, int side)
 	{
 		TransporterUtils.incrementColor(getTransmitter());
-		refreshConnections();
-		notifyTileChange();
+		onPartChanged(this);
 		PathfinderCache.onChanged(Coord4D.get(tile()));
 		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(tile()), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(tile())));
 		player.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " " + LangUtils.localize("tooltip.configurator.toggleColor") + ": " + (getTransmitter().getColor() != null ? getTransmitter().getColor().getName() : EnumColor.BLACK + LangUtils.localize("gui.none"))));

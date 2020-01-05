@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismConfig.general;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileComponent;
@@ -58,7 +59,11 @@ public class TileComponentSecurity implements ITileComponent
 	
 	public SecurityMode getMode()
 	{
-		return securityMode;
+		if(general.allowProtection) {
+			return securityMode;
+		} else {
+			return SecurityMode.PUBLIC;
+		}
 	}
 	
 	public void setMode(SecurityMode mode)

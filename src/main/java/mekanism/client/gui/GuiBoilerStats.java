@@ -43,7 +43,7 @@ public class GuiBoilerStats extends GuiMekanism
 			public List<String> getInfo()
 			{
 				TemperatureUnit unit = TemperatureUnit.values()[general.tempUnit.ordinal()];
-				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss*unit.intervalSize, unit);
+				String environment = UnitDisplayUtils.getDisplayShort(tileEntity.structure.lastEnvironmentLoss*unit.intervalSize, false, unit);
 				return ListUtils.asList(LangUtils.localize("gui.dissipated") + ": " + environment + "/t");
 			}
 		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBoilerStats.png")));

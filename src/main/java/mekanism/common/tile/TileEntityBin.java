@@ -10,9 +10,11 @@ import mekanism.api.Range4D;
 import mekanism.api.util.StackUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.BinTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.ITransporterTile;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.item.ItemBlockBasic;
@@ -32,7 +34,7 @@ import powercrystals.minefactoryreloaded.api.IDeepStorageUnit;
 import cpw.mods.fml.common.Optional.Interface;
 
 @Interface(iface = "powercrystals.minefactoryreloaded.api.IDeepStorageUnit", modid = "MineFactoryReloaded")
-public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit, IConfigurable
+public class TileEntityBin extends TileEntityBasicBlock implements ISidedInventory, IActiveState, IDeepStorageUnit, IConfigurable, ITierUpgradeable
 {
 	public boolean isActive;
 
@@ -56,6 +58,22 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	public int prevCount;
 
 	public int clientAmount;
+	
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
+	{
+		if(upgradeTier.ordinal() != tier.ordinal()+1)
+		{
+			return false;
+		}
+		
+		tier = BinTier.values()[upgradeTier.ordinal()];
+		
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		markDirty();
+		
+		return true;
+	}
 
 	public void sortStacks()
 	{
@@ -574,6 +592,7 @@ public class TileEntityBin extends TileEntityBasicBlock implements ISidedInvento
 	{
 		setActive(!getActive());
 		worldObj.playSoundEffect(xCoord, yCoord, zCoord, "random.click", 0.3F, 1);
+		
 		return true;
 	}
 

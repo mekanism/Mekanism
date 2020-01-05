@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.MekanismConfig.general;
 import mekanism.common.MekanismItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -19,7 +20,7 @@ public class ItemAlloy extends ItemMekanism
     {
 		TileEntity tile = world.getTileEntity(x, y, z);
 		
-		if(tile instanceof IAlloyInteraction)
+		if(general.allowTransmitterAlloyUpgrade && tile instanceof IAlloyInteraction)
 		{
 			if(!world.isRemote)
 			{

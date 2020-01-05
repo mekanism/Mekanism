@@ -153,7 +153,7 @@ public class GuiTItemStackFilter extends GuiMekanism
 			super.keyTyped(c, i);
 		}
 
-		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || isTextboxKey(c, i))
 		{
 			minField.textboxKeyTyped(c, i);
 			maxField.textboxKeyTyped(c, i);

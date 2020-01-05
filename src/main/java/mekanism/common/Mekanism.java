@@ -142,7 +142,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
  * @author AidanBrady
  *
  */
-@Mod(modid = "Mekanism", name = "Mekanism", version = "9.0.2", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
+@Mod(modid = "Mekanism", name = "Mekanism", version = "9.1.1", guiFactory = "mekanism.client.gui.ConfigGuiFactory",
 		dependencies = "after:ForgeMultipart;after:BuildCraft;after:BuildCraftAPI;after:IC2;after:CoFHCore;" +
 				"after:ComputerCraft;after:Galacticraft API;after:MetallurgyCore")
 public class Mekanism
@@ -168,7 +168,7 @@ public class Mekanism
     public static Configuration configuration;
     
 	/** Mekanism version number */
-	public static Version versionNumber = new Version(9, 0, 2);
+	public static Version versionNumber = new Version(9, 1, 1);
 	
 	/** MultiblockManagers for various structrures */
 	public static MultiblockManager<SynchronizedTankData> tankManager = new MultiblockManager<SynchronizedTankData>("dynamicTank");
@@ -357,7 +357,7 @@ public class Mekanism
 			" I ", "IBI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('B'), Items.bucket
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 4, 10), new Object[] {
-			" I ", "IGI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 9), Character.valueOf('G'), "blockGlass"
+			" I ", "IGI", " I ", Character.valueOf('I'), "ingotSteel", Character.valueOf('G'), "blockGlass"
 		}));
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock, 2, 11), new Object[] {
 			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock, 1, 9), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC)
@@ -479,14 +479,17 @@ public class Mekanism
 		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.BasicBlock2, 2, 2), new Object[] {
 			" I ", "ICI", " I ", Character.valueOf('I'), new ItemStack(MekanismBlocks.BasicBlock2, 1, 1), Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ELITE)
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.FactoryInstaller, 1, 0), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.TierInstaller, 1, 0), new Object[] {
 			"RCR", "iWi", "RCR", Character.valueOf('R'), "alloyBasic", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('i'), "ingotIron", Character.valueOf('W'), "plankWood"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.FactoryInstaller, 1, 1), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.TierInstaller, 1, 1), new Object[] {
 			"ECE", "oWo", "ECE", Character.valueOf('E'), "alloyAdvanced", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ADVANCED), Character.valueOf('o'), "ingotOsmium", Character.valueOf('W'), "plankWood"
 		}));
-		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.FactoryInstaller, 1, 2), new Object[] {
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.TierInstaller, 1, 2), new Object[] {
 			"RCR", "gWg", "RCR", Character.valueOf('R'), "alloyElite", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ELITE), Character.valueOf('g'), "ingotGold", Character.valueOf('W'), "plankWood"
+		}));
+		CraftingManager.getInstance().getRecipeList().add(new ShapedMekanismRecipe(new ItemStack(MekanismItems.TierInstaller, 1, 3), new Object[] {
+			"RCR", "dWd", "RCR", Character.valueOf('R'), "alloyUltimate", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.ULTIMATE), Character.valueOf('d'), "gemDiamond", Character.valueOf('W'), "plankWood"
 		}));
 		MachineType.OREDICTIONIFICATOR.addRecipe(new ShapedMekanismRecipe(new ItemStack(MekanismBlocks.MachineBlock3, 1, 3), new Object[] {
 			"SGS", "CBC", "SWS", Character.valueOf('S'), "ingotSteel", Character.valueOf('G'), "paneGlass", Character.valueOf('C'), MekanismUtils.getControlCircuit(BaseTier.BASIC), Character.valueOf('B'), MekanismItems.Dictionary, Character.valueOf('W'), Blocks.chest
@@ -1206,14 +1209,14 @@ public class Mekanism
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		//Register tier information
-		Tier.init();
-		
 		File config = event.getSuggestedConfigurationFile();
 		
 		//Set the mod's configuration
 		configuration = new Configuration(config);
-		
+
+        //Register tier information
+        Tier.init();
+
 		if(config.getAbsolutePath().contains("voltz"))
 		{
 			logger.info("Detected Voltz in root directory - hello, fellow user!");

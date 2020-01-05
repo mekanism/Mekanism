@@ -1,7 +1,7 @@
 package mekanism.common;
 
 /**
- * Version v1.0.4. Simple version handling for Mekanism.
+ * Version v2.0.0. Simple version handling for Mekanism.
  * @author AidanBrady
  *
  */
@@ -126,5 +126,30 @@ public class Version
 		else {
 			return major + "." + minor + "." + build;
 		}
+	}
+	
+	@Override
+	public int hashCode() 
+	{
+		int result = 1;
+		
+		result = 31 * result + build;
+		result = 31 * result + major;
+		result = 31 * result + minor;
+		
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) 
+	{	
+		if(obj == null || getClass() != obj.getClass())
+		{
+			return false;
+		}
+		
+		Version other = (Version)obj;
+		
+		return build == other.build && major == other.major && minor == other.minor;
 	}
 }

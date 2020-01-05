@@ -84,6 +84,7 @@ import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -687,7 +688,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 					{
 						String owner = ((ISecurityTile)tileEntity).getSecurity().getOwner();
 						
-						if(owner == null || entityplayer.getCommandSenderName().equals(owner))
+						if(MekanismUtils.isOp((EntityPlayerMP)entityplayer) || owner == null || entityplayer.getCommandSenderName().equals(owner))
 						{
 							entityplayer.openGui(Mekanism.instance, type.guiId, world, x, y, z);
 						}
@@ -801,6 +802,38 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		return world.setBlockToAir(x, y, z);
 	}
 	
+	@Override
+	public boolean hasComparatorInputOverride()
+	{
+		return true;
+	}
+	
+	@Override
+	public int getComparatorInputOverride(World world, int x, int y, int z, int par5)
+	{
+		TileEntity tileEntity = world.getTileEntity(x, y, z);
+		
+		if(tileEntity instanceof TileEntityFluidTank)
+		{
+			return ((TileEntityFluidTank)tileEntity).getRedstoneLevel();
+		}
+		
+		if(tileEntity instanceof TileEntityLaserAmplifier)
+		{
+			TileEntityLaserAmplifier amplifier = (TileEntityLaserAmplifier)tileEntity;
+			
+			if(amplifier.outputMode == TileEntityLaserAmplifier.RedstoneOutput.ENERGY_CONTENTS)
+			{
+				return amplifier.getRedstoneLevel();
+			}
+			else {
+				return isProvidingWeakPower(world, x, y, z, par5);
+			}
+		}
+		
+		return 0;
+	}
+	
 	private boolean manageInventory(EntityPlayer player, TileEntityFluidTank tileEntity)
 	{
 		ItemStack itemStack = player.getCurrentEquippedItem();
@@ -899,7 +932,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 						
 						if(itemFluid.amount-toFill > 0)
 						{
-							tileEntity.pushUp(new FluidStack(itemFluid.getFluid(), itemFluid.amount-toFill), true);
+							tileEntity.pushUp(PipeUtils.copy(itemFluid, itemFluid.amount-toFill), true);
 						}
 						
 						return true;

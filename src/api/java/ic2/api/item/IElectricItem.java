@@ -39,7 +39,9 @@ public interface IElectricItem {
 
 	/**
 	 * Get the item's tier, lower tiers can't send energy to higher ones.
-	 * Batteries are Tier 1, Energy Crystals are Tier 2, Lapotron Crystals are Tier 3.
+	 *
+	 * Batteries are Tier 1, Advanced Batteries are Tier 2, Energy Crystals are Tier 3, Lapotron
+	 * Crystals are Tier 4.
 	 *
 	 * @return Item's tier
 	 */

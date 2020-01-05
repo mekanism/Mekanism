@@ -36,6 +36,7 @@ import mekanism.common.tile.TileEntityFactory;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -178,8 +179,13 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 				
 				if(fluidStack != null)
 				{
-					list.add(EnumColor.PINK + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
+					list.add(EnumColor.AQUA + LangUtils.localizeFluidStack(fluidStack) + ": " + EnumColor.GREY + getFluidStack(itemstack).amount + "mB");
 				}
+				else {
+					list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
+				}
+				
+				list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + FluidTankTier.values()[getBaseTier(itemstack).ordinal()].storage + " mB");
 			}
 
 			list.add(LangUtils.localize("tooltip.hold") + " " + EnumColor.INDIGO + GameSettings.getKeyDisplayString(MekanismKeyHandler.sneakKey.getKeyCode()) + EnumColor.GREY + " " + LangUtils.localize("tooltip.forDetails") + ".");
@@ -852,7 +858,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			if(doFill)
 			{
 				int fillAmount = toFill + (stored == null ? 0 : stored.amount);
-				setFluidStack(new FluidStack(resource.getFluid(), (stored != null ? stored.amount : 0)+toFill), container);
+				setFluidStack(PipeUtils.copy(resource, (stored != null ? stored.amount : 0)+toFill), container);
 			}
 			
 			return toFill;
@@ -870,7 +876,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 			
 			if(stored != null)
 			{
-				FluidStack toDrain = new FluidStack(stored.getFluid(), Math.min(stored.amount, maxDrain));
+				FluidStack toDrain = PipeUtils.copy(stored, Math.min(stored.amount, maxDrain));
 				
 				if(doDrain)
 				{
@@ -938,7 +944,7 @@ public class ItemBlockMachine extends ItemBlock implements IEnergizedItem, ISpec
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.stackTagCompound == null || !general.allowProtection)
 		{
 			return SecurityMode.PUBLIC;
 		}

@@ -65,13 +65,14 @@ public class MekanismConfig
 		public static double maxEnergyPerSteam = 100;
 		public static double superheatingHeatTransfer = 10000;
 		public static double heatPerFuelTick = 4;
+		public static boolean allowTransmitterAlloyUpgrade;
+		public static boolean allowProtection = true;
 	}
 
 	public static class client
 	{
 		public static boolean enablePlayerSounds = true;
 		public static boolean enableMachineSounds = true;
-		public static boolean fancyUniversalCableRender = true;
 		public static boolean holidays = true;
 		public static float baseSoundVolume = 1F;
 		public static boolean machineEffects = true;
@@ -80,6 +81,7 @@ public class MekanismConfig
 		public static boolean renderCTM = true;
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
+		public static boolean opaqueTransmitters = false;
 	}
 	
 	public static class machines
@@ -144,6 +146,7 @@ public class MekanismConfig
 		public static int turbineBladesPerCoil;
 		public static double turbineVentGasFlow;
 		public static double turbineDisperserGasFlow;
+		public static int condenserRate;
 	}
 
 	public static class tools

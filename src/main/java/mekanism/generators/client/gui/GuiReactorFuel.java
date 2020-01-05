@@ -180,7 +180,7 @@ public class GuiReactorFuel extends GuiMekanism
 			}
 		}
 
-		if(Character.isDigit(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || isTextboxKey(c, i))
 		{
 			injectionRateField.textboxKeyTyped(c, i);
 		}

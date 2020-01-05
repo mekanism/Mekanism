@@ -56,6 +56,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * 10: Turbine Casing
  * 11: Turbine Valve
  * 12: Turbine Vent
+ * 13: Saturating Condenser
  * @author AidanBrady
  *
  */
@@ -519,7 +520,7 @@ public class ItemBlockGenerator extends ItemBlock implements IEnergizedItem, ISp
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.stackTagCompound == null || !general.allowProtection)
 		{
 			return SecurityMode.PUBLIC;
 		}

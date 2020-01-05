@@ -49,7 +49,7 @@
 	"tile.gen.gas": {"category": "block", "sounds": [{"name": "GasGenerator", "stream": false}]},
 	"tile.gen.heat": {"category": "block", "sounds": [{"name": "HeatGenerator", "stream": false}]},
 	"tile.gen.solar": {"category": "block", "sounds": [{"name": "SolarGenerator", "stream": false}]},
-	"tile.gen.wind": {"category": "block", "sounds": [{"name": "WindTurbine", "stream": false}]},
+	"tile.gen.wind": {"category": "weather", "sounds": [{"name": "WindTurbine", "stream": false}]},
 
 	"item.flamethrower.idle": {"category": "player", "sounds": [{"name": "FlamethrowerIdle", "stream": false}]},
 	"item.flamethrower.active": {"category": "player", "sounds": [{"name": "FlamethrowerActive", "stream": false}]},

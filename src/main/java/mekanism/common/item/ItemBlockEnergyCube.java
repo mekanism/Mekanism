@@ -64,6 +64,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
 	{
 		list.add(EnumColor.BRIGHT_GREEN + LangUtils.localize("tooltip.storedEnergy") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergy(itemstack)));
+		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + MekanismUtils.getEnergyDisplay(getEnergyCubeTier(itemstack).maxEnergy));
 		
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
@@ -392,7 +393,7 @@ public class ItemBlockEnergyCube extends ItemBlock implements IEnergizedItem, IE
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.stackTagCompound == null || !general.allowProtection)
 		{
 			return SecurityMode.PUBLIC;
 		}

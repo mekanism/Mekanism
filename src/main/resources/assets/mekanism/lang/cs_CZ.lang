@@ -1,0 +1,1085 @@
+//********//
+//MEKANISM//
+//********//
+
+//Items
+tile.ObsidianTNT.name=Obsidiánové TNT
+item.EnrichedAlloy.name=Obohacená Slitina
+item.ReinforcedAlloy.name=Tvrzená Slitina
+item.AtomicAlloy.name=Atomická Slitina
+item.EnergyTablet.name=Energický Tablet
+item.SpeedUpgrade.name=Vylepšení Rychlosti
+item.EnergyUpgrade.name=Vylepšení Energie
+item.FilterUpgrade.name=Vylepšení Filtru
+item.MufflingUpgrade.name=Vylepšení Dušení
+item.GasUpgrade.name=Vylepšení Plynu
+item.Robit.name=Robit
+item.AtomicDisassembler.name=Atomický Rozkladač
+item.ElectricBow.name=Elektrický Luk
+item.EnrichedIron.name=Obohacené Železo
+item.CompressedCarbon.name=Zkompresovaný Uhlík
+item.CompressedRedstone.name=Zkompresovaný Rudit
+item.CompressedDiamond.name=Zkompresovaný Diamant
+item.CompressedObsidian.name=Zkompresovaný Obsidián
+item.PortableTeleporter.name=Přenosný Teleportér
+item.TeleportationCore.name=Teleportační Jádro
+item.Configurator.name=Konfigurátor
+item.NetworkReader.name=Čtečka sítě
+item.WalkieTalkie.name=Vysílačka
+item.Jetpack.name=Jetpack
+item.ScubaTank.name=Potápěcí Nádrž
+item.GasMask.name=Plynová Maska
+item.Dictionary.name=Slovník
+item.ElectrolyticCore.name=Elektrolytické Jádro
+item.Sawdust.name=Piliny
+item.Salt.name=Sůl
+item.BrineBucket.name=Kyblík Solanky
+item.LithiumBucket.name=Kyblík Lithia
+item.HeavyWaterBucket.name=Kyblík Těžké Vody
+item.FreeRunners.name=Volnoběžky
+item.ArmoredJetpack.name=Obrněný Jetpack
+item.ConfigurationCard.name=Konfigurační Karta
+item.SeismicReader.name=Seismická Čtečka
+item.HDPEPellet.name=HDPE Kulička
+item.HDPERod.name=HDPE Tyč
+item.HDPESheet.name=HDPE List
+item.PlaStick.name=PlaTyčka
+item.Substrate.name=Substrát
+item.Flamethrower.name=Plamenomet
+item.GaugeDropper.name=Kapátko
+item.BioFuel.name=Bio Palivo
+item.CraftingFormula.name=Výrobní Formule
+
+//Control Circuits
+item.BasicControlCircuit.name=Základní Ovládací Obvod
+item.AdvancedControlCircuit.name=Pokročilý Ovládací Obvod
+item.EliteControlCircuit.name=Elitní Ovládací Obvod
+item.UltimateControlCircuit.name=Ultimátní Ovládací Obvod
+
+//Gas Tank
+tile.GasTankBasic.name=Základní Plynová Nádrž
+tile.GasTankAdvanced.name=Pokročilá Plynová Nádrž
+tile.GasTankElite.name=Elitní Plynová Nádrž
+tile.GasTankUltimate.name=Ultimátní Plynová Nádrž
+
+//Fluid Tank (part of MachineBlock2, naming handled differently)
+tile.FluidTankBasic.name=Základní Kapalinová Nádrž
+tile.FluidTankAdvanced.name=Pokročilá Kapalinová Nádrž
+tile.FluidTankElite.name=Elitní Kapalinová Nádrž
+tile.FluidTankUltimate.name=Ultimátní Kapalinová Nádrž
+
+//Cardboard Box
+tile.CardboardBox.name=Kartonová Krabice
+
+//Bounding Block
+tile.BoundingBlock.name=Vázací Blok
+
+//Salt
+tile.SaltBlock.name=Solný Blok
+
+//Basic Block
+tile.BasicBlock.OsmiumBlock.name=Blok Osmia
+tile.BasicBlock.BronzeBlock.name=Blok Bronzu
+tile.BasicBlock.RefinedObsidian.name=Rafinovaný Obsidián
+tile.BasicBlock.CharcoalBlock.name=Blok Dřevěného Uhlí
+tile.BasicBlock.RefinedGlowstone.name=Rafinovaný Světlit
+tile.BasicBlock.SteelBlock.name=Blok Oceli
+tile.BasicBlock.BinBasic.name=Základní Koš
+tile.BasicBlock.BinAdvanced.name=Pokročilý Koš
+tile.BasicBlock.BinElite.name=Elitní Koš
+tile.BasicBlock.BinUltimate.name=Ultimátní Koš
+tile.BasicBlock.TeleporterFrame.name=Rám Teleportéru
+tile.BasicBlock.SteelCasing.name=Ocelový Plášť
+tile.BasicBlock.DynamicTank.name=Dynamická Nádrž
+tile.BasicBlock.StructuralGlass.name=Strukturální Sklo
+tile.BasicBlock.DynamicValve.name=Dynamický Ventil
+tile.BasicBlock.CopperBlock.name=Blok Měďi
+tile.BasicBlock.TinBlock.name=Blok Cínu
+tile.BasicBlock.ThermalEvaporationController.name=Ovladač Slunečního Výparu
+tile.BasicBlock.ThermalEvaporationValve.name=Ventil Slunečního Výparu
+
+//Basic Block 2 (second ID iteration)
+tile.BasicBlock2.ThermalEvaporationBlock.name=Blok Slunečního Výparu
+tile.BasicBlock2.InductionCasing.name=Indukční Plášť
+tile.BasicBlock2.InductionPort.name=Indukční Port
+tile.BasicBlock2.InductionCellBasic.name=Základní Indukční Článek
+tile.BasicBlock2.InductionCellAdvanced.name=Pokročilý Indukční Článek
+tile.BasicBlock2.InductionCellElite.name=Elitní Indukční Článek
+tile.BasicBlock2.InductionCellUltimate.name=Ultimátní Indukční Článek
+tile.BasicBlock2.InductionProviderBasic.name=Základní Poskytovatel Indukce
+tile.BasicBlock2.InductionProviderAdvanced.name=Pokročilý Poskytovatel Indukce
+tile.BasicBlock2.InductionProviderElite.name=Elitní Poskytovatel Indukce
+tile.BasicBlock2.InductionProviderUltimate.name=Ultimátní Poskytovatel Indukce
+tile.BasicBlock2.SuperheatingElement.name=Superohřívací Element
+tile.BasicBlock2.PressureDisperser.name=Rozprašovač Tlaku
+tile.BasicBlock2.BoilerCasing.name=Plášť Bojleru
+tile.BasicBlock2.BoilerValve.name=Ventil Bojleru
+tile.BasicBlock2.SecurityDesk.name=Bezpečnostní Pult
+
+//Machine Block
+tile.MachineBlock.EnrichmentChamber.name=Obohacovací Komora
+tile.MachineBlock.OsmiumCompressor.name=Osmiový Kompresor
+tile.MachineBlock.Combiner.name=Kombinér
+tile.MachineBlock.Crusher.name=Drtička
+tile.MachineBlock.Factory.name=Továrna
+tile.MachineBlock.MetallurgicInfuser.name=Infúzer Kovů
+tile.MachineBlock.PurificationChamber.name=Purifikační Komora
+tile.MachineBlock.EnergizedSmelter.name=Elektrifikovaná Výpalovna
+tile.MachineBlock.Teleporter.name=Teleportér
+tile.MachineBlock.ElectricPump.name=Elektrická Pumpa
+tile.MachineBlock.PersonalChest.name=Osobní Truhla
+tile.MachineBlock.Chargepad.name=Nabíječka
+tile.MachineBlock.LogisticalSorter.name=Dopravní Třídič
+tile.MachineBlock.DigitalMiner.name=Digitální Těžička
+
+//Machine Block 2 (second ID iteration)
+tile.MachineBlock2.RotaryCondensentrator.name=Rotační Kondenzátor
+tile.MachineBlock2.ChemicalOxidizer.name=Chemický Oxidovač
+tile.MachineBlock2.ChemicalInfuser.name=Chemický Infúzer
+tile.MachineBlock2.ChemicalCombiner.name=Chemický Kombinér
+tile.MachineBlock2.ChemicalInjectionChamber.name=Chemická Vstřikovací Komora
+tile.MachineBlock2.ElectrolyticSeparator.name=Elektrolytická Oddělovačka
+tile.MachineBlock2.PrecisionSawmill.name=Precizní Pila
+tile.MachineBlock2.ChemicalDissolutionChamber.name=Chemicky Rozkládací Komora
+tile.MachineBlock2.ChemicalWasher.name=Chemická Myčka
+tile.MachineBlock2.ChemicalCrystallizer.name=Chemický Krystalizér
+tile.MachineBlock2.SeismicVibrator.name=Seismický Vibrátor
+tile.MachineBlock2.PressurizedReactionChamber.name=Tlaková Reakční Komora
+tile.MachineBlock2.PressurizedReactionChamber.short.name=TRK
+tile.MachineBlock2.FluidicPlenisher.name=Obohacovač Kapalin
+tile.MachineBlock2.Laser.name=Laser
+tile.MachineBlock2.LaserAmplifier.name=Zesilovač Laseru
+tile.MachineBlock2.LaserTractorBeam.name=Laserový Tažný Paprsek
+
+//Machine Block 3 (third ID iteration)
+tile.MachineBlock3.QuantumEntangloporter.name=Kvantový Vztahoportač
+tile.MachineBlock3.SolarNeutronActivator.name=Solární Aktivátor Neutronů
+tile.MachineBlock3.Oredictionificator.name=Rudo-Slovníkovač
+tile.MachineBlock3.ResistiveHeater.name=Odporový Ohřívač
+tile.MachineBlock3.FormulaicAssemblicator.name=Skladač Formulí
+tile.MachineBlock3.FuelwoodHeater.name=Ohřívač na Palivové Dřevo
+
+//Plastic
+tile.PlasticBlock.name=Plastový Blok
+tile.SlickPlasticBlock.name=Uhlazený Plastový Blok
+tile.GlowPlasticBlock.name=Svítivý Plastový Blok
+tile.ReinforcedPlasticBlock.name=Tvrzený Plastový Blok
+tile.RoadPlasticBlock.name=Plastová Cesta
+
+tile.PlasticFence.name=Plastová Bariéra
+
+//Infuse types
+infuse.carbon=Uhlík
+infuse.tin=Cín
+infuse.diamond=Diamant
+infuse.redstone=Rudit
+infuse.fungi=Houba
+infuse.obsidian=Obsidián
+infuse.bio=Biomasa
+
+//Ore Block
+tile.OreBlock.OsmiumOre.name=Ruda Osmia
+tile.OreBlock.CopperOre.name=Ruda Mědi
+tile.OreBlock.TinOre.name=Ruda Cínu
+
+//Transmitters
+item.MultipartTransmitter.BasicPressurizedTube.name=Základní Trubka pod Tlakem
+item.MultipartTransmitter.AdvancedPressurizedTube.name=Pokročilá Trubka pod Tlakem
+item.MultipartTransmitter.ElitePressurizedTube.name=Elitní Trubka pod Tlakem
+item.MultipartTransmitter.UltimatePressurizedTube.name=Ultimátní Trubka pod Tlakem
+item.MultipartTransmitter.BasicUniversalCable.name=Základní Univerzální Kabel
+item.MultipartTransmitter.AdvancedUniversalCable.name=Pokročilý Univerzální Kabel
+item.MultipartTransmitter.EliteUniversalCable.name=Elitní Univerzální Kabel
+item.MultipartTransmitter.UltimateUniversalCable.name=Ultimátní Univerzální Kabel
+item.MultipartTransmitter.BasicMechanicalPipe.name=Základní Mechanická Trubka
+item.MultipartTransmitter.AdvancedMechanicalPipe.name=Pokročilá Mechanická Trubka
+item.MultipartTransmitter.EliteMechanicalPipe.name=Elitní Mechanická Trubka
+item.MultipartTransmitter.UltimateMechanicalPipe.name=Ultimátní Mechanická Trubka
+item.MultipartTransmitter.BasicLogisticalTransporter.name=Základní Přepravní Transportér
+item.MultipartTransmitter.AdvancedLogisticalTransporter.name=Pokročilý Přepravní Transportér
+item.MultipartTransmitter.EliteLogisticalTransporter.name=Elitní Přepravní Transportér
+item.MultipartTransmitter.UltimateLogisticalTransporter.name=Ultimátní Přepravní Transportér
+item.MultipartTransmitter.RestrictiveTransporter.name=Omezovací Transportér
+item.MultipartTransmitter.DiversionTransporter.name=Diverzní Transportér
+item.MultipartTransmitter.BasicThermodynamicConductor.name=Základní Termodynamický Vodič
+item.MultipartTransmitter.AdvancedThermodynamicConductor.name=Pokročilý Termodynamický Vodič
+item.MultipartTransmitter.EliteThermodynamicConductor.name=Elitní Termodynamický Vodič
+item.MultipartTransmitter.UltimateThermodynamicConductor.name=Ultimátní Termodynamický Vodič
+
+//Glow Panel
+item.GlowPanel.name=Svítící Panel
+
+//Energy Cubes
+tile.EnergyCubeBasic.name=Základní Energetická Kostka
+tile.EnergyCubeAdvanced.name=Pokročilá Energetická Kostka
+tile.EnergyCubeElite.name=Elitní Energetická Kostka
+tile.EnergyCubeUltimate.name=Ultimátní Energetická Kostka
+tile.EnergyCubeCreative.name=Kreativní Energetická Kostka
+
+//Factory Installers
+item.basicFactoryInstaller.name=Základní Instalátor Továrny
+item.advancedFactoryInstaller.name=Pokročilý Instalátor Továrny
+item.eliteFactoryInstaller.name=Elitní Instalátor Továrny
+
+//Dust
+item.ironDust.name=Železný Prášek
+item.goldDust.name=Zlatý Prášek
+item.osmiumDust.name=Osmiový Prášek
+item.obsidianDust.name=Obsidiánový Prášek
+item.refinedobsidianDust.name=Rafinovaný Obsidiánový Prášek
+item.diamondDust.name=Diamantový Prášek
+item.steelDust.name=Ocelový Prášek
+item.copperDust.name=Měděný Prášek
+item.tinDust.name=Cínový Prášek
+item.silverDust.name=Stříbrný Prášek
+item.leadDust.name=Olověný Prášek
+item.sulfurDust.name=Sírový Prášek
+item.lithiumDust.name=Lithný Prášek
+
+//Clumps
+item.ironClump.name=Železný Chomáč
+item.goldClump.name=Zlatý Chomáč
+item.osmiumClump.name=Osmiový Chomáč
+item.copperClump.name=Měděný Chomáč
+item.tinClump.name=Cínový Chomáč
+item.silverClump.name=Stříbrný Chomáč
+item.leadClump.name=Olověný Chomáč
+
+//Shards
+item.ironShard.name=Železný Střep
+item.goldShard.name=Zlatý Střep
+item.osmiumShard.name=Osmiový Střep
+item.copperShard.name=Měděný Střep
+item.tinShard.name=Cínový Střep
+item.silverShard.name=Stříbrný Střep
+item.leadShard.name=Olověný Střep
+
+//Crystals
+item.ironCrystal.name=Železný Krystal
+item.goldCrystal.name=Zlatý Krystal
+item.osmiumCrystal.name=Osmiový Krystal
+item.copperCrystal.name=Měděný Krystal
+item.tinCrystal.name=Cínový Krystal
+item.silverCrystal.name=Stříbrný Krystal
+item.leadCrystal.name=Olověný Krystal
+
+//Dirty Dust
+item.dirtyIronDust.name=Špinavý Železný Prášek
+item.dirtyGoldDust.name=Špinavý Zlatý Prášek
+item.dirtyOsmiumDust.name=Špinavý Osmiový Prášek
+item.dirtyCopperDust.name=Špinavý Měděný Prášek
+item.dirtyTinDust.name=Špinavý Cínový Prášek
+item.dirtySilverDust.name=Špinavý Stříbrný Prášek
+item.dirtyLeadDust.name=Špinavý Olověný Prášek
+
+//Ingots
+item.obsidianIngot.name=Rafinovaný Obsidiánový Ingot
+item.osmiumIngot.name=Osmiový Ingot
+item.bronzeIngot.name=Bronzový Ingot
+item.glowstoneIngot.name=Světlitový Ingot
+item.steelIngot.name=Ocelový Ingot
+item.copperIngot.name=Měďený Ingot
+item.tinIngot.name=Cínový Ingot
+
+//Gasses
+gas.hydrogen=Vodík
+gas.oxygen=Kyslík
+gas.water=Vodní Pára
+gas.chlorine=Chlor
+gas.sulfurDioxideGas=Oxid Siřičitý
+gas.sulfurTrioxideGas=Oxid Sírový
+gas.sulfuricAcid=Kyselina Sírová
+gas.hydrogenChloride=Chlorid Vodnatý
+gas.liquidOsmium=Tekuté Osmium
+gas.liquidStone=Tekutý Kámen
+gas.ethene=Ethylen
+gas.sodium=Sodík
+gas.brine=Plynná Solanka
+gas.deuterium=Deutérium
+gas.tritium=Tritium
+gas.lithium=Lithium
+gas.fusionFuelDT=D-T Palivo
+
+gas.iron=Železná Kaše
+gas.gold=Zlatá Kaše
+gas.osmium=Osmiová Kaše
+gas.copper=Měděná Kaše
+gas.tin=Cínová Kaše
+gas.silver=Stříbrná Kaše
+gas.obsidian=Obsidiánová Kaše
+gas.lead=Olovnatá Kaše
+
+gas.cleanIron=Čistá Železná Kaše
+gas.cleanGold=Čistá Zlatá Kaše
+gas.cleanOsmium=Čistá Osmiová Kaše
+gas.cleanCopper=Čistá Měděná Kaše
+gas.cleanTin=Čistá Cínová Kaše
+gas.cleanSilver=Čistá Stříbrná Kaše
+gas.cleanObsidian=Čistá Obsidiánová Kaše
+gas.cleanLead=Čistá Olovnatá Kaše
+
+//BC Fuel Gases
+gas.fuel=Vypařené Palivo
+gas.oil=Vypařený Olej
+
+//Fluids
+fluid.hydrogen=Tekutý Vodík
+fluid.oxygen=Tekutý Kyslík
+fluid.chlorine=Tekutý Chlor
+fluid.sulfurDioxideGas=Tekutý Oxid Siřičitý
+fluid.sulfurTrioxideGas=Tekutý Oxid Sirný
+fluid.sulfuricAcid=Tekutá Kyselina Sírová
+fluid.hydrogenChloride=Tekutý Chlorid Vodnatý
+fluid.brine=Solanka
+fluid.ethene=Tekutý Ethylen
+fluid.sodium=Tekutý Sodík
+fluid.heavyWater=Těžká Voda
+fluid.lithium=Tekuté Lithium
+fluid.deuterium=Tekuté Deutérium
+fluid.tritium=Tekuté Tritium
+fluid.fusionFuelDT=Tekuté D-T Palivo
+fluid.steam=Pára
+
+//OreGas names
+oregas.iron=Ruda Železa
+oregas.gold=Ruda Zlata
+oregas.osmium=Ruda Osmia
+oregas.copper=Ruda Měďi
+oregas.tin=Ruda Cínu
+oregas.silver=Ruda Stříbra
+oregas.obsidian=Ruda Obsidiánu
+oregas.lead=Ruda Olova
+
+//Tier names
+tier.Basic=Základní
+tier.Advanced=Pokročilý
+tier.Elite=Elitní
+tier.Ultimate=Ultimátní
+tier.Creative=Kreativní
+
+//Transmission types
+transmission.Energy=Energie
+transmission.Fluids=Tekutiny
+transmission.Gases=Plyny
+transmission.Items=Předměty
+transmission.Heat=Teplo
+
+//Update handler text
+update.consider=Zvaž update na verzi
+update.newFeatures=Nové funkce
+update.visit=Navštiv
+update.toDownload=pro stažení
+update.devBuild=Je používáno vývojářské sestavení
+update.outdated=Je používána stará verze jednoho nebo více modulů
+
+//Upgrades
+upgrade.energy=Energie
+upgrade.energy.desc=Zvyšuje energetickou efektivitu a kapacitu stroje.
+upgrade.speed=Rychlost
+upgrade.speed.desc=Zvyšuje rychlost stroje.
+upgrade.filter=Filtr
+upgrade.filter.desc=Filtr, který odděluje těžkou vodu od běžné vody.
+upgrade.gas=Plyn
+upgrade.gas.desc=Zvyšuje efektivitu strojů využívajících plyn.
+upgrade.muffling=Dušení
+upgrade.muffling.desc=Snižuje hluk generovaný strojem.
+
+//Key description text
+key.mode=Přepínání Módů Předmětů
+key.armorMode=Přepínání Módů Brnění
+key.voice=Hlas
+
+//Entities
+entity.Mekanism.Robit.name=Robit
+entity.Mekanism.BabySkeleton.name=Dítě Kostlivce
+
+//Config Gui
+mekanism.configgui.ctgy.general=Základní Nastavení Mekanismu
+mekanism.configgui.ctgy.machines=Nastavení Strojů
+mekanism.configgui.ctgy.tier=Nastavení Stupňů
+mekanism.configgui.ctgy.usage=Nastavení Odběru
+mekanism.configgui.ctgy.client=Nastavení Klienta
+
+//Config Tooltips
+mekanism.configgui.ctgy.general.tooltip=Základní nastavení týkající se Mekanismu a všech jeho modulů
+mekanism.configgui.ctgy.machines.tooltip=Nastavení týkající se zápínání a vypínání specifických strojů
+mekanism.configgui.ctgy.tier.tooltip=Nastavení týkající se stupňů Mekanismu a jejich souvisejících hodnot
+mekanism.configgui.ctgy.usage.tooltip=Nastavení týkající se strojů a jejich odběru energie
+mekanism.configgui.ctgy.client.tooltip=Klientská nastavení týkající se Mekanismu a všech jeho modulů
+
+//Gui text
+gui.condensentrating=Kondenzace
+gui.decondensentrating=Dekondenzace
+gui.power=Energie
+gui.confirm=Potvrdit
+gui.open=Otevřít
+gui.allOK=Vše je OK
+gui.none=Nic
+gui.new=Nový
+gui.edit=Upravit
+gui.save=Uložit
+gui.output=Výstup
+gui.delete=Smazat
+gui.status=Status
+gui.autoEject=Auto-vyhazování
+gui.itemstack=ItemStack
+gui.oredict=Rudo-Slovník
+gui.material=Materiál
+gui.out=Ven
+gui.noFluid=Žádná kapalina
+gui.empty=Prázdný
+gui.volume=Objem
+gui.start=Start
+gui.stop=Stop
+gui.config=Konfig
+gui.teleport=Teleport
+gui.eject=Vyhodit
+gui.input=Vstup
+gui.strictInput=Striktní Vstup
+gui.slots=Sloty
+gui.state=Stav
+gui.on=Zapnuto
+gui.off=Vypnuto
+gui.filters=Filtry
+gui.filter=Filtr
+gui.idle=Nečinný
+gui.data=Data
+gui.newFilter=Nový Filtr
+gui.energy=Energie
+gui.gas=Plyn
+gui.dumping=Vyhazování
+gui.dumping_excess=Vyhazování Přebytku
+gui.modID=ID Módu
+gui.key=Klíč
+gui.id=ID
+gui.finished=Dokončeno
+gui.well=Vše je OK!
+gui.upgrade=Vylepšení
+gui.infinite=Nekonečno
+gui.min=Min
+gui.max=Max
+gui.delay=Prodleva
+gui.noDelay=Bez Prodlevy
+gui.fuel=Palivo
+gui.heat=Teplo
+gui.formed=Postaven
+gui.incomplete=Nedokončen
+gui.inductionMatrix=Indukční Matice
+gui.matrixStats=Statistiky Matice
+gui.turbineStats=Statistiky Turbíny
+gui.boilerStats=Statistiky Bojleru
+gui.main=Hlavní
+gui.outputting=Výstup
+gui.receiving=Příjem
+gui.dimensions=Dimenze
+gui.constituents=Složky
+gui.cells=články
+gui.providers=poskytovatelé
+gui.structure=Struktura
+gui.dynamicTank=Dynamická Nádrž
+gui.industrialTurbine=Průmyslová Turbína
+gui.thermoelectricBoiler=Termoelektrický Bojler
+gui.visuals=Vizuály
+gui.noEject=Nelze Vyhodit
+gui.undefined=Nedefinovaný
+gui.owner=Vlastník
+gui.public=Veřejný
+gui.private=Soukromý
+gui.add=Přidat
+gui.set=Nastavit
+gui.freq=Frekv
+gui.security=Bezpečnost
+gui.index=Index
+gui.producing=Vyrábí
+gui.maxOutput=Max Výstup
+gui.storing=Skladuje
+gui.skyBlocked=Obloha zablokována
+gui.using=Využívá
+gui.needed=Potřebuje
+gui.noRecipe=Žádný recept
+gui.conflict=Konflikt
+gui.height=Výška
+gui.mult=Více
+gui.chunk=Chunk
+gui.vibrating=Vibruje
+gui.abundancy=Hojnost
+gui.nextItem=Další Předmět
+gui.lastItem=Poslední Předmět
+gui.oreDictCompat=Kompatibilní Rudo-Slovníkový Klíč
+gui.toggleCooling=Sepnout Výpočty Chlazení
+gui.coolingMeasurements=Aktivní chlazení
+gui.redstoneOutputMode=Ruditový mód
+gui.entityDetection=Detekce Entit
+gui.moveUp=Pohnout Nahoru
+gui.moveDown=Pohnout Dolů
+gui.flowRate=Rychlost průtoku
+gui.maxFlow=Max průtok
+gui.tankVolume=Objem nádrže
+gui.steamFlow=Průtok Páry
+gui.production=Produkce
+gui.blades=Lopatky
+gui.coils=Cívky
+gui.dispersers=Rozprašovač
+gui.vents=Ventily
+gui.maxProduction=Max Produkce
+gui.limiting=Limitace
+gui.steamInput=Vstup Páry
+gui.capacity=Kapacita
+gui.unit=Jednotka
+gui.temp=Tepl
+gui.usage=Využití
+gui.transferred=Přeneseno
+gui.dissipated=Rozptýleno
+gui.boilRate=Rychlost Varu
+gui.maxBoil=Max Var
+gui.maxWater=Max Vody
+gui.maxSteam=Max Páry
+gui.heatTransfer=Přenesení Tepla
+gui.superheaters=Superohřívače
+gui.boilCapacity=Varná kapacita
+gui.encodeFormula=Kódovací Formule
+gui.autoModeToggle=Sepnout Auto-mód
+gui.craftSingle=Vyrobit Jeden Předmět
+gui.craftAvailable=Vyrobit Dostupné Předměty
+gui.fillEmpty=Naplnit/Vyprázdnit Mřížku
+gui.noOwner=Žádný Vlastník
+gui.securityOverride=Přepis Bezpečnosti
+gui.remove=Odebrat
+gui.trustedPlayers=Důvěřovaní Hráči
+gui.publicMode=Veřejný Mód
+gui.privateMode=Privátní Mód
+gui.trustedMode=Důvěřivý Mód
+gui.securityOffline=Bezpečnost Offline
+gui.noAccessDesc=Nemáš přístup.
+gui.overridden=Přepsáno
+gui.nowOwn=Nyní vlastníš tento předmět.
+gui.frequency=Frekvence
+gui.mode=Mód
+gui.burnRate=Rychlost Spalování
+
+gui.reactor.injectionRate=Rychlost Vstřikování
+
+gui.upgrades=Vylepšení
+gui.upgrades.supported=Podporováno
+gui.upgrades.noSelection=Nevybráno
+gui.upgrades.amount=Množství
+gui.upgrades.max=Max
+gui.upgrades.effect=Efekt
+
+gui.chemicalInfuser.short=Ch. Infúzer
+gui.chemicalDissolutionChamber.short=Ch. Rozkládací Komora
+gui.thermalEvaporationController.short=Ovl. Solárního Výp.
+
+gui.dictionary.noKey=Žádný klíč.
+
+gui.configuration=Konfigurace
+gui.config=Konfig
+gui.configuration.side=Konfigurace Stran
+gui.configuration.transporter=Konfigurace Transportérů
+gui.configuration.strictInput=Striktní Vstup
+
+gui.rotaryCondensentrator.toggleOperation=Sepnout operaci
+
+gui.factory.secondaryEnergy=Sekundární energie
+gui.factory.autoSort=Auto-třídění
+
+//Recipe types
+gui.factory.Smelting=Vypalování
+gui.factory.Enriching=Obohacování
+gui.factory.Crushing=Drcení
+gui.factory.Compressing=Komprese
+gui.factory.Combining=Kombinování
+gui.factory.Purifying=Purifikace
+gui.factory.Injecting=Vstřikování
+gui.factory.Infusing=Infúze
+
+gui.seismicReader.short=S. Čtečka
+gui.seismicReader.solids=Pevné
+gui.seismicReader.fluids=Kapaliny
+gui.seismicReader.reading=Čtení
+
+gui.filterSelect.title=Vytvořit Nový Filtr
+
+gui.oredictFilter=Rudo-Slovníkový Filtr
+gui.oredictFilter.noKey=Žádný klíč
+gui.oredictFilter.sameKey=Stejný klíč
+
+gui.modIDFilter=Filtr Mód ID
+gui.modIDFilter.noID=Žádné ID
+gui.modIDFilter.sameID=Stejné ID
+
+gui.oredictionificatorFilter=Rudo-Slovníkovač Filtr
+
+gui.itemFilter=Filtr Předmětů
+gui.itemFilter.noItem=Žádný předmět
+gui.itemFilter.details=ItemStack Detaily
+gui.itemFilter.min=Min
+gui.itemFilter.max=Max
+
+gui.materialFilter=Filtr Materiálu
+gui.materialFilter.details=Využíván materiál
+
+gui.portableTeleporter=Přenosný Teleportér
+
+gui.robit=Robit
+gui.robit.smelting=Robit Výpalovna
+gui.robit.inventory=Robit Onventář
+gui.robit.crafting=Robit Výroba
+gui.robit.greeting=Ahoj, jsem
+gui.robit.toggleFollow=Sepnout 'následovat' mód
+gui.robit.rename=Přejmenovat tohoto Robita
+gui.robit.teleport=Teleportovat zpět domů
+gui.robit.togglePickup=Sepnout 'sbírat dropy' mód
+gui.robit.following=Následuje
+gui.robit.dropPickup=Sbírá dropy
+gui.robit.owner=Vlastník
+
+gui.password.setPassword=Nastavit heslo
+gui.password.enterPassword=Zadat heslo
+gui.password.fieldsEmpty=Pole je(jsou) prázdné
+gui.password.notMatching=Neshoduje se
+gui.password.identical=Identické
+gui.password.invalid=Neplatné
+gui.password=Heslo
+
+gui.logisticalSorter.default=Výchozí
+gui.logisticalSorter.auto=Auto
+gui.logisticalSorter.roundRobin=Zaoblená-červenka
+//previous DEFINITELLY wrong, dunno what the original means
+gui.teleporter.notReady=Nepřipraven
+gui.teleporter.ready=Připraven
+gui.teleporter.noFrame=Není rám
+gui.teleporter.noLink=Není spojení
+gui.teleporter.exceeds=Spojení > 2
+gui.teleporter.needsEnergy=Potřebuje energii
+gui.teleporter.noAccess=Nemáš přístup k tomuto Teleportéru.
+gui.teleporter.noFreq=Žádná frekvence
+
+gui.entangloporter.noAccess=Nemáš přístup k tomuto Vztahoportači.
+
+gui.digitalMinerConfig=Konfig Digitální Těžičky
+
+gui.digitalMiner.autoPull=Auto-výtah
+gui.digitalMiner.replaceBlock=Nahrazovací blok
+gui.digitalMiner.reset=Resetovat
+gui.digitalMiner.silkTouch=Něžný dotek
+gui.digitalMiner.pull=Výtah
+gui.digitalMiner.silk=Něžně
+gui.digitalMiner.toMine=K těžbě
+gui.digitalMiner.running=Běží
+gui.digitalMiner.inverse=Opečný mód
+gui.digitalMiner.requireReplace=Vyžaduje nahrazení
+gui.digitalMiner.fuzzyMode=Nejasný mód
+gui.digitalMiner.missingBlock=Chybějící blok
+
+//Recipe names
+recipe.mekanismShaped=Tvarovaný
+recipe.mekanismShapeless=Beztvarý
+
+//Security types
+security.public=Veřejný
+security.private=Privátní
+security.trusted=Důvěřivý
+
+//Item and block tooltip text
+tooltip.configurator.configurate=Konfigurovat
+tooltip.configurator.empty=Prázdný
+tooltip.configurator.rotate=Otočit
+tooltip.configurator.wrench=Klíč
+tooltip.configurator.pumpReset=Resetovat kalkulace Elektrické Pumpy
+tooltip.configurator.toggleDiverter=Mód rozdělovače změněn na
+tooltip.configurator.toggleMode=Chování %s změněno na
+tooltip.configurator.viewMode=Aktuální chování %s
+tooltip.configurator.noLink=Žádný spoj
+tooltip.configurator.linkMsg=Svázat s
+tooltip.configurator.dim=dimenze
+tooltip.configurator.setLink=Nastavit spojení s blokem
+tooltip.configurator.plenisherReset=Resetovat kalkulace Obohacovače Kapalin
+tooltip.configurator.inductionPortMode=Mód vysílání Indukčního Portu nastaven na
+tooltip.configurator.toggleColor=Barva nastavena na
+tooltip.configurator.viewColor=Aktuální barva
+
+tooltip.upgrade.speed=Rychlost
+tooltip.upgrade.energy=Energie
+
+tooltip.inventory=Inventář
+tooltip.storedEnergy=Uskladněná energie
+tooltip.auth=Autorizován
+tooltip.locked=Uzamčeno
+tooltip.recipeType=Typ receptu
+tooltip.hold=Drž
+tooltip.forDesc=pro popis
+tooltip.forDetails=pro detaily
+tooltip.fireMode=Ohnivý Mód
+tooltip.capacity=Kapacita
+tooltip.pumpRate=Rychlost Pumpy
+tooltip.items=Předměty
+tooltip.blocks=Bloky
+tooltip.universal=univerzální
+tooltip.fluids=Kapaliny
+tooltip.gasses=Plyny
+tooltip.capableTrans=Schopný přenášet
+tooltip.restrictiveDesc=Využit pouze když není jiná cesta
+tooltip.diversionDesc=Ovladatelný ruditem
+tooltip.noGas=Neuložen žádný plyn
+tooltip.stored=Uloženo
+tooltip.channel=Kanál
+tooltip.mode=Mód
+tooltip.efficiency=Efektivita
+tooltip.modeToggle=Mód nastaven na
+tooltip.flowing=Tekoucí
+tooltip.yes=ano
+tooltip.no=ne
+tooltip.name=Název
+tooltip.blockData=Data bloku
+tooltip.block=Blok
+tooltip.meta=Metadata
+tooltip.tile=Dlaždice
+tooltip.keysFound=Klíč(e) nalezen(y)
+tooltip.noKey=Žádný klíč
+tooltip.hp=HP
+tooltip.configureState=Konfigurovat Stav
+tooltip.outputRate=Rychlost Výstupu
+tooltip.insufficientFuel=Nedostatek Paliva
+tooltip.readyForReaction=Připraven na Reakci
+tooltip.speed=Rychlost
+tooltip.and=a
+tooltip.heat=Teplota
+tooltip.itemAmount=Množství položek
+tooltip.invalid=Neplatný
+tooltip.encoded=Zakódovaný
+tooltip.ingredients=Ingredience
+
+tooltip.portableTank.bucketMode=Kyblíkový Mód
+//totally legit and not funny sounding :D
+tooltip.disassembler.normal=normální
+tooltip.disassembler.slow=pomalý
+tooltip.disassembler.fast=rychlý
+tooltip.disassembler.vein=žilný
+tooltip.disassembler.off=vyplý
+
+tooltip.configurationCard.got=Získaná konfigurační data z %s
+tooltip.configurationCard.set=Vložená konfigurační data typu %s
+tooltip.configurationCard.unequal=Nerovné formáty konfiguračních dat
+
+tooltip.balloon=Balón
+
+tooltip.jetpack.regular=Normální
+tooltip.jetpack.hover=Vznášecí
+tooltip.jetpack.disabled=Deaktivovaný
+
+tooltip.flamethrower.combat=Souboj
+tooltip.flamethrower.heat=Teplo
+tooltip.flamethrower.inferno=Peklo
+tooltip.flamethrower.modeBump=Mód plamenometu změněn na
+
+tooltip.seismicReader.needsEnergy=Nedostatek energie na interpretaci vibrací
+tooltip.seismicReader.noVibrations=Nenalezeny žádné vibrace
+
+tooltip.Bin=Blok schopný skladovat velká kvanta jednoho typu předmětu.
+tooltip.TeleporterFrame=Rám využívaný k postavení Teleportačního multibloku, umožnující portálu se vygenerovat uvnitř struktury.
+tooltip.SteelCasing=Solidní, ocelově založený plášť využívaný jako základ strojírenství.
+tooltip.DynamicTank=Plášť využívaný v multibloku Dynamická Nádrž, struktuře schopné skladovat enormní množství kapaliny.
+tooltip.StructuralGlass=Pokročilý, tvrzený materiál skla který se dropuje a může být využit v každém multibloku.
+tooltip.DynamicValve=Ventil, který lze umístit na multiblok Dynamická Nádrž, umožnujíc kapalinám být extrahovány a vkládány externím systémem trubek.
+tooltip.ThermalEvaporationController=Ovladač multibloku Teplotní Výparovna fungující jako srdce systému. Pouze jeden může být na multibloku.
+tooltip.ThermalEvaporationValve=Ventil, který lze umístit na multiblok Teplotní Výparovna, umožnujíc kapalinám být extrahovány a vkládány externím systémem trubek.
+tooltip.ThermalEvaporationBlock=Měděný plášť použitý v multibloku Teplotní Výparovna, využívající svůj materiál k přenosu tepla potřebného pro výrobu.
+tooltip.InductionCasing=Type energeticky odolného pláště využívaného k výrobě multibloku Energizovaná Indukční Matice.
+tooltip.InductionPort=Port který může být umístěn na multiblok Energizovaná Indukční Matice, umožnujíc energii být vložená či vytažená externí kabeláží.
+tooltip.InductionCell=Velmi vodivý energetický kapacitor schopný skladovat masivní množství energie v jednom bloku. Pro expanzi využijte multiblok Energizovaná Indukční Matice.
+tooltip.InductionProvider=Pokročilý komplex chladících systémů, vodičů a transformerů umožnujících zvyšovat maximální výstupní frekvenci energie multibloku Energizovaná Indukční Matice.
+tooltip.SuperheatingElement=Modulární, nějak nebezpečnýradiátor schopný vysílat obrovská množství tepla do svého okolí.
+tooltip.PressureDisperser=Blok používaný k rozptýlení páry v multibloku. Měli by tvořit bezmezerovou horizontální plošinu pro optimální ovládání toku páry.
+tooltip.BoilerCasing=Tlakuvzdorný hustý plášť využitý při stavbě multibloku Termoelektrický Bojler.
+tooltip.BoilerValve=Ventil který lze umístit na multiblok Termoelektrický Bojler, umožnující vstup vody a energie a výstup páry.
+tooltip.SecurityDesk=Centrální ovládací pult na kontrolu bezpečnosti všech vašich strojů.
+
+tooltip.EnrichmentChamber=Jednoduchý stroj obohacující rudy do jejich práškových protějšků a zároveň dělající mnoho dalších operací.
+tooltip.OsmiumCompressor=Poměrně pokročilý stroj kompresující osmium do různorodých prášků za účelem výroby jejich ingotových protějšků.
+tooltip.Combiner=Stroj kombinující prášky a cobblestone na zformování jejich rudných protějšků.
+tooltip.Crusher=Stroj drtící ingoty do jejich práškových protějšků a zároveň dělající mnoho dalších operací.
+tooltip.DigitalMiner=Velmi pokročilý, založený na filtrech, automatický těžič který dokáže vytěžit jakýkoli blok zadáš do max 32 bloků X, Y.
+tooltip.MetallurgicInfuser=Stroj infúzující různorodé materiály do (v podstatě) kovů pro výrobu slitin a dalších složek.
+tooltip.PurificationChamber=Pokročilý stroj drtící rudy do třech kupek, slouží jako počáteční stupeň 300% zpracování rud.
+tooltip.EnergizedSmelter=Jednoduchý stroj - pec na energii.
+tooltip.Teleporter=Stroj teleportující hráče na různorodé lokace definované jiným Teleportérem.
+tooltip.ElectricPump=Pokročilá, vylepšitelná pumpa, schopná extrahovat každý druh kapaliny.
+tooltip.PersonalChest=54 slotová truhla, která jde otevřít odkudkoli (dokonce i z inventáře)
+tooltip.Chargepad=Univerzální nabíječka která dokáže nabít jakýkoli energetický předmět z jakéhokoli módu.
+tooltip.LogisticalSorter=Pokročilý stroj založený na filtrech, dokáže vyhazovat věci z přilehlých inventářů do přilehlých inventářů a Přepravních Transportérů.
+tooltip.RotaryCondensentrator=Stroj konvertující plyny do jejich kapalinových protějšků a zpět.
+tooltip.ChemicalInjectionChamber=Elitní stroj drtící rudy do čtyř úlomků, slouží jako počáteční fáze 400% zpracování rud.
+tooltip.ElectrolyticSeparator=Stroj elektrolyzující kapalinu a rozdělující ji na dva plyny.
+tooltip.PrecisionSawmill=Stroj zpracovávající kmeny a jiné dřevěné věci efektivněji a zároveň zdroj pilin.
+tooltip.ChemicalDissolutionChamber=Ultimátní stroj chemicky rozkládající všechny nečistoty z rud a zanechávající je jako břečku.
+tooltip.ChemicalWasher=Ultimátní stroj čistící břečku a připravující ji na krystalizaci.
+tooltip.ChemicalCrystallizer=Ultimátní stroj krystalizující purifikovanou břečku do rudných krystalů.
+tooltip.ChemicalOxidizer=Stroj oxidující pevné materiály do jejich plynné fáze.
+tooltip.ChemicalInfuser=Stroj tvořící nový plyn ze dvou starých.
+tooltip.SeismicVibrator=Stroj využívající seismické otřesy k poskytnutí informací o rozdílném složení vrstev ve světě.
+tooltip.PressurizedReactionChamber=Pokročilý stroj, který vezme pevnou, tekutou i plynnou složku a vytvoří jak plynný, tak pevný produkt.
+tooltip.FluidTank=Užitečná přenosná nádrž umožňující vzít více kyblíků kapaliny kamkoli chcete.
+tooltip.FluidicPlenisher=Stroj schopný tvorby celých jezer zaplavováním místa pod sebou.
+tooltip.Laser=Pokročilá forma lineárního přenosu energie která zprostředkovává extrémně zhuštěný paprsek světla.
+tooltip.LaserAmplifier=Blok schopný slučovat a přesměrovávat laserové paprsky s kompletní kontrolou, kdy vystřelit.
+tooltip.LaserTractorBeam=Blok schopný slučovat a přesměrovávat laserové paprsky. Sbírá dropy z bloků které zničil.
+tooltip.SolarNeutronActivator=Stroj směřující neutronovou radiaci ze Slunce do svého zásobiště, umožňující pomalou tvorbu různorodých izotopů.
+tooltip.Oredictionificator=Stroj sjednocující různé předměty a rudy pomoci Rudo-Slovníku.
+tooltip.Factory=Stroj sloužící jako vylepšení k běžným strojům, umožňuje více operací najednou.
+tooltip.ResistiveHeater=Kondenzovaný, vinutý rezistor schopný převádět elektrickou energii přímo do tepelné energie.
+tooltip.FormulaicAssemblicator=Stroj využívající energii pro rychlou výrobu předmětů či bloků z Výrobních Formulí.
+tooltip.FuelwoodHeater=Stroj schopný generovat hodně energie spalováním hořlavých předmětů.
+tooltip.QuantumEntangloporter=Velmi pokročilý blok schopný přenášet jakýkoli zdroj napříč velkými vzdálenostmi a dimenzemi.
+
+tooltip.HeatGenerator=Generátor využívající teplo lávy nebo jiného spalovatelného zdroje k výrobě energie.
+tooltip.SolarGenerator=Generátor využívající energie Slunce k výrobě energie.
+tooltip.GasGenerator=Generátor využívající různorodost plynů k výrobě energie.
+tooltip.BioGenerator=Generátor spalující organické materiály ze světa k výrobě energie.
+tooltip.AdvancedSolarGenerator=Pokročilý generátor který přímo pohlcuje sluneční paprsky s minimální ztrátou k výrobě energie.
+tooltip.WindGenerator=Generátor využívající sílu větru k výrobě energie. Efektivita se zvyšuje úměrně s výškou.
+tooltip.TurbineRotor=Ocelová tyč použitá k udržení Turbínových Lopatek v Průmyslové Turbíně.
+tooltip.RotationalComplex=Konektor který je položen na nejvyšší Turbínový Rotor Průmyslové Turbíny pro přenášení kinetické energie do jeho Elektromagnetických Cívek.
+tooltip.ElectromagneticCoil=Blok konvertující energii z Rotačního Komplexu do využitelné energie. Tyto mohou být položeny do jakéhokoli uspořádání nad Rotačním Komplexem, pakliže se stále dotýkají jeden druhého a samotného komplexu.
+tooltip.TurbineCasing=Tlakuvzdorný plášť využitý k výrobě Průmyslové Turbíny.
+tooltip.TurbineValve=Typ Turbínového Pláště zahrnující port na přenos energie a páry.
+tooltip.TurbineVent=Typ Turbínového Pláště s integrovaným ventilem pro vypouštění páry. Tyto by měly být umístěny na úrovni nebo výše Turbínového Rotačního Komplexu.
+
+tooltip.ReactorGlass=Tvrzené sklo které může být použito v multibloku Fúzní Reaktor.
+tooltip.ReactorLaserFocusMatrix=Panel Reaktorového Skla který je schopný absorbovat optickou energii a tím zahřívat Fúzní Reaktor.
+tooltip.ReactorController=Kontrolní blok pro celou strukturu Fúzního Reaktoru.
+tooltip.ReactorFrame=Tvrzený rám který může být využit v multibloku Fúzní Reaktor.
+tooltip.ReactorNeutronCapturePlate=Blok který může být využit jak k zablokování radiace Fúzního Reaktoru tak k asistenci u produkce Trinia.
+tooltip.ReactorPort=Blok tvrzeného rámu který je schopen zpracovávat zároveň plyn i energii z a do Fúzního Reaktoru.
+tooltip.ReactorLogicAdapter=Blok který umožňuje základní sledování stavu reaktoru pomocí ruditu.
+
+tooltip.OsmiumOre=Silný minerál který lze nalézt v jakékoli hloubce. Je znám pro své využití v konstrukci strojů.
+tooltip.CopperOre=Běžný, vodivý materiál který se využívá k výrobě kabelů. Jeho schopnost vydržet velké teploty ho činí podstatným pro pokročilé stroje.
+tooltip.TinOre=Lehký, ale tvrdý, vodivý materiál který je o trochu vzácnější než Měď.
+
+//Side data
+sideData.None=Nic
+sideData.Input=Vstup
+sideData.Output=Výstup
+sideData.Energy=Energie
+sideData.Gas=Plyn
+sideData.Extra=Extra
+sideData.Infuse=Infúze
+sideData.Fluid=Kapalina
+sideData.Fill=Náplň
+sideData.Empty=Prázdný
+sideData.Charge=Náboj
+sideData.Discharge=Výboj
+
+//Redstone control
+control.disabled=Vyplý
+control.high=Silný
+control.low=Slabý
+control.pulse=Pulz
+control.disabled.desc=Vždy aktivní
+control.high.desc=Vždy se signálem
+control.low.desc=Vždy bez signálu
+control.pulse.desc=Pouze aktivní s prvním příchozím signálem
+
+//Container edit modes
+fluidedit.both=Oboje
+fluidedit.fill=Plný
+fluidedit.empty=Prázdný
+
+//Colors
+color.black=Černá
+color.darkBlue=Tmavě Modrá
+color.darkGreen=Tmavě Zelená
+color.darkAqua=Tmavá Aqua
+color.darkRed=Tmavě Červená
+color.purple=Fialová
+color.orange=Oranžová
+color.grey=Šedá
+color.darkGrey=Tmavě Šedá
+color.indigo=Indigo
+color.brightGreen=Světle Zelená
+color.aqua=Aqua
+color.red=Červená
+color.pink=Růžová
+color.yellow=Žlutá
+color.white=Bílá
+color.brown=Hnědá
+color.brightPink=Světle Růžová
+
+//Dyes
+dye.black=Černá
+dye.darkBlue=Modrá
+dye.brown=Hnědá
+dye.darkGreen=Zelená
+dye.darkAqua=Tyrkysová
+dye.darkRed=Tmavě Červená
+dye.purple=Nachová
+dye.orange=Oranžová
+dye.grey=Světle Šedá
+dye.darkGrey=Šedá
+dye.indigo=Světle Modrá
+dye.brightGreen=Limetka
+dye.aqua=Aqua
+dye.red=Červená
+dye.brightPink=Růžová
+dye.pink=Magenta
+dye.yellow=Žlutá
+dye.white=Bílá
+
+//Reactor Logic modes
+reactor.disabled=Deaktivovaný
+reactor.disabled.desc=Nebude vysílat ruditový signál
+reactor.ready=Připraven na Zážeh
+reactor.ready.desc=Reaktor dosáhl potřebné teploty pro zážeh
+reactor.capacity=Dosažena Tepelná Kapacita
+reactor.capacity.desc=Tepelná kapacita jádra reaktoru byla dosažena
+reactor.depleted=Nedostatek Paliva
+reactor.depleted.desc=Reaktor má nedostatek paliva k udržení reakce
+
+//Creative tab
+itemGroup.tabMekanism=Mekanism
+
+//NEI stuff
+nei.chemicalInjectionChamber=Ch. Vstřikovací Komora
+nei.rotaryCondensentrator=R. Kondenzátor
+
+//**********//
+//GENERATORS//
+//**********//
+
+//Items
+item.SolarPanel.name=Solární Panel
+item.Hohlraum.name=Hohlraum
+item.TurbineBlade.name=Turbínová Lopatka
+
+//Generators
+tile.Generator.HeatGenerator.name=Tepelný Generátor
+tile.Generator.SolarGenerator.name=Solární Generátor
+tile.Generator.GasGenerator.name=Plyno-Spalovací Generátor
+tile.Generator.BioGenerator.name=Bio-Generátor
+tile.Generator.AdvancedSolarGenerator.name=Pokročilý Solární Generátor
+tile.Generator.WindGenerator.name=Větrný Generátor
+tile.Generator.TurbineRotor.name=Turbínový Rotor
+tile.Generator.RotationalComplex.name=Rotační Komplex
+tile.Generator.ElectromagneticCoil.name=Elektromagnetická Cívka
+tile.Generator.TurbineCasing.name=Plášť Turbíny
+tile.Generator.TurbineValve.name=Turbínový Ventil
+tile.Generator.TurbineVent.name=Turbínový Průduch
+
+tile.Reactor.ReactorController.name=Kontroler Reaktoru
+tile.Reactor.ReactorFrame.name=Rám Reaktoru
+tile.Reactor.ReactorNeutronCapturePlate.name=Neutronový Zachytávací Plát
+tile.Reactor.ReactorPort.name=Port Reaktoru
+tile.Reactor.ReactorLogicAdapter.name=Logický Adaptér Reaktoru
+
+tile.ReactorGlass.ReactorGlass.name=Sklo Reaktoru
+tile.ReactorGlass.ReactorLaserFocusMatrix.name=Laserová Zaměřovací Matice
+
+//Gui text
+gui.heatGenerator.fuel=Palivo
+gui.solarGenerator.sun=Slunce
+gui.bioGenerator.bioFuel=Bio Palivo
+gui.electrolyticSeparator.dump=Vyhodit
+
+gui.passive=Chlazen vzduchem
+gui.active=Chalzen vodou
+
+gui.minInject=Min. Rychlost Vstřikování
+gui.ignition=Zážehová Teplota
+gui.maxPlasma=Max. Teplota Plasmy
+gui.maxCasing=Max. Teplota Pláště
+gui.passiveGeneration=Pasivní Generace
+gui.steamProduction=Produkce Páry
+
+//*****//
+//TOOLS//
+//*****//
+
+//Vanilla Paxels
+item.WoodPaxel.name=Dřevěný Sekrumpáč
+item.StonePaxel.name=Kamenný Sekrumpáč
+item.IronPaxel.name=Železný Sekrumpáč
+item.DiamondPaxel.name=Diamantový Sekrumpáč
+item.GoldPaxel.name=Zlatý Sekrumpáč
+
+//Obsidian
+item.ObsidianHelmet.name=Obsidiánová Helma
+item.ObsidianChestplate.name=Obsidiánové Brnění
+item.ObsidianLeggings.name=Obsidiánové Kalhoty
+item.ObsidianBoots.name=Obsidiánové Boty
+item.ObsidianPaxel.name=Obsidiánový Sekrumpáč
+item.ObsidianPickaxe.name=Obsidiánový Krumpáč
+item.ObsidianAxe.name=Obsidiánová Sekyra
+item.ObsidianShovel.name=Obsidiánová Lopata
+item.ObsidianHoe.name=Obsidiánová Motyka
+item.ObsidianSword.name=Obsidiánový Meč
+
+//Lapis Lazuli
+item.LazuliHelmet.name=Lapis Lazuli Helma
+item.LazuliChestplate.name=Lapis Lazuli Brnění
+item.LazuliLeggings.name=Lapis Lazuli Kalhoty
+item.LazuliBoots.name=Lapis Lazuli Boty
+item.LazuliPaxel.name=Lapis Lazuli Sekrumpáč
+item.LazuliPickaxe.name=Lapis Lazuli Krumpáč
+item.LazuliAxe.name=Lapis Lazuli Sekyra
+item.LazuliShovel.name=Lapis Lazuli Lopata
+item.LazuliHoe.name=Lapis Lazuli Motyka
+item.LazuliSword.name=Lapis Lazuli Meč
+
+//Osmium
+item.OsmiumHelmet.name=Osmiová Helma
+item.OsmiumChestplate.name=Osmiové Brnění
+item.OsmiumLeggings.name=Osmiové Kalhoty
+item.OsmiumBoots.name=Osmiové Boty
+item.OsmiumPaxel.name=Osmiový Sekrumpáč
+item.OsmiumPickaxe.name=Osmiový Krumpáč
+item.OsmiumAxe.name=Osmiová Sekyra
+item.OsmiumShovel.name=Osmiová Lopata
+item.OsmiumHoe.name=Osmiová Motyka
+item.OsmiumSword.name=Osmiový Meč
+
+//Bronze
+item.BronzeHelmet.name=Bronzová Helma
+item.BronzeChestplate.name=Bronzové Brnění
+item.BronzeLeggings.name=Bronzové Kalhoty
+item.BronzeBoots.name=Bronzové Boty
+item.BronzePaxel.name=Bronzový Sekrumpáč
+item.BronzePickaxe.name=Bronzový Krumpáč
+item.BronzeAxe.name=Bronzová Sekyra
+item.BronzeShovel.name=Bronzová Lopata
+item.BronzeHoe.name=Bronzová Motyka
+item.BronzeSword.name=Bronzový Meč
+
+//Glow
+item.GlowstoneHelmet.name=Světlitová Helma
+item.GlowstoneChestplate.name=Světlitové Brnění
+item.GlowstoneLeggings.name=Světlitové Kalhoty
+item.GlowstoneBoots.name=Světlitové Boty
+item.GlowstonePaxel.name=Světlitový Sekrumpáč
+item.GlowstonePickaxe.name=Světlitový Krumpáč
+item.GlowstoneAxe.name=Světlitová Sekyra
+item.GlowstoneShovel.name=Světlitová Lopata
+item.GlowstoneHoe.name=Světlitová Motyka
+item.GlowstoneSword.name=Světlitový Meč
+
+//Steel
+item.SteelHelmet.name=Ocelová Helma
+item.SteelChestplate.name=Ocelové Brnění
+item.SteelLeggings.name=Ocelové Kalhoty
+item.SteelBoots.name=Ocelové Boty
+item.SteelPaxel.name=Ocelový Sekrumpáč
+item.SteelPickaxe.name=Ocelový Krumpáč
+item.SteelAxe.name=Ocelová Sekyra
+item.SteelShovel.name=Ocelová Lopata
+item.SteelHoe.name=Ocelová Motyka
+item.SteelSword.name=Ocelové Meč
+
+//Config Gui
+mekanism.configgui.ctgy.tools.general=Základní
+mekanism.configgui.ctgy.tools.armor=Vyvážení Brnění
+mekanism.configgui.ctgy.tools.tools=Vyvážení Nástrojů
+
+//Config Tooltips
+mekanism.configgui.ctgy.tools.general.tooltip=Nastavení týkající se základní konfigurace MekanismTools
+mekanism.configgui.ctgy.tools.armor.tooltip=Nastavení týkající se protekčních hodnot a vyvážení setů brnění MekanismTools
+mekanism.configgui.ctgy.tools.tools.tooltip=Nastavení týkající se efektivních hodnot a vyvážení setů nástrojů MekanismTools

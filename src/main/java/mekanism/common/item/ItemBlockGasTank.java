@@ -122,11 +122,13 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 
 		if(gasStack == null)
 		{
-			list.add(LangUtils.localize("tooltip.noGas") + ".");
+			list.add(EnumColor.DARK_RED + LangUtils.localize("gui.empty") + ".");
 		}
 		else {
-			list.add(LangUtils.localize("tooltip.stored") + " " + gasStack.getGas().getLocalizedName() + ": " + gasStack.amount);
+			list.add(EnumColor.ORANGE + gasStack.getGas().getLocalizedName() + ": " + EnumColor.GREY + gasStack.amount);
 		}
+		
+		list.add(EnumColor.INDIGO + LangUtils.localize("tooltip.capacity") + ": " + EnumColor.GREY + GasTankTier.values()[getBaseTier(itemstack).ordinal()].storage);
 
 		if(!MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.sneakKey))
 		{
@@ -371,7 +373,7 @@ public class ItemBlockGasTank extends ItemBlock implements IGasItem, ISustainedI
 	@Override
 	public SecurityMode getSecurity(ItemStack stack) 
 	{
-		if(stack.stackTagCompound == null)
+		if(stack.stackTagCompound == null || !general.allowProtection)
 		{
 			return SecurityMode.PUBLIC;
 		}

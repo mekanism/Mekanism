@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.MekanismConfig.client;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.RenderPartTransmitter;
 import mekanism.common.HeatNetwork;
@@ -28,7 +29,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	public Tier.ConductorTier tier;
 	
 	public static TransmitterIcons conductorIcons = new TransmitterIcons(4, 8);
-	
+
 	public double temperature = 0;
 	public double clientTemperature = 0;
 	public double heatToAbsorb = 0;
@@ -71,10 +72,10 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 
 	public static void registerIcons(IIconRegister register)
 	{
-		conductorIcons.registerCenterIcons(register, new String[] {"ThermodynamicConductorBasic", "ThermodynamicConductorAdvanced",
-				"ThermodynamicConductorElite", "ThermodynamicConductorUltimate"});
-		conductorIcons.registerSideIcons(register, new String[] {"ThermodynamicConductorVerticalBasic", "ThermodynamicConductorVerticalAdvanced", "ThermodynamicConductorVerticalElite", "ThermodynamicConductorVerticalUltimate",
-				"ThermodynamicConductorHorizontalBasic", "ThermodynamicConductorHorizontalAdvanced", "ThermodynamicConductorHorizontalElite", "ThermodynamicConductorHorizontalUltimate"});
+        conductorIcons.registerCenterIcons(register, new String[]{"ThermodynamicConductorBasic", "ThermodynamicConductorAdvanced",
+            "ThermodynamicConductorElite", "ThermodynamicConductorUltimate"});
+        conductorIcons.registerSideIcons(register, new String[]{"ThermodynamicConductorVerticalBasic", "ThermodynamicConductorVerticalAdvanced", "ThermodynamicConductorVerticalElite", "ThermodynamicConductorVerticalUltimate",
+            "ThermodynamicConductorHorizontalBasic", "ThermodynamicConductorHorizontalAdvanced", "ThermodynamicConductorHorizontalElite", "ThermodynamicConductorHorizontalUltimate"});
 	}
 
 	@Override
@@ -123,7 +124,7 @@ public class PartThermodynamicConductor extends PartTransmitter<IHeatTransfer, H
 	@SideOnly(Side.CLIENT)
 	public void renderDynamic(Vector3 pos, float f, int pass)
 	{
-		if(pass == 0)
+		if(pass == 0 && !client.opaqueTransmitters)
 		{
 			RenderPartTransmitter.getInstance().renderContents(this, pos);
 		}

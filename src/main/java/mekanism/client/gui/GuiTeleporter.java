@@ -15,6 +15,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.ContainerNull;
 import mekanism.common.inventory.container.ContainerTeleporter;
 import mekanism.common.item.ItemPortableTeleporter;
@@ -42,8 +43,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiTeleporter extends GuiMekanism
 {
-	public static int MAX_LENGTH = 16;
-	
 	public ResourceLocation resource;
 	
 	public TileEntityTeleporter tileEntity;
@@ -162,7 +161,7 @@ public class GuiTeleporter extends GuiMekanism
 		}
 		
 		frequencyField = new GuiTextField(fontRendererObj, guiWidth + 50, guiHeight + 104, 86, 11);
-		frequencyField.setMaxStringLength(MAX_LENGTH);
+		frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
 		frequencyField.setEnableBackgroundDrawing(false);
 		
 		updateButtons();
@@ -326,7 +325,7 @@ public class GuiTeleporter extends GuiMekanism
 		{
 			super.keyTyped(c, i);
 		}
-
+		
 		if(i == Keyboard.KEY_RETURN)
 		{
 			if(frequencyField.isFocused())
@@ -336,7 +335,7 @@ public class GuiTeleporter extends GuiMekanism
 			}
 		}
 
-		if(Character.isDigit(c) || Character.isLetter(c) || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || Character.isLetter(c) || isTextboxKey(c, i) || FrequencyManager.SPECIAL_CHARS.contains(c))
 		{
 			frequencyField.textboxKeyTyped(c, i);
 		}

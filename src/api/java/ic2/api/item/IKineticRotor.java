@@ -3,7 +3,7 @@ package ic2.api.item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-public interface IKineticWindRotor {
+public interface IKineticRotor {
 	int getDiameter(ItemStack stack);
 
 	ResourceLocation getRotorRenderTexture(ItemStack stack);
@@ -13,4 +13,11 @@ public interface IKineticWindRotor {
 	int getMinWindStrength(ItemStack stack);
 
 	int getMaxWindStrength(ItemStack stack);
+
+	boolean isAcceptedType(ItemStack stack, GearboxType type);
+
+	public static enum GearboxType  {
+		WATER,
+		WIND,
+	}
 }

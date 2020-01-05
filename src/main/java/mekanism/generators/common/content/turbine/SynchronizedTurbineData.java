@@ -5,6 +5,7 @@ import java.util.Map;
 
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.tile.TileEntityGasTank.GasMode;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbineData>
@@ -19,9 +20,12 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 	
 	public double electricityStored;
 	
+	public GasMode dumpMode = GasMode.IDLE;
+	
 	public int blades;
 	public int vents;
 	public int coils;
+	public int condensers;
 	
 	public int lowerVolume;
 	
@@ -29,6 +33,8 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
 	
 	public int lastSteamInput;
 	public int newSteamInput;
+	
+	public int flowRemaining;
 	
 	public int clientDispersers;
 	public int clientFlow;

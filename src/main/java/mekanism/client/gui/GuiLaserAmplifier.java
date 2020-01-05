@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 
 import mekanism.api.Coord4D;
-import mekanism.client.gui.element.GuiDetectionTab;
+import mekanism.client.gui.element.GuiAmplifierTab;
 import mekanism.client.gui.element.GuiGauge.Type;
 import mekanism.client.gui.element.GuiNumberGauge;
 import mekanism.client.gui.element.GuiNumberGauge.INumberInfoHandler;
@@ -69,7 +69,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 		}, Type.STANDARD, this, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png"), 6, 10));
 		guiElements.add(new GuiSecurityTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 		guiElements.add(new GuiRedstoneControl(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
-		guiElements.add(new GuiDetectionTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
+		guiElements.add(new GuiAmplifierTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiBlank.png")));
 	}
 
 	@Override
@@ -148,7 +148,7 @@ public class GuiLaserAmplifier extends GuiMekanism
 			}
 		}
 
-		if(Character.isDigit(c) || c == '.' || c == 'E' || i == Keyboard.KEY_BACK || i == Keyboard.KEY_DELETE || i == Keyboard.KEY_LEFT || i == Keyboard.KEY_RIGHT)
+		if(Character.isDigit(c) || c == '.' || c == 'E' || isTextboxKey(c, i))
 		{
 			minField.textboxKeyTyped(c, i);
 			maxField.textboxKeyTyped(c, i);

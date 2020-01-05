@@ -630,6 +630,11 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 	public void renderTransparency(IIcon icon, CCModel cc, Colour color)
 	{
+		if(icon == null)
+		{
+			return;
+		}
+		
 		if(color != null)
 		{
 			cc.render(new IconTransformation(icon), new ColourMultiplier(color.rgba()));

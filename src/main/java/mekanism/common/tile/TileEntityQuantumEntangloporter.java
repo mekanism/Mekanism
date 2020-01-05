@@ -663,7 +663,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	@Override
 	public boolean canTubeConnect(ForgeDirection side) 
 	{
-		return frequency != null && configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).ioState != IOState.OFF;
+		return hasFrequency() && configComponent.getOutput(TransmissionType.GAS, side.ordinal(), facing).ioState != IOState.OFF;
 	}
 	
 	private static final String[] methods = new String[] {"setFrequency"};

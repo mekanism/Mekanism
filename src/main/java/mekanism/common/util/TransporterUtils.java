@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import java.util.Arrays;
 import java.util.List;
 
 import mekanism.api.Coord4D;
@@ -25,33 +24,6 @@ public final class TransporterUtils
 	public static List<EnumColor> colors = ListUtils.asList(EnumColor.DARK_BLUE, EnumColor.DARK_GREEN, EnumColor.DARK_AQUA, EnumColor.DARK_RED, EnumColor.PURPLE,
 			EnumColor.INDIGO, EnumColor.BRIGHT_GREEN, EnumColor.AQUA, EnumColor.RED, EnumColor.PINK, EnumColor.YELLOW, EnumColor.BLACK);
 
-	/**
-	 * Gets all the transporters around a tile entity.
-	 * @param tileEntity - center tile entity
-	 * @return array of TileEntities
-	 */
-	public static ILogisticalTransporter[] getConnectedTransporters(ILogisticalTransporter tileEntity)
-	{
-		ILogisticalTransporter[] transporters = new ILogisticalTransporter[] {null, null, null, null, null, null};
-
-		for(ForgeDirection orientation : ForgeDirection.VALID_DIRECTIONS)
-		{
-			TileEntity tile = tileEntity.coord().getFromSide(orientation).getTileEntity(tileEntity.world());
-
-			if(tile instanceof ITransporterTile)
-			{
-				ILogisticalTransporter otherTransporter = ((ITransporterTile)tile).getTransmitter();
-
-				if(otherTransporter.getColor() == null || tileEntity.getColor() == null || otherTransporter.getColor() == tileEntity.getColor())
-				{
-					transporters[orientation.ordinal()] = otherTransporter;
-				}
-			}
-		}
-
-		return transporters;
-	}
-
 	public static boolean isValidAcceptorOnSide(TileEntity tile, ForgeDirection side)
 	{
 		if(tile instanceof ITransmitterTile || !(tile instanceof IInventory))
@@ -74,68 +46,6 @@ public final class TransporterUtils
 		}
 		
 		return false;
-	}
-
-	/**
-	 * Gets all the adjacent connections to a TileEntity.
-	 * @param transporter - center TileEntity
-	 * @return boolean[] of adjacent connections
-	 */
-	public static boolean[] getConnections(ILogisticalTransporter transporter)
-	{
-		boolean[] connectable = new boolean[] {false, false, false, false, false, false};
-
-		ILogisticalTransporter[] connectedTransporters = getConnectedTransporters(transporter);
-		IInventory[] connectedInventories = getConnectedInventories(transporter);
-
-		for(IInventory inventory : connectedInventories)
-		{
-			if(inventory != null)
-			{
-				int side = Arrays.asList(connectedInventories).indexOf(inventory);
-
-				if(!transporter.canConnect(ForgeDirection.getOrientation(side)))
-				{
-					continue;
-				}
-
-				ForgeDirection forgeSide = ForgeDirection.getOrientation(side).getOpposite();
-
-				if(inventory.getSizeInventory() > 0)
-				{
-					if(inventory instanceof ISidedInventory)
-					{
-						ISidedInventory sidedInventory = (ISidedInventory)inventory;
-
-						if(sidedInventory.getAccessibleSlotsFromSide(forgeSide.ordinal()) != null)
-						{
-							if(sidedInventory.getAccessibleSlotsFromSide(forgeSide.ordinal()).length > 0)
-							{
-								connectable[side] = true;
-							}
-						}
-					}
-					else {
-						connectable[side] = true;
-					}
-				}
-			}
-		}
-
-		for(ILogisticalTransporter trans : connectedTransporters)
-		{
-			if(trans != null)
-			{
-				int side = Arrays.asList(connectedTransporters).indexOf(trans);
-
-				if(transporter.canConnectMutual(ForgeDirection.getOrientation(side)))
-				{
-					connectable[side] = true;
-				}
-			}
-		}
-
-		return connectable;
 	}
 
 	/**

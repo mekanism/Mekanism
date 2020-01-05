@@ -37,7 +37,7 @@ public class BlockBounding extends Block
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onBlockActivated(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, entityplayer, facing, playerX, playerY, playerZ);
+			return getMainBlock(tileEntity, world).onBlockActivated(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, entityplayer, facing, playerX, playerY, playerZ);
 		} catch(Exception e) {
 			return false;
 		}
@@ -56,7 +56,7 @@ public class BlockBounding extends Block
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getPickBlock(target, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, player);
+			return getMainBlock(tileEntity, world).getPickBlock(target, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, player);
 		} catch(Exception e) {
 			return null;
 		}
@@ -67,7 +67,7 @@ public class BlockBounding extends Block
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).removedByPlayer(world, player, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, willHarvest);
+			return getMainBlock(tileEntity, world).removedByPlayer(world, player, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, willHarvest);
 		} catch(Exception e) {
 			return false;
 		}
@@ -79,7 +79,7 @@ public class BlockBounding extends Block
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
 			tileEntity.onNeighborChange(block);
-			world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, this);
+			getMainBlock(tileEntity, world).onNeighborBlockChange(world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ, this);
 		} catch(Exception e) {}
 	}
 	
@@ -88,10 +88,22 @@ public class BlockBounding extends Block
 	{
 		try {
 			TileEntityBoundingBlock tileEntity = (TileEntityBoundingBlock)world.getTileEntity(x, y, z);
-			return world.getBlock(tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ).getPlayerRelativeBlockHardness(player, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
+			return getMainBlock(tileEntity, world).getPlayerRelativeBlockHardness(player, world, tileEntity.mainX, tileEntity.mainY, tileEntity.mainZ);
 		} catch(Exception e) {
 			return super.getPlayerRelativeBlockHardness(player, world, x, y, z);
 		}
+	}
+	
+	private Block getMainBlock(TileEntityBoundingBlock mainTile, World world)
+	{
+		Block block = world.getBlock(mainTile.mainX, mainTile.mainY, mainTile.mainZ);
+		
+		if(block instanceof BlockBounding)
+		{
+			return null;
+		}
+		
+		return block;
 	}
 
 	@Override

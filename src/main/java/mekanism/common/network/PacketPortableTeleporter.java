@@ -101,31 +101,34 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
 					
 					Coord4D coords = found.getClosestCoords(new Coord4D(player));
 					
-					World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coords.dimensionId);
-					TileEntityTeleporter teleporter = (TileEntityTeleporter)coords.getTileEntity(teleWorld);
-					
-					if(teleporter != null)
+					if(coords != null)
 					{
-						try {
-							teleporter.didTeleport.add(player.getPersistentID());
-							teleporter.teleDelay = 5;
-							
-							item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
-							
-							if(player instanceof EntityPlayerMP)
-							{
-								MekanismUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
-							}
-							
-							player.closeScreen();
-							
-							Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(new Coord4D(player)), coords.getTargetPoint(40D));
-							TileEntityTeleporter.teleportPlayerTo((EntityPlayerMP)player, coords, teleporter);
-                            TileEntityTeleporter.alignPlayer((EntityPlayerMP)player, coords);
-							
-							world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
-							Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
-						} catch(Exception e) {}
+						World teleWorld = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(coords.dimensionId);
+						TileEntityTeleporter teleporter = (TileEntityTeleporter)coords.getTileEntity(teleWorld);
+						
+						if(teleporter != null)
+						{
+							try {
+								teleporter.didTeleport.add(player.getPersistentID());
+								teleporter.teleDelay = 5;
+								
+								item.setEnergy(itemstack, item.getEnergy(itemstack) - item.calculateEnergyCost(player, coords));
+								
+								if(player instanceof EntityPlayerMP)
+								{
+									MekanismUtils.setPrivateValue(((EntityPlayerMP)player).playerNetServerHandler, 0, NetHandlerPlayServer.class, ObfuscatedNames.NetHandlerPlayServer_floatingTickCount);
+								}
+								
+								player.closeScreen();
+								
+								Mekanism.packetHandler.sendToAllAround(new PortalFXMessage(new Coord4D(player)), coords.getTargetPoint(40D));
+								TileEntityTeleporter.teleportPlayerTo((EntityPlayerMP)player, coords, teleporter);
+	                            TileEntityTeleporter.alignPlayer((EntityPlayerMP)player, coords);
+								
+								world.playSoundAtEntity(player, "mob.endermen.portal", 1.0F, 1.0F);
+								Mekanism.packetHandler.sendToReceivers(new PortalFXMessage(coords), new Range4D(coords));
+							} catch(Exception e) {}
+						}
 					}
 					
 					break;

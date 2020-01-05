@@ -216,10 +216,11 @@ tile.EnergyCubeElite.name=Elite Energy Cube
 tile.EnergyCubeUltimate.name=Ultimate Energy Cube
 tile.EnergyCubeCreative.name=Creative Energy Cube
 
-//Factory Installers
-item.basicFactoryInstaller.name=Basic Factory Installer
-item.advancedFactoryInstaller.name=Advanced Factory Installer
-item.eliteFactoryInstaller.name=Elite Factory Installer
+//Tier Installers
+item.basicTierInstaller.name=Basic Tier Installer
+item.advancedTierInstaller.name=Advanced Tier Installer
+item.eliteTierInstaller.name=Elite Tier Installer
+item.ultimateTierInstaller.name=Ultimate Tier Installer
 
 //Dust
 item.ironDust.name=Iron Dust
@@ -509,7 +510,6 @@ gui.oreDictCompat=Compatible OreDict Key
 gui.toggleCooling=Toggle Cooling Measurements
 gui.coolingMeasurements=Active cooling
 gui.redstoneOutputMode=Redstone mode
-gui.entityDetection=Entity Detection
 gui.moveUp=Move Up
 gui.moveDown=Move Down
 gui.flowRate=Flow rate
@@ -556,6 +556,10 @@ gui.nowOwn=You now own this item.
 gui.frequency=Frequency
 gui.mode=Mode
 gui.burnRate=Burn Rate
+gui.entityDetection=Entity Detection
+gui.energyContents=Energy Contents
+gui.redstoneOutput=Redstone Output
+gui.maxWaterOutput=Max Water Output
 
 gui.reactor.injectionRate=Injection Rate
 
@@ -698,6 +702,7 @@ tooltip.configurator.plenisherReset=Reset Fluidic Plenisher calculation
 tooltip.configurator.inductionPortMode=Toggled Induction Port transfer mode to
 tooltip.configurator.toggleColor=Color bumped to
 tooltip.configurator.viewColor=Current color
+tooltip.configurator.reactorPortEject=Toggled Reactor Port eject mode to
 
 tooltip.upgrade.speed=Speed
 tooltip.upgrade.energy=Energy
@@ -844,6 +849,7 @@ tooltip.ElectromagneticCoil=A block that converts kinetic energy from a Rotation
 tooltip.TurbineCasing=Pressure-resistant casing used in the creation of an Industrial Turbine.
 tooltip.TurbineValve=A type of Turbine Casing that includes a port for the transfer of energy and steam.
 tooltip.TurbineVent=A type of Turbine Casing with an integrated vent for the release of steam. These should be placed on the level of or above the turbine's Rotational Complex.
+tooltip.SaturatingCondenser=A block that condenses steam processed by an Industrial Turbine into reusable water. These can be placed in any arrangement above your rotational complex.
 
 tooltip.ReactorGlass=Reinforced glass that can be used in the Fusion Reactor multiblock.
 tooltip.ReactorLaserFocusMatrix=A panel of Reactor Glass that is capable of absorbing optical energy and thereby heating up the Fusion Reactor.
@@ -965,6 +971,7 @@ tile.Generator.ElectromagneticCoil.name=Electromagnetic Coil
 tile.Generator.TurbineCasing.name=Turbine Casing
 tile.Generator.TurbineValve.name=Turbine Valve
 tile.Generator.TurbineVent.name=Turbine Vent
+tile.Generator.SaturatingCondenser.name=Saturating Condenser
 
 tile.Reactor.ReactorController.name=Reactor Controller
 tile.Reactor.ReactorFrame.name=Reactor Frame

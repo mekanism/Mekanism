@@ -115,10 +115,18 @@ public final class PipeUtils
 				}
 				
 				ForgeDirection dir = ForgeDirection.getOrientation(Arrays.asList(possibleAcceptors).indexOf(acceptor)).getOpposite();
-				toSend -= acceptor.fill(dir, new FluidStack(stack.getFluid(), currentSending), true);
+				toSend -= acceptor.fill(dir, copy(stack, currentSending), true);
 			}
 		}
 
 		return prevSending-toSend;
+	}
+	
+	public static FluidStack copy(FluidStack fluid, int amount)
+	{
+		FluidStack ret = fluid.copy();
+		ret.amount = amount;
+		
+		return ret;
 	}
 }

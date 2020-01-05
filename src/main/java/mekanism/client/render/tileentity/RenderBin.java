@@ -90,7 +90,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 			if(amount != "")
 			{
-				renderText(amount, ForgeDirection.getOrientation(tileEntity.facing), 0.02F, x, y - 0.31F, z);
+				renderText(amount, ForgeDirection.getOrientation(tileEntity.facing), 0.02F, x, y - 0.3725F, z);
 			}
 			
 			MekanismRenderer.glowOff();

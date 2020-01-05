@@ -14,6 +14,7 @@ import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
+import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -75,7 +76,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 						setEnergy(getEnergy()+((int)rate)*energyMultiplier);
 						
 						structure.fluidStored.amount -= rate;
-						structure.clientFlow = (int)rate;
+						structure.clientFlow = Math.min((int)rate, structure.condensers*generators.condenserRate);
+						structure.flowRemaining = (int)rate;
 						
 						if(structure.fluidStored.amount == 0)
 						{
@@ -84,6 +86,16 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 					}
 					else {
 						structure.clientFlow = 0;
+					}
+					
+					if(structure.dumpMode == GasMode.DUMPING && structure.fluidStored != null)
+					{
+						structure.fluidStored.amount -= Math.min(structure.fluidStored.amount, Math.max(structure.fluidStored.amount/50, structure.lastSteamInput*2));
+						
+						if(structure.fluidStored.amount == 0)
+						{
+							structure.fluidStored = null;
+						}
 					}
 					
 					float newRotation = (float)flowRate;
@@ -170,10 +182,12 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 			data.add(structure.vents);
 			data.add(structure.blades);
 			data.add(structure.coils);
+			data.add(structure.condensers);
 			data.add(structure.getDispersers());
 			data.add(structure.electricityStored);
 			data.add(structure.clientFlow);
 			data.add(structure.lastSteamInput);
+			data.add(structure.dumpMode.ordinal());
 			
 			if(structure.fluidStored != null)
 			{
@@ -198,6 +212,21 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 	@Override
 	public void handlePacketData(ByteBuf dataStream)
 	{
+		if(!worldObj.isRemote)
+		{
+			if(structure != null)
+			{
+				byte type = dataStream.readByte();
+	
+				if(type == 0)
+				{
+					structure.dumpMode = GasMode.values()[structure.dumpMode.ordinal() == GasMode.values().length-1 ? 0 : structure.dumpMode.ordinal()+1];
+				}
+			}
+
+			return;
+		}
+		
 		super.handlePacketData(dataStream);
 		
 		if(worldObj.isRemote)
@@ -209,10 +238,12 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 				structure.vents = dataStream.readInt();
 				structure.blades = dataStream.readInt();
 				structure.coils = dataStream.readInt();
+				structure.condensers = dataStream.readInt();
 				structure.clientDispersers = dataStream.readInt();
 				structure.electricityStored = dataStream.readDouble();
 				structure.clientFlow = dataStream.readInt();
 				structure.lastSteamInput = dataStream.readInt();
+				structure.dumpMode = GasMode.values()[dataStream.readInt()];
 				
 				if(dataStream.readInt() == 1)
 				{

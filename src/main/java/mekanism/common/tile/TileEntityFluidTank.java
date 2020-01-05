@@ -9,11 +9,13 @@ import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.api.Range4D;
 import mekanism.common.Mekanism;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Tier.FluidTankTier;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.ISustainedTank;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -22,10 +24,12 @@ import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -36,7 +40,7 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile
+public class TileEntityFluidTank extends TileEntityContainerBlock implements IActiveState, IConfigurable, IFluidHandler, ISustainedTank, IFluidContainerManager, ITankManager, ISecurityTile, ITierUpgradeable
 {
 	public boolean isActive;
 
@@ -59,6 +63,8 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 	
 	public boolean needsPacket;
 	
+	public int currentRedstoneLevel;
+	
 	public TileComponentSecurity securityComponent = new TileComponentSecurity(this);
 	
 	public TileEntityFluidTank() 
@@ -67,6 +73,23 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		
 		fluidTank = new FluidTank(tier.storage);
 		inventory = new ItemStack[2];
+	}
+	
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
+	{
+		if(upgradeTier.ordinal() != tier.ordinal()+1)
+		{
+			return false;
+		}
+		
+		tier = FluidTankTier.values()[upgradeTier.ordinal()];
+		fluidTank.setCapacity(tier.storage);
+		
+		Mekanism.packetHandler.sendToReceivers(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), new Range4D(Coord4D.get(this)));
+		markDirty();
+		
+		return true;
 	}
 	
 	@Override
@@ -138,6 +161,14 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 				activeEmit();
 			}
 			
+			int newRedstoneLevel = getRedstoneLevel();
+
+			if(newRedstoneLevel != currentRedstoneLevel)
+			{
+				markDirty();
+				currentRedstoneLevel = newRedstoneLevel;
+			}
+			
 			if(needsPacket)
 			{
 				Mekanism.packetHandler.sendToAllAround(new TileEntityMessage(Coord4D.get(this), getNetworkedData(new ArrayList())), Coord4D.get(this).getTargetPoint(50));
@@ -183,13 +214,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 					
 					if(ret != null)
 					{
-						fluidTank.setFluid(new FluidStack(ret.getFluid(), Math.min(fluidTank.getCapacity(), ret.amount)));
+						fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
 						
 						int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
 						
 						if(rejects > 0)
 						{
-							pushUp(new FluidStack(ret.getFluid(), rejects), true);
+							pushUp(PipeUtils.copy(ret, rejects), true);
 						}
 					}
 				}
@@ -204,13 +235,13 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 				
 				if(ret != null)
 				{
-					fluidTank.setFluid(new FluidStack(ret.getFluid(), Math.min(fluidTank.getCapacity(), ret.amount)));
+					fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.amount)));
 					
 					int rejects = Math.max(0, ret.amount - fluidTank.getCapacity());
 					
 					if(rejects > 0)
 					{
-						pushUp(new FluidStack(ret.getFluid(), rejects), true);
+						pushUp(PipeUtils.copy(ret, rejects), true);
 					}
 				}
 			}
@@ -352,6 +383,12 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 		}
 	}
 	
+	public int getRedstoneLevel()
+	{
+        double fractionFull = (float)fluidTank.getFluidAmount()/(float)fluidTank.getCapacity();
+        return MathHelper.floor_float((float)(fractionFull * 14.0F)) + (fractionFull > 0 ? 1 : 0);
+	}
+	
 	public int getCurrentNeeded()
 	{
 		int needed = fluidTank.getCapacity()-fluidTank.getFluidAmount();
@@ -464,7 +501,7 @@ public class TileEntityFluidTank extends TileEntityContainerBlock implements IAc
 			
 			if(filled < resource.amount && !isActive)
 			{
-				filled += pushUp(new FluidStack(resource.getFluid(), resource.amount-filled), doFill);
+				filled += pushUp(PipeUtils.copy(resource, resource.amount-filled), doFill);
 			}
 			
 			if(filled > 0 && from == ForgeDirection.UP)

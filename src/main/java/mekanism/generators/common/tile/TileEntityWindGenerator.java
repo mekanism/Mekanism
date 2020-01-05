@@ -1,5 +1,9 @@
 package mekanism.generators.common.tile;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.generators;
 import mekanism.common.base.IBoundingBlock;
@@ -14,6 +18,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 {
 	/** The angle the blades of this Wind Turbine are currently at. */
 	public double angle;
+	
+	public float currentMultiplier;
 
 	public TileEntityWindGenerator()
 	{
@@ -30,15 +36,37 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 		{
 			ChargeUtils.charge(0, this);
 			
-			if(canOperate())
+			if(ticker % 20 == 0)
 			{
-				setActive(true);
-				setEnergy(electricityStored + (generators.windGenerationMin*getMultiplier()));
+				setActive((currentMultiplier = getMultiplier()) > 0);
 			}
-			else {
-				setActive(false);
+			
+			if(getActive())
+			{
+				setEnergy(electricityStored + (generators.windGenerationMin*currentMultiplier));
 			}
 		}
+	}
+	
+	@Override
+	public void handlePacketData(ByteBuf dataStream)
+	{
+		super.handlePacketData(dataStream);
+
+		if(worldObj.isRemote)
+		{
+			currentMultiplier = dataStream.readFloat();
+		}
+	}
+
+	@Override
+	public ArrayList getNetworkedData(ArrayList data)
+	{
+		super.getNetworkedData(data);
+
+		data.add(currentMultiplier);
+
+		return data;
 	}
 
 	/** Determines the current output multiplier, taking sky visibility and height into account. **/

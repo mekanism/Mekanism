@@ -14,8 +14,10 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismBlocks;
 import mekanism.common.MekanismItems;
 import mekanism.common.SideData;
+import mekanism.common.Tier.BaseTier;
 import mekanism.common.Upgrade;
 import mekanism.common.base.IFactory.RecipeType;
+import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.recipe.RecipeHandler;
 import mekanism.common.recipe.inputs.AdvancedMachineInput;
 import mekanism.common.recipe.machines.AdvancedMachineRecipe;
@@ -33,7 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends TileEntityBasicMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ITubeConnection
+public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedMachineRecipe<RECIPE>> extends TileEntityBasicMachine<AdvancedMachineInput, ItemStackOutput, RECIPE> implements IGasHandler, ITubeConnection, ITierUpgradeable
 {
 	/** How much secondary energy (fuel) this machine uses per tick, not including upgrades. */
 	public int BASE_SECONDARY_ENERGY_PER_TICK;
@@ -89,12 +91,19 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		ejectorComponent.setOutputData(TransmissionType.ITEM, configComponent.getOutputs(TransmissionType.ITEM).get(2));
 	}
 	
-	public void upgrade(RecipeType type)
+	@Override
+	public boolean upgrade(BaseTier upgradeTier)
 	{
+		if(upgradeTier != BaseTier.BASIC)
+		{
+			return false;
+		}
+		
 		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 		worldObj.setBlock(xCoord, yCoord, zCoord, MekanismBlocks.MachineBlock, 5, 3);
 		
 		TileEntityFactory factory = (TileEntityFactory)worldObj.getTileEntity(xCoord, yCoord, zCoord);
+		RecipeType type = RecipeType.getFromMachine(getBlockType(), getBlockMetadata());
 		
 		//Basic
 		factory.facing = facing;
@@ -146,8 +155,9 @@ public abstract class TileEntityAdvancedElectricMachine<RECIPE extends AdvancedM
 		}
 		
 		factory.upgraded = true;
-		
 		factory.markDirty();
+		
+		return true;
 	}
 
 	/**
