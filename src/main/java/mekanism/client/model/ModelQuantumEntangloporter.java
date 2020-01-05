@@ -87,7 +87,7 @@ public class ModelQuantumEntangloporter extends Model {
         setRotation(portLeft, 0F, 0F, 0F);
         portRight = new ModelRenderer(this, 0, 0);
         portRight.mirror = true;
-        portRight.func_228304_a_(0F, 0F, 0F, 1, 8, 8, false);
+        portRight.func_228304_a_(0F, 0F, 0F, 1, 8, 8, true);
         portRight.setRotationPoint(7F, 12F, -4F);
         portRight.setTextureSize(128, 64);
         setRotation(portRight, 0F, 0F, 0F);
