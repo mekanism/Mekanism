@@ -28,7 +28,7 @@ public class RenderFreeRunners extends MekanismItemStackRenderer {
         matrix.func_227863_a_(Vector3f.field_229180_c_.func_229187_a_(90));
         matrix.func_227862_a_(2.0F, 2.0F, 2.0F);
         matrix.func_227861_a_(0.2, -1.43, 0.12);
-        freeRunners.render(matrix, renderer, light, overlayLight);
+        freeRunners.render(matrix, renderer, light, overlayLight, stack.hasEffect());
         matrix.func_227865_b_();
     }
 

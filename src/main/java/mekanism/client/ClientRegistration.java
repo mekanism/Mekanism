@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import it.unimi.dsi.fastutil.floats.Float2ObjectFunction;
 import java.util.Map;
 import java.util.function.Function;
 import mekanism.api.block.IColoredBlock;
@@ -96,6 +97,7 @@ import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.item.gear.RenderGasMask;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaTank;
+import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalCrystallizer;
@@ -131,8 +133,19 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.DrownedModel;
+import net.minecraft.client.renderer.entity.model.GiantModel;
+import net.minecraft.client.renderer.entity.model.SkeletonModel;
+import net.minecraft.client.renderer.entity.model.ZombieModel;
+import net.minecraft.client.renderer.entity.model.ZombieVillagerModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -145,8 +158,10 @@ import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
@@ -420,5 +435,39 @@ public class ClientRegistration {
     public static void modelRegistryEvent(ModelRegistryEvent event) {
         //Register our custom model loader for transmitters
         ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
+    }
+
+    @SubscribeEvent
+    public static void loadComplete(FMLLoadCompleteEvent evt) {
+        // ClientSetup is too early to do this
+        DeferredWorkQueue.runLater(() -> {
+            //Add our own custom armor layer to everything that has an armor layer
+            //TODO: See if this can be done better so that it supports modded mobs
+            // Maybe loop all of the renderers and if they are a LivingRenderer that has an armorLayer add one
+            EntityRendererManager entityRenderManager = Minecraft.getInstance().getRenderManager();
+            Map<String, PlayerRenderer> skinMap = entityRenderManager.getSkinMap();
+            addCustomArmorLayer(skinMap.get("default"), BipedModel::new);
+            addCustomArmorLayer(skinMap.get("slim"), BipedModel::new);
+            addCustomArmorLayer(entityRenderManager, EntityType.ARMOR_STAND, BipedModel::new);
+            addCustomArmorLayer(entityRenderManager, EntityType.DROWNED, size -> new DrownedModel<>(size, true));
+            addCustomArmorLayer(entityRenderManager, EntityType.HUSK, size -> new ZombieModel<>(size, true));
+            addCustomArmorLayer(entityRenderManager, EntityType.ZOMBIE, size -> new ZombieModel<>(size, true));
+            addCustomArmorLayer(entityRenderManager, EntityType.ZOMBIE_PIGMAN, size -> new ZombieModel<>(size, true));
+            addCustomArmorLayer(entityRenderManager, EntityType.GIANT, size -> new GiantModel(size, true));
+            addCustomArmorLayer(entityRenderManager, EntityType.ZOMBIE_VILLAGER, size -> new ZombieVillagerModel<>(size, true));
+            addCustomArmorLayer(entityRenderManager, EntityType.SKELETON, size -> new SkeletonModel<>(size, true));
+            addCustomArmorLayer(entityRenderManager, EntityType.STRAY, size -> new SkeletonModel<>(size, true));
+            addCustomArmorLayer(entityRenderManager, EntityType.WITHER_SKELETON, size -> new SkeletonModel<>(size, true));
+        });
+    }
+
+    private static <T extends LivingEntity, A extends BipedModel<T>> void addCustomArmorLayer(EntityRendererManager entityRenderManager, EntityType<T> type,
+          Float2ObjectFunction<A> modelCreator) {
+        addCustomArmorLayer((LivingRenderer<T, ? extends BipedModel<T>>) entityRenderManager.renderers.get(type), modelCreator);
+    }
+
+    private static <T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> void addCustomArmorLayer(LivingRenderer<T, M> renderer,
+          Float2ObjectFunction<A> modelCreator) {
+        renderer.addLayer(new MekanismArmorLayer<>(renderer, modelCreator.get(0.5F), modelCreator.get(1.0F)));
     }
 }

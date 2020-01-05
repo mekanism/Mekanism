@@ -8,6 +8,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -174,10 +175,14 @@ public class ModelJetpack extends Model {
         setRotation(light3, 0F, 0F, 0F);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
+        func_225598_a_(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         //TODO: Should our wing render type have cull enabled? It previously was enabled
-        renderWings(matrix, renderer.getBuffer(WING_RENDER_TYPE), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
+        renderWings(matrix, getVertexBuilder(renderer, WING_RENDER_TYPE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.2F);
+    }
+
+    private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, RenderType renderType, boolean hasEffect) {
+        return ItemRenderer.func_229113_a_(renderer, renderType, false, hasEffect);
     }
 
     @Override

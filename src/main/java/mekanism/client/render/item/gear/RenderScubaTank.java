@@ -28,7 +28,7 @@ public class RenderScubaTank extends MekanismItemStackRenderer {
         matrix.func_227863_a_(Vector3f.field_229180_c_.func_229187_a_(90));
         matrix.func_227862_a_(1.6F, 1.6F, 1.6F);
         matrix.func_227861_a_(0.2, -0.5, 0);
-        scubaTank.render(matrix, renderer, light, overlayLight);
+        scubaTank.render(matrix, renderer, light, overlayLight, stack.hasEffect());
         matrix.func_227865_b_();
     }
 

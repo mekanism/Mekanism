@@ -27,7 +27,7 @@ public class RenderGasMask extends MekanismItemStackRenderer {
         matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
         matrix.func_227863_a_(Vector3f.field_229180_c_.func_229187_a_(90));
         matrix.func_227861_a_(0.1, 0.2, 0);
-        gasMask.render(matrix, renderer, light, overlayLight);
+        gasMask.render(matrix, renderer, light, overlayLight, stack.hasEffect());
         matrix.func_227865_b_();
     }
 

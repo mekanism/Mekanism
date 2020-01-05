@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -68,26 +69,39 @@ public class ModelFreeRunners extends Model {
         SupportR.mirror = false;
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
+        func_225598_a_(matrix, getVertexBuilder(renderer, hasEffect), light, overlayLight, 1, 1, 1, 1);
+    }
+
+    private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, boolean hasEffect) {
+        return ItemRenderer.func_229113_a_(renderer, RENDER_TYPE, false, hasEffect);
     }
 
     @Override
     public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        renderLeft(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        renderRight(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    public void renderLeft(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         SpringL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         BraceL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         SupportL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    public void renderRight(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         SpringR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         BraceR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         SupportR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    }
+
+    public void renderLeg(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, boolean left) {
+        IVertexBuilder vertexBuilder = getVertexBuilder(renderer, hasEffect);
+        float red = 1;
+        float green = 1;
+        float blue = 1;
+        float alpha = 1;
+        if (left) {
+            SpringL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            BraceL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            SupportL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        } else {
+            SpringR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            BraceR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            SupportR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        }
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

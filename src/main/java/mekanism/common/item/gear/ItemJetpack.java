@@ -14,14 +14,13 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.ModelCustomArmor;
-import mekanism.client.render.ModelCustomArmor.ArmorModel;
+import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
@@ -42,7 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemJetpack extends ArmorItem implements IGasItem {
+public class ItemJetpack extends ArmorItem implements IGasItem, ISpecialGear {
 
     public static final JetpackMaterial JETPACK_MATERIAL = new JetpackMaterial();
 
@@ -92,15 +91,14 @@ public class ItemJetpack extends ArmorItem implements IGasItem {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return "mekanism:render/jetpack.png";
+        return "mekanism:render/null_armor.png";
     }
 
+    @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
-    public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default) {
-        ModelCustomArmor model = ModelCustomArmor.INSTANCE;
-        model.modelType = ArmorModel.JETPACK;
-        return model;
+    public ModelCustomArmor getGearModel() {
+        return JetpackArmor.JETPACK;
     }
 
     public void incrementMode(ItemStack stack) {

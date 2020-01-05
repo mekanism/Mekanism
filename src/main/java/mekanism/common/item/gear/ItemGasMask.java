@@ -1,15 +1,14 @@
 package mekanism.common.item.gear;
 
 import java.util.concurrent.Callable;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.client.render.ModelCustomArmor;
-import mekanism.client.render.ModelCustomArmor.ArmorModel;
+import mekanism.client.render.armor.GasMaskArmor;
 import mekanism.client.render.item.gear.RenderGasMask;
-import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
@@ -20,7 +19,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemGasMask extends ArmorItem {
+public class ItemGasMask extends ArmorItem implements ISpecialGear {
 
     public static final GasMaskMaterial GAS_MASK_MATERIAL = new GasMaskMaterial();
 
@@ -36,15 +35,14 @@ public class ItemGasMask extends ArmorItem {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return "mekanism:render/scuba_set.png";
+        return "mekanism:render/null_armor.png";
     }
 
+    @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
-    public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default) {
-        ModelCustomArmor model = ModelCustomArmor.INSTANCE;
-        model.modelType = ArmorModel.GASMASK;
-        return model;
+    public ModelCustomArmor getGearModel() {
+        return GasMaskArmor.GAS_MASK;
     }
 
     @ParametersAreNonnullByDefault

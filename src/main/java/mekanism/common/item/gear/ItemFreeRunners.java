@@ -11,7 +11,7 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.ModelCustomArmor;
-import mekanism.client.render.ModelCustomArmor.ArmorModel;
+import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -20,11 +20,9 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.IArmorMaterial;
@@ -42,7 +40,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemFreeRunners extends ArmorItem implements IItemEnergized {
+public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpecialGear {
 
     public static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
@@ -63,15 +61,14 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return "mekanism:render/free_runners.png";
+        return "mekanism:render/null_armor.png";
     }
 
+    @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
-    public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default) {
-        ModelCustomArmor model = ModelCustomArmor.INSTANCE;
-        model.modelType = ArmorModel.FREERUNNERS;
-        return model;
+    public ModelCustomArmor getGearModel() {
+        return FreeRunnerArmor.FREE_RUNNERS;
     }
 
     @Override

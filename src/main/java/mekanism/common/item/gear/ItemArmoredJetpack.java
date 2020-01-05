@@ -1,17 +1,15 @@
 package mekanism.common.item.gear;
 
 import java.util.concurrent.Callable;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.client.render.ModelCustomArmor;
-import mekanism.client.render.ModelCustomArmor.ArmorModel;
+import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,12 +27,11 @@ public class ItemArmoredJetpack extends ItemJetpack {
         return RenderArmoredJetpack::new;
     }
 
+    @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
-    public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default) {
-        ModelCustomArmor model = ModelCustomArmor.INSTANCE;
-        model.modelType = ArmorModel.ARMOREDJETPACK;
-        return model;
+    public ModelCustomArmor getGearModel() {
+        return JetpackArmor.ARMORED_JETPACK;
     }
 
     @ParametersAreNonnullByDefault
