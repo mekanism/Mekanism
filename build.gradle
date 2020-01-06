@@ -471,21 +471,9 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             // A file can also be set using: changelog = file('changelog.txt')
             releaseType = "${curse_release_type}"
             mainArtifact(coreJar) {
-                //TODO: Update this list, and also update it in the mods.toml file
                 relations {
                     optionalDependency "jei"
-                    optionalDependency "crafttweaker"
-                    optionalDependency "industrial-craft"
-                    optionalDependency "mcmultipart"
-                    optionalDependency "tesla"
-                    optionalDependency "cc-tweaked"
-                    optionalDependency "the-one-probe"
-                    optionalDependency "hwyla"
-                    optionalDependency "applied-energistics-2"
-                    optionalDependency "redstone-flux"
-                    optionalDependency "metallurgy-4-reforged"
-                    optionalDependency "opencomputers"
-                    optionalDependency "cyclic"
+                    optionalDependency "biomes-o-plenty"
                 }
             }
             addArtifact apiJar

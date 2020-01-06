@@ -1,3 +1,6 @@
+path_classifiers:
+  generated:
+    - exclude: "build/sources"
 extraction:
   java:
     index:
