@@ -22,9 +22,7 @@ the hydrogen-powered jetpacks, and have a cute robotic friend following you arou
 
 # Alpha Status #
 
-Mekanism for 1.15 is currently in a pre-alpha state. Once we finish work on adapting to all the rendering
-changes that vanilla made in 1.15 we will release an alpha. More information about how Mekanism will be
-once it reaches an alpha state are as follows. The majority of basic features are working properly, while
+Mekanism for 1.15 is currently in an alpha state. The majority of basic features are working properly, while
 other things like inventories for multiblocks are in a more broken state. We are currently working on
 refactoring multiple large portions of the code to make Mekanism easier to maintain and add new features
 to. Because of this, the internals are in flux and may be changed greatly so we may also make breaking

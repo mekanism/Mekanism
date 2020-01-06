@@ -129,10 +129,10 @@ repositories {
         name 'amadornes'
         url 'https://maven.amadornes.com/'
     }
-    /*maven {
+    maven {
         name 'prog'
         url 'http://dvs1.progwml6.com/files/maven'
-    }*/
+    }
     maven {
         name 'curseforge'
         url 'https://minecraft.curseforge.com/api/maven/'
