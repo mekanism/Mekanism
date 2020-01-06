@@ -237,6 +237,7 @@ minecraft {
 
         data {
             workingDirectory project.file("run")
+            environment 'target', 'fmluserdevdata'
             properties 'fml.earlyprogresswindow': 'false'
 
             args '--all', '--output', '"' + file('src/datagen/generated/') + '"',
