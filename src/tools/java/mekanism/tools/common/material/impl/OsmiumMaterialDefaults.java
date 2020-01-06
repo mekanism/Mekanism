@@ -74,13 +74,13 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     public int getDurability(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 3;
+                return 390;
             case LEGS:
-                return 6;
+                return 450;
             case CHEST:
-                return 5;
+                return 480;
             case HEAD:
-                return 3;
+                return 330;
         }
         return 0;
     }
@@ -89,13 +89,13 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 390;
+                return 3;
             case LEGS:
-                return 450;
+                return 6;
             case CHEST:
-                return 480;
+                return 5;
             case HEAD:
-                return 330;
+                return 3;
         }
         return 0;
     }
