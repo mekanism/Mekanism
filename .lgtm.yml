@@ -1,0 +1,6 @@
+extraction:
+  java:
+    index:
+      java_version: 8
+      gradle:
+        version: "4.10.3"
