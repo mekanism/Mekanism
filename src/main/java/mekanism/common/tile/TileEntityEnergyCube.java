@@ -4,20 +4,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.base.ITileComponent;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -27,23 +25,21 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
+import mekanism.common.upgrade.EnergyCubeUpgradeData;
+import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ITierUpgradeable, IConfigCardAccess,
-      IComparatorSupport {
+public class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
     /**
      * This Energy Cube's tier.
      */
-    public EnergyCubeTier tier;
+    public EnergyCubeTier tier;//TODO: Make this private
     /**
      * The redstone level this Energy Cube is outputting at.
      */
@@ -118,18 +114,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     }
 
     @Override
-    public boolean upgrade(BaseTier upgradeTier) {
-        //TODO: Upgrade
-        /*if (upgradeTier.ordinal() != tier.ordinal() + 1) {
-            return false;
-        }
-        tier = EnumUtils.ENERGY_CUBE_TIERS[upgradeTier.ordinal()];
-        Mekanism.packetHandler.sendUpdatePacket(this);
-        markDirty();*/
-        return true;
-    }
-
-    @Override
     public double getMaxOutput() {
         return tier.getOutput();
     }
@@ -173,40 +157,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            EnergyCubeTier prevTier = tier;
-            tier = dataStream.readEnumValue(EnergyCubeTier.class);
-            if (prevTier != tier) {
-                MekanismUtils.updateBlock(getWorld(), getPos());
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(tier);
-        return data;
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        tier = EnumUtils.ENERGY_CUBE_TIERS[nbtTags.getInt("tier")];
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        //TODO: We shouldn't be having to save the "tier" to NBT given we have a different TileEntityType per tier?? Same with most of the other things that store tier
-        nbtTags.putInt("tier", tier.ordinal());
-        return nbtTags;
-    }
-
-    @Override
     public void setEnergy(double energy) {
         if (tier == EnergyCubeTier.CREATIVE && energy != Double.MAX_VALUE) {
             return;
@@ -247,5 +197,29 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
             return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+        if (upgradeData instanceof EnergyCubeUpgradeData) {
+            EnergyCubeUpgradeData data = (EnergyCubeUpgradeData) upgradeData;
+            redstone = data.redstone;
+            setControlType(data.controlType);
+            setEnergy(data.electricityStored);
+            chargeSlot.setStack(data.chargeSlot.getStack());
+            dischargeSlot.setStack(data.dischargeSlot.getStack());
+            for (ITileComponent component : getComponents()) {
+                component.read(data.components);
+            }
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public EnergyCubeUpgradeData getUpgradeData() {
+
+        return new EnergyCubeUpgradeData(redstone, getControlType(), getEnergy(), chargeSlot, dischargeSlot, getComponents());
     }
 }

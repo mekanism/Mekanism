@@ -5,8 +5,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.tile.TileEntityCardboardBox;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe;
-import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -167,11 +165,21 @@ public class BlockStateHelper {
         return false;
     }
 
-    @Nonnull
-    private static ConnectionType getStateConnection(@Nonnull TileEntity tile, @Nonnull Direction side) {
-        if (tile instanceof TileEntitySidedPipe) {
-            return ((TileEntitySidedPipe) tile).getConnectionType(side);
+    public static BlockState copyStateData(BlockState oldState, BlockState newState) {
+        Block oldBlock = oldState.getBlock();
+        Block newBlock = newState.getBlock();
+        if (oldBlock instanceof IStateFacing && newBlock instanceof IStateFacing) {
+            newState = newState.with(((IStateFacing) newBlock).getFacingProperty(), oldState.get(((IStateFacing) oldBlock).getFacingProperty()));
         }
-        return ConnectionType.NONE;
+        if (oldBlock instanceof IStateActive && newBlock instanceof IStateActive) {
+            newState = newState.with(activeProperty, oldState.get(activeProperty));
+        }
+        if (oldBlock instanceof IStateStorage && newBlock instanceof IStateStorage) {
+            newState = newState.with(storageProperty, oldState.get(storageProperty));
+        }
+        if (oldBlock instanceof IStateFacing && newBlock instanceof IStateFacing) {
+            newState = newState.with(WATERLOGGED, oldState.get(WATERLOGGED));
+        }
+        return newState;
     }
 }

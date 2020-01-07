@@ -13,14 +13,16 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.EnergyCubeContainer;
 import mekanism.common.item.block.ItemBlockEnergyCube;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -61,7 +63,7 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntityEnergyCube>, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory,
+public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntityEnergyCube>, IStateFacing, IUpgradeableBlock<EnergyCubeTier>, IBlockElectric, IHasInventory,
       IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[128];
@@ -184,9 +186,8 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
     @Override
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityEnergyCube) {
-            TileEntityEnergyCube cube = (TileEntityEnergyCube) tile;
-            if (cube.tier == EnergyCubeTier.CREATIVE) {
-                ConfigInfo energyConfig = cube.configComponent.getConfig(TransmissionType.ENERGY);
+            if (tier == EnergyCubeTier.CREATIVE) {
+                ConfigInfo energyConfig = ((TileEntityEnergyCube) tile).configComponent.getConfig(TransmissionType.ENERGY);
                 if (energyConfig != null) {
                     energyConfig.fill(((ItemBlockEnergyCube) stack.getItem()).getEnergy(stack) > 0 ? DataType.OUTPUT : DataType.INPUT);
                 }
@@ -287,5 +288,23 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
     @Override
     public ILangEntry getDescription() {
         return MekanismLang.DESCRIPTION_ENERGY_CUBE;
+    }
+
+    @Nonnull
+    @Override
+    public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_ENERGY_CUBE.getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_ENERGY_CUBE.getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_ENERGY_CUBE.getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_ENERGY_CUBE.getBlock().getDefaultState());
+            case CREATIVE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.CREATIVE_ENERGY_CUBE.getBlock().getDefaultState());
+        }
+        return current;
     }
 }

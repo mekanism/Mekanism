@@ -31,6 +31,7 @@ import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
@@ -56,6 +57,8 @@ import mekanism.common.tile.interfaces.ITileElectric;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.ITileUpgradable;
+import mekanism.common.tile.interfaces.IUpgradeableTile;
+import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -93,7 +96,7 @@ import net.minecraftforge.items.IItemHandler;
 // rather than silently "fail" and just do nothing
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
-      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable {
+      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, IUpgradeableTile {
     //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
@@ -117,6 +120,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     private boolean supportsUpgrades;
     private boolean supportsRedstone;
+    private boolean canBeUpgraded;
     private boolean isDirectional;
     private boolean isActivatable;
     private boolean hasInventory;
@@ -126,6 +130,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     private boolean hasGui;
 
     //Variables for handling ITileRedstone
+    //TODO: Move these to private variables?
     public boolean redstone = false;
     public boolean redstoneLastTick = false;
     /**
@@ -217,6 +222,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         //Used to get any data we may need
         isElectric = block instanceof IBlockElectric;
         supportsUpgrades = block instanceof ISupportsUpgrades;
+        canBeUpgraded = block instanceof IUpgradeableBlock;
         isDirectional = block instanceof IStateFacing;
         supportsRedstone = block instanceof ISupportsRedstone;
         hasSound = block instanceof IBlockSound;
@@ -249,6 +255,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public final boolean supportsUpgrades() {
         return supportsUpgrades;
+    }
+
+    @Override
+    public final boolean canBeUpgraded() {
+        return canBeUpgraded;
     }
 
     @Override
@@ -618,6 +629,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         super.read(tag);
     }
 
+    //Methods pertaining to IUpgradeableTile
+    public void parseUpgradeData(@Nonnull IUpgradeData data) {
+        Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
+    }
+    //End methods IUpgradeableTile
 
     //Methods for implementing ITileDirectional
     @Nonnull
