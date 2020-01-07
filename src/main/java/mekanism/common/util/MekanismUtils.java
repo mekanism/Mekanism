@@ -183,21 +183,6 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets the energy required per tick for a machine via it's upgrades, not taking into account speed upgrades.
-     *
-     * @param mgmt - tile containing upgrades
-     * @param def  - the original, default energy required
-     *
-     * @return required energy per tick
-     */
-    public static double getBaseEnergyPerTick(IUpgradeTile mgmt, double def) {
-        if (mgmt.supportsUpgrades()) {
-            return def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(mgmt, Upgrade.ENERGY));
-        }
-        return def;
-    }
-
-    /**
      * Gets the secondary energy required per tick for a machine via upgrades.
      *
      * @param mgmt - tile containing upgrades

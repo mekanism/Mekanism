@@ -53,7 +53,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         addButton(new GuiVerticalPowerBar(this, tile, resource, 163, 23));
         addButton(new GuiVisualsTab(this, tile, resource));
         addButton(new GuiEnergyInfo(() -> {
-            double perTick = tile.getPerTick();
+            double perTick = tile.getEnergyPerTick();
             ArrayList<ITextComponent> ret = new ArrayList<>(4);
             ret.add(MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(tile.getMaxEnergy())));
             ret.add(MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(perTick)));
@@ -100,7 +100,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Dig
         drawString(tile.getName(), 69, 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         ILangEntry runningType;
-        if (tile.getPerTick() > tile.getMaxEnergy()) {
+        if (tile.getEnergyPerTick() > tile.getMaxEnergy()) {
             runningType = MekanismLang.MINER_LOW_POWER;
         } else if (tile.running) {
             runningType = MekanismLang.MINER_RUNNING;

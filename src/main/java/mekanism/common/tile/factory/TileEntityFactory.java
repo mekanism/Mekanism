@@ -673,21 +673,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
-        switch (upgrade) {
-            case ENERGY:
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage())); // incorporate speed upgrades
-                break;
-            case GAS:
-                //TODO: Move gas upgrade to only be in specific factories? At least for calculations?
-                secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-                break;
-            case SPEED:
-                ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
-                secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-                break;
-            default:
-                break;
+        if (upgrade == Upgrade.GAS) {
+            //TODO: Move gas upgrade to only be in specific factories? At least for calculations?
+            secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+        } else if (upgrade == Upgrade.SPEED) {
+            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+            secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
         }
     }
 

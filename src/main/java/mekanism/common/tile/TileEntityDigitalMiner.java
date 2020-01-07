@@ -188,12 +188,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
             energySlot.discharge(this);
 
-            if (MekanismUtils.canFunction(this) && running && getEnergy() >= getPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0) {
+            if (MekanismUtils.canFunction(this) && running && getEnergy() >= getEnergyPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0) {
                 setActive(true);
                 if (delay > 0) {
                     delay--;
                 }
-                setEnergy(getEnergy() - getPerTick());
+                setEnergy(getEnergy() - getEnergyPerTick());
                 if (delay == 0) {
                     boolean did = false;
                     for (Iterator<Chunk3D> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
@@ -295,8 +295,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         }
     }
 
-    public double getPerTick() {
-        double ret = getEnergyPerTick();
+    @Override
+    public double getEnergyPerTick() {
+        double ret = super.getEnergyPerTick();
         if (silkTouch) {
             ret *= MekanismConfig.general.minerSilkMultiplier.get();
         }

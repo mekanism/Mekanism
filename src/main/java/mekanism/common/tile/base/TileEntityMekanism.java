@@ -703,11 +703,15 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         //TODO: Defaults for each of the types based on what other things this machine supports??
-        if (upgrade == Upgrade.ENERGY) {
+        if (upgrade == Upgrade.SPEED) {
+            if (isElectric()) {
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
+            }
+        } else if (upgrade == Upgrade.ENERGY) {
             //TODO: Is there any case this is not a required sub req?
             if (isElectric()) {
                 setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
-                setEnergyPerTick(MekanismUtils.getBaseEnergyPerTick(this, getBaseUsage()));
+                setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
                 setEnergy(Math.min(getMaxEnergy(), getEnergy()));
             }
         }

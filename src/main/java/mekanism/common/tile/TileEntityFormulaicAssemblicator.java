@@ -635,7 +635,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
-            setEnergyPerTick(MekanismUtils.getEnergyPerTick(this, getBaseUsage()));
         }
     }
 
