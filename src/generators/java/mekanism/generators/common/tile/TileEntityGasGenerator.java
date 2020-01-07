@@ -41,7 +41,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     /**
      * The maximum amount of gas this block can store.
      */
-    public int MAX_GAS = 18000;
+    private static final int MAX_GAS = 18_000;
     /**
      * The tank this block is storing fuel in.
      */

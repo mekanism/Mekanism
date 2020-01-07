@@ -52,33 +52,22 @@ public class GasInventorySlot extends BasicInventorySlot {
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
             if (item instanceof IGasItem) {
+                IGasItem gasItem = (IGasItem) item;
                 boolean mode = modeSupplier.getAsBoolean();
-                GasStack gasContained = ((IGasItem) item).getGas(stack);
-                if (gasContained.isEmpty()) {
+                GasStack containedGas = gasItem.getGas(stack);
+                if (containedGas.isEmpty()) {
                     //We want to try and drain the tank AND we are not the input tank
                     return mode;
                 }
                 //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
-                return !mode && isValidGas.test(gasContained.getType()) && gasTank.fill(gasContained, Action.SIMULATE) > 0;
+                return !mode && isValidGas.test(containedGas.getType()) && gasTank.fill(containedGas, Action.SIMULATE) > 0;
             }
             return false;
         }, stack -> {
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
-            if (item instanceof IGasItem) {
-                IGasItem gasItem = (IGasItem) item;
-                if (!modeSupplier.getAsBoolean()) {
-                    //Input tank, so we want to fill it
-                    //TODO: Add a way to the capability to see if the item can ever output gas, as things like jetpacks cannot have the gas be drained from them
-                    // Strictly speaking this currently could be done as gasItem.canProvideGas(stack, MekanismAPI.EMPTY_GAS), but is being ignored instead for clarity
-                    GasStack containedGas = gasItem.getGas(stack);
-                    return !containedGas.isEmpty() && isValidGas.test(containedGas.getType());
-                }
-                //Output tank, so we want to drain
-                //Only accept items that are gas items and can accept some form of gas
-                return gasItem.getNeeded(stack) > 0;
-            }
-            return false;
+            //Note: we allow all IGasItem's as valid and have a more restrictive insert check so that we allow tanks when they are done being filled/emptied
+            return item instanceof IGasItem;
         }, inventory, x, y);
     }
 
@@ -108,9 +97,11 @@ public class GasInventorySlot extends BasicInventorySlot {
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
             if (item instanceof IGasItem) {
+                //TODO: Add a way to the capability to see if the item can ever output gas, as things like jetpacks cannot have the gas be drained from them
+                // Strictly speaking this currently could be done as gasItem.canProvideGas(stack, MekanismAPI.EMPTY_GAS), but is being ignored instead for clarity
                 GasStack containedGas = ((IGasItem) item).getGas(stack);
-                //True if we can fill the tank with any of our contents, ignored if the item has no gas, as it won't pass isValid
-                return gasTank.fill(containedGas, Action.SIMULATE) > 0;
+                //True if we can fill the tank with any of our contents
+                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) && gasTank.fill(containedGas, Action.SIMULATE) > 0;
             }
             GasStack gasConversion = getPotentialConversion(worldSupplier.get(), stack);
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
@@ -119,10 +110,8 @@ public class GasInventorySlot extends BasicInventorySlot {
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
             if (item instanceof IGasItem) {
-                //TODO: Add a way to the capability to see if the item can ever output gas, as things like jetpacks cannot have the gas be drained from them
-                // Strictly speaking this currently could be done as gasItem.canProvideGas(stack, MekanismAPI.EMPTY_GAS), but is being ignored instead for clarity
-                GasStack containedGas = ((IGasItem) item).getGas(stack);
-                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType());
+                //Note: we allow all IGasItem's as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
+                return true;
             }
             //Allow gas conversion of items that have a gas that is valid
             GasStack gasConversion = getPotentialConversion(worldSupplier.get(), stack);
@@ -141,8 +130,9 @@ public class GasInventorySlot extends BasicInventorySlot {
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
             if (item instanceof IGasItem) {
-                //Only allow extraction if our item is out of gas
-                return ((IGasItem) item).getGas(stack).isEmpty();
+                GasStack gasInItem = ((IGasItem) item).getGas(stack);
+                //Only allow extraction if our item is out of gas or it is not a valid gas
+                return gasInItem.isEmpty() || !isValidGas.test(gasInItem.getType());
             }
             //Always allow it if something went horribly wrong and we are not an IGasItem
             return true;
@@ -152,20 +142,15 @@ public class GasInventorySlot extends BasicInventorySlot {
             //TODO: Use a capability instead of instanceof
             if (item instanceof IGasItem) {
                 GasStack containedGas = ((IGasItem) item).getGas(stack);
-                //True if we can fill the tank with any of our contents, ignored if the item has no gas, as it won't pass isValid
-                return gasTank.fill(containedGas, Action.SIMULATE) > 0;
+                //True if we can fill the tank with any of our contents
+                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) && gasTank.fill(containedGas, Action.SIMULATE) > 0;
             }
             return false;
         }, stack -> {
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
-            if (item instanceof IGasItem) {
-                //TODO: Add a way to the capability to see if the item can ever output gas, as things like jetpacks cannot have the gas be drained from them
-                // Strictly speaking this currently could be done as gasItem.canProvideGas(stack, MekanismAPI.EMPTY_GAS), but is being ignored instead for clarity
-                GasStack containedGas = ((IGasItem) item).getGas(stack);
-                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType());
-            }
-            return false;
+            //Note: we allow all IGasItem's as valid and have a more restrictive insert check so that we allow empty tanks when they are done being drained
+            return item instanceof IGasItem;
         }, inventory, x, y);
     }
 
@@ -198,17 +183,14 @@ public class GasInventorySlot extends BasicInventorySlot {
                     return true;
                 }
                 //NOTE: The canReceiveGas is not consistent on if it checks if we need any gas or we even double check the contained type
-                return gasTank.isEmpty() || gasItem.canReceiveGas(stack, gasTank.getType());
+                return gasTank.isEmpty() || ((IGasItem) item).getNeeded(stack) > 0 && gasItem.canReceiveGas(stack, gasTank.getType());
             }
             return false;
         }, stack -> {
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
-            if (item instanceof IGasItem) {
-                //Only accept items that are gas items and can accept some form of gas
-                return ((IGasItem) item).getNeeded(stack) > 0;
-            }
-            return false;
+            //Note: we allow all IGasItem's as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
+            return item instanceof IGasItem;
         }, inventory, x, y);
     }
 
