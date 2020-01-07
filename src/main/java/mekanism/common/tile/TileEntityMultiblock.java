@@ -157,6 +157,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         }
     }
 
+    @Nonnull
     protected abstract T getNewStructure();
 
     public abstract MultiblockCache<T> getNewCache();

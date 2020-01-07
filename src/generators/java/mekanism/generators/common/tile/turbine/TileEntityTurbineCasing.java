@@ -1,5 +1,6 @@
 package mekanism.generators.common.tile.turbine;
 
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -193,6 +194,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
         }
     }
 
+    @Nonnull
     @Override
     protected SynchronizedTurbineData getNewStructure() {
         return new SynchronizedTurbineData();

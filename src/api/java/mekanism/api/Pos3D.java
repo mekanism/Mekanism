@@ -302,11 +302,10 @@ public class Pos3D extends Vec3d {
         double y = axis.y;
         double z = axis.z;
 
-        angle *= 0.0174532925D;
-
-        float cos = (float) Math.cos(angle);
+        double angleAsRadian = Math.toRadians(angle);
+        float cos = (float) Math.cos(angleAsRadian);
         float ocos = 1.0F - cos;
-        float sin = (float) Math.sin(angle);
+        float sin = (float) Math.sin(angleAsRadian);
 
         matrix[0] = x * x * ocos + cos;
         matrix[1] = y * x * ocos + z * sin;

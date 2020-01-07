@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.EnumSet;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -73,7 +74,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     @Override
     public IFluidTank[] getTankInfo(Direction from) {
         if ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) {
-            if (structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1) {
+            if (Objects.requireNonNull(structure).upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1) {
                 return new IFluidTank[]{steamTank};
             }
             return new IFluidTank[]{waterTank};
@@ -100,7 +101,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
         if ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) {
-            return structure.upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y - 1 && fluid.getFluid() == Fluids.WATER;
+            return Objects.requireNonNull(structure).upperRenderLocation != null && getPos().getY() < structure.upperRenderLocation.y - 1 && fluid.getFluid() == Fluids.WATER;
         }
         return false;
     }
@@ -108,7 +109,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         if ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) {
-            return structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1 && FluidContainerUtils.canDrain(structure.steamStored, fluid);
+            return Objects.requireNonNull(structure).upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1 && FluidContainerUtils.canDrain(structure.steamStored, fluid);
         }
         return false;
     }

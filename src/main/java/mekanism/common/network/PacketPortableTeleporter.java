@@ -36,13 +36,8 @@ public class PacketPortableTeleporter {
     public PacketPortableTeleporter(PortableTeleporterPacketType type, Hand hand, Frequency freq) {
         packetType = type;
         currentHand = hand;
-        if (type == PortableTeleporterPacketType.DATA_REQUEST) {
-            frequency = freq;
-        } else if (type == PortableTeleporterPacketType.SET_FREQ) {
-            frequency = freq;
-        } else if (type == PortableTeleporterPacketType.DEL_FREQ) {
-            frequency = freq;
-        } else if (type == PortableTeleporterPacketType.TELEPORT) {
+        if (type == PortableTeleporterPacketType.DATA_REQUEST ||type == PortableTeleporterPacketType.SET_FREQ ||
+            type == PortableTeleporterPacketType.DEL_FREQ || type == PortableTeleporterPacketType.TELEPORT) {
             frequency = freq;
         }
     }
@@ -160,7 +155,8 @@ public class PacketPortableTeleporter {
     public static void encode(PacketPortableTeleporter pkt, PacketBuffer buf) {
         buf.writeEnumValue(pkt.packetType);
         buf.writeEnumValue(pkt.currentHand);
-        if (pkt.packetType == PortableTeleporterPacketType.DATA_REQUEST) {
+        if (pkt.packetType == PortableTeleporterPacketType.DATA_REQUEST || pkt.packetType == PortableTeleporterPacketType.SET_FREQ ||
+            pkt.packetType == PortableTeleporterPacketType.DEL_FREQ || pkt.packetType == PortableTeleporterPacketType.TELEPORT) {
             if (pkt.frequency != null) {
                 buf.writeBoolean(true);
                 buf.writeString(pkt.frequency.name);
@@ -190,15 +186,6 @@ public class PacketPortableTeleporter {
             }
 
             PacketHandler.encode(data.toArray(), buf);
-        } else if (pkt.packetType == PortableTeleporterPacketType.SET_FREQ) {
-            buf.writeString(pkt.frequency.name);
-            buf.writeBoolean(pkt.frequency.publicFreq);
-        } else if (pkt.packetType == PortableTeleporterPacketType.DEL_FREQ) {
-            buf.writeString(pkt.frequency.name);
-            buf.writeBoolean(pkt.frequency.publicFreq);
-        } else if (pkt.packetType == PortableTeleporterPacketType.TELEPORT) {
-            buf.writeString(pkt.frequency.name);
-            buf.writeBoolean(pkt.frequency.publicFreq);
         }
     }
 
@@ -209,7 +196,8 @@ public class PacketPortableTeleporter {
         List<Frequency> privateCache = new ArrayList<>();
         Frequency frequency = null;
         byte status = 0;
-        if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
+        if (packetType == PortableTeleporterPacketType.DATA_REQUEST || packetType == PortableTeleporterPacketType.SET_FREQ ||
+            packetType == PortableTeleporterPacketType.DEL_FREQ || packetType == PortableTeleporterPacketType.TELEPORT) {
             if (buf.readBoolean()) {
                 frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
             }
@@ -227,12 +215,6 @@ public class PacketPortableTeleporter {
             for (int i = 0; i < amount; i++) {
                 privateCache.add(new Frequency(buf));
             }
-        } else if (packetType == PortableTeleporterPacketType.SET_FREQ) {
-            frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
-        } else if (packetType == PortableTeleporterPacketType.DEL_FREQ) {
-            frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
-        } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
-            frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
         }
         return new PacketPortableTeleporter(currentHand, frequency, status, publicCache, privateCache);
     }

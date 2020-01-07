@@ -59,6 +59,7 @@ public class TMaterialFilter extends TransporterFilter<TMaterialFilter> implemen
     @Override
     public int hashCode() {
         int code = 1;
+        code = 31 * code + super.hashCode();
         code = 31 * code + materialItem.hashCode();
         return code;
     }

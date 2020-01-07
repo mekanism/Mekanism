@@ -60,7 +60,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
     }
 
     @Override
-    public void updateCapacity() {
+    public synchronized void updateCapacity() {
         //The capacity is always zero so no point in doing calculations.
     }
 

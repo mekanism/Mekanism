@@ -71,8 +71,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> implements
         replaceStack = dataStream.readItemStack();
     }
 
-    @Override
-    public boolean equals(Object filter) {
-        return filter instanceof MinerFilter;
-    }
+    public abstract boolean equals(Object filter);
+
+    public abstract int hashCode();
 }

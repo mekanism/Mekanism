@@ -268,7 +268,7 @@ public class RenderResizableCuboid {
 
         double avgBlockLight = 0;
         double avgSkyLight = 0;
-        float avgColorMultiplier = 0;
+        double avgColorMultiplier = 0;
         for (int i = 0; i < numPositions; i++) {
             double part = distances[i] / totalDist;
             avgBlockLight += blockLight[i] * part;

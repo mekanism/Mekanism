@@ -57,7 +57,7 @@ public class MOreDictFilter extends MinerFilter<MOreDictFilter> implements IOreD
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MOreDictFilter && ((MOreDictFilter) filter).oreDictName.equals(oreDictName);
+        return filter instanceof MOreDictFilter && ((MOreDictFilter) filter).oreDictName.equals(oreDictName);
     }
 
     @Override

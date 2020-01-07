@@ -40,8 +40,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Range4D packetRange = null;
     protected int capacity = 0;
     protected double doubleCapacity = 0;
-    @Deprecated
-    protected double meanCapacity = 0;
     protected boolean needsUpdate = false;
     protected int updateDelay = 0;
     protected boolean firstUpdate = true;

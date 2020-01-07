@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.base.FluidHandlerWrapper;
@@ -74,7 +75,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) && FluidContainerUtils.canDrain(structure.fluidStored, fluid);
+        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) && FluidContainerUtils.canDrain(Objects.requireNonNull(structure).fluidStored, fluid);
     }
 
     @Nonnull

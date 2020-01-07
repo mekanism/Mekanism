@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.slot.IInventorySlot;
@@ -118,6 +119,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         return ActionResultType.PASS;
     }
 
+    @Nonnull
     @Override
     protected SynchronizedTankData getNewStructure() {
         return new SynchronizedTankData();

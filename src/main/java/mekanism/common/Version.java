@@ -60,7 +60,7 @@ public class Version {
             return null;
         }
         for (String i : split) {
-            for (Character c : i.toCharArray()) {
+            for (char c : i.toCharArray()) {
                 if (!Character.isDigit(c)) {
                     return null;
                 }

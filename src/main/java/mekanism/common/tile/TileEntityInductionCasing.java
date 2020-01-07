@@ -75,6 +75,7 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         }
     }
 
+    @Nonnull
     @Override
     protected SynchronizedMatrixData getNewStructure() {
         return new SynchronizedMatrixData();

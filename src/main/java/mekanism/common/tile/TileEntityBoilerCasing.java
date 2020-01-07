@@ -135,6 +135,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return openGui(player);
     }
 
+    @Nonnull
     @Override
     protected SynchronizedBoilerData getNewStructure() {
         return new SynchronizedBoilerData();

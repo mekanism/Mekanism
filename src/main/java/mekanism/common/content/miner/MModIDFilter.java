@@ -57,7 +57,7 @@ public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFil
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MModIDFilter && ((MModIDFilter) filter).modID.equals(modID);
+        return filter instanceof MModIDFilter && ((MModIDFilter) filter).modID.equals(modID);
     }
 
     @Override

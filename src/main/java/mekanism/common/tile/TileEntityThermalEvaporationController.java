@@ -67,7 +67,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     // Will make it so we don't have cast issues from the configs. Doing so in 1.12 may be slightly annoying
     // due to the fact the variables are stored in NBT as floats. Even though it should be able to load the float as a double
     public float temperature = 0;
-    public float heatToAbsorb = 0;
+    public double heatToAbsorb = 0;
 
     public float lastGain = 0;
 
@@ -241,7 +241,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             temperatureSet = true;
         }
         heatToAbsorb += getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get();
-        temperature += heatToAbsorb / (float) height;
+        temperature += (float) (heatToAbsorb / height);
 
         float biome = biomeTemp - 0.5F;
         float base = biome > 0 ? biome * 20 : biomeTemp * 40;
