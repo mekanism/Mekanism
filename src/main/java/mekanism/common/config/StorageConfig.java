@@ -36,7 +36,7 @@ public class StorageConfig implements IMekanismConfig {
 
     StorageConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Machine Energy Storage Config").push("storage");
+        builder.comment("Machine Energy Storage Config. This config is synced from server to client.").push("storage");
 
         enrichmentChamber = builder.comment("Base energy storage (Joules).").define("enrichmentChamber", 20_000D);
         osmiumCompressor = builder.comment("Base energy storage (Joules).").define("osmiumCompressor", 80_000D);

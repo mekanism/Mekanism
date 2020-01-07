@@ -84,7 +84,7 @@ public class GeneralConfig implements IMekanismConfig {
 
     GeneralConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("General Config").push("general");
+        builder.comment("General Config. This config is synced from server to client.").push("general");
         //TODO: Move things to different files where it makes more sense
         // Also make config options for the different gear types, where previously we didn't allow them to be configured
 

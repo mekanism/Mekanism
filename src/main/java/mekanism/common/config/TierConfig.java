@@ -36,7 +36,7 @@ public class TierConfig implements IMekanismConfig {
 
     TierConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Tier Config").push("tier");
+        builder.comment("Tier Config. This config is synced from server to client.").push("tier");
         addEnergyCubeCategory(builder);
         addFluidTankCategory(builder);
         addGasTankCategory(builder);

@@ -40,7 +40,7 @@ public class UsageConfig implements IMekanismConfig {
 
     UsageConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Machine Energy Usage Config").push("usage");
+        builder.comment("Machine Energy Usage Config. This config is synced from server to client.").push("usage");
 
         enrichmentChamber = builder.comment("Energy per operation tick (Joules).").define("enrichmentChamber", 50D);
         osmiumCompressor = builder.comment("Energy per operation tick (Joules).").define("osmiumCompressor", 100D);

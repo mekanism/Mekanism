@@ -39,7 +39,7 @@ public class GeneratorsConfig implements IMekanismConfig {
 
     GeneratorsConfig() {
         Builder builder = new Builder();
-        builder.comment("Mekanism Generators Config");
+        builder.comment("Mekanism Generators Config. This config is synced between server and client.").push("generators");
 
         bioGeneration = builder.comment("Amount of energy in Joules the Bio Generator produces per tick.")
               .defineInRange("bioGeneration", 350, 0, Double.MAX_VALUE);
@@ -90,7 +90,7 @@ public class GeneratorsConfig implements IMekanismConfig {
                   }
                   return false;
               });
-        builder.pop();
+        builder.pop(2);
         configSpec = builder.build();
     }
 

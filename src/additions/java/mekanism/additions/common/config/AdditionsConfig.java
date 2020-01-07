@@ -11,7 +11,6 @@ public class AdditionsConfig implements IMekanismConfig {
 
     private final ForgeConfigSpec configSpec;
 
-    public final BooleanValue spawnBabySkeletons;
     public final IntValue obsidianTNTDelay;
     public final ConfigValue<Integer> obsidianTNTBlastRadius;
     public final BooleanValue voiceServerEnabled;
@@ -19,15 +18,14 @@ public class AdditionsConfig implements IMekanismConfig {
 
     AdditionsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Mekanism Additions Config");
+        builder.comment("Mekanism Additions Config. This config is synced between server and client.").push("additions");
 
-        spawnBabySkeletons = builder.comment("Enable the spawning of baby skeletons. Think baby zombies but skeletons.").define("spawnBabySkeletons", true);
         obsidianTNTDelay = builder.comment("Fuse time for Obsidian TNT.").defineInRange("obsidianTNTDelay", 100, 0, Integer.MAX_VALUE);
         obsidianTNTBlastRadius = builder.comment("Radius of the explosion of Obsidian TNT.").define("obsidianTNTBlastRadius", 12);
 
         voiceServerEnabled = builder.comment("Enables the voice server for Walkie Talkies.").define("voiceServerEnabled", false);
         VOICE_PORT = builder.comment("TCP port for the Voice server to listen on.").defineInRange("VoicePort", 36123, 1, 65535);
-
+        builder.pop();
         configSpec = builder.build();
     }
 

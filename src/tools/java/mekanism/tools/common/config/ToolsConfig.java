@@ -27,7 +27,7 @@ public class ToolsConfig implements IMekanismConfig {
 
     ToolsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Mekanism Tools Config");
+        builder.comment("Mekanism Tools Config. This config is synced from server to client.").push("tools");
 
         armorSpawnRate = builder.comment("The chance that Mekanism Armor can spawn on mobs.").defineInRange("mobArmorSpawnRate", 0.03D, 0, 1);
 
@@ -37,7 +37,7 @@ public class ToolsConfig implements IMekanismConfig {
         refinedGlowstone = new MaterialCreator(builder, new RefinedGlowstoneMaterialDefaults());
         refinedObsidian = new MaterialCreator(builder, new RefinedObsidianMaterialDefaults());
         steel = new MaterialCreator(builder, new SteelMaterialDefaults());
-
+        builder.pop();
         configSpec = builder.build();
     }
 

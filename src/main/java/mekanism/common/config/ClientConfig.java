@@ -25,7 +25,7 @@ public class ClientConfig implements IMekanismConfig {
         //TODO: Should this stuff be moved from constructor to an init method defined in IMekanismConfig
         // Only really matters if they can't stay final
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-        builder.comment("Client Config");
+        builder.comment("Client Config. This config only exists on the client").push("client");
 
         enablePlayerSounds = builder.comment("Play sounds for Jetpack/Gas Mask/Flamethrower (all players).").define("enablePlayerSounds", true);
         enableMachineSounds = builder.comment("If enabled machines play their sounds while running.").define("enableMachineSounds", true);
@@ -40,7 +40,7 @@ public class ClientConfig implements IMekanismConfig {
         enableMultiblockFormationParticles = builder.comment("Set to false to prevent particle spam when loading multiblocks (notification message will display instead).")
               .define("enableMultiblockFormationParticles", true);
         alignHUDLeft = builder.comment("Align HUD with left (if true) or right (if false)").define("alignHUDLeft", true);
-
+        builder.pop();
         configSpec = builder.build();
     }
 

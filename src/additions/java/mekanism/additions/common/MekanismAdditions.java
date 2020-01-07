@@ -95,8 +95,9 @@ public class MekanismAdditions implements IModule {
             voiceManager = new VoiceServerManager();
         }
         //Add baby skeleton to spawn table
-        if (MekanismAdditionsConfig.additions.spawnBabySkeletons.get()) {
+        if (MekanismAdditionsConfig.common.spawnBabySkeletons.get()) {
             SpawnListEntry spawnListEntry = new SpawnListEntry(AdditionsEntityTypes.BABY_SKELETON.get(), 40, 1, 3);
+            //TODO: Do we want this to look at all biomes?
             for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
                 List<SpawnListEntry> monsterSpawns = biome.getSpawns(EntityClassification.MONSTER);
                 if (!monsterSpawns.isEmpty()) {
