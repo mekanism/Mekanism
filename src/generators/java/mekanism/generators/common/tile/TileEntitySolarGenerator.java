@@ -57,15 +57,15 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
         // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
-        float tempEff = 0.3f * (0.8f - b.getTemperature(getPos()));
+        float tempEff = 0.3F * (0.8F - b.getTemperature(getPos()));
 
         // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
         // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
         // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
         // (like the End) have rainfall set, but can't actually support rain.
-        float humidityEff = -0.3f * (b.getPrecipitation() != RainType.NONE ? b.getDownfall() : 0.0f);
+        float humidityEff = -0.3F * (b.getPrecipitation() != RainType.NONE ? b.getDownfall() : 0.0F);
 
-        peakOutput = getConfiguredMax() * (1.0f + tempEff + humidityEff);
+        peakOutput = getConfiguredMax() * (1.0F + tempEff + humidityEff);
         needsRainCheck = b.getPrecipitation() != RainType.NONE;
 
         settingsChecked = true;
@@ -74,11 +74,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (!settingsChecked) {
+            recheckSettings();
+        }
         if (!isRemote()) {
-            if (!settingsChecked) {
-                recheckSettings();
-            }
-
             energySlot.charge(this);
             // Sort out if the generator can see the sun; we no longer check if it's raining here,
             // since under the new rules, we can still generate power when it's raining, albeit at a
@@ -114,7 +113,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         }
         // Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
-        float brightness = getSunBrightness(world, 1.0f);
+        float brightness = getSunBrightness(world, 1.0F);
         //TODO: Galacticraft
         /*if (MekanismUtils.existsAndInstance(world.provider, "micdoodle8.mods.galacticraft.api.world.ISolarLevel")) {
             brightness *= ((ISolarLevel) world.provider).getSolarEnergyMultiplier();
