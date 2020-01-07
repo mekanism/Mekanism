@@ -334,7 +334,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     public ActionResultType openGui(PlayerEntity player) {
-        if (hasGui() && !player.func_225608_bj_()) {
+        //Everything that calls this has isRemote being false but add the check just in case anyways
+        if (hasGui() && !isRemote() && !player.func_225608_bj_()) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
                 return ActionResultType.FAIL;

@@ -57,7 +57,6 @@ public class ItemSeismicReader extends ItemEnergized {
             if (!world.isRemote) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NEEDS_ENERGY.translateColored(EnumColor.RED)));
             }
-
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         } else if (!MekanismUtils.isChunkVibrated(chunk)) {
             if (!world.isRemote) {
@@ -68,10 +67,12 @@ public class ItemSeismicReader extends ItemEnergized {
         if (!player.isCreative()) {
             setEnergy(stack, getEnergy(stack) - ENERGY_USAGE);
         }
-        NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new SeismicReaderContainer(i, inv, hand, stack)), buf -> {
-            buf.writeEnumValue(hand);
-            buf.writeItemStack(stack);
-        });
+        if (!world.isRemote) {
+            NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new SeismicReaderContainer(i, inv, hand, stack)), buf -> {
+                buf.writeEnumValue(hand);
+                buf.writeItemStack(stack);
+            });
+        }
         return new ActionResult<>(ActionResultType.PASS, stack);
     }
 }
