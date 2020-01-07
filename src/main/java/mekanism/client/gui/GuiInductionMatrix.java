@@ -65,8 +65,11 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     }
 
     public void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/) {
+        minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
         int start = 0;
-        while (true) {
+        int x = getGuiLeft() + xPos;
+        int y = getGuiTop() + yPos;
+        while (scale > 0) {
             int renderRemaining;
             if (scale > 16) {
                 renderRemaining = 16;
@@ -75,14 +78,10 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
                 renderRemaining = scale;
                 scale = 0;
             }
-            minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
-            drawTexturedRectFromIcon(getGuiLeft() + xPos, getGuiTop() + yPos + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, renderRemaining);
+            drawTexturedRectFromIcon(x, y + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, renderRemaining);
             start += 16;
-            if (renderRemaining == 0 || scale == 0) {
-                break;
-            }
         }
         minecraft.textureManager.bindTexture(getGuiLocation());
-        drawTexturedRect(getGuiLeft() + xPos, getGuiTop() + yPos, 176, side == 0 ? 0 : 54, 16, 54);
+        drawTexturedRect(x, y, 176, side == 0 ? 0 : 54, 16, 54);
     }
 }
