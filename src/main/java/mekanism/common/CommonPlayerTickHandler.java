@@ -18,6 +18,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,9 +32,12 @@ public class CommonPlayerTickHandler {
         int z = MathHelper.floor(player.func_226281_cx_());
         BlockPos pos = new BlockPos(x, y, z);
         BlockState s = player.world.getBlockState(pos);
-        AxisAlignedBB box = s.getShape(player.world, pos).getBoundingBox().offset(pos);
+        VoxelShape shape = s.getShape(player.world, pos);
+        if (shape.isEmpty()) {
+            return false;
+        }
         AxisAlignedBB playerBox = player.getBoundingBox();
-        return !s.getBlock().isAir(s, player.world, pos) && playerBox.offset(0, -0.01, 0).intersects(box);
+        return !s.isAir(player.world, pos) && playerBox.offset(0, -0.01, 0).intersects(shape.getBoundingBox().offset(pos));
 
     }
 
@@ -88,22 +92,22 @@ public class CommonPlayerTickHandler {
             JetpackMode mode = jetpack.getMode(stack);
             Vec3d motion = player.getMotion();
             if (mode == JetpackMode.NORMAL) {
-                player.setMotion(0, Math.min(motion.getY() + 0.15D, 0.5D), 0);
+                player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
             } else if (mode == JetpackMode.HOVER) {
                 boolean ascending = Mekanism.keyMap.has(player, KeySync.ASCEND);
                 boolean descending = Mekanism.keyMap.has(player, KeySync.DESCEND);
                 if ((!ascending && !descending) || (ascending && descending)) {
                     if (motion.getY() > 0) {
-                        player.setMotion(0, Math.max(motion.getY() - 0.15D, 0), 0);
+                        player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, 0), motion.getZ());
                     } else if (motion.getY() < 0) {
                         if (!isOnGround(player)) {
-                            player.setMotion(0, Math.min(motion.getY() + 0.15D, 0), 0);
+                            player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0), motion.getZ());
                         }
                     }
                 } else if (ascending) {
-                    player.setMotion(0, Math.min(motion.getY() + 0.15D, 0.2D), 0);
+                    player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.2D), motion.getZ());
                 } else if (!isOnGround(player)) {
-                    player.setMotion(0, Math.max(motion.getY() - 0.15D, -0.2D), 0);
+                    player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, -0.2D), motion.getZ());
                 }
             }
             player.fallDistance = 0.0F;

@@ -228,23 +228,23 @@ public class ClientTickHandler {
                 JetpackMode mode = jetpack.getMode(chestStack);
                 Vec3d motion = minecraft.player.getMotion();
                 if (mode == JetpackMode.NORMAL) {
-                    minecraft.player.setMotion(0, Math.min(motion.getY() + 0.15D, 0.5D), 0);
+                    minecraft.player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
                     minecraft.player.fallDistance = 0.0F;
                 } else if (mode == JetpackMode.HOVER) {
                     boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
                     boolean descending = MekanismKeyHandler.sneakKey.isKeyDown();
                     if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null) {
                         if (motion.getY() > 0) {
-                            minecraft.player.setMotion(0, Math.max(motion.getY() - 0.15D, 0), 0);
+                            minecraft.player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, 0), motion.getZ());
                         } else if (motion.getY() < 0) {
                             if (!CommonPlayerTickHandler.isOnGround(minecraft.player)) {
-                                minecraft.player.setMotion(0, Math.min(motion.getY() + 0.15D, 0), 0);
+                                minecraft.player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0), motion.getZ());
                             }
                         }
                     } else if (ascending) {
-                        minecraft.player.setMotion(0, Math.min(motion.getY() + 0.15D, 0.2D), 0);
+                        minecraft.player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.2D), motion.getZ());
                     } else if (!CommonPlayerTickHandler.isOnGround(minecraft.player)) {
-                        minecraft.player.setMotion(0, Math.max(motion.getY() - 0.15D, -0.2D), 0);
+                        minecraft.player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, -0.2D), motion.getZ());
                     }
                     minecraft.player.fallDistance = 0.0F;
                 }

@@ -46,7 +46,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         ignoreFrustumCheck = true;
         preventEntitySpawning = true;
         setPosition(func_226277_ct_() + 0.5F, func_226278_cu_() + 3F, func_226281_cx_() + 0.5F);
-        setMotion(0, 0.04, 0);
+        setMotion(getMotion().getX(), 0.04, getMotion().getZ());
 
         dataManager.register(IS_LATCHED, (byte) 0);
         dataManager.register(LATCHED_X, 0);

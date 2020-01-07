@@ -57,7 +57,6 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         Pos3D motion = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(player.getLookVec()));
 
         setHeading(motion);
-
         setMotion(motion);
 
         owner = player;

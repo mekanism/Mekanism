@@ -105,16 +105,6 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new FluidToFluidRecipeCategory(guiHelper));
     }
 
-    //TODO: Reimplement the blacklist?
-    /*@Override
-    public void register(IModRegistry registry) {
-        //Blacklist
-        IIngredientBlacklist ingredientBlacklist = registry.getJeiHelpers().getIngredientBlacklist();
-        //TODO: Why do these still show up in JEI (Is it due to an error with category types?)
-        ingredientBlacklist.addIngredientToBlacklist(MekanismItem.ITEM_PROXY.getItemStack());
-        ingredientBlacklist.addIngredientToBlacklist(MekanismBlocks.BOUNDING_BLOCK.getItemStack());
-    }*/
-
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER, GuiEnrichmentChamber.class, 79, 40, 24, 7);
