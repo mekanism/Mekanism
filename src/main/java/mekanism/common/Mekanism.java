@@ -460,16 +460,16 @@ public class Mekanism {
             CompoundNBT nbtTags = event.getData();
 
             nbtTags.putInt("MekanismWorldGen", baseWorldGenVersion);
-            nbtTags.putInt("MekanismUserWorldGen", MekanismConfig.general.userWorldGenVersion.get());
+            nbtTags.putInt("MekanismUserWorldGen", MekanismConfig.world.userGenVersion.get());
         }
     }
 
     private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
-            if (MekanismConfig.general.enableWorldRegeneration.get()) {
+            if (MekanismConfig.world.enableRegeneration.get()) {
                 CompoundNBT loadData = event.getData();
                 if (loadData.getInt("MekanismWorldGen") == baseWorldGenVersion &&
-                    loadData.getInt("MekanismUserWorldGen") == MekanismConfig.general.userWorldGenVersion.get()) {
+                    loadData.getInt("MekanismUserWorldGen") == MekanismConfig.world.userGenVersion.get()) {
                     return;
                 }
                 ChunkPos coordPair = event.getChunk().getPos();

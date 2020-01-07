@@ -12,6 +12,7 @@ public class MekanismConfig {
     public static final StorageConfig storage = new StorageConfig();
     public static final TierConfig tiers = new TierConfig();
     public static final UsageConfig usage = new UsageConfig();
+    public static final WorldConfig world = new WorldConfig();
 
     public static void registerConfigs(ModLoadingContext modLoadingContext) {
         ModContainer modContainer = modLoadingContext.getActiveContainer();
@@ -20,5 +21,6 @@ public class MekanismConfig {
         MekanismConfigHelper.registerConfig(modContainer, storage);
         MekanismConfigHelper.registerConfig(modContainer, tiers);
         MekanismConfigHelper.registerConfig(modContainer, usage);
+        MekanismConfigHelper.registerConfig(modContainer, world);
     }
 }

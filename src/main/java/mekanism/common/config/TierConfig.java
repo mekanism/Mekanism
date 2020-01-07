@@ -32,8 +32,7 @@ public class TierConfig implements IMekanismConfig {
     private static final String ITEMS_CATEGORY = "items";
     private static final String HEAT_CATEGORY = "heat";
 
-    //TODO: final
-    private ForgeConfigSpec configSpec;
+    private final ForgeConfigSpec configSpec;
 
     TierConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();

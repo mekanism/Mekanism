@@ -6,8 +6,7 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 
 public class StorageConfig implements IMekanismConfig {
 
-    //TODO: final
-    private ForgeConfigSpec configSpec;
+    private final ForgeConfigSpec configSpec;
 
     public final ConfigValue<Double> enrichmentChamber;
     public final ConfigValue<Double> osmiumCompressor;

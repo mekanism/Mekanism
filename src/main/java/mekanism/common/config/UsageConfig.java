@@ -8,8 +8,7 @@ public class UsageConfig implements IMekanismConfig {
 
     private static final String TELEPORTER_CATEGORY = "teleporter";
 
-    //TODO: final
-    private ForgeConfigSpec configSpec;
+    private final ForgeConfigSpec configSpec;
 
     public final ConfigValue<Double> enrichmentChamber;
     public final ConfigValue<Double> osmiumCompressor;
