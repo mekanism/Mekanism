@@ -51,7 +51,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine<GasToItemStackRecipe> implements IGasHandler, ISideConfiguration, ISustainedData,
       ITankManager, IConfigCardAccess {
 
-    public static final int MAX_GAS = 10000;
+    public static final int MAX_GAS = 10_000;
 
     public GasTank inputTank;
 

@@ -59,8 +59,8 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityChemicalWasher extends TileEntityMekanism implements IGasHandler, IFluidHandlerWrapper, ISustainedData, ITankManager, IComparatorSupport,
       ITileCachedRecipeHolder<FluidGasToGasRecipe> {
 
-    public static final int MAX_GAS = 10000;
-    public static final int MAX_FLUID = 10000;
+    public static final int MAX_GAS = 10_000;
+    public static final int MAX_FLUID = 10_000;
     public FluidTank fluidTank;
     public GasTank inputTank;
     public GasTank outputTank;

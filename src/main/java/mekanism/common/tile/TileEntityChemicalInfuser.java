@@ -43,7 +43,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGasHandler, ISustainedData, ITankManager, ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
-    public static final int MAX_GAS = 10000;
+    public static final int MAX_GAS = 10_000;
     public GasTank leftTank;
     public GasTank rightTank;
     public GasTank centerTank;

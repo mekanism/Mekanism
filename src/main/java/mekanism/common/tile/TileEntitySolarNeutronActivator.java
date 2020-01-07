@@ -52,7 +52,7 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager,
       IComparatorSupport, ITileCachedRecipeHolder<GasToGasRecipe> {
 
-    public static final int MAX_GAS = 10000;
+    public static final int MAX_GAS = 10_000;
 
     public GasTank inputTank;
     public GasTank outputTank;

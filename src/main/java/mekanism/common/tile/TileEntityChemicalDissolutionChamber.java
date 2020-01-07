@@ -47,7 +47,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> implements IGasHandler, ISustainedData, ITankManager {
 
-    public static final int MAX_GAS = 10000;
+    public static final int MAX_GAS = 10_000;
     public static final int BASE_INJECT_USAGE = 1;
     public static final int BASE_TICKS_REQUIRED = 100;
     public GasTank injectTank;

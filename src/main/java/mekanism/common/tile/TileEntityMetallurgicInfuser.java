@@ -52,7 +52,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse",
                                                          "getInfuseNeeded"};
 
-    public static final int MAX_INFUSE = 1000;
+    public static final int MAX_INFUSE = 1_000;
     public InfusionTank infusionTank;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;

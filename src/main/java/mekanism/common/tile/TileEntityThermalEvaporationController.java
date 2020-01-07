@@ -47,7 +47,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager,
       ITileCachedRecipeHolder<FluidToFluidRecipe> {
 
-    public static final int MAX_OUTPUT = 10000;
+    public static final int MAX_OUTPUT = 10_000;
     public static final int MAX_SOLARS = 4;
     public static final int MAX_HEIGHT = 18;
 

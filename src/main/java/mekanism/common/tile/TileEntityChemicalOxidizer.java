@@ -43,7 +43,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> implements ISustainedData, ITankManager, IGasHandler {
 
-    public static final int MAX_GAS = 10000;
+    public static final int MAX_GAS = 10_000;
     public GasTank gasTank;
     public int gasOutput = 256;
 
