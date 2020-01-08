@@ -31,7 +31,7 @@ public class BlockResource extends BlockMekanism implements IHasModel {
         return resource.isBeaconBase();
     }
 
-    //TODO: 1.15 - Add an @Override annotation once https://github.com/MinecraftForge/MinecraftForge/pull/6389 gets merged
+    @Override
     public boolean isPortalFrame(BlockState state, IWorldReader world, BlockPos pos) {
         return resource.isPortalFrame();
     }
