@@ -25,14 +25,18 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.interfaces.IUpgradeableBlock;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.FactoryContainer;
 import mekanism.common.item.block.machine.factory.ItemBlockFactory;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -66,7 +70,7 @@ import net.minecraft.world.World;
 
 public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityFactory<?>>, IStateFacing, IStateActive, IBlockSound,
       ITieredBlock<FactoryTier>, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityFactory<?>>, ISupportsRedstone, ISupportsComparator,
-      IHasDescription {
+      IHasDescription, IUpgradeableBlock {
 
     private final FactoryTier tier;
     private final FactoryType type;
@@ -359,5 +363,112 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
     @Override
     public ILangEntry getDescription() {
         return MekanismLang.DESCRIPTION_FACTORY;
+    }
+
+    @Nonnull
+    @Override
+    public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (type) {
+            case CRUSHING:
+                switch (tier) {
+                    case BASIC:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_CRUSHING_FACTORY.getBlock().getDefaultState());
+                    case ADVANCED:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_CRUSHING_FACTORY.getBlock().getDefaultState());
+                    case ELITE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_CRUSHING_FACTORY.getBlock().getDefaultState());
+                    case ULTIMATE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_CRUSHING_FACTORY.getBlock().getDefaultState());
+                }
+            case COMBINING:
+                switch (tier) {
+                    case BASIC:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_COMBINING_FACTORY.getBlock().getDefaultState());
+                    case ADVANCED:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_COMBINING_FACTORY.getBlock().getDefaultState());
+                    case ELITE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_COMBINING_FACTORY.getBlock().getDefaultState());
+                    case ULTIMATE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_COMBINING_FACTORY.getBlock().getDefaultState());
+                }
+            case COMPRESSING:
+                switch (tier) {
+                    case BASIC:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_COMPRESSING_FACTORY.getBlock().getDefaultState());
+                    case ADVANCED:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_COMPRESSING_FACTORY.getBlock().getDefaultState());
+                    case ELITE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_COMPRESSING_FACTORY.getBlock().getDefaultState());
+                    case ULTIMATE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_COMPRESSING_FACTORY.getBlock().getDefaultState());
+                }
+            case ENRICHING:
+                switch (tier) {
+                    case BASIC:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_ENRICHING_FACTORY.getBlock().getDefaultState());
+                    case ADVANCED:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_ENRICHING_FACTORY.getBlock().getDefaultState());
+                    case ELITE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_ENRICHING_FACTORY.getBlock().getDefaultState());
+                    case ULTIMATE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_ENRICHING_FACTORY.getBlock().getDefaultState());
+                }
+            case INFUSING:
+                switch (tier) {
+                    case BASIC:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_INFUSING_FACTORY.getBlock().getDefaultState());
+                    case ADVANCED:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_INFUSING_FACTORY.getBlock().getDefaultState());
+                    case ELITE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_INFUSING_FACTORY.getBlock().getDefaultState());
+                    case ULTIMATE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_INFUSING_FACTORY.getBlock().getDefaultState());
+                }
+            case INJECTING:
+                switch (tier) {
+                    case BASIC:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_INJECTING_FACTORY.getBlock().getDefaultState());
+                    case ADVANCED:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_INJECTING_FACTORY.getBlock().getDefaultState());
+                    case ELITE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_INJECTING_FACTORY.getBlock().getDefaultState());
+                    case ULTIMATE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_INJECTING_FACTORY.getBlock().getDefaultState());
+                }
+            case PURIFYING:
+                switch (tier) {
+                    case BASIC:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_PURIFYING_FACTORY.getBlock().getDefaultState());
+                    case ADVANCED:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_PURIFYING_FACTORY.getBlock().getDefaultState());
+                    case ELITE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_PURIFYING_FACTORY.getBlock().getDefaultState());
+                    case ULTIMATE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_PURIFYING_FACTORY.getBlock().getDefaultState());
+                }
+            case SAWING:
+                switch (tier) {
+                    case BASIC:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_SAWING_FACTORY.getBlock().getDefaultState());
+                    case ADVANCED:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_SAWING_FACTORY.getBlock().getDefaultState());
+                    case ELITE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_SAWING_FACTORY.getBlock().getDefaultState());
+                    case ULTIMATE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_SAWING_FACTORY.getBlock().getDefaultState());
+                }
+            case SMELTING:
+                switch (tier) {
+                    case BASIC:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_SMELTING_FACTORY.getBlock().getDefaultState());
+                    case ADVANCED:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_SMELTING_FACTORY.getBlock().getDefaultState());
+                    case ELITE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_SMELTING_FACTORY.getBlock().getDefaultState());
+                    case ULTIMATE:
+                        return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_SMELTING_FACTORY.getBlock().getDefaultState());
+                }
+        }
+        return current;
     }
 }

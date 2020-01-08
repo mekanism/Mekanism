@@ -22,9 +22,10 @@ public class ItemTierInstaller extends Item {
 
     @Nullable
     private final BaseTier fromTier;
+    @Nonnull
     private final BaseTier toTier;
 
-    public ItemTierInstaller(@Nullable BaseTier fromTier, BaseTier toTier, Properties properties) {
+    public ItemTierInstaller(@Nullable BaseTier fromTier, @Nonnull BaseTier toTier, Properties properties) {
         super(properties.maxStackSize(1));
         this.fromTier = fromTier;
         this.toTier = toTier;
@@ -42,10 +43,9 @@ public class ItemTierInstaller extends Item {
         BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
         if (block instanceof IUpgradeableBlock) {
-            IUpgradeableBlock<?> upgradeableBlock = (IUpgradeableBlock<?>) block;
-            BaseTier baseTier = upgradeableBlock.getTier().getBaseTier();
-            //TODO: Allow base tier ot be null if the upgradeableblock is not a tiered one?
-            if (baseTier == fromTier && baseTier != toTier && baseTier != BaseTier.ULTIMATE && baseTier != BaseTier.CREATIVE) {
+            IUpgradeableBlock upgradeableBlock = (IUpgradeableBlock) block;
+            BaseTier baseTier = upgradeableBlock.getBaseTier();
+            if (baseTier == fromTier && baseTier != toTier) {
                 BlockState upgradeState = upgradeableBlock.upgradeResult(state, toTier);
                 if (state == upgradeState) {
                     return ActionResultType.PASS;

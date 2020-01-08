@@ -10,9 +10,12 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CombinerCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.upgrade.CombinerUpgradeData;
+import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -112,5 +115,40 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty);
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+        if (upgradeData instanceof CombinerUpgradeData) {
+            CombinerUpgradeData data = (CombinerUpgradeData) upgradeData;
+            redstone = data.redstone;
+            setControlType(data.controlType);
+            setEnergy(data.electricityStored);
+            sorting = data.sorting;
+            //TODO: Transfer recipe ticks?
+            //TODO: Transfer operating ticks properly
+            extraSlot.setStack(data.extraSlot.getStack());
+            energySlot.setStack(data.energySlot.getStack());
+            typeInputSlot.setStack(data.typeInputStack);
+            typeOutputSlot.setStack(data.typeOutputStack);
+            for (int i = 0; i < data.inputSlots.size(); i++) {
+                inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
+            }
+            for (int i = 0; i < data.outputSlots.size(); i++) {
+                outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());
+            }
+            for (ITileComponent component : getComponents()) {
+                component.read(data.components);
+            }
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public CombinerUpgradeData getUpgradeData() {
+        return new CombinerUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, extraSlot, inputSlots, outputSlots, sorting, typeInputSlot.getStack(),
+              typeOutputSlot.getStack(), getComponents());
     }
 }

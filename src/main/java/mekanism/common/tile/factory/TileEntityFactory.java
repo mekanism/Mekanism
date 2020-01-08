@@ -22,7 +22,6 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.machine.factory.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
@@ -32,7 +31,6 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -45,7 +43,6 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -59,13 +56,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
-      ITierUpgradeable, ISustainedData, IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
+      ISustainedData, IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
     private final CachedRecipe<RECIPE>[] cachedRecipes;
@@ -126,9 +122,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Nonnull
     protected FactoryType type;
 
-    private IInventorySlot typeInputSlot;
-    private OutputInventorySlot typeOutputSlot;
-    private EnergyInventorySlot energySlot;
+    protected List<IInventorySlot> inputSlots;
+    protected List<IInventorySlot> outputSlots;
+    protected IInventorySlot typeInputSlot;
+    protected OutputInventorySlot typeOutputSlot;
+    protected EnergyInventorySlot energySlot;
 
     protected TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -142,8 +140,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            List<IInventorySlot> inputSlots = new ArrayList<>();
-            List<IInventorySlot> outputSlots = new ArrayList<>();
+            inputSlots = new ArrayList<>();
+            outputSlots = new ArrayList<>();
 
             for (ProcessInfo info : processInfoSlots) {
                 inputSlots.add(info.getInputSlot());
@@ -213,80 +211,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Nullable
     protected IInventorySlot getExtraSlot() {
         return null;
-    }
-
-    @Override
-    public boolean upgrade(BaseTier upgradeTier) {
-        int upgradeOrdinal = upgradeTier.ordinal();
-        if (upgradeOrdinal != tier.ordinal() + 1 || upgradeOrdinal > EnumUtils.FACTORY_TIERS.length) {
-            return false;
-        }
-        World world = getWorld();
-        if (world == null) {
-            return false;
-        }
-
-        //TODO: Upgrading remove this if and fix the block state setting. A bunch of the TileEntity stuff may be able to be moved to the block classes themselves
-        if (true) {
-            return false;
-        }
-        world.removeBlock(getPos(), false);
-        //world.setBlockState(getPos(), MekanismBlocks.MachineBlock.getStateFromMeta(5 + tier.ordinal() + 1));
-
-        //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)
-        /*TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
-
-        //Basic
-        factory.facing = facing;
-        factory.clientFacing = clientFacing;
-        factory.ticker = ticker;
-        factory.redstone = redstone;
-        factory.redstoneLastTick = redstoneLastTick;
-        factory.doAutoSync = doAutoSync;
-
-        //Electric
-        factory.electricityStored = electricityStored;
-
-        //Factory
-        //TODO: Copy this
-        System.arraycopy(progress, 0, factory.progress, 0, tier.processes);
-
-        factory.recipeTicks = recipeTicks;
-        factory.isActive = isActive;
-        //TODO: Transfer cached recipe
-        //factory.prevEnergy = prevEnergy;
-        factory.gasTank.setGas(gasTank.getGas());
-        factory.sorting = sorting;
-        factory.setControlType(getControlType());
-        factory.upgradeComponent.readFrom(upgradeComponent);
-        factory.ejectorComponent.readFrom(ejectorComponent);
-        factory.configComponent.readFrom(configComponent);
-        factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-        factory.setRecipeType(recipeType);
-        factory.upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
-        factory.securityComponent.readFrom(securityComponent);
-        factory.infuseStored.copyFrom(infuseStored);
-
-        for (int i = 0; i < tier.processes + 5; i++) {
-            factory.inventory.set(i, inventory.get(i));
-        }
-
-        for (int i = 0; i < tier.processes; i++) {
-            int output = getOutputSlot(i);
-            if (!inventory.get(output).isEmpty()) {
-                int newOutput = 5 + factory.tier.processes + i;
-                factory.inventory.set(newOutput, inventory.get(output));
-            }
-        }
-
-        for (Upgrade upgrade : factory.upgradeComponent.getSupportedTypes()) {
-            factory.recalculateUpgrades(upgrade);
-        }
-
-        factory.upgraded = true;
-        factory.markDirty();
-        Mekanism.packetHandler.sendUpdatePacket(factory);*/
-        return true;
     }
 
     @Override

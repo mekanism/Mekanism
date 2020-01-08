@@ -1,6 +1,7 @@
 package mekanism.common.registries;
 
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
@@ -175,7 +176,7 @@ public class MekanismItems {
         return ITEMS.register(tier.getSimpleName().toLowerCase(Locale.ROOT) + "_control_circuit");
     }
 
-    private static ItemRegistryObject<ItemTierInstaller> registerInstaller(@Nullable BaseTier fromTier, BaseTier toTier) {
+    private static ItemRegistryObject<ItemTierInstaller> registerInstaller(@Nullable BaseTier fromTier, @Nonnull BaseTier toTier) {
         //Ensure the name is lower case as with concatenating with values from enums it may not be
         return ITEMS.register(toTier.getSimpleName().toLowerCase(Locale.ROOT) + "_tier_installer", properties -> new ItemTierInstaller(fromTier, toTier, properties));
     }

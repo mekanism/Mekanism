@@ -26,13 +26,13 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.prefab.TileEntityUpgradeableMachine;
+import mekanism.common.tile.prefab.TileEntityBasicMachine;
+import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<SawmillRecipe> {
+public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
@@ -82,20 +82,6 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
         builder.addSlot(secondaryOutputSlot = OutputInventorySlot.at(this, 132, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 56, 53));
         return builder.build();
-    }
-
-    @Override
-    protected void upgradeInventory(TileEntityFactory<?> factory) {
-        //TODO: Upgrade
-        //Chance Machine
-        /*factory.configComponent.getOutputs(TransmissionType.ITEM).get(2).availableSlots = new int[]{4, 8, 9, 10};
-
-        NonNullList<ItemStack> factoryInventory = factory.getInventory();
-        NonNullList<ItemStack> inventory = getInventory();
-        factoryInventory.set(5, inventory.get(0));
-        factoryInventory.set(1, inventory.get(1));
-        factoryInventory.set(5 + 3, inventory.get(2));
-        factoryInventory.set(0, inventory.get(3));*/
     }
 
     @Override
@@ -168,5 +154,11 @@ public class TileEntityPrecisionSawmill extends TileEntityUpgradeableMachine<Saw
             default:
                 throw new NoSuchMethodException();
         }
+    }
+
+    @Nonnull
+    @Override
+    public SawmillUpgradeData getUpgradeData() {
+        return new SawmillUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), energySlot, inputSlot, outputSlot, secondaryOutputSlot, getComponents());
     }
 }

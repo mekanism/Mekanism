@@ -35,7 +35,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -48,7 +48,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgradeableMachine<ItemStackGasToItemStackRecipe> implements IGasHandler, ISustainedData {
+public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine<ItemStackGasToItemStackRecipe> implements IGasHandler, ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy",
                                                          "getEnergyNeeded"};
@@ -134,23 +134,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 31, 35));
         return builder.build();
-    }
-
-    @Override
-    protected void upgradeInventory(TileEntityFactory<?> factory) {
-        //TODO: Upgrade
-        //Advanced Machine
-        /*if (factory instanceof TileEntityItemStackGasToItemStackFactory) {
-            ((TileEntityItemStackGasToItemStackFactory) factory).gasTank.setStack(gasTank.getStack());
-        }
-
-        NonNullList<ItemStack> factoryInventory = factory.getInventory();
-        NonNullList<ItemStack> inventory = getInventory();
-        factoryInventory.set(5, inventory.get(0));
-        factoryInventory.set(4, inventory.get(1));
-        factoryInventory.set(5 + 3, inventory.get(2));
-        factoryInventory.set(1, inventory.get(3));
-        factoryInventory.set(0, inventory.get(4));*/
     }
 
     public boolean isValidGas(@Nonnull Gas gas) {
@@ -341,5 +324,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityUpgrad
     @Override
     public void readSustainedData(ItemStack itemStack) {
         GasUtils.readSustainedData(gasTank, itemStack);
+    }
+
+    @Nonnull
+    @Override
+    public AdvancedMachineUpgradeData getUpgradeData() {
+        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), gasTank.getStack(), secondarySlot, energySlot, inputSlot,
+              outputSlot, getComponents());
     }
 }

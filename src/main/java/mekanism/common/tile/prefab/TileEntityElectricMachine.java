@@ -24,12 +24,12 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.factory.TileEntityFactory;
+import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 
-public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMachine<ItemStackToItemStackRecipe> {
+public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<ItemStackToItemStackRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
@@ -83,17 +83,6 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 56, 53));
         return builder.build();
-    }
-
-    @Override
-    protected void upgradeInventory(TileEntityFactory<?> factory) {
-        //TODO: Upgrade
-        /*NonNullList<ItemStack> factoryInventory = factory.getInventory();
-        NonNullList<ItemStack> inventory = getInventory();
-        factoryInventory.set(5, inventory.get(0));
-        factoryInventory.set(1, inventory.get(1));
-        factoryInventory.set(5 + 3, inventory.get(2));
-        factoryInventory.set(0, inventory.get(3));*/
     }
 
     @Override
@@ -157,5 +146,11 @@ public abstract class TileEntityElectricMachine extends TileEntityUpgradeableMac
             default:
                 throw new NoSuchMethodException();
         }
+    }
+
+    @Nonnull
+    @Override
+    public MachineUpgradeData getUpgradeData() {
+        return new MachineUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), energySlot, inputSlot, outputSlot, getComponents());
     }
 }

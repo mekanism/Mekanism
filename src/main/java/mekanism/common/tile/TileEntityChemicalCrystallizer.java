@@ -180,7 +180,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.put("inputTank", inputTank.write(new CompoundNBT()));
-        nbtTags.putBoolean("sideDataStored", true);
         return nbtTags;
     }
 

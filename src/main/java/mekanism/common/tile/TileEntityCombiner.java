@@ -25,13 +25,13 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.factory.TileEntityFactory;
-import mekanism.common.tile.prefab.TileEntityUpgradeableMachine;
+import mekanism.common.tile.prefab.TileEntityBasicMachine;
+import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRecipe> {
+public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
 
@@ -90,19 +90,6 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 31, 35));
         return builder.build();
-    }
-
-    @Override
-    protected void upgradeInventory(TileEntityFactory<?> factory) {
-        //TODO: Upgrade
-        /*NonNullList<ItemStack> factoryInventory = factory.getInventory();
-        NonNullList<ItemStack> inventory = getInventory();
-        //Double Machine
-        factoryInventory.set(5, inventory.get(0));
-        factoryInventory.set(4, inventory.get(1));
-        factoryInventory.set(5 + 3, inventory.get(2));
-        factoryInventory.set(1, inventory.get(3));
-        factoryInventory.set(0, inventory.get(4));*/
     }
 
     @Override
@@ -179,5 +166,11 @@ public class TileEntityCombiner extends TileEntityUpgradeableMachine<CombinerRec
             default:
                 throw new NoSuchMethodException();
         }
+    }
+
+    @Nonnull
+    @Override
+    public CombinerUpgradeData getUpgradeData() {
+        return new CombinerUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents());
     }
 }

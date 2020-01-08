@@ -22,13 +22,17 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.IUpgradeableBlock;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ChemicalInjectionChamberContainer;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -59,7 +63,7 @@ import net.minecraft.world.World;
 
 public class BlockChemicalInjectionChamber extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityChemicalInjectionChamber>, IStateFacing,
       IStateActive, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalInjectionChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator,
-      IHasDescription {
+      IHasDescription, IUpgradeableBlock {
 
     public BlockChemicalInjectionChamber() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
@@ -195,5 +199,21 @@ public class BlockChemicalInjectionChamber extends BlockMekanism implements IBlo
     @Override
     public ILangEntry getDescription() {
         return MekanismLang.DESCRIPTION_CHEMICAL_INJECTION_CHAMBER;
+    }
+
+    @Nonnull
+    @Override
+    public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_INJECTING_FACTORY.getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_INJECTING_FACTORY.getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_INJECTING_FACTORY.getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_INJECTING_FACTORY.getBlock().getDefaultState());
+        }
+        return current;
     }
 }

@@ -17,6 +17,7 @@ import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
@@ -25,6 +26,8 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.upgrade.AdvancedMachineUpgradeData;
+import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
@@ -258,5 +261,41 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+        if (upgradeData instanceof AdvancedMachineUpgradeData) {
+            AdvancedMachineUpgradeData data = (AdvancedMachineUpgradeData) upgradeData;
+            redstone = data.redstone;
+            setControlType(data.controlType);
+            setEnergy(data.electricityStored);
+            sorting = data.sorting;
+            //TODO: Transfer recipe ticks?
+            //TODO: Transfer operating ticks properly
+            gasTank.setStack(data.stored);
+            extraSlot.setStack(data.gasSlot.getStack());
+            energySlot.setStack(data.energySlot.getStack());
+            typeInputSlot.setStack(data.typeInputStack);
+            typeOutputSlot.setStack(data.typeOutputStack);
+            for (int i = 0; i < data.inputSlots.size(); i++) {
+                inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
+            }
+            for (int i = 0; i < data.outputSlots.size(); i++) {
+                outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());
+            }
+            for (ITileComponent component : getComponents()) {
+                component.read(data.components);
+            }
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public AdvancedMachineUpgradeData getUpgradeData() {
+        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergy(), progress, gasTank.getStack(), extraSlot, energySlot,
+              inputSlots, outputSlots, sorting, typeInputSlot.getStack(), typeOutputSlot.getStack(), getComponents());
     }
 }

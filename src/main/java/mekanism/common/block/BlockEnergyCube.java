@@ -13,6 +13,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
@@ -63,8 +64,8 @@ import net.minecraft.world.World;
  *
  * @author AidanBrady
  */
-public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntityEnergyCube>, IStateFacing, IUpgradeableBlock<EnergyCubeTier>, IBlockElectric, IHasInventory,
-      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator, IStateWaterLogged, IHasDescription {
+public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntityEnergyCube>, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory,
+      IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator, IStateWaterLogged, IHasDescription, IUpgradeableBlock {
 
     private static final VoxelShape[] bounds = new VoxelShape[128];
 
@@ -295,15 +296,13 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
     public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
         switch (tier) {
             case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_ENERGY_CUBE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_SAWING_FACTORY.getBlock().getDefaultState());
             case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_ENERGY_CUBE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_SAWING_FACTORY.getBlock().getDefaultState());
             case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_ENERGY_CUBE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_SAWING_FACTORY.getBlock().getDefaultState());
             case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_ENERGY_CUBE.getBlock().getDefaultState());
-            case CREATIVE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.CREATIVE_ENERGY_CUBE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_SAWING_FACTORY.getBlock().getDefaultState());
         }
         return current;
     }

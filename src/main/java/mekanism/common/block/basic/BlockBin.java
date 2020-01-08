@@ -11,6 +11,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -48,8 +49,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, IUpgradeableBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator,
-      IHasInventory, IHasDescription {
+public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator,
+      IHasInventory, IHasDescription, IUpgradeableBlock {
 
     private final BinTier tier;
 

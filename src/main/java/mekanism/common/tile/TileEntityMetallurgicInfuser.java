@@ -18,7 +18,6 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -29,25 +28,24 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<MetallurgicInfuserRecipe> implements IComputerIntegration, ISideConfiguration,
-      IConfigCardAccess, ITierUpgradeable, ISustainedData {
+      IConfigCardAccess, ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse",
                                                          "getInfuseNeeded"};
@@ -126,71 +124,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         }
     }
 
-    @Override
-    public boolean upgrade(BaseTier upgradeTier) {
-        if (upgradeTier != BaseTier.BASIC) {
-            return false;
-        }
-
-        World world = getWorld();
-        if (world == null) {
-            return false;
-        }
-        world.removeBlock(getPos(), false);
-        world.setBlockState(getPos(), MekanismBlocks.BASIC_INFUSING_FACTORY.getBlock().getDefaultState());
-
-        //TODO: How much of this can be removed if we chance TileEntityMetallurgicInfuser to extending TileEntityUpgradeableMachine
-        //TODO: Make this copy the settings over, probably make a method TileEntityMekanism#copySettings(TileEntityMekanism other)
-        /*TileEntityFactory factory = Objects.requireNonNull((TileEntityFactory) world.getTileEntity(getPos()));
-        RecipeType type = RecipeType.INFUSING;
-
-        //Basic
-        factory.facing = facing;
-        factory.clientFacing = clientFacing;
-        factory.ticker = ticker;
-        factory.redstone = redstone;
-        factory.redstoneLastTick = redstoneLastTick;
-        factory.doAutoSync = doAutoSync;
-
-        //Electric
-        factory.electricityStored = electricityStored;
-
-        //Machine
-        factory.progress[0] = getOperatingTicks();
-        factory.setActive(isActive);
-        factory.setControlType(getControlType());
-        //TODO: Transfer cache?
-        //factory.prevEnergy = prevEnergy;
-        factory.upgradeComponent.readFrom(upgradeComponent);
-        factory.upgradeComponent.setUpgradeSlot(0);
-        factory.ejectorComponent.readFrom(ejectorComponent);
-        factory.ejectorComponent.setOutputData(TransmissionType.ITEM, factory.configComponent.getOutputs(TransmissionType.ITEM).get(2));
-        factory.setRecipeType(type);
-        factory.upgradeComponent.setSupported(Upgrade.GAS, type.fuelEnergyUpgrades());
-        factory.securityComponent.readFrom(securityComponent);
-
-        for (TransmissionType transmission : configComponent.getTransmissions()) {
-            factory.configComponent.setConfig(transmission, configComponent.getConfig(transmission).asByteArray());
-            factory.configComponent.setEjecting(transmission, configComponent.isEjecting(transmission));
-        }
-
-        //Infuser
-        factory.infuseStored.copyFrom(infuseStored);
-
-        factory.inventory.set(5, inventory.get(2));
-        factory.inventory.set(1, inventory.get(4));
-        factory.inventory.set(5 + 3, inventory.get(3));
-        factory.inventory.set(0, inventory.get(0));
-        factory.inventory.set(4, inventory.get(1));
-
-        for (Upgrade upgrade : factory.upgradeComponent.getSupportedTypes()) {
-            factory.recalculateUpgrades(upgrade);
-        }
-        factory.upgraded = true;
-        factory.markDirty();*/
-        return true;
-    }
-
     @Nonnull
     @Override
     public MekanismRecipeType<MetallurgicInfuserRecipe> getRecipeType() {
@@ -241,7 +174,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
         if (!infusionTank.isEmpty()) {
             nbtTags.put("infuseStored", infusionTank.write(new CompoundNBT()));
         }
-        nbtTags.putBoolean("sideDataStored", true);
         return nbtTags;
     }
 
@@ -339,5 +271,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     public void readSustainedData(ItemStack itemStack) {
         infusionTank.readSustainedData(itemStack);
+    }
+
+    @Nonnull
+    @Override
+    public MetallurgicInfuserUpgradeData getUpgradeData() {
+        return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), infusionTank.getStack(), infusionSlot, energySlot,
+              inputSlot, outputSlot, getComponents());
     }
 }

@@ -16,6 +16,7 @@ import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
@@ -60,8 +61,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, IUpgradeableBlock<FluidTankTier>,
-      IHasInventory, IHasTileEntity<TileEntityFluidTank>, ISupportsComparator, IHasSecurity, IStateWaterLogged, IHasDescription {
+public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>,
+      IHasInventory, IHasTileEntity<TileEntityFluidTank>, ISupportsComparator, IHasSecurity, IStateWaterLogged, IHasDescription, IUpgradeableBlock {
 
     private static final VoxelShape bounds = makeCuboidShape(2, 0, 2, 14, 16, 14);
 

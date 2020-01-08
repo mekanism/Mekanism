@@ -10,6 +10,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
@@ -47,8 +48,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGasTank>, IStateFacing, IUpgradeableBlock<GasTankTier>, IHasInventory, IHasSecurity,
-      ISupportsRedstone, IHasTileEntity<TileEntityGasTank>, ISupportsComparator, IStateWaterLogged, IHasDescription {
+public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGasTank>, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity,
+      ISupportsRedstone, IHasTileEntity<TileEntityGasTank>, ISupportsComparator, IStateWaterLogged, IHasDescription, IUpgradeableBlock {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

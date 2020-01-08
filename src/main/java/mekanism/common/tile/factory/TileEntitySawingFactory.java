@@ -13,12 +13,15 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.FactoryTier;
+import mekanism.common.upgrade.IUpgradeData;
+import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -132,5 +135,39 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty);
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+        if (upgradeData instanceof SawmillUpgradeData) {
+            SawmillUpgradeData data = (SawmillUpgradeData) upgradeData;
+            redstone = data.redstone;
+            setControlType(data.controlType);
+            setEnergy(data.electricityStored);
+            sorting = data.sorting;
+            //TODO: Transfer recipe ticks?
+            //TODO: Transfer operating ticks properly
+            energySlot.setStack(data.energySlot.getStack());
+            typeInputSlot.setStack(data.typeInputStack);
+            typeOutputSlot.setStack(data.typeOutputStack);
+            for (int i = 0; i < data.inputSlots.size(); i++) {
+                inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
+            }
+            for (int i = 0; i < data.outputSlots.size(); i++) {
+                outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());
+            }
+            for (ITileComponent component : getComponents()) {
+                component.read(data.components);
+            }
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public SawmillUpgradeData getUpgradeData() {
+        return new SawmillUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, inputSlots, outputSlots, sorting, typeInputSlot.getStack(),
+              typeOutputSlot.getStack(), getComponents());
     }
 }
