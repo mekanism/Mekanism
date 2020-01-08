@@ -6,6 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.IUpgradeableTile;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -14,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -50,15 +52,15 @@ public class ItemTierInstaller extends Item {
                 if (state == upgradeState) {
                     return ActionResultType.PASS;
                 }
-                //TODO: Make it so it doesn't have to be a TileEntityMekanism?
-                TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-                if (tile != null) {
-                    if (tile.playersUsing.size() > 0) {
+                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                if (tile instanceof IUpgradeableTile) {
+                    if (tile instanceof TileEntityMekanism && ((TileEntityMekanism) tile).playersUsing.size() > 0) {
                         return ActionResultType.FAIL;
                     }
-                    IUpgradeData upgradeData = tile.getUpgradeData();
+                    IUpgradeData upgradeData = ((IUpgradeableTile) tile).getUpgradeData();
                     if (upgradeData != null) {
                         world.setBlockState(pos, upgradeState);
+                        //TODO: Make it so it doesn't have to be a TileEntityMekanism?
                         TileEntityMekanism upgradedTile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
                         if (upgradedTile != null) {
                             upgradedTile.parseUpgradeData(upgradeData);
@@ -73,7 +75,7 @@ public class ItemTierInstaller extends Item {
                             Mekanism.logger.warn("Error upgrading block at position: {} in {}.", pos, world);
                             return ActionResultType.FAIL;
                         }
-                    } else if (tile.canBeUpgraded()) {
+                    } else if (((IUpgradeableTile) tile).canBeUpgraded()) {
                         Mekanism.logger.warn("Got no upgrade data for block {} at position: {} in {} but it said it would be able to provide some.", block, pos, world);
                         return ActionResultType.FAIL;
                     }
