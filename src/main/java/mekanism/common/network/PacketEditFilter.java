@@ -35,7 +35,6 @@ public class PacketEditFilter {
         delete = deletion;
         this.filter = filter;
         this.edited = edited;
-
         if (filter instanceof TransporterFilter) {
             type = 0;
         } else if (filter instanceof MinerFilter) {

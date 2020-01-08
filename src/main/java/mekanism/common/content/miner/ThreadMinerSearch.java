@@ -97,7 +97,7 @@ public class ThreadMinerSearch extends Thread {
                         continue;
                     }
                     for (MinerFilter<?> filter : filters) {
-                        if (filter.canFilter(stack)) {
+                        if (filter.canFilter(state)) {
                             filterFound = filter;
                             break;
                         }

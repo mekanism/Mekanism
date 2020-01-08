@@ -22,7 +22,7 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
 
     public GuiMMaterialFilter(DMMaterialFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        origFilter = container.getFilter();
+        origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
     }

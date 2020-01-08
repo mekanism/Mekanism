@@ -17,7 +17,7 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
-import mekanism.common.content.filter.IOreDictFilter;
+import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.inventory.container.tile.filter.FilterEmptyContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -36,7 +36,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected final int filterW = 96;
     protected final int filterH = 29;
 
-    protected Map<IOreDictFilter<?>, StackData> oreDictStacks = new HashMap<>();
+    protected Map<ITagFilter<?>, StackData> oreDictStacks = new HashMap<>();
     protected Map<IModIDFilter<?>, StackData> modIDStacks = new HashMap<>();
     /**
      * True if the scrollbar is being dragged
@@ -78,7 +78,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
         // Update displayed stacks
         if (stackSwitch == 0) {
-            for (Entry<IOreDictFilter<?>, StackData> entry : oreDictStacks.entrySet()) {
+            for (Entry<ITagFilter<?>, StackData> entry : oreDictStacks.entrySet()) {
                 setNextRenderStack(entry.getValue());
             }
             for (Entry<IModIDFilter<?>, StackData> entry : modIDStacks.entrySet()) {
@@ -86,7 +86,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
             }
             stackSwitch = 20;
         } else {
-            for (Entry<IOreDictFilter<?>, StackData> entry : oreDictStacks.entrySet()) {
+            for (Entry<ITagFilter<?>, StackData> entry : oreDictStacks.entrySet()) {
                 StackData data = entry.getValue();
                 if (data.iterStacks != null && data.iterStacks.size() == 0) {
                     data.renderStack = ItemStack.EMPTY;
@@ -100,22 +100,22 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
             }
         }
 
-        Set<IOreDictFilter<?>> oreDictFilters = new HashSet<>();
+        Set<ITagFilter<?>> oreDictFilters = new HashSet<>();
         Set<IModIDFilter<?>> modIDFilters = new HashSet<>();
 
         HashList<FILTER> filters = tile.getFilters();
 
         for (int i = 0; i < 4; i++) {
             FILTER filter = filters.get(getFilterIndex() + i);
-            if (filter instanceof IOreDictFilter) {
-                oreDictFilters.add((IOreDictFilter<?>) filter);
+            if (filter instanceof ITagFilter) {
+                oreDictFilters.add((ITagFilter<?>) filter);
             } else if (filter instanceof IModIDFilter) {
                 modIDFilters.add((IModIDFilter<?>) filter);
             }
         }
 
         for (FILTER filter : filters) {
-            if (filter instanceof IOreDictFilter && !oreDictFilters.contains(filter)) {
+            if (filter instanceof ITagFilter && !oreDictFilters.contains(filter)) {
                 oreDictStacks.remove(filter);
             } else if (filter instanceof IModIDFilter && !modIDFilters.contains(filter)) {
                 modIDStacks.remove(filter);
@@ -137,7 +137,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                 // Change color based on filter type
                 if (filter instanceof IItemStackFilter) {
                     MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
-                } else if (filter instanceof IOreDictFilter) {
+                } else if (filter instanceof ITagFilter) {
                     MekanismRenderer.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
                 } else if (filter instanceof IMaterialFilter) {
                     MekanismRenderer.color(EnumColor.PURPLE, 1.0F, 4F);
@@ -210,11 +210,11 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         return true;
     }
 
-    protected void updateStackList(IOreDictFilter<?> filter) {
+    protected void updateStackList(ITagFilter<?> filter) {
         if (!oreDictStacks.containsKey(filter)) {
             oreDictStacks.put(filter, new StackData());
         }
-        oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.getOreDictName(), false);
+        oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.getTagName(), false);
         stackSwitch = 0;
         tick();
         oreDictStacks.get(filter).stackIndex = -1;

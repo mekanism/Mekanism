@@ -26,7 +26,6 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter<FILTER>, TILE ext
     protected abstract TextFieldWidget createTextField();
 
     protected boolean wasTextboxKey(char c, int i) {
-        //TODO: Allow tag filters to accept `:`
         return Character.isLetter(c) || Character.isDigit(c);
     }
 

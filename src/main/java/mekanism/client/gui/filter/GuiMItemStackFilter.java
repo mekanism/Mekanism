@@ -31,7 +31,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     public GuiMItemStackFilter(DMItemStackFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        origFilter = container.getFilter();
+        origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
     }
@@ -60,7 +60,7 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
         addButton(new MekanismImageButton(this, getGuiLeft() + 148, getGuiTop() + 45, 14, 16, getButtonLocation("exclamation"),
               () -> filter.requireStack = !filter.requireStack, getOnHoverReplace(filter)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 15, getGuiTop() + 45, 14, getButtonLocation("fuzzy"),
-              () -> filter.fuzzy = !filter.fuzzy, getOnHover(MekanismLang.MINER_FUZZY_MODE.translate(YesNo.of(filter.fuzzy)))));
+              () -> filter.fuzzy = !filter.fuzzy, getOnHover(() -> MekanismLang.MINER_FUZZY_MODE.translate(YesNo.of(filter.fuzzy)))));
     }
 
     @Override

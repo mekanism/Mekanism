@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
@@ -44,11 +45,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     protected IHoverable getOnHover(ILangEntry translationHelper) {
-        return getOnHover(translationHelper.translate());
+        return getOnHover((Supplier<ITextComponent>) translationHelper::translate);
     }
 
-    protected IHoverable getOnHover(ITextComponent component) {
-        return (onHover, xAxis, yAxis) -> displayTooltip(component, xAxis, yAxis);
+    protected IHoverable getOnHover(Supplier<ITextComponent> componentSupplier) {
+        return (onHover, xAxis, yAxis) -> displayTooltip(componentSupplier.get(), xAxis, yAxis);
     }
 
     protected ResourceLocation getButtonLocation(String name) {

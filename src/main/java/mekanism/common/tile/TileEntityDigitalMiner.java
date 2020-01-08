@@ -31,7 +31,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MItemStackFilter;
-import mekanism.common.content.miner.MOreDictFilter;
+import mekanism.common.content.miner.MTagFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
@@ -230,9 +230,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
                             boolean hasFilter = false;
                             BlockState state = world.getBlockState(coordPos);
-                            ItemStack is = new ItemStack(state.getBlock());
                             for (MinerFilter<?> filter : filters) {
-                                if (filter.canFilter(is)) {
+                                if (filter.canFilter(state)) {
                                     hasFilter = true;
                                     break;
                                 }
@@ -844,8 +843,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 return new Object[]{"Invalid parameters."};
             }
             String ore = (String) arguments[0];
-            MOreDictFilter filter = new MOreDictFilter();
-            filter.setOreDictName(ore);
+            MTagFilter filter = new MTagFilter();
+            filter.setTagName(ore);
             filters.add(filter);
             return new Object[]{"Added filter."};
         } else if (method == 6) {
@@ -856,8 +855,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             Iterator<MinerFilter<?>> iter = filters.iterator();
             while (iter.hasNext()) {
                 MinerFilter<?> filter = iter.next();
-                if (filter instanceof MOreDictFilter) {
-                    if (((MOreDictFilter) filter).getOreDictName().equals(ore)) {
+                if (filter instanceof MTagFilter) {
+                    if (((MTagFilter) filter).getTagName().equals(ore)) {
                         iter.remove();
                         return new Object[]{"Removed filter."};
                     }

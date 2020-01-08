@@ -15,6 +15,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 //TODO: Rewrite this entire class to be more of a tag helper class than a caching class
 public final class OreDictCache {
@@ -98,7 +99,7 @@ public final class OreDictCache {
     }
 
     public static List<ItemStack> getOreDictStacks(String oreName, boolean forceBlock) {
-        //TODO: Replace with others
+        //TODO: Replace with others, we also need to make this sometimes go off of the block's tags not the item tags
         return getItemTagStacks(oreName, forceBlock);
     }
 
@@ -106,31 +107,27 @@ public final class OreDictCache {
         if (modIDStacks.get(modName) != null) {
             return modIDStacks.get(modName);
         }
-        //TODO: Fix this
         List<ItemStack> stacks = new ArrayList<>();
-        /*for (String key : OreDictionary.getOreNames()) {
-            for (ItemStack stack : OreDictionary.getOres(key, false)) {
-                ItemStack toAdd = stack.copy();
-                String s = ItemRegistryUtils.getMod(toAdd);
-                if (!stacks.contains(stack) && toAdd.getItem() instanceof BlockItem) {
-                    if (modName.equals(s) || modName.equals("*")) {
-                        stacks.add(stack.copy());
-                    } else if (modName.endsWith("*") && !modName.startsWith("*")) {
-                        if (s.startsWith(modName.substring(0, modName.length() - 1))) {
-                            stacks.add(stack.copy());
-                        }
-                    } else if (modName.startsWith("*") && !modName.endsWith("*")) {
-                        if (s.endsWith(modName.substring(1))) {
-                            stacks.add(stack.copy());
-                        }
-                    } else if (modName.startsWith("*") && modName.endsWith("*")) {
-                        if (s.contains(modName.substring(1, modName.length() - 1))) {
-                            stacks.add(stack.copy());
-                        }
+        for (Item item : ForgeRegistries.ITEMS.getValues()) {
+            if (!forceBlock || item instanceof BlockItem) {
+                String id = item.getRegistryName().getNamespace();
+                if (modName.equals(id) || modName.equals("*")) {
+                    stacks.add(new ItemStack(item));
+                } else if (modName.endsWith("*") && !modName.startsWith("*")) {
+                    if (id.startsWith(modName.substring(0, modName.length() - 1))) {
+                        stacks.add(new ItemStack(item));
+                    }
+                } else if (modName.startsWith("*") && !modName.endsWith("*")) {
+                    if (id.endsWith(modName.substring(1))) {
+                        stacks.add(new ItemStack(item));
+                    }
+                } else if (modName.startsWith("*") && modName.endsWith("*")) {
+                    if(id.contains(modName.substring(1, modName.length() - 1))) {
+                        stacks.add(new ItemStack(item));
                     }
                 }
             }
-        }*/
+        }
         modIDStacks.put(modName, stacks);
         return stacks;
     }

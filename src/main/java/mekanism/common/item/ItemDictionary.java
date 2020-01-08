@@ -1,10 +1,9 @@
 package mekanism.common.item;
 
-import java.util.List;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import net.minecraft.block.Block;
@@ -17,6 +16,7 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -38,11 +38,12 @@ public class ItemDictionary extends Item {
             Block block = state.getBlock();
             if (world.isRemote) {
                 ItemStack testStack = new ItemStack(block);
-                List<String> names = OreDictCache.getOreDictName(testStack);
-                if (!names.isEmpty()) {
+                //TODO: Also list block tags/fluid tags it the item is of that type
+                Set<ResourceLocation> tags = testStack.getItem().getTags();
+                if (!tags.isEmpty()) {
                     player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_KEYS_FOUND.translateColored(EnumColor.GRAY)));
-                    for (String name : names) {
-                        player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, name));
+                    for (ResourceLocation tag : tags) {
+                        player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag));
                     }
                 } else {
                     player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.DICTIONARY_NO_KEY.translateColored(EnumColor.GRAY)));

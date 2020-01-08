@@ -3,10 +3,9 @@ package mekanism.common.content.miner;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IMaterialFilter;
-import mekanism.common.content.transporter.Finder.MaterialFinder;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -20,11 +19,8 @@ public class MMaterialFilter extends MinerFilter<MMaterialFilter> implements IMa
     }
 
     @Override
-    public boolean canFilter(ItemStack itemStack) {
-        if (itemStack.isEmpty() || !(itemStack.getItem() instanceof BlockItem)) {
-            return false;
-        }
-        return new MaterialFinder(getMaterial()).modifies(itemStack);
+    public boolean canFilter(BlockState state) {
+        return state.getMaterial() == getMaterial();
     }
 
     @Override

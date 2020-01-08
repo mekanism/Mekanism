@@ -43,7 +43,7 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
         if (type == 0) {
             filter = new TItemStackFilter();
         } else if (type == 1) {
-            filter = new TOreDictFilter();
+            filter = new TTagFilter();
         } else if (type == 2) {
             filter = new TMaterialFilter();
         } else if (type == 3) {

@@ -64,7 +64,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
               getOnHover(MekanismLang.ENCODE_FORMULA)));
         addButton(stockControlButton = new MekanismImageButton(this, getGuiLeft() + 26, getGuiTop() + 75, 16, getButtonLocation("stock_control"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(5))),
-              getOnHover(MekanismLang.STOCK_CONTROL.translate(OnOff.of(tile.stockControl)))));
+              getOnHover(() -> MekanismLang.STOCK_CONTROL.translate(OnOff.of(tile.stockControl)))));
         addButton(fillEmptyButton = new MekanismImageButton(this, getGuiLeft() + 44, getGuiTop() + 75, 16, getButtonLocation("fill_empty"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(4))),
               getOnHover(MekanismLang.FILL_EMPTY)));
@@ -76,7 +76,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
               getOnHover(MekanismLang.CRAFT_AVAILABLE)));
         addButton(autoModeButton = new MekanismImageButton(this, getGuiLeft() + 107, getGuiTop() + 75, 16, getButtonLocation("auto_toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))),
-              getOnHover(MekanismLang.AUTO_MODE.translate(OnOff.of(tile.autoMode)))));
+              getOnHover(() -> MekanismLang.AUTO_MODE.translate(OnOff.of(tile.autoMode)))));
         updateEnabledButtons();
     }
 

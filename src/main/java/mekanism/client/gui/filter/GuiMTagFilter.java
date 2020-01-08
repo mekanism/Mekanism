@@ -7,7 +7,7 @@ import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.OreDictCache;
-import mekanism.common.content.miner.MOreDictFilter;
+import mekanism.common.content.miner.MTagFilter;
 import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
@@ -19,11 +19,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEntityDigitalMiner, DMTagFilterContainer> {
+public class GuiMTagFilter extends GuiTagFilter<MTagFilter, TileEntityDigitalMiner, DMTagFilterContainer> {
 
-    public GuiMOreDictFilter(DMTagFilterContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiMTagFilter(DMTagFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        origFilter = container.getFilter();
+        origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
     }
@@ -34,7 +34,7 @@ public class GuiMOreDictFilter extends GuiOreDictFilter<MOreDictFilter, TileEnti
             if (!text.getText().isEmpty()) {
                 setText();
             }
-            if (filter.getOreDictName() != null && !filter.getOreDictName().isEmpty()) {
+            if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tile), filter));
                 } else {

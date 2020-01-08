@@ -8,7 +8,7 @@ import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.OreDictCache;
-import mekanism.common.content.transporter.TOreDictFilter;
+import mekanism.common.content.transporter.TTagFilter;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
 import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
@@ -23,14 +23,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
-public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEntityLogisticalSorter, LSTagFilterContainer> {
+public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogisticalSorter, LSTagFilterContainer> {
 
-    public GuiTOreDictFilter(LSTagFilterContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiTTagFilter(LSTagFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        origFilter = container.getFilter();
+        origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
-        updateStackList(filter.getOreDictName());
+        updateStackList(filter.getTagName());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class GuiTOreDictFilter extends GuiOreDictFilter<TOreDictFilter, TileEnti
             if (!text.getText().isEmpty()) {
                 setText();
             }
-            if (filter.getOreDictName() != null && !filter.getOreDictName().isEmpty()) {
+            if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
                 if (isNew) {
                     Mekanism.packetHandler.sendToServer(new PacketNewFilter(Coord4D.get(tile), filter));
                 } else {

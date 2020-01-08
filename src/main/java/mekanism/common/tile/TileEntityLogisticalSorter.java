@@ -16,7 +16,7 @@ import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
 import mekanism.common.content.transporter.TItemStackFilter;
-import mekanism.common.content.transporter.TOreDictFilter;
+import mekanism.common.content.transporter.TTagFilter;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
@@ -523,8 +523,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 if (arguments.length != 2 || !(arguments[0] instanceof String) || !(arguments[1] instanceof String)) {
                     return new Object[]{"Invalid parameters."};
                 }
-                TOreDictFilter filter = new TOreDictFilter();
-                filter.setOreDictName((String) arguments[0]);
+                TTagFilter filter = new TTagFilter();
+                filter.setTagName((String) arguments[0]);
                 filter.color = EnumColor.getFromDyeName((String) arguments[1]);
                 filters.add(filter);
                 return new Object[]{"Added filter."};
@@ -536,8 +536,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 Iterator<TransporterFilter<?>> iter = filters.iterator();
                 while (iter.hasNext()) {
                     TransporterFilter<?> filter = iter.next();
-                    if (filter instanceof TOreDictFilter) {
-                        if (((TOreDictFilter) filter).getOreDictName().equals(ore)) {
+                    if (filter instanceof TTagFilter) {
+                        if (((TTagFilter) filter).getTagName().equals(ore)) {
                             iter.remove();
                             return new Object[]{"Removed filter."};
                         }

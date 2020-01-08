@@ -14,7 +14,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
-import mekanism.common.content.filter.IOreDictFilter;
+import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.tile.filter.list.LogisticalSorterContainer;
 import mekanism.common.network.PacketGuiButtonPress;
@@ -112,7 +112,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
                         if (filter instanceof IItemStackFilter) {
                             Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        } else if (filter instanceof IOreDictFilter) {
+                        } else if (filter instanceof ITagFilter) {
                             Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_TAG, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IMaterialFilter) {
@@ -168,8 +168,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
                     } else {
                         drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
                     }
-                } else if (filter instanceof IOreDictFilter) {
-                    IOreDictFilter<?> oreFilter = (IOreDictFilter<?>) filter;
+                } else if (filter instanceof ITagFilter) {
+                    ITagFilter<?> oreFilter = (ITagFilter<?>) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }

@@ -1,12 +1,12 @@
 package mekanism.common.content.transporter;
 
-import java.util.List;
-import mekanism.common.OreDictCache;
+import java.util.Set;
 import mekanism.common.util.ItemRegistryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public abstract class Finder {
 
@@ -20,34 +20,35 @@ public abstract class Finder {
         }
     }
 
-    public static class OreDictFinder extends Finder {
+    public static class TagFinder extends Finder {
 
-        public String oreDictName;
+        public final String tagName;
 
-        public OreDictFinder(String name) {
-            oreDictName = name;
+        public TagFinder(String name) {
+            tagName = name;
         }
 
         @Override
         public boolean modifies(ItemStack stack) {
-            List<String> oreKeys = OreDictCache.getOreDictName(stack);
-
-            if (oreKeys.isEmpty()) {
+            Set<ResourceLocation> tags = stack.getItem().getTags();
+            if (tags.isEmpty()) {
                 return false;
             }
-            for (String oreKey : oreKeys) {
-                if (oreDictName.equals(oreKey) || oreDictName.equals("*")) {
+            for (ResourceLocation tag : tags) {
+                //TODO: How should we handle #
+                String tagAsString = tag.toString();
+                if (tagName.equals(tagAsString) || tagName.equals("*")) {
                     return true;
-                } else if (oreDictName.endsWith("*") && !oreDictName.startsWith("*")) {
-                    if (oreKey.startsWith(oreDictName.substring(0, oreDictName.length() - 1))) {
+                } else if (tagName.endsWith("*") && !tagName.startsWith("*")) {
+                    if (tagAsString.startsWith(tagName.substring(0, tagName.length() - 1))) {
                         return true;
                     }
-                } else if (oreDictName.startsWith("*") && !oreDictName.endsWith("*")) {
-                    if (oreKey.endsWith(oreDictName.substring(1))) {
+                } else if (tagName.startsWith("*") && !tagName.endsWith("*")) {
+                    if (tagAsString.endsWith(tagName.substring(1))) {
                         return true;
                     }
-                } else if (oreDictName.startsWith("*") && oreDictName.endsWith("*")) {
-                    if (oreKey.contains(oreDictName.substring(1, oreDictName.length() - 1))) {
+                } else if (tagName.startsWith("*") && tagName.endsWith("*")) {
+                    if (tagAsString.contains(tagName.substring(1, tagName.length() - 1))) {
                         return true;
                     }
                 }

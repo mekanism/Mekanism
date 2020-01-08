@@ -3,9 +3,7 @@ package mekanism.common.content.miner;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
-import mekanism.common.content.transporter.Finder.ModIDFinder;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
@@ -14,11 +12,18 @@ public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFil
     private String modID;
 
     @Override
-    public boolean canFilter(ItemStack itemStack) {
-        if (itemStack.isEmpty() || !(itemStack.getItem() instanceof BlockItem)) {
-            return false;
+    public boolean canFilter(BlockState state) {
+        String id = state.getBlock().getRegistryName().getNamespace();
+        if (modID.equals(id) || modID.equals("*")) {
+            return true;
+        } else if (modID.endsWith("*") && !modID.startsWith("*")) {
+            return id.startsWith(modID.substring(0, modID.length() - 1));
+        } else if (modID.startsWith("*") && !modID.endsWith("*")) {
+            return id.endsWith(modID.substring(1));
+        } else if (modID.startsWith("*") && modID.endsWith("*")) {
+            return id.contains(modID.substring(1, modID.length() - 1));
         }
-        return new ModIDFinder(modID).modifies(itemStack);
+        return false;
     }
 
     @Override

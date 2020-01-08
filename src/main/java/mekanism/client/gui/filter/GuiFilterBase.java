@@ -50,7 +50,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
     }
 
     protected IHoverable getOnHoverReplace(MinerFilter<?> filter) {
-        return getOnHover(MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(filter.requireStack)));
+        return getOnHover(() -> MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(filter.requireStack)));
     }
 
     protected void drawMinerForegroundLayer(ItemStack stack) {

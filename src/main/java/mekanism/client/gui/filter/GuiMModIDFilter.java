@@ -23,7 +23,7 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
 
     public GuiMModIDFilter(DMModIDFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        origFilter = container.getFilter();
+        origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
     }

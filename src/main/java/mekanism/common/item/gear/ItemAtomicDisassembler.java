@@ -37,6 +37,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
@@ -411,7 +412,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             location = loc;
             startBlock = loc.getBlock(world);
             rayTraceResult = traceResult;
-            isWood = OreDictCache.getOreDictName(stack).contains("logWood");
+            isWood = stack.getItem().isIn(ItemTags.LOGS);
             maxRange = range;
             maxCount = MekanismConfig.general.disassemblerMiningCount.get() - 1;
         }

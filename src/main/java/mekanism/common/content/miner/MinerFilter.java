@@ -3,6 +3,7 @@ package mekanism.common.content.miner;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IFilter;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -35,7 +36,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> implements
         if (type == 0) {
             filter = new MItemStackFilter();
         } else if (type == 1) {
-            filter = new MOreDictFilter();
+            filter = new MTagFilter();
         } else if (type == 2) {
             filter = new MMaterialFilter();
         } else if (type == 3) {
@@ -44,7 +45,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> implements
         return filter;
     }
 
-    public abstract boolean canFilter(ItemStack itemStack);
+    public abstract boolean canFilter(BlockState state);
 
     public CompoundNBT write(CompoundNBT nbtTags) {
         nbtTags.putBoolean("requireStack", requireStack);

@@ -3,6 +3,7 @@ package mekanism.common.content.miner;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IItemStackFilter;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -10,6 +11,7 @@ import net.minecraft.network.PacketBuffer;
 public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements IItemStackFilter<MItemStackFilter> {
 
     private ItemStack itemType = ItemStack.EMPTY;
+    //TODO: Fuzzy doesn't do anything due the the removal of meta data
     public boolean fuzzy;
 
     public MItemStackFilter(ItemStack item) {
@@ -20,7 +22,8 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
     }
 
     @Override
-    public boolean canFilter(ItemStack itemStack) {
+    public boolean canFilter(BlockState state) {
+        ItemStack itemStack = new ItemStack(state.getBlock());
         if (itemStack.isEmpty()) {
             return false;
         }

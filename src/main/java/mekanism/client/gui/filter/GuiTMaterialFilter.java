@@ -26,7 +26,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
 
     public GuiTMaterialFilter(LSMaterialFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        origFilter = container.getFilter();
+        origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
     }

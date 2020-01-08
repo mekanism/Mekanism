@@ -12,7 +12,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
-import mekanism.common.content.filter.IOreDictFilter;
+import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.inventory.container.tile.filter.list.DigitalMinerConfigContainer;
 import mekanism.common.network.PacketGuiButtonPress;
@@ -90,7 +90,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                         if (filter instanceof IItemStackFilter) {
                             Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_ITEMSTACK, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        } else if (filter instanceof IOreDictFilter) {
+                        } else if (filter instanceof ITagFilter) {
                             Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_TAG, tile.getPos(), index));
                             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         } else if (filter instanceof IMaterialFilter) {
@@ -160,8 +160,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                 if (filter instanceof IItemStackFilter) {
                     renderItem(((IItemStackFilter<?>) filter).getItemStack(), 59, yStart + 3);
                     drawString(MekanismLang.ITEM_FILTER.translate(), 78, yStart + 2, 0x404040);
-                } else if (filter instanceof IOreDictFilter) {
-                    IOreDictFilter<?> oreFilter = (IOreDictFilter<?>) filter;
+                } else if (filter instanceof ITagFilter) {
+                    ITagFilter<?> oreFilter = (ITagFilter<?>) filter;
                     if (!oreDictStacks.containsKey(oreFilter)) {
                         updateStackList(oreFilter);
                     }

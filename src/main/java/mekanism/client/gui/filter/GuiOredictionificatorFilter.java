@@ -29,7 +29,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     public GuiOredictionificatorFilter(OredictionificatorFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        origFilter = container.getFilter();
+        origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
         updateRenderStack();
