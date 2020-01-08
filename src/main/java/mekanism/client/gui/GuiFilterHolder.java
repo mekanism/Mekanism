@@ -214,11 +214,13 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         if (!oreDictStacks.containsKey(filter)) {
             oreDictStacks.put(filter, new StackData());
         }
-        oreDictStacks.get(filter).iterStacks = OreDictCache.getOreDictStacks(filter.getTagName(), false);
+        oreDictStacks.get(filter).iterStacks = getTagStacks(filter.getTagName());
         stackSwitch = 0;
         tick();
         oreDictStacks.get(filter).stackIndex = -1;
     }
+
+    protected abstract List<ItemStack> getTagStacks(String tagName);
 
     protected void updateStackList(IModIDFilter<?> filter) {
         if (!modIDStacks.containsKey(filter)) {

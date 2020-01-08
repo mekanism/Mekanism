@@ -13,7 +13,7 @@ import net.minecraft.network.PacketBuffer;
 
 public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>> implements IFilter<FILTER> {
 
-    public static final int MAX_LENGTH = 24;
+    public static final int MAX_LENGTH = 48;
 
     public static final List<Character> SPECIAL_CHARS = Arrays.asList('*', '-', ' ', '|', '_', '\'');
 

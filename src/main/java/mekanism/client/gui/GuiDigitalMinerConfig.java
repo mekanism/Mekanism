@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.MekanismImageButton;
@@ -8,6 +9,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -24,6 +26,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
@@ -253,5 +256,10 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
             Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(8, toUse)));
             maxField.setText("");
         }
+    }
+
+    @Override
+    protected List<ItemStack> getTagStacks(String tagName) {
+        return OreDictCache.getBlockTagStacks(tagName);
     }
 }

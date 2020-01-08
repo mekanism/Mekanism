@@ -64,7 +64,7 @@ public class GuiMTagFilter extends GuiTagFilter<MTagFilter, TileEntityDigitalMin
 
     @Override
     protected void updateStackList(String oreName) {
-        iterStacks = OreDictCache.getOreDictStacks(oreName, true);
+        iterStacks = OreDictCache.getBlockTagStacks(oreName);
         stackSwitch = 0;
         stackIndex = -1;
     }

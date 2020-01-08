@@ -73,7 +73,7 @@ public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogistical
 
     @Override
     protected void updateStackList(String oreName) {
-        iterStacks = OreDictCache.getOreDictStacks(oreName, false);
+        iterStacks = OreDictCache.getItemTagStacks(oreName);
         stackSwitch = 0;
         stackIndex = -1;
     }

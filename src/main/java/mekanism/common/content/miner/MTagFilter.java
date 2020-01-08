@@ -2,7 +2,6 @@ package mekanism.common.content.miner;
 
 import java.util.Set;
 import mekanism.api.TileNetworkList;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.ITagFilter;
 import net.minecraft.block.BlockState;
@@ -22,7 +21,6 @@ public class MTagFilter extends MinerFilter<MTagFilter> implements ITagFilter<MT
         }
         for (ResourceLocation tag : tags) {
             String tagAsString = tag.toString();
-            Mekanism.logger.info("Tag info: {}, {}", tagName, tagAsString);
             if (tagName.equals(tagAsString) || tagName.equals("*")) {
                 return true;
             } else if (tagName.endsWith("*") && !tagName.startsWith("*")) {

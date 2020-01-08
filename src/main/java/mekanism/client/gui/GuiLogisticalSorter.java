@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import java.util.List;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.ColorButton;
 import mekanism.client.gui.button.MekanismImageButton;
@@ -11,6 +12,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.OreDictCache;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
@@ -26,6 +28,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
@@ -215,5 +218,10 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
+
+    @Override
+    protected List<ItemStack> getTagStacks(String tagName) {
+        return OreDictCache.getItemTagStacks(tagName);
     }
 }
