@@ -22,10 +22,9 @@ public class EnergyCubeUpgradeData implements IUpgradeData {
         this.electricityStored = electricityStored;
         this.chargeSlot = chargeSlot;
         this.dischargeSlot = dischargeSlot;
-        CompoundNBT nbt = new CompoundNBT();
+        this.components = new CompoundNBT();
         for (ITileComponent component : components) {
-            component.write(nbt);
+            component.write(this.components);
         }
-        this.components = nbt;
     }
 }

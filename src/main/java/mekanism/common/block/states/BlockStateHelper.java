@@ -177,7 +177,7 @@ public class BlockStateHelper {
         if (oldBlock instanceof IStateStorage && newBlock instanceof IStateStorage) {
             newState = newState.with(storageProperty, oldState.get(storageProperty));
         }
-        if (oldBlock instanceof IStateFacing && newBlock instanceof IStateFacing) {
+        if (oldBlock instanceof IStateWaterLogged && newBlock instanceof IStateWaterLogged) {
             newState = newState.with(WATERLOGGED, oldState.get(WATERLOGGED));
         }
         return newState;

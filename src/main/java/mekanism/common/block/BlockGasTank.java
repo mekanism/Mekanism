@@ -10,13 +10,16 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
-import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.interfaces.IUpgradeableBlock;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.item.block.ItemBlockGasTank;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -44,7 +47,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGasTank>, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity,
+public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGasTank>, IStateFacing, IUpgradeableBlock<GasTankTier>, IHasInventory, IHasSecurity,
       ISupportsRedstone, IHasTileEntity<TileEntityGasTank>, ISupportsComparator, IStateWaterLogged, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
@@ -83,7 +86,7 @@ public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGas
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityGasTank) {
             TileEntityGasTank gasTank = (TileEntityGasTank) tile;
-            gasTank.gasTank.setCapacity(gasTank.tier.getStorage());
+            gasTank.gasTank.setCapacity(tier.getStorage());
             gasTank.gasTank.setStack(((ItemBlockGasTank) stack.getItem()).getGas(stack));
         }
     }
@@ -154,5 +157,23 @@ public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGas
     @Override
     public ILangEntry getDescription() {
         return MekanismLang.DESCRIPTION_GAS_TANK;
+    }
+
+    @Nonnull
+    @Override
+    public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_GAS_TANK.getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_GAS_TANK.getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_GAS_TANK.getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_GAS_TANK.getBlock().getDefaultState());
+            case CREATIVE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.CREATIVE_GAS_TANK.getBlock().getDefaultState());
+        }
+        return current;
     }
 }

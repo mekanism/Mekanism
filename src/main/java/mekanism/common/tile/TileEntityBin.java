@@ -9,7 +9,6 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IComparatorSupport;
-import mekanism.common.base.ITierUpgradeable;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
@@ -17,9 +16,10 @@ import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.upgrade.BinUpgradeData;
+import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -36,13 +36,13 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityBin extends TileEntityMekanism implements IActiveState, IConfigurable, ITierUpgradeable, IComparatorSupport {
+public class TileEntityBin extends TileEntityMekanism implements IActiveState, IConfigurable, IComparatorSupport {
 
     public int addTicks = 0;
 
     public int delayTicks;
 
-    public BinTier tier;
+    private BinTier tier;
 
     //TODO: Remove this, and just sync the slot??
     public ItemStack clientStack = ItemStack.EMPTY;
@@ -64,19 +64,6 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(binSlot = BinInventorySlot.create(this, tier));
         return builder.build();
-    }
-
-    @Override
-    public boolean upgrade(BaseTier upgradeTier) {
-        //TODO: Upgrade
-        //TODO: Replace tier with next tier?
-        /*if (upgradeTier.ordinal() != tier.ordinal() + 1) {
-            return false;
-        }
-        tier = EnumUtils.BIN_TIERS[upgradeTier.ordinal()];
-        Mekanism.packetHandler.sendUpdatePacket(this);
-        markDirty();*/
-        return true;
     }
 
     public BinTier getTier() {
@@ -201,5 +188,22 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+        if (upgradeData instanceof BinUpgradeData) {
+            BinUpgradeData data = (BinUpgradeData) upgradeData;
+            redstone = data.redstone;
+            binSlot.setStack(data.binSlot.getStack());
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public BinUpgradeData getUpgradeData() {
+        return new BinUpgradeData(redstone, getBinSlot());
     }
 }

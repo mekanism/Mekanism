@@ -1,6 +1,7 @@
 package mekanism.common.registries;
 
 import java.util.Locale;
+import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.Resource;
@@ -101,10 +102,10 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> HDPE_SHEET = ITEMS.register("hdpe_sheet");
     public static final ItemRegistryObject<Item> HDPE_STICK = ITEMS.register("hdpe_stick");
 
-    public static final ItemRegistryObject<ItemTierInstaller> BASIC_TIER_INSTALLER = registerInstaller(BaseTier.BASIC);
-    public static final ItemRegistryObject<ItemTierInstaller> ADVANCED_TIER_INSTALLER = registerInstaller(BaseTier.ADVANCED);
-    public static final ItemRegistryObject<ItemTierInstaller> ELITE_TIER_INSTALLER = registerInstaller(BaseTier.ELITE);
-    public static final ItemRegistryObject<ItemTierInstaller> ULTIMATE_TIER_INSTALLER = registerInstaller(BaseTier.ULTIMATE);
+    public static final ItemRegistryObject<ItemTierInstaller> BASIC_TIER_INSTALLER = registerInstaller(null, BaseTier.BASIC);
+    public static final ItemRegistryObject<ItemTierInstaller> ADVANCED_TIER_INSTALLER = registerInstaller(BaseTier.BASIC, BaseTier.ADVANCED);
+    public static final ItemRegistryObject<ItemTierInstaller> ELITE_TIER_INSTALLER = registerInstaller(BaseTier.ADVANCED, BaseTier.ELITE);
+    public static final ItemRegistryObject<ItemTierInstaller> ULTIMATE_TIER_INSTALLER = registerInstaller(BaseTier.ELITE, BaseTier.ULTIMATE);
 
     public static final ItemRegistryObject<Item> IRON_CRYSTAL = registerResource(ResourceType.CRYSTAL, Resource.IRON);
     public static final ItemRegistryObject<Item> GOLD_CRYSTAL = registerResource(ResourceType.CRYSTAL, Resource.GOLD);
@@ -174,9 +175,9 @@ public class MekanismItems {
         return ITEMS.register(tier.getSimpleName().toLowerCase(Locale.ROOT) + "_control_circuit");
     }
 
-    private static ItemRegistryObject<ItemTierInstaller> registerInstaller(BaseTier tier) {
+    private static ItemRegistryObject<ItemTierInstaller> registerInstaller(@Nullable BaseTier fromTier, BaseTier toTier) {
         //Ensure the name is lower case as with concatenating with values from enums it may not be
-        return ITEMS.register(tier.getSimpleName().toLowerCase(Locale.ROOT) + "_tier_installer", properties -> new ItemTierInstaller(tier, properties));
+        return ITEMS.register(toTier.getSimpleName().toLowerCase(Locale.ROOT) + "_tier_installer", properties -> new ItemTierInstaller(fromTier, toTier, properties));
     }
 
     private static ItemRegistryObject<ItemAlloy> registerAlloy(AlloyTier tier) {

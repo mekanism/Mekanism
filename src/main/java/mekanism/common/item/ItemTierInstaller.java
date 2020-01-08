@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.tier.BaseTier;
@@ -19,11 +20,14 @@ import net.minecraft.world.World;
 
 public class ItemTierInstaller extends Item {
 
-    private final BaseTier tier;
+    @Nullable
+    private final BaseTier fromTier;
+    private final BaseTier toTier;
 
-    public ItemTierInstaller(BaseTier tier, Properties properties) {
+    public ItemTierInstaller(@Nullable BaseTier fromTier, BaseTier toTier, Properties properties) {
         super(properties.maxStackSize(1));
-        this.tier = tier;
+        this.fromTier = fromTier;
+        this.toTier = toTier;
     }
 
     @Nonnull
@@ -40,13 +44,9 @@ public class ItemTierInstaller extends Item {
         if (block instanceof IUpgradeableBlock) {
             IUpgradeableBlock<?> upgradeableBlock = (IUpgradeableBlock<?>) block;
             BaseTier baseTier = upgradeableBlock.getTier().getBaseTier();
-            if (baseTier != tier && baseTier != BaseTier.ULTIMATE && baseTier != BaseTier.CREATIVE) {
-                if (baseTier.ordinal() + 1 != tier.ordinal()) {
-                    //TODO: Allow for going past more than a singular tier at once
-                    // Will need to check the base tier that it starts at matches the current tier of the machine
-                    return ActionResultType.FAIL;
-                }
-                BlockState upgradeState = upgradeableBlock.upgradeResult(state, tier);
+            //TODO: Allow base tier ot be null if the upgradeableblock is not a tiered one?
+            if (baseTier == fromTier && baseTier != toTier && baseTier != BaseTier.ULTIMATE && baseTier != BaseTier.CREATIVE) {
+                BlockState upgradeState = upgradeableBlock.upgradeResult(state, toTier);
                 if (state == upgradeState) {
                     return ActionResultType.PASS;
                 }
@@ -58,13 +58,12 @@ public class ItemTierInstaller extends Item {
                     }
                     IUpgradeData upgradeData = tile.getUpgradeData();
                     if (upgradeData != null) {
-                        //TODO: Do we need to remove the block as well instead of just replacing?
-                        //world.removeBlock(pos, false);
                         world.setBlockState(pos, upgradeState);
                         TileEntityMekanism upgradedTile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
                         if (upgradedTile != null) {
                             upgradedTile.parseUpgradeData(upgradeData);
                             Mekanism.packetHandler.sendUpdatePacket(upgradedTile);
+                            upgradedTile.markDirty();
                             if (!player.isCreative()) {
                                 ItemStack stack = player.getHeldItem(context.getHand());
                                 stack.shrink(1);

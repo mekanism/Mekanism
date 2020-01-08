@@ -219,7 +219,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Nonnull
     @Override
     public EnergyCubeUpgradeData getUpgradeData() {
-
         return new EnergyCubeUpgradeData(redstone, getControlType(), getEnergy(), chargeSlot, dischargeSlot, getComponents());
     }
 }

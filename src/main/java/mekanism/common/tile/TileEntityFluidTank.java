@@ -14,18 +14,18 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.base.ITileComponent;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.upgrade.FluidTankUpgradeData;
+import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
@@ -50,7 +50,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
-      ITankManager, ITierUpgradeable, IComparatorSupport {
+      ITankManager, IComparatorSupport {
 
     public FluidTank fluidTank;
 
@@ -90,19 +90,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, fluid -> true, this, 146, 19), RelativeSide.TOP);
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 146, 51), RelativeSide.BOTTOM);
         return builder.build();
-    }
-
-    @Override
-    public boolean upgrade(BaseTier upgradeTier) {
-        //TODO: Upgrade
-        /*if (upgradeTier.ordinal() != tier.ordinal() + 1) {
-            return false;
-        }
-        tier = EnumUtils.FLUID_TANK_TIERS[upgradeTier.ordinal()];
-        fluidTank.setCapacity(tier.getStorage());
-        Mekanism.packetHandler.sendUpdatePacket(this);
-        markDirty();*/
-        return true;
     }
 
     @Override
@@ -194,7 +181,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("tier", tier.ordinal());
         nbtTags.putInt("editMode", editMode.ordinal());
         if (!fluidTank.getFluid().isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
@@ -205,7 +191,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        tier = EnumUtils.FLUID_TANK_TIERS[nbtTags.getInt("tier")];
         editMode = ContainerEditMode.byIndexStatic(nbtTags.getInt("editMode"));
         //Needs to be outside the contains check because this is just based on the tier which is known information
         fluidTank.setCapacity(tier.getStorage());
@@ -218,10 +203,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            FluidTankTier prevTier = tier;
-            tier = dataStream.readEnumValue(FluidTankTier.class);
-            fluidTank.setCapacity(tier.getStorage());
-
             valve = dataStream.readInt();
             editMode = dataStream.readEnumValue(ContainerEditMode.class);
             if (valve > 0) {
@@ -229,12 +210,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             } else {
                 valveFluid = FluidStack.EMPTY;
             }
-
             TileUtils.readTankData(dataStream, fluidTank);
-            if (prevTier != tier) {
-                //TODO: Is this still needed given the block actually will change once we setup upgrading
-                MekanismUtils.updateBlock(getWorld(), getPos());
-            }
         }
     }
 
@@ -263,7 +239,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(tier);
         data.add(valve);
         data.add(editMode);
         if (valve > 0) {
@@ -407,5 +382,28 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public Object[] getTanks() {
         return new Object[]{fluidTank};
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+        if (upgradeData instanceof FluidTankUpgradeData) {
+            FluidTankUpgradeData data = (FluidTankUpgradeData) upgradeData;
+            redstone = data.redstone;
+            inputSlot.setStack(data.inputSlot.getStack());
+            outputSlot.setStack(data.outputSlot.getStack());
+            setContainerEditMode(data.editMode);
+            fluidTank.setFluid(data.stored);
+            for (ITileComponent component : getComponents()) {
+                component.read(data.components);
+            }
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public FluidTankUpgradeData getUpgradeData() {
+        return new FluidTankUpgradeData(redstone, inputSlot, outputSlot, editMode, fluidTank.getFluid(), getComponents());
     }
 }

@@ -21,7 +21,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITierUpgradeable;
+import mekanism.common.base.ITileComponent;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -29,7 +29,6 @@ import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -39,7 +38,8 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.util.EnumUtils;
+import mekanism.common.upgrade.GasTankUpgradeData;
+import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
@@ -52,7 +52,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, ITierUpgradeable, IComputerIntegration, IComparatorSupport {
+public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, IComputerIntegration, IComparatorSupport {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
     /**
@@ -161,19 +161,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     }
 
     @Override
-    public boolean upgrade(BaseTier upgradeTier) {
-        //TODO: Upgrade
-        /*if (upgradeTier.ordinal() != tier.ordinal() + 1) {
-            return false;
-        }
-        tier = EnumUtils.GAS_TANK_TIERS[upgradeTier.ordinal()];
-        gasTank.setCapacity(tier.getStorage());
-        Mekanism.packetHandler.sendUpdatePacket(this);
-        markDirty();*/
-        return true;
-    }
-
-    @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (tier == GasTankTier.CREATIVE) {
             return stack.getAmount();
@@ -243,26 +230,18 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
             for (PlayerEntity player : playersUsing) {
                 Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
             }
-
             return;
         }
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            GasTankTier prevTier = tier;
-            tier = dataStream.readEnumValue(GasTankTier.class);
-            gasTank.setCapacity(tier.getStorage());
             TileUtils.readTankData(dataStream, gasTank);
             dumping = dataStream.readEnumValue(GasMode.class);
-            if (prevTier != tier) {
-                MekanismUtils.updateBlock(getWorld(), getPos());
-            }
         }
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        tier = EnumUtils.GAS_TANK_TIERS[nbtTags.getInt("tier")];
         gasTank.read(nbtTags.getCompound("gasTank"));
         dumping = GasMode.byIndexStatic(nbtTags.getInt("dumping"));
     }
@@ -271,7 +250,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("tier", tier.ordinal());
         nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
         nbtTags.putInt("dumping", dumping.ordinal());
         return nbtTags;
@@ -280,7 +258,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(tier);
         TileUtils.addTankData(data, gasTank);
         data.add(dumping);
         return data;
@@ -323,6 +300,30 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
             default:
                 throw new NoSuchMethodException();
         }
+    }
+
+    @Override
+    public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
+        if (upgradeData instanceof GasTankUpgradeData) {
+            GasTankUpgradeData data = (GasTankUpgradeData) upgradeData;
+            redstone = data.redstone;
+            setControlType(data.controlType);
+            drainSlot.setStack(data.drainSlot.getStack());
+            fillSlot.setStack(data.fillSlot.getStack());
+            dumping = data.dumping;
+            gasTank.setStack(data.stored);
+            for (ITileComponent component : getComponents()) {
+                component.read(data.components);
+            }
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public GasTankUpgradeData getUpgradeData() {
+        return new GasTankUpgradeData(redstone, getControlType(), drainSlot, fillSlot, dumping, gasTank.getStack(), getComponents());
     }
 
     public enum GasMode implements IIncrementalEnum<GasMode>, IHasTextComponent {

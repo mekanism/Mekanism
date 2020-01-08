@@ -11,12 +11,15 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.interfaces.ITieredBlock;
+import mekanism.common.block.interfaces.IUpgradeableBlock;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.inventory.InventoryBin;
 import mekanism.common.inventory.slot.BinInventorySlot;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -45,7 +48,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator,
+public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, IUpgradeableBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator,
       IHasInventory, IHasDescription {
 
     private final BinTier tier;
@@ -197,5 +200,23 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
     @Override
     public ILangEntry getDescription() {
         return MekanismLang.DESCRIPTION_BIN;
+    }
+
+    @Nonnull
+    @Override
+    public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_BIN.getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_BIN.getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_BIN.getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_BIN.getBlock().getDefaultState());
+            case CREATIVE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.CREATIVE_BIN.getBlock().getDefaultState());
+        }
+        return current;
     }
 }
