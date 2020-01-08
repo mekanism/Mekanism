@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
+import mekanism.api.tier.AlloyTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -133,5 +134,10 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     @Override
     protected TransmitterModelData.Diversion initModelData() {
         return new TransmitterModelData.Diversion();
+    }
+
+    @Override
+    protected boolean canUpgrade(AlloyTier tier) {
+        return false;
     }
 }

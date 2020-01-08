@@ -26,7 +26,6 @@ import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -61,7 +60,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public boolean sendDesc = false;
     private boolean redstonePowered = false;
 
-    private boolean redstoneReactive = false;
+    protected boolean redstoneReactive = false;
 
     public boolean forceUpdate = true;
 
@@ -120,13 +119,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 sendDesc = false;
             }
         }
-    }
-
-    public BaseTier getBaseTier() {
-        return BaseTier.BASIC;
-    }
-
-    public void setBaseTier(BaseTier baseTier) {
     }
 
     public boolean handlesRedstone() {
@@ -314,14 +306,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         for (int i = 0; i < 6; i++) {
             nbtTags.putInt("connection" + i, connectionTypes[i].ordinal());
         }
-        return nbtTags;
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT getUpdateTag() {
-        CompoundNBT nbtTags = super.getUpdateTag();
-        nbtTags.putInt("tier", getBaseTier().ordinal());
         return nbtTags;
     }
 

@@ -26,6 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class CommonPlayerTracker {
 
     private static final ITextComponent ALPHA_WARNING;
+
     static {
         TranslationTextComponent hereComponent = MekanismLang.ALPHA_WARNING_HERE.translate();
         hereComponent.getStyle().setUnderlined(true).setColor(TextFormatting.BLUE).setClickEvent(new ClickEvent(Action.OPEN_URL, "https://github.com/mekanism/Mekanism#alpha-status"));

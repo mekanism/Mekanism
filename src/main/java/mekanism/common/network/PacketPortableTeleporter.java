@@ -36,7 +36,7 @@ public class PacketPortableTeleporter {
     public PacketPortableTeleporter(PortableTeleporterPacketType type, Hand hand, Frequency freq) {
         packetType = type;
         currentHand = hand;
-        if (type == PortableTeleporterPacketType.DATA_REQUEST ||type == PortableTeleporterPacketType.SET_FREQ ||
+        if (type == PortableTeleporterPacketType.DATA_REQUEST || type == PortableTeleporterPacketType.SET_FREQ ||
             type == PortableTeleporterPacketType.DEL_FREQ || type == PortableTeleporterPacketType.TELEPORT) {
             frequency = freq;
         }

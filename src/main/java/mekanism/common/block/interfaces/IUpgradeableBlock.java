@@ -2,7 +2,7 @@ package mekanism.common.block.interfaces;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.tier.BaseTier;
+import mekanism.api.tier.BaseTier;
 import net.minecraft.block.BlockState;
 
 public interface IUpgradeableBlock {

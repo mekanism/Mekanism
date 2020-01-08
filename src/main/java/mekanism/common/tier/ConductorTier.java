@@ -1,5 +1,7 @@
 package mekanism.common.tier;
 
+import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.ITier;
 import mekanism.common.ColorRGBA;
 import mekanism.common.util.EnumUtils;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;

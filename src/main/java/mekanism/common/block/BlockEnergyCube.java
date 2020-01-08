@@ -8,6 +8,7 @@ import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
+import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -23,7 +24,6 @@ import mekanism.common.inventory.container.tile.EnergyCubeContainer;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -120,6 +120,7 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
               makeCuboidShape(3, 1, 5, 13, 2, 11),//connectorBottomToggle
               makeCuboidShape(4, 0, 4, 12, 1, 12)//portBottomToggle
         );
+        //TODO: FIXME when it is facing up or down, a couple of the sides have the voxelshape in the wrong spot
         VoxelShape frameRotated = VoxelShapeUtils.rotate(frame, Rotation.CLOCKWISE_90);
         VoxelShape topRotated = VoxelShapeUtils.rotate(topPanel, Rotation.CLOCKWISE_90);
         VoxelShape bottomRotated = VoxelShapeUtils.rotate(bottomPanel, Rotation.CLOCKWISE_90);
@@ -250,8 +251,8 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
               isSideEnabled(energyConfig, facing, Direction.DOWN),//bottom
               isSideEnabled(energyConfig, facing, Direction.SOUTH),//front
               isSideEnabled(energyConfig, facing, Direction.NORTH),//back
-              isSideEnabled(energyConfig, facing, Direction.EAST),//left
-              isSideEnabled(energyConfig, facing, Direction.WEST));//right
+              isSideEnabled(energyConfig, facing, Direction.WEST),//left
+              isSideEnabled(energyConfig, facing, Direction.EAST));//right
         return bounds[index];
     }
 
@@ -296,13 +297,15 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
     public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
         switch (tier) {
             case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_SAWING_FACTORY.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_ENERGY_CUBE.getBlock().getDefaultState());
             case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_SAWING_FACTORY.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_ENERGY_CUBE.getBlock().getDefaultState());
             case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_SAWING_FACTORY.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_ENERGY_CUBE.getBlock().getDefaultState());
             case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_SAWING_FACTORY.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_ENERGY_CUBE.getBlock().getDefaultState());
+            case CREATIVE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.CREATIVE_ENERGY_CUBE.getBlock().getDefaultState());
         }
         return current;
     }

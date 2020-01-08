@@ -21,7 +21,6 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 
 public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
@@ -50,10 +49,10 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             for (RelativeSide side : EnumUtils.SIDES) {
                 DataType dataType = DataType.byIndexStatic(sideConfig.getInt("side" + side.ordinal()));
                 //TODO: Improve on the check compared to just directly comparing the data type?
-                energyCube.renderSide(matrix, renderer, light, overlayLight, side.getDirection(Direction.NORTH), dataType.equals(DataType.INPUT), dataType.equals(DataType.OUTPUT));
+                energyCube.renderSide(matrix, renderer, light, overlayLight, side, dataType.equals(DataType.INPUT), dataType.equals(DataType.OUTPUT));
             }
         } else {
-            for (Direction side : EnumUtils.DIRECTIONS) {
+            for (RelativeSide side : EnumUtils.SIDES) {
                 energyCube.renderSide(matrix, renderer, light, overlayLight, side, true, true);
             }
         }

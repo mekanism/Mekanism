@@ -3,6 +3,7 @@ package mekanism.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
+import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
@@ -13,7 +14,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelEnergyCube extends Model {
@@ -347,11 +347,11 @@ public class ModelEnergyCube extends Model {
         ledLeft2.mirror = true;
         setRotation(ledLeft2, 0F, 0F, 0F);
 
-        leds1 = new ModelRenderer[]{ledBottom1, ledTop1, ledFront1, ledBack1, ledLeft1, ledRight1};
-        leds2 = new ModelRenderer[]{ledBottom2, ledTop2, ledFront2, ledBack2, ledLeft2, ledRight2};
+        leds1 = new ModelRenderer[]{ledFront1, ledLeft1, ledRight1, ledBack1, ledTop1, ledBottom1};
+        leds2 = new ModelRenderer[]{ledFront2, ledLeft2, ledRight2, ledBack2, ledTop2, ledBottom2};
 
-        ports = new ModelRenderer[]{portBottomToggle, portTopToggle, portFrontToggle, portBackToggle, portLeftToggle, portRightToggle};
-        connectors = new ModelRenderer[]{connectorBottomToggle, connectorTopToggle, connectorFrontToggle, connectorBackToggle, connectorLeftToggle, connectorRightToggle};
+        ports = new ModelRenderer[]{portFrontToggle, portLeftToggle, portRightToggle, portBackToggle, portTopToggle, portBottomToggle};
+        connectors = new ModelRenderer[]{connectorFrontToggle, connectorLeftToggle, connectorRightToggle, connectorBackToggle, connectorTopToggle, connectorBottomToggle};
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, EnergyCubeTier tier, boolean renderMain) {
@@ -402,7 +402,7 @@ public class ModelEnergyCube extends Model {
         matrix.func_227865_b_();
     }
 
-    public void renderSide(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, Direction side, boolean canInput, boolean canOutput) {
+    public void renderSide(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, RelativeSide side, boolean canInput, boolean canOutput) {
         if (canInput || canOutput) {
             IVertexBuilder buffer = renderer.getBuffer(RENDER_TYPE);
             connectors[side.ordinal()].func_228309_a_(matrix, buffer, light, overlayLight, 1, 1, 1, 1);

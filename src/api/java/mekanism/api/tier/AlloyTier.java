@@ -1,4 +1,4 @@
-package mekanism.common.tier;
+package mekanism.api.tier;
 
 public enum AlloyTier implements ITier {
     INFUSED("infused", BaseTier.ADVANCED),

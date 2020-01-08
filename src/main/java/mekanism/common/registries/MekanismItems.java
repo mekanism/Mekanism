@@ -4,6 +4,8 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
+import mekanism.api.tier.AlloyTier;
+import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.Resource;
 import mekanism.common.item.ItemAlloy;
@@ -33,8 +35,6 @@ import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.resource.INamedResource;
 import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.ResourceType;
-import mekanism.common.tier.AlloyTier;
-import mekanism.common.tier.BaseTier;
 import net.minecraft.item.Item;
 
 public class MekanismItems {

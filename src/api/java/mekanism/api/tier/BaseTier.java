@@ -1,4 +1,4 @@
-package mekanism.common.tier;
+package mekanism.api.tier;
 
 import java.util.Locale;
 import mekanism.api.text.EnumColor;

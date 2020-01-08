@@ -5,7 +5,7 @@ import mcmultipart.api.multipart.IMultipart;
 import mcmultipart.api.slot.EnumCenterSlot;
 import mcmultipart.api.slot.IPartSlot;
 import mekanism.common.MekanismBlock;
-import mekanism.common.tier.BaseTier;
+import mekanism.api.tier.BaseTier;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

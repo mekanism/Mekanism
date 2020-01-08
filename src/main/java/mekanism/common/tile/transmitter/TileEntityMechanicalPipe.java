@@ -5,17 +5,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.tier.AlloyTier;
+import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockMechanicalPipe;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.tier.BaseTier;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.PipeTier;
 import mekanism.common.transmitters.grid.FluidNetwork;
+import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.PipeUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -30,7 +36,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandler, FluidNetwork, FluidStack> implements IFluidHandlerWrapper {
 
-    public PipeTier tier;
+    public final PipeTier tier;
 
     public float currentScale;
 
@@ -44,17 +50,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         super(((IHasTileEntity<TileEntityMechanicalPipe>) blockProvider.getBlock()).getTileType());
         this.tier = ((BlockMechanicalPipe) blockProvider.getBlock()).getTier();
         buffer = new FluidTank(getCapacity());
-    }
-
-    @Override
-    public BaseTier getBaseTier() {
-        return tier.getBaseTier();
-    }
-
-    @Override
-    public void setBaseTier(BaseTier baseTier) {
-        //TODO: UPGRADING
-        buffer.setCapacity(getCapacity());
     }
 
     @Override
@@ -262,15 +257,42 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     }
 
     @Override
-    public boolean upgrade(int tierOrdinal) {
-        //TODO: UPGRADING
-        /*if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = EnumUtils.PIPE_TIERS[tier.ordinal() + 1];
-            markDirtyTransmitters();
-            sendDesc = true;
-            return true;
-        }*/
-        return false;
+    protected boolean canUpgrade(AlloyTier alloyTier) {
+        return alloyTier.getBaseTier().ordinal() == tier.getBaseTier().ordinal() + 1;
+    }
+
+    @Nonnull
+    @Override
+    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_MECHANICAL_PIPE.getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_MECHANICAL_PIPE.getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_MECHANICAL_PIPE.getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_MECHANICAL_PIPE.getBlock().getDefaultState());
+        }
+        return current;
+    }
+
+    @Nullable
+    @Override
+    protected MechanicalPipeUpgradeData getUpgradeData() {
+        return new MechanicalPipeUpgradeData(redstoneReactive, connectionTypes, getBuffer());
+    }
+
+    @Override
+    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
+        if (upgradeData instanceof MechanicalPipeUpgradeData) {
+            MechanicalPipeUpgradeData data = (MechanicalPipeUpgradeData) upgradeData;
+            redstoneReactive = data.redstoneReactive;
+            connectionTypes = data.connectionTypes;
+            takeFluid(data.contents, FluidAction.EXECUTE);
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
     }
 
     @Nonnull

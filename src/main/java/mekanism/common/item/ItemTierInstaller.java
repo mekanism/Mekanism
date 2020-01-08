@@ -2,9 +2,9 @@ package mekanism.common.item;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
-import mekanism.common.tier.BaseTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IUpgradeableTile;
 import mekanism.common.upgrade.IUpgradeData;
@@ -58,11 +58,19 @@ public class ItemTierInstaller extends Item {
                         return ActionResultType.FAIL;
                     }
                     IUpgradeData upgradeData = ((IUpgradeableTile) tile).getUpgradeData();
-                    if (upgradeData != null) {
+                    if (upgradeData == null) {
+                        if (((IUpgradeableTile) tile).canBeUpgraded()) {
+                            Mekanism.logger.warn("Got no upgrade data for block {} at position: {} in {} but it said it would be able to provide some.", block, pos, world);
+                            return ActionResultType.FAIL;
+                        }
+                    } else {
                         world.setBlockState(pos, upgradeState);
                         //TODO: Make it so it doesn't have to be a TileEntityMekanism?
                         TileEntityMekanism upgradedTile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-                        if (upgradedTile != null) {
+                        if (upgradedTile == null) {
+                            Mekanism.logger.warn("Error upgrading block at position: {} in {}.", pos, world);
+                            return ActionResultType.FAIL;
+                        } else {
                             upgradedTile.parseUpgradeData(upgradeData);
                             Mekanism.packetHandler.sendUpdatePacket(upgradedTile);
                             upgradedTile.markDirty();
@@ -71,13 +79,7 @@ public class ItemTierInstaller extends Item {
                                 stack.shrink(1);
                             }
                             return ActionResultType.SUCCESS;
-                        } else {
-                            Mekanism.logger.warn("Error upgrading block at position: {} in {}.", pos, world);
-                            return ActionResultType.FAIL;
                         }
-                    } else if (((IUpgradeableTile) tile).canBeUpgraded()) {
-                        Mekanism.logger.warn("Got no upgrade data for block {} at position: {} in {} but it said it would be able to provide some.", block, pos, world);
-                        return ActionResultType.FAIL;
                     }
                 }
             }

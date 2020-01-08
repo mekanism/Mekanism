@@ -11,15 +11,21 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.tier.AlloyTier;
+import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockPressurizedTube;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tier.BaseTier;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.transmitters.grid.GasNetwork;
+import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -28,7 +34,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IGasHandler {
 
-    public TubeTier tier;
+    public final TubeTier tier;
 
     public float currentScale;
 
@@ -71,17 +77,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         super(((IHasTileEntity<TileEntityPressurizedTube>) blockProvider.getBlock()).getTileType());
         this.tier = ((BlockPressurizedTube) blockProvider.getBlock()).getTier();
         buffer = new GasTank(getCapacity());
-    }
-
-    @Override
-    public BaseTier getBaseTier() {
-        return tier.getBaseTier();
-    }
-
-    @Override
-    public void setBaseTier(BaseTier baseTier) {
-        //TODO: UPGRADING
-        buffer.setCapacity(getCapacity());
     }
 
     @Override
@@ -162,7 +157,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        buffer.setCapacity(getCapacity());
         if (nbtTags.contains("cacheGas")) {
             buffer.setStack(GasStack.readFromNBT(nbtTags.getCompound("cacheGas")));
         } else {
@@ -296,15 +290,42 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Override
-    public boolean upgrade(int tierOrdinal) {
-        //TODO: UPGRADING
-        /*if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = EnumUtils.TUBE_TIERS[tier.ordinal() + 1];
-            markDirtyTransmitters();
-            sendDesc = true;
-            return true;
-        }*/
-        return false;
+    protected boolean canUpgrade(AlloyTier alloyTier) {
+        return alloyTier.getBaseTier().ordinal() == tier.getBaseTier().ordinal() + 1;
+    }
+
+    @Nonnull
+    @Override
+    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_PRESSURIZED_TUBE.getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE.getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_PRESSURIZED_TUBE.getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE.getBlock().getDefaultState());
+        }
+        return current;
+    }
+
+    @Nullable
+    @Override
+    protected PressurizedTubeUpgradeData getUpgradeData() {
+        return new PressurizedTubeUpgradeData(redstoneReactive, connectionTypes, getBuffer());
+    }
+
+    @Override
+    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
+        if (upgradeData instanceof PressurizedTubeUpgradeData) {
+            PressurizedTubeUpgradeData data = (PressurizedTubeUpgradeData) upgradeData;
+            redstoneReactive = data.redstoneReactive;
+            connectionTypes = data.connectionTypes;
+            takeGas(data.contents, Action.EXECUTE);
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
     }
 
     @Nonnull

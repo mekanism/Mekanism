@@ -1,6 +1,8 @@
 package mekanism.common.tier;
 
 import java.util.Locale;
+import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.ITier;
 import net.minecraft.util.IStringSerializable;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 

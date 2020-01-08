@@ -7,18 +7,24 @@ import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.tier.AlloyTier;
+import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockThermodynamicConductor;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tier.BaseTier;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.ConductorTier;
 import mekanism.common.transmitters.grid.HeatNetwork;
+import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -28,7 +34,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHeatTransfer, HeatNetwork, Void> implements IHeatTransfer {
 
-    public ConductorTier tier;
+    public final ConductorTier tier;
 
     public double temperature = 0;
     public double clientTemperature = 0;
@@ -37,16 +43,6 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     public TileEntityThermodynamicConductor(IBlockProvider blockProvider) {
         super(((IHasTileEntity<TileEntityThermodynamicConductor>) blockProvider.getBlock()).getTileType());
         this.tier = ((BlockThermodynamicConductor) blockProvider.getBlock()).getTier();
-    }
-
-    @Override
-    public BaseTier getBaseTier() {
-        return tier.getBaseTier();
-    }
-
-    @Override
-    public void setBaseTier(BaseTier baseTier) {
-        //TODO: UPGRADING
     }
 
     @Override
@@ -187,14 +183,41 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     }
 
     @Override
-    public boolean upgrade(int tierOrdinal) {
-        //TODO: UPGRADING
-        /*if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = EnumUtils.CONDUCTOR_TIERS[tier.ordinal() + 1];
-            markDirtyTransmitters();
-            sendDesc = true;
-            return true;
-        }*/
-        return false;
+    protected boolean canUpgrade(AlloyTier alloyTier) {
+        return alloyTier.getBaseTier().ordinal() == tier.getBaseTier().ordinal() + 1;
+    }
+
+    @Nonnull
+    @Override
+    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR.getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR.getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR.getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR.getBlock().getDefaultState());
+        }
+        return current;
+    }
+
+    @Nullable
+    @Override
+    protected ThermodynamicConductorUpgradeData getUpgradeData() {
+        return new ThermodynamicConductorUpgradeData(redstoneReactive, connectionTypes, temperature);
+    }
+
+    @Override
+    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
+        if (upgradeData instanceof ThermodynamicConductorUpgradeData) {
+            ThermodynamicConductorUpgradeData data = (ThermodynamicConductorUpgradeData) upgradeData;
+            redstoneReactive = data.redstoneReactive;
+            connectionTypes = data.connectionTypes;
+            temperature = data.temperature;
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
     }
 }

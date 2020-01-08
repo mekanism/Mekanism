@@ -2,12 +2,14 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.tile.TileEntityEnergyCube;
+import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -15,7 +17,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
 
 public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
 
@@ -52,16 +53,19 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
         model.render(matrix, renderer, light, overlayLight, tile.tier, false);
 
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            ISlotInfo slotInfo = tile.configComponent.getSlotInfo(TransmissionType.ENERGY, side);
-            //TODO: Re-evaluate
-            boolean canInput = false;
-            boolean canOutput = false;
-            if (slotInfo != null) {
-                canInput = slotInfo.canInput();
-                canOutput = slotInfo.canOutput();
+        ConfigInfo config = tile.configComponent.getConfig(TransmissionType.ENERGY);
+        if (config != null) {
+            for (RelativeSide side : EnumUtils.SIDES) {
+                ISlotInfo slotInfo = config.getSlotInfo(side);
+                //TODO: Re-evaluate
+                boolean canInput = false;
+                boolean canOutput = false;
+                if (slotInfo != null) {
+                    canInput = slotInfo.canInput();
+                    canOutput = slotInfo.canOutput();
+                }
+                model.renderSide(matrix, renderer, light, overlayLight, side, canInput, canOutput);
             }
-            model.renderSide(matrix, renderer, light, overlayLight, side, canInput, canOutput);
         }
         matrix.func_227865_b_();
 

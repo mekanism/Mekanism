@@ -11,10 +11,13 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.api.tier.AlloyTier;
+import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
@@ -22,14 +25,17 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.tier.BaseTier;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.transmitters.TransporterImpl;
 import mekanism.common.transmitters.grid.InventoryNetwork;
+import mekanism.common.upgrade.transmitter.LogisticalTransporterUpgradeData;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -46,7 +52,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     private final int SYNC_PACKET = 1;
     private final int BATCH_PACKET = 2;
 
-    public TransporterTier tier;
+    public final TransporterTier tier;
 
     private int delay = 0;
     private int delayCount = 0;
@@ -61,16 +67,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             this.tier = TransporterTier.BASIC;
         }
         transmitterDelegate = new TransporterImpl(this);
-    }
-
-    @Override
-    public BaseTier getBaseTier() {
-        return tier.getBaseTier();
-    }
-
-    @Override
-    public void setBaseTier(BaseTier baseTier) {
-        //TODO: UPGRADING
     }
 
     @Override
@@ -343,15 +339,42 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public boolean upgrade(int tierOrdinal) {
-        //TODO: UPGRADING
-        /*if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = EnumUtils.TRANSPORTER_TIERS[tier.ordinal() + 1];
-            markDirtyTransmitters();
-            sendDesc = true;
-            return true;
-        }*/
-        return false;
+    protected boolean canUpgrade(AlloyTier alloyTier) {
+        return alloyTier.getBaseTier().ordinal() == tier.getBaseTier().ordinal() + 1;
+    }
+
+    @Nonnull
+    @Override
+    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER.getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER.getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER.getBlock().getDefaultState());
+        }
+        return current;
+    }
+
+    @Nullable
+    @Override
+    protected LogisticalTransporterUpgradeData getUpgradeData() {
+        return new LogisticalTransporterUpgradeData(redstoneReactive, connectionTypes, getTransmitter());
+    }
+
+    @Override
+    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
+        if (upgradeData instanceof LogisticalTransporterUpgradeData) {
+            LogisticalTransporterUpgradeData data = (LogisticalTransporterUpgradeData) upgradeData;
+            redstoneReactive = data.redstoneReactive;
+            connectionTypes = data.connectionTypes;
+            getTransmitter().readFromNBT(data.nbt);
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
     }
 
     @Nonnull
@@ -373,7 +396,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         }
     }
 
-    //TODO: Set color against the data
     @Nonnull
     @Override
     protected TransmitterModelData initModelData() {

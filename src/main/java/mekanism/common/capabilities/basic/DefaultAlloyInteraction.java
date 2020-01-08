@@ -1,6 +1,8 @@
 package mekanism.common.capabilities.basic;
 
+import javax.annotation.Nonnull;
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.tier.AlloyTier;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -14,6 +16,6 @@ public class DefaultAlloyInteraction implements IAlloyInteraction {
     }
 
     @Override
-    public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, int tierOrdinal) {
+    public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, @Nonnull AlloyTier tier) {
     }
 }

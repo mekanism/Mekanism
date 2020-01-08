@@ -1,5 +1,8 @@
 package mekanism.common.tier;
 
+import mekanism.api.tier.BaseTier;
+import mekanism.api.tier.ITier;
+
 public enum FactoryTier implements ITier {
     BASIC(BaseTier.BASIC, 3),
     ADVANCED(BaseTier.ADVANCED, 5),

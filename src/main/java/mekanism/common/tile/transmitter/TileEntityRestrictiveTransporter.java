@@ -1,5 +1,6 @@
 package mekanism.common.tile.transmitter;
 
+import mekanism.api.tier.AlloyTier;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,5 +26,10 @@ public class TileEntityRestrictiveTransporter extends TileEntityLogisticalTransp
     @Override
     protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         return ActionResultType.PASS;
+    }
+
+    @Override
+    protected boolean canUpgrade(AlloyTier tier) {
+        return false;
     }
 }

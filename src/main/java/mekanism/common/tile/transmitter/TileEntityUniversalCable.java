@@ -9,20 +9,26 @@ import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.tier.AlloyTier;
+import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockUniversalCable;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.forgeenergy.ForgeEnergyCableIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.tier.BaseTier;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.CableTier;
 import mekanism.common.transmitters.grid.EnergyNetwork;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
+import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -33,7 +39,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements IStrictEnergyAcceptor,
       IStrictEnergyStorage {
 
-    public CableTier tier;
+    public final CableTier tier;
 
     public double currentPower = 0;
     public double lastWrite = 0;
@@ -45,16 +51,6 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     public TileEntityUniversalCable(IBlockProvider blockProvider) {
         super(((IHasTileEntity<TileEntityUniversalCable>) blockProvider.getBlock()).getTileType());
         this.tier = ((BlockUniversalCable) blockProvider.getBlock()).getTier();
-    }
-
-    @Override
-    public BaseTier getBaseTier() {
-        return tier.getBaseTier();
-    }
-
-    @Override
-    public void setBaseTier(BaseTier baseTier) {
-        //TODO: UPGRADING
     }
 
     @Override
@@ -238,6 +234,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
      * @return Amount of left over energy
      */
     public double takeEnergy(double energy, boolean doEmit) {
+        //TODO: Replace doEmit with an Action
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().emit(energy, doEmit);
         }
@@ -254,15 +251,42 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     }
 
     @Override
-    public boolean upgrade(int tierOrdinal) {
-        //TODO: UPGRADING
-        /*if (tier.ordinal() < BaseTier.ULTIMATE.ordinal() && tierOrdinal == tier.ordinal() + 1) {
-            tier = EnumUtils.CABLE_TIERS[tier.ordinal() + 1];
-            markDirtyTransmitters();
-            sendDesc = true;
-            return true;
-        }*/
-        return false;
+    protected boolean canUpgrade(AlloyTier alloyTier) {
+        return alloyTier.getBaseTier().ordinal() == tier.getBaseTier().ordinal() + 1;
+    }
+
+    @Nonnull
+    @Override
+    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_UNIVERSAL_CABLE.getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE.getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_UNIVERSAL_CABLE.getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE.getBlock().getDefaultState());
+        }
+        return current;
+    }
+
+    @Nullable
+    @Override
+    protected UniversalCableUpgradeData getUpgradeData() {
+        return new UniversalCableUpgradeData(redstoneReactive, connectionTypes, buffer.amount);
+    }
+
+    @Override
+    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
+        if (upgradeData instanceof UniversalCableUpgradeData) {
+            UniversalCableUpgradeData data = (UniversalCableUpgradeData) upgradeData;
+            redstoneReactive = data.redstoneReactive;
+            connectionTypes = data.connectionTypes;
+            buffer.amount = data.buffer;
+        } else {
+            super.parseUpgradeData(upgradeData);
+        }
     }
 
     @Nonnull

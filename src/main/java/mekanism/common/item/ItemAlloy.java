@@ -1,9 +1,9 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
+import mekanism.api.tier.AlloyTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.tier.AlloyTier;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,7 +36,7 @@ public class ItemAlloy extends Item {
                   interaction -> {
                       if (!world.isRemote) {
                           Hand hand = context.getHand();
-                          interaction.onAlloyInteraction(player, hand, player.getHeldItem(hand), tier.getBaseTier().ordinal());
+                          interaction.onAlloyInteraction(player, hand, player.getHeldItem(hand), tier);
                       }
                       return ActionResultType.SUCCESS;
                   },

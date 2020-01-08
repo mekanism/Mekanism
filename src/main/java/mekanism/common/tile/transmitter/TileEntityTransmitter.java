@@ -5,22 +5,27 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
+import mekanism.api.tier.AlloyTier;
+import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.TransmitterImpl;
+import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -225,34 +230,54 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     }
 
     @Override
-    public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, int tierOrdinal) {
-        if (getTransmitter().hasTransmitterNetwork()) {
+    public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, @Nonnull AlloyTier tier) {
+        if (getWorld() != null && getTransmitter().hasTransmitterNetwork()) {
             int upgraded = 0;
-            List<IGridTransmitter<A, N, BUFFER>> list = new ArrayList<>(getTransmitter().getTransmitterNetwork().getTransmitters());
+            N transmitterNetwork = getTransmitter().getTransmitterNetwork();
+            List<IGridTransmitter<A, N, BUFFER>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
             list.sort((o1, o2) -> {
                 if (o1 != null && o2 != null) {
-                    Coord4D thisCoord = new Coord4D(getPos(), getWorld());
-
-                    Coord4D o1Coord = o1.coord();
-                    Coord4D o2Coord = o2.coord();
-
-                    return Integer.compare(o1Coord.distanceTo(thisCoord), o2Coord.distanceTo(thisCoord));
+                    BlockPos o1Pos = o1.coord().getPos();
+                    BlockPos o2Pos = o2.coord().getPos();
+                    return Double.compare(o1Pos.distanceSq(getPos()), o2Pos.distanceSq(getPos()));
                 }
-
                 return 0;
             });
             for (IGridTransmitter<A, N, BUFFER> iter : list) {
                 if (iter instanceof TransmitterImpl) {
-                    TileEntityTransmitter<A, N, BUFFER> t = ((TransmitterImpl<A, N, BUFFER>) iter).containingTile;
-                    if (t.upgrade(tierOrdinal)) {
-                        upgraded++;
-                        if (upgraded == 8) {
-                            break;
+                    TransmitterImpl<A, N, BUFFER> transmitter = (TransmitterImpl<A, N, BUFFER>) iter;
+                    TileEntityTransmitter<A, N, BUFFER> t = transmitter.containingTile;
+                    if (t.canUpgrade(tier)) {
+                        BlockState state = t.getBlockState();
+                        BlockState upgradeState = upgradeResult(state, tier.getBaseTier());
+                        if (state == upgradeState) {
+                            //Skip if it would not actually upgrade anything
+                            continue;
+                        }
+                        transmitter.takeShare();
+                        transmitter.setTransmitterNetwork(null);
+                        TransmitterUpgradeData upgradeData = t.getUpgradeData();
+                        if (upgradeData == null) {
+                            Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.", t.getPos(), t.getWorld());
+                        } else {
+                            t.getWorld().setBlockState(t.getPos(), upgradeState);
+                            TileEntityTransmitter<?, ?, ?> upgradedTile = MekanismUtils.getTileEntity(TileEntityTransmitter.class, t.getWorld(), t.getPos());
+                            if (upgradedTile == null) {
+                                Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", t.getPos(), t.getWorld());
+                            } else {
+                                upgradedTile.parseUpgradeData(upgradeData);
+                                upgraded++;
+                                if (upgraded == 8) {
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
             }
             if (upgraded > 0) {
+                //TODO: Do we want to invalidate the network/have it rebuild to make sure it is properly combined/not including old data
+                // We might be needing to invalidate it up above
                 if (!player.isCreative()) {
                     stack.shrink(1);
                     if (stack.getCount() == 0) {
@@ -263,8 +288,22 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         }
     }
 
-    public boolean upgrade(int tierOrdinal) {
+    protected boolean canUpgrade(AlloyTier tier) {
         return false;
+    }
+
+    @Nonnull
+    protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
+        return current;
+    }
+
+    @Nullable
+    protected TransmitterUpgradeData getUpgradeData() {
+        return null;
+    }
+
+    protected void parseUpgradeData(@Nonnull TransmitterUpgradeData upgradeData) {
+        Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
     }
 
     public abstract int getCapacity();

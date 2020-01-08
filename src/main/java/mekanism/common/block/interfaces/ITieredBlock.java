@@ -1,6 +1,6 @@
 package mekanism.common.block.interfaces;
 
-import mekanism.common.tier.ITier;
+import mekanism.api.tier.ITier;
 
 public interface ITieredBlock<TIER extends ITier> {
 
