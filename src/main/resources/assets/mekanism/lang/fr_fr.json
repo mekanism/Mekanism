@@ -762,8 +762,8 @@
   "robit.mekanism.robit": "Robit",
   "robit.mekanism.smelting": "Fonderie Robit",
   "robit.mekanism.teleport": "Téléportation à la maison",
-  "robit.mekanism.toggle_follow": "Basculer le mode "follow" (suivre)",
-  "robit.mekanism.toggle_pickup": "Basculer le mode "drop pickup" (ramassage par chute)",
+  "robit.mekanism.toggle_follow": "Basculer le mode \"follow\" (suivre)",
+  "robit.mekanism.toggle_pickup": "Basculer le mode \"drop pickup\" (ramassage par chute)",
   "security.mekanism.add": "Ajouter :",
   "security.mekanism.no_access": "Vous n'avez pas d'accès.",
   "security.mekanism.offline": "Sécurité hors ligne",
@@ -853,5 +853,5 @@
   "upgrade.mekanism.muffling": "Étouffement",
   "upgrade.mekanism.muffling.description": "Réduit le bruit généré par les machines.",
   "upgrade.mekanism.speed": "Vitesse",
-  "upgrade.mekanism.speed.description": "Augmente la vitesse des machines",
+  "upgrade.mekanism.speed.description": "Augmente la vitesse des machines"
 }
