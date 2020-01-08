@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "output": {
+    "item": "mekanism:bio_fuel"
+  },
+  "input": {
+    "ingredient": {
+      "item": "minecraft:melon_slice"
+    }
+  }
+}
