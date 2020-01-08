@@ -21,8 +21,8 @@ import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -73,7 +73,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 if (connectionType == ConnectionType.NORMAL) {
                     Model3D model = getModel(side, fluidStack, getStage(scale, gas));
                     if (model != null) {
-                        MekanismRenderer.renderObject(model, matrix, renderer, MekanismRenderType.renderMechanicalPipeState(PlayerContainer.field_226615_c_),
+                        MekanismRenderer.renderObject(model, matrix, renderer, MekanismRenderType.renderMechanicalPipeState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                               MekanismRenderer.getColorARGB(fluidStack, scale));
                     }
                 } else if (connectionType != ConnectionType.NONE) {
@@ -83,14 +83,14 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     float green = MekanismRenderer.getGreen(color);
                     float blue = MekanismRenderer.getBlue(color);
                     float alpha = MekanismRenderer.getAlpha(color);
-                    renderModel(pipe, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(PlayerContainer.field_226615_c_)), red, green, blue, alpha, light,
+                    renderModel(pipe, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), red, green, blue, alpha, light,
                           overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidType.STILL), Collections.singletonList(side.getName() + connectionType.getName().toUpperCase()));
                     matrix.func_227861_a_(-0.5, -0.5, -0.5);
                 }
             }
             Model3D model = getModel(null, fluidStack, getStage(scale, gas));
             if (model != null) {
-                MekanismRenderer.renderObject(model, matrix, renderer, MekanismRenderType.renderMechanicalPipeState(PlayerContainer.field_226615_c_),
+                MekanismRenderer.renderObject(model, matrix, renderer, MekanismRenderType.renderMechanicalPipeState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                       MekanismRenderer.getColorARGB(fluidStack, scale));
             }
             MekanismRenderer.disableGlow(glowInfo);

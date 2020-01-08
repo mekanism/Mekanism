@@ -33,7 +33,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -105,7 +104,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     GlowInfo glowInfo = MekanismRenderer.enableGlow();
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
                     MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer,
-                          MekanismRenderType.configurableMachineState(PlayerContainer.field_226615_c_), MekanismRenderer.getColorARGB(255, 255, 255, 0.8F));
+                          MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), MekanismRenderer.getColorARGB(255, 255, 255, 0.8F));
                     MekanismRenderer.disableGlow(glowInfo);
                     matrix.func_227865_b_();
                 }

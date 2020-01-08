@@ -13,10 +13,10 @@ import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -51,7 +51,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                     matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
                     Model3D fluidModel = FluidRenderer.getFluidModel(data, tile.prevWaterScale);
-                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                           MekanismRenderer.getColorARGB(data.fluidType, (float) waterStored.getAmount() / (float) tile.clientWaterCapacity));
                     MekanismRenderer.disableGlow(glowInfo);
                     matrix.func_227865_b_();
@@ -61,7 +61,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                         matrix.func_227861_a_(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
                         GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(waterStored);
                         Model3D valveModel = FluidRenderer.getValveModel(ValveRenderData.get(data, valveData));
-                        MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                        MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                               MekanismRenderer.getColorARGB(data.fluidType));
                         MekanismRenderer.disableGlow(valveGlowInfo);
                         matrix.func_227865_b_();
@@ -84,7 +84,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                     matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.steamStored);
                     Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
-                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                           MekanismRenderer.getColorARGB(tile.structure.steamStored, (float) tile.structure.steamStored.getAmount() / (float) tile.clientSteamCapacity));
                     MekanismRenderer.disableGlow(glowInfo);
                     matrix.func_227865_b_();

@@ -10,9 +10,9 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.math.BlockPos;
 
 public class RenderThermalEvaporationController extends TileEntityRenderer<TileEntityThermalEvaporationController> {
@@ -32,7 +32,7 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
             data.length = 2;
             data.width = 2;
             data.fluidType = tile.inputTank.getFluid();
-            field_228858_b_.textureManager.bindTexture(PlayerContainer.field_226615_c_);
+            field_228858_b_.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             matrix.func_227860_a_();
             BlockPos pos = tile.getPos();
             matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
@@ -40,7 +40,7 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
             GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
             //Render the proper height
             Model3D fluidModel = FluidRenderer.getFluidModel(data, Math.min(1, fluidScale));
-            MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+            MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                   MekanismRenderer.getColorARGB(data.fluidType, fluidScale));
             MekanismRenderer.disableGlow(glowInfo);
             matrix.func_227865_b_();

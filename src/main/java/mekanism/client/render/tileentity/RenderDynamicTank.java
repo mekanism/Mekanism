@@ -12,9 +12,9 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.math.BlockPos;
 
 public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank> {
@@ -39,7 +39,7 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
                 matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                 GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
                 Model3D fluidModel = FluidRenderer.getFluidModel(data, tile.prevScale);
-                MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                       MekanismRenderer.getColorARGB(data.fluidType, (float) data.fluidType.getAmount() / (float) tile.clientCapacity));
                 MekanismRenderer.disableGlow(glowInfo);
                 matrix.func_227865_b_();
@@ -49,7 +49,7 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
                     matrix.func_227861_a_(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
                     GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(data.fluidType);
                     Model3D valveModel = FluidRenderer.getValveModel(ValveRenderData.get(data, valveData));
-                    MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                    MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                           MekanismRenderer.getColorARGB(data.fluidType));
                     MekanismRenderer.disableGlow(valveGlowInfo);
                     matrix.func_227865_b_();

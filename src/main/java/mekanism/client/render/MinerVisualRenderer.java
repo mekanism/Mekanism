@@ -12,7 +12,7 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 
 public final class MinerVisualRenderer {
 
@@ -26,7 +26,7 @@ public final class MinerVisualRenderer {
         matrix.func_227860_a_();
         List<Model3D> models = getModels(new MinerRenderData(miner));
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        RenderType.State.Builder stateBuilder = MekanismRenderType.configurableMachineState(PlayerContainer.field_226615_c_);
+        RenderType.State.Builder stateBuilder = MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         //TODO: Rendering the visuals drops FPS by a good bit, can we at least batch getting the vertex builder
         // Or maybe we should just make one large square?
         for (Model3D model : models) {

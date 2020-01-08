@@ -12,9 +12,9 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
 
 public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
 
@@ -37,7 +37,7 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             //TODO: Improve how it calculates which direction it is facing? In case there are multiple teleporters touching?
             Model3D overlayModel = getOverlayModel(tile.getWorld().getBlockState(tile.getPos().west()).getBlock() instanceof BlockTeleporterFrame);
-            MekanismRenderer.renderObject(overlayModel, matrix, renderer, MekanismRenderType.configurableMachineState(PlayerContainer.field_226615_c_),
+            MekanismRenderer.renderObject(overlayModel, matrix, renderer, MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                   MekanismRenderer.getColorARGB(EnumColor.PURPLE, 0.75F));
             MekanismRenderer.disableGlow(glowInfo);
             matrix.func_227865_b_();

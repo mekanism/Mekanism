@@ -14,9 +14,9 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraftforge.fluids.FluidStack;
 
 public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
@@ -52,7 +52,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             } else {
                 modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
             }
-            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidTankState(PlayerContainer.field_226615_c_),
+            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidTankState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                   MekanismRenderer.getColorARGB(fluid, fluidScale));
             MekanismRenderer.disableGlow(glowInfo);
             matrix.func_227865_b_();
@@ -62,7 +62,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             matrix.func_227860_a_();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(valveFluid);
             Model3D valveModel = getValveModel(valveFluid, Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1))));
-            MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidTankState(PlayerContainer.field_226615_c_),
+            MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidTankState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                   MekanismRenderer.getColorARGB(valveFluid));
             MekanismRenderer.disableGlow(glowInfo);
             matrix.func_227865_b_();

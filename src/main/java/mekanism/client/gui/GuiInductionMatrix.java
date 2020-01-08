@@ -11,8 +11,8 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -65,7 +65,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     }
 
     public void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/) {
-        minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
+        minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         int start = 0;
         int x = getGuiLeft() + xPos;
         int y = getGuiTop() + yPos;

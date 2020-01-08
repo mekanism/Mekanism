@@ -8,8 +8,8 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
 
 public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter<?, ?, ?>> extends RenderTransmitterBase<T> {
 
@@ -21,7 +21,7 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter<?,
 
     protected void render(@Nonnull T transmitter, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, int glow) {
         matrix.func_227860_a_();
-        IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.transmitterContents(PlayerContainer.field_226615_c_));
+        IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE));
         matrix.func_227861_a_(0.5, 0.5, 0.5);
         GlowInfo glowInfo = MekanismRenderer.enableGlow(glow);
         renderContents(matrix, buffer, transmitter, light, overlayLight);

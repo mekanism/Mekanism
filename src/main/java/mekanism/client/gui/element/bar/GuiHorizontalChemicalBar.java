@@ -6,7 +6,7 @@ import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvid
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiHorizontalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiHorizontalBar<ChemicalInfoProvider<CHEMICAL>> {
@@ -20,7 +20,7 @@ public class GuiHorizontalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> exten
     }
 
     public GuiHorizontalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, ResourceLocation def, int x, int y, int width) {
-        super(PlayerContainer.field_226615_c_, gui, infoProvider, def, x, y, width, texHeight + 2);
+        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, def, x, y, width, texHeight + 2);
     }
 
     @Override

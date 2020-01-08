@@ -18,9 +18,9 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -77,7 +77,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContai
             // The other option which may make more sense is to make it be a GuiGauge
             int scale = (int) (((double) tile.gasTank.getStored() / tile.tier.getStorage()) * 72);
             TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(tile.gasTank.getType());
-            minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
+            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             MekanismRenderer.color(tile.gasTank.getStack());
             int start = 0;
             int x = getGuiLeft() + 65;

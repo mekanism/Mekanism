@@ -16,8 +16,8 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -65,7 +65,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         if (scale > 0 && icon != null) {
             int start = 0;
             applyRenderColor();
-            minecraft.textureManager.bindTexture(PlayerContainer.field_226615_c_);
+            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
             while (scale > 0) {
                 int renderRemaining;
                 if (scale > 16) {

@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.TNTMinecartRenderer;
-import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -44,6 +44,6 @@ public class RenderObsidianTNTPrimed extends EntityRenderer<EntityObsidianTNT> {
     @Nonnull
     @Override
     public ResourceLocation getEntityTexture(@Nonnull EntityObsidianTNT entity) {
-        return PlayerContainer.field_226615_c_;
+        return AtlasTexture.LOCATION_BLOCKS_TEXTURE;
     }
 }

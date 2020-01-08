@@ -14,9 +14,9 @@ import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
 
 public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerator> {
@@ -40,7 +40,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             //TODO: FIXME, you can see through the back. Might have to make the main "model" into json and then just render the fluid as a TER
             MekanismRenderer.renderObject(getModel(tile.getDirection(), tile.getScaledFuelLevel(stages - 1)), matrix, renderer,
-                  MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_), -1);
+                  MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), -1);
             MekanismRenderer.disableGlow(glowInfo);
             matrix.func_227865_b_();
         }

@@ -37,7 +37,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -113,7 +112,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
-        return Minecraft.getInstance().func_228015_a_(PlayerContainer.field_226615_c_).apply(spriteLocation);
+        return Minecraft.getInstance().func_228015_a_(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(spriteLocation);
     }
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
@@ -325,7 +324,7 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().func_229223_g_().equals(PlayerContainer.field_226615_c_)) {
+        if (!event.getMap().func_229223_g_().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -355,7 +354,7 @@ public class MekanismRenderer {
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Post event) {
         AtlasTexture map = event.getMap();
-        if (!map.func_229223_g_().equals(PlayerContainer.field_226615_c_)) {
+        if (!map.func_229223_g_().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {

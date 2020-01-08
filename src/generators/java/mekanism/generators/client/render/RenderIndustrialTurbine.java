@@ -13,9 +13,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -67,7 +67,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
                     matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.fluidStored);
                     Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
-                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(PlayerContainer.field_226615_c_),
+                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                           MekanismRenderer.getColorARGB(tile.structure.fluidStored, (float) tile.structure.fluidStored.getAmount() / (float) tile.structure.getFluidCapacity()));
                     MekanismRenderer.disableGlow(glowInfo);
                     matrix.func_227865_b_();

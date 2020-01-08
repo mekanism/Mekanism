@@ -18,7 +18,7 @@ import mekanism.common.tier.FluidTankTier;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -62,7 +62,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
                 modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
                 color = MekanismRenderer.getColorARGB(fluid);
             }
-            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidTankState(PlayerContainer.field_226615_c_), color);
+            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidTankState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), color);
             MekanismRenderer.disableGlow(glowInfo);
             matrix.func_227865_b_();
         }

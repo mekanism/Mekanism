@@ -18,10 +18,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidAttributes;
 import org.lwjgl.opengl.GL11;
@@ -108,7 +108,7 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
     }
 
     private void drawTiledSprite(int xPosition, int yPosition, int tiledWidth, int tiledHeight, @Nonnull Gas gas, int scaledAmount, TextureAtlasSprite sprite) {
-        MekanismRenderer.bindTexture(PlayerContainer.field_226615_c_);
+        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         MekanismRenderer.color(gas);
 
         final int xTileCount = tiledWidth / TEX_WIDTH;
