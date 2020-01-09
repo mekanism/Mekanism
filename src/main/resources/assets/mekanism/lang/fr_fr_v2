@@ -703,7 +703,7 @@
   "miner.mekanism.paused": "En pause",
   "miner.mekanism.radius": "Rayons : %s",
   "miner.mekanism.ready": "Prêt",
-  "miner.mekanism.require_replace": "Besoin de remplacement : %s",
+  "miner.mekanism.require_replace": "Activer le remplacement : %s",
   "miner.mekanism.reset": "Réinitialiser",
   "miner.mekanism.running": "Minage en cours",
   "miner.mekanism.searching": "Recherche sur",
