@@ -1,7 +1,8 @@
 {
   "type": "mekanism:crushing",
   "output": {
-    "item": "mekanism:bio_fuel"
+    "item": "mekanism:bio_fuel",
+    "count": 4
   },
   "input": {
     "ingredient": {
