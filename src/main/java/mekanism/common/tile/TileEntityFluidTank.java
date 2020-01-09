@@ -95,7 +95,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public void onUpdate() {
         if (isRemote()) {
-            float targetScale = (float) fluidTank.getFluid().getAmount() / fluidTank.getCapacity();
+            float targetScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
             if (Math.abs(prevScale - targetScale) > 0.01) {
                 prevScale = (9 * prevScale + targetScale) / 10;
             }
@@ -134,7 +134,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     private void activeEmit() {
-        if (!fluidTank.getFluid().isEmpty()) {
+        if (!fluidTank.isEmpty()) {
             TileEntity tile = MekanismUtils.getTileEntity(getWorld(), pos.down());
             CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
@@ -182,7 +182,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt("editMode", editMode.ordinal());
-        if (!fluidTank.getFluid().isEmpty()) {
+        if (!fluidTank.isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
@@ -226,8 +226,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         }
         TileEntityFluidTank topTank = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
         if (topTank != null) {
-            if (!fluidTank.getFluid().isEmpty() && !topTank.fluidTank.getFluid().isEmpty()) {
-                if (fluidTank.getFluid().getFluid() != topTank.fluidTank.getFluid().getFluid()) {
+            if (!fluidTank.isEmpty() && !topTank.fluidTank.isEmpty()) {
+                if (!fluidTank.getFluid().isFluidEqual(topTank.fluidTank.getFluid())) {
                     return needed;
                 }
             }
@@ -333,7 +333,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             return true;
         }
         if (getActive() && tile instanceof TileEntityFluidTank) { // Only fill if tanks underneath have same fluid.
-            return fluidTank.getFluid().isEmpty() ? ((TileEntityFluidTank) tile).canFill(Direction.UP, fluid) : fluidTank.getFluid().isFluidEqual(fluid);
+            return fluidTank.isEmpty() ? ((TileEntityFluidTank) tile).canFill(Direction.UP, fluid) : fluidTank.getFluid().isFluidEqual(fluid);
         }
         return FluidContainerUtils.canFill(fluidTank.getFluid(), fluid);
     }

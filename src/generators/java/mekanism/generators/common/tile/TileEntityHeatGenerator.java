@@ -94,7 +94,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
                 } else {
                     int fuel = getFuel(fuelStack);
                     if (fuel > 0) {
-                        int fuelNeeded = lavaTank.getCapacity() - lavaTank.getFluid().getAmount();
+                        int fuelNeeded = lavaTank.getCapacity() - lavaTank.getFluidAmount();
                         if (fuel <= fuelNeeded) {
                             lavaTank.fill(new FluidStack(Fluids.LAVA, fuel), FluidAction.EXECUTE);
                             ItemStack containerItem = fuelStack.getItem().getContainerItem(fuelStack);
@@ -139,7 +139,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Override
     public boolean canOperate() {
-        return getEnergy() < getBaseStorage() && lavaTank.getFluid().getAmount() >= 10 && MekanismUtils.canFunction(this);
+        return getEnergy() < getBaseStorage() && lavaTank.getFluidAmount() >= 10 && MekanismUtils.canFunction(this);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (!lavaTank.getFluid().isEmpty()) {
+        if (!lavaTank.isEmpty()) {
             nbtTags.put("lavaTank", lavaTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
@@ -194,7 +194,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
      * @return Scaled fuel level
      */
     public int getScaledFuelLevel(int i) {
-        return lavaTank.getFluid().getAmount() * i / lavaTank.getCapacity();
+        return lavaTank.getFluidAmount() * i / lavaTank.getCapacity();
     }
 
     @Override
@@ -238,9 +238,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             case 3:
                 return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
-                return new Object[]{lavaTank.getFluid().getAmount()};
+                return new Object[]{lavaTank.getFluidAmount()};
             case 5:
-                return new Object[]{lavaTank.getCapacity() - lavaTank.getFluid().getAmount()};
+                return new Object[]{lavaTank.getCapacity() - lavaTank.getFluidAmount()};
             default:
                 throw new NoSuchMethodException();
         }
@@ -271,7 +271,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (!lavaTank.getFluid().isEmpty()) {
+        if (!lavaTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "lavaTank", lavaTank.getFluid().writeToNBT(new CompoundNBT()));
         }
     }

@@ -361,7 +361,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (!inputFluidTank.getFluid().isEmpty()) {
+        if (!inputFluidTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "inputFluidTank", inputFluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (!inputGasTank.isEmpty()) {

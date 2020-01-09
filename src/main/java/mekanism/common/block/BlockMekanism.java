@@ -264,9 +264,6 @@ public abstract class BlockMekanism extends Block {
         if (item instanceof ISustainedInventory && tile.hasInventory()) {
             tile.setInventory(((ISustainedInventory) item).getInventory(stack));
         }
-        /*if (item instanceof IItemEnergized && tile instanceof TileEntityElectricBlock) {
-            ((TileEntityElectricBlock) tile).electricityStored = ((IItemEnergized) item).getEnergy(stack);
-        }*/
         //The variant of it that was in BlockBasic
         if (item instanceof IItemEnergized && tile.isElectric() && !(tile instanceof TileEntityMultiblock<?>)) {
             tile.setEnergy(((IItemEnergized) item).getEnergy(stack));

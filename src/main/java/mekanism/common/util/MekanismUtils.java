@@ -439,7 +439,7 @@ public final class MekanismUtils {
             if (!filter) {
                 return new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME);
             }
-            return new FluidStack(MekanismFluids.HEAVY_WATER.getStillFluid(), 10);
+            return MekanismFluids.HEAVY_WATER.getFluidStack( 10);
         } else if (block == Blocks.LAVA && state.get(FlowingFluidBlock.LEVEL) == 0) {
             return new FluidStack(Fluids.LAVA, FluidAttributes.BUCKET_VOLUME);
         } else if (block instanceof IFluidBlock) {

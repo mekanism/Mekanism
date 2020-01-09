@@ -54,7 +54,7 @@ public class InventoryFrequency extends Frequency {
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putDouble("storedEnergy", storedEnergy);
-        if (!storedFluid.getFluid().isEmpty()) {
+        if (!storedFluid.isEmpty()) {
             nbtTags.put("storedFluid", storedFluid.writeToNBT(new CompoundNBT()));
         }
         if (!storedGas.isEmpty()) {

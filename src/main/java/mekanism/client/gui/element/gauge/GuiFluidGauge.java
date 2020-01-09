@@ -37,7 +37,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
             return height - 2;
         }
         FluidTank tank = infoHandler.getTank();
-        if (tank.getFluid().isEmpty() || tank.getCapacity() == 0) {
+        if (tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
         if (tank.getFluidAmount() == Integer.MAX_VALUE) {

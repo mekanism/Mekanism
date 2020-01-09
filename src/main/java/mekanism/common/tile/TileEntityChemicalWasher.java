@@ -322,7 +322,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (!fluidTank.getFluid().isEmpty()) {
+        if (!fluidTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (!inputTank.isEmpty()) {

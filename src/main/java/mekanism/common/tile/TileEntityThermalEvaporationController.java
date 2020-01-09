@@ -180,8 +180,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 if (structured) {
                     inputTank.setCapacity(getMaxFluid());
 
-                    if (!inputTank.getFluid().isEmpty()) {
-                        inputTank.getFluid().setAmount(Math.min(inputTank.getFluid().getAmount(), getMaxFluid()));
+                    if (!inputTank.isEmpty()) {
+                        inputTank.getFluid().setAmount(Math.min(inputTank.getFluidAmount(), getMaxFluid()));
                     }
                 } else {
                     clearStructure();

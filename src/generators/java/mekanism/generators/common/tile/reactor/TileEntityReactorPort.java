@@ -83,7 +83,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         super.onUpdate();
         if (!isRemote()) {
             CableUtils.emit(this);
-            if (fluidEject && getReactor() != null && !getReactor().getSteamTank().getFluid().isEmpty()) {
+            if (fluidEject && getReactor() != null && !getReactor().getSteamTank().isEmpty()) {
                 IFluidTank tank = getReactor().getSteamTank();
                 EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
                     if (!(tile instanceof TileEntityReactorPort)) {

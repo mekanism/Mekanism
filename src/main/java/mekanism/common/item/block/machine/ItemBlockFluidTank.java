@@ -180,6 +180,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                         if (!player.canPlayerEdit(coord.getPos(), pos.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
+                        //TODO: Use/check IBucketPickupHandler
                         FluidStack fluid = MekanismUtils.getFluid(world, coord.getPos(), false);
                         if (!fluid.isEmpty()) {
                             FluidStack stored = getFluidStack(stack);

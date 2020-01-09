@@ -200,7 +200,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         super.write(nbtTags);
         nbtTags.putBoolean("mode", mode);
         nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
-        if (!fluidTank.getFluid().isEmpty()) {
+        if (!fluidTank.isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
@@ -266,7 +266,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (!fluidTank.getFluid().isEmpty()) {
+        if (!fluidTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
         if (!gasTank.isEmpty()) {

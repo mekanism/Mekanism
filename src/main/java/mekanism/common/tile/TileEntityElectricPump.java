@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
@@ -36,27 +36,31 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, ITankManager, IComputerIntegration,
       IComparatorSupport {
@@ -70,7 +74,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
      * The type of fluid this pump is pumping
      */
     @Nonnull
-    public Fluid activeType = Fluids.EMPTY;
+    public FluidStack activeType = FluidStack.EMPTY;
     public boolean suckedLastOperation;
     /**
      * How many ticks it takes to run an operation.
@@ -84,7 +88,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     /**
      * The nodes that have full sources near them or in them
      */
-    public Set<Coord4D> recurringNodes = new HashSet<>();
+    private Set<BlockPos> recurringNodes = new HashSet<>();
 
     private int currentRedstoneLevel;
 
@@ -123,8 +127,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {
-                    if (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().getAmount() + FluidAttributes.BUCKET_VOLUME <= fluidTank.getCapacity()) {
-                        if (!suck(true)) {
+                    if (fluidTank.isEmpty() || fluidTank.getFluidAmount() + FluidAttributes.BUCKET_VOLUME <= fluidTank.getCapacity()) {
+                        if (!suck()) {
                             suckedLastOperation = false;
                             reset();
                         } else {
@@ -139,7 +143,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 suckedLastOperation = false;
             }
 
-            if (!fluidTank.getFluid().isEmpty()) {
+            if (!fluidTank.isEmpty()) {
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos.up());
                 CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
                     FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
@@ -161,75 +165,119 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         return upgradeComponent.isUpgradeInstalled(Upgrade.FILTER);
     }
 
-    public boolean suck(boolean take) {
-        List<Coord4D> tempPumpList = Arrays.asList(recurringNodes.toArray(new Coord4D[0]));
-        Collections.shuffle(tempPumpList);
-
+    private boolean suck() {
+        boolean hasFilter = hasFilter();
         //First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
         for (Direction orientation : EnumUtils.DIRECTIONS) {
-            Coord4D wrapper = Coord4D.get(this).offset(orientation);
-            FluidStack fluid = MekanismUtils.getFluid(world, wrapper.getPos(), hasFilter());
-            if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
-                if (take) {
-                    activeType = fluid.getFluid();
-                    recurringNodes.add(wrapper);
-                    fluidTank.fill(fluid, FluidAction.EXECUTE);
-                    if (shouldTake(fluid, wrapper)) {
-                        world.removeBlock(wrapper.getPos(), false);
-                    }
-                }
+            if (suck(pos.offset(orientation), hasFilter, true)) {
                 return true;
             }
         }
-
+        //Even though we can add to recurring in the above for loop, we always then exit and don't get to here if we did so
+        List<BlockPos> tempPumpList = Arrays.asList(recurringNodes.toArray(new BlockPos[0]));
+        Collections.shuffle(tempPumpList);
         //Finally, go over the recurring list of nodes and see if there is a fluid block available to suck - if not, will iterate around the recurring block, attempt to suck,
         //and then add the adjacent block to the recurring list
-        for (Coord4D wrapper : tempPumpList) {
-            FluidStack fluid = MekanismUtils.getFluid(world, wrapper.getPos(), hasFilter());
-            if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
-                if (take) {
-                    activeType = fluid.getFluid();
-                    fluidTank.fill(fluid, FluidAction.EXECUTE);
-                    if (shouldTake(fluid, wrapper)) {
-                        world.removeBlock(wrapper.getPos(), false);
-                    }
-                }
+        for (BlockPos tempPumpPos : tempPumpList) {
+            if (suck(tempPumpPos, hasFilter, false)) {
                 return true;
             }
-
             //Add all the blocks surrounding this recurring node to the recurring node list
             for (Direction orientation : EnumUtils.DIRECTIONS) {
-                Coord4D side = wrapper.offset(orientation);
-                if (Coord4D.get(this).distanceTo(side) <= MekanismConfig.general.maxPumpRange.get()) {
-                    fluid = MekanismUtils.getFluid(world, side.getPos(), hasFilter());
-                    if (!fluid.isEmpty() && (activeType == Fluids.EMPTY || fluid.getFluid() == activeType) && (fluidTank.getFluid().isEmpty() || fluidTank.getFluid().isFluidEqual(fluid))) {
-                        if (take) {
-                            activeType = fluid.getFluid();
-                            recurringNodes.add(side);
-                            fluidTank.fill(fluid, FluidAction.EXECUTE);
-                            if (shouldTake(fluid, side)) {
-                                world.removeBlock(side.getPos(), false);
-                            }
-                        }
+                BlockPos side = tempPumpPos.offset(orientation);
+                if (Math.sqrt(pos.distanceSq(side)) <= MekanismConfig.general.maxPumpRange.get()) {
+                    if (suck(side, hasFilter, true)) {
                         return true;
                     }
                 }
             }
-            recurringNodes.remove(wrapper);
+            recurringNodes.remove(tempPumpPos);
+        }
+        return false;
+    }
+
+    private boolean suck(BlockPos pos, boolean hasFilter, boolean addRecurring) {
+        IFluidState fluidState = world.getFluidState(pos);
+        if (!fluidState.isEmpty() && fluidState.isSource()) {
+            //Just in case someone does weird things and has a fluid state that is empty and a source
+            // only allow collecting from non empty sources
+            //TODO: Move some of this back into a util method in MekanismUtils?
+            Fluid fluid = fluidState.getFluid();
+            FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
+            if (hasFilter && fluid == Fluids.WATER) {
+                fluid = MekanismFluids.HEAVY_WATER.getStillFluid();
+                fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
+            }
+            //Note: we get the block state from the world and not the fluid state
+            // so that we can get the proper block in case it is fluid logged
+            BlockState blockState = world.getBlockState(pos);
+            Block block = blockState.getBlock();
+            if (block instanceof IFluidBlock) {
+                fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);
+                if (validFluid(fluidStack, true)) {
+                    //Actually drain it
+                    fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
+                    suck(fluidStack, pos, addRecurring);
+                    return true;
+                }
+            } else if (block instanceof IBucketPickupHandler && validFluid(fluidStack, false)) {
+                //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
+                if (shouldTake(fluid)) {
+                    //Note we only attempt taking if we should take the fluid type
+                    // otherwise we assume the type from the fluid state is correct
+                    fluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
+                    //Update the fluid stack in case something somehow changed about the type
+                    // making sure that we replace to heavy water if we got heavy water
+                    if (hasFilter && fluid == Fluids.WATER) {
+                        fluid = MekanismFluids.HEAVY_WATER.getStillFluid();
+                        fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
+                    } else {
+                        fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
+                    }
+                    if (!validFluid(fluidStack, false)) {
+                        Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
+                              fluidState.getFluid(), pos, world, fluid);
+                        return false;
+                    }
+                }
+                suck(fluidStack, pos, addRecurring);
+                return true;
+            }
+            //Otherwise, we do not know how to drain from the block or it is not valid and we shouldn't take it so don't handle it
+        }
+        return false;
+    }
+
+    //TODO: Name this method better?
+    private void suck(@Nonnull FluidStack fluidStack, BlockPos pos, boolean addRecurring) {
+        //Size doesn't matter, but we do want to take the NBT into account
+        activeType = new FluidStack(fluidStack, 1);
+        if (addRecurring) {
+            recurringNodes.add(pos);
+        }
+        fluidTank.fill(fluidStack, FluidAction.EXECUTE);
+    }
+
+    private boolean validFluid(@Nonnull FluidStack fluidStack, boolean recheckSize) {
+        if (!fluidStack.isEmpty() && (activeType.isEmpty() || activeType.isFluidEqual(fluidStack))) {
+            if (fluidTank.isEmpty()) {
+                return true;
+            }
+            if (fluidTank.getFluid().isFluidEqual(fluidStack)) {
+                return !recheckSize || fluidTank.getFluidAmount() + fluidStack.getAmount() <= fluidTank.getCapacity();
+            }
+            return false;
         }
         return false;
     }
 
     public void reset() {
-        activeType = Fluids.EMPTY;
+        activeType = FluidStack.EMPTY;
         recurringNodes.clear();
     }
 
-    private boolean shouldTake(@Nonnull FluidStack fluid, Coord4D coord) {
-        if (fluid.getFluid() == Fluids.WATER || fluid.getFluid() == MekanismFluids.HEAVY_WATER.getStillFluid()) {
-            return MekanismConfig.general.pumpWaterSources.get();
-        }
-        return true;
+    private boolean shouldTake(@Nonnull Fluid fluid) {
+        return fluid == Fluids.WATER || fluid == MekanismFluids.HEAVY_WATER.getStillFluid() ? MekanismConfig.general.pumpWaterSources.get() : Boolean.valueOf(true);
     }
 
     @Override
@@ -253,20 +301,18 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         super.write(nbtTags);
         nbtTags.putInt("operatingTicks", operatingTicks);
         nbtTags.putBoolean("suckedLastOperation", suckedLastOperation);
-
-        if (activeType != Fluids.EMPTY) {
-            //TODO: If active type is empty handle things?
-            nbtTags.putString("activeType", ForgeRegistries.FLUIDS.getKey(activeType).toString());
+        if (!activeType.isEmpty()) {
+            nbtTags.put("activeType", activeType.writeToNBT(new CompoundNBT()));
         }
-
-        if (!fluidTank.getFluid().isEmpty()) {
+        if (!fluidTank.isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
-
         ListNBT recurringList = new ListNBT();
-        for (Coord4D wrapper : recurringNodes) {
+        for (BlockPos nodePos : recurringNodes) {
             CompoundNBT tagCompound = new CompoundNBT();
-            wrapper.write(tagCompound);
+            tagCompound.putInt("x", nodePos.getX());
+            tagCompound.putInt("y", nodePos.getY());
+            tagCompound.putInt("z", nodePos.getZ());
             recurringList.add(tagCompound);
         }
         if (!recurringList.isEmpty()) {
@@ -281,9 +327,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         operatingTicks = nbtTags.getInt("operatingTicks");
         suckedLastOperation = nbtTags.getBoolean("suckedLastOperation");
         if (nbtTags.contains("activeType")) {
-            //TODO: Can this return null? If so set it to empty instead
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbtTags.getString("activeType")));
-            activeType = fluid == null ? Fluids.EMPTY : fluid;
+            activeType = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("activeType"));
         }
         if (nbtTags.contains("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
@@ -291,7 +335,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         if (nbtTags.contains("recurringNodes")) {
             ListNBT tagList = nbtTags.getList("recurringNodes", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
-                recurringNodes.add(Coord4D.read(tagList.getCompound(i)));
+                CompoundNBT compound = tagList.getCompound(i);
+                recurringNodes.add(new BlockPos(compound.getInt("x"), compound.getInt("y"), compound.getInt("z")));
             }
         }
     }

@@ -101,7 +101,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             energySlot.discharge(this);
             inputSlot.fillTank(outputSlot);
 
-            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.getFluid().isEmpty() &&
+            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.isEmpty() &&
                 fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluidTank.getFluid())) {
                 //TODO: Is there a better position to use
                 if (!finishedCalc) {
@@ -221,7 +221,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         nbtTags.putInt("operatingTicks", operatingTicks);
         nbtTags.putBoolean("finishedCalc", finishedCalc);
 
-        if (!fluidTank.getFluid().isEmpty()) {
+        if (!fluidTank.isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
 

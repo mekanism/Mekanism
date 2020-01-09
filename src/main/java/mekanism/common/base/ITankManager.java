@@ -66,12 +66,12 @@ public interface ITankManager {
                     FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
                     int dropperStored = fluidStack.getAmount();
 
-                    if (!fluidStack.isEmpty() && !fluidTank.getFluid().isEmpty() && !fluidStack.isFluidEqual(fluidTank.getFluid())) {
+                    if (!fluidStack.isEmpty() && !fluidTank.isEmpty() && !fluidStack.isFluidEqual(fluidTank.getFluid())) {
                         return;
                     }
 
                     if (button == 0) { //Insert fluid into dropper
-                        if (!storedGas.isEmpty() || fluidTank.getFluid().isEmpty()) {
+                        if (!storedGas.isEmpty() || fluidTank.isEmpty()) {
                             return;
                         }
 
