@@ -63,6 +63,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 // And ShovelItem#field_195955_e for figuring out the grass -> grass path
 public class ItemAtomicDisassembler extends ItemEnergized {
 
+    //TODO: Set some tool types?
     public ItemAtomicDisassembler(Properties properties) {
         super(MekanismConfig.general.disassemblerBatteryCapacity.get(), properties.setNoRepair().setTEISR(() -> getTEISR()));
     }

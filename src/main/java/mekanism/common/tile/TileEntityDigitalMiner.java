@@ -247,7 +247,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                                 continue;
                             }
 
-                            List<ItemStack> drops = MinerUtils.getDrops(world, coord, silkTouch, this.pos);
+                            List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, coord, silkTouch, this.pos);
                             if (canInsert(drops) && setReplace(coord, index)) {
                                 did = true;
                                 add(drops);
@@ -594,20 +594,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                     // Move filter up
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex - 1);
-                    for (PlayerEntity player : playersUsing) {
-                        //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
-                        //openInventory(player);
-                    }
+                    //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
+                    /*for (PlayerEntity player : playersUsing) {
+                        openInventory(player);
+                    }*/
                     break;
                 }
                 case 12: {
                     // Move filter down
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex + 1);
-                    for (PlayerEntity player : playersUsing) {
-                        //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
-//                        openInventory(player);
-                    }
+                    //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
+                    /*for (PlayerEntity player : playersUsing) {
+                        openInventory(player);
+                    }*/
                     break;
                 }
             }
