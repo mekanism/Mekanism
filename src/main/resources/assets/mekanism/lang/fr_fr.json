@@ -272,7 +272,7 @@
   "connection.mekanism.none": "Aucun",
   "connection.mekanism.normal": "Normal",
   "connection.mekanism.pull": "Tirer",
-  "connection.mekanism.push": "Poussez",
+  "connection.mekanism.push": "Pousser",
   "constants.mekanism.alpha_warning": "Attention : Mekanism est actuellement en alpha, et n'est pas recommandé pour une utilisation généralisée dans les modpacks. Il y aura probablement des bogues dans le jeu, et d'autres problèmes que vous pouvez lire sur %s.",
   "constants.mekanism.alpha_warning.here": "ici",
   "constants.mekanism.debug_title": "Débogage du mékanisme",
