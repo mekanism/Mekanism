@@ -276,7 +276,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         if (world != null && !isRemote()) {
             if (formula == null) {
                 //Should always be 9 for the size
-                for (int i = 0; i <= craftingGridSlots.size(); i++) {
+                for (int i = 0; i < craftingGridSlots.size(); i++) {
                     dummyInv.setInventorySlotContents(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
                 }
 
@@ -308,7 +308,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private boolean doSingleCraft() {
         //Should always be 9 for the size
-        for (int i = 0; i <= craftingGridSlots.size(); i++) {
+        for (int i = 0; i < craftingGridSlots.size(); i++) {
             dummyInv.setInventorySlotContents(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
         }
         recalculateRecipe();
@@ -361,7 +361,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private boolean moveItemsToGrid() {
         boolean ret = true;
-        for (int i = 0; i <= craftingGridSlots.size(); i++) {
+        for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
             ItemStack recipeStack = recipeSlot.getStack();
             if (formula.isIngredientInPos(world, recipeStack, i)) {
@@ -406,7 +406,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void moveItemsToInput(boolean forcePush) {
-        for (int i = 0; i <= craftingGridSlots.size(); i++) {
+        for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
             ItemStack recipeStack = recipeSlot.getStack();
             if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(getWorld(), recipeStack, i)))) {
