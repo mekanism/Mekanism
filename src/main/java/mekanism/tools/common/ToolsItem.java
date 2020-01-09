@@ -163,7 +163,7 @@ public enum ToolsItem {
             var toolItem = toolsItem.getItem();
             
             if (toolItem != null) {
-                ResourceLocation registryName = .getRegistryName();
+                ResourceLocation registryName = toolItem.getRegistryName();
                 toolsItem.updateItem(ForgeRegistries.ITEMS.getValue(registryName));
             }
         }
