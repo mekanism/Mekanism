@@ -64,4 +64,5 @@
   "item.mekanismtools.steel_sword": "Épée en acier",
   "item.mekanismtools.stone_paxel": "Piopèche en pierre",
   "item.mekanismtools.wood_paxel": "Piopèche en bois"
+  "tooltip.mekanismtools.hp": "PV: %s"
 }
