@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "mekanismadditions:black_glow_panel"
+          "name": "mekanismadditions:black_plastic"
         }
       ],
       "conditions": [

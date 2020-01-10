@@ -24,7 +24,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    protected void add(String key, String value) {
+    public void add(String key, String value) {
         super.add(key, value);
         if (altProviders.length > 0) {
             List<Component> splitEnglish = FormatSplitter.split(value);
