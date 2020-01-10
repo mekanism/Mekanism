@@ -10,7 +10,7 @@
   "duration": 100,
   "itemInput": {
     "ingredient": {
-      "item": "mekanism:substrate"
+      "item": "mekanism:bio_fuel"
     },
     "amount": 2
   },
