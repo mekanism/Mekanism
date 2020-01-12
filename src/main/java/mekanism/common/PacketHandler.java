@@ -172,13 +172,17 @@ public class PacketHandler {
 
         registerMessage(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
         registerMessage(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
-        //TODO
-        //registerMessage(PacketConfigSync.class, PacketConfigSync::encode, PacketConfigSync::decode, PacketConfigSync::handle);
     }
 
+    private <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
+        registerMessage(index++, type, encoder, decoder, consumer);
+    }
 
-    public <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
-        netHandler.registerMessage(index++, type, encoder, decoder, consumer);
+    //TODO: Figure out a better way to do this, for now with generators we are just starting it at id 100 to make sure they don't clash
+    // Given we will rewrite our packet system at some point, I am not bothering to do more than just a patch for now
+    // One better solution may be to register the information to Mekanism, from the module and let it add it when it is adding the other ones
+    public <MSG> void registerMessage(int id, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
+        netHandler.registerMessage(id, type, encoder, decoder, consumer);
     }
 
     /**

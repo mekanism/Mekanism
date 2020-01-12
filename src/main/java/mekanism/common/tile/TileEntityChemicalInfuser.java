@@ -69,7 +69,6 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         leftInputHandler = InputHelper.getInputHandler(leftTank);
         rightInputHandler = InputHelper.getInputHandler(rightTank);
         outputHandler = OutputHelper.getOutputHandler(centerTank);
-        //TODO: Upgrade slot index: 4
     }
 
     @Override

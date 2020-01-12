@@ -75,7 +75,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     public TileEntityFluidicPlenisher() {
         super(MekanismBlocks.FLUIDIC_PLENISHER);
-        //TODO: Upgrade slot index: 3
     }
 
     @Override

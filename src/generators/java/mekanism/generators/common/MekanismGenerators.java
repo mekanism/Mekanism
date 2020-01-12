@@ -76,7 +76,7 @@ public class MekanismGenerators implements IModule {
     }
 
     private void registerPackets() {
-        Mekanism.packetHandler.registerMessage(PacketGeneratorsGuiButtonPress.class, PacketGeneratorsGuiButtonPress::encode, PacketGeneratorsGuiButtonPress::decode,
+        Mekanism.packetHandler.registerMessage(100, PacketGeneratorsGuiButtonPress.class, PacketGeneratorsGuiButtonPress::encode, PacketGeneratorsGuiButtonPress::decode,
               PacketGeneratorsGuiButtonPress::handle);
     }
 

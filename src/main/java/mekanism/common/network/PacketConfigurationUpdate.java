@@ -1,6 +1,7 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
@@ -31,7 +32,7 @@ public class PacketConfigurationUpdate {
     private int inputSide;
     private int clickType;
 
-    public PacketConfigurationUpdate(ConfigurationPacket type, Coord4D coord, int click, int extra, TransmissionType trans) {
+    public PacketConfigurationUpdate(@Nonnull ConfigurationPacket type, Coord4D coord, int click, int extra, TransmissionType trans) {
         packetType = type;
         coord4D = coord;
 
