@@ -27,7 +27,6 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -52,7 +51,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -452,11 +450,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
-    }
-
-    public boolean isFluidInputItem(ItemStack itemStack) {
-        return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemStack)).matches(
-              fluidStack -> !fluidStack.isEmpty() && containsRecipe(recipe -> recipe.getInput().testType(fluidStack)));
     }
 
     @Override

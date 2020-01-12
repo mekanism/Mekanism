@@ -1,5 +1,6 @@
 package mekanism.common.block.machine;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IColoredBlock;
@@ -60,6 +61,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<TileEntityFluidTank>, IColoredBlock, IStateActive, ITieredBlock<FluidTankTier>,
       IHasInventory, IHasTileEntity<TileEntityFluidTank>, ISupportsComparator, IHasSecurity, IStateWaterLogged, IHasDescription, IUpgradeableBlock {
@@ -131,78 +133,74 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
     }
 
     private boolean manageInventory(PlayerEntity player, TileEntityFluidTank tile, Hand hand, ItemStack itemStack) {
-        ItemStack copyStack = StackUtils.size(itemStack.copy(), 1);
-        return new LazyOptionalHelper<>(FluidUtil.getFluidHandler(copyStack)).getIfPresentElse(
-              handler -> new LazyOptionalHelper<>(FluidUtil.getFluidContained(copyStack)).getIfPresentElseDo(
-                    itemFluid -> {
-                        int needed = tile.getCurrentNeeded();
-                        if (!tile.fluidTank.isEmpty() && !tile.fluidTank.getFluid().isFluidEqual(itemFluid)) {
-                            return false;
+        ItemStack copyStack = StackUtils.size(itemStack, 1);
+        Optional<IFluidHandlerItem> fluidHandlerItem = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(copyStack));
+        if (fluidHandlerItem.isPresent()) {
+            IFluidHandlerItem handler = fluidHandlerItem.get();
+            FluidStack fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+            if (fluidInItem.isEmpty()) {
+                if (!tile.fluidTank.isEmpty()) {
+                    int filled = handler.fill(tile.fluidTank.getFluid(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+                    ItemStack container = handler.getContainer();
+                    if (filled > 0) {
+                        if (itemStack.getCount() == 1) {
+                            player.setHeldItem(hand, container);
+                        } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(container)) {
+                            itemStack.shrink(1);
+                        } else {
+                            player.dropItem(container, false, true);
+                            itemStack.shrink(1);
                         }
-                        boolean filled = false;
-                        FluidStack drained = handler.drain(needed, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
-                        ItemStack container = handler.getContainer();
-                        if (container.getCount() == 0) {
-                            container = ItemStack.EMPTY;
+                        //TODO: Switch to getting the capability for the tile and then draining that way, so that we
+                        // don't need special casing here for the creative tank, and instead can let the creative tank
+                        // special case itself
+                        if (tile.tier != FluidTankTier.CREATIVE) {
+                            tile.fluidTank.drain(filled, FluidAction.EXECUTE);
                         }
-                        if (!drained.isEmpty()) {
-                            if (player.isCreative()) {
-                                filled = true;
-                            } else if (!container.isEmpty()) {
-                                if (container.getCount() == 1) {
-                                    player.setHeldItem(hand, container);
-                                    filled = true;
-                                } else if (player.inventory.addItemStackToInventory(container)) {
-                                    itemStack.shrink(1);
-
-                                    filled = true;
-                                }
-                            } else {
-                                itemStack.shrink(1);
-                                if (itemStack.getCount() == 0) {
-                                    player.setHeldItem(hand, ItemStack.EMPTY);
-                                }
-                                filled = true;
-                            }
-
-                            if (filled) {
-                                int toFill = tile.fluidTank.getCapacity() - tile.fluidTank.getFluidAmount();
-                                if (tile.tier != FluidTankTier.CREATIVE) {
-                                    toFill = Math.min(toFill, drained.getAmount());
-                                }
-                                tile.fluidTank.fill(PipeUtils.copy(drained, toFill), FluidAction.EXECUTE);
-                                if (drained.getAmount() - toFill > 0) {
-                                    tile.pushUp(PipeUtils.copy(itemFluid, drained.getAmount() - toFill), FluidAction.EXECUTE);
-                                }
-                                return true;
-                            }
-                        }
-                        return false;
-                    },
-                    () -> {
-                        if (!tile.fluidTank.isEmpty()) {
-                            int filled = handler.fill(tile.fluidTank.getFluid(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
-                            ItemStack container = handler.getContainer();
-                            if (filled > 0) {
-                                if (itemStack.getCount() == 1) {
-                                    player.setHeldItem(hand, container);
-                                } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(container)) {
-                                    itemStack.shrink(1);
-                                } else {
-                                    player.dropItem(container, false, true);
-                                    itemStack.shrink(1);
-                                }
-                                if (tile.tier != FluidTankTier.CREATIVE) {
-                                    tile.fluidTank.drain(filled, FluidAction.EXECUTE);
-                                }
-                                return true;
-                            }
-                        }
-                        return false;
+                        return true;
                     }
-              ),
-              false
-        );
+                }
+            } else if (tile.fluidTank.isEmpty() || tile.fluidTank.getFluid().isFluidEqual(fluidInItem)) {
+                boolean filled = false;
+                int needed = tile.getCurrentNeeded();
+                FluidStack drained = handler.drain(needed, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+                ItemStack container = handler.getContainer();
+                if (!drained.isEmpty()) {
+                    if (player.isCreative()) {
+                        filled = true;
+                    } else if (!container.isEmpty()) {
+                        if (container.getCount() == 1) {
+                            player.setHeldItem(hand, container);
+                            filled = true;
+                        } else if (player.inventory.addItemStackToInventory(container)) {
+                            itemStack.shrink(1);
+                            filled = true;
+                        }
+                    } else {
+                        itemStack.shrink(1);
+                        if (itemStack.isEmpty()) {
+                            player.setHeldItem(hand, ItemStack.EMPTY);
+                        }
+                        filled = true;
+                    }
+                    if (filled) {
+                        int toFill = tile.fluidTank.getCapacity() - tile.fluidTank.getFluidAmount();
+                        //TODO: Switch to getting the capability for the tile and then draining that way, so that we
+                        // don't need special casing here for the creative tank, and instead can let the creative tank
+                        // special case itself
+                        if (tile.tier != FluidTankTier.CREATIVE) {
+                            toFill = Math.min(toFill, drained.getAmount());
+                        }
+                        tile.fluidTank.fill(PipeUtils.copy(drained, toFill), FluidAction.EXECUTE);
+                        if (drained.getAmount() - toFill > 0) {
+                            tile.pushUp(PipeUtils.copy(fluidInItem, drained.getAmount() - toFill), FluidAction.EXECUTE);
+                        }
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override
