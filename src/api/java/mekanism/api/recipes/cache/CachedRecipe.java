@@ -89,7 +89,6 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     }
 
     public void process() {
-        boolean hasResourcesForTick = isInputValid();
         //TODO: Given we are going to probably have ALL recipes check the getOperationsThisTick(), we are going to
         // want some way to check things so that by default it doesn't do the max operations and instead does a single
         // run for the majority of recipes
@@ -109,12 +108,6 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
             // the energy we have now. Due to the performance improvements that were made to handling the active states, I believe that
             // using the more accurate "disabling" of machines makes more sense
             setActive.accept(false);
-        }
-        //TODO: Should this be moved into the else branch
-        if (!hasResourcesForTick) {
-            //Note: We don't have to recalculate hasResourcesForTick after we finish processing
-            // as operating ticks will be set to zero in that case anyways
-            operatingTicks = 0;
         }
     }
 

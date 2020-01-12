@@ -69,7 +69,9 @@ public class ItemStackGasToGasCachedRecipe extends CachedRecipe<ItemStackGasToGa
         //Ensure that we check that we have enough for that the recipe matches *and* also that we have enough for how much we need to use
         if (!gas.isEmpty() && recipe.test(itemInputHandler.getInput(), gas)) {
             GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
-            return !recipeGas.isEmpty() && gas.getAmount() >= recipeGas.getAmount() * getGasUsage();
+            //TODO: Decide how to best handle usage, given technically the input is still valid regardless of extra usage
+            // we just can't process it yet
+            return !recipeGas.isEmpty() && gas.getAmount() >= recipeGas.getAmount();// * getGasUsage();
         }
         return false;
     }
