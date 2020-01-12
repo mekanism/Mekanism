@@ -40,8 +40,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public boolean isItemValid(@Nonnull ItemStack stack) {
-        //TODO: Should this also check canInsert to make sure that it does not get manually inserted
-        return !stack.isEmpty() && slot.isItemValid(stack);
+        return !stack.isEmpty() && insertItem(stack, Action.SIMULATE).getCount() < stack.getCount();
     }
 
     @Nonnull

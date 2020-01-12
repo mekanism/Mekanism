@@ -3,7 +3,6 @@ package mekanism.common.inventory.slot;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 
@@ -16,7 +15,7 @@ public class OutputInventorySlot extends BasicInventorySlot {
     }
 
     private OutputInventorySlot(@Nullable IMekanismInventory inventory, int x, int y) {
-        super(alwaysTrueBi, (stack, automationType) -> automationType == AutomationType.INTERNAL, alwaysTrue, inventory, x, y);
+        super(alwaysTrueBi, internalOnly, alwaysTrue, inventory, x, y);
     }
 
     @Override

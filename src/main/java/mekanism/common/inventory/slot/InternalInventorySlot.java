@@ -2,7 +2,6 @@ package mekanism.common.inventory.slot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 
@@ -14,8 +13,7 @@ public class InternalInventorySlot extends BasicInventorySlot {
     }
 
     private InternalInventorySlot(@Nullable IMekanismInventory inventory) {
-        super((stack, automationType) -> automationType == AutomationType.INTERNAL, (stack, automationType) -> automationType == AutomationType.INTERNAL, alwaysTrue,
-              inventory, 0, 0);
+        super(internalOnly, internalOnly, alwaysTrue, inventory, 0, 0);
     }
 
     @Nullable
