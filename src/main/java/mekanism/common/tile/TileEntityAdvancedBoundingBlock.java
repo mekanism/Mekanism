@@ -3,19 +3,22 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.Upgrade;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
+import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tile.component.TileComponentUpgrade;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData {
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData, IUpgradeTile {
 
     public TileEntityAdvancedBoundingBlock() {
         super(MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK.getTileEntityType());
@@ -130,5 +133,34 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
             return super.getCapability(capability, side);
         }
         return inv.getOffsetCapability(capability, side, pos.subtract(getMainPos()));
+    }
+
+    @Override
+    public boolean supportsUpgrades() {
+        IAdvancedBoundingBlock inv = getInv();
+        return inv instanceof IUpgradeTile && ((IUpgradeTile) inv).supportsUpgrades();
+    }
+
+    @Override
+    public TileComponentUpgrade getComponent() {
+        IAdvancedBoundingBlock inv = getInv();
+        if (inv instanceof IUpgradeTile) {
+            IUpgradeTile upgradeTile = (IUpgradeTile) inv;
+            if (upgradeTile.supportsUpgrades()) {
+                return upgradeTile.getComponent();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void recalculateUpgrades(Upgrade upgradeType) {
+        IAdvancedBoundingBlock inv = getInv();
+        if (inv instanceof IUpgradeTile) {
+            IUpgradeTile upgradeTile = (IUpgradeTile) inv;
+            if (upgradeTile.supportsUpgrades()) {
+                upgradeTile.recalculateUpgrades(upgradeType);
+            }
+        }
     }
 }

@@ -110,7 +110,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
             drawString(TextComponentUtil.build(upgrade), xPos + 12, yPos + 2, 0x404040);
             renderUpgrade(upgrade, xPos + 2, yPos + 2, 0.5F);
             if (overUpgradeType(xAxis, yAxis, xPos, yPos)) {
-                displayTooltip(TextComponentUtil.build(upgrade.getDescription(), UpgradeUtils.getStack(upgrade)), xAxis, yAxis);
+                displayTooltip(upgrade.getDescription(), xAxis, yAxis);
             }
         }
 
