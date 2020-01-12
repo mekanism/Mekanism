@@ -1,5 +1,7 @@
 package mekanism.generators.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -219,6 +221,13 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Override
     public void readSustainedData(ItemStack itemStack) {
         bioFuelSlot.setFluid(ItemDataUtils.getInt(itemStack, "fluidStored"));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("bioFuelStored", "fluidStored");
+        return remap;
     }
 
     @Nonnull

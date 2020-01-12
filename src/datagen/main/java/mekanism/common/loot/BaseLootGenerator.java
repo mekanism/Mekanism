@@ -9,11 +9,11 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.loot.table.BaseBlockLootTable;
-import mekanism.common.loot.table.BaseChestLootTable;
-import mekanism.common.loot.table.BaseEntityLootTable;
-import mekanism.common.loot.table.BaseFishingLootTable;
-import mekanism.common.loot.table.BaseGiftLootTable;
+import mekanism.common.loot.table.BaseBlockLootTables;
+import mekanism.common.loot.table.BaseChestLootTables;
+import mekanism.common.loot.table.BaseEntityLootTables;
+import mekanism.common.loot.table.BaseFishingLootTables;
+import mekanism.common.loot.table.BaseGiftLootTables;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
 import net.minecraft.util.ResourceLocation;
@@ -23,35 +23,43 @@ import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTable.Builder;
 import net.minecraft.world.storage.loot.ValidationTracker;
 
-//TODO: Override getName?
 public abstract class BaseLootGenerator extends LootTableProvider {
 
-    public BaseLootGenerator(DataGenerator gen) {
+    private final String modid;
+
+    public BaseLootGenerator(DataGenerator gen, String modid) {
         super(gen);
+        this.modid = modid;
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return super.getName() + ": " + modid;
     }
 
     @Nullable
-    protected BaseBlockLootTable getBlockLootTable() {
+    protected BaseBlockLootTables getBlockLootTable() {
         return null;
     }
 
     @Nullable
-    protected BaseChestLootTable getChestLootTable() {
+    protected BaseChestLootTables getChestLootTable() {
         return null;
     }
 
     @Nullable
-    protected BaseEntityLootTable getEntityLootTable() {
+    protected BaseEntityLootTables getEntityLootTable() {
         return null;
     }
 
     @Nullable
-    protected BaseFishingLootTable getFishingLootTable() {
+    protected BaseFishingLootTables getFishingLootTable() {
         return null;
     }
 
     @Nullable
-    protected BaseGiftLootTable getGiftLootTable() {
+    protected BaseGiftLootTables getGiftLootTable() {
         return null;
     }
 
@@ -59,23 +67,23 @@ public abstract class BaseLootGenerator extends LootTableProvider {
     @Override
     protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, Builder>>>, LootParameterSet>> getTables() {
         ImmutableList.Builder<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, Builder>>>, LootParameterSet>> builder = new ImmutableList.Builder<>();
-        BaseBlockLootTable blockLootTable = getBlockLootTable();
+        BaseBlockLootTables blockLootTable = getBlockLootTable();
         if (blockLootTable != null) {
             builder.add(Pair.of(() -> blockLootTable, LootParameterSets.BLOCK));
         }
-        BaseChestLootTable chestLootTable = getChestLootTable();
+        BaseChestLootTables chestLootTable = getChestLootTable();
         if (chestLootTable != null) {
             builder.add(Pair.of(() -> chestLootTable, LootParameterSets.CHEST));
         }
-        BaseEntityLootTable entityLootTable = getEntityLootTable();
+        BaseEntityLootTables entityLootTable = getEntityLootTable();
         if (entityLootTable != null) {
             builder.add(Pair.of(() -> entityLootTable, LootParameterSets.ENTITY));
         }
-        BaseFishingLootTable fishingLootTable = getFishingLootTable();
+        BaseFishingLootTables fishingLootTable = getFishingLootTable();
         if (fishingLootTable != null) {
             builder.add(Pair.of(() -> fishingLootTable, LootParameterSets.FISHING));
         }
-        BaseGiftLootTable giftLootTable = getGiftLootTable();
+        BaseGiftLootTables giftLootTable = getGiftLootTable();
         if (giftLootTable != null) {
             builder.add(Pair.of(() -> giftLootTable, LootParameterSets.GIFT));
         }

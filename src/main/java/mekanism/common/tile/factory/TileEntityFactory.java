@@ -17,7 +17,6 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory.RecipeType;
@@ -61,7 +60,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
-      ISustainedData, IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
+      IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
     private final CachedRecipe<RECIPE>[] cachedRecipes;
@@ -419,10 +418,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return (double) getProgress(process) * i / (double) ticksRequired;
     }
 
-    public int getScaledInfuseLevel(int i) {
-        return infusionTank.getStored() * i / infusionTank.getCapacity();
-    }
-
     public int getScaledRecipeProgress(int i) {
         return recipeTicks * i / RECIPE_TICKS_REQUIRED;
     }
@@ -467,7 +462,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         recipeTicks = nbtTags.getInt("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
-        infusionTank.read(nbtTags.getCompound("infuseStored"));
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInt("progress" + i);
@@ -480,9 +474,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         super.write(nbtTags);
         nbtTags.putInt("recipeTicks", recipeTicks);
         nbtTags.putBoolean("sorting", sorting);
-        if (!infusionTank.isEmpty()) {
-            nbtTags.put("infuseStored", infusionTank.write(new CompoundNBT()));
-        }
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
             nbtTags.putInt("progress" + i, getProgress(i));
@@ -620,16 +611,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public String getDataType() {
         return getName().getFormattedText();
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        infusionTank.writeSustainedData(itemStack);
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        infusionTank.readSustainedData(itemStack);
     }
 
     @Override

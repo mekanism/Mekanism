@@ -15,7 +15,6 @@ import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,7 +34,6 @@ public class ItemBlockLaserTractorBeam extends ItemBlockAdvancedTooltip<BlockLas
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
             tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         }
-        ListNBT inventory = getInventory(stack);
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(inventory != null && !inventory.isEmpty())));
+        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }
 }

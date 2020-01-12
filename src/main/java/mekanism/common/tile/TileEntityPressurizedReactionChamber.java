@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -377,6 +379,15 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "inputFluidTank")));
         inputGasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputGasTank")));
         outputGasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputGasTank")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("inputFluidTank", "inputFluidTank");
+        remap.put("inputGasTank.stored", "inputGasTank");
+        remap.put("outputGasTank.stored", "outputGasTank");
+        return remap;
     }
 
     @Override

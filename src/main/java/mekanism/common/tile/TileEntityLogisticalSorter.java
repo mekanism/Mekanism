@@ -1,6 +1,8 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
@@ -177,15 +179,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         nbtTags.putBoolean("singleItem", singleItem);
 
         nbtTags.putInt("rrIndex", rrIndex);
-
-        ListNBT filterTags = new ListNBT();
-
-        for (TransporterFilter<?> filter : filters) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            filter.write(tagCompound);
-            filterTags.add(tagCompound);
-        }
-        if (!filterTags.isEmpty()) {
+        if (!filters.isEmpty()) {
+            ListNBT filterTags = new ListNBT();
+            for (TransporterFilter<?> filter : filters) {
+                CompoundNBT tagCompound = new CompoundNBT();
+                filter.write(tagCompound);
+                filterTags.add(tagCompound);
+            }
             nbtTags.put("filters", filterTags);
         }
         return nbtTags;
@@ -385,14 +385,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         nbtTags.putBoolean("roundRobin", roundRobin);
         nbtTags.putBoolean("singleItem", singleItem);
         nbtTags.putInt("rrIndex", rrIndex);
-
-        ListNBT filterTags = new ListNBT();
-        for (TransporterFilter<?> filter : filters) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            filter.write(tagCompound);
-            filterTags.add(tagCompound);
-        }
-        if (!filterTags.isEmpty()) {
+        if (!filters.isEmpty()) {
+            ListNBT filterTags = new ListNBT();
+            for (TransporterFilter<?> filter : filters) {
+                CompoundNBT tagCompound = new CompoundNBT();
+                filter.write(tagCompound);
+                filterTags.add(tagCompound);
+            }
             nbtTags.put("filters", filterTags);
         }
         return nbtTags;
@@ -423,42 +422,48 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setBoolean(itemStack, "hasSorterConfig", true);
         if (color != null) {
             ItemDataUtils.setInt(itemStack, "color", TransporterUtils.colors.indexOf(color));
         }
-
         ItemDataUtils.setBoolean(itemStack, "autoEject", autoEject);
         ItemDataUtils.setBoolean(itemStack, "roundRobin", roundRobin);
         ItemDataUtils.setBoolean(itemStack, "singleItem", singleItem);
-
-        ListNBT filterTags = new ListNBT();
-        for (TransporterFilter<?> filter : filters) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            filter.write(tagCompound);
-            filterTags.add(tagCompound);
-        }
-        if (!filterTags.isEmpty()) {
+        if (!filters.isEmpty()) {
+            ListNBT filterTags = new ListNBT();
+            for (TransporterFilter<?> filter : filters) {
+                CompoundNBT tagCompound = new CompoundNBT();
+                filter.write(tagCompound);
+                filterTags.add(tagCompound);
+            }
             ItemDataUtils.setList(itemStack, "filters", filterTags);
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, "hasSorterConfig")) {
-            if (ItemDataUtils.hasData(itemStack, "color")) {
-                color = TransporterUtils.colors.get(ItemDataUtils.getInt(itemStack, "color"));
-            }
-            autoEject = ItemDataUtils.getBoolean(itemStack, "autoEject");
-            roundRobin = ItemDataUtils.getBoolean(itemStack, "roundRobin");
-            singleItem = ItemDataUtils.getBoolean(itemStack, "singleItem");
-            if (ItemDataUtils.hasData(itemStack, "filters")) {
-                ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
-                for (int i = 0; i < tagList.size(); i++) {
-                    filters.add(TransporterFilter.readFromNBT(tagList.getCompound(i)));
-                }
+        if (ItemDataUtils.hasData(itemStack, "color")) {
+            color = TransporterUtils.colors.get(ItemDataUtils.getInt(itemStack, "color"));
+        }
+        autoEject = ItemDataUtils.getBoolean(itemStack, "autoEject");
+        roundRobin = ItemDataUtils.getBoolean(itemStack, "roundRobin");
+        singleItem = ItemDataUtils.getBoolean(itemStack, "singleItem");
+        if (ItemDataUtils.hasData(itemStack, "filters")) {
+            ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
+            for (int i = 0; i < tagList.size(); i++) {
+                filters.add(TransporterFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("color", "color");
+        remap.put("autoEject", "autoEject");
+        remap.put("roundRobin", "roundRobin");
+        remap.put("singleItem", "singleItem");
+        remap.put("filters", "filters");
+        return remap;
     }
 
     @Override

@@ -31,7 +31,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -53,7 +52,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<Blo
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
+        Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "frequency"));
         if (freq != null) {
             tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, freq.name));
             tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, !freq.publicFreq ? MekanismLang.PRIVATE : MekanismLang.PUBLIC));
@@ -69,8 +68,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<Blo
             tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         }
         tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
-        ListNBT inventory = getInventory(stack);
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(inventory != null && !inventory.isEmpty())));
+        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
         if (ItemDataUtils.hasData(stack, "upgrades")) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(stack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {

@@ -26,7 +26,6 @@ import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,8 +51,7 @@ public class ItemBlockSolarNeutronActivator extends ItemBlockAdvancedTooltip<Blo
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
             tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         }
-        ListNBT inventory = getInventory(stack);
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(inventory != null && !inventory.isEmpty())));
+        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
         if (ItemDataUtils.hasData(stack, "upgrades")) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(stack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {

@@ -2,8 +2,10 @@ package mekanism.common.tile;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -20,6 +22,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -51,8 +54,10 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.HeatUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -67,7 +72,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
-      IGasHandler, IHeatTransfer, IComputerIntegration, IChunkLoader {
+      IGasHandler, IHeatTransfer, IComputerIntegration, IChunkLoader, ISustainedData {
 
     private static final String[] methods = new String[]{"setFrequency"};
     public InventoryFrequency frequency;
@@ -599,5 +604,28 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             return Collections.emptyList();
         }
         return frequency.inventorySlots;
+    }
+
+    @Override
+    public void writeSustainedData(ItemStack itemStack) {
+        if (frequency != null) {
+            ItemDataUtils.setCompound(itemStack, "frequency", frequency.getIdentity().serialize());
+        }
+    }
+
+    @Override
+    public void readSustainedData(ItemStack itemStack) {
+        Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(itemStack, "frequency"));
+        if (freq != null) {
+            setFrequency(freq.name, freq.publicFreq);
+        }
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("frequency.name", "frequency.name");
+        remap.put("frequency.publicFreq", "frequency.publicFreq");
+        return remap;
     }
 }

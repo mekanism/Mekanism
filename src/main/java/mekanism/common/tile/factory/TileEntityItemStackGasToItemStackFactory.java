@@ -1,5 +1,7 @@
 package mekanism.common.tile.factory;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -16,6 +18,7 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
@@ -29,6 +32,7 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.GasUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -38,7 +42,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //Compressing, injecting, purifying
-public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IGasHandler {
+public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IGasHandler, ISustainedData {
 
     //TODO: Finish moving references to gasTank to this class
     //public final GasTank gasTank;
@@ -201,14 +205,21 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        super.writeSustainedData(itemStack);
-        GasUtils.writeSustainedData(gasTank, itemStack);
+        if (!gasTank.isEmpty()) {
+            ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.getStack().write(new CompoundNBT()));
+        }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        super.readSustainedData(itemStack);
-        GasUtils.readSustainedData(gasTank, itemStack);
+        gasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasStored")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("gasTank.stored", "gasStored");
+        return remap;
     }
 
     @Override

@@ -1,0 +1,67 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "ownerUUID",
+                  "target": "mekData.ownerUUID",
+                  "op": "replace"
+                },
+                {
+                  "source": "securityMode",
+                  "target": "mekData.security",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentUpgrade",
+                  "target": "mekData.componentUpgrade",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentConfig",
+                  "target": "mekData.componentConfig",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentEjector",
+                  "target": "mekData.componentEjector",
+                  "op": "replace"
+                },
+                {
+                  "source": "controlType",
+                  "target": "mekData.controlType",
+                  "op": "replace"
+                },
+                {
+                  "source": "Items",
+                  "target": "mekData.Items",
+                  "op": "replace"
+                },
+                {
+                  "source": "electricityStored",
+                  "target": "mekData.electricityStored",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "mekanism:elite_smelting_factory"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

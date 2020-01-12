@@ -17,10 +17,8 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
@@ -33,7 +31,6 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.FactoryContainer;
-import mekanism.common.item.block.machine.factory.ItemBlockFactory;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -48,10 +45,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -90,21 +85,6 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
     @Override
     public FactoryType getFactoryType() {
         return type;
-    }
-
-    @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
-        if (tile instanceof TileEntityFactory) {
-            RecipeType recipeType = ((ItemBlockFactory) stack.getItem()).getRecipeTypeOrNull(stack);
-            if (recipeType != null) {
-                ((TileEntityFactory<?>) tile).setRecipeType(recipeType);
-            }
-            world.notifyNeighborsOfStateChange(pos, tile.getBlockType());
-            if (!world.isRemote) {
-                //TODO??
-                Mekanism.packetHandler.sendUpdatePacket(tile);
-            }
-        }
     }
 
     /**

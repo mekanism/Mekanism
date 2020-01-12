@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -301,6 +303,14 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public void readSustainedData(ItemStack itemStack) {
         inputTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
         outputTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputTank")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("inputTank.stored", "inputTank");
+        remap.put("outputTank.stored", "outputTank");
+        return remap;
     }
 
     @Override

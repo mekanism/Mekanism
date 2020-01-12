@@ -34,6 +34,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -198,13 +199,16 @@ public class TileComponentEjector implements ITileComponent {
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        strictInput = nbtTags.getBoolean("strictInput");
-        if (nbtTags.contains("ejectColor")) {
-            outputColor = readColor(nbtTags.getInt("ejectColor"));
-        }
-        for (int i = 0; i < 6; i++) {
-            if (nbtTags.contains("inputColors" + i)) {
-                inputColors[i] = readColor(nbtTags.getInt("inputColors" + i));
+        if (nbtTags.contains("componentEjector", NBT.TAG_COMPOUND)) {
+            CompoundNBT ejectorNBT = nbtTags.getCompound("componentEjector");
+            strictInput = ejectorNBT.getBoolean("strictInput");
+            if (ejectorNBT.contains("ejectColor", NBT.TAG_INT)) {
+                outputColor = readColor(ejectorNBT.getInt("ejectColor"));
+            }
+            for (int i = 0; i < 6; i++) {
+                if (ejectorNBT.contains("inputColors" + i, NBT.TAG_INT)) {
+                    inputColors[i] = readColor(ejectorNBT.getInt("inputColors" + i));
+                }
             }
         }
     }
@@ -220,13 +224,15 @@ public class TileComponentEjector implements ITileComponent {
 
     @Override
     public void write(CompoundNBT nbtTags) {
-        nbtTags.putBoolean("strictInput", strictInput);
+        CompoundNBT ejectorNBT = new CompoundNBT();
+        ejectorNBT.putBoolean("strictInput", strictInput);
         if (outputColor != null) {
-            nbtTags.putInt("ejectColor", getColorIndex(outputColor));
+            ejectorNBT.putInt("ejectColor", getColorIndex(outputColor));
         }
         for (int i = 0; i < 6; i++) {
-            nbtTags.putInt("inputColors" + i, getColorIndex(inputColors[i]));
+            ejectorNBT.putInt("inputColors" + i, getColorIndex(inputColors[i]));
         }
+        nbtTags.put("componentEjector", ejectorNBT);
     }
 
     @Override

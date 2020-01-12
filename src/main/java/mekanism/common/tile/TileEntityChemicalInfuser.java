@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -275,6 +277,15 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         leftTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "leftTank")));
         rightTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "rightTank")));
         centerTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "centerTank")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("leftTank.stored", "leftTank");
+        remap.put("rightTank.stored", "rightTank");
+        remap.put("centerTank.stored", "centerTank");
+        return remap;
     }
 
     @Override

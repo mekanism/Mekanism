@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,6 +16,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -41,10 +44,12 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.upgrade.GasTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.GasUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
@@ -52,7 +57,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, IComputerIntegration, IComparatorSupport {
+public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, IComputerIntegration, IComparatorSupport, ISustainedData {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
     /**
@@ -324,6 +329,28 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public GasTankUpgradeData getUpgradeData() {
         return new GasTankUpgradeData(redstone, getControlType(), drainSlot, fillSlot, dumping, gasTank.getStack(), getComponents());
+    }
+
+    @Override
+    public void writeSustainedData(ItemStack itemStack) {
+        if (!gasTank.isEmpty()) {
+            ItemDataUtils.setCompound(itemStack, "stored", gasTank.getStack().write(new CompoundNBT()));
+        }
+        ItemDataUtils.setInt(itemStack, "dumping", dumping.ordinal());
+    }
+
+    @Override
+    public void readSustainedData(ItemStack itemStack) {
+        gasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "stored")));
+        dumping = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, "dumping"));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("gasTank.stored", "stored");
+        remap.put("dumping", "dumping");
+        return remap;
     }
 
     public enum GasMode implements IIncrementalEnum<GasMode>, IHasTextComponent {

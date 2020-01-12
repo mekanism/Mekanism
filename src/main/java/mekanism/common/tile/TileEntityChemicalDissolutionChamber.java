@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -166,7 +168,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         injectTank.read(nbtTags.getCompound("injectTank"));
-        outputTank.read(nbtTags.getCompound("gasTank"));
+        outputTank.read(nbtTags.getCompound("outputTank"));
         GasUtils.clearIfInvalid(injectTank, this::isValidGas);
     }
 
@@ -175,7 +177,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.put("injectTank", injectTank.write(new CompoundNBT()));
-        nbtTags.put("gasTank", outputTank.write(new CompoundNBT()));
+        nbtTags.put("outputTank", outputTank.write(new CompoundNBT()));
         return nbtTags;
     }
 
@@ -254,6 +256,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public void readSustainedData(ItemStack itemStack) {
         injectTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "injectTank")));
         outputTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputTank")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("injectTank.stored", "injectTank");
+        remap.put("outputTank.stored", "outputTank");
+        return remap;
     }
 
     @Override

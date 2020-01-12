@@ -1,29 +1,15 @@
 package mekanism.common.util;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import mekanism.api.Upgrade;
 import mekanism.api.block.ISupportsUpgrades;
-import mekanism.api.energy.IEnergizedItem;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasItem;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.base.LazyOptionalHelper;
-import mekanism.common.inventory.InventoryBin;
-import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.machine.factory.ItemBlockFactory;
-import mekanism.common.security.ISecurityItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class RecipeUtils {
 
@@ -52,7 +38,7 @@ public class RecipeUtils {
         return stack.getItem() instanceof ItemBlockFactory;
     }
 
-    public static ItemStack getCraftingResult(CraftingInventory inv, ItemStack toReturn) {
+    /*public static ItemStack getCraftingResult(CraftingInventory inv, ItemStack toReturn) {
         int invLength = inv.getSizeInventory();
         if (toReturn.getItem() instanceof IEnergizedItem) {
             double energyFound = 0;
@@ -171,7 +157,7 @@ public class RecipeUtils {
             Upgrade.saveMap(upgrades, ItemDataUtils.getDataMap(toReturn));
         }
         return toReturn;
-    }
+    }*/
 
     private static boolean supportsUpgrades(ItemStack stack) {
         return !stack.isEmpty() && stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ISupportsUpgrades;

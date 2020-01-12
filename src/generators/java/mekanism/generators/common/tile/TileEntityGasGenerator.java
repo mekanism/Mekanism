@@ -1,5 +1,7 @@
 package mekanism.generators.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -163,17 +165,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         return (fuelTank.getStored() > 0 || burnTicks > 0) && MekanismUtils.canFunction(this);
     }
 
-    /**
-     * Gets the scaled gas level for the GUI.
-     *
-     * @param i - multiplier
-     *
-     * @return Scaled gas level
-     */
-    public int getScaledGasLevel(int i) {
-        return fuelTank.getStored() * i / MAX_GAS;
-    }
-
     @Override
     public String[] getMethods() {
         return methods;
@@ -311,6 +302,13 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                 output = fuel.energyPerTick * 2;
             }
         }
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("fuelTank", "fuelTank");
+        return remap;
     }
 
     @Override

@@ -7,7 +7,7 @@ import net.minecraft.nbt.ListNBT;
  *
  * @author AidanBrady
  */
-public interface ISustainedInventory {
+public interface ISustainedInventory {//TODO: Figure out what this is used by and if we can remove it
 
     /**
      * Sets the inventory tag list to a new value.
@@ -25,4 +25,16 @@ public interface ISustainedInventory {
      * @return inventory tag list
      */
     ListNBT getInventory(Object... data);
+
+    /**
+     * Gets if there is an inventory from an item or block.
+     *
+     * @param data - ItemStack parameter if using on item
+     *
+     * @return true if there is a non empty inventory stored, false otherwise
+     */
+    default boolean hasInventory(Object... data) {
+        ListNBT inventory = getInventory(data);
+        return inventory != null && !inventory.isEmpty();
+    }
 }

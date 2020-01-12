@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -121,14 +122,17 @@ public class TileComponentConfig implements ITileComponent {
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        if (nbtTags.getBoolean("sideDataStored")) {
-            for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
-                TransmissionType type = entry.getKey();
-                ConfigInfo info = entry.getValue();
-                info.setEjecting(nbtTags.getBoolean("ejecting" + type.ordinal()));
-                CompoundNBT sideConfig = nbtTags.getCompound("config" + type.ordinal());
-                for (RelativeSide side : EnumUtils.SIDES) {
-                    info.setDataType(side, DataType.byIndexStatic(sideConfig.getInt("side" + side.ordinal())));
+        if (nbtTags.contains("componentConfig", NBT.TAG_COMPOUND)) {
+            CompoundNBT configNBT = nbtTags.getCompound("componentConfig");
+            if (configNBT.getBoolean("sideDataStored")) {
+                for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
+                    TransmissionType type = entry.getKey();
+                    ConfigInfo info = entry.getValue();
+                    info.setEjecting(configNBT.getBoolean("ejecting" + type.ordinal()));
+                    CompoundNBT sideConfig = configNBT.getCompound("config" + type.ordinal());
+                    for (RelativeSide side : EnumUtils.SIDES) {
+                        info.setDataType(side, DataType.byIndexStatic(sideConfig.getInt("side" + side.ordinal())));
+                    }
                 }
             }
         }
@@ -156,17 +160,19 @@ public class TileComponentConfig implements ITileComponent {
 
     @Override
     public void write(CompoundNBT nbtTags) {
+        CompoundNBT configNBT = new CompoundNBT();
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            nbtTags.putBoolean("ejecting" + type.ordinal(), info.isEjecting());
+            configNBT.putBoolean("ejecting" + type.ordinal(), info.isEjecting());
             CompoundNBT sideConfig = new CompoundNBT();
             for (RelativeSide side : EnumUtils.SIDES) {
                 sideConfig.putInt("side" + side.ordinal(), info.getDataType(side).ordinal());
             }
-            nbtTags.put("config" + type.ordinal(), sideConfig);
+            configNBT.put("config" + type.ordinal(), sideConfig);
         }
-        nbtTags.putBoolean("sideDataStored", true);
+        configNBT.putBoolean("sideDataStored", true);
+        nbtTags.put("componentConfig", configNBT);
     }
 
     @Override

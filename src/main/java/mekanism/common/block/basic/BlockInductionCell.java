@@ -2,6 +2,7 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -23,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockInductionCell extends BlockMekanism implements ITieredBlock<InductionCellTier>, IHasTileEntity<TileEntityInductionCell>, IHasDescription {
+public class BlockInductionCell extends BlockMekanism implements ITieredBlock<InductionCellTier>, IHasTileEntity<TileEntityInductionCell>, IHasDescription, IBlockElectric {
 
     private final InductionCellTier tier;
 
@@ -72,5 +73,10 @@ public class BlockInductionCell extends BlockMekanism implements ITieredBlock<In
     @Override
     public ILangEntry getDescription() {
         return MekanismLang.DESCRIPTION_INDUCTION_CELL;
+    }
+
+    @Override
+    public double getConfigStorage() {
+        return tier.getMaxEnergy();
     }
 }

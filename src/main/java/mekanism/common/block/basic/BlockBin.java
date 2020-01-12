@@ -17,7 +17,6 @@ import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.inventory.InventoryBin;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -31,7 +30,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -46,7 +44,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, IStateActive, ITieredBlock<BinTier>, IHasTileEntity<TileEntityBin>, ISupportsComparator,
@@ -71,17 +68,6 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
             TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
                 tile.onNeighborChange(neighborBlock);
-            }
-        }
-    }
-
-    @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
-        if (stack.hasTag() && tile instanceof TileEntityBin) {
-            InventoryBin inv = new InventoryBin(stack);
-            if (!inv.getItemType().isEmpty()) {
-                TileEntityBin bin = (TileEntityBin) tile;
-                bin.getBinSlot().setStack(StackUtils.size(inv.getItemType(), inv.getItemCount()));
             }
         }
     }
@@ -164,20 +150,6 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
             }
         }
         return ActionResultType.SUCCESS;
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack setItemData(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
-        if (tile instanceof TileEntityBin) {
-            TileEntityBin bin = (TileEntityBin) tile;
-            if (bin.getItemCount() > 0) {
-                InventoryBin inv = new InventoryBin(stack);
-                inv.setItemCount(bin.getItemCount());
-                inv.setItemType(bin.getItemType());
-            }
-        }
-        return stack;
     }
 
     @Override

@@ -26,7 +26,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
@@ -34,10 +33,8 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateContainer;
-import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.INameable;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -58,7 +55,8 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Nonnull
-    protected ItemStack getDropItem(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    @Override
+    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlayerEntity player) {
         ItemStack itemStack = new ItemStack(this);
         TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
@@ -66,10 +64,6 @@ public abstract class BlockMekanism extends Block {
         }
         //TODO: If crashes happen here because of lack of NBT make things use ItemDataUtils
         Item item = itemStack.getItem();
-
-        //Set any data that is block specific rather than tile specific
-        itemStack = setItemData(state, world, pos, tile, itemStack);
-
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
             securityItem.setOwnerUUID(itemStack, tile.getSecurity().getOwnerUUID());
@@ -105,50 +99,6 @@ public abstract class BlockMekanism extends Block {
             ((IEnergizedItem) item).setEnergy(itemStack, tile.getEnergy());
         }
         return itemStack;
-    }
-
-    protected ItemStack setItemData(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
-        return stack;
-    }
-
-    /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)}.
-     *
-     * @author Forge
-     * @see FlowerPotBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
-     */
-    @Override
-    public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, @Nonnull ItemStack stack) {
-        //TODO: Replace the below stuff with allowing the drop to spawn from the loot table, or at least for now fall back to the loot table if there is no TE
-        player.addStat(Stats.BLOCK_MINED.get(this));
-        player.addExhaustion(0.005F);
-        if (!world.isRemote) {
-            ItemStack dropItem = getDropItem(state, world, pos);
-            if (te instanceof INameable) {
-                dropItem.setDisplayName(((INameable) te).getName());
-            }
-            spawnAsEntity(world, pos, dropItem);
-        }
-        //Set it to air like the flower pot's harvestBlock method
-        world.removeBlock(pos, false);
-    }
-
-    /**
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops}. Used together with {@link Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState,
-     * TileEntity, ItemStack)}.
-     *
-     * @author Forge
-     * @see FlowerPotBlock#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)
-     */
-    @Override
-    public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest, IFluidState fluidState) {
-        return willHarvest || super.removedByPlayer(state, world, pos, player, false, fluidState);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlayerEntity player) {
-        return getDropItem(state, world, pos);
     }
 
     @Override
@@ -211,13 +161,6 @@ public abstract class BlockMekanism extends Block {
         if (tile instanceof IBoundingBlock) {
             ((IBoundingBlock) tile).onPlace();
         }
-
-        /*
-        //TODO: Block Basic had this, figure out why
-        world.markBlockRangeForRenderUpdate(pos, pos.add(1, 1, 1));
-        world.checkLightFor(EnumSkyBlock.BLOCK, pos);
-        world.checkLightFor(EnumSkyBlock.SKY, pos);
-         */
         if (!world.isRemote) {
             if (tile instanceof IMultiblock) {
                 ((IMultiblock<?>) tile).doUpdate();
@@ -237,15 +180,15 @@ public abstract class BlockMekanism extends Block {
             UUID ownerUUID = securityItem.getOwnerUUID(stack);
             tile.getSecurity().setOwnerUUID(ownerUUID == null ? placer.getUniqueID() : ownerUUID);
         }
-        if (tile.supportsUpgrades() && ItemDataUtils.hasData(stack, "upgrades")) {
+        if (tile.supportsUpgrades()) {
+            //The read method validates that data is stored
             tile.getComponent().read(ItemDataUtils.getDataMap(stack));
         }
         if (tile instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tile;
-            if (ItemDataUtils.hasData(stack, "sideDataStored")) {
-                config.getConfig().read(ItemDataUtils.getDataMap(stack));
-                config.getEjector().read(ItemDataUtils.getDataMap(stack));
-            }
+            //The read methods validate that data is stored
+            config.getConfig().read(ItemDataUtils.getDataMap(stack));
+            config.getEjector().read(ItemDataUtils.getDataMap(stack));
         }
         if (tile instanceof ISustainedData && stack.hasTag()) {
             ((ISustainedData) tile).readSustainedData(stack);
@@ -276,7 +219,6 @@ public abstract class BlockMekanism extends Block {
 
     //TODO: Method to override for setting some simple tile specific stuff
     public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
-
     }
 
     @Override

@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "ownerUUID",
+                  "target": "mekData.ownerUUID",
+                  "op": "replace"
+                },
+                {
+                  "source": "securityMode",
+                  "target": "mekData.security",
+                  "op": "replace"
+                },
+                {
+                  "source": "controlType",
+                  "target": "mekData.controlType",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "mekanism:laser_amplifier"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

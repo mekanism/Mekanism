@@ -22,15 +22,12 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.entangloporter.InventoryFrequency;
-import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
@@ -39,10 +36,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
@@ -115,18 +110,6 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
     @Override
     public DirectionProperty getFacingProperty() {
         return BlockStateHelper.facingProperty;
-    }
-
-    @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
-        if (tile instanceof TileEntityQuantumEntangloporter) {
-            if (!world.isRemote && ItemDataUtils.hasData(stack, "entangleporter_frequency")) {
-                Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "entangleporter_frequency"));
-                if (freq != null) {
-                    ((TileEntityQuantumEntangloporter) tile).setFrequency(freq.name, freq.publicFreq);
-                }
-            }
-        }
     }
 
     /**
@@ -222,18 +205,6 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         return bounds;
-    }
-
-    @Nonnull
-    @Override
-    protected ItemStack setItemData(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull TileEntityMekanism tile, @Nonnull ItemStack stack) {
-        if (tile instanceof TileEntityQuantumEntangloporter) {
-            InventoryFrequency frequency = ((TileEntityQuantumEntangloporter) tile).frequency;
-            if (frequency != null) {
-                ItemDataUtils.setCompound(stack, "entangleporter_frequency", frequency.getIdentity().serialize());
-            }
-        }
-        return stack;
     }
 
     @Override

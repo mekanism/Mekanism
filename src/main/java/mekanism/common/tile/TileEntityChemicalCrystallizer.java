@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -263,6 +265,13 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public void readSustainedData(ItemStack itemStack) {
         inputTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("inputTank.stored", "inputTank");
+        return remap;
     }
 
     @Override

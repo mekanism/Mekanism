@@ -6,21 +6,23 @@ import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.basic.BlockBin;
-import mekanism.common.inventory.InventoryBin;
+import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.BinTier;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
-public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredItem<BinTier> {
+public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredItem<BinTier>, IItemSustainedInventory {
 
     public ItemBlockBin(BlockBin block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
@@ -39,13 +41,24 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredI
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        InventoryBin inv = new InventoryBin(stack);
-        if (inv.getItemCount() > 0) {
-            tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, inv.getItemType().getDisplayName()));
-            tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY,
-                  inv.getItemCount() == Integer.MAX_VALUE ? MekanismLang.INFINITE : inv.getItemCount()));
-        } else {
+        ItemStack stored = ItemStack.EMPTY;
+        ListNBT items = getInventory(stack);
+        if (items != null && !items.isEmpty()) {
+            //TODO: Do this better
+            CompoundNBT compound = items.getCompound(0);
+            if (compound.contains("Item", NBT.TAG_COMPOUND)) {
+                stored = ItemStack.read(compound.getCompound("Item"));
+                if (compound.contains("SizeOverride", NBT.TAG_INT)) {
+                    stored.setCount(compound.getInt("SizeOverride"));
+                }
+            }
+        }
+        if (stored.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
+        } else {
+            tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, stored.getDisplayName()));
+            tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY,
+                  stored.getCount() == Integer.MAX_VALUE ? MekanismLang.INFINITE : stored.getCount()));
         }
         BinTier tier = getTier(stack);
         if (tier != null) {
@@ -58,7 +71,8 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredI
         }
     }
 
-    @Override
+    //TODO: FIXME once we re-add bin recipes for getting contents/adding contents
+    /*@Override
     public boolean hasContainerItem(ItemStack stack) {
         return ItemDataUtils.hasData(stack, "newCount");
     }
@@ -74,5 +88,5 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements ITieredI
         ItemStack ret = stack.copy();
         ItemDataUtils.setInt(ret, "itemCount", newCount);
         return ret;
-    }
+    }*/
 }

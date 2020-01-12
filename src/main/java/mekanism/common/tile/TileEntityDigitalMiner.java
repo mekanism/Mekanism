@@ -890,11 +890,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         nbtTags.putBoolean("doPull", doPull);
         nbtTags.putBoolean("silkTouch", silkTouch);
         nbtTags.putBoolean("inverse", inverse);
-        ListNBT filterTags = new ListNBT();
-        for (MinerFilter<?> filter : filters) {
-            filterTags.add(filter.write(new CompoundNBT()));
-        }
-        if (!filterTags.isEmpty()) {
+        if (!filters.isEmpty()) {
+            ListNBT filterTags = new ListNBT();
+            for (MinerFilter<?> filter : filters) {
+                filterTags.add(filter.write(new CompoundNBT()));
+            }
             nbtTags.put("filters", filterTags);
         }
         return nbtTags;
@@ -924,8 +924,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setBoolean(itemStack, "hasMinerConfig", true);
-
         ItemDataUtils.setInt(itemStack, "radius", radius);
         ItemDataUtils.setInt(itemStack, "minY", minY);
         ItemDataUtils.setInt(itemStack, "maxY", maxY);
@@ -933,36 +931,44 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         ItemDataUtils.setBoolean(itemStack, "doPull", doPull);
         ItemDataUtils.setBoolean(itemStack, "silkTouch", silkTouch);
         ItemDataUtils.setBoolean(itemStack, "inverse", inverse);
-
-        ListNBT filterTags = new ListNBT();
-
-        for (MinerFilter<?> filter : filters) {
-            filterTags.add(filter.write(new CompoundNBT()));
-        }
-
-        if (!filterTags.isEmpty()) {
+        if (!filters.isEmpty()) {
+            ListNBT filterTags = new ListNBT();
+            for (MinerFilter<?> filter : filters) {
+                filterTags.add(filter.write(new CompoundNBT()));
+            }
             ItemDataUtils.setList(itemStack, "filters", filterTags);
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, "hasMinerConfig")) {
-            setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"), MekanismConfig.general.digitalMinerMaxRadius.get()));
-            minY = ItemDataUtils.getInt(itemStack, "minY");
-            maxY = ItemDataUtils.getInt(itemStack, "maxY");
-            doEject = ItemDataUtils.getBoolean(itemStack, "doEject");
-            doPull = ItemDataUtils.getBoolean(itemStack, "doPull");
-            silkTouch = ItemDataUtils.getBoolean(itemStack, "silkTouch");
-            inverse = ItemDataUtils.getBoolean(itemStack, "inverse");
-
-            if (ItemDataUtils.hasData(itemStack, "filters")) {
-                ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
-                for (int i = 0; i < tagList.size(); i++) {
-                    filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
-                }
+        setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"), MekanismConfig.general.digitalMinerMaxRadius.get()));
+        minY = ItemDataUtils.getInt(itemStack, "minY");
+        maxY = ItemDataUtils.getInt(itemStack, "maxY");
+        doEject = ItemDataUtils.getBoolean(itemStack, "doEject");
+        doPull = ItemDataUtils.getBoolean(itemStack, "doPull");
+        silkTouch = ItemDataUtils.getBoolean(itemStack, "silkTouch");
+        inverse = ItemDataUtils.getBoolean(itemStack, "inverse");
+        if (ItemDataUtils.hasData(itemStack, "filters")) {
+            ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
+            for (int i = 0; i < tagList.size(); i++) {
+                filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("radius", "radius");
+        remap.put("minY", "minY");
+        remap.put("maxY", "maxY");
+        remap.put("doEject", "doEject");
+        remap.put("doPull", "doPull");
+        remap.put("silkTouch", "silkTouch");
+        remap.put("inverse", "inverse");
+        remap.put("filters", "filters");
+        return remap;
     }
 
     @Override

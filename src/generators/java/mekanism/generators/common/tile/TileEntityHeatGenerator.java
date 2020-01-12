@@ -1,5 +1,7 @@
 package mekanism.generators.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -186,17 +188,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         return ForgeHooks.getBurnTime(stack) / 2;
     }
 
-    /**
-     * Gets the scaled fuel level for the GUI.
-     *
-     * @param i - multiplier
-     *
-     * @return Scaled fuel level
-     */
-    public int getScaledFuelLevel(int i) {
-        return lavaTank.getFluidAmount() * i / lavaTank.getCapacity();
-    }
-
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
@@ -279,6 +270,13 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Override
     public void readSustainedData(ItemStack itemStack) {
         lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "lavaTank")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("lavaTank", "lavaTank");
+        return remap;
     }
 
     @Override

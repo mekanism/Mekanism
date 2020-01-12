@@ -15,7 +15,6 @@ import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -133,19 +132,5 @@ public final class GasUtils {
             return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), stack);
         }
         return 0;
-    }
-
-    public static void writeSustainedData(GasTank gasTank, ItemStack itemStack) {
-        if (!gasTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.getStack().write(new CompoundNBT()));
-        }
-    }
-
-    public static void readSustainedData(GasTank gasTank, ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, "gasStored")) {
-            gasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasStored")));
-        } else {
-            gasTank.setEmpty();
-        }
     }
 }

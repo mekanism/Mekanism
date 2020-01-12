@@ -13,7 +13,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.Upgrade;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
@@ -682,8 +681,7 @@ public final class MekanismUtils {
      */
     public static ItemStack getFullGasTank(GasTankTier tier, @Nonnull Gas gas) {
         ItemStack tank = getEmptyGasTank(tier);
-        ItemBlockGasTank item = (ItemBlockGasTank) tank.getItem();
-        item.setGas(tank, new GasStack(gas, item.MAX_GAS));
+        ((ItemBlockGasTank) tank.getItem()).setGas(tank, gas.getGasStack(tier.getStorage()));
         return tank;
     }
 

@@ -11,7 +11,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
@@ -118,14 +117,6 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return state1.getBlock().getPickBlock(state1, target, world, mainPos, player);
     }
 
-    //TODO: Change this as there is now proper support for removing when there is a TileEntity in the given location
-    /*
-     * {@inheritDoc} Keep tile entity in world until after {@link Block#getDrops(NonNullList, IBlockReader, BlockPos, BlockState, int)}. Used together with {@link
-     * Block#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)}.
-     *
-     * @author Forge
-     * @see FlowerPotBlock#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)
-     */
     @Override
     public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest, IFluidState fluidState) {
         if (willHarvest) {
@@ -135,19 +126,11 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return super.removedByPlayer(state, world, pos, player, false, fluidState);
     }
 
-    /**
-     * {@inheritDoc} Used together with {@link Block#removedByPlayer(BlockState, World, BlockPos, PlayerEntity, boolean, IFluidState)}.
-     *
-     * @author Forge
-     * @see FlowerPotBlock#harvestBlock(World, PlayerEntity, BlockPos, BlockState, TileEntity, ItemStack)
-     */
     @Override
     public void harvestBlock(@Nonnull World world, PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te, @Nonnull ItemStack stack) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
             BlockState mainState = world.getBlockState(mainPos);
-            //TODO: Once we properly move things to loot tables, make this proxy it to that instead?
-            // or is this still a good way to proxy it
             mainState.getBlock().harvestBlock(world, player, mainPos, mainState, MekanismUtils.getTileEntity(world, mainPos), stack);
         } else {
             super.harvestBlock(world, player, pos, state, te, stack);

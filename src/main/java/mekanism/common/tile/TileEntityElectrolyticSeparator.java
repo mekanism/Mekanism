@@ -1,6 +1,8 @@
 package mekanism.common.tile;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -342,6 +344,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
         leftTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "leftTank")));
         rightTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "rightTank")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("fluidTank", "fluidTank");
+        remap.put("leftTank.stored", "leftTank");
+        remap.put("rightTank.stored", "rightTank");
+        return remap;
     }
 
     @Override

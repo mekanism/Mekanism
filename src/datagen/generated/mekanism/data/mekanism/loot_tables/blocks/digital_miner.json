@@ -1,0 +1,97 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "ownerUUID",
+                  "target": "mekData.ownerUUID",
+                  "op": "replace"
+                },
+                {
+                  "source": "securityMode",
+                  "target": "mekData.security",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentUpgrade",
+                  "target": "mekData.componentUpgrade",
+                  "op": "replace"
+                },
+                {
+                  "source": "doEject",
+                  "target": "mekData.doEject",
+                  "op": "replace"
+                },
+                {
+                  "source": "inverse",
+                  "target": "mekData.inverse",
+                  "op": "replace"
+                },
+                {
+                  "source": "minY",
+                  "target": "mekData.minY",
+                  "op": "replace"
+                },
+                {
+                  "source": "maxY",
+                  "target": "mekData.maxY",
+                  "op": "replace"
+                },
+                {
+                  "source": "doPull",
+                  "target": "mekData.doPull",
+                  "op": "replace"
+                },
+                {
+                  "source": "filters",
+                  "target": "mekData.filters",
+                  "op": "replace"
+                },
+                {
+                  "source": "radius",
+                  "target": "mekData.radius",
+                  "op": "replace"
+                },
+                {
+                  "source": "silkTouch",
+                  "target": "mekData.silkTouch",
+                  "op": "replace"
+                },
+                {
+                  "source": "controlType",
+                  "target": "mekData.controlType",
+                  "op": "replace"
+                },
+                {
+                  "source": "Items",
+                  "target": "mekData.Items",
+                  "op": "replace"
+                },
+                {
+                  "source": "electricityStored",
+                  "target": "mekData.electricityStored",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "mekanism:digital_miner"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

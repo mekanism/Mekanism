@@ -2,6 +2,7 @@ package mekanism.client.lang;
 
 import java.io.IOException;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
 import net.minecraft.data.DataGenerator;
@@ -11,12 +12,20 @@ import net.minecraftforge.common.data.LanguageProvider;
 public abstract class BaseLanguageProvider extends LanguageProvider {
 
     private final ConvertibleLanguageProvider[] altProviders;
+    private final String modid;
 
     public BaseLanguageProvider(DataGenerator gen, String modid) {
         super(gen, modid, "en_us");
+        this.modid = modid;
         altProviders = new ConvertibleLanguageProvider[]{
               new UpsideDownLanguageProvider(gen, modid)
         };
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return super.getName() + ": " + modid;
     }
 
     protected void add(IHasTranslationKey key, String value) {

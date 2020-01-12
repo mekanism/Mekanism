@@ -144,13 +144,13 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        ListNBT filterTags = new ListNBT();
-        for (OredictionificatorFilter filter : filters) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            filter.write(tagCompound);
-            filterTags.add(tagCompound);
-        }
-        if (!filterTags.isEmpty()) {
+        if (!filters.isEmpty()) {
+            ListNBT filterTags = new ListNBT();
+            for (OredictionificatorFilter filter : filters) {
+                CompoundNBT tagCompound = new CompoundNBT();
+                filter.write(tagCompound);
+                filterTags.add(tagCompound);
+            }
             nbtTags.put("filters", filterTags);
         }
         return nbtTags;
@@ -224,13 +224,13 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        ListNBT filterTags = new ListNBT();
-        for (OredictionificatorFilter filter : filters) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            filter.write(tagCompound);
-            filterTags.add(tagCompound);
-        }
-        if (!filterTags.isEmpty()) {
+        if (!filters.isEmpty()) {
+            ListNBT filterTags = new ListNBT();
+            for (OredictionificatorFilter filter : filters) {
+                CompoundNBT tagCompound = new CompoundNBT();
+                filter.write(tagCompound);
+                filterTags.add(tagCompound);
+            }
             nbtTags.put("filters", filterTags);
         }
         return nbtTags;
@@ -253,28 +253,32 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setBoolean(itemStack, "hasOredictionificatorConfig", true);
-        ListNBT filterTags = new ListNBT();
-        for (OredictionificatorFilter filter : filters) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            filter.write(tagCompound);
-            filterTags.add(tagCompound);
-        }
-        if (!filterTags.isEmpty()) {
+        if (!filters.isEmpty()) {
+            ListNBT filterTags = new ListNBT();
+            for (OredictionificatorFilter filter : filters) {
+                CompoundNBT tagCompound = new CompoundNBT();
+                filter.write(tagCompound);
+                filterTags.add(tagCompound);
+            }
             ItemDataUtils.setList(itemStack, "filters", filterTags);
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, "hasOredictionificatorConfig")) {
-            if (ItemDataUtils.hasData(itemStack, "filters")) {
-                ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
-                for (int i = 0; i < tagList.size(); i++) {
-                    filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
-                }
+        if (ItemDataUtils.hasData(itemStack, "filters")) {
+            ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
+            for (int i = 0; i < tagList.size(); i++) {
+                filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("filters", "filters");
+        return remap;
     }
 
     @Override

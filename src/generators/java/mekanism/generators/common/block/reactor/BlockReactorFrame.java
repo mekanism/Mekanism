@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
+//TODO: Why is this IBlockElectric
 public class BlockReactorFrame extends BlockMekanism implements IBlockElectric, IHasTileEntity<TileEntityReactorFrame>, IHasDescription {
 
     public BlockReactorFrame() {

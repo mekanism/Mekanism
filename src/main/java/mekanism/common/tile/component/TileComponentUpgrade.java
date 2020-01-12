@@ -158,24 +158,29 @@ public class TileComponentUpgrade implements ITileComponent {
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        upgrades = Upgrade.buildMap(nbtTags);
-        for (Upgrade upgrade : getSupportedTypes()) {
-            tile.recalculateUpgrades(upgrade);
-        }
-        //Load the inventory
-        if (nbtTags.contains("UpgradeSlot", NBT.TAG_COMPOUND)) {
-            upgradeSlot.deserializeNBT(nbtTags.getCompound("UpgradeSlot"));
+        if (nbtTags.contains("componentUpgrade", NBT.TAG_COMPOUND)) {
+            CompoundNBT upgradeNBT = nbtTags.getCompound("componentUpgrade");
+            upgrades = Upgrade.buildMap(upgradeNBT);
+            for (Upgrade upgrade : getSupportedTypes()) {
+                tile.recalculateUpgrades(upgrade);
+            }
+            //Load the inventory
+            if (upgradeNBT.contains("UpgradeSlot", NBT.TAG_COMPOUND)) {
+                upgradeSlot.deserializeNBT(upgradeNBT.getCompound("UpgradeSlot"));
+            }
         }
     }
 
     @Override
     public void write(CompoundNBT nbtTags) {
-        Upgrade.saveMap(upgrades, nbtTags);
+        CompoundNBT upgradeNBT = new CompoundNBT();
+        Upgrade.saveMap(upgrades, upgradeNBT);
         //Save the inventory
         CompoundNBT compoundNBT = upgradeSlot.serializeNBT();
         if (!compoundNBT.isEmpty()) {
-            nbtTags.put("UpgradeSlot", compoundNBT);
+            upgradeNBT.put("UpgradeSlot", compoundNBT);
         }
+        nbtTags.put("componentUpgrade", upgradeNBT);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package mekanism.common.tile.prefab;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -37,6 +39,7 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.GasUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StatUtils;
@@ -318,12 +321,21 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        GasUtils.writeSustainedData(gasTank, itemStack);
+        if (!gasTank.isEmpty()) {
+            ItemDataUtils.setCompound(itemStack, "gasStored", gasTank.getStack().write(new CompoundNBT()));
+        }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        GasUtils.readSustainedData(gasTank, itemStack);
+        gasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasStored")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("gasTank.stored", "gasStored");
+        return remap;
     }
 
     @Nonnull

@@ -24,7 +24,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -33,11 +32,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockGasTank extends ItemBlockAdvancedTooltip<BlockGasTank> implements IGasItem, IItemSustainedInventory, ISecurityItem {
-
-    /**
-     * The maximum amount of gas this tank can hold.
-     */
-    public int MAX_GAS = 96000;
 
     public ItemBlockGasTank(BlockGasTank block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
@@ -70,8 +64,7 @@ public class ItemBlockGasTank extends ItemBlockAdvancedTooltip<BlockGasTank> imp
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
             tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         }
-        ListNBT inventory = getInventory(stack);
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(inventory != null && !inventory.isEmpty())));
+        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }
 
     @Nonnull

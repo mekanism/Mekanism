@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
@@ -35,6 +37,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
@@ -265,12 +268,21 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        infusionTank.writeSustainedData(itemStack);
+        if (!infusionTank.isEmpty()) {
+            ItemDataUtils.setCompound(itemStack, "infusionStored", infusionTank.getStack().write(new CompoundNBT()));
+        }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        infusionTank.readSustainedData(itemStack);
+        infusionTank.setStack(InfusionStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "infusionStored")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("infuseStored.stored", "infusionStored");
+        return remap;
     }
 
     @Nonnull

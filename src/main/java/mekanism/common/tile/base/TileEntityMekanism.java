@@ -909,7 +909,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return toGive;
     }
 
-    //TODO: Once upgrade handling is moved into this class, this can probably be removed
+    //TODO: Remove the need for this?
     protected void setMaxEnergy(double maxEnergy) {
         if (isElectric()) {
             this.maxEnergy = maxEnergy;

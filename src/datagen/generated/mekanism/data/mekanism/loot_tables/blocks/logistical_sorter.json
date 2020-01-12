@@ -1,0 +1,77 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "ownerUUID",
+                  "target": "mekData.ownerUUID",
+                  "op": "replace"
+                },
+                {
+                  "source": "securityMode",
+                  "target": "mekData.security",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentUpgrade",
+                  "target": "mekData.componentUpgrade",
+                  "op": "replace"
+                },
+                {
+                  "source": "autoEject",
+                  "target": "mekData.autoEject",
+                  "op": "replace"
+                },
+                {
+                  "source": "color",
+                  "target": "mekData.color",
+                  "op": "replace"
+                },
+                {
+                  "source": "singleItem",
+                  "target": "mekData.singleItem",
+                  "op": "replace"
+                },
+                {
+                  "source": "filters",
+                  "target": "mekData.filters",
+                  "op": "replace"
+                },
+                {
+                  "source": "roundRobin",
+                  "target": "mekData.roundRobin",
+                  "op": "replace"
+                },
+                {
+                  "source": "controlType",
+                  "target": "mekData.controlType",
+                  "op": "replace"
+                },
+                {
+                  "source": "Items",
+                  "target": "mekData.Items",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "mekanism:logistical_sorter"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

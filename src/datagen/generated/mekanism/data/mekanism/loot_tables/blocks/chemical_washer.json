@@ -1,0 +1,72 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "ownerUUID",
+                  "target": "mekData.ownerUUID",
+                  "op": "replace"
+                },
+                {
+                  "source": "securityMode",
+                  "target": "mekData.security",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentUpgrade",
+                  "target": "mekData.componentUpgrade",
+                  "op": "replace"
+                },
+                {
+                  "source": "rightTank.stored",
+                  "target": "mekData.inputTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "centerTank.stored",
+                  "target": "mekData.outputTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "leftTank",
+                  "target": "mekData.fluidTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "controlType",
+                  "target": "mekData.controlType",
+                  "op": "replace"
+                },
+                {
+                  "source": "Items",
+                  "target": "mekData.Items",
+                  "op": "replace"
+                },
+                {
+                  "source": "electricityStored",
+                  "target": "mekData.electricityStored",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "mekanism:chemical_washer"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 package mekanism.common.tile.factory;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
@@ -13,17 +15,20 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> {
+public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements ISustainedData {
 
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
@@ -174,5 +179,38 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     public MetallurgicInfuserUpgradeData getUpgradeData() {
         return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergy(), progress, infusionTank.getStack(), extraSlot, energySlot,
               inputSlots, outputSlots, sorting, typeInputSlot.getStack(), typeOutputSlot.getStack(), getComponents());
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.put("infuseStored", infusionTank.write(new CompoundNBT()));
+        return nbtTags;
+    }
+
+    @Override
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        infusionTank.read(nbtTags.getCompound("infuseStored"));
+    }
+
+    @Override
+    public void writeSustainedData(ItemStack itemStack) {
+        if (!infusionTank.isEmpty()) {
+            ItemDataUtils.setCompound(itemStack, "infusionStored", infusionTank.getStack().write(new CompoundNBT()));
+        }
+    }
+
+    @Override
+    public void readSustainedData(ItemStack itemStack) {
+        infusionTank.setStack(InfusionStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "infusionStored")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("infuseStored.stored", "infusionStored");
+        return remap;
     }
 }

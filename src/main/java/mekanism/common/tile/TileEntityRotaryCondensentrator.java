@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -278,6 +280,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     public void readSustainedData(ItemStack itemStack) {
         fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
         gasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasTank")));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("fluidTank", "fluidTank");
+        remap.put("gasTank.stored", "gasTank");
+        return remap;
     }
 
     @Override

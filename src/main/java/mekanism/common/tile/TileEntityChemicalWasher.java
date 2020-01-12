@@ -1,5 +1,7 @@
 package mekanism.common.tile;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -25,7 +27,6 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
@@ -49,7 +50,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -341,6 +341,15 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     }
 
     @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new HashMap<>();
+        remap.put("leftTank", "fluidTank");
+        remap.put("rightTank.stored", "inputTank");
+        remap.put("centerTank.stored", "outputTank");
+        return remap;
+    }
+
+    @Override
     public Object[] getTanks() {
         return new Object[]{fluidTank, inputTank, outputTank};
     }
@@ -348,11 +357,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
-    }
-
-    public boolean isFluidInputItem(ItemStack itemStack) {
-        return new LazyOptionalHelper<>(FluidUtil.getFluidContained(itemStack)).matches(
-              fluidStack -> !fluidStack.isEmpty() && containsRecipe(recipe -> recipe.getFluidInput().testType(fluidStack)));
     }
 
     @Override

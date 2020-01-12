@@ -18,7 +18,6 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.GasTankContainer;
-import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.GasTankTier;
@@ -33,10 +32,8 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -81,15 +78,6 @@ public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGas
     @Override
     public GasTankTier getTier() {
         return tier;
-    }
-
-    @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
-        if (tile instanceof TileEntityGasTank) {
-            TileEntityGasTank gasTank = (TileEntityGasTank) tile;
-            gasTank.gasTank.setCapacity(tier.getStorage());
-            gasTank.gasTank.setStack(((ItemBlockGasTank) stack.getItem()).getGas(stack));
-        }
     }
 
     @Override
