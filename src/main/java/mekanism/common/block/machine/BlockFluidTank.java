@@ -12,7 +12,6 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.BlockMekanism;
@@ -45,7 +44,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -82,13 +80,18 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
 
     @Override
     public int getLightValue(BlockState state, ILightReader world, BlockPos pos) {
-        if (MekanismConfig.client.enableAmbientLighting.get()) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-            if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).wasActiveRecently()) {
-                return MekanismConfig.client.ambientLightingLevel.get();
+        int ambientLight = 0;
+        TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
+        if (tile != null) {
+            if (MekanismConfig.client.enableAmbientLighting.get() && tile.lightUpdate() && tile.wasActiveRecently()) {
+                ambientLight = MekanismConfig.client.ambientLightingLevel.get();
+            }
+            FluidStack fluid = tile.fluidTank.getFluid();
+            if (!fluid.isEmpty()) {
+                ambientLight = Math.max(ambientLight, fluid.getFluid().getAttributes().getLuminosity(world, pos));
             }
         }
-        return 0;
+        return ambientLight;
     }
 
     @Nonnull
