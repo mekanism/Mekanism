@@ -56,12 +56,8 @@ public class ItemStackGasToGasCachedRecipe extends CachedRecipe<ItemStackGasToGa
         //Calculate the current max based on the item input
         currentMax = itemInputHandler.operationsCanSupport(recipe.getItemInput(), currentMax);
 
-        //Calculate the current max based on the gas input
-        //Note: We divide the max by the amount of gas we are using this tick to ensure that after multiplying by it we have the proper amount
-        int gasUsage = getGasUsage();
-        if (gasUsage > 0) {
-            currentMax = gasInputHandler.operationsCanSupport(recipe.getGasInput(), currentMax) / gasUsage;
-        }
+        //Calculate the current max based on the gas input, and the given usage amount
+        currentMax = gasInputHandler.operationsCanSupport(recipe.getGasInput(), currentMax, getGasUsage());
 
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(recipeItem, recipeGas), currentMax);

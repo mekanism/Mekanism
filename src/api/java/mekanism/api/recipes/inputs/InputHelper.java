@@ -48,10 +48,14 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull ItemStack> recipeIngredient, int currentMax) {
+            public int operationsCanSupport(InputIngredient<@NonNull ItemStack> recipeIngredient, int currentMax, int usageMultiplier) {
                 if (currentMax == 0) {
                     //Short circuit that if we already can't perform any operations, just return
                     return 0;
+                }
+                if (usageMultiplier == 0) {
+                    //If we don't actually use any of this, just return our current max
+                    return currentMax;
                 }
                 ItemStack recipeInput = getRecipeInput(recipeIngredient);
                 if (recipeInput.isEmpty()) {
@@ -59,7 +63,7 @@ public class InputHelper {
                     return 0;
                 }
                 //TODO: Simulate?
-                return Math.min(getInput().getCount() / recipeInput.getCount(), currentMax);
+                return Math.min(getInput().getCount() / (recipeInput.getCount() * usageMultiplier), currentMax);
             }
         };
     }
@@ -103,10 +107,14 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull GasStack> recipeIngredient, int currentMax) {
+            public int operationsCanSupport(InputIngredient<@NonNull GasStack> recipeIngredient, int currentMax, int usageMultiplier) {
                 if (currentMax == 0) {
                     //Short circuit that if we already can't perform any operations, just return
                     return 0;
+                }
+                if (usageMultiplier == 0) {
+                    //If we don't actually use any of this, just return our current max
+                    return currentMax;
                 }
                 GasStack recipeInput = getRecipeInput(recipeIngredient);
                 //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
@@ -115,7 +123,7 @@ public class InputHelper {
                     return 0;
                 }
                 //TODO: Simulate the drain?
-                return Math.min(getInput().getAmount() / recipeInput.getAmount(), currentMax);
+                return Math.min(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier), currentMax);
             }
         };
     }
@@ -157,10 +165,14 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull FluidStack> recipeIngredient, int currentMax) {
+            public int operationsCanSupport(InputIngredient<@NonNull FluidStack> recipeIngredient, int currentMax, int usageMultiplier) {
                 if (currentMax == 0) {
                     //Short circuit that if we already can't perform any operations, just return
                     return 0;
+                }
+                if (usageMultiplier == 0) {
+                    //If we don't actually use any of this, just return our current max
+                    return currentMax;
                 }
                 FluidStack recipeInput = getRecipeInput(recipeIngredient);
                 //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
@@ -169,7 +181,7 @@ public class InputHelper {
                     return 0;
                 }
                 //TODO: Simulate the drain?
-                return Math.min(getInput().getAmount() / recipeInput.getAmount(), currentMax);
+                return Math.min(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier), currentMax);
             }
         };
     }
@@ -213,10 +225,14 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull InfusionStack> recipeIngredient, int currentMax) {
+            public int operationsCanSupport(InputIngredient<@NonNull InfusionStack> recipeIngredient, int currentMax, int usageMultiplier) {
                 if (currentMax == 0) {
                     //Short circuit that if we already can't perform any operations, just return
                     return 0;
+                }
+                if (usageMultiplier == 0) {
+                    //If we don't actually use any of this, just return our current max
+                    return currentMax;
                 }
                 InfusionStack recipeInput = getRecipeInput(recipeIngredient);
                 //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputInfusion)
@@ -225,7 +241,7 @@ public class InputHelper {
                     return 0;
                 }
                 //TODO: Simulate the drain?
-                return Math.min(getInput().getAmount() / recipeInput.getAmount(), currentMax);
+                return Math.min(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier), currentMax);
             }
         };
     }
