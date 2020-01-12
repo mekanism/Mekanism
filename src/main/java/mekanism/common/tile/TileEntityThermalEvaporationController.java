@@ -291,13 +291,13 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         controllerConflict = false;
         updatedThisTick = true;
 
-        Coord4D startPoint = Coord4D.get(this);
-        while (MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, pos.up()) != null) {
-            startPoint = startPoint.offset(Direction.UP);
+        BlockPos startPoint = getPos();
+        while (MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, startPoint.up()) != null) {
+            startPoint = startPoint.up();
         }
 
-        Coord4D test = startPoint.offset(Direction.DOWN).offset(right, 2);
-        isLeftOnFace = MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, test.getPos()) != null;
+        BlockPos test = startPoint.down().offset(right, 2);
+        isLeftOnFace = MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, test) != null;
         startPoint = startPoint.offset(left, isLeftOnFace ? 1 : 2);
         if (!scanTopLayer(startPoint)) {
             return false;
@@ -305,11 +305,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
         height = 1;
 
-        Coord4D middlePointer = startPoint.offset(Direction.DOWN);
+        BlockPos middlePointer = startPoint.down();
         while (scanLowerLayer(middlePointer)) {
-            middlePointer = middlePointer.offset(Direction.DOWN);
+            middlePointer = middlePointer.down();
         }
-        renderY = middlePointer.y + 1;
+        renderY = middlePointer.getY() + 1;
         if (height < 3 || height > MAX_HEIGHT) {
             height = 0;
             return false;
@@ -319,10 +319,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return true;
     }
 
-    public boolean scanTopLayer(Coord4D current) {
+    public boolean scanTopLayer(BlockPos currentPos) {
         Direction right = getRightSide();
         Direction back = getOppositeDirection();
-        BlockPos currentPos = current.getPos();
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
                 BlockPos pointerPos = currentPos.offset(right, x).offset(back, z);
@@ -363,11 +362,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return -1;
     }
 
-    public boolean scanLowerLayer(Coord4D current) {
+    public boolean scanLowerLayer(BlockPos currentPos) {
         Direction right = getRightSide();
         Direction back = getOppositeDirection();
         boolean foundCenter = false;
-        BlockPos currentPos = current.getPos();
         for (int x = 0; x < 4; x++) {
             for (int z = 0; z < 4; z++) {
                 BlockPos pointerPos = currentPos.offset(right, x).offset(back, z);
