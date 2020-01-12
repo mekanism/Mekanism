@@ -14,6 +14,7 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
 
     public GuiPersonalChestItem(PersonalChestItemContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        ySize += 64;
     }
 
     @Override

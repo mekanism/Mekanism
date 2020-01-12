@@ -14,7 +14,6 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
 
     public GuiPersonalChestTile(PersonalChestTileContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        xSize += 26;
         ySize += 64;
     }
 

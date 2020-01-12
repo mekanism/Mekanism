@@ -1,7 +1,7 @@
 package mekanism.additions.common.loot;
 
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import mekanism.common.loot.table.BaseEntityLootTable;
+import mekanism.common.loot.table.BaseEntityLootTables;
 import net.minecraft.item.Items;
 import net.minecraft.world.storage.loot.ConstantRange;
 import net.minecraft.world.storage.loot.ItemLootEntry;
@@ -11,7 +11,7 @@ import net.minecraft.world.storage.loot.RandomValueRange;
 import net.minecraft.world.storage.loot.functions.LootingEnchantBonus;
 import net.minecraft.world.storage.loot.functions.SetCount;
 
-public class AdditionsEntityLootTables extends BaseEntityLootTable {
+public class AdditionsEntityLootTables extends BaseEntityLootTables {
 
     @Override
     protected void addTables() {

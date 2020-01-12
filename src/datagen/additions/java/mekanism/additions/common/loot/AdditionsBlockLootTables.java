@@ -1,7 +1,7 @@
 package mekanism.additions.common.loot;
 
 import mekanism.additions.common.registries.AdditionsBlocks;
-import mekanism.common.loot.table.BaseBlockLootTable;
+import mekanism.common.loot.table.BaseBlockLootTables;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.TNTBlock;
@@ -12,14 +12,18 @@ import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.conditions.BlockStateProperty;
 
-public class AdditionsBlockLootTables extends BaseBlockLootTable {
+public class AdditionsBlockLootTables extends BaseBlockLootTables {
 
     @Override
     protected void addTables() {
         //Obsidian TNT
         registerObsidianTNT();
-
-        //Glow Panels
+        //Plastic slabs
+        registerLootTable(BlockLootTables::droppingSlab, AdditionsBlocks.BLACK_PLASTIC_SLAB, AdditionsBlocks.RED_PLASTIC_SLAB, AdditionsBlocks.GREEN_PLASTIC_SLAB,
+              AdditionsBlocks.BROWN_PLASTIC_SLAB, AdditionsBlocks.BLUE_PLASTIC_SLAB, AdditionsBlocks.PURPLE_PLASTIC_SLAB, AdditionsBlocks.CYAN_PLASTIC_SLAB,
+              AdditionsBlocks.LIGHT_GRAY_PLASTIC_SLAB, AdditionsBlocks.GRAY_PLASTIC_SLAB, AdditionsBlocks.PINK_PLASTIC_SLAB, AdditionsBlocks.LIME_PLASTIC_SLAB,
+              AdditionsBlocks.YELLOW_PLASTIC_SLAB, AdditionsBlocks.LIGHT_BLUE_PLASTIC_SLAB, AdditionsBlocks.MAGENTA_PLASTIC_SLAB, AdditionsBlocks.ORANGE_PLASTIC_SLAB,
+              AdditionsBlocks.WHITE_PLASTIC_SLAB);
         registerDropSelfLootTable(
               //Plastic Blocks
               AdditionsBlocks.BLACK_PLASTIC_BLOCK, AdditionsBlocks.RED_PLASTIC_BLOCK, AdditionsBlocks.GREEN_PLASTIC_BLOCK, AdditionsBlocks.BROWN_PLASTIC_BLOCK,
@@ -71,12 +75,6 @@ public class AdditionsBlockLootTables extends BaseBlockLootTable {
               AdditionsBlocks.GRAY_GLOW_PANEL, AdditionsBlocks.PINK_GLOW_PANEL, AdditionsBlocks.LIME_GLOW_PANEL, AdditionsBlocks.YELLOW_GLOW_PANEL,
               AdditionsBlocks.LIGHT_BLUE_GLOW_PANEL, AdditionsBlocks.MAGENTA_GLOW_PANEL, AdditionsBlocks.ORANGE_GLOW_PANEL, AdditionsBlocks.WHITE_GLOW_PANEL
         );
-        //Plastic slabs
-        registerLootTable(BlockLootTables::droppingSlab,  AdditionsBlocks.BLACK_PLASTIC_SLAB, AdditionsBlocks.RED_PLASTIC_SLAB, AdditionsBlocks.GREEN_PLASTIC_SLAB,
-              AdditionsBlocks.BROWN_PLASTIC_SLAB, AdditionsBlocks.BLUE_PLASTIC_SLAB, AdditionsBlocks.PURPLE_PLASTIC_SLAB, AdditionsBlocks.CYAN_PLASTIC_SLAB,
-              AdditionsBlocks.LIGHT_GRAY_PLASTIC_SLAB, AdditionsBlocks.GRAY_PLASTIC_SLAB, AdditionsBlocks.PINK_PLASTIC_SLAB, AdditionsBlocks.LIME_PLASTIC_SLAB,
-              AdditionsBlocks.YELLOW_PLASTIC_SLAB, AdditionsBlocks.LIGHT_BLUE_PLASTIC_SLAB, AdditionsBlocks.MAGENTA_PLASTIC_SLAB, AdditionsBlocks.ORANGE_PLASTIC_SLAB,
-              AdditionsBlocks.WHITE_PLASTIC_SLAB);
     }
 
     private void registerObsidianTNT() {
