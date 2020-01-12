@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Hand;
+import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO: Should this be rewritten to be a mekanism inventory
 public class InventoryPersonalChest extends Inventory {
@@ -46,8 +47,11 @@ public class InventoryPersonalChest extends Inventory {
             ItemStack stack = getStackInSlot(slotCount);
             if (!stack.isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
+                tagCompound.put("Item", stack.write(new CompoundNBT()));
+                if (stack.getCount() > stack.getMaxStackSize()) {
+                    tagCompound.putInt("SizeOverride", stack.getCount());
+                }
                 tagCompound.putByte("Slot", (byte) slotCount);
-                stack.write(tagCompound);
                 tagList.add(tagCompound);
             }
         }
@@ -67,7 +71,14 @@ public class InventoryPersonalChest extends Inventory {
                 CompoundNBT tagCompound = tagList.getCompound(tagCount);
                 byte slotID = tagCompound.getByte("Slot");
                 if (slotID >= 0 && slotID < getSizeInventory()) {
-                    setInventorySlotContents(slotID, ItemStack.read(tagCompound));
+                    ItemStack stack = ItemStack.EMPTY;
+                    if (tagCompound.contains("Item", NBT.TAG_COMPOUND)) {
+                        stack = ItemStack.read(tagCompound.getCompound("Item"));
+                        if (tagCompound.contains("SizeOverride", NBT.TAG_INT)) {
+                            stack.setCount(tagCompound.getInt("SizeOverride"));
+                        }
+                    }
+                    setInventorySlotContents(slotID, stack);
                 }
             }
         }
