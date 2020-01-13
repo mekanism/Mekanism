@@ -133,7 +133,8 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 //If the block is electric but is not part of a multiblock
                 // we want to copy the energy information
                 if (!(tile instanceof TileEntityMultiblock<?>)) {
-                    nbtBuilder.func_216056_a("electricityStored", ItemDataUtils.DATA_ID + ".electricityStored");
+                    //TODO: Eventually make these use the same key of energyStored?
+                    nbtBuilder.func_216056_a("electricityStored", ItemDataUtils.DATA_ID + ".energyStored");
                     hasData = true;
                 }
             }
