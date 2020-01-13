@@ -4,16 +4,19 @@ import mekanism.api.gas.GasStack;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
+import mekanism.common.item.gear.ItemFreeRunners.FreeRunnerMode;
 import mekanism.common.item.gear.ItemGasMask;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -21,6 +24,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 
@@ -136,7 +140,7 @@ public class CommonPlayerTickHandler {
         }
     }
 
-    public boolean isJetpackOn(PlayerEntity player) {
+    public static boolean isJetpackOn(PlayerEntity player) {
         if (!player.isCreative() && !player.isSpectator()) {
             ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack) {
@@ -159,5 +163,32 @@ public class CommonPlayerTickHandler {
             }
         }
         return false;
+    }
+
+    @SubscribeEvent
+    public void onEntityAttacked(LivingAttackEvent event) {
+        LivingEntity base = event.getEntityLiving();
+        //Gas Mask checks
+        ItemStack headStack = base.getItemStackFromSlot(EquipmentSlotType.HEAD);
+        if (!headStack.isEmpty() && headStack.getItem() instanceof ItemGasMask) {
+            ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
+            if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank) {
+                ItemScubaTank tank = (ItemScubaTank) chestStack.getItem();
+                if (tank.getFlowing(chestStack) && !tank.getGas(chestStack).isEmpty()) {
+                    if (event.getSource() == DamageSource.MAGIC) {
+                        event.setCanceled(true);
+                    }
+                }
+            }
+        }
+        //Free runner checks
+        ItemStack feetStack = base.getItemStackFromSlot(EquipmentSlotType.FEET);
+        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners) {
+            ItemFreeRunners boots = (ItemFreeRunners) feetStack.getItem();
+            if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL && boots.getEnergy(feetStack) > 0 && event.getSource() == DamageSource.FALL) {
+                boots.setEnergy(feetStack, boots.getEnergy(feetStack) - event.getAmount() * 50);
+                event.setCanceled(true);
+            }
+        }
     }
 }

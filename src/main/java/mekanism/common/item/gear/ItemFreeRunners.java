@@ -47,7 +47,7 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpeci
     /**
      * The maximum amount of energy this item can hold.
      */
-    public double MAX_ELECTRICITY = 64000;
+    public double MAX_ELECTRICITY = 64_000;
 
     public ItemFreeRunners(Properties properties) {
         super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.setTEISR(() -> getTEISR()).setNoRepair());
