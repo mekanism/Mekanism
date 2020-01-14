@@ -95,9 +95,15 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public void onUpdate() {
         if (isRemote()) {
+            //TODO: Unify scale code into its own object/helper class so that we can use the same calculations everywhere
+            // and also make sure we include the override for rendering contents even when there is less than 0.01 for the
+            // scale they would be
             float targetScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
             if (Math.abs(prevScale - targetScale) > 0.01) {
                 prevScale = (9 * prevScale + targetScale) / 10;
+            } else if (fluidTank.getFluidAmount() > 0 && prevScale == 0) {
+                //If we have any fluid in the tank make sure we end up rendering it
+                prevScale = targetScale;
             }
         } else {
             if (valve > 0) {
