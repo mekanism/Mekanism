@@ -6,7 +6,7 @@ import net.minecraft.util.math.ChunkPos;
 
 public interface IChunkLoader {
 
-    TileComponentChunkLoader getChunkLoader();
+    TileComponentChunkLoader<?> getChunkLoader();
 
     Set<ChunkPos> getChunkSet();
 }

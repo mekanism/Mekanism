@@ -83,7 +83,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     public List<Frequency> privateCache = new ArrayList<>();
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
-    public TileComponentChunkLoader chunkLoaderComponent;
+    public TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
 
     public TileEntityQuantumEntangloporter() {
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
@@ -141,7 +141,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         ejectorComponent.setOutputData(TransmissionType.FLUID, fluidConfig);
         ejectorComponent.setOutputData(TransmissionType.GAS, gasConfig);
 
-        chunkLoaderComponent = new TileComponentChunkLoader(this);
+        chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     }
 
     @Override
@@ -586,7 +586,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public TileComponentChunkLoader getChunkLoader() {
+    public TileComponentChunkLoader<TileEntityQuantumEntangloporter> getChunkLoader() {
         return chunkLoaderComponent;
     }
 

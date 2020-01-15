@@ -64,13 +64,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
      */
     public byte status = 0;
 
-    public TileComponentChunkLoader chunkLoaderComponent;
+    private TileComponentChunkLoader<TileEntityTeleporter> chunkLoaderComponent;
 
     private EnergyInventorySlot energySlot;
 
     public TileEntityTeleporter() {
         super(MekanismBlocks.TELEPORTER);
-        chunkLoaderComponent = new TileComponentChunkLoader(this);
+        chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     }
 
     @Nonnull
@@ -492,7 +492,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     }
 
     @Override
-    public TileComponentChunkLoader getChunkLoader() {
+    public TileComponentChunkLoader<TileEntityTeleporter> getChunkLoader() {
         return chunkLoaderComponent;
     }
 

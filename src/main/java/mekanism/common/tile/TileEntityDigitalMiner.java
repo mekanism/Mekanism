@@ -133,7 +133,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     private Set<ChunkPos> chunkSet;
 
-    public TileComponentChunkLoader chunkLoaderComponent = new TileComponentChunkLoader(this);
+    public TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     private List<IInventorySlot> mainSlots;
@@ -1079,7 +1079,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     @Override
-    public TileComponentChunkLoader getChunkLoader() {
+    public TileComponentChunkLoader<TileEntityDigitalMiner> getChunkLoader() {
         return chunkLoaderComponent;
     }
 
