@@ -63,8 +63,10 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
     @Override
     public void keyDown(KeyBinding kb, boolean isRepeat) {
+        PlayerEntity player = Minecraft.getInstance().player;
+        if (player == null)
+            return;
         if (kb == modeSwitchKey) {
-            PlayerEntity player = Minecraft.getInstance().player;
             if (player.func_225608_bj_()) {
                 ItemStack toolStack = player.inventory.getCurrentItem();
                 Item item = toolStack.getItem();
@@ -98,7 +100,6 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 }
             }
         } else if (kb == armorModeSwitchKey) {
-            PlayerEntity player = Minecraft.getInstance().player;
             ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
             Item chestItem = chestStack.getItem();
 
@@ -119,7 +120,6 @@ public class MekanismKeyHandler extends MekKeyHandler {
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         } else if (kb == freeRunnerModeSwitchKey) {
-            PlayerEntity player = Minecraft.getInstance().player;
             ItemStack feetStack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
             Item feetItem = feetStack.getItem();
 
