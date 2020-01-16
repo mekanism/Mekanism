@@ -9,6 +9,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.lasers.ILaserReceptor;
+import mekanism.client.ClientLaserManager;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
@@ -74,7 +75,7 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
     public void onUpdate() {
         if (isRemote()) {
             if (on) {
-                BlockRayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), lastFired, world);
+                BlockRayTraceResult mop = ClientLaserManager.fireLaserClient(this, getDirection(), world);
                 Coord4D hitCoord = new Coord4D(mop, world);
                 if (!hitCoord.equals(digging)) {
                     digging = mop.getType() == Type.MISS ? null : hitCoord;

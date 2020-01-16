@@ -9,6 +9,7 @@ import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.client.ClientLaserManager;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
@@ -69,7 +70,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     public void onUpdate() {
         if (isRemote()) {
             if (on) {
-                BlockRayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), lastFired, world);
+                BlockRayTraceResult mop = ClientLaserManager.fireLaserClient(this, getDirection(), world);
                 Coord4D hitCoord = new Coord4D(mop, world);
                 if (!hitCoord.equals(digging)) {
                     digging = mop.getType() == Type.MISS ? null : hitCoord;

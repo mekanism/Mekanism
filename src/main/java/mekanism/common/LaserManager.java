@@ -11,7 +11,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -32,7 +31,7 @@ import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.world.BlockEvent;
 
 //TODO: Make the laser "shrink" the further distance it goes
-// If above a certain level and in water makes it bubble
+// If above a certain energy level and in water makes it bubble
 public class LaserManager {
 
     public static LaserInfo fireLaser(TileEntity source, Direction direction, double energy, World world) {
@@ -98,15 +97,6 @@ public class LaserManager {
         world.removeBlock(pos, false);
         world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
         return ret;
-    }
-
-    //TODO: Remove, have server tell client about the effects
-    @Deprecated
-    public static BlockRayTraceResult fireLaserClient(TileEntity source, Direction direction, double energy, World world) {
-        Pos3D from = new Pos3D(source).centre().translate(direction, 0.501);
-        Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-        //TODO: Verify this is correct
-        return world.rayTraceBlocks(new RayTraceContext(from, to, BlockMode.COLLIDER, FluidMode.NONE, Minecraft.getInstance().player));
     }
 
     //TODO: Should this be removed?

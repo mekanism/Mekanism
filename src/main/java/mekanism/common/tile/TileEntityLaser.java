@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import mekanism.api.Coord4D;
+import mekanism.client.ClientLaserManager;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
@@ -29,7 +30,7 @@ public class TileEntityLaser extends TileEntityMekanism {
     public void onUpdate() {
         if (isRemote()) {
             if (getActive()) {
-                BlockRayTraceResult mop = LaserManager.fireLaserClient(this, getDirection(), MekanismConfig.usage.laser.get(), world);
+                BlockRayTraceResult mop = ClientLaserManager.fireLaserClient(this, getDirection(), world);
                 Coord4D hitCoord = new Coord4D(mop, world);
                 if (!hitCoord.equals(digging)) {
                     digging = mop.getType() == Type.MISS ? null : hitCoord;
