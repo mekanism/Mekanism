@@ -895,7 +895,7 @@ public final class MekanismUtils {
             return null;
         }
         if (clazz.isInstance(tile)) {
-            return (T) tile;
+            return clazz.cast(tile);
         } else if (logWrongType) {
             Mekanism.logger.warn("Unexpected TileEntity class at {}, expected {}, but found: {}", pos, clazz, tile.getClass());
         }
