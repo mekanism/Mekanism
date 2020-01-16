@@ -2,6 +2,7 @@ package mekanism.additions.common;
 
 import mekanism.additions.client.AdditionsLangGenerator;
 import mekanism.additions.common.loot.AdditionsLootGenerator;
+import mekanism.additions.common.tag.AdditionsTagGenerator;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -21,6 +22,7 @@ public class AdditionsDataGenerator {
         if (event.includeServer()) {
             //Server side data generators
             gen.addProvider(new AdditionsLootGenerator(gen));
+            gen.addProvider(new AdditionsTagGenerator(gen));
         }
     }
 }

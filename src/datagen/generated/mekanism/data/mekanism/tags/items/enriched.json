@@ -3,8 +3,8 @@
   "values": [
     "#mekanism:enriched/carbon",
     "#mekanism:enriched/diamond",
-    "#mekanism:enriched/redstone",
     "#mekanism:enriched/obsidian",
+    "#mekanism:enriched/redstone",
     "#mekanism:enriched/tin"
   ]
 }

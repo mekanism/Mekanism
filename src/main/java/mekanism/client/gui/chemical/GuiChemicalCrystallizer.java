@@ -121,7 +121,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         super.tick();
         if (prevGas != getInputGas()) {
             prevGas = getInputGas();
-            if (!prevGas.isEmptyType() && prevGas instanceof Slurry && !prevGas.isIn(MekanismTags.DIRTY_SLURRY)) {
+            if (!prevGas.isEmptyType() && prevGas instanceof Slurry && !prevGas.isIn(MekanismTags.Gases.DIRTY_SLURRY)) {
                 updateStackList(((Slurry) prevGas).getOreTag());
             } else {
                 resetStacks();

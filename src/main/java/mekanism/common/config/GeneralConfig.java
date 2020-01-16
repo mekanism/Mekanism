@@ -11,9 +11,9 @@ import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
+//TODO: Make electrolytic separator recipes actually scale with the config value energy in case From H2 changes
 public class GeneralConfig implements IMekanismConfig {
 
-    private static final String WORLD_GEN_CATEGORY = "world_generation";
     private static final String CONVERSION_CATEGORY = "energy_conversion";
     private static final String DISASSEMBLER_CATEGORY = "atomic_disassembler";
     private static final String EVAPORATION_CATEGORY = "thermal_evaporation";
