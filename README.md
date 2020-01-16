@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/aidancbrady/Mekanism.svg?branch=master)](https://travis-ci.org/aidancbrady/Mekanism)
+[![Build Status](https://travis-ci.com/mekanism/Mekanism.svg?branch=1.15x)](https://travis-ci.com/mekanism/Mekanism)
 
 # Mekanism for Minecraft 1.15 #
 
