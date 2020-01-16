@@ -58,8 +58,8 @@ public class PacketPortableTeleporter {
         return publicCache;
     }
 
-    private PacketPortableTeleporter(Hand hand, Frequency freq, byte b, List<Frequency> publicFreqs, List<Frequency> privateFreqs) {
-        packetType = PortableTeleporterPacketType.DATA_RESPONSE;
+    private PacketPortableTeleporter(PortableTeleporterPacketType packetType, Hand hand, Frequency freq, byte b, List<Frequency> publicFreqs, List<Frequency> privateFreqs) {
+        this.packetType = packetType;
 
         currentHand = hand;
         frequency = freq;
@@ -180,11 +180,9 @@ public class PacketPortableTeleporter {
                 freq.write(data);
             }
             data.add(pkt.privateCache.size());
-
             for (Frequency freq : pkt.privateCache) {
                 freq.write(data);
             }
-
             PacketHandler.encode(data.toArray(), buf);
         }
     }
@@ -206,7 +204,6 @@ public class PacketPortableTeleporter {
                 frequency = new Frequency(PacketHandler.readString(buf), null).setPublic(buf.readBoolean());
             }
             status = buf.readByte();
-
             int amount = buf.readInt();
             for (int i = 0; i < amount; i++) {
                 publicCache.add(new Frequency(buf));
@@ -216,7 +213,7 @@ public class PacketPortableTeleporter {
                 privateCache.add(new Frequency(buf));
             }
         }
-        return new PacketPortableTeleporter(currentHand, frequency, status, publicCache, privateCache);
+        return new PacketPortableTeleporter(packetType, currentHand, frequency, status, publicCache, privateCache);
     }
 
     public static void sendDataResponse(Frequency given, World world, PlayerEntity player, ItemPortableTeleporter item, ItemStack stack, Hand hand) {
@@ -251,7 +248,8 @@ public class PacketPortableTeleporter {
                 }
             }
         }
-        Mekanism.packetHandler.sendTo(new PacketPortableTeleporter(hand, given, status, publicFreqs, privateFreqs), (ServerPlayerEntity) player);
+        Mekanism.packetHandler.sendTo(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_RESPONSE, hand, given, status, publicFreqs, privateFreqs),
+              (ServerPlayerEntity) player);
     }
 
     public static FrequencyManager getManager(UUID owner, World world) {

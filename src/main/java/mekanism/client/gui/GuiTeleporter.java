@@ -149,7 +149,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
             }
         } else {
             for (Frequency freq : getPublicCache()) {
-                text.add(freq.name + " (" + freq.clientOwner + ")");
+                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.name, freq.clientOwner).getFormattedText());
             }
         }
         scrollList.setText(text);

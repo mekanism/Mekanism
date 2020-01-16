@@ -130,10 +130,10 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             updateButtons();
         }));
         updateButtons();
-        if (!isInit) {
-            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
-        } else {
+        if (isInit) {
             isInit = false;
+        } else {
+            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
         }
     }
 
@@ -171,7 +171,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
         } else {
             for (Frequency freq : clientPublicCache) {
-                text.add(freq.name + " (" + freq.clientOwner + ")");
+                text.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(freq.name, freq.clientOwner).getFormattedText());
             }
         }
         scrollList.setText(text);
