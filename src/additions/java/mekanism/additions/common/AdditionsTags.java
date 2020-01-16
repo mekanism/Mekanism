@@ -11,6 +11,8 @@ public class AdditionsTags {
 
     public static class Items {
 
+        public static final Tag<Item> BALLOONS = forgeTag("balloons");
+
         public static final Tag<Item> FENCES_PLASTIC = forgeTag("fences/plastic");
         public static final Tag<Item> FENCE_GATES_PLASTIC = forgeTag("fence_gates/plastic");
         public static final Tag<Item> STAIRS_PLASTIC = forgeTag("stairs/plastic");

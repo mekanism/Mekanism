@@ -1,9 +1,8 @@
-package mekanism.additions.common.tag;
+package mekanism.additions.common;
 
-import mekanism.additions.common.AdditionsTags;
-import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.common.tag.BaseTagGenerator;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.BlockTags;
@@ -20,6 +19,7 @@ public class AdditionsTagGenerator extends BaseTagGenerator {
     @Override
     protected void registerTags() {
         addEntities();
+        addBalloons();
         addSlabs();
         addStairs();
         addFences();
@@ -30,6 +30,14 @@ public class AdditionsTagGenerator extends BaseTagGenerator {
 
     private void addEntities() {
         addToTag(EntityTypeTags.SKELETONS, AdditionsEntityTypes.BABY_SKELETON);
+    }
+
+    private void addBalloons() {
+        addToTag(AdditionsTags.Items.BALLOONS,
+              AdditionsItems.BLACK_BALLOON, AdditionsItems.RED_BALLOON, AdditionsItems.GREEN_BALLOON, AdditionsItems.BROWN_BALLOON, AdditionsItems.BLUE_BALLOON,
+              AdditionsItems.PURPLE_BALLOON, AdditionsItems.CYAN_BALLOON, AdditionsItems.LIGHT_GRAY_BALLOON, AdditionsItems.GRAY_BALLOON, AdditionsItems.PINK_BALLOON,
+              AdditionsItems.LIME_BALLOON, AdditionsItems.YELLOW_BALLOON, AdditionsItems.LIGHT_BLUE_BALLOON, AdditionsItems.MAGENTA_BALLOON, AdditionsItems.ORANGE_BALLOON,
+              AdditionsItems.WHITE_BALLOON);
     }
 
     private void addSlabs() {
