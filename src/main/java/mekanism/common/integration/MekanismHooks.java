@@ -19,7 +19,6 @@ public final class MekanismHooks {
     public static final String METALLURGY_MOD_ID = "metallurgy";
     public static final String OPENCOMPUTERS_MOD_ID = "opencomputers";
     public static final String GALACTICRAFT_MOD_ID = "Galacticraft API";
-    public static final String WAILA_MOD_ID = "Waila";
     public static final String TOP_MOD_ID = "theoneprobe";
     public static final String CYCLIC_MOD_ID = "cyclicmagic";
     public static final String MYSTICALAGRICULTURE_MOD_ID = "mysticalagriculture";
@@ -50,11 +49,8 @@ public final class MekanismHooks {
 
     public void hookCommonSetup() {
         //TODO
-        //Integrate with Waila
-        /*FMLInterModComms.sendMessage(WAILA_MOD_ID, "register", "mekanism.common.integration.WailaDataProvider.register");
-
         //Register TOP handler
-        FMLInterModComms.sendFunctionMessage(TOP_MOD_ID, "getTheOneProbe", "mekanism.common.integration.TOPProvider");
+        /*FMLInterModComms.sendFunctionMessage(TOP_MOD_ID, "getTheOneProbe", "mekanism.common.integration.TOPProvider");
         if (OCLoaded) {
             loadOCDrivers();
         }

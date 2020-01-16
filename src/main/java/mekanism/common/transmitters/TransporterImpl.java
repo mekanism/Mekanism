@@ -123,8 +123,10 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                         }
 
                         Coord4D next = stack.getPath().get(currentIndex - 1);
-                        if (!stack.isFinal(this)) {
-                            if (next != null) {
+                        //TODO: Can next ever even be null? We moved this check out given theoretically both branches could maybe have it be null
+                        // if it can even be null. I did not bother looking into if the null check that already existed was valid or unneeded
+                        if (next != null) {
+                            if (!stack.isFinal(this)) {
                                 TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
                                 if (stack.canInsertToTransporter(tile, stack.getSide(this))) {
                                     CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).ifPresent(nextTile ->
@@ -133,24 +135,24 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                                     continue;
                                 }
                                 prevSet = next;
-                            }
-                        } else if (stack.getPathType() != Path.NONE) {
-                            TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
-                            if (tile != null) {
-                                TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromTransport(stack), stack.getSide(this),
-                                      stack.getPathType() == Path.HOME);
-                                // Nothing was rejected; remove the stack from the prediction tracker and
-                                // schedule this stack for deletion. Continue the loop thereafter
-                                ItemStack rejected = response.getRejected(stack.itemStack);
-                                if (rejected.isEmpty()) {
-                                    TransporterManager.remove(stack);
-                                    deletes.add(stackId);
-                                    continue;
+                            } else if (stack.getPathType() != Path.NONE) {
+                                TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
+                                if (tile != null) {
+                                    TransitResponse response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromTransport(stack), stack.getSide(this),
+                                          stack.getPathType() == Path.HOME);
+                                    // Nothing was rejected; remove the stack from the prediction tracker and
+                                    // schedule this stack for deletion. Continue the loop thereafter
+                                    ItemStack rejected = response.getRejected(stack.itemStack);
+                                    if (rejected.isEmpty()) {
+                                        TransporterManager.remove(stack);
+                                        deletes.add(stackId);
+                                        continue;
+                                    }
+                                    // Some portion of the stack got rejected; save the remainder and
+                                    // let the recalculate below sort out what to do next
+                                    stack.itemStack = rejected;
+                                    prevSet = next;
                                 }
-                                // Some portion of the stack got rejected; save the remainder and
-                                // let the recalculate below sort out what to do next
-                                stack.itemStack = rejected;
-                                prevSet = next;
                             }
                         }
                     }

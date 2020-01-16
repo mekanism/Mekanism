@@ -94,11 +94,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     private static final Predicate<@NonNull ItemStack> validPredicate = stack -> {
         //Used to be ChargeUtils#isEnergyItem
         if (stack.getItem() instanceof IEnergizedItem) {
-            IEnergizedItem energizedItem = (IEnergizedItem) stack.getItem();
-            //TODO: Should this just always return true??
-            if (energizedItem.canSend(stack) || energizedItem.canReceive(stack)) {
-                return true;
-            }
+            //Always return true, even if it cannot currently receive or send energy, as it might have drained/charged and not support the other
+            return true;
         }
         if (MekanismUtils.useForge()) {
             if (new LazyOptionalHelper<>(stack.getCapability(CapabilityEnergy.ENERGY)).matches(IEnergyStorage::canExtract)) {

@@ -278,15 +278,12 @@ dependencies {
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    //TODO: Fix this once https://github.com/McJtyMods/TheOneProbe/issues/344 gets resolved
-    compile fg.deobf(project.dependencies.create("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api") {
+    /*runtimeOnly fg.deobf(project.dependencies.create("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}") {
         transitive = false
-    })
-    //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}")
-    //compileOnly "mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api"
-
-    //compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
-    //runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+    })*/
+    /*compileOnly fg.deobf(project.dependencies.create("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api") {
+        transitive = false
+    })*/
 
     //compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
