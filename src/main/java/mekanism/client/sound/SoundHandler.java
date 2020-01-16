@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
@@ -16,10 +15,9 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.client.audio.SoundEventAccessor;
+import net.minecraft.client.audio.SoundEngine;
+import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -29,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.event.sound.SoundSetupEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -60,6 +59,7 @@ public class SoundHandler {
 
     private static Map<Long, ISound> soundMap = new HashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;
+    private static SoundEngine soundEngine;
 
     public static void clearPlayerSounds() {
         jetpackSounds.clear();
@@ -118,27 +118,13 @@ public class SoundHandler {
         Minecraft.getInstance().getSoundHandler().play(sound);
     }
 
-    public static ISound startTileSound(SoundEvent soundEvent, float volume, BlockPos pos) {
-        return startTileSound(soundEvent, SoundCategory.BLOCKS, volume, pos);
-    }
-
-    //TODO: Use this more directly allowing for block's to declare different sound categories (previously was the wind generator and it used the weather sound category)
     public static ISound startTileSound(SoundEvent soundEvent, SoundCategory category, float volume, BlockPos pos) {
-        ResourceLocation soundLoc = soundEvent.getName();
         // First, check to see if there's already a sound playing at the desired location
         ISound s = soundMap.get(pos.toLong());
         if (s == null || !Minecraft.getInstance().getSoundHandler().isPlaying(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
-            s = new SimpleSound(soundLoc, category, volume * MekanismConfig.client.baseSoundVolume.get(), 1, true, 0,
-                  ISound.AttenuationType.LINEAR, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, false) {
-                @Override
-                public float getVolume() {
-                    if (this.sound == null) {
-                        this.createAccessor(Minecraft.getInstance().getSoundHandler());
-                    }
-                    return super.getVolume();
-                }
-            };
+            // The TileTickableSound will then periodically poll to see if the volume should be adjusted
+            s = new TileTickableSound(soundEvent, category, pos, volume);
 
             // Start the sound
             playSound(s);
@@ -154,10 +140,21 @@ public class SoundHandler {
         long posKey = pos.toLong();
         ISound s = soundMap.get(posKey);
         if (s != null) {
-            // TODO: Saw some code that suggests there is a soundmap MC already tracks; investigate further
-            // and maybe we can avoid this dedicated soundmap
+            // TODO: Saw some code that suggests there is a soundMap MC already tracks; investigate further
+            // and maybe we can avoid this dedicated soundMap
             Minecraft.getInstance().getSoundHandler().stop(s);
             soundMap.remove(posKey);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onSoundEngineSetup(SoundSetupEvent event) {
+        //Grab the sound engine, so that we are able to play sounds. We use this event rather than requiring the use of an AT
+        if (soundEngine == null) {
+            //Note: We include a null check as the constructor for SoundEngine is public and calls this event
+            // And we do not want to end up grabbing a modders variant of this
+            //TODO: Look into if this causes issues and we have to go back to an AT, if someone is say replacing the sound engine entirely
+            soundEngine = event.getManager();
         }
     }
 
@@ -169,8 +166,6 @@ public class SoundHandler {
             return;
         }
 
-        //TODO: This will need to be modified if we want to let modules be supported by this such as having generators include their own sounds
-        // instead of packing them in the main module
         // Ignore any sound event outside this mod namespace
         ResourceLocation soundLoc = event.getSound().getSoundLocation();
         //If it is mekanism or one of the sub modules let continue
@@ -188,13 +183,8 @@ public class SoundHandler {
 
         //Ignore any non-tile Mek sounds
         if (event.getName().startsWith("tile.")) {
-            //At this point, we've got a known block Mekanism sound. We want to re-wrap the original
-            // using the (possibly) muffled sound as the initial volume. The TileSound will then periodically poll
-            // to see if the volume should be adjusted
-            resultSound = new TileSound(event.getSound(), resultSound.getVolume());
-            event.setResultSound(resultSound);
-
-            //Finally, update our soundMap so that we can actually have a shot at stopping this sound; note that we also
+            //At this point, we've got a known block Mekanism sound.
+            // Update our soundMap so that we can actually have a shot at stopping this sound; note that we also
             // need to "unoffset" the sound position so that we build the correct key for the sound map
             // Aside: I really, really, wish Forge returned the final result sound as part of playSound :/
             BlockPos pos = new BlockPos(resultSound.getX() - 0.5, resultSound.getY() - 0.5, resultSound.getZ() - 0.5);
@@ -202,39 +192,44 @@ public class SoundHandler {
         }
     }
 
-    private static class TileSound implements ITickableSound {
+    private static class TileTickableSound extends TickableSound {
 
-        private ISound original;
-        private float volume;
-        private boolean donePlaying = false;
+        private final float originalVolume;
 
         // Choose an interval between 60-80 ticks (3-4 seconds) to check for muffling changes. We do this
         // to ensure that not every tile sound tries to run on the same tick and thus create
         // uneven spikes of CPU usage
         private int checkInterval = 60 + ThreadLocalRandom.current().nextInt(20);
 
-        private Minecraft minecraft = Minecraft.getInstance();
-
-        TileSound(ISound original, float volume) {
-            this.original = original;
-            this.volume = volume * getMufflingFactor();
+        TileTickableSound(SoundEvent soundEvent, SoundCategory category, BlockPos pos, float volume) {
+            super(soundEvent, category);
+            //Keep track of our original volume
+            this.originalVolume = volume * MekanismConfig.client.baseSoundVolume.get();
+            this.volume = this.originalVolume * getMufflingFactor();
+            this.x = pos.getX() + 0.5F;
+            this.y = pos.getY() + 0.5F;
+            this.z = pos.getZ() + 0.5F;
+            this.repeat = true;
+            this.repeatDelay = 0;
         }
 
         @Override
         public void tick() {
             // Every configured interval, see if we need to adjust muffling
-            if (minecraft.world.getDayTime() % checkInterval == 0) {
-
+            if (Minecraft.getInstance().world.getDayTime() % checkInterval == 0) {
                 // Run the event bus with the original sound. Note that we must making sure to set the GLOBAL/STATIC
                 // flag that ensures we don't wrap already muffled sounds. This is...NOT ideal and makes some
                 // significant (hopefully well-informed) assumptions about locking/ordering of all these calls.
                 IN_MUFFLED_CHECK = true;
-                ISound s = ForgeHooksClient.playSound(minecraft.getSoundHandler().sndManager, original);
+                //Make sure we set our volume back to what it actually would be for purposes of letting other mods know
+                // what volume to use
+                volume = originalVolume;
+                ISound s = ForgeHooksClient.playSound(soundEngine, this);
                 IN_MUFFLED_CHECK = false;
 
                 if (s == this) {
                     // No filtering done, use the original sound's volume
-                    volume = original.getVolume() * getMufflingFactor();
+                    volume = originalVolume * getMufflingFactor();
                 } else if (s == null) {
                     // Full on mute; go ahead and shutdown
                     donePlaying = true;
@@ -246,16 +241,13 @@ public class SoundHandler {
         }
 
         private float getMufflingFactor() {
-            if (minecraft.world == null) {
-                return 1.0F;
-            }
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            TileEntity te = MekanismUtils.getTileEntity(minecraft.world, new BlockPos(original.getX(), original.getY(), original.getZ()));
-            if (te instanceof IUpgradeTile) {
-                IUpgradeTile upgradeTile = (IUpgradeTile) te;
+            TileEntity tile = MekanismUtils.getTileEntity(Minecraft.getInstance().world, new BlockPos(getX(), getY(), getZ()));
+            if (tile instanceof IUpgradeTile) {
+                IUpgradeTile upgradeTile = (IUpgradeTile) tile;
                 if (upgradeTile.supportsUpgrades() && upgradeTile.getComponent().supports(Upgrade.MUFFLING)) {
-                    int mufflerCount = (upgradeTile).getComponent().getUpgrades(Upgrade.MUFFLING);
+                    int mufflerCount = upgradeTile.getComponent().getUpgrades(Upgrade.MUFFLING);
                     return 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
                 }
             }
@@ -263,84 +255,15 @@ public class SoundHandler {
         }
 
         @Override
-        public boolean isDonePlaying() {
-            return donePlaying;
-        }
-
-        @Override
         public float getVolume() {
-            return volume;
-        }
-
-        @Nonnull
-        @Override
-        public ResourceLocation getSoundLocation() {
-            return original.getSoundLocation();
-        }
-
-        @Nullable
-        @Override
-        public SoundEventAccessor createAccessor(@Nonnull net.minecraft.client.audio.SoundHandler handler) {
-            return original.createAccessor(handler);
-        }
-
-        @Nonnull
-        @Override
-        public Sound getSound() {
-            return original.getSound();
-        }
-
-        @Nonnull
-        @Override
-        public SoundCategory getCategory() {
-            return original.getCategory();
-        }
-
-        @Override
-        public boolean canRepeat() {
-            return original.canRepeat();
-        }
-
-        @Override
-        public boolean isGlobal() {
-            return false;
-        }
-
-        @Override
-        public int getRepeatDelay() {
-            return original.getRepeatDelay();
-        }
-
-        @Override
-        public float getPitch() {
-            return original.getPitch();
-        }
-
-        @Override
-        public float getX() {
-            return original.getX();
-        }
-
-        @Override
-        public float getY() {
-            return original.getY();
-        }
-
-        @Override
-        public float getZ() {
-            return original.getZ();
-        }
-
-        @Nonnull
-        @Override
-        public AttenuationType getAttenuationType() {
-            return original.getAttenuationType();
+            if (this.sound == null) {
+                this.createAccessor(Minecraft.getInstance().getSoundHandler());
+            }
+            return super.getVolume();
         }
 
         @Override
         public boolean canBeSilent() {
-            //TODO: This method defaults to false so doesn't have to be implemented but I believe the tile sounds can be silent
-            // so it makes sense to override this, check if this causes errors
             return true;
         }
     }

@@ -10,6 +10,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -179,5 +180,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     public boolean isBlacklistDimension() {
         return isBlacklistDimension;
+    }
+
+    @Override
+    public SoundCategory getSoundCategory() {
+        return SoundCategory.WEATHER;
     }
 }

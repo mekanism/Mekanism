@@ -85,8 +85,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -180,7 +178,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End variables ITileActive
 
     //Variables for handling ITileSound
-    //TODO: Make this final?
     @Nullable
     private final SoundEvent soundEvent;
 
@@ -986,10 +983,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End methods ITileActive
 
     //Methods for implementing ITileSound
-    protected float getInitialVolume() {
-        return 1.0f;
-    }
-
     /**
      * Only call this from the client
      */
@@ -1010,12 +1003,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
             // play it
             if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundHandler().isPlaying(activeSound))) {
-                activeSound = SoundHandler.startTileSound(soundEvent, getInitialVolume(), getPos());
+                activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), getPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again
             playSoundCooldown = 20;
-
         } else {
             // Determine how long the machine has been stopped (ala lighting changes). Don't try and stop the sound
             // unless machine has been stopped at least half-a-second, so that machines which are rapidly flipping on/off
