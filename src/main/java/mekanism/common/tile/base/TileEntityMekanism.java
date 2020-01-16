@@ -218,6 +218,15 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
     }
 
+    /**
+     * Like getWorld(), but for when you _know_ world won't be null
+     * @return The world!
+     */
+    @Nonnull
+    protected World getWorldNN() {
+        return Objects.requireNonNull(getWorld(), "getWorldNN called before world set");
+    }
+
     private void setSupportedTypes(Block block) {
         //Used to get any data we may need
         isElectric = block instanceof IBlockElectric;
@@ -243,8 +252,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     public boolean isRemote() {
-        //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
-        return getWorld() == null ? EffectiveSide.get() == LogicalSide.CLIENT : getWorld().isRemote();
+        return getWorldNN().isRemote();
     }
 
     public Block getBlockType() {
@@ -378,7 +386,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (isActivatable()) {
             //Update the block if the specified amount of time has passed
             if (!getActive() && lastActive > 0) {
-                long updateDiff = world.getDayTime() - lastActive;
+                long updateDiff = getWorldNN().getDayTime() - lastActive;
                 if (updateDiff > RECENT_THRESHOLD) {
                     MekanismUtils.updateBlock(world, getPos());
                     lastActive = -1;
