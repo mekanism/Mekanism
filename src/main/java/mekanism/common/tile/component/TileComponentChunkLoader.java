@@ -2,7 +2,11 @@ package mekanism.common.tile.component;
 
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Objects;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.common.base.ITileComponent;
@@ -14,23 +18,31 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoader> implements ITileComponent {
     private static final TicketType<TileComponentChunkLoader<?>> TICKET_TYPE = TicketType.create("mekanism:chunk_loader", Comparator.comparing(tccl->tccl.tile.getPos()));
+    /**
+     * Not 100% sure what this is, but 2 means the ticket has the same value as a forceChunk()
+     */
+    private static final int TICKET_DISTANCE = 2;
 
     /**
      * TileEntity implementing this component.
      */
-    public T tile;
+    private T tile;
 
-    public Set<ChunkPos> chunkSet = new HashSet<>();
+    private Set<ChunkPos> chunkSet = new HashSet<>();
 
-    private DimensionType prevDimension;
+    @Nullable
+    private World prevWorld;
+    @Nullable
     private BlockPos prevPos;
+
     private boolean hasRegistered;
 
     public TileComponentChunkLoader(T tile) {
@@ -43,34 +55,55 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
     }
 
-    private void releaseChunkTickets()
+    private void releaseChunkTickets(@Nonnull World world)
     {
-        ServerChunkProvider chunkProvider = (ServerChunkProvider)tile.getWorld().getChunkProvider();
-        chunkProvider.func_217222_b(TICKET_TYPE, new ChunkPos(prevPos), 32, this);
+        ServerChunkProvider chunkProvider = (ServerChunkProvider)world.getChunkProvider();
+        if (prevPos != null) {
+            ((ServerWorld)world).forceChunk(prevPos.getX() >> 4, prevPos.getZ() >> 4, false);
+        }
+        Iterator<ChunkPos> chunkIt = chunkSet.iterator();
+        while (chunkIt.hasNext()) {
+            chunkProvider.func_217222_b(TICKET_TYPE, chunkIt.next(), TICKET_DISTANCE, this);
+            chunkIt.remove();
+        }
         this.hasRegistered = false;
+        this.prevWorld = null;
+    }
+
+    private void registerChunkTickets(@Nonnull World world)
+    {
+        ServerChunkProvider chunkProvider = (ServerChunkProvider) world.getChunkProvider();
+
+        prevPos = tile.getPos();
+        prevWorld = world;
+
+        ((ServerWorld)world).forceChunk(prevPos.getX() >> 4, prevPos.getZ() >> 4, true);
+
+        for (ChunkPos chunkPos : tile.getChunkSet()) {
+            chunkProvider.func_217228_a(TICKET_TYPE, chunkPos, TICKET_DISTANCE, this);
+            chunkSet.add(chunkPos);
+        }
+
+        hasRegistered = true;
     }
 
     @Override
     public void tick() {
-        if (tile.getWorld() == null || !(tile.getWorld().getChunkProvider() instanceof ServerChunkProvider)) {
+        World world = tile.getWorld();
+        if (world == null || !(world.getChunkProvider() instanceof ServerChunkProvider)) {
             return;
         }
         if (!tile.isRemote()) {
-            if (hasRegistered && (prevDimension == null || prevPos == null || prevDimension != tile.getWorld().dimension.getType() || prevPos != tile.getPos())) {
-                releaseChunkTickets();
+            if (hasRegistered && prevWorld != null && (prevPos == null || prevWorld != world || prevPos != tile.getPos())) {
+                releaseChunkTickets(prevWorld);
             }
 
             if (hasRegistered && !canOperate()) {
-                releaseChunkTickets();
+                releaseChunkTickets(world);
             }
 
             if (canOperate() && !hasRegistered) {
-                prevPos = tile.getPos();
-                prevDimension = tile.getWorld().dimension.getType();
-
-                ServerChunkProvider chunkProvider = (ServerChunkProvider)tile.getWorld().getChunkProvider();
-                chunkProvider.func_217228_a(TICKET_TYPE, new ChunkPos(prevPos), 32, this);
-                hasRegistered = true;
+                registerChunkTickets(world);
             }
         }
     }
@@ -112,8 +145,22 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
 
     @Override
     public void invalidate() {
+        if (!tile.isRemote() && prevWorld != null) {
+            releaseChunkTickets(prevWorld);
+        }
+    }
+
+    /**
+     * Release and re-register tickets, call when chunkset changes
+     */
+    public void refreshChunkTickets()
+    {
+        if (prevWorld != null)
+        {
+            releaseChunkTickets(prevWorld);
+        }
         if (!tile.isRemote()) {
-            releaseChunkTickets();
+            registerChunkTickets(Objects.requireNonNull(tile.getWorld()));
         }
     }
 }

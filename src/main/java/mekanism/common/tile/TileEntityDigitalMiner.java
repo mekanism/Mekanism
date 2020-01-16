@@ -131,8 +131,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     public boolean clientRendering = false;
 
-    private Set<ChunkPos> chunkSet;
-
     public TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
@@ -321,8 +319,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         // If the radius changed and we're on the server, go ahead and refresh
         // the chunk set
         if (changed && hasWorld() && isRemote()) {
-            chunkSet = null;
-            getChunkSet();
+            getChunkLoader().refreshChunkTickets();
         }
     }
 
@@ -1085,10 +1082,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        if (chunkSet == null) {
-            chunkSet = new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunks().stream().map(Chunk3D::getPos).collect(Collectors.toSet());
-        }
-        return chunkSet;
+        return new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunkPositions();
     }
 
     @Override

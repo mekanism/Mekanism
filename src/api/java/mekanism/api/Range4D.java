@@ -5,6 +5,7 @@ import java.util.Set;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -68,6 +69,16 @@ public class Range4D {
         for (int chunkX = xMin >> 4; chunkX <= xMax - 1 >> 4; chunkX++) {
             for (int chunkZ = zMin >> 4; chunkZ <= zMax - 1 >> 4; chunkZ++) {
                 set.add(new Chunk3D(chunkX, chunkZ, dimension));
+            }
+        }
+        return set;
+    }
+
+    public Set<ChunkPos> getIntersectingChunkPositions() {
+        Set<ChunkPos> set = new HashSet<>();
+        for (int chunkX = xMin >> 4; chunkX <= xMax - 1 >> 4; chunkX++) {
+            for (int chunkZ = zMin >> 4; chunkZ <= zMax - 1 >> 4; chunkZ++) {
+                set.add(new ChunkPos(chunkX, chunkZ));
             }
         }
         return set;

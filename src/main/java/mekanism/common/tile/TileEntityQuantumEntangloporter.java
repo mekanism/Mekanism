@@ -592,9 +592,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        Set<ChunkPos> ret = new HashSet<>();
-        ret.add(new Chunk3D(Coord4D.get(this)).getPos());
-        return ret;
+        return Collections.singleton(new ChunkPos(getPos()));
     }
 
     @Nonnull

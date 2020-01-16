@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -498,9 +499,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        Set<ChunkPos> ret = new HashSet<>();
-        ret.add(new Chunk3D(Coord4D.get(this)).getPos());
-        return ret;
+        return Collections.singleton(new ChunkPos(getPos()));
     }
 
     @Override
