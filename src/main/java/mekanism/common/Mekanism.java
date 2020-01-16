@@ -57,7 +57,6 @@ import mekanism.common.world.GenHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -468,13 +467,9 @@ public class Mekanism {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
             if (MekanismConfig.world.enableRegeneration.get()) {
                 CompoundNBT loadData = event.getData();
-                if (loadData.getInt("MekanismWorldGen") == baseWorldGenVersion &&
-                    loadData.getInt("MekanismUserWorldGen") == MekanismConfig.world.userGenVersion.get()) {
-                    return;
+                if (loadData.getInt("MekanismWorldGen") != baseWorldGenVersion || loadData.getInt("MekanismUserWorldGen") != MekanismConfig.world.userGenVersion.get()) {
+                    worldTickHandler.addRegenChunk(event.getWorld().getDimension().getType(), event.getChunk().getPos());
                 }
-                ChunkPos coordPair = event.getChunk().getPos();
-                //TODO: Is this correct
-                worldTickHandler.addRegenChunk(event.getWorld().getDimension().getType().getId(), coordPair);
             }
         }
     }

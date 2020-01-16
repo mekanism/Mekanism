@@ -1,13 +1,18 @@
 package mekanism.common;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Random;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
+import mekanism.common.world.GenHandler;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,18 +22,19 @@ public class CommonWorldTickHandler {
 
     private static final long maximumDeltaTimeNanoSecs = 16_000_000; // 16 milliseconds
 
-    private Int2ObjectMap<Queue<ChunkPos>> chunkRegenMap;
+    private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
 
-    public void addRegenChunk(int dimensionId, ChunkPos chunkCoord) {
+    public void addRegenChunk(DimensionType dimension, ChunkPos chunkCoord) {
         if (chunkRegenMap == null) {
-            chunkRegenMap = new Int2ObjectArrayMap<>();
+            chunkRegenMap = new Object2ObjectArrayMap<>();
         }
-        if (!chunkRegenMap.containsKey(dimensionId)) {
+        ResourceLocation dimensionName = dimension.getRegistryName();
+        if (!chunkRegenMap.containsKey(dimensionName)) {
             LinkedList<ChunkPos> list = new LinkedList<>();
             list.add(chunkCoord);
-            chunkRegenMap.put(dimensionId, list);
-        } else if (!chunkRegenMap.get(dimensionId).contains(chunkCoord)) {
-            chunkRegenMap.get(dimensionId).add(chunkCoord);
+            chunkRegenMap.put(dimensionName, list);
+        } else if (!chunkRegenMap.get(dimensionName).contains(chunkCoord)) {
+            chunkRegenMap.get(dimensionName).add(chunkCoord);
         }
     }
 
@@ -61,18 +67,14 @@ public class CommonWorldTickHandler {
         if (!world.isRemote) {
             MultiblockManager.tick(world);
             FrequencyManager.tick(world);
-            //TODO: Fix chunk regeneration at some point
-            /*if (chunkRegenMap == null) {
+            if (chunkRegenMap == null) {
                 return;
             }
-
-            //TODO: I think this is wrong
-            int dimensionId = world.getDimension().getType().getId();
+            ResourceLocation dimensionName = world.getDimension().getType().getRegistryName();
             //Credit to E. Beef
-            if (chunkRegenMap.containsKey(dimensionId)) {
-                Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionId);
+            if (chunkRegenMap.containsKey(dimensionName)) {
+                Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionName);
                 long startTime = System.nanoTime();
-
                 while (System.nanoTime() - startTime < maximumDeltaTimeNanoSecs && !chunksToGen.isEmpty()) {
                     ChunkPos nextChunk = chunksToGen.poll();
                     if (nextChunk == null) {
@@ -83,13 +85,13 @@ public class CommonWorldTickHandler {
                     long xSeed = fmlRandom.nextLong() >> 2 + 1L;
                     long zSeed = fmlRandom.nextLong() >> 2 + 1L;
                     fmlRandom.setSeed((xSeed * nextChunk.x + zSeed * nextChunk.z) ^ world.getSeed());
-                    Mekanism.genHandler.generate(fmlRandom, nextChunk.x, nextChunk.z, world, ((ServerChunkProvider) world.getChunkProvider()).getChunkGenerator(), world.getChunkProvider());
+                    GenHandler.generate(world, ((ServerChunkProvider) world.getChunkProvider()).getChunkGenerator(), fmlRandom, nextChunk.x, nextChunk.z);
                     Mekanism.logger.info("Regenerating ores at chunk " + nextChunk);
                 }
                 if (chunksToGen.isEmpty()) {
-                    chunkRegenMap.remove(dimensionId);
+                    chunkRegenMap.remove(dimensionName);
                 }
-            }*/
+            }
         }
     }
 }
