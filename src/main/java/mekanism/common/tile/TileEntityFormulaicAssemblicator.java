@@ -16,9 +16,9 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FormulaInventorySlot;
+import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -152,9 +152,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 3; slotX++) {
-                //TODO: Make sure that automation cannot extract from this slot, and cannot insert into it
-                //TODO: Also previously this had canTakeStack and isEnabled be the same as the !autoMode for the slot impl
-                IInventorySlot craftingSlot = BasicInventorySlot.at(item -> !autoMode, this, 26 + slotX * 18, 17 + slotY * 18);
+                IInventorySlot craftingSlot = FormulaicCraftingSlot.at(() -> autoMode, this, 26 + slotX * 18, 17 + slotY * 18);
                 builder.addSlot(craftingSlot);
                 craftingGridSlots.add(craftingSlot);
             }
