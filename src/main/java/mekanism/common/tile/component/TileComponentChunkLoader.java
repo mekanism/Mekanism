@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.common.base.ITileComponent;
+import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -29,7 +30,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     /**
      * Not 100% sure what this is, but 2 means the ticket has the same value as a forceChunk()
      */
-    private static final int TICKET_DISTANCE = 2;
+    public static final int TICKET_DISTANCE = 2;
 
     /**
      * TileEntity implementing this component.
@@ -58,12 +59,14 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     private void releaseChunkTickets(@Nonnull World world)
     {
         ServerChunkProvider chunkProvider = (ServerChunkProvider)world.getChunkProvider();
-        if (prevPos != null) {
-            ((ServerWorld)world).forceChunk(prevPos.getX() >> 4, prevPos.getZ() >> 4, false);
-        }
         Iterator<ChunkPos> chunkIt = chunkSet.iterator();
+        ChunkManager manager = ChunkManager.getInstance((ServerWorld)world);
         while (chunkIt.hasNext()) {
-            chunkProvider.func_217222_b(TICKET_TYPE, chunkIt.next(), TICKET_DISTANCE, this);
+            ChunkPos chunkPos = chunkIt.next();
+            if (prevPos != null) {
+                manager.deregisterChunk(chunkPos, prevPos);
+            }
+            chunkProvider.func_217222_b(TICKET_TYPE, chunkPos, TICKET_DISTANCE, this);
             chunkIt.remove();
         }
         this.hasRegistered = false;
@@ -73,14 +76,14 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     private void registerChunkTickets(@Nonnull World world)
     {
         ServerChunkProvider chunkProvider = (ServerChunkProvider) world.getChunkProvider();
+        ChunkManager manager = ChunkManager.getInstance((ServerWorld)world);
 
         prevPos = tile.getPos();
         prevWorld = world;
 
-        ((ServerWorld)world).forceChunk(prevPos.getX() >> 4, prevPos.getZ() >> 4, true);
-
         for (ChunkPos chunkPos : tile.getChunkSet()) {
             chunkProvider.func_217228_a(TICKET_TYPE, chunkPos, TICKET_DISTANCE, this);
+            manager.registerChunk(chunkPos, prevPos);
             chunkSet.add(chunkPos);
         }
 
