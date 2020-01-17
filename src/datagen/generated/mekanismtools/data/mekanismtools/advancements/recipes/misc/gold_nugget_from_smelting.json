@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:gold_nugget_from_smelting"
+    ]
+  },
+  "criteria": {
+    "has_gold_paxel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:gold_paxel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:gold_nugget_from_smelting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_gold_paxel",
+      "has_the_recipe"
+    ]
+  ]
+}

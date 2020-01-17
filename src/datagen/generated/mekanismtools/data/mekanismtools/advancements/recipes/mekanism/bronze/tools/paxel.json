@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:bronze/tools/paxel"
+    ]
+  },
+  "criteria": {
+    "has_bronze_axe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:bronze_axe"
+          }
+        ]
+      }
+    },
+    "has_bronze_pickaxe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:bronze_pickaxe"
+          }
+        ]
+      }
+    },
+    "has_bronze_shovel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:bronze_shovel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:bronze/tools/paxel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_bronze_axe",
+      "has_bronze_pickaxe",
+      "has_bronze_shovel",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:steel/tools/sword"
+    ]
+  },
+  "criteria": {
+    "has_steel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/steel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:steel/tools/sword"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_steel",
+      "has_the_recipe"
+    ]
+  ]
+}

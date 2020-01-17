@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:stone_paxel"
+    ]
+  },
+  "criteria": {
+    "has_stone_axe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:stone_axe"
+          }
+        ]
+      }
+    },
+    "has_stone_pickaxe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:stone_pickaxe"
+          }
+        ]
+      }
+    },
+    "has_stone_shovel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:stone_shovel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:stone_paxel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_stone_axe",
+      "has_stone_pickaxe",
+      "has_stone_shovel",
+      "has_the_recipe"
+    ]
+  ]
+}

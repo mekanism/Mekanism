@@ -27,7 +27,7 @@ public abstract class BaseLootGenerator extends LootTableProvider {
 
     private final String modid;
 
-    public BaseLootGenerator(DataGenerator gen, String modid) {
+    protected BaseLootGenerator(DataGenerator gen, String modid) {
         super(gen);
         this.modid = modid;
     }

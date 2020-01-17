@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "II",
+    "IR",
+    " R"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/bronze"
+    },
+    "R": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "mekanismtools:bronze_axe"
+  }
+}

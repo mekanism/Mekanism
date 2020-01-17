@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I I",
+    "I I"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:gems/lapis"
+    }
+  },
+  "result": {
+    "item": "mekanismtools:lapis_lazuli_boots"
+  }
+}

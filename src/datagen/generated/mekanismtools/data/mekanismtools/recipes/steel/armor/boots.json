@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "I I",
+    "I I"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "result": {
+    "item": "mekanismtools:steel_boots"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "II",
+    "IR",
+    " R"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/refined_glowstone"
+    },
+    "R": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "mekanismtools:refined_glowstone_axe"
+  }
+}

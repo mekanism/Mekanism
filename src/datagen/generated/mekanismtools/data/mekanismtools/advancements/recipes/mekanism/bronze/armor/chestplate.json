@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:bronze/armor/chestplate"
+    ]
+  },
+  "criteria": {
+    "has_bronze": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/bronze"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:bronze/armor/chestplate"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_bronze",
+      "has_the_recipe"
+    ]
+  ]
+}

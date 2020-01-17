@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "APS",
+    " R ",
+    " R "
+  ],
+  "key": {
+    "A": {
+      "item": "mekanismtools:lapis_lazuli_axe"
+    },
+    "P": {
+      "item": "mekanismtools:lapis_lazuli_pickaxe"
+    },
+    "S": {
+      "item": "mekanismtools:lapis_lazuli_shovel"
+    },
+    "R": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "mekanismtools:lapis_lazuli_paxel"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "APS",
+    " R ",
+    " R "
+  ],
+  "key": {
+    "A": {
+      "item": "mekanismtools:steel_axe"
+    },
+    "P": {
+      "item": "mekanismtools:steel_pickaxe"
+    },
+    "S": {
+      "item": "mekanismtools:steel_shovel"
+    },
+    "R": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "mekanismtools:steel_paxel"
+  }
+}

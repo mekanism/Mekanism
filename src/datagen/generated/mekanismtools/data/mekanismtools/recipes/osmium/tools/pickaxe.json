@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    " R ",
+    " R "
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/osmium"
+    },
+    "R": {
+      "tag": "forge:rods/wooden"
+    }
+  },
+  "result": {
+    "item": "mekanismtools:osmium_pickaxe"
+  }
+}

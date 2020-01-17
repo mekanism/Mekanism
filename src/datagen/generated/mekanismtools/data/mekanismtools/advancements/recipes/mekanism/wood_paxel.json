@@ -1,0 +1,54 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:wood_paxel"
+    ]
+  },
+  "criteria": {
+    "has_wooden_axe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:wooden_axe"
+          }
+        ]
+      }
+    },
+    "has_wooden_pickaxe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:wooden_pickaxe"
+          }
+        ]
+      }
+    },
+    "has_wooden_shovel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:wooden_shovel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:wood_paxel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wooden_axe",
+      "has_wooden_pickaxe",
+      "has_wooden_shovel",
+      "has_the_recipe"
+    ]
+  ]
+}

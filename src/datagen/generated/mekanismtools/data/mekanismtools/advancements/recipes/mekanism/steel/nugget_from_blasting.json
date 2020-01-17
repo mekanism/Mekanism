@@ -1,0 +1,131 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismtools:steel/nugget_from_blasting"
+    ]
+  },
+  "criteria": {
+    "has_steel_helmet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_helmet"
+          }
+        ]
+      }
+    },
+    "has_steel_chestplate": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_chestplate"
+          }
+        ]
+      }
+    },
+    "has_steel_leggings": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_leggings"
+          }
+        ]
+      }
+    },
+    "has_steel_boots": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_boots"
+          }
+        ]
+      }
+    },
+    "has_steel_sword": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_sword"
+          }
+        ]
+      }
+    },
+    "has_steel_axe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_axe"
+          }
+        ]
+      }
+    },
+    "has_steel_pickaxe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_pickaxe"
+          }
+        ]
+      }
+    },
+    "has_steel_shovel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_shovel"
+          }
+        ]
+      }
+    },
+    "has_steel_hoe": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_hoe"
+          }
+        ]
+      }
+    },
+    "has_steel_paxel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismtools:steel_paxel"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismtools:steel/nugget_from_blasting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_steel_helmet",
+      "has_steel_chestplate",
+      "has_steel_leggings",
+      "has_steel_boots",
+      "has_steel_sword",
+      "has_steel_axe",
+      "has_steel_pickaxe",
+      "has_steel_shovel",
+      "has_steel_hoe",
+      "has_steel_paxel",
+      "has_the_recipe"
+    ]
+  ]
+}
