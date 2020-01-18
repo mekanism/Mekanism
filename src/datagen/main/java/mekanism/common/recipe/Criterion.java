@@ -1,5 +1,6 @@
 package mekanism.common.recipe;
 
+import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;

@@ -173,6 +173,15 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             buffer.writeInt(amount);
         }
 
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonObject json = new JsonObject();
+            json.addProperty("amount", amount);
+            json.addProperty("gas", gasInstance.getRegistryName().toString());
+            return json;
+        }
+
         public static Single read(PacketBuffer buffer) {
             return new Single(buffer.readRegistryId(), buffer.readInt());
         }
@@ -229,6 +238,15 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             buffer.writeEnumValue(IngredientType.TAGGED);
             buffer.writeResourceLocation(tag.getId());
             buffer.writeInt(amount);
+        }
+
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonObject json = new JsonObject();
+            json.addProperty("amount", amount);
+            json.addProperty("tag", tag.getId().toString());
+            return json;
         }
 
         public static Tagged read(PacketBuffer buffer) {
@@ -291,6 +309,16 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             for (GasStackIngredient ingredient : ingredients) {
                 ingredient.write(buffer);
             }
+        }
+
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonArray json = new JsonArray();
+            for (GasStackIngredient ingredient : ingredients) {
+                json.add(ingredient.serialize());
+            }
+            return json;
         }
 
         public static GasStackIngredient read(PacketBuffer buffer) {

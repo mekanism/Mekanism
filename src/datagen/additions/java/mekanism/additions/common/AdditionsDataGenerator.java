@@ -1,7 +1,7 @@
 package mekanism.additions.common;
 
-import mekanism.additions.client.AdditionsLangGenerator;
-import mekanism.additions.common.loot.AdditionsLootGenerator;
+import mekanism.additions.client.AdditionsLangProvider;
+import mekanism.additions.common.loot.AdditionsLootProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -16,13 +16,13 @@ public class AdditionsDataGenerator {
         DataGenerator gen = event.getGenerator();
         if (event.includeClient()) {
             //Client side data generators
-            gen.addProvider(new AdditionsLangGenerator(gen));
+            gen.addProvider(new AdditionsLangProvider(gen));
         }
         if (event.includeServer()) {
             //Server side data generators
-            gen.addProvider(new AdditionsLootGenerator(gen));
-            gen.addProvider(new AdditionsTagGenerator(gen));
-            gen.addProvider(new AdditionsRecipeGenerator(gen));
+            gen.addProvider(new AdditionsLootProvider(gen));
+            gen.addProvider(new AdditionsTagProvider(gen));
+            gen.addProvider(new AdditionsRecipeProvider(gen));
         }
     }
 }

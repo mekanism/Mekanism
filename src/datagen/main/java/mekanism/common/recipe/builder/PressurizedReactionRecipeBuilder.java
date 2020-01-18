@@ -1,0 +1,124 @@
+package mekanism.common.recipe.builder;
+
+import com.google.gson.JsonObject;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.gas.GasStack;
+import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.GasStackIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.common.recipe.serializer.SerializerHelper;
+import mekanism.common.registries.MekanismRecipeSerializers;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.util.ResourceLocation;
+
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<PressurizedReactionRecipe, PressurizedReactionRecipeBuilder> {
+
+    private final ItemStackIngredient inputSolid;
+    private final FluidStackIngredient inputFluid;
+    private final GasStackIngredient inputGas;
+    private double energyRequired;
+    private final int duration;
+    private final ItemStack outputItem;
+    private final GasStack outputGas;
+
+    protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
+          ItemStack outputItem, GasStack outputGas) {
+        super(MekanismRecipeSerializers.REACTION.getRecipeSerializer());
+        this.inputSolid = inputSolid;
+        this.inputFluid = inputFluid;
+        this.inputGas = inputGas;
+        this.duration = duration;
+        this.outputItem = outputItem;
+        this.outputGas = outputGas;
+    }
+
+    public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
+          int duration, ItemStack outputItem) {
+        if (outputItem.isEmpty()) {
+            throw new IllegalArgumentException("This reaction recipe requires a non empty output item.");
+        }
+        return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, outputItem, GasStack.EMPTY);
+    }
+
+    public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
+          GasStack outputGas) {
+        if (outputGas.isEmpty()) {
+            throw new IllegalArgumentException("This reaction recipe requires a non empty output gas.");
+        }
+        return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, outputGas);
+    }
+
+    public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
+          ItemStack outputItem, GasStack outputGas) {
+        if (outputItem.isEmpty() || outputGas.isEmpty()) {
+            throw new IllegalArgumentException("This reaction recipe requires non empty item and gas outputs.");
+        }
+        return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, outputItem, outputGas);
+    }
+
+    public PressurizedReactionRecipeBuilder energyUsage(double energyRequired) {
+        if (energyRequired < 0) {
+            throw new IllegalArgumentException("Required energy must be at least zero");
+        }
+        this.energyRequired = energyRequired;
+        return this;
+    }
+
+    @Override
+    public PressurizedReactionRecipeResult getResult(ResourceLocation id) {
+        return new PressurizedReactionRecipeResult(id, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas, advancementBuilder,
+              new ResourceLocation(id.getNamespace(),"recipes/" + id.getPath()), recipeSerializer);
+    }
+
+    public static class PressurizedReactionRecipeResult extends RecipeResult<PressurizedReactionRecipe> {
+
+        private final ItemStackIngredient inputSolid;
+        private final FluidStackIngredient inputFluid;
+        private final GasStackIngredient inputGas;
+        private final double energyRequired;
+        private final int duration;
+        private final ItemStack outputItem;
+        private final GasStack outputGas;
+
+        public PressurizedReactionRecipeResult(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
+              double energyRequired, int duration, ItemStack outputItem, GasStack outputGas, Advancement.Builder advancementBuilder, ResourceLocation advancementId,
+              IRecipeSerializer<PressurizedReactionRecipe> recipeSerializer) {
+            super(id, advancementBuilder, advancementId, recipeSerializer);
+            this.inputSolid = inputSolid;
+            this.inputFluid = inputFluid;
+            this.inputGas = inputGas;
+            this.energyRequired = energyRequired;
+            this.duration = duration;
+            this.outputItem = outputItem;
+            this.outputGas = outputGas;
+        }
+
+        @Override
+        public void serialize(@Nonnull JsonObject json) {
+            json.add("itemInput", inputSolid.serialize());
+            json.add("fluidInput", inputFluid.serialize());
+            json.add("gasInput", inputGas.serialize());
+            if (energyRequired > 0) {
+                //Only add energy required if it is not zero, as otherwise it will default to zero
+                json.addProperty("energyRequired", energyRequired);
+            }
+            json.addProperty("duration", duration);
+            if (!outputItem.isEmpty()) {
+                json.add("itemOutput", SerializerHelper.serializeItemStack(outputItem));
+            }
+            if (!outputGas.isEmpty()) {
+                json.add("gasOutput", SerializerHelper.serializeGasStack(outputGas));
+            }
+        }
+    }
+}

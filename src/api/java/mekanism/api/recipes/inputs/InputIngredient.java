@@ -1,7 +1,9 @@
 package mekanism.api.recipes.inputs;
 
+import com.google.gson.JsonElement;
 import java.util.List;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import net.minecraft.network.PacketBuffer;
 
@@ -34,4 +36,12 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      * @param buffer The buffer to write to.
      */
     void write(PacketBuffer buffer);
+
+    /**
+     * Serializes this ingredient to a JsonElement
+     *
+     * @return JsonElement representation of this ingredient.
+     */
+    @Nonnull
+    JsonElement serialize();
 }

@@ -1,10 +1,13 @@
 package mekanism.api.recipes.inputs;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +19,7 @@ import mekanism.api.annotations.NonNull;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
@@ -29,6 +33,8 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 //TODO: Allow for empty fluid stacks (at least in 1.14 with FluidStack.EMPTY)
 public abstract class FluidStackIngredient implements InputIngredient<@NonNull FluidStack> {
+
+    private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public static FluidStackIngredient from(@NonNull Fluid instance, int amount) {
         return from(new FluidStack(instance, amount));
@@ -97,8 +103,19 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             if (fluid == null || fluid == Fluids.EMPTY) {
                 throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
             }
-            //TODO: Add support for reading NBT of fluid
             CompoundNBT nbt = null;
+            if (jsonObject.has("nbt")) {
+                JsonElement jsonNBT = jsonObject.get("nbt");
+                try {
+                    if (jsonNBT.isJsonObject()) {
+                        nbt = JsonToNBT.getTagFromJson(GSON.toJson(jsonNBT));
+                    } else {
+                        nbt = JsonToNBT.getTagFromJson(JSONUtils.getString(jsonNBT, "nbt"));
+                    }
+                } catch (CommandSyntaxException e) {
+                    throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");
+                }
+            }
             return from(new FluidStack(fluid, amount, nbt));
         } else if (jsonObject.has("tag")) {
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
@@ -167,6 +184,18 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             fluidInstance.writeToPacket(buffer);
         }
 
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonObject json = new JsonObject();
+            json.addProperty("amount", fluidInstance.getAmount());
+            json.addProperty("fluid", fluidInstance.getFluid().getRegistryName().toString());
+            if (fluidInstance.hasTag()) {
+                json.addProperty("nbt", fluidInstance.getTag().toString());
+            }
+            return json;
+        }
+
         public static Single read(PacketBuffer buffer) {
             return new Single(FluidStack.readFromPacket(buffer));
         }
@@ -218,6 +247,15 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             buffer.writeEnumValue(IngredientType.TAGGED);
             buffer.writeResourceLocation(tag.getId());
             buffer.writeInt(amount);
+        }
+
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonObject json = new JsonObject();
+            json.addProperty("amount", amount);
+            json.addProperty("tag", tag.getId().toString());
+            return json;
         }
 
         public static Tagged read(PacketBuffer buffer) {
@@ -274,6 +312,16 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             for (FluidStackIngredient ingredient : ingredients) {
                 ingredient.write(buffer);
             }
+        }
+
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonArray json = new JsonArray();
+            for (FluidStackIngredient ingredient : ingredients) {
+                json.add(ingredient.serialize());
+            }
+            return json;
         }
 
         public static FluidStackIngredient read(PacketBuffer buffer) {

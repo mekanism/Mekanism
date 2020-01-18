@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.providers.IItemProvider;
@@ -206,6 +207,17 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             buffer.writeInt(amount);
         }
 
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonObject json = new JsonObject();
+            if (amount > 1) {
+                json.addProperty("amount", amount);
+            }
+            json.add("ingredient", ingredient.serialize());
+            return json;
+        }
+
         public static Single read(PacketBuffer buffer) {
             return new Single(Ingredient.read(buffer), buffer.readInt());
         }
@@ -260,6 +272,16 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             for (ItemStackIngredient ingredient : ingredients) {
                 ingredient.write(buffer);
             }
+        }
+
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonArray json = new JsonArray();
+            for (ItemStackIngredient ingredient : ingredients) {
+                json.add(ingredient.serialize());
+            }
+            return json;
         }
 
         public static ItemStackIngredient read(PacketBuffer buffer) {

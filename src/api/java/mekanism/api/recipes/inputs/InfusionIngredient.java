@@ -172,6 +172,15 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
             buffer.writeInt(amount);
         }
 
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonObject json = new JsonObject();
+            json.addProperty("amount", amount);
+            json.addProperty("infuse_type", infuseType.getRegistryName().toString());
+            return json;
+        }
+
         public static Single read(PacketBuffer buffer) {
             return new Single(buffer.readRegistryId(), buffer.readInt());
         }
@@ -228,6 +237,15 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
             buffer.writeEnumValue(IngredientType.TAGGED);
             buffer.writeResourceLocation(tag.getId());
             buffer.writeInt(amount);
+        }
+
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonObject json = new JsonObject();
+            json.addProperty("amount", amount);
+            json.addProperty("tag", tag.getId().toString());
+            return json;
         }
 
         public static Tagged read(PacketBuffer buffer) {
@@ -289,6 +307,16 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
             for (InfusionIngredient ingredient : ingredients) {
                 ingredient.write(buffer);
             }
+        }
+
+        @Nonnull
+        @Override
+        public JsonElement serialize() {
+            JsonArray json = new JsonArray();
+            for (InfusionIngredient ingredient : ingredients) {
+                json.add(ingredient.serialize());
+            }
+            return json;
         }
 
         public static InfusionIngredient read(PacketBuffer buffer) {

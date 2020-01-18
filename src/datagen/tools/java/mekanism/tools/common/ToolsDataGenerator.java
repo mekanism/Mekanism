@@ -1,6 +1,6 @@
 package mekanism.tools.common;
 
-import mekanism.tools.client.ToolsLangGenerator;
+import mekanism.tools.client.ToolsLangProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -15,11 +15,11 @@ public class ToolsDataGenerator {
         DataGenerator gen = event.getGenerator();
         if (event.includeClient()) {
             //Client side data generators
-            gen.addProvider(new ToolsLangGenerator(gen));
+            gen.addProvider(new ToolsLangProvider(gen));
         }
         if (event.includeServer()) {
             //Server side data generators
-            gen.addProvider(new ToolsRecipeGenerator(gen));
+            gen.addProvider(new ToolsRecipeProvider(gen));
         }
     }
 }

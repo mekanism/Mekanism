@@ -2,6 +2,7 @@ package mekanism.common.recipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.datagen.recipe.RecipeCriterion;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.Item;

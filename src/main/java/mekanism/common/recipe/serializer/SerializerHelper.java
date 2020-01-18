@@ -1,8 +1,11 @@
 package mekanism.common.recipe.serializer;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -13,6 +16,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -20,6 +24,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 //TODO: Move this to API? Would let the fluid and gas ingredients use it
 public class SerializerHelper {
+
+    private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {
         if (!json.has(key)) {
@@ -98,8 +104,19 @@ public class SerializerHelper {
         if (fluid == null || fluid == Fluids.EMPTY) {
             throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
         }
-        //TODO: Add support for reading NBT of fluid
         CompoundNBT nbt = null;
+        if (json.has("nbt")) {
+            JsonElement jsonNBT = json.get("nbt");
+            try {
+                if (jsonNBT.isJsonObject()) {
+                    nbt = JsonToNBT.getTagFromJson(GSON.toJson(jsonNBT));
+                } else {
+                    nbt = JsonToNBT.getTagFromJson(JSONUtils.getString(jsonNBT, "nbt"));
+                }
+            } catch (CommandSyntaxException e) {
+                throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");
+            }
+        }
         return new FluidStack(fluid, amount, nbt);
     }
 
@@ -121,5 +138,42 @@ public class SerializerHelper {
             throw new JsonSyntaxException("Invalid infusion type '" + resourceLocation + "'");
         }
         return new InfusionStack(infuseType, amount);
+    }
+
+
+    public static JsonElement serializeItemStack(@Nonnull ItemStack stack) {
+        JsonObject json = new JsonObject();
+        json.addProperty("item", stack.getItem().getRegistryName().toString());
+        if (stack.getCount() > 1) {
+            json.addProperty("count", stack.getCount());
+        }
+        if (stack.hasTag()) {
+            json.addProperty("nbt", stack.getTag().toString());
+        }
+        return json;
+    }
+
+    public static JsonElement serializeGasStack(@Nonnull GasStack stack) {
+        JsonObject json = new JsonObject();
+        json.addProperty("gas", stack.getType().getRegistryName().toString());
+        json.addProperty("amount", stack.getAmount());
+        return json;
+    }
+
+    public static JsonElement serializeFluidStack(@Nonnull FluidStack stack) {
+        JsonObject json = new JsonObject();
+        json.addProperty("fluid", stack.getFluid().getRegistryName().toString());
+        json.addProperty("amount", stack.getAmount());
+        if (stack.hasTag()) {
+            json.addProperty("nbt", stack.getTag().toString());
+        }
+        return json;
+    }
+
+    public static JsonElement serializeInfusionStack(@Nonnull InfusionStack stack) {
+        JsonObject json = new JsonObject();
+        json.addProperty("infuse_type", stack.getType().getRegistryName().toString());
+        json.addProperty("amount", stack.getAmount());
+        return json;
     }
 }
