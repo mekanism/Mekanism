@@ -272,7 +272,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         }
     }
 
-        @Nonnull
+    @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {

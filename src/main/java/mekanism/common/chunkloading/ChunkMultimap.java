@@ -15,20 +15,22 @@ import net.minecraftforge.common.util.INBTSerializable;
  * MultiMap-style Map which uses a fastutils Long2ObjectMap
  */
 public class ChunkMultimap extends Long2ObjectOpenHashMap<Set<BlockPos>> implements INBTSerializable<ListNBT> {
+
     private static final String ENTRIES_KEY = "entries";
     private static final String KEY_KEY = "key";
 
-    public ChunkMultimap() {}
+    public ChunkMultimap() {
+    }
 
     public boolean add(ChunkPos key, BlockPos value) {
-        return computeIfAbsent(key.asLong(), k->new HashSet<>()).add(value);
+        return computeIfAbsent(key.asLong(), k -> new HashSet<>()).add(value);
     }
 
     public void remove(ChunkPos key, BlockPos value) {
         Set<BlockPos> chunkEntries = this.get(key.asLong());
         if (chunkEntries != null) {
             chunkEntries.remove(value);
-            if (chunkEntries.isEmpty()){
+            if (chunkEntries.isEmpty()) {
                 this.remove(key.asLong());
             }
         }

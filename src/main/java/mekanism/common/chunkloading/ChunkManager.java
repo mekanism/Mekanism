@@ -1,6 +1,5 @@
 package mekanism.common.chunkloading;
 
-import java.util.Set;
 import java.util.function.LongConsumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -21,7 +20,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Saved data for managing Mekanism chunkloaders.
+ *
  * Stores a MultiMap style Map of ChunkPos(long) -> List of block positions of Chunkloaders.
+ *
  * Removes the risk of vanilla forced chunks being unforced on us
  */
 @MethodsReturnNonnullByDefault
@@ -69,7 +70,7 @@ public class ChunkManager extends WorldSavedData {
             ServerWorld world = (ServerWorld) event.getWorld();
             ChunkManager savedData = getInstance(world);
             LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.dimension.getType().getRegistryName());
-            savedData.chunks.keySet().forEach((LongConsumer) key->{
+            savedData.chunks.keySet().forEach((LongConsumer) key -> {
                 //option 1 - for each position, find TE and get it to refresh chunks
                 Chunk chunk = world.getChunk((int) key, (int) (key >> 32));
                 for (BlockPos blockPos : savedData.chunks.get(key)) {

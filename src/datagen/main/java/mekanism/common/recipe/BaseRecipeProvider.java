@@ -12,8 +12,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
-//TODO: Make this extend a class that is provided in the API package instead, with helpers for registering Mekanism machine recipes
-// Or maybe have it be more like the CustomRecipeBuilder and ShapedRecipeBuilder classes
 //TODO: Evaluate the bio fuel recipes, and maybe add sweet berry bush/coral to it (and maybe bamboo sapling, and honey). Also add missing flowers that don't get
 // caught by the small flowers tag
 @ParametersAreNonnullByDefault

@@ -132,7 +132,7 @@ public final class OreDictCache {
                         stacks.add(new ItemStack(item));
                     }
                 } else if (modName.startsWith("*") && modName.endsWith("*")) {
-                    if(id.contains(modName.substring(1, modName.length() - 1))) {
+                    if (id.contains(modName.substring(1, modName.length() - 1))) {
                         stacks.add(new ItemStack(item));
                     }
                 }

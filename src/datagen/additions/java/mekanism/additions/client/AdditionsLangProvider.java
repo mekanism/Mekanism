@@ -96,7 +96,7 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
               AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE, AdditionsBlocks.GRAY_PLASTIC_FENCE, AdditionsBlocks.PINK_PLASTIC_FENCE, AdditionsBlocks.LIME_PLASTIC_FENCE,
               AdditionsBlocks.YELLOW_PLASTIC_FENCE, AdditionsBlocks.LIGHT_BLUE_PLASTIC_FENCE, AdditionsBlocks.MAGENTA_PLASTIC_FENCE, AdditionsBlocks.ORANGE_PLASTIC_FENCE,
               AdditionsBlocks.WHITE_PLASTIC_FENCE);
-              //Plastic Fence Gate
+        //Plastic Fence Gate
         addColoredBlocks("Plastic Gate", AdditionsBlocks.BLACK_PLASTIC_FENCE_GATE, AdditionsBlocks.RED_PLASTIC_FENCE_GATE, AdditionsBlocks.GREEN_PLASTIC_FENCE_GATE,
               AdditionsBlocks.BROWN_PLASTIC_FENCE_GATE, AdditionsBlocks.BLUE_PLASTIC_FENCE_GATE, AdditionsBlocks.PURPLE_PLASTIC_FENCE_GATE,
               AdditionsBlocks.CYAN_PLASTIC_FENCE_GATE, AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE_GATE, AdditionsBlocks.GRAY_PLASTIC_FENCE_GATE,

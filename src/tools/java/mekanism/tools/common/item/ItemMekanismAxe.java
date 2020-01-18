@@ -52,8 +52,8 @@ public class ItemMekanismAxe extends AxeItem implements IHasRepairType {
     /**
      * {@inheritDoc}
      *
-     * @implNote Wrap {@link AxeItem#getDestroySpeed(ItemStack, BlockState)} and  {@link net.minecraft.item.ToolItem#getDestroySpeed(ItemStack, BlockState)} to return
-     * our efficiency level
+     * @implNote Wrap {@link AxeItem#getDestroySpeed(ItemStack, BlockState)} and  {@link net.minecraft.item.ToolItem#getDestroySpeed(ItemStack, BlockState)} to return our
+     * efficiency level
      */
     @Override
     public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {

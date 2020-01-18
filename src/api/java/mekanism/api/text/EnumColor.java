@@ -20,7 +20,8 @@ public enum EnumColor {//TODO: Maybe rename some of these or their lang keys
     DARK_GREEN("\u00a72", APILang.COLOR_DARK_GREEN, "Green", "Green", "green", new int[]{0, 170, 0}, TextFormatting.DARK_GREEN, DyeColor.GREEN),
     DARK_AQUA("\u00a73", APILang.COLOR_DARK_AQUA, "Cyan", "Cyan", "cyan", new int[]{0, 255, 255}, TextFormatting.DARK_AQUA, DyeColor.CYAN),
     //TODO: Better dye tag?
-    DARK_RED("\u00a74", APILang.COLOR_DARK_RED, "Dark Red", null, "dark_red", new int[]{170, 0, 0}, TextFormatting.DARK_RED, MaterialColor.NETHERRACK, Tags.Items.DYES_RED),
+    DARK_RED("\u00a74", APILang.COLOR_DARK_RED, "Dark Red", null, "dark_red", new int[]{170, 0, 0}, TextFormatting.DARK_RED,
+          MaterialColor.NETHERRACK, Tags.Items.DYES_RED),
     PURPLE("\u00a75", APILang.COLOR_PURPLE, "Purple", "Purple", "purple", new int[]{170, 0, 170}, TextFormatting.DARK_PURPLE, DyeColor.PURPLE),
     ORANGE("\u00a76", APILang.COLOR_ORANGE, "Orange", "Orange", "orange", new int[]{255, 170, 0}, TextFormatting.GOLD, DyeColor.ORANGE),
     GRAY("\u00a77", APILang.COLOR_GRAY, "Light Gray", "LightGray", "light_gray", new int[]{170, 170, 170}, TextFormatting.GRAY, DyeColor.LIGHT_GRAY),

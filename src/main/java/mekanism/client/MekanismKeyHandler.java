@@ -64,8 +64,9 @@ public class MekanismKeyHandler extends MekKeyHandler {
     @Override
     public void keyDown(KeyBinding kb, boolean isRepeat) {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (player == null)
+        if (player == null) {
             return;
+        }
         if (kb == modeSwitchKey) {
             if (player.func_225608_bj_()) {
                 ItemStack toolStack = player.inventory.getCurrentItem();

@@ -26,7 +26,8 @@ import net.minecraft.world.server.TicketType;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoader> implements ITileComponent {
-    private static final TicketType<TileComponentChunkLoader<?>> TICKET_TYPE = TicketType.create("mekanism:chunk_loader", Comparator.comparing(tccl->tccl.tile.getPos()));
+
+    private static final TicketType<TileComponentChunkLoader<?>> TICKET_TYPE = TicketType.create("mekanism:chunk_loader", Comparator.comparing(tccl -> tccl.tile.getPos()));
     /**
      * Not 100% sure what this is, but 2 means the ticket has the same value as a forceChunk()
      */
@@ -56,11 +57,10 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getComponent().getInstalledTypes().contains(Upgrade.ANCHOR);
     }
 
-    private void releaseChunkTickets(@Nonnull World world)
-    {
-        ServerChunkProvider chunkProvider = (ServerChunkProvider)world.getChunkProvider();
+    private void releaseChunkTickets(@Nonnull World world) {
+        ServerChunkProvider chunkProvider = (ServerChunkProvider) world.getChunkProvider();
         Iterator<ChunkPos> chunkIt = chunkSet.iterator();
-        ChunkManager manager = ChunkManager.getInstance((ServerWorld)world);
+        ChunkManager manager = ChunkManager.getInstance((ServerWorld) world);
         while (chunkIt.hasNext()) {
             ChunkPos chunkPos = chunkIt.next();
             if (prevPos != null) {
@@ -73,10 +73,9 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         this.prevWorld = null;
     }
 
-    private void registerChunkTickets(@Nonnull World world)
-    {
+    private void registerChunkTickets(@Nonnull World world) {
         ServerChunkProvider chunkProvider = (ServerChunkProvider) world.getChunkProvider();
-        ChunkManager manager = ChunkManager.getInstance((ServerWorld)world);
+        ChunkManager manager = ChunkManager.getInstance((ServerWorld) world);
 
         prevPos = tile.getPos();
         prevWorld = world;
@@ -156,10 +155,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     /**
      * Release and re-register tickets, call when chunkset changes
      */
-    public void refreshChunkTickets()
-    {
-        if (prevWorld != null)
-        {
+    public void refreshChunkTickets() {
+        if (prevWorld != null) {
             releaseChunkTickets(prevWorld);
         }
         if (!tile.isRemote()) {

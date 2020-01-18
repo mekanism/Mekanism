@@ -9,7 +9,7 @@ public class TransmitterUpgradeData implements IUpgradeData {
     public final ConnectionType[] connectionTypes;
 
     public TransmitterUpgradeData(boolean redstoneReactive, ConnectionType[] connectionTypes) {
-        this.redstoneReactive= redstoneReactive;
+        this.redstoneReactive = redstoneReactive;
         this.connectionTypes = connectionTypes;
     }
 }

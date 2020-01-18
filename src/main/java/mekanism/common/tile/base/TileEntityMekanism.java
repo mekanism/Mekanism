@@ -217,6 +217,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     /**
      * Like getWorld(), but for when you _know_ world won't be null
+     *
      * @return The world!
      */
     @Nonnull
@@ -983,6 +984,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End methods ITileActive
 
     //Methods for implementing ITileSound
+
     /**
      * Only call this from the client
      */
