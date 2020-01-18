@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.GasStack;
+import mekanism.api.gas.IGasItem;
+import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiElectrolyticSeparator;
 import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiMekanism;
@@ -37,19 +39,24 @@ import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
+import mekanism.common.item.IItemEnergized;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 
@@ -58,10 +65,58 @@ public class MekanismJEI implements IModPlugin {
 
     public static final IIngredientType<GasStack> TYPE_GAS = () -> GasStack.class;
 
+    private static final ISubtypeInterpreter GAS_TANK_NBT_INTERPRETER = itemStack -> {
+        if (!itemStack.hasTag() || !(itemStack.getItem() instanceof IGasItem)) {
+            return ISubtypeInterpreter.NONE;
+        }
+        GasStack gasStack = ((IGasItem) itemStack.getItem()).getGas(itemStack);
+        if (gasStack.isEmpty()) {
+            return ISubtypeInterpreter.NONE;
+        }
+        return gasStack.getType().getRegistryName().toString();
+    };
+    private static final ISubtypeInterpreter ENERGY_INTERPRETER = itemStack -> {
+        if (!itemStack.hasTag() || !(itemStack.getItem() instanceof IItemEnergized)) {
+            return ISubtypeInterpreter.NONE;
+        }
+        IItemEnergized energized = (IItemEnergized) itemStack.getItem();
+        double energy = energized.getEnergy(itemStack);
+        if (energy == 0) {
+            return "empty";
+        } else if (energy == energized.getMaxEnergy(itemStack)) {
+            return "filled";
+        }
+        return ISubtypeInterpreter.NONE;
+    };
+
     @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
         return Mekanism.rl("jei_plugin");
+    }
+
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistration registry) {
+        for (IItemProvider itemProvider : MekanismItems.ITEMS.getAllItems()) {
+            Item item = itemProvider.getItem();
+            //Handle items
+            if (item instanceof IGasItem) {
+                registry.registerSubtypeInterpreter(item, GAS_TANK_NBT_INTERPRETER);
+            } else if (item instanceof IItemEnergized) {
+                registry.registerSubtypeInterpreter(item, ENERGY_INTERPRETER);
+            }
+        }
+        //We don't have a get all blocks so just manually add them
+        registry.registerSubtypeInterpreter(MekanismBlocks.BASIC_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ADVANCED_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ELITE_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ULTIMATE_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.CREATIVE_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.BASIC_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ADVANCED_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ELITE_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.ULTIMATE_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
+        registry.registerSubtypeInterpreter(MekanismBlocks.CREATIVE_ENERGY_CUBE.getItem(), ENERGY_INTERPRETER);
     }
 
     @Override
