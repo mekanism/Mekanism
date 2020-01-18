@@ -1,4 +1,4 @@
-package mekanism.common.recipe.serializer;
+package mekanism.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO: Move this to API? Would let the fluid and gas ingredients use it
 public class SerializerHelper {
 
     private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();

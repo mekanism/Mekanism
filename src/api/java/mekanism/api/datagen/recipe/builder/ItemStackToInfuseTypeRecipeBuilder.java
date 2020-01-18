@@ -1,30 +1,28 @@
-package mekanism.common.recipe.builder;
+package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.serializer.SerializerHelper;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemStackToInfuseTypeRecipeBuilder extends MekanismRecipeBuilder<ItemStackToInfuseTypeRecipe, ItemStackToInfuseTypeRecipeBuilder> {
+public class ItemStackToInfuseTypeRecipeBuilder extends MekanismRecipeBuilder<ItemStackToInfuseTypeRecipeBuilder> {
 
     private final ItemStackIngredient input;
     private final InfusionStack output;
 
     protected ItemStackToInfuseTypeRecipeBuilder(ItemStackIngredient input, InfusionStack output) {
-        super(MekanismRecipeSerializers.INFUSION_CONVERSION.getRecipeSerializer());
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "infusion_conversion"));
         this.input = input;
         this.output = output;
     }
@@ -38,17 +36,17 @@ public class ItemStackToInfuseTypeRecipeBuilder extends MekanismRecipeBuilder<It
 
     @Override
     public ItemStackToInfuseTypeRecipeResult getResult(ResourceLocation id) {
-        return new ItemStackToInfuseTypeRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), recipeSerializer);
+        return new ItemStackToInfuseTypeRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
-    public static class ItemStackToInfuseTypeRecipeResult extends RecipeResult<ItemStackToInfuseTypeRecipe> {
+    public static class ItemStackToInfuseTypeRecipeResult extends RecipeResult {
 
         private final ItemStackIngredient input;
         private final InfusionStack output;
 
         public ItemStackToInfuseTypeRecipeResult(ResourceLocation id, ItemStackIngredient input, InfusionStack output, Advancement.Builder advancementBuilder,
-              ResourceLocation advancementId, IRecipeSerializer<ItemStackToInfuseTypeRecipe> recipeSerializer) {
-            super(id, advancementBuilder, advancementId, recipeSerializer);
+              ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, advancementBuilder, advancementId, serializerName);
             this.input = input;
             this.output = output;
         }

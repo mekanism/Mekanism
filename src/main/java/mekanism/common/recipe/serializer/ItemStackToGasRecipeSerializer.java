@@ -2,6 +2,7 @@ package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
+import mekanism.api.SerializerHelper;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;

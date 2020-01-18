@@ -1,8 +1,9 @@
-package mekanism.common.recipe;
+package mekanism.common.recipe.builder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.datagen.recipe.RecipeCriterion;
+import mekanism.common.recipe.RecipePattern;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.item.Item;

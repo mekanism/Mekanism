@@ -21,9 +21,9 @@ import net.minecraft.item.BucketItem;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
-public class MekanismLangGenerator extends BaseLanguageProvider {
+public class MekanismLangProvider extends BaseLanguageProvider {
 
-    public MekanismLangGenerator(DataGenerator gen) {
+    public MekanismLangProvider(DataGenerator gen) {
         super(gen, Mekanism.MODID);
     }
 

@@ -1,30 +1,28 @@
-package mekanism.common.recipe.builder;
+package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.common.recipe.serializer.SerializerHelper;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipe, GasToGasRecipeBuilder> {
+public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeBuilder> {
 
     private final GasStackIngredient input;
     private final GasStack output;
 
     protected GasToGasRecipeBuilder(GasStackIngredient input, GasStack output) {
-        super(MekanismRecipeSerializers.ACTIVATING.getRecipeSerializer());
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "activating"));
         this.input = input;
         this.output = output;
     }
@@ -38,17 +36,17 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipe,
 
     @Override
     public GasToGasRecipeResult getResult(ResourceLocation id) {
-        return new GasToGasRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), recipeSerializer);
+        return new GasToGasRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
-    public static class GasToGasRecipeResult extends RecipeResult<GasToGasRecipe> {
+    public static class GasToGasRecipeResult extends RecipeResult {
 
         private final GasStackIngredient input;
         private final GasStack output;
 
         public GasToGasRecipeResult(ResourceLocation id, GasStackIngredient input, GasStack output, Advancement.Builder advancementBuilder,
-              ResourceLocation advancementId, IRecipeSerializer<GasToGasRecipe> recipeSerializer) {
-            super(id, advancementBuilder, advancementId, recipeSerializer);
+              ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, advancementBuilder, advancementId, serializerName);
             this.input = input;
             this.output = output;
         }

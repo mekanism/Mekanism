@@ -1,24 +1,22 @@
-package mekanism.common.recipe.builder;
+package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.common.recipe.serializer.SerializerHelper;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<ElectrolysisRecipe, ElectrolysisRecipeBuilder> {
+public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<ElectrolysisRecipeBuilder> {
 
     private final FluidStackIngredient input;
     private final GasStack leftGasOutput;
@@ -26,7 +24,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
     private double energyUsage;
 
     protected ElectrolysisRecipeBuilder(FluidStackIngredient input, GasStack leftGasOutput, GasStack rightGasOutput) {
-        super(MekanismRecipeSerializers.SEPARATING.getRecipeSerializer());
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "separating"));
         this.input = input;
         this.leftGasOutput = leftGasOutput;
         this.rightGasOutput = rightGasOutput;
@@ -50,10 +48,10 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
     @Override
     public ElectrolysisRecipeResult getResult(ResourceLocation id) {
         return new ElectrolysisRecipeResult(id, input, energyUsage, leftGasOutput, rightGasOutput, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), recipeSerializer);
+              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
-    public static class ElectrolysisRecipeResult extends RecipeResult<ElectrolysisRecipe> {
+    public static class ElectrolysisRecipeResult extends RecipeResult {
 
         private final FluidStackIngredient input;
         private final GasStack leftGasOutput;
@@ -61,8 +59,8 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         private final double energyUsage;
 
         public ElectrolysisRecipeResult(ResourceLocation id, FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput,
-              Advancement.Builder advancementBuilder, ResourceLocation advancementId, IRecipeSerializer<ElectrolysisRecipe> recipeSerializer) {
-            super(id, advancementBuilder, advancementId, recipeSerializer);
+              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, advancementBuilder, advancementId, serializerName);
             this.input = input;
             this.energyUsage = energyUsage;
             this.leftGasOutput = leftGasOutput;

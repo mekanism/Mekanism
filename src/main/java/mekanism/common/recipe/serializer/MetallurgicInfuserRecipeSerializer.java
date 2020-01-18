@@ -3,6 +3,7 @@ package mekanism.common.recipe.serializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
+import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;

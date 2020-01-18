@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import mekanism.client.MekanismLangGenerator;
+import mekanism.client.MekanismLangProvider;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.tag.MekanismTagProvider;
 import net.minecraft.data.DataGenerator;
@@ -17,7 +17,7 @@ public class MekanismDataGenerator {
         DataGenerator gen = event.getGenerator();
         if (event.includeClient()) {
             //Client side data generators
-            gen.addProvider(new MekanismLangGenerator(gen));
+            gen.addProvider(new MekanismLangProvider(gen));
         }
         if (event.includeServer()) {
             //Server side data generators

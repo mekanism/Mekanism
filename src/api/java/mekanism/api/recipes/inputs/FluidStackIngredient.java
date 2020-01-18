@@ -7,7 +7,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,18 +14,15 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Created by Thiakil on 12/07/2019.
@@ -84,40 +80,22 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             throw new JsonSyntaxException("Expected item to be object or array of objects");
         }
         JsonObject jsonObject = json.getAsJsonObject();
-        if (!jsonObject.has("amount")) {
-            throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
-        }
-        JsonElement count = jsonObject.get("amount");
-        if (!JSONUtils.isNumber(count)) {
-            throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
-        }
-        int amount = count.getAsJsonPrimitive().getAsInt();
-        if (amount < 1) {
-            throw new JsonSyntaxException("Expected amount to be greater than zero.");
-        }
         if (jsonObject.has("fluid") && jsonObject.has("tag")) {
             throw new JsonParseException("An ingredient entry is either a tag or an item, not both");
         } else if (jsonObject.has("fluid")) {
-            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "fluid"));
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourceLocation);
-            if (fluid == null || fluid == Fluids.EMPTY) {
-                throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
-            }
-            CompoundNBT nbt = null;
-            if (jsonObject.has("nbt")) {
-                JsonElement jsonNBT = jsonObject.get("nbt");
-                try {
-                    if (jsonNBT.isJsonObject()) {
-                        nbt = JsonToNBT.getTagFromJson(GSON.toJson(jsonNBT));
-                    } else {
-                        nbt = JsonToNBT.getTagFromJson(JSONUtils.getString(jsonNBT, "nbt"));
-                    }
-                } catch (CommandSyntaxException e) {
-                    throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");
-                }
-            }
-            return from(new FluidStack(fluid, amount, nbt));
+            return from(SerializerHelper.deserializeFluid(jsonObject));
         } else if (jsonObject.has("tag")) {
+            if (!jsonObject.has("amount")) {
+                throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
+            }
+            JsonElement count = jsonObject.get("amount");
+            if (!JSONUtils.isNumber(count)) {
+                throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
+            }
+            int amount = count.getAsJsonPrimitive().getAsInt();
+            if (amount < 1) {
+                throw new JsonSyntaxException("Expected amount to be greater than zero.");
+            }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
             Tag<Fluid> tag = FluidTags.func_226157_a_().get(resourceLocation);
             if (tag == null) {

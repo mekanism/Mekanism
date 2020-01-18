@@ -1,32 +1,30 @@
-package mekanism.common.recipe.builder;
+package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.serializer.SerializerHelper;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetallurgicInfuserRecipeBuilder extends MekanismRecipeBuilder<MetallurgicInfuserRecipe, MetallurgicInfuserRecipeBuilder> {
+public class MetallurgicInfuserRecipeBuilder extends MekanismRecipeBuilder<MetallurgicInfuserRecipeBuilder> {
 
     private final ItemStackIngredient itemInput;
     private final InfusionIngredient infusionInput;
     private final ItemStack output;
 
     protected MetallurgicInfuserRecipeBuilder(ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output) {
-        super(MekanismRecipeSerializers.METALLURGIC_INFUSING.getRecipeSerializer());
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "metallurgic_infusing"));
         this.itemInput = itemInput;
         this.infusionInput = infusionInput;
         this.output = output;
@@ -42,18 +40,18 @@ public class MetallurgicInfuserRecipeBuilder extends MekanismRecipeBuilder<Metal
     @Override
     public MetallurgicInfuserRecipeResult getResult(ResourceLocation id) {
         return new MetallurgicInfuserRecipeResult(id, itemInput, infusionInput, output, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + output.getItem().getGroup().getPath() + "/" + id.getPath()), recipeSerializer);
+              new ResourceLocation(id.getNamespace(), "recipes/" + output.getItem().getGroup().getPath() + "/" + id.getPath()), serializerName);
     }
 
-    public static class MetallurgicInfuserRecipeResult extends RecipeResult<MetallurgicInfuserRecipe> {
+    public static class MetallurgicInfuserRecipeResult extends RecipeResult {
 
         private final ItemStackIngredient itemInput;
         private final InfusionIngredient infusionInput;
         private final ItemStack output;
 
         public MetallurgicInfuserRecipeResult(ResourceLocation id, ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output,
-              Advancement.Builder advancementBuilder, ResourceLocation advancementId, IRecipeSerializer<MetallurgicInfuserRecipe> recipeSerializer) {
-            super(id, advancementBuilder, advancementId, recipeSerializer);
+              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, advancementBuilder, advancementId, serializerName);
             this.itemInput = itemInput;
             this.infusionInput = infusionInput;
             this.output = output;

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -78,27 +79,22 @@ public abstract class GasStackIngredient implements InputIngredient<@NonNull Gas
             throw new JsonSyntaxException("Expected item to be object or array of objects");
         }
         JsonObject jsonObject = json.getAsJsonObject();
-        if (!jsonObject.has("amount")) {
-            throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
-        }
-        JsonElement count = jsonObject.get("amount");
-        if (!JSONUtils.isNumber(count)) {
-            throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
-        }
-        int amount = count.getAsJsonPrimitive().getAsInt();
-        if (amount < 1) {
-            throw new JsonSyntaxException("Expected amount to be greater than zero.");
-        }
         if (jsonObject.has("gas") && jsonObject.has("tag")) {
             throw new JsonParseException("An ingredient entry is either a tag or an item, not both");
         } else if (jsonObject.has("gas")) {
-            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "gas"));
-            Gas gas = Gas.getFromRegistry(resourceLocation);
-            if (gas.isEmptyType()) {
-                throw new JsonSyntaxException("Invalid gas type '" + resourceLocation + "'");
-            }
-            return from(gas, amount);
+            return from(SerializerHelper.deserializeGas(jsonObject));
         } else if (jsonObject.has("tag")) {
+            if (!jsonObject.has("amount")) {
+                throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
+            }
+            JsonElement count = jsonObject.get("amount");
+            if (!JSONUtils.isNumber(count)) {
+                throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
+            }
+            int amount = count.getAsJsonPrimitive().getAsInt();
+            if (amount < 1) {
+                throw new JsonSyntaxException("Expected amount to be greater than zero.");
+            }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
             Tag<Gas> tag = GasTags.getCollection().get(resourceLocation);
             if (tag == null) {

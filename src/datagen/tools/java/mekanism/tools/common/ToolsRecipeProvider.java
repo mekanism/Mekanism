@@ -7,7 +7,7 @@ import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.Criterion;
-import mekanism.common.recipe.ExtendedShapedRecipeBuilder;
+import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.Pattern;
 import mekanism.common.recipe.RecipePattern;
 import mekanism.common.recipe.RecipePattern.DoubleLine;

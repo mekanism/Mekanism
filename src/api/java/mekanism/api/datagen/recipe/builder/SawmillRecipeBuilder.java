@@ -1,24 +1,22 @@
-package mekanism.common.recipe.builder;
+package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.serializer.SerializerHelper;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipe, SawmillRecipeBuilder> {
+public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBuilder> {
 
     private final OutputType outputType;
     private final ItemStackIngredient input;
@@ -27,7 +25,7 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipe, S
     private final double secondaryChance;
 
     protected SawmillRecipeBuilder(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance, OutputType outputType) {
-        super(MekanismRecipeSerializers.SAWING.getRecipeSerializer());
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "sawing"));
         this.outputType = outputType;
         this.input = input;
         this.mainOutput = mainOutput;
@@ -65,10 +63,10 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipe, S
     @Override
     public SawmillRecipeResult getResult(ResourceLocation id) {
         return new SawmillRecipeResult(id, input, mainOutput, secondaryOutput, secondaryChance, outputType, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), recipeSerializer);
+              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
-    public static class SawmillRecipeResult extends RecipeResult<SawmillRecipe> {
+    public static class SawmillRecipeResult extends RecipeResult {
 
         private final OutputType outputType;
         private final ItemStackIngredient input;
@@ -77,8 +75,8 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipe, S
         private final double secondaryChance;
 
         public SawmillRecipeResult(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance,
-              OutputType outputType, Advancement.Builder advancementBuilder, ResourceLocation advancementId, IRecipeSerializer<SawmillRecipe> recipeSerializer) {
-            super(id, advancementBuilder, advancementId, recipeSerializer);
+              OutputType outputType, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, advancementBuilder, advancementId, serializerName);
             this.outputType = outputType;
             this.input = input;
             this.mainOutput = mainOutput;

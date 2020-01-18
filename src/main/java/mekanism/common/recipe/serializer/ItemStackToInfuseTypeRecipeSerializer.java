@@ -2,6 +2,7 @@ package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
+import mekanism.api.SerializerHelper;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfuseTypeTags;
@@ -26,6 +27,10 @@ import net.minecraft.util.ResourceLocation;
  * Created by Thiakil on 12/07/2019.
  */
 public abstract class InfusionIngredient implements InputIngredient<@NonNull InfusionStack> {
+
+    public static InfusionIngredient from(@NonNull InfusionStack instance) {
+        return from(instance.getType(), instance.getAmount());
+    }
 
     public static InfusionIngredient from(@NonNull IInfuseTypeProvider infuseType, int amount) {
         return new Single(infuseType.getInfuseType(), amount);
@@ -73,27 +78,22 @@ public abstract class InfusionIngredient implements InputIngredient<@NonNull Inf
             throw new JsonSyntaxException("Expected item to be object or array of objects");
         }
         JsonObject jsonObject = json.getAsJsonObject();
-        if (!jsonObject.has("amount")) {
-            throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
-        }
-        JsonElement count = jsonObject.get("amount");
-        if (!JSONUtils.isNumber(count)) {
-            throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
-        }
-        int amount = count.getAsJsonPrimitive().getAsInt();
-        if (amount < 1) {
-            throw new JsonSyntaxException("Expected amount to be greater than zero.");
-        }
         if (jsonObject.has("infuse_type") && jsonObject.has("tag")) {
             throw new JsonParseException("An ingredient entry is either a tag or an item, not both");
         } else if (jsonObject.has("infuse_type")) {
-            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "infuse_type"));
-            InfuseType infuseType = InfuseType.getFromRegistry(resourceLocation);
-            if (infuseType.isEmptyType()) {
-                throw new JsonSyntaxException("Invalid infuse type type '" + resourceLocation + "'");
-            }
-            return from(infuseType, amount);
+            return from(SerializerHelper.deserializeInfuseType(jsonObject));
         } else if (jsonObject.has("tag")) {
+            if (!jsonObject.has("amount")) {
+                throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
+            }
+            JsonElement count = jsonObject.get("amount");
+            if (!JSONUtils.isNumber(count)) {
+                throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
+            }
+            int amount = count.getAsJsonPrimitive().getAsInt();
+            if (amount < 1) {
+                throw new JsonSyntaxException("Expected amount to be greater than zero.");
+            }
             ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
             Tag<InfuseType> tag = InfuseTypeTags.getCollection().get(resourceLocation);
             if (tag == null) {

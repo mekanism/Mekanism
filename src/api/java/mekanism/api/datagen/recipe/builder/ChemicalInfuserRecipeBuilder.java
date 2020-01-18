@@ -1,31 +1,29 @@
-package mekanism.common.recipe.builder;
+package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.common.recipe.serializer.SerializerHelper;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<ChemicalInfuserRecipe, ChemicalInfuserRecipeBuilder> {
+public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<ChemicalInfuserRecipeBuilder> {
 
     private final GasStackIngredient leftInput;
     private final GasStackIngredient rightInput;
     private final GasStack output;
 
     protected ChemicalInfuserRecipeBuilder(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        super(MekanismRecipeSerializers.CHEMICAL_INFUSING.getRecipeSerializer());
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "chemical_infusing"));
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.output = output;
@@ -41,18 +39,18 @@ public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<Chemical
     @Override
     public ChemicalInfuserRecipeResult getResult(ResourceLocation id) {
         return new ChemicalInfuserRecipeResult(id, leftInput, rightInput, output, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), recipeSerializer);
+              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
-    public static class ChemicalInfuserRecipeResult extends RecipeResult<ChemicalInfuserRecipe> {
+    public static class ChemicalInfuserRecipeResult extends RecipeResult {
 
         private final GasStackIngredient leftInput;
         private final GasStackIngredient rightInput;
         private final GasStack output;
 
         public ChemicalInfuserRecipeResult(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output,
-              Advancement.Builder advancementBuilder, ResourceLocation advancementId, IRecipeSerializer<ChemicalInfuserRecipe> recipeSerializer) {
-            super(id, advancementBuilder, advancementId, recipeSerializer);
+              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, advancementBuilder, advancementId, serializerName);
             this.leftInput = leftInput;
             this.rightInput = rightInput;
             this.output = output;

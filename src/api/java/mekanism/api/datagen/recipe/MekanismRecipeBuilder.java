@@ -13,23 +13,21 @@ import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.IRequirementsStrategy;
 import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO: Improve/fix this so that the implementations can properly reference the correct serializers instead of still requiring access on the main package to get
-// instances of the serializers. Because currently we are just storing the builder implementations in the datagen package so that we can reference them
 //TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MekanismRecipeBuilder<RECIPE extends IRecipe<?>, BUILDER extends MekanismRecipeBuilder<RECIPE, BUILDER>> {
+public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilder<BUILDER>> {
 
     protected final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
-    protected final IRecipeSerializer<RECIPE> recipeSerializer;
+    protected final ResourceLocation serializerName;
 
-    protected MekanismRecipeBuilder(IRecipeSerializer<RECIPE> recipeSerializer) {
-        this.recipeSerializer = recipeSerializer;
+    protected MekanismRecipeBuilder(ResourceLocation serializerName) {
+        this.serializerName = serializerName;
     }
 
     public BUILDER addCriterion(RecipeCriterion criterion) {
@@ -41,7 +39,7 @@ public abstract class MekanismRecipeBuilder<RECIPE extends IRecipe<?>, BUILDER e
         return (BUILDER) this;
     }
 
-    protected abstract RecipeResult<RECIPE> getResult(ResourceLocation id);
+    protected abstract RecipeResult getResult(ResourceLocation id);
 
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
         //Validate that there is a way to "unlock" this recipe. Technically is not needed for reading the JSON
@@ -55,32 +53,34 @@ public abstract class MekanismRecipeBuilder<RECIPE extends IRecipe<?>, BUILDER e
         consumer.accept(getResult(id));
     }
 
-    protected static abstract class RecipeResult<RECIPE extends IRecipe<?>> implements IFinishedRecipe {
+    protected static abstract class RecipeResult implements IFinishedRecipe {
 
         private final ResourceLocation id;
         private final Advancement.Builder advancementBuilder;
         private final ResourceLocation advancementId;
-        private final IRecipeSerializer<RECIPE> recipeSerializer;
+        private final ResourceLocation serializerName;
 
-        public RecipeResult(ResourceLocation id, Advancement.Builder advancementBuilder, ResourceLocation advancementId, IRecipeSerializer<RECIPE> recipeSerializer) {
+        public RecipeResult(ResourceLocation id, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
             this.id = id;
             this.advancementBuilder = advancementBuilder;
             this.advancementId = advancementId;
-            this.recipeSerializer = recipeSerializer;
+            this.serializerName = serializerName;
         }
 
         @Override
         public JsonObject getRecipeJson() {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("type", getSerializer().getRegistryName().toString());
+            jsonObject.addProperty("type", serializerName.toString());
             this.serialize(jsonObject);
             return jsonObject;
         }
 
         @Nonnull
         @Override
-        public IRecipeSerializer<RECIPE> getSerializer() {
-            return recipeSerializer;
+        public IRecipeSerializer<?> getSerializer() {
+            //TODO: Do we want ot improve how this is done
+            //Note: This may be null if something is screwed up but this method isn't actually used so it shouldn't matter
+            return ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName);
         }
 
         @Nonnull

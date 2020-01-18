@@ -1,27 +1,25 @@
-package mekanism.common.recipe.builder;
+package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.common.recipe.serializer.SerializerHelper;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<PressurizedReactionRecipe, PressurizedReactionRecipeBuilder> {
+public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<PressurizedReactionRecipeBuilder> {
 
     private final ItemStackIngredient inputSolid;
     private final FluidStackIngredient inputFluid;
@@ -33,7 +31,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
     protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
           ItemStack outputItem, GasStack outputGas) {
-        super(MekanismRecipeSerializers.REACTION.getRecipeSerializer());
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "reaction"));
         this.inputSolid = inputSolid;
         this.inputFluid = inputFluid;
         this.inputGas = inputGas;
@@ -77,10 +75,10 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     @Override
     public PressurizedReactionRecipeResult getResult(ResourceLocation id) {
         return new PressurizedReactionRecipeResult(id, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), recipeSerializer);
+              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
-    public static class PressurizedReactionRecipeResult extends RecipeResult<PressurizedReactionRecipe> {
+    public static class PressurizedReactionRecipeResult extends RecipeResult {
 
         private final ItemStackIngredient inputSolid;
         private final FluidStackIngredient inputFluid;
@@ -92,8 +90,8 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
         public PressurizedReactionRecipeResult(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
               double energyRequired, int duration, ItemStack outputItem, GasStack outputGas, Advancement.Builder advancementBuilder, ResourceLocation advancementId,
-              IRecipeSerializer<PressurizedReactionRecipe> recipeSerializer) {
-            super(id, advancementBuilder, advancementId, recipeSerializer);
+              ResourceLocation serializerName) {
+            super(id, advancementBuilder, advancementId, serializerName);
             this.inputSolid = inputSolid;
             this.inputFluid = inputFluid;
             this.inputGas = inputGas;

@@ -1,26 +1,24 @@
-package mekanism.common.recipe.builder;
+package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.gas.GasStack;
-import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.common.recipe.serializer.SerializerHelper;
-import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipe, RotaryRecipeBuilder> {
+public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuilder> {
 
     private final static GasStackIngredient EMPTY_GAS_INPUT = GasStackIngredient.from(GasStack.EMPTY);
     private final static FluidStackIngredient EMPTY_FLUID_INPUT = FluidStackIngredient.from(FluidStack.EMPTY);
@@ -31,7 +29,7 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipe, Rot
     private final GasStack gasOutput;
 
     protected RotaryRecipeBuilder(FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput, RecipeDirection direction) {
-        super(MekanismRecipeSerializers.ROTARY.getRecipeSerializer());
+        super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "rotary"));
         this.direction = direction;
         this.gasInput = gasInput;
         this.fluidInput = fluidInput;
@@ -63,10 +61,10 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipe, Rot
     @Override
     public RotaryRecipeResult getResult(ResourceLocation id) {
         return new RotaryRecipeResult(id, fluidInput, gasInput, gasOutput, fluidOutput, direction, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), recipeSerializer);
+              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
-    public static class RotaryRecipeResult extends RecipeResult<RotaryRecipe> {
+    public static class RotaryRecipeResult extends RecipeResult {
 
         private final RecipeDirection direction;
         private final GasStackIngredient gasInput;
@@ -75,8 +73,8 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipe, Rot
         private final GasStack gasOutput;
 
         public RotaryRecipeResult(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput,
-              RecipeDirection direction, Advancement.Builder advancementBuilder, ResourceLocation advancementId, IRecipeSerializer<RotaryRecipe> recipeSerializer) {
-            super(id, advancementBuilder, advancementId, recipeSerializer);
+              RecipeDirection direction, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, advancementBuilder, advancementId, serializerName);
             this.direction = direction;
             this.gasInput = gasInput;
             this.fluidInput = fluidInput;

@@ -1,4 +1,4 @@
-package mekanism.common.recipe;
+package mekanism.common.recipe.builder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
