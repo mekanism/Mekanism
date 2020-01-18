@@ -44,11 +44,6 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     }
 
     @Override
-    public boolean upgradeableSecondaryEfficiency() {
-        return true;
-    }
-
-    @Override
     public boolean useStatisticalMechanics() {
         return true;
     }

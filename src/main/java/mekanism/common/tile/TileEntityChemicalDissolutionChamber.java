@@ -69,8 +69,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     public TileEntityChemicalDissolutionChamber() {
         super(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, BASE_TICKS_REQUIRED);
-        upgradeComponent.setSupported(Upgrade.GAS);
-
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(injectTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);

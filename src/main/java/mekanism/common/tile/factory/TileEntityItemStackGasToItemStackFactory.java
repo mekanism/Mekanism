@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -262,7 +263,16 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         return true;
     }
 
-    @Nonnull
+    @Override
+    public void recalculateUpgrades(Upgrade upgrade) {
+        super.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS)) {
+            //TODO: Move gas upgrade to only be in specific factories? At least for calculations?
+            secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+        }
+    }
+
+        @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {

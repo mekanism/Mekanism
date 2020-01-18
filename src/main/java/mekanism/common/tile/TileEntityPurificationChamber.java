@@ -26,11 +26,6 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
     }
 
     @Override
-    public boolean upgradeableSecondaryEfficiency() {
-        return true;
-    }
-
-    @Override
     public boolean useStatisticalMechanics() {
         return true;
     }

@@ -336,6 +336,9 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
     @Nonnull
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
+        if (type == FactoryType.INJECTING || type == FactoryType.PURIFYING) {
+            return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS);
+        }
         return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
     }
 

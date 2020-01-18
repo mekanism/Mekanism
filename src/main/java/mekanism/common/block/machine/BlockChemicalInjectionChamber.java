@@ -192,7 +192,7 @@ public class BlockChemicalInjectionChamber extends BlockMekanism implements IBlo
     @Nonnull
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
-        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
+        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS);
     }
 
     @Nonnull

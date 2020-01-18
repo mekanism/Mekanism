@@ -192,7 +192,7 @@ public class BlockPurificationChamber extends BlockMekanism implements IBlockEle
     @Nonnull
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
-        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
+        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS);
     }
 
     @Nonnull

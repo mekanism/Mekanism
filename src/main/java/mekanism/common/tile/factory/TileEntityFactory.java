@@ -85,7 +85,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     /**
      * How much secondary energy each operation consumes per tick
      */
-    private double secondaryEnergyPerTick = 0;
+    protected double secondaryEnergyPerTick = 0;
     protected int secondaryEnergyThisTick;
     /**
      * How long it takes this factory to switch recipe types.
@@ -116,7 +116,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     //TODO: Remove this and factor recipe specific things to their proper subclasses. Also move any factory type information to FactoryType
     @Nonnull
     @Deprecated
-    private RecipeType recipeType;
+    protected RecipeType recipeType;
 
     @Nonnull
     protected FactoryType type;
@@ -239,7 +239,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                                 ItemStack returnStack = getMachineStack();
 
                                 upgradeComponent.write(ItemDataUtils.getDataMap(returnStack));
-                                upgradeComponent.setSupported(Upgrade.GAS, toSet.fuelEnergyUpgrades());
                                 upgradeComponent.read(ItemDataUtils.getDataMapIfPresentNN(typeInputStack));
 
                                 typeInputSlot.setStack(ItemStack.EMPTY);
@@ -299,7 +298,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         recipeType = Objects.requireNonNull(type);
         setMaxEnergy(getBaseStorage());
         setEnergyPerTick(getBaseUsage());
-        upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
 
         /*if (type.getFuelType() == MachineFuelType.CHANCE) {
@@ -438,7 +436,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         super.handlePacketData(dataStream);
 
         if (isRemote()) {
-            upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
             recipeTicks = dataStream.readInt();
             sorting = dataStream.readBoolean();
             upgraded = dataStream.readBoolean();
@@ -459,7 +456,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        upgradeComponent.setSupported(Upgrade.GAS, recipeType.fuelEnergyUpgrades());
         recipeTicks = nbtTags.getInt("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
@@ -588,10 +584,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.GAS) {
-            //TODO: Move gas upgrade to only be in specific factories? At least for calculations?
-            secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
-        } else if (upgrade == Upgrade.SPEED) {
+        if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
             secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
         }

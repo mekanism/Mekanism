@@ -111,10 +111,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
         BASE_SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
         secondaryEnergyPerTick = secondaryPerTick;
-
-        if (upgradeableSecondaryEfficiency()) {
-            upgradeComponent.setSupported(Upgrade.GAS);
-        }
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
 
@@ -156,10 +152,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
                 cachedRecipe.process();
             }
         }
-    }
-
-    public boolean upgradeableSecondaryEfficiency() {
-        return false;
     }
 
     public boolean useStatisticalMechanics() {
@@ -284,7 +276,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED || (upgradeableSecondaryEfficiency() && upgrade == Upgrade.GAS)) {
+        if (upgrade == Upgrade.SPEED || (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS))) {
             secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK);
         }
     }

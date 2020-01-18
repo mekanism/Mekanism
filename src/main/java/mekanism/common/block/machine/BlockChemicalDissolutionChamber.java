@@ -217,7 +217,7 @@ public class BlockChemicalDissolutionChamber extends BlockMekanism implements IB
     @Nonnull
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
-        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
+        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS);
     }
 
     @Nonnull
