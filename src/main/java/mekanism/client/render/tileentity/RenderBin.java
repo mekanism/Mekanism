@@ -1,52 +1,50 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.common.MekanismLang;
-import mekanism.common.tier.BinTier;
+import com.mojang.blaze3d.platform.GlStateManager;
+import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityBin;
+import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 
 public class RenderBin extends TileEntityRenderer<TileEntityBin> {
 
-    public RenderBin(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    @Override
+    public void render(TileEntityBin tile, double x, double y, double z, float partialTick, int destroyStage) {
+        Coord4D obj = Coord4D.get(tile).offset(tile.getDirection());
+        if (!Block.hasSolidSide(tile.getWorld().getBlockState(obj.getPos()), tile.getWorld(), obj.getPos(), tile.getOppositeDirection())) {
+            render(tile.getDirection(), tile.clientStack, true, x, y, z);
+        }
     }
 
-    @Override
-    public void func_225616_a_(@Nonnull TileEntityBin tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        Direction facing = tile.getDirection();
-        //position of the block covering the front side
-        BlockPos coverPos = tile.getPos().offset(facing);
-        //if the bin has an item stack and the face isn't covered by a solid side
-        if (!tile.clientStack.isEmpty() && !tile.getWorld().getBlockState(coverPos).func_224755_d(tile.getWorld(), coverPos, facing.getOpposite())) {
-            String amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate().getFormattedText()
-                                                               : Integer.toString(tile.clientStack.getCount());
-            matrix.func_227860_a_();
+    public void render(Direction facing, ItemStack clientStack, boolean text, double x, double y, double z) {
+        if (!clientStack.isEmpty()) {
+            int clientAmount = clientStack.getCount();
+            String amount = Integer.toString(clientAmount);
+            if (clientAmount == Integer.MAX_VALUE) {
+                amount = TextComponentUtil.translate("gui.mekanism.infinite").getFormattedText();
+            }
+            setLightmapDisabled(true);
+            GlStateManager.pushMatrix();
             switch (facing) {
                 case NORTH:
-                    matrix.func_227861_a_(0.73, 0.83, -0.0001);
+                    GlStateManager.translatef((float) x + 0.73F, (float) y + 0.83F, (float) z - 0.0001F);
                     break;
                 case SOUTH:
-                    matrix.func_227861_a_(0.27, 0.83, 1.0001);
-                    matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180));
+                    GlStateManager.translatef((float) x + 0.27F, (float) y + 0.83F, (float) z + 1.0001F);
+                    GlStateManager.rotatef(180, 0, 1, 0);
                     break;
                 case WEST:
-                    matrix.func_227861_a_(-0.0001, 0.83, 0.27);
-                    matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90));
+                    GlStateManager.translatef((float) x - 0.0001F, (float) y + 0.83F, (float) z + 0.27F);
+                    GlStateManager.rotatef(90, 0, 1, 0);
                     break;
                 case EAST:
-                    matrix.func_227861_a_(1.0001, 0.83, 0.73);
-                    matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-90));
+                    GlStateManager.translatef((float) x + 1.0001F, (float) y + 0.83F, (float) z + 0.73F);
+                    GlStateManager.rotatef(-90, 0, 1, 0);
                     break;
                 default:
                     break;
@@ -54,49 +52,53 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
 
             float scale = 0.03125F;
             float scaler = 0.9F;
-            matrix.func_227862_a_(scale * scaler, scale * scaler, -0.0001F);
-            matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-            matrix.func_227861_a_(8, 8, 3);
-            matrix.func_227862_a_(16, -16, 16);
-            //TODO: The lighting seems a bit off but it is close enough for now
-            Minecraft.getInstance().getItemRenderer().func_229110_a_(tile.clientStack, TransformType.GUI, MekanismRenderer.FULL_LIGHT, overlayLight, matrix, renderer);
-            matrix.func_227865_b_();
-            renderText(matrix, renderer, overlayLight, amount, facing, 0.02F);
+            GlStateManager.scalef(scale * scaler, scale * scaler, -0.0001F);
+            GlStateManager.rotatef(180, 0, 0, 1);
+            Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(clientStack, 0, 0);
+            GlStateManager.popMatrix();
+            if (text) {
+                renderText(amount, facing, 0.02F, x, y - 0.3725F, z);
+            }
+            setLightmapDisabled(false);
         }
     }
 
     @SuppressWarnings("incomplete-switch")
-    private void renderText(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int overlayLight, String text, Direction side, float maxScale) {
-        matrix.func_227860_a_();
-        matrix.func_227861_a_(0, -0.3725, 0);
+    private void renderText(String text, Direction side, float maxScale, double x, double y, double z) {
+        GlStateManager.pushMatrix();
+        GlStateManager.polygonOffset(-10, -10);
+        GlStateManager.enablePolygonOffset();
+        float displayWidth = 1;
+        float displayHeight = 1;
+        GlStateManager.translatef((float) x, (float) y, (float) z);
+
         switch (side) {
             case SOUTH:
-                matrix.func_227861_a_(0, 1, 0);
-                matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90));
+                GlStateManager.translatef(0, 1, 0);
+                GlStateManager.rotatef(0, 0, 1, 0);
+                GlStateManager.rotatef(90, 1, 0, 0);
                 break;
             case NORTH:
-                matrix.func_227861_a_(1, 1, 1);
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180));
-                matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90));
+                GlStateManager.translatef(1, 1, 1);
+                GlStateManager.rotatef(180, 0, 1, 0);
+                GlStateManager.rotatef(90, 1, 0, 0);
                 break;
             case EAST:
-                matrix.func_227861_a_(0, 1, 1);
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90));
-                matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90));
+                GlStateManager.translatef(0, 1, 1);
+                GlStateManager.rotatef(90, 0, 1, 0);
+                GlStateManager.rotatef(90, 1, 0, 0);
                 break;
             case WEST:
-                matrix.func_227861_a_(1, 1, 0);
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-90));
-                matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90));
+                GlStateManager.translatef(1, 1, 0);
+                GlStateManager.rotatef(-90, 0, 1, 0);
+                GlStateManager.rotatef(90, 1, 0, 0);
                 break;
         }
 
-        float displayWidth = 1;
-        float displayHeight = 1;
-        matrix.func_227861_a_(displayWidth / 2, 1, displayHeight / 2);
-        matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-90));
+        GlStateManager.translatef(displayWidth / 2, 1F, displayHeight / 2);
+        GlStateManager.rotatef(-90, 1, 0, 0);
 
-        FontRenderer font = field_228858_b_.getFontRenderer();
+        FontRenderer font = getFontRenderer();
 
         int requiredWidth = Math.max(font.getStringWidth(text), 1);
         int requiredHeight = font.FONT_HEIGHT + 2;
@@ -107,14 +109,17 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             scale = Math.min(scale, maxScale);
         }
 
-        matrix.func_227862_a_(scale, -scale, scale);
+        GlStateManager.scalef(scale, -scale, scale);
+        GlStateManager.depthMask(false);
         int realHeight = (int) Math.floor(displayHeight / scale);
         int realWidth = (int) Math.floor(displayWidth / scale);
         int offsetX = (realWidth - requiredWidth) / 2;
         int offsetY = (realHeight - requiredHeight) / 2;
-        //font.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
-        font.func_228079_a_("\u00a7f" + text, offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
-              false, matrix.func_227866_c_().func_227870_a_(), renderer, false, 0, MekanismRenderer.FULL_LIGHT);
-        matrix.func_227865_b_();
+        GlStateManager.disableLighting();
+        font.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
+        GlStateManager.enableLighting();
+        GlStateManager.depthMask(true);
+        GlStateManager.disablePolygonOffset();
+        GlStateManager.popMatrix();
     }
 }

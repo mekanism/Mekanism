@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IHasTileEntity<TileEntityStructuralGlass>, IHasDescription {
 
     public BlockStructuralGlass() {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F).func_226896_b_());
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(5F, 10F));
     }
 
     @Override

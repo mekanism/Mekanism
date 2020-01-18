@@ -392,7 +392,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         TransmitterModelData modelData = getModelData();
         if (modelData instanceof TransmitterModelData.Colorable) {
             TransmitterModelData.Colorable colorable = (TransmitterModelData.Colorable) modelData;
-            colorable.setColor(getRenderColor() != null);
+            colorable.setColor(getRenderColor());
         }
     }
 

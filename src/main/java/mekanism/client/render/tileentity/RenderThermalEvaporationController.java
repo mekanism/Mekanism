@@ -1,29 +1,20 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.BlockPos;
 
 public class RenderThermalEvaporationController extends TileEntityRenderer<TileEntityThermalEvaporationController> {
 
-    public RenderThermalEvaporationController(TileEntityRendererDispatcher renderer) {
-        super(renderer);
-    }
-
     @Override
-    public void func_225616_a_(@Nonnull TileEntityThermalEvaporationController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
-          int light, int overlayLight) {
+    public void render(TileEntityThermalEvaporationController tile, double x, double y, double z, float partialTick, int destroyStage) {
         if (tile.structured && tile.height - 2 >= 1 && tile.inputTank.getFluidAmount() > 0) {
             RenderData data = new RenderData();
             data.location = tile.getRenderLocation();
@@ -32,18 +23,30 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
             data.length = 2;
             data.width = 2;
             data.fluidType = tile.inputTank.getFluid();
-            field_228858_b_.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            matrix.func_227860_a_();
-            BlockPos pos = tile.getPos();
-            matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.enableBlend();
+            GlStateManager.disableLighting();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            setLightmapDisabled(true);
+            FluidRenderer.translateToOrigin(data.location);
             float fluidScale = (float) tile.inputTank.getFluidAmount() / (float) tile.getMaxFluid();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
-            //Render the proper height
-            Model3D fluidModel = FluidRenderer.getFluidModel(data, Math.min(1, fluidScale));
-            MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                  MekanismRenderer.getColorARGB(data.fluidType, fluidScale));
+            MekanismRenderer.color(data.fluidType, fluidScale);
+            if (data.fluidType.getFluid().getAttributes().isGaseous(data.fluidType)) {
+                FluidRenderer.getTankDisplay(data).render();
+            } else {
+                //Render the proper height
+                FluidRenderer.getTankDisplay(data, Math.min(1, fluidScale)).render();
+            }
+            MekanismRenderer.resetColor();
             MekanismRenderer.disableGlow(glowInfo);
-            matrix.func_227865_b_();
+            setLightmapDisabled(false);
+            GlStateManager.enableLighting();
+            GlStateManager.disableBlend();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
     }
 

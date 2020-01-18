@@ -48,7 +48,7 @@ public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStat
     @Nonnull
     @Override
     public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (!world.isRemote && player.func_225608_bj_()) {
+        if (!world.isRemote && player.isSneaking()) {
             TileEntityCardboardBox tile = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
 
             if (tile != null && tile.storedData != null) {
@@ -75,7 +75,7 @@ public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStat
                 spawnAsEntity(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
             }
         }
-        return player.func_225608_bj_() ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        return player.isSneaking() ? ActionResultType.SUCCESS : ActionResultType.PASS;
     }
 
     @Nonnull
@@ -99,7 +99,7 @@ public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStat
      */
     @SubscribeEvent
     public void rightClickEvent(RightClickBlock blockEvent) {
-        if (blockEvent.getPlayer().func_225608_bj_() && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() == this) {
+        if (blockEvent.getPlayer().isSneaking() && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() == this) {
             blockEvent.setUseBlock(Event.Result.ALLOW);
             blockEvent.setUseItem(Event.Result.DENY);
         }

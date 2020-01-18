@@ -55,7 +55,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 64, 11, getButtonLocation("default"),
               () -> filter.allowDefault = !filter.allowDefault, getOnHover(MekanismLang.FILTER_ALLOW_DEFAULT)));
         addButton(new ColorButton(this, getGuiLeft() + 12, getGuiTop() + 44, 16, 16, () -> filter.color,
-              () -> filter.color = InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
+              () -> filter.color = InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
               () -> filter.color = TransporterUtils.decrement(filter.color)));
     }
 

@@ -1,11 +1,12 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+
+import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.render.MekanismRenderer;
@@ -106,10 +107,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             float scale = (float) maxX / length;
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(scale, scale, scale);
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(scale, scale, scale);
             drawString(text, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
-            RenderSystem.popMatrix();
+            GlStateManager.popMatrix();
         }
     }
 
@@ -153,7 +154,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height) {
-        blit(x, y, getBlitOffset(), width, height, icon);
+        blit(x, y, blitOffset, width, height, icon);
     }
 
     @Override
@@ -206,17 +207,17 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
         if (!stack.isEmpty()) {
             try {
-                RenderSystem.pushMatrix();
-                RenderSystem.enableDepthTest();
-                RenderHelper.func_227780_a_();
+                GlStateManager.pushMatrix();
+                GlStateManager.enableDepthTest();
+                RenderHelper.enableGUIStandardItemLighting();
                 if (scale != 1) {
-                    RenderSystem.scalef(scale, scale, scale);
+                    GlStateManager.scalef(scale, scale, scale);
                 }
                 //TODO: renderItemAndEffectIntoGUI has some form of GL leak. Fix it
                 itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
-                RenderSystem.disableDepthTest();
-                RenderSystem.popMatrix();
+                GlStateManager.disableDepthTest();
+                GlStateManager.popMatrix();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }

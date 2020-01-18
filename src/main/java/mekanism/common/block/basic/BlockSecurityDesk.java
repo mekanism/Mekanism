@@ -129,7 +129,7 @@ public class BlockSecurityDesk extends BlockMekanism implements IStateFacing, IH
         TileEntitySecurityDesk tile = MekanismUtils.getTileEntity(TileEntitySecurityDesk.class, world, pos);
         //TODO
         if (tile != null) {
-            if (!player.func_225608_bj_()) {
+            if (!player.isSneaking()) {
                 if (!world.isRemote) {
                     UUID ownerUUID = tile.ownerUUID;
                     if (ownerUUID == null || player.getUniqueID().equals(ownerUUID)) {

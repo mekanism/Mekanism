@@ -81,7 +81,7 @@ public class BlockObsidianTNT extends TNTBlock implements IStateWaterLogged {
         if (!world.isRemote) {
             TNTEntity tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
             world.addEntity(tnt);
-            world.playSound(null, tnt.func_226277_ct_(), tnt.func_226278_cu_(), tnt.func_226281_cx_(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, tnt.posX, tnt.posY, tnt.posZ, SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
     }
 

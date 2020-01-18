@@ -21,7 +21,7 @@ import net.minecraft.world.storage.loot.LootParameterSet;
 import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTable.Builder;
-import net.minecraft.world.storage.loot.ValidationTracker;
+import net.minecraft.world.storage.loot.ValidationResults;
 
 public abstract class BaseLootGenerator extends LootTableProvider {
 
@@ -91,7 +91,7 @@ public abstract class BaseLootGenerator extends LootTableProvider {
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
+    protected void validate(Map<ResourceLocation, LootTable> map, ValidationResults validationResults) {
         //NO-OP, as we don't
     }
 }

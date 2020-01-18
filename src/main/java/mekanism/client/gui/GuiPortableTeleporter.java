@@ -116,7 +116,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         addButton(teleportButton = new TranslationButton(this, getGuiLeft() + 42, getGuiTop() + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             if (clientFreq != null && clientStatus == 1) {
                 //TODO: Set focus
-                //minecraft.func_228018_at_().setIngameFocus();
+                //minecraft.mainWindow.setIngameFocus();
                 ClientTickHandler.portableTeleport(player, currentHand, clientFreq);
             }
             updateButtons();

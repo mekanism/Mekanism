@@ -1,5 +1,5 @@
 # Blender MTL File: 'transmitter_large.blend'
-# Material Count: 9
+# Material Count: 4
 
 newmtl None
 Ka 0.000000 0.000000 0.000000
@@ -7,41 +7,11 @@ Kd 0.8 0.8 0.8
 d 1
 map_Kd #side
 
-newmtl None_Center_Down
+newmtl None_Center
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 d 1
-map_Kd #center_down
-
-newmtl None_Center_Up
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-d 1
-map_Kd #center_up
-
-newmtl None_Center_North
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-d 1
-map_Kd #center_north
-
-newmtl None_Center_South
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-d 1
-map_Kd #center_south
-
-newmtl None_Center_East
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-d 1
-map_Kd #center_east
-
-newmtl None_Center_West
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-d 1
-map_Kd #center_west
+map_Kd #center
 
 newmtl None_Opaque
 Ka 0.000000 0.000000 0.000000

@@ -45,7 +45,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
         ignoreFrustumCheck = true;
         preventEntitySpawning = true;
-        setPosition(func_226277_ct_() + 0.5F, func_226278_cu_() + 3F, func_226281_cx_() + 0.5F);
+        setPosition(posX + 0.5F, posY + 3F, posZ + 0.5F);
         setMotion(getMotion().getX(), 0.04, getMotion().getZ());
 
         dataManager.register(IS_LATCHED, (byte) 0);
@@ -63,9 +63,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         this(AdditionsEntityTypes.BALLOON, world);
         setPosition(x + 0.5F, y + 3F, z + 0.5F);
 
-        prevPosX = func_226277_ct_();
-        prevPosY = func_226278_cu_();
-        prevPosZ = func_226281_cx_();
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
         color = c;
     }
 
@@ -73,11 +73,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         this(AdditionsEntityTypes.BALLOON, entity.world);
         latchedEntity = entity;
         float height = latchedEntity.getSize(latchedEntity.getPose()).height;
-        setPosition(latchedEntity.func_226277_ct_(), latchedEntity.func_226278_cu_() + height + 1.7F, latchedEntity.func_226281_cx_());
+        setPosition(latchedEntity.posX, latchedEntity.posY + height + 1.7F, latchedEntity.posZ);
 
-        prevPosX = func_226277_ct_();
-        prevPosY = func_226278_cu_();
-        prevPosZ = func_226281_cx_();
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
 
         color = c;
         dataManager.set(IS_LATCHED, (byte) 2);
@@ -89,9 +89,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         latched = obj;
         setPosition(latched.x + 0.5F, latched.y + 1.9F, latched.z + 0.5F);
 
-        prevPosX = func_226277_ct_();
-        prevPosY = func_226278_cu_();
-        prevPosZ = func_226281_cx_();
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
 
         color = c;
         dataManager.set(IS_LATCHED, (byte) 1);
@@ -102,11 +102,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public void tick() {
-        prevPosX = func_226277_ct_();
-        prevPosY = func_226278_cu_();
-        prevPosZ = func_226281_cx_();
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
 
-        if (func_226278_cu_() > 255) {
+        if (posY > 255) {
             pop();
             return;
         }
@@ -181,14 +181,14 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         } else if (latchedEntity != null && latchedEntity.getHealth() > 0) {
             int floor = getFloor(latchedEntity);
             Vec3d motion = latchedEntity.getMotion();
-            if (latchedEntity.func_226278_cu_() - (floor + 1) < -0.1) {
+            if (latchedEntity.posY - (floor + 1) < -0.1) {
                 latchedEntity.setMotion(motion.getX(), Math.max(0.04, motion.getY() * 1.015), motion.getZ());
-            } else if (latchedEntity.func_226278_cu_() - (floor + 1) > 0.1) {
+            } else if (latchedEntity.posY - (floor + 1) > 0.1) {
                 latchedEntity.setMotion(motion.getX(), Math.min(-0.04, motion.getY() * 1.015), motion.getZ());
             } else {
                 latchedEntity.setMotion(motion.getX(), 0, motion.getZ());
             }
-            setPosition(latchedEntity.func_226277_ct_(), latchedEntity.func_226278_cu_() + getAddedHeight(), latchedEntity.func_226281_cx_());
+            setPosition(latchedEntity.posX, latchedEntity.posY + getAddedHeight(), latchedEntity.posZ);
         }
     }
 
@@ -233,7 +233,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     private void doParticle() {
         world.addParticle(new RedstoneParticleData(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F),
-              func_226277_ct_() + (rand.nextFloat() * 0.6 - 0.3), func_226278_cu_() + (rand.nextFloat() * 0.6 - 0.3), func_226281_cx_() + (rand.nextFloat() * 0.6 - 0.3), 0, 0, 0);
+              posX + (rand.nextFloat() * 0.6 - 0.3), posY + (rand.nextFloat() * 0.6 - 0.3), posZ + (rand.nextFloat() * 0.6 - 0.3), 0, 0, 0);
     }
 
     @Override
@@ -247,7 +247,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected boolean func_225502_at_() {
+    protected boolean canTriggerWalking() {
         return false;
     }
 
@@ -293,9 +293,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public void writeSpawnData(PacketBuffer data) {
-        data.writeDouble(func_226277_ct_());
-        data.writeDouble(func_226278_cu_());
-        data.writeDouble(func_226281_cx_());
+        data.writeDouble(posX);
+        data.writeDouble(posY);
+        data.writeDouble(posZ);
 
         data.writeEnumValue(color);
         if (latched != null) {

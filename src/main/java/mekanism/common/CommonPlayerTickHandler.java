@@ -31,9 +31,9 @@ import net.minecraftforge.fml.LogicalSide;
 public class CommonPlayerTickHandler {
 
     public static boolean isOnGround(PlayerEntity player) {
-        int x = MathHelper.floor(player.func_226277_ct_());
-        int y = MathHelper.floor(player.func_226278_cu_() - 0.01);
-        int z = MathHelper.floor(player.func_226281_cx_());
+        int x = MathHelper.floor(player.posX);
+        int y = MathHelper.floor(player.posY - 0.01);
+        int z = MathHelper.floor(player.posZ);
         BlockPos pos = new BlockPos(x, y, z);
         BlockState s = player.world.getBlockState(pos);
         VoxelShape shape = s.getShape(player.world, pos);
@@ -76,7 +76,7 @@ public class CommonPlayerTickHandler {
 
     public void tickEnd(PlayerEntity player) {
         ItemStack feetStack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners && !player.func_225608_bj_()) {
+        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemFreeRunners && !player.isSneaking()) {
             player.stepHeight = 1.002F;
         } else if (player.stepHeight == 1.002F) {
             player.stepHeight = 0.6F;

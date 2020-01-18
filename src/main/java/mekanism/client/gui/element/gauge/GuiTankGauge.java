@@ -33,7 +33,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
                 if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {
                     int index = Arrays.asList(((ITankManager) tile).getTanks()).indexOf(infoHandler.getTank());
                     if (index != -1) {
-                        if (button == 0 && InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                        if (button == 0 && InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                             button = 2;
                         }
                         Mekanism.packetHandler.sendToServer(new PacketDropperUse(Coord4D.get(tile), button, index));

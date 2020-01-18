@@ -1,17 +1,12 @@
 package mekanism.common.item.gear;
 
-import java.util.List;
-import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.armor.CustomArmor;
-import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -39,6 +34,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpecialGear {
 
@@ -68,7 +69,9 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpeci
     @Override
     @OnlyIn(Dist.CLIENT)
     public CustomArmor getGearModel() {
-        return FreeRunnerArmor.FREE_RUNNERS;
+        ModelCustomArmor model = ModelCustomArmor.INSTANCE;
+        model.modelType = ModelCustomArmor.ArmorModel.FREERUNNERS;
+        return model;
     }
 
     @Override

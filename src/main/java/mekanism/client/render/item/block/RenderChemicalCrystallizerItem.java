@@ -1,12 +1,13 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelChemicalCrystallizer;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 
@@ -16,16 +17,15 @@ public class RenderChemicalCrystallizerItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-        matrix.func_227861_a_(0.05, -1.001, 0.05);
-        chemicalCrystallizer.render(matrix, renderer, light, overlayLight);
+    public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+        GlStateManager.rotatef(180, 0, 0, 1);
+        GlStateManager.translatef(0.05F, -1.001F, 0.05F);
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "chemical_crystallizer.png"));
+        chemicalCrystallizer.render(0.0625F);
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
     }
 
     @Nonnull

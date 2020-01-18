@@ -37,7 +37,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        if (!InputMappings.isKeyDown(Minecraft.getInstance().func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        if (!InputMappings.isKeyDown(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
             tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.sneakKey.getLocalizedName()));
         } else {
             tooltip.add(getUpgradeType(stack).getDescription());
@@ -53,7 +53,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (player != null && player.func_225608_bj_()) {
+        if (player != null && player.isSneaking()) {
             World world = context.getWorld();
             TileEntity tile = MekanismUtils.getTileEntity(world, context.getPos());
             ItemStack stack = player.getHeldItem(context.getHand());

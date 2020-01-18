@@ -1,13 +1,15 @@
 package mekanism.generators.client.render.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelHeatGenerator;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 
@@ -17,16 +19,15 @@ public class RenderHeatGeneratorItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-        matrix.func_227861_a_(0, -1, 0);
-        heatGenerator.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, "energyStored") > 0);
+    public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+        GlStateManager.rotatef(180, 0, 0, 1);
+        GlStateManager.translatef(0, -1.0F, 0);
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "heat_generator.png"));
+        heatGenerator.render(0.0625F, ItemDataUtils.getDouble(stack, "energyStored") > 0, Minecraft.getInstance().textureManager);
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
     }
 
     @Nonnull

@@ -17,6 +17,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -45,7 +46,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateWa
         }
         IMekWrench wrenchHandler = Wrenches.getHandler(stack);
         if (wrenchHandler != null) {
-            if (wrenchHandler.canUseWrench(stack, player, hit.getPos()) && player.func_225608_bj_()) {
+            if (wrenchHandler.canUseWrench(stack, player, hit.getPos()) && player.isSneaking()) {
                 if (!world.isRemote) {
                     MekanismUtils.dismantleBlock(state, world, pos);
                 }
@@ -80,6 +81,11 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateWa
             Direction side = Direction.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
             tile.onNeighborTileChange(side);
         }
+    }
+
+    @Override
+    public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
+        return layer == BlockRenderLayer.CUTOUT;
     }
 
     @Nonnull

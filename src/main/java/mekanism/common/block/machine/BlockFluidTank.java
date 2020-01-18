@@ -53,7 +53,7 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IEnviromentBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -79,7 +79,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
     }
 
     @Override
-    public int getLightValue(BlockState state, ILightReader world, BlockPos pos) {
+    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
         int ambientLight = 0;
         TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
         if (tile != null) {
@@ -108,7 +108,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
             return ActionResultType.SUCCESS;
         }
         //Handle filling fluid tank
-        if (!player.func_225608_bj_()) {
+        if (!player.isSneaking()) {
             if (SecurityUtils.canAccess(player, tile)) {
                 ItemStack stack = player.getHeldItem(hand);
                 if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack) && manageInventory(player, (TileEntityFluidTank) tile, hand, stack)) {

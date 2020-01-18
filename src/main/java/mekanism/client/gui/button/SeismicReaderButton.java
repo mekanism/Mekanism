@@ -1,6 +1,6 @@
 package mekanism.client.gui.button;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.util.ResourceLocation;
@@ -26,9 +26,9 @@ public class SeismicReaderButton extends MekanismButton {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         MekanismRenderer.bindTexture(this.resourceLocation);
         if (!this.active) {
-            RenderSystem.color3f(0.25F, 0.25F, 0.25F);
+            GlStateManager.color3f(0.25F, 0.25F, 0.25F);
         } else if (isHovered()) {
-            RenderSystem.color3f(0.5F, 0.5F, 1);
+            GlStateManager.color3f(0.5F, 0.5F, 1);
         } else {
             MekanismRenderer.resetColor();
         }

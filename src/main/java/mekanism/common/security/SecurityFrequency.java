@@ -47,7 +47,7 @@ public class SecurityFrequency extends Frequency {
         if (!trusted.isEmpty()) {
             ListNBT trustedList = new ListNBT();
             for (String s : trusted) {
-                trustedList.add(StringNBT.func_229705_a_(s));
+                trustedList.add(new StringNBT(s));
             }
             nbtTags.put("trusted", trustedList);
         }

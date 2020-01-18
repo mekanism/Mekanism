@@ -46,7 +46,9 @@ public class MekFakePlayer extends FakePlayer {
         }
 
         INSTANCE.world = world;
-        INSTANCE.func_226288_n_(x, y, z);
+        INSTANCE.posX = x;
+        INSTANCE.posY = y;
+        INSTANCE.posZ = z;
         return new WeakReference<>(INSTANCE);
     }
 

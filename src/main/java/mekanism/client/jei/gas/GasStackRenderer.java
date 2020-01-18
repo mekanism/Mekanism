@@ -1,6 +1,6 @@
 package mekanism.client.jei.gas;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,10 +67,10 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuffer();
         vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        vertexBuffer.func_225582_a_(xCoord, yCoord + 16, zLevel).func_225583_a_(uMin, vMax).endVertex();
-        vertexBuffer.func_225582_a_(xCoord + 16 - maskRight, yCoord + 16, zLevel).func_225583_a_(uMax, vMax).endVertex();
-        vertexBuffer.func_225582_a_(xCoord + 16 - maskRight, yCoord + maskTop, zLevel).func_225583_a_(uMax, vMin).endVertex();
-        vertexBuffer.func_225582_a_(xCoord, yCoord + maskTop, zLevel).func_225583_a_(uMin, vMin).endVertex();
+        vertexBuffer.pos(xCoord, yCoord + 16, zLevel).tex(uMin, vMax).endVertex();
+        vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + 16, zLevel).tex(uMax, vMax).endVertex();
+        vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + maskTop, zLevel).tex(uMax, vMin).endVertex();
+        vertexBuffer.pos(xCoord, yCoord + maskTop, zLevel).tex(uMin, vMin).endVertex();
         tessellator.draw();
     }
 
@@ -79,17 +79,17 @@ public class GasStackRenderer implements IIngredientRenderer<GasStack> {
         if (gasStack == null || gasStack.isEmpty()) {
             return;
         }
-        RenderSystem.enableBlend();
-        RenderSystem.enableAlphaTest();
+        GlStateManager.enableBlend();
+        GlStateManager.enableAlphaTest();
         drawGas(xPosition, yPosition, gasStack);
         if (overlay != null) {
-            RenderSystem.pushMatrix();
-            RenderSystem.translatef(0, 0, 200);
+            GlStateManager.pushMatrix();
+            GlStateManager.translatef(0, 0, 200);
             overlay.draw(xPosition, yPosition);
-            RenderSystem.popMatrix();
+            GlStateManager.popMatrix();
         }
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableBlend();
+        GlStateManager.disableAlphaTest();
+        GlStateManager.disableBlend();
     }
 
     private void drawGas(int xPosition, int yPosition, @Nonnull GasStack gasStack) {

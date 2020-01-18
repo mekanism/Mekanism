@@ -174,7 +174,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                     if (!world.getDimension().canMineBlock(player, coord.getPos())) {
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
-                    if (!player.func_225608_bj_()) {
+                    if (!player.isSneaking()) {
                         if (!player.canPlayerEdit(coord.getPos(), pos.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }

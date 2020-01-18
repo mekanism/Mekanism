@@ -1,15 +1,13 @@
 package mekanism.generators.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.common.Mekanism;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.client.model.ModelTurbine;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
 public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRotor> {
 
@@ -17,17 +15,18 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
     public static boolean internalRender = false;
     private ModelTurbine model = new ModelTurbine();
 
-    public RenderTurbineRotor(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    @Override
+    public void render(TileEntityTurbineRotor tile, double x, double y, double z, float partialTick, int destroyStage) {
+        renderAModelAt(tile, x, y, z, partialTick);
     }
 
-    @Override
-    public void func_225616_a_(@Nonnull TileEntityTurbineRotor tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    private void renderAModelAt(TileEntityTurbineRotor tile, double x, double y, double z, float partialTick) {
         if (tile.getMultiblock() != null && !internalRender) {
             return;
         }
 
-        matrix.func_227860_a_();
+        GlStateManager.pushMatrix();
+        bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "turbine.png"));
 
         int baseIndex = tile.getPosition() * 2;
         float rotateSpeed = 0.0F;
@@ -42,21 +41,22 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
         }
 
         if (tile.getHousedBlades() > 0) {
-            matrix.func_227860_a_();
-            matrix.func_227861_a_(0.5, -1, 0.5);
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(tile.rotationLower));
-            model.render(matrix, renderer, light, overlayLight, baseIndex);
-            matrix.func_227865_b_();
+            GlStateManager.pushMatrix();
+            GlStateManager.translatef((float) x + 0.5F, (float) y - 1F, (float) z + 0.5F);
+            GlStateManager.rotatef(tile.rotationLower, 0, 1, 0);
+            model.render(0.0625F, baseIndex);
+            GlStateManager.popMatrix();
         }
 
         if (tile.getHousedBlades() == 2) {
-            matrix.func_227860_a_();
-            matrix.func_227861_a_(0.5, -0.5, 0.5);
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(tile.rotationUpper));
-            model.render(matrix, renderer, light, overlayLight, baseIndex + 1);
-            matrix.func_227865_b_();
+            GlStateManager.pushMatrix();
+            GlStateManager.translatef((float) x + 0.5F, (float) y - 0.5F, (float) z + 0.5F);
+            GlStateManager.rotatef(tile.rotationUpper, 0, 1, 0);
+            model.render(0.0625F, baseIndex + 1);
+            GlStateManager.popMatrix();
         }
-        matrix.func_227865_b_();
+
+        GlStateManager.popMatrix();
     }
 
     @Override

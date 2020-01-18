@@ -1,50 +1,57 @@
 package mekanism.additions.client.render.entity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
-import mekanism.additions.client.model.ModelBalloon;
 import mekanism.additions.common.entity.EntityBalloon;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import mekanism.api.text.EnumColor;
+import mekanism.additions.client.model.ModelBalloon;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
-    private static final ModelBalloon model = new ModelBalloon();
+    public ModelBalloon model = new ModelBalloon();
 
     public RenderBalloon(EntityRendererManager renderManager) {
         super(renderManager);
     }
 
-    @Nonnull
     @Override
-    public ResourceLocation getEntityTexture(@Nonnull EntityBalloon entity) {
-        return ModelBalloon.BALLOON_TEXTURE;
+    protected ResourceLocation getEntityTexture(@Nonnull EntityBalloon entity) {
+        return MekanismUtils.getResource(ResourceType.RENDER, "balloon.png");
     }
 
     @Override
-    public void func_225623_a_(@Nonnull EntityBalloon balloon, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
-        matrix.func_227860_a_();
+    public void doRender(@Nonnull EntityBalloon balloon, double x, double y, double z, float f, float partialTick) {
+        double renderPosX = x - (balloon.lastTickPosX + (balloon.posX - balloon.lastTickPosX) * partialTick);
+        double renderPosY = y - (balloon.lastTickPosY + (balloon.posY - balloon.lastTickPosY) * partialTick);
+        double renderPosZ = z - (balloon.lastTickPosZ + (balloon.posZ - balloon.lastTickPosZ) * partialTick);
+
         if (balloon.isLatchedToEntity()) {
-            //Shift the rendering of the balloon to be over the entity
-            double x = balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.func_226277_ct_() - balloon.latchedEntity.lastTickPosX) * partialTick
-                       - (balloon.lastTickPosX + (balloon.func_226277_ct_() - balloon.lastTickPosX) * partialTick);
-            double y = balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.func_226278_cu_() - balloon.latchedEntity.lastTickPosY) * partialTick
-                       - (balloon.lastTickPosY + (balloon.func_226278_cu_() - balloon.lastTickPosY) * partialTick)
-                       + balloon.getAddedHeight();
-            double z = balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.func_226281_cx_() - balloon.latchedEntity.lastTickPosZ) * partialTick
-                       - (balloon.lastTickPosZ + (balloon.func_226281_cx_() - balloon.lastTickPosZ) * partialTick);
-            matrix.func_227861_a_(x, y, z);
+            x = balloon.latchedEntity.lastTickPosX + (balloon.latchedEntity.posX - balloon.latchedEntity.lastTickPosX) * partialTick;
+            y = balloon.latchedEntity.lastTickPosY + (balloon.latchedEntity.posY - balloon.latchedEntity.lastTickPosY) * partialTick;
+            z = balloon.latchedEntity.lastTickPosZ + (balloon.latchedEntity.posZ - balloon.latchedEntity.lastTickPosZ) * partialTick;
+
+            x += renderPosX;
+            y += renderPosY;
+            z += renderPosZ;
+
+            y += balloon.getAddedHeight();
         }
-        model.render(matrix, renderer, light, balloon.color);
-        matrix.func_227865_b_();
-        super.func_225623_a_(balloon, entityYaw, partialTick, matrix, renderer, light);
+
+        render(balloon.color, x, y, z);
     }
 
-    @Override
-    protected int func_225624_a_(EntityBalloon balloon, float partialTick) {
-        //We always want our balloon to have full brightness
-        return 15;
+    public void render(EnumColor color, double x, double y, double z) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translatef((float) x, (float) y, (float) z);
+        GlStateManager.rotatef(180, 1, 0, 0);
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "balloon.png"));
+        model.render(0.0625F, color);
+        GlStateManager.popMatrix();
     }
 }

@@ -1,8 +1,7 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
@@ -16,65 +15,67 @@ import mekanism.api.infuse.InfuseType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.item.block.RenderFluidTankItem;
+import mekanism.client.render.obj.TransmitterModel;
 import mekanism.client.render.tileentity.RenderConfigurableMachine;
 import mekanism.client.render.tileentity.RenderFluidTank;
-import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
-import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.MissingTextureSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
-import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.ModelSettings;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL11;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
 
     public static final GlowInfo NO_GLOW = new GlowInfo(0, 0, false);
-    public static final int FULL_LIGHT = 0xF000F0;
 
-    public static OBJModel contentsModel;
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
     public static Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
     private static RenderConfigurableMachine<?> machineRenderer;
+    public static TextureAtlasSprite missingIcon;
+    private static AtlasTexture texMap = null;
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         //Note: We set the machine renderer in a FMLClientSetupEvent, to make sure that it does not get set at the
         // wrong time when running the data generators and thus cause a crash
-        machineRenderer = new RenderConfigurableMachine<>(TileEntityRendererDispatcher.instance);
+        machineRenderer = new RenderConfigurableMachine<>();
     }
 
     @SuppressWarnings("unchecked")
     public static <S extends TileEntity & ISideConfiguration> RenderConfigurableMachine<S> machineRenderer() {
         return (RenderConfigurableMachine<S>) machineRenderer;
+    }
+
+    public static void initFluidTextures(AtlasTexture map) {
+        missingIcon = MissingTextureSprite.func_217790_a();
+        texMap = map;
     }
 
     /**
@@ -86,6 +87,10 @@ public class MekanismRenderer {
      * @return the sprite, or missing sprite if not found
      */
     public static TextureAtlasSprite getBaseFluidTexture(@Nonnull Fluid fluid, @Nonnull FluidType type) {
+        if (fluid == Fluids.EMPTY) {
+            return missingIcon;
+        }
+
         ResourceLocation spriteLocation;
         if (type == FluidType.STILL) {
             spriteLocation = fluid.getAttributes().getStillTexture();
@@ -93,26 +98,88 @@ public class MekanismRenderer {
             spriteLocation = fluid.getAttributes().getFlowingTexture();
         }
 
-        return getSprite(spriteLocation);
+        return getTextureAtlasSprite(spriteLocation);
     }
 
     public static TextureAtlasSprite getFluidTexture(@Nonnull FluidStack fluidStack, @Nonnull FluidType type) {
+        if (fluidStack.isEmpty()) {
+            return missingIcon;
+        }
+
         Fluid fluid = fluidStack.getFluid();
         ResourceLocation spriteLocation;
         if (type == FluidType.STILL) {
-            spriteLocation = fluid.getAttributes().getStillTexture(fluidStack);
+            spriteLocation = fluid.getAttributes().getStill(fluidStack);
         } else {
-            spriteLocation = fluid.getAttributes().getFlowingTexture(fluidStack);
+            spriteLocation = fluid.getAttributes().getFlowing(fluidStack);
         }
-        return getSprite(spriteLocation);
+        return getTextureAtlasSprite(spriteLocation);
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>> TextureAtlasSprite getChemicalTexture(@Nonnull CHEMICAL chemical) {
-        return getSprite(chemical.getIcon());
+        return getTextureAtlasSprite(chemical.getIcon());
     }
 
-    public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
-        return Minecraft.getInstance().func_228015_a_(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(spriteLocation);
+    public static TextureAtlasSprite getTextureAtlasSprite(ResourceLocation spriteLocation) {
+        return texMap.getSprite(spriteLocation);
+    }
+
+    public static RenderState pauseRenderer(Tessellator tess) {
+        RenderState state = null;
+        if (MekanismRenderer.isDrawing(tess)) {
+            state = new RenderState(tess.getBuffer().getVertexFormat(), tess.getBuffer().getDrawMode());
+            tess.draw();
+        }
+        return state;
+    }
+
+    public static void resumeRenderer(Tessellator tess, RenderState renderState) {
+        if (renderState != null) {
+            tess.getBuffer().begin(renderState.prevMode, renderState.prevFormat);
+        }
+    }
+
+    public static boolean isDrawing(Tessellator tess) {
+        return isDrawing(tess.getBuffer());
+    }
+
+    public static boolean isDrawing(BufferBuilder buffer) {
+        return buffer.isDrawing;
+    }
+
+    public static BakedQuad iconTransform(BakedQuad quad, TextureAtlasSprite sprite) {
+        int[] vertexData = quad.getVertexData();
+        int[] vertices = new int[vertexData.length];
+        System.arraycopy(vertexData, 0, vertices, 0, vertices.length);
+
+        VertexFormat format = quad.getFormat();
+        for (int i = 0; i < 4; ++i) {
+            int j = format.getIntegerSize() * i;
+            int uvIndex = format.getUvOffsetById(0) / 4;
+            if (j + uvIndex + 1 < vertices.length) {
+                vertices[j + uvIndex] = Float.floatToRawIntBits(sprite.getInterpolatedU(quad.getSprite().getUnInterpolatedU(Float.intBitsToFloat(vertices[j + uvIndex]))));
+                vertices[j + uvIndex + 1] = Float.floatToRawIntBits(sprite.getInterpolatedV(quad.getSprite().getUnInterpolatedV(Float.intBitsToFloat(vertices[j + uvIndex + 1]))));
+            }
+        }
+
+        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), sprite, quad.shouldApplyDiffuseLighting(), format);
+    }
+
+    public static BakedQuad rotate(BakedQuad quad, int amount) {
+        int[] vertices = new int[quad.getVertexData().length];
+        System.arraycopy(quad.getVertexData(), 0, vertices, 0, vertices.length);
+
+        for (int i = 0; i < 4; i++) {
+            int nextIndex = (i + amount) % 4;
+            int quadSize = quad.getFormat().getIntegerSize();
+            int uvIndex = quad.getFormat().getUvOffsetById(0) / 4;
+            if (i + uvIndex + 1 < vertices.length) {
+                vertices[quadSize * i + uvIndex] = quad.getVertexData()[quadSize * nextIndex + uvIndex];
+                vertices[quadSize * i + uvIndex + 1] = quad.getVertexData()[quadSize * nextIndex + uvIndex + 1];
+            }
+        }
+
+        return new BakedQuad(vertices, quad.getTintIndex(), quad.getFace(), quad.getSprite(), quad.shouldApplyDiffuseLighting(), quad.getFormat());
     }
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
@@ -121,18 +188,15 @@ public class MekanismRenderer {
         model.setTextures(still, still, flowing, flowing, flowing, flowing);
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder) {
-        renderObject(object, matrix, renderer, stateBuilder, -1);
-    }
-
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder,
-          int argb) {
-        if (object != null) {
-            matrix.func_227860_a_();
-            matrix.func_227861_a_(object.minX, object.minY, object.minZ);
-            RenderResizableCuboid.INSTANCE.renderCube(object, matrix, renderer, stateBuilder, argb);
-            matrix.func_227865_b_();
+    public static void renderObject(Model3D object) {
+        if (object == null) {
+            return;
         }
+
+        GlStateManager.pushMatrix();
+        GlStateManager.translatef((float) object.minX, (float) object.minY, (float) object.minZ);
+        RenderResizableCuboid.INSTANCE.renderCube(object);
+        GlStateManager.popMatrix();
     }
 
     public static void bindTexture(ResourceLocation texture) {
@@ -141,33 +205,46 @@ public class MekanismRenderer {
 
     //Color
     public static void resetColor() {
-        //TODO: Should this be RenderSystem.clearColor
-        RenderSystem.color4f(1, 1, 1, 1);
+        //TODO: Should this be GlStateManager.clearColor
+        GlStateManager.color4f(1, 1, 1, 1);
     }
 
-    public static float getRed(int color) {
+    private static float getRed(int color) {
         return (color >> 16 & 0xFF) / 255.0F;
     }
 
-    public static float getGreen(int color) {
+    private static float getGreen(int color) {
         return (color >> 8 & 0xFF) / 255.0F;
     }
 
-    public static float getBlue(int color) {
+    private static float getBlue(int color) {
         return (color & 0xFF) / 255.0F;
     }
 
-    public static float getAlpha(int color) {
-        return (color >> 24 & 0xFF) / 255.0F;
+    public static void color(int color) {
+        GlStateManager.color4f(getRed(color), getGreen(color), getBlue(color), (color >> 24 & 0xFF) / 255f);
     }
 
-    public static void color(int color) {
-        RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
+    public static void color(@Nonnull FluidStack fluid, float fluidScale) {
+        if (!fluid.isEmpty()) {
+            int color = fluid.getFluid().getAttributes().getColor(fluid);
+            if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
+                GlStateManager.color4f(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
+            } else {
+                color(color);
+            }
+        }
     }
 
     public static void color(@Nonnull FluidStack fluid) {
         if (!fluid.isEmpty()) {
             color(fluid.getFluid().getAttributes().getColor(fluid));
+        }
+    }
+
+    public static void color(@Nonnull Fluid fluid) {
+        if (fluid != Fluids.EMPTY) {
+            color(fluid.getAttributes().getColor());
         }
     }
 
@@ -180,7 +257,7 @@ public class MekanismRenderer {
     public static <CHEMICAL extends Chemical<CHEMICAL>> void color(@Nonnull CHEMICAL chemical) {
         if (!chemical.isEmptyType()) {
             int color = chemical.getTint();
-            RenderSystem.color3f(getRed(color), getGreen(color), getBlue(color));
+            GlStateManager.color3f(getRed(color), getGreen(color), getBlue(color));
         }
     }
 
@@ -198,44 +275,20 @@ public class MekanismRenderer {
 
     public static void color(@Nullable EnumColor color, float alpha, float multiplier) {
         if (color != null) {
-            RenderSystem.color4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+            GlStateManager.color4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
         }
     }
 
     public static int getColorARGB(EnumColor color, float alpha) {
-        return getColorARGB(color.rgbCode[0], color.rgbCode[1], color.rgbCode[2], alpha);
-    }
-
-    public static int getColorARGB(@Nonnull FluidStack fluidStack) {
-        return fluidStack.getFluid().getAttributes().getColor(fluidStack);
-    }
-
-    public static int getColorARGB(@Nonnull FluidStack fluidStack, float fluidScale) {
-        if (fluidStack.isEmpty()) {
-            return -1;
-        }
-        int color = getColorARGB(fluidStack);
-        if (fluidStack.getFluid().getAttributes().isGaseous(fluidStack)) {
-            //TODO: We probably want to factor in the fluid's alpha value somehow
-            return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, fluidScale + 0.2F));
-        }
-        return color;
-    }
-
-    public static int getColorARGB(float red, float green, float blue, float alpha) {
-        return getColorARGB((int) (255 * red), (int) (255 * green), (int) (255 * blue), alpha);
-    }
-
-    public static int getColorARGB(int red, int green, int blue, float alpha) {
         if (alpha < 0) {
             alpha = 0;
         } else if (alpha > 1) {
             alpha = 1;
         }
         int argb = (int) (255 * alpha) << 24;
-        argb |= red << 16;
-        argb |= green << 8;
-        argb |= blue;
+        argb |= color.rgbCode[0] << 16;
+        argb |= color.rgbCode[1] << 8;
+        argb |= color.rgbCode[2];
         return argb;
     }
 
@@ -246,13 +299,11 @@ public class MekanismRenderer {
 
     @Nonnull
     public static GlowInfo enableGlow(int glow) {
-        //TODO: Decide if for fullbright glow we want to just disable the lightmap instead of using this method for glow
-        //to modify the state properly we would add .func_228719_a_(field_228529_u_)
         //TODO: Do we need to make sure optifine is not loaded
         if (/*!FMLClientHandler.instance().hasOptifine() && */glow > 0) {
-            GlowInfo info = new GlowInfo(GlStateManager.lastBrightnessX, GlStateManager.lastBrightnessY, true);
+            GlowInfo info = new GlowInfo(GLX.lastBrightnessX, GLX.lastBrightnessY, true);
             float glowStrength = (glow / 15F) * 240F;
-            RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
+            GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, Math.min(glowStrength + info.lightmapLastX, 240), Math.min(glowStrength + info.lightmapLastY, 240));
             return info;
         }
         return NO_GLOW;
@@ -270,7 +321,7 @@ public class MekanismRenderer {
 
     public static void disableGlow(@Nonnull GlowInfo info) {
         if (info.glowEnabled) {
-            RenderSystem.glMultiTexCoord2f(GL13.GL_TEXTURE1, info.lightmapLastX, info.lightmapLastY);
+            GLX.glMultiTexCoord2f(GLX.GL_TEXTURE1, info.lightmapLastX, info.lightmapLastY);
         }
     }
 
@@ -278,62 +329,38 @@ public class MekanismRenderer {
         return Minecraft.getInstance().getRenderPartialTicks();
     }
 
-    @Deprecated
     public static void rotate(Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
-                RenderSystem.rotatef(north, 0, 1, 0);
+                GlStateManager.rotatef(north, 0, 1, 0);
                 break;
             case SOUTH:
-                RenderSystem.rotatef(south, 0, 1, 0);
+                GlStateManager.rotatef(south, 0, 1, 0);
                 break;
             case WEST:
-                RenderSystem.rotatef(west, 0, 1, 0);
+                GlStateManager.rotatef(west, 0, 1, 0);
                 break;
             case EAST:
-                RenderSystem.rotatef(east, 0, 1, 0);
+                GlStateManager.rotatef(east, 0, 1, 0);
                 break;
-        }
-    }
-
-    public static void rotate(MatrixStack matrix, Direction facing, float north, float south, float west, float east) {
-        switch (facing) {
-            case NORTH:
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(north));
-                break;
-            case SOUTH:
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(south));
-                break;
-            case WEST:
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(west));
-                break;
-            case EAST:
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(east));
-                break;
-        }
-    }
-
-    @SubscribeEvent
-    public static void onModelBake(ModelBakeEvent event) {
-        try {
-            contentsModel = OBJLoader.INSTANCE.loadModel(new ModelSettings(RenderTransmitterBase.MODEL_LOCATION, true, false, true, true, null));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().func_229223_g_().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+        if (!event.getMap().getBasePath().equals("textures")) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
-            event.addSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay"));
+            event.addSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/" + type.getTransmission() + "_overlay"));
         }
 
-        event.addSprite(Mekanism.rl("block/overlay/overlay_white"));
-        event.addSprite(Mekanism.rl("block/liquid/liquid_energy"));
-        event.addSprite(Mekanism.rl("block/liquid/liquid_heat"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/overlay_white"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
+        event.addSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
+
+        //TODO: Figure out why this sometimes causes crashes during startup
+        TransmitterModel.addIcons(event);
 
         for (Gas gas : MekanismAPI.GAS_REGISTRY.getValues()) {
             event.addSprite(gas.getIcon());
@@ -343,36 +370,52 @@ public class MekanismRenderer {
             event.addSprite(type.getIcon());
         }
 
-        FluidRenderer.resetCachedModels();
-        RenderFluidTank.resetCachedModels();
-        RenderFluidTankItem.resetCachedModels();
-        RenderConfigurableMachine.resetCachedOverlays();
-        MinerVisualRenderer.resetCachedVisuals();
-        RenderTeleporter.resetCachedModels();
+        FluidRenderer.resetDisplayInts();
+        RenderFluidTank.resetDisplayInts();
     }
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Post event) {
         AtlasTexture map = event.getMap();
-        if (!map.func_229223_g_().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+        if (!map.getBasePath().equals("textures")) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
-            overlays.put(type, map.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay")));
+            overlays.put(type, map.getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/" + type.getTransmission() + "_overlay")));
         }
 
-        whiteIcon = map.getSprite(Mekanism.rl("block/overlay/overlay_white"));
-        energyIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_energy"));
-        heatIcon = map.getSprite(Mekanism.rl("block/liquid/liquid_heat"));
+        whiteIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/overlay/overlay_white"));
+        energyIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_energy"));
+        heatIcon = map.getSprite(new ResourceLocation(Mekanism.MODID, "block/liquid/liquid_heat"));
 
-        //TODO: Why are these reset in post and the rest reset in Pre?
+        TransmitterModel.getIcons(map);
+
+        initFluidTextures(map);
+
         RenderLogisticalTransporter.onStitch(map);
         RenderMechanicalPipe.onStitch();
+    }
+
+    public static TextureAtlasSprite getSprite(ResourceLocation icon) {
+        AtlasTexture textureMapBlocks = Minecraft.getInstance().getTextureMap();
+        TextureAtlasSprite sprite = null;
+        if (icon != null) {
+            sprite = textureMapBlocks.getSprite(icon);
+        }
+        if (sprite == null) {
+            sprite = missingIcon;
+        }
+        return sprite;
     }
 
     public enum FluidType {
         STILL,
         FLOWING
+    }
+
+    public interface ICustomBlockIcon {
+
+        ResourceLocation getIcon(ItemStack stack, int side);
     }
 
     public static class Model3D {
@@ -438,6 +481,45 @@ public class MekanismRenderer {
             textures[3] = south;
             textures[4] = west;
             textures[5] = east;
+        }
+    }
+
+    public static class DisplayInteger {
+
+        public int display;
+
+        public static DisplayInteger createAndStart() {
+            DisplayInteger newInteger = new DisplayInteger();
+            newInteger.display = GLAllocation.generateDisplayLists(1);
+            GlStateManager.newList(newInteger.display, GL11.GL_COMPILE);
+            return newInteger;
+        }
+
+        @Override
+        public int hashCode() {
+            int code = 1;
+            code = 31 * code + display;
+            return code;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof DisplayInteger && ((DisplayInteger) obj).display == display;
+        }
+
+        public void render() {
+            GlStateManager.callList(display);
+        }
+    }
+
+    public static class RenderState {
+
+        private final VertexFormat prevFormat;
+        private final int prevMode;
+
+        private RenderState(VertexFormat prevFormat, int prevMode) {
+            this.prevFormat = prevFormat;
+            this.prevMode = prevMode;
         }
     }
 

@@ -1,85 +1,97 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
-import mekanism.api.RelativeSide;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.TileEntityEnergyCube;
-import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
 
-    public static final Vector3f coreVec = new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO);
+    public static ResourceLocation baseTexture = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube.png");
+    public static ResourceLocation coreTexture = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
+
     private ModelEnergyCube model = new ModelEnergyCube();
     private ModelEnergyCore core = new ModelEnergyCore();
 
-    public RenderEnergyCube(TileEntityRendererDispatcher renderer) {
-        super(renderer);
-    }
-
     @Override
-    public void func_225616_a_(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
-        matrix.func_227860_a_();
-        matrix.func_227861_a_(0.5, 1.5, 0.5);
+    public void render(TileEntityEnergyCube tile, double x, double y, double z, float partialTick, int destroyStage) {
+        //TODO: Debate converting the energy cube to a normal baked model and then just have this draw the model AND then add the core in the middle
+        // Would this improve performance at all? We probably would have to put port state information into the blockstate
+        GlStateManager.pushMatrix();
+        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        GlStateManager.disableAlphaTest();
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.translatef((float) x + 0.5F, (float) y + 1.5F, (float) z + 0.5F);
 
-        matrix.func_227860_a_();
+        GlStateManager.pushMatrix();
         switch (tile.getDirection()) {
             case DOWN:
-                matrix.func_227863_a_(Vector3f.field_229178_a_.func_229187_a_(90));
-                matrix.func_227861_a_(0, 1, -1);
+                GlStateManager.rotatef(90, -1, 0, 0);
+                GlStateManager.translatef(0, 1.0F, -1.0F);
                 break;
             case UP:
-                matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90));
-                matrix.func_227861_a_(0, 1, 1);
+                GlStateManager.rotatef(90, 1, 0, 0);
+                GlStateManager.translatef(0, 1.0F, 1.0F);
                 break;
             default:
                 //Otherwise use the helper method for handling different face options because it is one of them
-                MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
+                MekanismRenderer.rotate(tile.getDirection(), 0, 180, 90, 270);
                 break;
         }
 
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-        model.render(matrix, renderer, light, overlayLight, tile.tier, false);
+        GlStateManager.rotatef(180, 0, 0, 1);
+        model.render(0.0625F, tile.tier, rendererDispatcher.textureManager, false);
 
-        ConfigInfo config = tile.configComponent.getConfig(TransmissionType.ENERGY);
-        if (config != null) {
-            for (RelativeSide side : EnumUtils.SIDES) {
-                ISlotInfo slotInfo = config.getSlotInfo(side);
-                //TODO: Re-evaluate
-                boolean canInput = false;
-                boolean canOutput = false;
-                if (slotInfo != null) {
-                    canInput = slotInfo.canInput();
-                    canOutput = slotInfo.canOutput();
-                }
-                model.renderSide(matrix, renderer, light, overlayLight, side, canInput, canOutput);
+        setLightmapDisabled(true);
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            bindTexture(baseTexture);
+            ISlotInfo slotInfo = tile.configComponent.getSlotInfo(TransmissionType.ENERGY, side);
+            //TODO: Re-evaluate
+            boolean canInput = false;
+            boolean canOutput = false;
+            if (slotInfo != null) {
+                canInput = slotInfo.canInput();
+                canOutput = slotInfo.canOutput();
             }
+            model.renderSide(0.0625F, side, canInput, canOutput, rendererDispatcher.textureManager);
         }
-        matrix.func_227865_b_();
+        setLightmapDisabled(false);
+        GlStateManager.popMatrix();
 
         double energyPercentage = tile.getEnergy() / tile.getMaxEnergy();
         if (energyPercentage > 0.1) {
-            matrix.func_227861_a_(0, -1, 0);
+            GlStateManager.translatef(0, -1.0F, 0);
+            bindTexture(coreTexture);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
             float ticks = MekanismClient.ticksPassed + partialTick;
-            matrix.func_227862_a_(0.4F, 0.4F, 0.4F);
-            matrix.func_227861_a_(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(4 * ticks));
-            matrix.func_227863_a_(coreVec.func_229187_a_(36F + 4 * ticks));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), (float) energyPercentage);
+            GlStateManager.scalef(0.4F, 0.4F, 0.4F);
+            MekanismRenderer.color(tile.tier.getBaseTier().getColor(), (float) energyPercentage);
+            GlStateManager.translatef(0, (float) Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+            GlStateManager.rotatef(4 * ticks, 0, 1, 0);
+            GlStateManager.rotatef(36F + 4 * ticks, 0, 1, 1);
+            core.render(0.0625F);
+            MekanismRenderer.resetColor();
+            MekanismRenderer.disableGlow(glowInfo);
         }
-        matrix.func_227865_b_();
-        MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, overlayLight);
+
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlphaTest();
+        GlStateManager.popMatrix();
+        MekanismRenderer.machineRenderer().render(tile, x, y, z, partialTick, destroyStage);
     }
 }

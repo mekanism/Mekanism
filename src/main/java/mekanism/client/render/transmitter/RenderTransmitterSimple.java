@@ -1,31 +1,43 @@
 package mekanism.client.render.transmitter;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import mekanism.common.util.EnumUtils;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.util.Direction;
 
 public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter<?, ?, ?>> extends RenderTransmitterBase<T> {
 
-    public RenderTransmitterSimple(TileEntityRendererDispatcher renderer) {
-        super(renderer);
-    }
+    protected abstract void renderSide(BufferBuilder renderer, Direction side, T transmitter);
 
-    protected abstract void renderContents(MatrixStack matrix, IVertexBuilder renderer, T transmitter, int light, int overlayLight);
+    protected void render(@Nonnull T transmitter, double x, double y, double z, int glow) {
+        GlStateManager.pushMatrix();
+        GlStateManager.enableCull();
+        GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
+        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder worldRenderer = tessellator.getBuffer();
+        bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        GlStateManager.translatef((float) x + 0.5F, (float) y + 0.5F, (float) z + 0.5F);
 
-    protected void render(@Nonnull T transmitter, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, int glow) {
-        matrix.func_227860_a_();
-        IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE));
-        matrix.func_227861_a_(0.5, 0.5, 0.5);
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            renderSide(worldRenderer, side, transmitter);
+        }
+
         GlowInfo glowInfo = MekanismRenderer.enableGlow(glow);
-        renderContents(matrix, buffer, transmitter, light, overlayLight);
+        tessellator.draw();
         MekanismRenderer.disableGlow(glowInfo);
-        matrix.func_227865_b_();
+        GlStateManager.enableLighting();
+        GlStateManager.disableBlend();
+        GlStateManager.disableCull();
+        GlStateManager.popMatrix();
     }
 }

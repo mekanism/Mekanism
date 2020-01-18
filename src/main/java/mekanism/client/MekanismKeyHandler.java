@@ -40,7 +40,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
     public static KeyBinding armorModeSwitchKey = new KeyBinding(MekanismLang.KEY_ARMOR_MODE.getTranslationKey(), GLFW.GLFW_KEY_G, keybindCategory);
     public static KeyBinding freeRunnerModeSwitchKey = new KeyBinding(MekanismLang.KEY_FEET_MODE.getTranslationKey(), GLFW.GLFW_KEY_H, keybindCategory);
 
-    public static KeyBinding sneakKey = Minecraft.getInstance().gameSettings.field_228046_af_;
+    public static KeyBinding sneakKey = Minecraft.getInstance().gameSettings.keyBindSneak;
 
     private static Builder BINDINGS = new Builder()
           .addBinding(modeSwitchKey, false)
@@ -67,7 +67,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
         if (player == null)
             return;
         if (kb == modeSwitchKey) {
-            if (player.func_225608_bj_()) {
+            if (player.isSneaking()) {
                 ItemStack toolStack = player.inventory.getCurrentItem();
                 Item item = toolStack.getItem();
                 if (item instanceof ItemConfigurator) {
@@ -105,13 +105,13 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
             if (chestItem instanceof ItemJetpack) {
                 ItemJetpack jetpack = (ItemJetpack) chestItem;
-                if (player.func_225608_bj_()) {
+                if (player.isSneaking()) {
                     jetpack.setMode(chestStack, JetpackMode.DISABLED);
                 } else {
                     jetpack.incrementMode(chestStack);
                 }
 
-                Mekanism.packetHandler.sendToServer(PacketJetpackData.MODE_CHANGE(player.func_225608_bj_()));
+                Mekanism.packetHandler.sendToServer(PacketJetpackData.MODE_CHANGE(player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             } else if (chestItem instanceof ItemScubaTank) {
                 ItemScubaTank scubaTank = (ItemScubaTank) chestItem;
@@ -125,12 +125,12 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
             if (feetItem instanceof ItemFreeRunners) {
                 ItemFreeRunners freeRunners = (ItemFreeRunners) feetItem;
-                if (player.func_225608_bj_()) {
+                if (player.isSneaking()) {
                     freeRunners.setMode(feetStack, ItemFreeRunners.FreeRunnerMode.DISABLED);
                 } else {
                     freeRunners.incrementMode(feetStack);
                 }
-                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.MODE, null, player.func_225608_bj_()));
+                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.MODE, null, player.isSneaking()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         }

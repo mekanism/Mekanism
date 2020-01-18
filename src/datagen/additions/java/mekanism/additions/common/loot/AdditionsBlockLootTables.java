@@ -2,7 +2,6 @@ package mekanism.additions.common.loot;
 
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.common.loot.table.BaseBlockLootTables;
-import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.TNTBlock;
 import net.minecraft.data.loot.BlockLootTables;
@@ -79,8 +78,9 @@ public class AdditionsBlockLootTables extends BaseBlockLootTables {
 
     private void registerObsidianTNT() {
         Block tnt = AdditionsBlocks.OBSIDIAN_TNT.getBlock();
-        registerLootTable(tnt, LootTable.builder().addLootPool(withSurvivesExplosion(tnt, LootPool.builder().rolls(ConstantRange.of(1))
-              .addEntry(ItemLootEntry.builder(tnt).acceptCondition(BlockStateProperty.builder(tnt)
-                    .func_227567_a_(StatePropertiesPredicate.Builder.func_227191_a_().func_227195_a_(TNTBlock.UNSTABLE, false)))))));
+        // TODO
+        //registerLootTable(tnt, LootTable.builder().addLootPool(withSurvivesExplosion(tnt, LootPool.builder().rolls(ConstantRange.of(1))
+        //       .addEntry(ItemLootEntry.builder(tnt).acceptCondition(BlockStateProperty.builder(tnt)
+        //            .func_227567_a_(StatePropertiesPredicate.Builder.func_227191_a_().func_227195_a_(TNTBlock.UNSTABLE, false)))))));
     }
 }

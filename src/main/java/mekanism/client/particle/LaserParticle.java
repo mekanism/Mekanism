@@ -1,87 +1,98 @@
 package mekanism.client.particle;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.Nonnull;
+import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.api.Pos3D;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nonnull;
 
 public class LaserParticle extends SpriteTexturedParticle {
 
-    private static final float RADIAN_45 = (float) Math.toRadians(45);
-    private static final float RADIAN_90 = (float) Math.toRadians(90);
-
     private final Direction direction;
-    private final float halfLength;
+    private final double length;
 
-    private LaserParticle(World world, Pos3D start, Pos3D end, Direction dir, double energy) {
+    public LaserParticle(World world, Pos3D start, Pos3D end, Direction dir, double energy) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
         maxAge = 5;
         particleRed = 1;
         particleGreen = 0;
         particleBlue = 0;
-        particleAlpha = 0.1F;
-        //TODO: We probably want the 50,000 to scale with the max energy of the laser?
-        particleScale = (float) Math.min(energy / 50_000, 0.6);
-        halfLength = (float) (end.distance(start) / 2);
+        //TODO: Figure out why alpha no longer works (Note: If it is set to a low value like 0.1F it just makes the laser invisible)
+        //particleAlpha = 0.1F;
+        particleScale = (float) Math.min(energy / 50000, 0.6);
+        length = end.distance(start);
         direction = dir;
     }
 
     @Override
-    public void func_225606_a_(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
-        Vec3d view = renderInfo.getProjectedView();
-        float newX = (float) (MathHelper.lerp(partialTicks, prevPosX, posX) - view.getX());
-        float newY = (float) (MathHelper.lerp(partialTicks, prevPosY, posY) - view.getY());
-        float newZ = (float) (MathHelper.lerp(partialTicks, prevPosZ, posZ) - view.getZ());
+    public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull ActiveRenderInfo renderInfo, float partialTicks, float rotationX, float rotationZ, float rotationYZ,
+                               float rotationXY, float rotationXZ) {
+        Tessellator tessellator = Tessellator.getInstance();
+        MekanismRenderer.RenderState renderState = MekanismRenderer.pauseRenderer(tessellator);
+
+        GlStateManager.pushMatrix();
+        float newX = (float) (prevPosX + (posX - prevPosX) * (double) partialTicks - interpPosX);
+        float newY = (float) (prevPosY + (posY - prevPosY) * (double) partialTicks - interpPosY);
+        float newZ = (float) (prevPosZ + (posZ - prevPosZ) * (double) partialTicks - interpPosZ);
+
+        GlStateManager.translatef(newX, newY, newZ);
+
+        switch (direction) {
+            case WEST:
+            case EAST:
+                GlStateManager.rotatef(90, 0, 0, 1);
+                break;
+            case NORTH:
+            case SOUTH:
+                GlStateManager.rotatef(90, 1, 0, 0);
+                break;
+            default:
+                break;
+        }
+        drawLaser(buffer, tessellator);
+        GlStateManager.popMatrix();
+        MekanismRenderer.resumeRenderer(tessellator, renderState);
+    }
+
+    private void drawLaser(BufferBuilder buffer, Tessellator tessellator) {
         float uMin = getMinU();
         float uMax = getMaxU();
         float vMin = getMinV();
         float vMax = getMaxV();
-        //TODO: Do we need to disable cull, we previously had it disabled, was that for purposes of rendering when underwater
-        // if it even showed under water before or what
-        Quaternion quaternion = direction.func_229384_a_();
-        quaternion.multiply(Vector3f.field_229181_d_.func_229193_c_(RADIAN_45));
-        drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);
-        Quaternion quaternion2 = new Quaternion(quaternion);
-        quaternion2.multiply(Vector3f.field_229181_d_.func_229193_c_(RADIAN_90));
-        drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ), uMin, uMax, vMin, vMax);
+        GlStateManager.disableCull();
+        MekanismRenderer.GlowInfo glowInfo = MekanismRenderer.enableGlow();
+        drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 45);
+        drawComponent(buffer, tessellator, uMin, uMax, vMin, vMax, 90);
+        MekanismRenderer.disableGlow(glowInfo);
+        GlStateManager.enableCull();
     }
 
-    private Vector3f[] getResultVector(Quaternion quaternion, float newX, float newY, float newZ) {
-        Vector3f[] resultVector = new Vector3f[]{
-              new Vector3f(-particleScale, -halfLength, 0),
-              new Vector3f(-particleScale, halfLength, 0),
-              new Vector3f(particleScale, halfLength, 0),
-              new Vector3f(particleScale, -halfLength, 0)
-        };
-        for (Vector3f vec : resultVector) {
-            vec.func_214905_a(quaternion);
-            vec.add(newX, newY, newZ);
-        }
-        return resultVector;
-    }
-
-    private void drawComponent(IVertexBuilder vertexBuilder, Vector3f[] resultVector, float uMin, float uMax, float vMin, float vMax) {
-        vertexBuilder.func_225582_a_(resultVector[0].getX(), resultVector[0].getY(), resultVector[0].getZ()).func_225583_a_(uMax, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        vertexBuilder.func_225582_a_(resultVector[1].getX(), resultVector[1].getY(), resultVector[1].getZ()).func_225583_a_(uMax, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        vertexBuilder.func_225582_a_(resultVector[2].getX(), resultVector[2].getY(), resultVector[2].getZ()).func_225583_a_(uMin, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        vertexBuilder.func_225582_a_(resultVector[3].getX(), resultVector[3].getY(), resultVector[3].getZ()).func_225583_a_(uMin, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
+    private void drawComponent(BufferBuilder buffer, Tessellator tessellator, float uMin, float uMax, float vMin, float vMax, float angle) {
+        GlStateManager.rotatef(angle, 0, 1, 0);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+        buffer.pos(-particleScale, -length / 2, 0).tex(uMin, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        buffer.pos(-particleScale, length / 2, 0).tex(uMin, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        buffer.pos(particleScale, length / 2, 0).tex(uMax, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        buffer.pos(particleScale, -length / 2, 0).tex(uMax, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        tessellator.draw();
     }
 
     @Nonnull
     @Override
     public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        return IParticleRenderType.CUSTOM;
     }
 
     public static class Factory implements IParticleFactory<LaserParticleData> {

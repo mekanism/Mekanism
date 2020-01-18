@@ -1,17 +1,12 @@
 package mekanism.common.item.gear;
 
-import java.util.List;
-import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.armor.CustomArmor;
-import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -36,6 +31,12 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 public class ItemScubaTank extends ArmorItem implements IGasItem, ISpecialGear {
 
@@ -89,7 +90,9 @@ public class ItemScubaTank extends ArmorItem implements IGasItem, ISpecialGear {
     @Override
     @OnlyIn(Dist.CLIENT)
     public CustomArmor getGearModel() {
-        return ScubaTankArmor.SCUBA_TANK;
+        ModelCustomArmor model = ModelCustomArmor.INSTANCE;
+        model.modelType = ModelCustomArmor.ArmorModel.SCUBATANK;
+        return model;
     }
 
     public void useGas(ItemStack stack) {

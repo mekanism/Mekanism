@@ -1,6 +1,6 @@
 package mekanism.client.gui.robit;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
@@ -43,7 +43,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        RenderSystem.disableLighting();
+        GlStateManager.disableLighting();
         drawString(MekanismLang.REPAIR.translate(), 60, 6, 0x404040);
 
         int maximumCost = container.getMaximumCost();
@@ -67,7 +67,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
                 font.drawStringWithShadow(component.getFormattedText(), (float) width, 69.0F, k);
             }
         }
-        RenderSystem.enableLighting();
+        GlStateManager.enableLighting();
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

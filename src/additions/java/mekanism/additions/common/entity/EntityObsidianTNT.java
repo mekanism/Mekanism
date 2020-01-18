@@ -36,13 +36,13 @@ public class EntityObsidianTNT extends TNTEntity {
     public void tick() {
         super.tick();
         if (isAlive() && getFuse() > 0) {
-            world.addParticle(ParticleTypes.LAVA, func_226277_ct_(), func_226278_cu_() + 0.5, func_226281_cx_(), 0, 0, 0);
+            world.addParticle(ParticleTypes.LAVA, posX, posY + 0.5, posZ, 0, 0, 0);
         }
     }
 
     @Override
     protected void explode() {
-        world.createExplosion(this, func_226277_ct_(), func_226278_cu_() + (double) (getHeight() / 16.0F), func_226281_cx_(), MekanismAdditionsConfig.additions.obsidianTNTBlastRadius.get(), Mode.BREAK);
+        world.createExplosion(this, posX, posY + (double) (getHeight() / 16.0F), posZ, MekanismAdditionsConfig.additions.obsidianTNTBlastRadius.get(), Mode.BREAK);
     }
 
     @Nonnull

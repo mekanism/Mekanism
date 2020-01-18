@@ -78,14 +78,14 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
             boolean doNull = false;
             ItemStack stack = minecraft.player.inventory.getItemStack();
             ItemStack toUse = ItemStack.EMPTY;
-            if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 if (stack.getItem() instanceof BlockItem) {
                     if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                         toUse = stack.copy();
                         toUse.setCount(1);
                     }
                 }
-            } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 doNull = true;
             }
             if (!toUse.isEmpty() || doNull) {

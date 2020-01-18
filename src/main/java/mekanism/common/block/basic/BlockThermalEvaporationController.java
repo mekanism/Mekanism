@@ -62,7 +62,7 @@ public class BlockThermalEvaporationController extends BlockMekanism implements 
     @Nonnull
     @Override
     public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
-        if (!player.func_225608_bj_()) {
+        if (!player.isSneaking()) {
             TileEntityThermalEvaporationController tile = MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, world, pos);
             if (tile != null) {
                 if (!world.isRemote) {

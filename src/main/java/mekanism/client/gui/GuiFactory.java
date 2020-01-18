@@ -139,7 +139,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryCon
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (tile.hasSecondaryResourceBar()) {
-            if (button == 0 || InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            if (button == 0 || InputMappings.isKeyDown(minecraft.mainWindow.getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 double xAxis = mouseX - getGuiLeft();
                 double yAxis = mouseY - getGuiTop();
                 //TODO: Hovering over the secondary bar??

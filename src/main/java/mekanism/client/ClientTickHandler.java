@@ -181,7 +181,7 @@ public class ClientTickHandler {
             }
 
             ItemStack bootStack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.FEET);
-            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !minecraft.player.func_225608_bj_()) {
+            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !minecraft.player.isSneaking()) {
                 minecraft.player.stepHeight = 1.002F;
             } else if (minecraft.player.stepHeight == 1.002F) {
                 minecraft.player.stepHeight = 0.6F;
@@ -197,9 +197,9 @@ public class ClientTickHandler {
                 Entry<PlayerEntity, TeleportData> entry = iter.next();
                 PlayerEntity player = entry.getKey();
                 for (int i = 0; i < 100; i++) {
-                    double x = player.func_226277_ct_() + rand.nextDouble() - 0.5D;
-                    double y = player.func_226278_cu_() + rand.nextDouble() * 2 - 2D;
-                    double z = player.func_226281_cx_() + rand.nextDouble() - 0.5D;
+                    double x = player.posX + rand.nextDouble() - 0.5D;
+                    double y = player.posY + rand.nextDouble() * 2 - 2D;
+                    double z = player.posZ + rand.nextDouble() - 0.5D;
                     minecraft.world.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
                 }
 
@@ -273,7 +273,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onMouseEvent(MouseScrollEvent event) {
-        if (MekanismConfig.client.allowConfiguratorModeScroll.get() && minecraft.player != null && minecraft.player.func_225608_bj_()) {
+        if (MekanismConfig.client.allowConfiguratorModeScroll.get() && minecraft.player != null && minecraft.player.isSneaking()) {
             ItemStack stack = minecraft.player.getHeldItemMainhand();
             if (stack.getItem() instanceof ItemConfigurator) {
                 double delta = event.getScrollDelta();

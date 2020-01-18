@@ -1,15 +1,22 @@
 package mekanism.common.entity;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+
 import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.registries.MekanismEntityTypes;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
@@ -25,8 +32,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
+import net.minecraft.util.math.shapes.VoxelShapePart;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -76,17 +83,19 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
         ticksExisted++;
 
-        prevPosX = func_226277_ct_();
-        prevPosY = func_226278_cu_();
-        prevPosZ = func_226281_cx_();
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
 
         prevRotationPitch = rotationPitch;
         prevRotationYaw = rotationYaw;
 
         Vec3d motion = getMotion();
-        func_226288_n_(func_226277_ct_() + motion.getX(), func_226278_cu_() + motion.getY(), func_226281_cx_() + motion.getZ());
+        posX += motion.getX();
+        posY += motion.getY();
+        posZ += motion.getZ();
 
-        setPosition(func_226277_ct_(), func_226278_cu_(), func_226281_cx_());
+        setPosition(posX, posY, posZ);
 
         calculateVector();
         if (ticksExisted > LIFESPAN) {
@@ -96,10 +105,11 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     private void calculateVector() {
         //TODO: Reimplement this
-        /*Vec3d localVec = new Vec3d(posX, posY, posZ);
+        Vec3d localVec = new Vec3d(posX, posY, posZ);
         Vec3d motion = getMotion();
         Vec3d motionVec = new Vec3d(posX + motion.getX() * 2, posY + motion.getY() * 2, posZ + motion.getZ() * 2);
-        BlockRayTraceResult mop = world.rayTraceBlocks(localVec, motionVec, true, false, false);
+        RayTraceResult mop = world.rayTraceBlocks(new RayTraceContext(localVec, motionVec, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+        if (mop.getType() == RayTraceResult.Type.MISS) mop = null;
         localVec = new Vec3d(posX, posY, posZ);
         motionVec = new Vec3d(posX + motion.getX(), posY + motion.getY(), posZ + motion.getZ());
         if (mop != null) {
@@ -128,14 +138,13 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
 
         if (entity != null) {
-            mop = new RayTraceResult(entity);
-        }
-
-        if (mop != null && mop.entityHit instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) mop.entityHit;
-            if (player.capabilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
-                mop = null;
+            if (entity instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) entity;
+                if (/* TODO: player.capabilities.disableDamage || */ owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
+                    return;
+                }
             }
+            mop = new EntityRayTraceResult(entity);
         }
 
         if (mop != null) {
@@ -151,10 +160,11 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     } else {
                         burn(entityResult.getEntity());
                     }
+                    remove();
                 }
             } else if (mop instanceof BlockRayTraceResult) {
-                BlockRayTraceResult blockResult = mop;
-                boolean fluid = MekanismUtils.isFluid(world, new Coord4D(blockResult, world)) || MekanismUtils.isDeadFluid(world, new Coord4D(blockResult, world));
+                BlockRayTraceResult blockResult = (BlockRayTraceResult) mop;
+                boolean fluid = MekanismUtils.isFluid(world, blockResult.getPos()) || MekanismUtils.isDeadFluid(world, blockResult.getPos());
 
                 Coord4D sideCoord = new Coord4D(blockResult.getPos().offset(blockResult.getFace()), world);
 
@@ -170,9 +180,9 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
                     spawnParticlesAt(new Pos3D(this));
                     playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
                 }
+                remove();
             }
-            remove();
-        }*/
+        }
     }
 
     private boolean smeltItem(ItemEntity item) {
@@ -238,7 +248,7 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     private void spawnParticlesAt(Pos3D pos) {
         for (int i = 0; i < 10; i++) {
             world.addParticle(ParticleTypes.SMOKE, pos.x + (rand.nextFloat() - 0.5), pos.y + (rand.nextFloat() - 0.5),
-                  pos.z + (rand.nextFloat() - 0.5), 0, 0, 0);
+                    pos.z + (rand.nextFloat() - 0.5), 0, 0, 0);
         }
     }
 

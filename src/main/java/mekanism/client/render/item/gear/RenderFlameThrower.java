@@ -1,12 +1,13 @@
 package mekanism.client.render.item.gear;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFlamethrower;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 
@@ -16,40 +17,39 @@ public class RenderFlameThrower extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
+    protected void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
-        matrix.func_227860_a_();
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(160));
-        matrix.func_227861_a_(0, -1, 0);
-        matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(135));
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(-20));
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
+        GlStateManager.pushMatrix();
+        GlStateManager.rotatef(160, 0, 0, 1);
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "flamethrower.png"));
+        GlStateManager.translatef(0, -1.0F, 0);
+        GlStateManager.rotatef(135, 0, 1, 0);
+        GlStateManager.rotatef(-20, 0, 0, 1);
 
         if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_RIGHT_HAND
             || transformType == TransformType.FIRST_PERSON_LEFT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(55));
+                GlStateManager.rotatef(55, 0, 1, 0);
             } else if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-160));
-                matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(30));
+                GlStateManager.rotatef(-160, 0, 1, 0);
+                GlStateManager.rotatef(30, 1, 0, 0);
             } else if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND) {
-                matrix.func_227861_a_(0, 0.7, 0);
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(75));
+                GlStateManager.translatef(0, 0.7F, 0);
+                GlStateManager.rotatef(75, 0, 1, 0);
             } else {//if(type == TransformType.THIRD_PERSON_LEFT_HAND)
-                matrix.func_227861_a_(-0.5, 0.7, 0);
+                GlStateManager.translatef(-0.5F, 0.7F, 0);
             }
-            matrix.func_227862_a_(2.5F, 2.5F, 2.5F);
-            matrix.func_227861_a_(0, -1, -0.5);
+            GlStateManager.scalef(2.5F, 2.5F, 2.5F);
+            GlStateManager.translatef(0, -1.0F, -0.5F);
         } else if (transformType == TransformType.GUI) {
-            matrix.func_227861_a_(-0.6, 0, 0);
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(45));
+            GlStateManager.translatef(-0.6F, 0, 0);
+            GlStateManager.rotatef(45, 0, 1, 0);
         }
-        flamethrower.render(matrix, renderer, light, overlayLight);
-        matrix.func_227865_b_();
+        flamethrower.render(0.0625F);
+        GlStateManager.popMatrix();
     }
 
     @Nonnull

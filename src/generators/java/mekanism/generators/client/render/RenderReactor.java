@@ -1,57 +1,64 @@
 package mekanism.generators.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.tileentity.RenderEnergyCube;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import org.lwjgl.opengl.GL11;
 
 public class RenderReactor extends TileEntityRenderer<TileEntityReactorController> {
 
     private ModelEnergyCore core = new ModelEnergyCore();
 
-    public RenderReactor(TileEntityRendererDispatcher renderer) {
-        super(renderer);
-    }
-
     @Override
-    public void func_225616_a_(@Nonnull TileEntityReactorController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
+    public void render(TileEntityReactorController tile, double x, double y, double z, float partialTick, int destroyStage) {
         if (tile.isBurning()) {
-            matrix.func_227860_a_();
-            matrix.func_227861_a_(0.5, -1.5, 0.5);
+            GlStateManager.pushMatrix();
+            GlStateManager.translatef((float) x + 0.5F, (float) y - 1.5F, (float) z + 0.5F);
+            bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png"));
+
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlphaTest();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow();
 
             long scaledTemp = Math.round(tile.getPlasmaTemp() / 1E8);
             float ticks = MekanismClient.ticksPassed + partialTick;
             double scale = 1 + 0.7 * Math.sin(Math.toRadians(ticks * 3.14 * scaledTemp + 135F));
-            renderPart(matrix, renderer, overlayLight, EnumColor.AQUA, scale, ticks, scaledTemp, -6, -7, 0, 36);
+            renderPart(EnumColor.AQUA, scale, ticks, scaledTemp, -6, -7, 0, 36);
 
             scale = 1 + 0.8 * Math.sin(Math.toRadians(ticks * 3 * scaledTemp));
-            renderPart(matrix, renderer, overlayLight, EnumColor.RED, scale, ticks, scaledTemp, 4, 4, 0, 36);
+            renderPart(EnumColor.RED, scale, ticks, scaledTemp, 4, 4, 0, 36);
 
             scale = 1 - 0.9 * Math.sin(Math.toRadians(ticks * 4 * scaledTemp + 90F));
-            renderPart(matrix, renderer, overlayLight, EnumColor.ORANGE, scale, ticks, scaledTemp, 5, -3, -35, 106);
+            renderPart(EnumColor.ORANGE, scale, ticks, scaledTemp, 5, -3, -35, 106);
 
-            matrix.func_227865_b_();
+            MekanismRenderer.disableGlow(glowInfo);
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlphaTest();
+            GlStateManager.popMatrix();
         }
     }
 
-    private void renderPart(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int overlayLight, EnumColor color, double scale, float ticks,
-          long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
+    private void renderPart(EnumColor color, double scale, float ticks, long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
         float ticksScaledTemp = ticks * scaledTemp;
-        matrix.func_227860_a_();
-        matrix.func_227862_a_((float) scale, (float) scale, (float) scale);
-        matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(ticksScaledTemp * mult1 + shift1));
-        matrix.func_227863_a_(RenderEnergyCube.coreVec.func_229187_a_(ticksScaledTemp * mult2 + shift2));
-        core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, color, 1);
-        matrix.func_227865_b_();
+        GlStateManager.pushMatrix();
+        GlStateManager.scalef((float) scale, (float) scale, (float) scale);
+        MekanismRenderer.color(color);
+        GlStateManager.rotatef(ticksScaledTemp * mult1 + shift1, 0, 1, 0);
+        GlStateManager.rotatef(ticksScaledTemp * mult2 + shift2, 0, 1, 1);
+        core.render(0.0625F);
+        MekanismRenderer.resetColor();
+        GlStateManager.popMatrix();
     }
 
     @Override

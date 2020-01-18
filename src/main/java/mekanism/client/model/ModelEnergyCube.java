@@ -1,423 +1,417 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.Nonnull;
-import mekanism.api.RelativeSide;
-import mekanism.api.text.EnumColor;
-import mekanism.client.render.MekanismRenderType;
+import com.mojang.blaze3d.platform.GlStateManager;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 
 public class ModelEnergyCube extends Model {
 
-    private static final ResourceLocation CUBE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube.png");
     private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube_overlay_on.png");
     private static final ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube_overlay_off.png");
     private static final ResourceLocation BASE_OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "energy_cube_overlay_base.png");
-    private static final RenderType RENDER_TYPE_ON = MekanismRenderType.mekStandard(OVERLAY_ON);
-    private static final RenderType RENDER_TYPE_OFF = MekanismRenderType.mekStandard(OVERLAY_OFF);
-    private static final RenderType RENDER_TYPE_BASE = MekanismRenderType.mekStandard(BASE_OVERLAY);
 
-    private final RenderType RENDER_TYPE = func_228282_a_(CUBE_TEXTURE);
-
-    private final ModelRenderer[] leds1;
-    private final ModelRenderer[] leds2;
-    private final ModelRenderer[] ports;
-    private final ModelRenderer[] connectors;
-    private final ModelRenderer frame12;
-    private final ModelRenderer frame11;
-    private final ModelRenderer frame10;
-    private final ModelRenderer frame9;
-    private final ModelRenderer frame8;
-    private final ModelRenderer frame7;
-    private final ModelRenderer frame6;
-    private final ModelRenderer frame5;
-    private final ModelRenderer frame4;
-    private final ModelRenderer frame3;
-    private final ModelRenderer frame2;
-    private final ModelRenderer frame1;
-    private final ModelRenderer corner8;
-    private final ModelRenderer corner7;
-    private final ModelRenderer corner6;
-    private final ModelRenderer corner5;
-    private final ModelRenderer corner4;
-    private final ModelRenderer corner3;
-    private final ModelRenderer corner2;
-    private final ModelRenderer corner1;
-    private final ModelRenderer connectorBackToggle;
-    private final ModelRenderer connectorRightToggle;
-    private final ModelRenderer connectorBottomToggle;
-    private final ModelRenderer connectorLeftToggle;
-    private final ModelRenderer connectorFrontToggle;
-    private final ModelRenderer connectorTopToggle;
-    private final ModelRenderer portBackToggle;
-    private final ModelRenderer portBottomToggle;
-    private final ModelRenderer portFrontToggle;
-    private final ModelRenderer portLeftToggle;
-    private final ModelRenderer portRightToggle;
-    private final ModelRenderer portTopToggle;
-    private final ModelRenderer ledTop1;
-    private final ModelRenderer ledTop2;
-    private final ModelRenderer ledBack1;
-    private final ModelRenderer ledBack2;
-    private final ModelRenderer ledBottom2;
-    private final ModelRenderer ledBottom1;
-    private final ModelRenderer ledFront1;
-    private final ModelRenderer ledFront2;
-    private final ModelRenderer ledRight2;
-    private final ModelRenderer ledRight1;
-    private final ModelRenderer ledLeft1;
-    private final ModelRenderer ledLeft2;
+    private final RendererModel[] leds1;
+    private final RendererModel[] leds2;
+    private final RendererModel[] ports;
+    private final RendererModel[] connectors;
+    private final RendererModel frame12;
+    private final RendererModel frame11;
+    private final RendererModel frame10;
+    private final RendererModel frame9;
+    private final RendererModel frame8;
+    private final RendererModel frame7;
+    private final RendererModel frame6;
+    private final RendererModel frame5;
+    private final RendererModel frame4;
+    private final RendererModel frame3;
+    private final RendererModel frame2;
+    private final RendererModel frame1;
+    private final RendererModel corner8;
+    private final RendererModel corner7;
+    private final RendererModel corner6;
+    private final RendererModel corner5;
+    private final RendererModel corner4;
+    private final RendererModel corner3;
+    private final RendererModel corner2;
+    private final RendererModel corner1;
+    private final RendererModel connectorBackToggle;
+    private final RendererModel connectorRightToggle;
+    private final RendererModel connectorBottomToggle;
+    private final RendererModel connectorLeftToggle;
+    private final RendererModel connectorFrontToggle;
+    private final RendererModel connectorTopToggle;
+    private final RendererModel portBackToggle;
+    private final RendererModel portBottomToggle;
+    private final RendererModel portFrontToggle;
+    private final RendererModel portLeftToggle;
+    private final RendererModel portRightToggle;
+    private final RendererModel portTopToggle;
+    private final RendererModel ledTop1;
+    private final RendererModel ledTop2;
+    private final RendererModel ledBack1;
+    private final RendererModel ledBack2;
+    private final RendererModel ledBottom2;
+    private final RendererModel ledBottom1;
+    private final RendererModel ledFront1;
+    private final RendererModel ledFront2;
+    private final RendererModel ledRight2;
+    private final RendererModel ledRight1;
+    private final RendererModel ledLeft1;
+    private final RendererModel ledLeft2;
 
     public ModelEnergyCube() {
-        super(RenderType::func_228634_a_);
         textureWidth = 64;
         textureHeight = 64;
 
-        frame12 = new ModelRenderer(this, 0, 0);
-        frame12.func_228304_a_(0F, 0F, 0F, 3, 10, 3, false);
+        frame12 = new RendererModel(this, 0, 0);
+        frame12.addBox(0F, 0F, 0F, 3, 10, 3);
         frame12.setRotationPoint(-8F, 11F, 5F);
         frame12.setTextureSize(64, 64);
         frame12.mirror = true;
         setRotation(frame12, 0F, 0F, 0F);
-        frame11 = new ModelRenderer(this, 0, 0);
-        frame11.func_228304_a_(0F, 0F, 0F, 3, 10, 3, false);
+        frame11 = new RendererModel(this, 0, 0);
+        frame11.addBox(0F, 0F, 0F, 3, 10, 3);
         frame11.setRotationPoint(5F, 11F, -8F);
         frame11.setTextureSize(64, 64);
         frame11.mirror = true;
         setRotation(frame11, 0F, 0F, 0F);
-        frame10 = new ModelRenderer(this, 0, 13);
-        frame10.func_228304_a_(0F, 0F, 0F, 10, 3, 3, false);
+        frame10 = new RendererModel(this, 0, 13);
+        frame10.addBox(0F, 0F, 0F, 10, 3, 3);
         frame10.setRotationPoint(-5F, 21F, 5F);
         frame10.setTextureSize(64, 64);
         frame10.mirror = true;
         setRotation(frame10, 0F, 0F, 0F);
-        frame9 = new ModelRenderer(this, 12, 0);
-        frame9.func_228304_a_(0F, 0F, 0F, 3, 3, 10, false);
+        frame9 = new RendererModel(this, 12, 0);
+        frame9.addBox(0F, 0F, 0F, 3, 3, 10);
         frame9.setRotationPoint(5F, 21F, -5F);
         frame9.setTextureSize(64, 64);
         frame9.mirror = true;
         setRotation(frame9, 0F, 0F, 0F);
-        frame8 = new ModelRenderer(this, 0, 13);
-        frame8.func_228304_a_(0F, 0F, 0F, 10, 3, 3, false);
+        frame8 = new RendererModel(this, 0, 13);
+        frame8.addBox(0F, 0F, 0F, 10, 3, 3);
         frame8.setRotationPoint(-5F, 8F, 5F);
         frame8.setTextureSize(64, 64);
         frame8.mirror = true;
         setRotation(frame8, 0F, 0F, 0F);
-        frame7 = new ModelRenderer(this, 0, 13);
-        frame7.func_228304_a_(0F, 0F, 0F, 10, 3, 3, false);
+        frame7 = new RendererModel(this, 0, 13);
+        frame7.addBox(0F, 0F, 0F, 10, 3, 3);
         frame7.setRotationPoint(-5F, 21F, -8F);
         frame7.setTextureSize(64, 64);
         frame7.mirror = true;
         setRotation(frame7, 0F, 0F, 0F);
-        frame6 = new ModelRenderer(this, 0, 0);
-        frame6.func_228304_a_(0F, 0F, 0F, 3, 10, 3, false);
+        frame6 = new RendererModel(this, 0, 0);
+        frame6.addBox(0F, 0F, 0F, 3, 10, 3);
         frame6.setRotationPoint(5F, 11F, 5F);
         frame6.setTextureSize(64, 64);
         frame6.mirror = true;
         setRotation(frame6, 0F, 0F, 0F);
-        frame5 = new ModelRenderer(this, 0, 0);
-        frame5.func_228304_a_(0F, 0F, 0F, 3, 10, 3, false);
+        frame5 = new RendererModel(this, 0, 0);
+        frame5.addBox(0F, 0F, 0F, 3, 10, 3);
         frame5.setRotationPoint(-8F, 11F, -8F);
         frame5.setTextureSize(64, 64);
         frame5.mirror = true;
         setRotation(frame5, 0F, 0F, 0F);
-        frame4 = new ModelRenderer(this, 12, 0);
-        frame4.func_228304_a_(0F, 0F, 0F, 3, 3, 10, false);
+        frame4 = new RendererModel(this, 12, 0);
+        frame4.addBox(0F, 0F, 0F, 3, 3, 10);
         frame4.setRotationPoint(5F, 8F, -5F);
         frame4.setTextureSize(64, 64);
         frame4.mirror = true;
         setRotation(frame4, 0F, 0F, 0F);
-        frame3 = new ModelRenderer(this, 12, 0);
-        frame3.func_228304_a_(0F, 0F, 0F, 3, 3, 10, false);
+        frame3 = new RendererModel(this, 12, 0);
+        frame3.addBox(0F, 0F, 0F, 3, 3, 10);
         frame3.setRotationPoint(-8F, 21F, -5F);
         frame3.setTextureSize(64, 64);
         frame3.mirror = true;
         setRotation(frame3, 0F, 0F, 0F);
-        frame2 = new ModelRenderer(this, 12, 0);
-        frame2.func_228304_a_(0F, 0F, 0F, 3, 3, 10, false);
+        frame2 = new RendererModel(this, 12, 0);
+        frame2.addBox(0F, 0F, 0F, 3, 3, 10);
         frame2.setRotationPoint(-8F, 8F, -5F);
         frame2.setTextureSize(64, 64);
         frame2.mirror = true;
         setRotation(frame2, 0F, 0F, 0F);
-        frame1 = new ModelRenderer(this, 0, 13);
-        frame1.func_228304_a_(0F, 0F, 0F, 10, 3, 3, false);
+        frame1 = new RendererModel(this, 0, 13);
+        frame1.addBox(0F, 0F, 0F, 10, 3, 3);
         frame1.setRotationPoint(-5F, 8F, -8F);
         frame1.setTextureSize(64, 64);
         frame1.mirror = true;
         setRotation(frame1, 0F, 0F, 0F);
-        corner8 = new ModelRenderer(this, 26, 13);
-        corner8.func_228304_a_(0F, 0F, 0F, 3, 3, 3, false);
+        corner8 = new RendererModel(this, 26, 13);
+        corner8.addBox(0F, 0F, 0F, 3, 3, 3);
         corner8.setRotationPoint(5F, 21F, 5F);
         corner8.setTextureSize(64, 64);
         corner8.mirror = true;
         setRotation(corner8, 0F, 0F, 0F);
-        corner7 = new ModelRenderer(this, 26, 13);
-        corner7.func_228304_a_(0F, 0F, 0F, 3, 3, 3, false);
+        corner7 = new RendererModel(this, 26, 13);
+        corner7.addBox(0F, 0F, 0F, 3, 3, 3);
         corner7.setRotationPoint(5F, 21F, -8F);
         corner7.setTextureSize(64, 64);
         corner7.mirror = true;
         setRotation(corner7, 0F, 0F, 0F);
-        corner6 = new ModelRenderer(this, 26, 13);
-        corner6.func_228304_a_(0F, 0F, 0F, 3, 3, 3, false);
+        corner6 = new RendererModel(this, 26, 13);
+        corner6.addBox(0F, 0F, 0F, 3, 3, 3);
         corner6.setRotationPoint(-8F, 21F, 5F);
         corner6.setTextureSize(64, 64);
         corner6.mirror = true;
         setRotation(corner6, 0F, 0F, 0F);
-        corner5 = new ModelRenderer(this, 26, 13);
-        corner5.func_228304_a_(0F, 0F, 0F, 3, 3, 3, false);
+        corner5 = new RendererModel(this, 26, 13);
+        corner5.addBox(0F, 0F, 0F, 3, 3, 3);
         corner5.setRotationPoint(-8F, 21F, -8F);
         corner5.setTextureSize(64, 64);
         corner5.mirror = true;
         setRotation(corner5, 0F, 0F, 0F);
-        corner4 = new ModelRenderer(this, 26, 13);
-        corner4.func_228304_a_(0F, 0F, 0F, 3, 3, 3, false);
+        corner4 = new RendererModel(this, 26, 13);
+        corner4.addBox(0F, 0F, 0F, 3, 3, 3);
         corner4.setRotationPoint(5F, 8F, 5F);
         corner4.setTextureSize(64, 64);
         corner4.mirror = true;
         setRotation(corner4, 0F, 0F, 0F);
-        corner3 = new ModelRenderer(this, 26, 13);
-        corner3.func_228304_a_(0F, 0F, 0F, 3, 3, 3, false);
+        corner3 = new RendererModel(this, 26, 13);
+        corner3.addBox(0F, 0F, 0F, 3, 3, 3);
         corner3.setRotationPoint(5F, 8F, -8F);
         corner3.setTextureSize(64, 64);
         corner3.mirror = true;
         setRotation(corner3, 0F, 0F, 0F);
-        corner2 = new ModelRenderer(this, 26, 13);
-        corner2.func_228304_a_(0F, 0F, 0F, 3, 3, 3, false);
+        corner2 = new RendererModel(this, 26, 13);
+        corner2.addBox(0F, 0F, 0F, 3, 3, 3);
         corner2.setRotationPoint(-8F, 8F, 5F);
         corner2.setTextureSize(64, 64);
         corner2.mirror = true;
         setRotation(corner2, 0F, 0F, 0F);
-        corner1 = new ModelRenderer(this, 26, 13);
-        corner1.func_228304_a_(0F, 0F, 0F, 3, 3, 3, false);
+        corner1 = new RendererModel(this, 26, 13);
+        corner1.addBox(0F, 0F, 0F, 3, 3, 3);
         corner1.setRotationPoint(-8F, 8F, -8F);
         corner1.setTextureSize(64, 64);
         corner1.mirror = true;
         setRotation(corner1, 0F, 0F, 0F);
-        connectorBackToggle = new ModelRenderer(this, 38, 16);
-        connectorBackToggle.func_228304_a_(0F, 0F, 0F, 10, 6, 1, false);
+        connectorBackToggle = new RendererModel(this, 38, 16);
+        connectorBackToggle.addBox(0F, 0F, 0F, 10, 6, 1);
         connectorBackToggle.setRotationPoint(-5F, 13F, 6F);
         connectorBackToggle.setTextureSize(64, 64);
         connectorBackToggle.mirror = true;
         setRotation(connectorBackToggle, 0F, 0F, 0F);
-        connectorRightToggle = new ModelRenderer(this, 38, 0);
-        connectorRightToggle.func_228304_a_(0F, 0F, 0F, 1, 6, 10, false);
+        connectorRightToggle = new RendererModel(this, 38, 0);
+        connectorRightToggle.addBox(0F, 0F, 0F, 1, 6, 10);
         connectorRightToggle.setRotationPoint(6F, 13F, -5F);
         connectorRightToggle.setTextureSize(64, 64);
         connectorRightToggle.mirror = true;
         setRotation(connectorRightToggle, 0F, 0F, 0F);
-        connectorBottomToggle = new ModelRenderer(this, 0, 19);
-        connectorBottomToggle.func_228304_a_(0F, 0F, 0F, 10, 1, 6, false);
+        connectorBottomToggle = new RendererModel(this, 0, 19);
+        connectorBottomToggle.addBox(0F, 0F, 0F, 10, 1, 6);
         connectorBottomToggle.setRotationPoint(-5F, 22F, -3F);
         connectorBottomToggle.setTextureSize(64, 64);
         connectorBottomToggle.mirror = true;
         setRotation(connectorBottomToggle, 0F, 0F, 0F);
-        connectorLeftToggle = new ModelRenderer(this, 38, 0);
-        connectorLeftToggle.func_228304_a_(0F, 0F, 0F, 1, 6, 10, false);
+        connectorLeftToggle = new RendererModel(this, 38, 0);
+        connectorLeftToggle.addBox(0F, 0F, 0F, 1, 6, 10);
         connectorLeftToggle.setRotationPoint(-7F, 13F, -5F);
         connectorLeftToggle.setTextureSize(64, 64);
         connectorLeftToggle.mirror = true;
         setRotation(connectorLeftToggle, 0F, 0F, 0F);
-        connectorFrontToggle = new ModelRenderer(this, 38, 16);
-        connectorFrontToggle.func_228304_a_(0F, 0F, 0F, 10, 6, 1, false);
+        connectorFrontToggle = new RendererModel(this, 38, 16);
+        connectorFrontToggle.addBox(0F, 0F, 0F, 10, 6, 1);
         connectorFrontToggle.setRotationPoint(-5F, 13F, -7F);
         connectorFrontToggle.setTextureSize(64, 64);
         connectorFrontToggle.mirror = true;
         setRotation(connectorFrontToggle, 0F, 0F, 0F);
-        connectorTopToggle = new ModelRenderer(this, 0, 19);
-        connectorTopToggle.func_228304_a_(0F, 0F, 0F, 10, 1, 6, false);
+        connectorTopToggle = new RendererModel(this, 0, 19);
+        connectorTopToggle.addBox(0F, 0F, 0F, 10, 1, 6);
         connectorTopToggle.setRotationPoint(-5F, 9F, -3F);
         connectorTopToggle.setTextureSize(64, 64);
         connectorTopToggle.mirror = true;
         setRotation(connectorTopToggle, 0F, 0F, 0F);
-        portBackToggle = new ModelRenderer(this, 18, 35);
-        portBackToggle.func_228304_a_(0F, 0F, 0F, 8, 8, 1, false);
+        portBackToggle = new RendererModel(this, 18, 35);
+        portBackToggle.addBox(0F, 0F, 0F, 8, 8, 1);
         portBackToggle.setRotationPoint(-4F, 12F, 7F);
         portBackToggle.setTextureSize(64, 64);
         portBackToggle.mirror = true;
         setRotation(portBackToggle, 0F, 0F, 0F);
-        portBottomToggle = new ModelRenderer(this, 0, 26);
-        portBottomToggle.func_228304_a_(0F, 0F, 0F, 8, 1, 8, false);
+        portBottomToggle = new RendererModel(this, 0, 26);
+        portBottomToggle.addBox(0F, 0F, 0F, 8, 1, 8);
         portBottomToggle.setRotationPoint(-4F, 23F, -4F);
         portBottomToggle.setTextureSize(64, 64);
         portBottomToggle.mirror = true;
         setRotation(portBottomToggle, 0F, 0F, 0F);
-        portFrontToggle = new ModelRenderer(this, 18, 35);
-        portFrontToggle.func_228304_a_(0F, 0F, 0F, 8, 8, 1, false);
+        portFrontToggle = new RendererModel(this, 18, 35);
+        portFrontToggle.addBox(0F, 0F, 0F, 8, 8, 1);
         portFrontToggle.setRotationPoint(-4F, 12F, -8F);
         portFrontToggle.setTextureSize(64, 64);
         portFrontToggle.mirror = true;
         setRotation(portFrontToggle, 0F, 0F, 0F);
-        portLeftToggle = new ModelRenderer(this, 0, 35);
-        portLeftToggle.func_228304_a_(0F, 0F, 0F, 1, 8, 8, false);
+        portLeftToggle = new RendererModel(this, 0, 35);
+        portLeftToggle.addBox(0F, 0F, 0F, 1, 8, 8);
         portLeftToggle.setRotationPoint(-8F, 12F, -4F);
         portLeftToggle.setTextureSize(64, 64);
         portLeftToggle.mirror = true;
         setRotation(portLeftToggle, 0F, 0F, 0F);
-        portRightToggle = new ModelRenderer(this, 0, 35);
-        portRightToggle.func_228304_a_(0F, 0F, 0F, 1, 8, 8, false);
+        portRightToggle = new RendererModel(this, 0, 35);
+        portRightToggle.addBox(0F, 0F, 0F, 1, 8, 8);
         portRightToggle.setRotationPoint(7F, 12F, -4F);
         portRightToggle.setTextureSize(64, 64);
         portRightToggle.mirror = true;
         setRotation(portRightToggle, 0F, 0F, 0F);
-        portTopToggle = new ModelRenderer(this, 0, 26);
-        portTopToggle.func_228304_a_(0F, 0F, 0F, 8, 1, 8, false);
+        portTopToggle = new RendererModel(this, 0, 26);
+        portTopToggle.addBox(0F, 0F, 0F, 8, 1, 8);
         portTopToggle.setRotationPoint(-4F, 8F, -4F);
         portTopToggle.setTextureSize(64, 64);
         portTopToggle.mirror = true;
         setRotation(portTopToggle, 0F, 0F, 0F);
-        ledTop1 = new ModelRenderer(this, 0, 51);
-        ledTop1.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledTop1 = new RendererModel(this, 0, 51);
+        ledTop1.addBox(0F, 0F, 0F, 1, 1, 1);
         ledTop1.setRotationPoint(-5.5F, 8.1F, -0.5F);
         ledTop1.setTextureSize(64, 64);
         ledTop1.mirror = true;
         setRotation(ledTop1, 0F, 0F, 0F);
-        ledTop2 = new ModelRenderer(this, 0, 51);
-        ledTop2.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledTop2 = new RendererModel(this, 0, 51);
+        ledTop2.addBox(0F, 0F, 0F, 1, 1, 1);
         ledTop2.setRotationPoint(4.5F, 8.1F, -0.5F);
         ledTop2.setTextureSize(64, 64);
         ledTop2.mirror = true;
         setRotation(ledTop2, 0F, 0F, 0F);
-        ledBack1 = new ModelRenderer(this, 0, 51);
-        ledBack1.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledBack1 = new RendererModel(this, 0, 51);
+        ledBack1.addBox(0F, 0F, 0F, 1, 1, 1);
         ledBack1.setRotationPoint(-5.5F, 15.5F, 6.9F);
         ledBack1.setTextureSize(64, 64);
         ledBack1.mirror = true;
         setRotation(ledBack1, 0F, 0F, 0F);
-        ledBack2 = new ModelRenderer(this, 0, 51);
-        ledBack2.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledBack2 = new RendererModel(this, 0, 51);
+        ledBack2.addBox(0F, 0F, 0F, 1, 1, 1);
         ledBack2.setRotationPoint(4.5F, 15.5F, 6.9F);
         ledBack2.setTextureSize(64, 64);
         ledBack2.mirror = true;
         setRotation(ledBack2, 0F, 0F, 0F);
-        ledBottom2 = new ModelRenderer(this, 0, 51);
-        ledBottom2.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledBottom2 = new RendererModel(this, 0, 51);
+        ledBottom2.addBox(0F, 0F, 0F, 1, 1, 1);
         ledBottom2.setRotationPoint(4.5F, 22.9F, -0.5F);
         ledBottom2.setTextureSize(64, 64);
         ledBottom2.mirror = true;
         setRotation(ledBottom2, 0F, 0F, 0F);
-        ledBottom1 = new ModelRenderer(this, 0, 51);
-        ledBottom1.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledBottom1 = new RendererModel(this, 0, 51);
+        ledBottom1.addBox(0F, 0F, 0F, 1, 1, 1);
         ledBottom1.setRotationPoint(-5.5F, 22.9F, -0.5F);
         ledBottom1.setTextureSize(64, 64);
         ledBottom1.mirror = true;
         setRotation(ledBottom1, 0F, 0F, 0F);
-        ledFront1 = new ModelRenderer(this, 0, 51);
-        ledFront1.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledFront1 = new RendererModel(this, 0, 51);
+        ledFront1.addBox(0F, 0F, 0F, 1, 1, 1);
         ledFront1.setRotationPoint(-5.5F, 15.5F, -7.9F);
         ledFront1.setTextureSize(64, 64);
         ledFront1.mirror = true;
         setRotation(ledFront1, 0F, 0F, 0F);
-        ledFront2 = new ModelRenderer(this, 0, 51);
-        ledFront2.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledFront2 = new RendererModel(this, 0, 51);
+        ledFront2.addBox(0F, 0F, 0F, 1, 1, 1);
         ledFront2.setRotationPoint(4.5F, 15.5F, -7.9F);
         ledFront2.setTextureSize(64, 64);
         ledFront2.mirror = true;
         setRotation(ledFront2, 0F, 0F, 0F);
-        ledRight2 = new ModelRenderer(this, 0, 51);
-        ledRight2.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledRight2 = new RendererModel(this, 0, 51);
+        ledRight2.addBox(0F, 0F, 0F, 1, 1, 1);
         ledRight2.setRotationPoint(6.9F, 15.5F, 4.5F);
         ledRight2.setTextureSize(64, 64);
         ledRight2.mirror = true;
         setRotation(ledRight2, 0F, 0F, 0F);
-        ledRight1 = new ModelRenderer(this, 0, 51);
-        ledRight1.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledRight1 = new RendererModel(this, 0, 51);
+        ledRight1.addBox(0F, 0F, 0F, 1, 1, 1);
         ledRight1.setRotationPoint(6.9F, 15.5F, -5.5F);
         ledRight1.setTextureSize(64, 64);
         ledRight1.mirror = true;
         setRotation(ledRight1, 0F, 0F, 0F);
-        ledLeft1 = new ModelRenderer(this, 0, 51);
-        ledLeft1.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledLeft1 = new RendererModel(this, 0, 51);
+        ledLeft1.addBox(0F, 0F, 0F, 1, 1, 1);
         ledLeft1.setRotationPoint(-7.9F, 15.5F, 4.5F);
         ledLeft1.setTextureSize(64, 64);
         ledLeft1.mirror = true;
         setRotation(ledLeft1, 0F, 0F, 0F);
-        ledLeft2 = new ModelRenderer(this, 0, 51);
-        ledLeft2.func_228304_a_(0F, 0F, 0F, 1, 1, 1, false);
+        ledLeft2 = new RendererModel(this, 0, 51);
+        ledLeft2.addBox(0F, 0F, 0F, 1, 1, 1);
         ledLeft2.setRotationPoint(-7.9F, 15.5F, -5.5F);
         ledLeft2.setTextureSize(64, 64);
         ledLeft2.mirror = true;
         setRotation(ledLeft2, 0F, 0F, 0F);
 
-        leds1 = new ModelRenderer[]{ledFront1, ledLeft1, ledRight1, ledBack1, ledTop1, ledBottom1};
-        leds2 = new ModelRenderer[]{ledFront2, ledLeft2, ledRight2, ledBack2, ledTop2, ledBottom2};
+        leds1 = new RendererModel[]{ledBottom1, ledTop1, ledFront1, ledBack1, ledLeft1, ledRight1};
+        leds2 = new RendererModel[]{ledBottom2, ledTop2, ledFront2, ledBack2, ledLeft2, ledRight2};
 
-        ports = new ModelRenderer[]{portFrontToggle, portLeftToggle, portRightToggle, portBackToggle, portTopToggle, portBottomToggle};
-        connectors = new ModelRenderer[]{connectorFrontToggle, connectorLeftToggle, connectorRightToggle, connectorBackToggle, connectorTopToggle, connectorBottomToggle};
+        ports = new RendererModel[]{portBottomToggle, portTopToggle, portFrontToggle, portBackToggle, portLeftToggle, portRightToggle};
+        connectors = new RendererModel[]{connectorBottomToggle, connectorTopToggle, connectorFrontToggle, connectorBackToggle, connectorLeftToggle, connectorRightToggle};
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, EnergyCubeTier tier, boolean renderMain) {
+    public void render(float size, EnergyCubeTier tier, TextureManager manager, boolean renderMain) {
         if (renderMain) {
-            func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, 1, 1, 1, 1);
+            frame12.render(size);
+            frame11.render(size);
+            frame10.render(size);
+            frame9.render(size);
+            frame8.render(size);
+            frame7.render(size);
+            frame6.render(size);
+            frame5.render(size);
+            frame4.render(size);
+            frame3.render(size);
+            frame2.render(size);
+            frame1.render(size);
+
+            corner8.render(size);
+            corner7.render(size);
+            corner6.render(size);
+            corner5.render(size);
+            corner4.render(size);
+            corner3.render(size);
+            corner2.render(size);
+            corner1.render(size);
         }
-        EnumColor color = tier.getBaseTier().getColor();
-        renderCorners(matrix, renderer.getBuffer(RENDER_TYPE_BASE), MekanismRenderer.FULL_LIGHT, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+
+        GlStateManager.pushMatrix();
+        GlStateManager.scalef(1.001F, 1.005F, 1.001F);
+        GlStateManager.translatef(0, -0.0061F, 0);
+        manager.bindTexture(BASE_OVERLAY);
+        MekanismRenderer.color(tier.getBaseTier().getColor());
+        GlowInfo glowInfo = MekanismRenderer.enableGlow();
+
+        corner8.render(size);
+        corner7.render(size);
+        corner6.render(size);
+        corner5.render(size);
+        corner4.render(size);
+        corner3.render(size);
+        corner2.render(size);
+        corner1.render(size);
+
+        MekanismRenderer.disableGlow(glowInfo);
+        MekanismRenderer.resetColor();
+        GlStateManager.popMatrix();
     }
 
-    @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        frame12.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame11.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame10.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame9.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        frame1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-
-        corner8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void renderCorners(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        matrix.func_227860_a_();
-        matrix.func_227862_a_(1.001F, 1.005F, 1.001F);
-        matrix.func_227861_a_(0, -0.0061, 0);
-        corner8.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner7.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner6.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner5.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner4.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner3.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner2.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        corner1.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        matrix.func_227865_b_();
-    }
-
-    public void renderSide(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, RelativeSide side, boolean canInput, boolean canOutput) {
+    public void renderSide(float size, Direction side, boolean canInput, boolean canOutput, TextureManager renderer) {
         if (canInput || canOutput) {
-            IVertexBuilder buffer = renderer.getBuffer(RENDER_TYPE);
-            connectors[side.ordinal()].func_228309_a_(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
-            ports[side.ordinal()].func_228309_a_(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
+            connectors[side.ordinal()].render(size);
+            ports[side.ordinal()].render(size);
         }
+
+        GlowInfo glowInfo;
         if (canOutput) {
-            light = MekanismRenderer.FULL_LIGHT;
-            ports[side.ordinal()].func_228309_a_(matrix, renderer.getBuffer(RENDER_TYPE_BASE), light, overlayLight, 1, 1, 1, 1);
+            glowInfo = MekanismRenderer.enableGlow();
+            renderer.bindTexture(BASE_OVERLAY);
+            ports[side.ordinal()].render(size);
+        } else {
+            glowInfo = MekanismRenderer.NO_GLOW;
         }
-        IVertexBuilder ledBuffer = renderer.getBuffer(canOutput ? RENDER_TYPE_ON : RENDER_TYPE_OFF);
-        leds1[side.ordinal()].func_228309_a_(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
-        leds2[side.ordinal()].func_228309_a_(matrix, ledBuffer, light, overlayLight, 1, 1, 1, 1);
+
+        renderer.bindTexture(canOutput ? OVERLAY_ON : OVERLAY_OFF);
+
+        leds1[side.ordinal()].render(size);
+        leds2[side.ordinal()].render(size);
+        MekanismRenderer.disableGlow(glowInfo);
     }
 
-    private void setRotation(ModelRenderer model, float x, float y, float z) {
+    private void setRotation(RendererModel model, float x, float y, float z) {
         model.rotateAngleX = x;
         model.rotateAngleY = y;
         model.rotateAngleZ = z;
@@ -425,32 +419,21 @@ public class ModelEnergyCube extends Model {
 
     public static class ModelEnergyCore extends Model {
 
-        private static final ResourceLocation CORE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
-
-        private final RenderType RENDER_TYPE = func_228282_a_(CORE_TEXTURE);
-        private ModelRenderer cube;
+        private RendererModel cube;
 
         public ModelEnergyCore() {
-            super(MekanismRenderType::mekStandard);
             textureWidth = 32;
             textureHeight = 32;
 
-            cube = new ModelRenderer(this, 0, 0);
-            cube.func_228304_a_(-8, -8, -8, 16, 16, 16, false);
+            cube = new RendererModel(this, 0, 0);
+            cube.addBox(-8, -8, -8, 16, 16, 16);
             cube.setRotationPoint(0, 0, 0);
             cube.setTextureSize(32, 32);
             cube.mirror = true;
         }
 
-        public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, EnumColor color, float energyPercentage) {
-            cube.func_228309_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2),
-                  energyPercentage);
-        }
-
-        @Override
-        public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
-              float alpha) {
-            cube.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        public void render(float size) {
+            cube.render(size);
         }
     }
 }

@@ -1,16 +1,18 @@
 package mekanism.client.render;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -18,124 +20,161 @@ public final class FluidRenderer {
 
     private static final int BLOCK_STAGES = 1000;
 
-    private static Map<RenderData, Map<Integer, Model3D>> cachedCenterFluids = new HashMap<>();
-    private static Map<ValveRenderData, Model3D> cachedValveFluids = new HashMap<>();
+    private static Map<RenderData, DisplayInteger[]> cachedCenterFluids = new HashMap<>();
+    private static Map<ValveRenderData, DisplayInteger> cachedValveFluids = new HashMap<>();
 
-    public static Model3D getFluidModel(RenderData data, double fluidScale) {
-        int maxStages = data.height * BLOCK_STAGES;
-        int stage;
-        if (data.fluidType.getFluid().getAttributes().isGaseous(data.fluidType)) {
-            stage = maxStages;
-        } else {
-            stage = Math.min(maxStages, (int) (fluidScale * maxStages));
-        }
-        Map<Integer, Model3D> cachedCenter;
+    public static void translateToOrigin(Coord4D origin) {
+        GlStateManager.translatef((float) getX(origin.x), (float) getY(origin.y), (float) getZ(origin.z));
+    }
+
+    public static int getStages(RenderData data) {
+        return data.height * BLOCK_STAGES;
+    }
+
+    public static DisplayInteger getTankDisplay(RenderData data) {
+        return getTankDisplay(data, 1);
+    }
+
+    public static DisplayInteger getTankDisplay(RenderData data, double scale) {
+        int maxStages = getStages(data);
+        int stage = Math.min(maxStages, (int) (scale * maxStages));
+        DisplayInteger[] cachedCenter;
         if (cachedCenterFluids.containsKey(data)) {
             cachedCenter = cachedCenterFluids.get(data);
-            if (cachedCenter.containsKey(stage)) {
-                return cachedCenter.get(stage);
+
+            if (cachedCenter[stage] != null) {
+                return cachedCenter[stage];
             }
         } else {
-            cachedCenterFluids.put(data, cachedCenter = new Int2ObjectOpenHashMap<>());
+            cachedCenterFluids.put(data, cachedCenter = new DisplayInteger[maxStages + 1]);
         }
         if (maxStages == 0) {
             maxStages = stage = 1;
         }
 
-        Model3D model = new Model3D();
+        Model3D toReturn = new Model3D();
         BlockState state = MekanismUtils.getFlowingBlockState(data.fluidType);
-        //TODO: Check air better, given we don't have any position information
-        model.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
-        model.setTexture(MekanismRenderer.getFluidTexture(data.fluidType, FluidType.STILL));
+        //TODO: Check air better?
+        toReturn.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
+        toReturn.setTexture(MekanismRenderer.getFluidTexture(data.fluidType, FluidType.STILL));
 
-        cachedCenter.put(stage, model);
-        model.minX = 0.01;
-        model.minY = 0.01;
-        model.minZ = 0.01;
+        DisplayInteger display = DisplayInteger.createAndStart();
+        cachedCenter[stage] = display;
 
-        model.maxX = data.length - .01;
-        model.maxY = ((float) stage / (float) maxStages) * data.height - .01;
-        model.maxZ = data.width - .01;
-        return model;
+        if (data.fluidType.getFluid().getAttributes().getStill(data.fluidType) != null) {
+            toReturn.minX = 0.01;
+            toReturn.minY = 0.01;
+            toReturn.minZ = 0.01;
+
+            toReturn.maxX = data.length - .01;
+            toReturn.maxY = ((float) stage / (float) maxStages) * data.height - .01;
+            toReturn.maxZ = data.width - .01;
+
+            MekanismRenderer.renderObject(toReturn);
+        }
+
+        GlStateManager.endList();
+
+        return display;
     }
 
-    public static Model3D getValveModel(ValveRenderData data) {
+    public static DisplayInteger getValveDisplay(ValveRenderData data) {
         if (cachedValveFluids.containsKey(data)) {
             return cachedValveFluids.get(data);
         }
 
-        Model3D model = new Model3D();
-        model.baseBlock = Blocks.WATER;
-        MekanismRenderer.prepFlowing(model, data.fluidType);
+        Model3D toReturn = new Model3D();
+        toReturn.baseBlock = Blocks.WATER;
+        MekanismRenderer.prepFlowing(toReturn, data.fluidType);
 
-        cachedValveFluids.put(data, model);
+        DisplayInteger display = DisplayInteger.createAndStart();
+        cachedValveFluids.put(data, display);
 
         switch (data.side) {
             case DOWN:
-                model.minX = 0.3;
-                model.minY = 1.01;
-                model.minZ = 0.3;
+                toReturn.minX = 0.3;
+                toReturn.minY = 1.01;
+                toReturn.minZ = 0.3;
 
-                model.maxX = 0.7;
-                model.maxY = 1.5;
-                model.maxZ = 0.7;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = 1.5;
+                toReturn.maxZ = 0.7;
                 break;
             case UP:
-                model.minX = 0.3;
-                model.minY = -data.height - 0.01;
-                model.minZ = 0.3;
+                toReturn.minX = 0.3;
+                toReturn.minY = -data.height - 0.01;
+                toReturn.minZ = 0.3;
 
-                model.maxX = 0.7;
-                model.maxY = -0.01;
-                model.maxZ = 0.7;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = -0.01;
+                toReturn.maxZ = 0.7;
                 break;
             case NORTH:
-                model.minX = 0.3;
-                model.minY = -getValveFluidHeight(data) + 0.01;
-                model.minZ = 1.02;
+                toReturn.minX = 0.3;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = 1.02;
 
-                model.maxX = 0.7;
-                model.maxY = 0.7;
-                model.maxZ = 1.4;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = 1.4;
                 break;
             case SOUTH:
-                model.minX = 0.3;
-                model.minY = -getValveFluidHeight(data) + 0.01;
-                model.minZ = -0.4;
+                toReturn.minX = 0.3;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = -0.4;
 
-                model.maxX = 0.7;
-                model.maxY = 0.7;
-                model.maxZ = -0.02;
+                toReturn.maxX = 0.7;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = -0.02;
                 break;
             case WEST:
-                model.minX = 1.02;
-                model.minY = -getValveFluidHeight(data) + 0.01;
-                model.minZ = 0.3;
+                toReturn.minX = 1.02;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = 0.3;
 
-                model.maxX = 1.4;
-                model.maxY = 0.7;
-                model.maxZ = 0.7;
+                toReturn.maxX = 1.4;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = 0.7;
                 break;
             case EAST:
-                model.minX = -0.4;
-                model.minY = -getValveFluidHeight(data) + 0.01;
-                model.minZ = 0.3;
+                toReturn.minX = -0.4;
+                toReturn.minY = -getValveFluidHeight(data) + 0.01;
+                toReturn.minZ = 0.3;
 
-                model.maxX = -0.02;
-                model.maxY = 0.7;
-                model.maxZ = 0.7;
+                toReturn.maxX = -0.02;
+                toReturn.maxY = 0.7;
+                toReturn.maxZ = 0.7;
                 break;
             default:
                 break;
         }
-        return model;
+
+        if (data.fluidType.getFluid().getAttributes().getFlowing(data.fluidType) != null) {
+            MekanismRenderer.renderObject(toReturn);
+        }
+
+        GlStateManager.endList();
+
+        return display;
     }
 
     private static int getValveFluidHeight(ValveRenderData data) {
         return data.valveLocation.y - data.location.y;
     }
 
-    public static void resetCachedModels() {
+    private static double getX(int x) {
+        return x - TileEntityRendererDispatcher.staticPlayerX;
+    }
+
+    private static double getY(int y) {
+        return y - TileEntityRendererDispatcher.staticPlayerY;
+    }
+
+    private static double getZ(int z) {
+        return z - TileEntityRendererDispatcher.staticPlayerZ;
+    }
+
+    public static void resetDisplayInts() {
         cachedCenterFluids.clear();
         cachedValveFluids.clear();
     }

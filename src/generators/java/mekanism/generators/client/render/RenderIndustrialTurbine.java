@@ -1,39 +1,38 @@
 package mekanism.generators.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
-import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
+
+import javax.annotation.Nonnull;
 
 public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbineCasing> {
 
     @Nonnull
     private static FluidStack STEAM = FluidStack.EMPTY;
 
-    public RenderIndustrialTurbine(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    @Override
+    public void render(TileEntityTurbineCasing tile, double x, double y, double z, float partialTick, int destroyStage) {
+        renderAModelAt(tile, x, y, z, partialTick, destroyStage);
     }
 
-    @Override
-    public void func_225616_a_(@Nonnull TileEntityTurbineCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
+    public void renderAModelAt(TileEntityTurbineCasing tile, double x, double y, double z, float partialTick, int destroyStage) {
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null) {
             RenderTurbineRotor.internalRender = true;
-            BlockPos pos = tile.getPos();
             BlockPos complexPos = tile.structure.complex.getPos();
 
             while (true) {
@@ -42,10 +41,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
                 if (rotor == null) {
                     break;
                 }
-                matrix.func_227860_a_();
-                matrix.func_227861_a_(complexPos.getX() - pos.getX(), complexPos.getY() - pos.getY(), complexPos.getZ() - pos.getZ());
-                field_228858_b_.func_228852_a_(rotor, matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight);
-                matrix.func_227865_b_();
+                TileEntityRendererDispatcher.instance.render(rotor, partialTick, destroyStage);
             }
 
             RenderTurbineRotor.internalRender = false;
@@ -62,15 +58,24 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
                 data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
 
-                if (data.location != null && data.height >= 1 && !tile.structure.fluidStored.isEmpty()) {
-                    matrix.func_227860_a_();
-                    matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+                bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+
+                if (data.location != null && data.height >= 1 && tile.structure.fluidStored.getFluid() != Fluids.EMPTY) {
+                    GlStateManager.pushMatrix();
+                    GlStateManager.enableCull();
+                    GlStateManager.enableBlend();
+                    GlStateManager.disableLighting();
+                    GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+                    FluidRenderer.translateToOrigin(data.location);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.fluidStored);
-                    Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
-                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                          MekanismRenderer.getColorARGB(tile.structure.fluidStored, (float) tile.structure.fluidStored.getAmount() / (float) tile.structure.getFluidCapacity()));
+                    MekanismRenderer.color(tile.structure.fluidStored, (float) tile.structure.fluidStored.getAmount() / (float) tile.structure.getFluidCapacity());
+                    FluidRenderer.getTankDisplay(data).render();
+                    MekanismRenderer.resetColor();
                     MekanismRenderer.disableGlow(glowInfo);
-                    matrix.func_227865_b_();
+                    GlStateManager.enableLighting();
+                    GlStateManager.disableBlend();
+                    GlStateManager.disableCull();
+                    GlStateManager.popMatrix();
                 }
             }
         }

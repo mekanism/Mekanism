@@ -1,28 +1,26 @@
 package mekanism.client.render.transmitter;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.Collections;
-import java.util.Map;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.ColorRGBA;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -31,23 +29,19 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final int stages = 100;
     private static final double height = 0.45;
     private static final double offset = 0.015;
-    //TODO: this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support. 6 is used for null side
-    private static Int2ObjectMap<FluidRenderMap<Map<Integer, Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(7);
-
-    public RenderMechanicalPipe(TileEntityRendererDispatcher renderer) {
-        super(renderer);
-    }
+    //TODO this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support. 6 is used for null side
+    private static Int2ObjectMap<FluidRenderMap<DisplayInteger[]>> cachedLiquids = new Int2ObjectArrayMap<>(7);
 
     public static void onStitch() {
         cachedLiquids.clear();
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityMechanicalPipe pipe, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
+    public void render(TileEntityMechanicalPipe pipe, double x, double y, double z, float partialTick, int destroyStage) {
         if (MekanismConfig.client.opaqueTransmitters.get()) {
             return;
         }
+
         float targetScale;
         FluidStack fluidStack;
         if (pipe.getTransmitter().hasTransmitterNetwork()) {
@@ -58,145 +52,178 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             targetScale = (float) pipe.buffer.getFluidAmount() / (float) pipe.buffer.getCapacity();
             fluidStack = pipe.getBuffer();
         }
+
         if (Math.abs(pipe.currentScale - targetScale) > 0.01) {
             pipe.currentScale = (12 * pipe.currentScale + targetScale) / 13;
         } else {
             pipe.currentScale = targetScale;
         }
+
         float scale = Math.min(pipe.currentScale, 1);
         if (scale > 0.01 && !fluidStack.isEmpty()) {
-            matrix.func_227860_a_();
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluidStack);
+            MekanismRenderer.color(fluidStack);
+
+            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            GlStateManager.translatef((float) x, (float) y, (float) z);
+
             boolean gas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
             for (Direction side : EnumUtils.DIRECTIONS) {
-                ConnectionType connectionType = pipe.getConnectionType(side);
-                if (connectionType == ConnectionType.NORMAL) {
-                    Model3D model = getModel(side, fluidStack, getStage(scale, gas));
-                    if (model != null) {
-                        MekanismRenderer.renderObject(model, matrix, renderer, MekanismRenderType.renderMechanicalPipeState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                              MekanismRenderer.getColorARGB(fluidStack, scale));
+                if (pipe.getConnectionType(side) == ConnectionType.NORMAL) {
+                    renderDisplayLists(getListAndRender(side, fluidStack), scale, gas);
+                } else if (pipe.getConnectionType(side) != ConnectionType.NONE) {
+                    GlStateManager.translatef(0.5F, 0.5F, 0.5F);
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder worldRenderer = tessellator.getBuffer();
+                    if (renderFluidInOut(worldRenderer, side, pipe)) {
+                        tessellator.draw();
                     }
-                } else if (connectionType != ConnectionType.NONE) {
-                    matrix.func_227861_a_(0.5, 0.5, 0.5);
-                    int color = MekanismRenderer.getColorARGB(fluidStack, pipe.currentScale);
-                    float red = MekanismRenderer.getRed(color);
-                    float green = MekanismRenderer.getGreen(color);
-                    float blue = MekanismRenderer.getBlue(color);
-                    float alpha = MekanismRenderer.getAlpha(color);
-                    renderModel(pipe, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), red, green, blue, alpha, light,
-                          overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidType.STILL), Collections.singletonList(side.getName() + connectionType.getName().toUpperCase()));
-                    matrix.func_227861_a_(-0.5, -0.5, -0.5);
+                    GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
                 }
             }
-            Model3D model = getModel(null, fluidStack, getStage(scale, gas));
-            if (model != null) {
-                MekanismRenderer.renderObject(model, matrix, renderer, MekanismRenderType.renderMechanicalPipeState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                      MekanismRenderer.getColorARGB(fluidStack, scale));
-            }
+            renderDisplayLists(getListAndRender(null, fluidStack), scale, gas);
+            MekanismRenderer.resetColor();
             MekanismRenderer.disableGlow(glowInfo);
-            matrix.func_227865_b_();
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
     }
 
-    private int getStage(float scale, boolean gas) {
-        return gas ? stages - 1 : Math.max(3, (int) (scale * (stages - 1)));
+    private void renderDisplayLists(DisplayInteger[] displayLists, float scale, boolean gas) {
+        if (displayLists != null) {
+            if (gas) {
+                GlStateManager.color4f(1, 1, 1, scale);
+                displayLists[stages - 1].render();
+                MekanismRenderer.resetColor();
+            } else {
+                displayLists[Math.max(3, (int) (scale * (stages - 1)))].render();
+            }
+        }
     }
 
-    @Nullable
-    private Model3D getModel(Direction side, @Nonnull FluidStack fluid, int stage) {
+    private DisplayInteger[] getListAndRender(Direction side, @Nonnull FluidStack fluid) {
         if (fluid.isEmpty()) {
             return null;
         }
+
         int sideOrdinal = side != null ? side.ordinal() : 6;
-        FluidRenderMap<Map<Integer, Model3D>> cachedFluids;
-        if (cachedLiquids.containsKey(sideOrdinal)) {
-            cachedFluids = cachedLiquids.get(sideOrdinal);
-            if (cachedFluids.containsKey(fluid) && cachedFluids.get(fluid).containsKey(stage)) {
-                return cachedFluids.get(fluid).get(stage);
-            }
-        } else {
-            cachedLiquids.put(sideOrdinal, cachedFluids = new FluidRenderMap<>());
+
+        if (cachedLiquids.containsKey(sideOrdinal) && cachedLiquids.get(sideOrdinal).containsKey(fluid)) {
+            return cachedLiquids.get(sideOrdinal).get(fluid);
         }
-        Model3D model = new Model3D();
-        model.baseBlock = Blocks.WATER;
-        model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
+
+        Model3D toReturn = new Model3D();
+        toReturn.baseBlock = Blocks.WATER;
+        toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
+
         if (side != null) {
-            model.setSideRender(side, false);
-            model.setSideRender(side.getOpposite(), false);
+            toReturn.setSideRender(side, false);
+            toReturn.setSideRender(side.getOpposite(), false);
         }
-        switch (sideOrdinal) {
-            case 0:
-                model.minX = 0.5 - (((float) stage / (float) stages) * height) / 2;
-                model.minY = 0.0;
-                model.minZ = 0.5 - (((float) stage / (float) stages) * height) / 2;
 
-                model.maxX = 0.5 + (((float) stage / (float) stages) * height) / 2;
-                model.maxY = 0.25 + offset;
-                model.maxZ = 0.5 + (((float) stage / (float) stages) * height) / 2;
-                break;
-            case 1:
-                model.minX = 0.5 - (((float) stage / (float) stages) * height) / 2;
-                model.minY = 0.25 - offset + ((float) stage / (float) stages) * height;
-                model.minZ = 0.5 - (((float) stage / (float) stages) * height) / 2;
+        DisplayInteger[] displays = new DisplayInteger[stages];
 
-                model.maxX = 0.5 + (((float) stage / (float) stages) * height) / 2;
-                model.maxY = 1.0;
-                model.maxZ = 0.5 + (((float) stage / (float) stages) * height) / 2;
-                break;
-            case 2:
-                model.minX = 0.25 + offset;
-                model.minY = 0.25 + offset;
-                model.minZ = 0.0;
-
-                model.maxX = 0.75 - offset;
-                model.maxY = 0.25 + offset + ((float) stage / (float) stages) * height;
-                model.maxZ = 0.25 + offset;
-                break;
-            case 3:
-                model.minX = 0.25 + offset;
-                model.minY = 0.25 + offset;
-                model.minZ = 0.75 - offset;
-
-                model.maxX = 0.75 - offset;
-                model.maxY = 0.25 + offset + ((float) stage / (float) stages) * height;
-                model.maxZ = 1.0;
-                break;
-            case 4:
-                model.minX = 0.0;
-                model.minY = 0.25 + offset;
-                model.minZ = 0.25 + offset;
-
-                model.maxX = 0.25 + offset;
-                model.maxY = 0.25 + offset + ((float) stage / (float) stages) * height;
-                model.maxZ = 0.75 - offset;
-                break;
-            case 5:
-                model.minX = 0.75 - offset;
-                model.minY = 0.25 + offset;
-                model.minZ = 0.25 + offset;
-
-                model.maxX = 1.0;
-                model.maxY = 0.25 + offset + ((float) stage / (float) stages) * height;
-                model.maxZ = 0.75 - offset;
-                break;
-            case 6:
-                //Null side
-                model.minX = 0.25 + offset;
-                model.minY = 0.25 + offset;
-                model.minZ = 0.25 + offset;
-
-                model.maxX = 0.75 - offset;
-                model.maxY = 0.25 + offset + ((float) stage / (float) stages) * height;
-                model.maxZ = 0.75 - offset;
-                break;
-        }
-        if (cachedFluids.containsKey(fluid)) {
-            cachedFluids.get(fluid).put(stage, model);
+        if (cachedLiquids.containsKey(sideOrdinal)) {
+            cachedLiquids.get(sideOrdinal).put(fluid, displays);
         } else {
-            Map<Integer, Model3D> map = new Int2ObjectOpenHashMap<>();
-            map.put(stage, model);
-            cachedFluids.put(fluid, map);
+            FluidRenderMap<DisplayInteger[]> map = new FluidRenderMap<>();
+            map.put(fluid, displays);
+            cachedLiquids.put(sideOrdinal, map);
         }
-        return model;
+
+        for (int i = 0; i < stages; i++) {
+            displays[i] = DisplayInteger.createAndStart();
+
+            switch (sideOrdinal) {
+                case 6:
+                    toReturn.minX = 0.25 + offset;
+                    toReturn.minY = 0.25 + offset;
+                    toReturn.minZ = 0.25 + offset;
+
+                    toReturn.maxX = 0.75 - offset;
+                    toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
+                    toReturn.maxZ = 0.75 - offset;
+                    break;
+                case 0:
+                    toReturn.minX = 0.5 - (((float) i / (float) stages) * height) / 2;
+                    toReturn.minY = 0.0;
+                    toReturn.minZ = 0.5 - (((float) i / (float) stages) * height) / 2;
+
+                    toReturn.maxX = 0.5 + (((float) i / (float) stages) * height) / 2;
+                    toReturn.maxY = 0.25 + offset;
+                    toReturn.maxZ = 0.5 + (((float) i / (float) stages) * height) / 2;
+                    break;
+                case 1:
+                    toReturn.minX = 0.5 - (((float) i / (float) stages) * height) / 2;
+                    toReturn.minY = 0.25 - offset + ((float) i / (float) stages) * height;
+                    toReturn.minZ = 0.5 - (((float) i / (float) stages) * height) / 2;
+
+                    toReturn.maxX = 0.5 + (((float) i / (float) stages) * height) / 2;
+                    toReturn.maxY = 1.0;
+                    toReturn.maxZ = 0.5 + (((float) i / (float) stages) * height) / 2;
+                    break;
+                case 2:
+                    toReturn.minX = 0.25 + offset;
+                    toReturn.minY = 0.25 + offset;
+                    toReturn.minZ = 0.0;
+
+                    toReturn.maxX = 0.75 - offset;
+                    toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
+                    toReturn.maxZ = 0.25 + offset;
+                    break;
+                case 3:
+                    toReturn.minX = 0.25 + offset;
+                    toReturn.minY = 0.25 + offset;
+                    toReturn.minZ = 0.75 - offset;
+
+                    toReturn.maxX = 0.75 - offset;
+                    toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
+                    toReturn.maxZ = 1.0;
+                    break;
+                case 4:
+                    toReturn.minX = 0.0;
+                    toReturn.minY = 0.25 + offset;
+                    toReturn.minZ = 0.25 + offset;
+
+                    toReturn.maxX = 0.25 + offset;
+                    toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
+                    toReturn.maxZ = 0.75 - offset;
+                    break;
+                case 5:
+                    toReturn.minX = 0.75 - offset;
+                    toReturn.minY = 0.25 + offset;
+                    toReturn.minZ = 0.25 + offset;
+
+                    toReturn.maxX = 1.0;
+                    toReturn.maxY = 0.25 + offset + ((float) i / (float) stages) * height;
+                    toReturn.maxZ = 0.75 - offset;
+                    break;
+            }
+
+            MekanismRenderer.renderObject(toReturn);
+            GlStateManager.endList();
+        }
+
+        return displays;
+    }
+
+    public boolean renderFluidInOut(BufferBuilder renderer, Direction side, @Nonnull TileEntityMechanicalPipe pipe) {
+        if (pipe.getTransmitter().hasTransmitterNetwork()) {
+            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            FluidNetwork fn = pipe.getTransmitter().getTransmitterNetwork();
+            TextureAtlasSprite tex = MekanismRenderer.getFluidTexture(fn.buffer, FluidType.STILL);
+            int color = fn.buffer.getFluid().getAttributes().getColor(fn.buffer);
+            ColorRGBA c = new ColorRGBA(1.0, 1.0, 1.0, pipe.currentScale);
+            if (color != 0xFFFFFFFF) {
+                c.setRGBFromInt(color);
+            }
+            renderTransparency(renderer, tex, getModelForSide(pipe, side), c, pipe.getBlockState(), pipe.getModelData());
+            return true;
+        }
+        return false;
     }
 }

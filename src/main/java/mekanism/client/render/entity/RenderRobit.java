@@ -1,6 +1,7 @@
 package mekanism.client.render.entity;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.model.ModelRobit;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.util.MekanismUtils;
@@ -15,10 +16,10 @@ public class RenderRobit extends MobRenderer<EntityRobit, ModelRobit> {
         super(renderManager, new ModelRobit(), 0.5F);
     }
 
-    @Nonnull
+    @Nullable
     @Override
-    public ResourceLocation getEntityTexture(@Nonnull EntityRobit robit) {
-        if ((Math.abs(robit.func_226277_ct_() - robit.prevPosX) + Math.abs(robit.func_226277_ct_() - robit.prevPosX)) > 0.001) {
+    protected ResourceLocation getEntityTexture(@Nonnull EntityRobit robit) {
+        if ((Math.abs(robit.posX - robit.prevPosX) + Math.abs(robit.posX - robit.prevPosX)) > 0.001) {
             if (robit.ticksExisted % 3 == 0) {
                 robit.texTick = !robit.texTick;
             }

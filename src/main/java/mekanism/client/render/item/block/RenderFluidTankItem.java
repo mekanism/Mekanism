@@ -1,13 +1,13 @@
 package mekanism.client.render.item.block;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.Map;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
 import mekanism.client.render.FluidRenderMap;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -15,28 +15,25 @@ import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import org.lwjgl.opengl.GL11;
 
 public class RenderFluidTankItem extends MekanismItemStackRenderer {
 
     public static ItemLayerWrapper model;
 
     private static ModelFluidTank fluidTank = new ModelFluidTank();
-    private static FluidRenderMap<Map<Integer, Model3D>> cachedCenterFluids = new FluidRenderMap<>();
+    private static FluidRenderMap<DisplayInteger[]> cachedCenterFluids = new FluidRenderMap<>();
     private static int stages = 1400;
 
-    public static void resetCachedModels() {
-        cachedCenterFluids.clear();
-    }
-
     @Override
-    public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
+    public void renderBlockSpecific(@Nonnull ItemStack stack, TransformType transformType) {
         ItemBlockFluidTank itemFluidTank = (ItemBlockFluidTank) stack.getItem();
         FluidTankTier tier = itemFluidTank.getTier(stack);
         if (tier == null) {
@@ -45,65 +42,82 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         FluidStack fluid = itemFluidTank.getFluidStack(stack);
         float fluidScale = (float) fluid.getAmount() / itemFluidTank.getCapacity(stack);
 
-        matrix.func_227860_a_();
+        GlStateManager.pushMatrix();
         if (!fluid.isEmpty() && fluidScale > 0) {
+            GlStateManager.pushMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.disableLighting();
+            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            GlStateManager.disableAlphaTest();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+
+            MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
+            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
+
+            DisplayInteger[] displayList = getListAndRender(fluid);
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
-            matrix.func_227860_a_();
-            matrix.func_227861_a_(-0.5, -0.5, -0.5);
-            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
-            int modelNumber;
-            int color;
+
+            MekanismRenderer.color(fluid, fluidScale);
             if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
-                modelNumber = stages - 1;
-                color = MekanismRenderer.getColorARGB(fluid, fluidScale);
+                displayList[stages - 1].render();
             } else {
-                modelNumber = Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)));
-                color = MekanismRenderer.getColorARGB(fluid);
+                displayList[Math.min(stages - 1, (int) (fluidScale * ((float) stages - 1)))].render();
             }
-            MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidTankState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), color);
+            MekanismRenderer.resetColor();
             MekanismRenderer.disableGlow(glowInfo);
-            matrix.func_227865_b_();
+            GlStateManager.disableBlend();
+            GlStateManager.enableAlphaTest();
+            GlStateManager.enableLighting();
+            GlStateManager.disableCull();
+            GlStateManager.popMatrix();
         }
 
-        matrix.func_227861_a_(0, -0.9, 0);
-        matrix.func_227862_a_(0.9F, 0.8F, 0.9F);
-        //Scale to to size of item
-        matrix.func_227862_a_(1.168F, 1.168F, 1.168F);
-        fluidTank.render(matrix, renderer, light, overlayLight, tier);
-        matrix.func_227865_b_();
+        GlStateManager.translatef(0, -0.9F, 0);
+        GlStateManager.scalef(0.9F, 0.8F, 0.9F);
+        MekanismRenderer.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png"));
+        fluidTank.render(0.073F, tier);
+        GlStateManager.popMatrix();
     }
 
-    private Model3D getFluidModel(@Nonnull FluidStack fluid, int stage) {
-        if (cachedCenterFluids.containsKey(fluid) && cachedCenterFluids.get(fluid).containsKey(stage)) {
-            return cachedCenterFluids.get(fluid).get(stage);
-        }
-        Model3D model = new Model3D();
-        model.baseBlock = Blocks.WATER;
-        model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
-        if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
-            model.minX = 0.125 + .01;
-            model.minY = 0.0625 + .01;
-            model.minZ = 0.125 + .01;
-
-            model.maxX = 0.875 - .01;
-            model.maxY = 0.0625 + ((float) stage / (float) stages) * 0.875 - .01;
-            model.maxZ = 0.875 - .01;
-        }
+    private static DisplayInteger[] getListAndRender(@Nonnull FluidStack fluid) {
         if (cachedCenterFluids.containsKey(fluid)) {
-            cachedCenterFluids.get(fluid).put(stage, model);
-        } else {
-            Map<Integer, Model3D> map = new Int2ObjectOpenHashMap<>();
-            map.put(stage, model);
-            cachedCenterFluids.put(fluid, map);
+            return cachedCenterFluids.get(fluid);
         }
-        return model;
+
+        Model3D toReturn = new Model3D();
+        toReturn.baseBlock = Blocks.WATER;
+        toReturn.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
+
+        DisplayInteger[] displays = new DisplayInteger[stages];
+        cachedCenterFluids.put(fluid, displays);
+
+        for (int i = 0; i < stages; i++) {
+            displays[i] = DisplayInteger.createAndStart();
+
+            if (fluid.getFluid().getAttributes().getStill(fluid) != null) {
+                toReturn.minX = 0.125 + .01;
+                toReturn.minY = 0.0625 + .01;
+                toReturn.minZ = 0.125 + .01;
+
+                toReturn.maxX = 0.875 - .01;
+                toReturn.maxY = 0.0625 + ((float) i / (float) stages) * 0.875 - .01;
+                toReturn.maxZ = 0.875 - .01;
+
+                MekanismRenderer.renderObject(toReturn);
+            }
+
+            GlStateManager.endList();
+        }
+
+        return displays;
     }
 
     @Override
-    protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
-          TransformType transformType) {
+    protected void renderItemSpecific(@Nonnull ItemStack stack, TransformType transformType) {
     }
 
     @Nonnull

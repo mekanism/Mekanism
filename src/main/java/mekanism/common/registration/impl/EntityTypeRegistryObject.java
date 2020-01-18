@@ -7,6 +7,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.fml.RegistryObject;
 
+import java.lang.reflect.ParameterizedType;
+
 public class EntityTypeRegistryObject<ENTITY extends Entity> extends WrappedRegistryObject<EntityType<ENTITY>> implements IEntityTypeProvider {
 
     public EntityTypeRegistryObject(RegistryObject<EntityType<ENTITY>> registryObject) {

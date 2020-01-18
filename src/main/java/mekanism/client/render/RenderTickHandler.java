@@ -7,29 +7,27 @@ import mekanism.api.Pos3D;
 import mekanism.client.ClientTickHandler;
 import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.registries.MekanismGases;
-import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.ParticleType;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
@@ -79,8 +77,8 @@ public class RenderTickHandler {
                     ItemStack stack = player.getHeldItemMainhand();
                     ConfiguratorMode mode = ((ItemConfigurator) stack.getItem()).getState(stack);
 
-                    int x = minecraft.func_228018_at_().getScaledWidth();
-                    int y = minecraft.func_228018_at_().getScaledHeight();
+                    int x = minecraft.mainWindow.getScaledWidth();
+                    int y = minecraft.mainWindow.getScaledHeight();
                     //TODO: Check this, though if we use vanilla status bar text it may be a lot simpler instead
                     String text = mode.getTextComponent().getFormattedText();
                     int color = new ColorRGBA(1, 1, 1, (float) modeSwitchTimer / 100F).argb();
@@ -96,31 +94,38 @@ public class RenderTickHandler {
                 if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()) {
                     ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
-                    int y = minecraft.func_228018_at_().getScaledHeight();
+                    int y = minecraft.mainWindow.getScaledHeight();
                     boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
 
                     if (stack.getItem() instanceof ItemJetpack) {
                         ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-                        drawString(MekanismLang.MODE.translate(jetpack.getMode(stack)), alignLeft, y - 20, 0xc8c8c8);
-                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.HYDROGEN, jetpack.getStored(stack)), alignLeft, y - 11, 0xc8c8c8);
+                        //TODO: Lang strings
+                        //TODO: Also fix components to not ned the getFormattedText here
+                        drawString(TextComponentUtil.build("Mode: ", jetpack.getMode(stack)).getFormattedText(), alignLeft, y - 20, 0xc8c8c8);
+                        drawString(TextComponentUtil.build("Hydrogen: ", jetpack.getStored(stack)).getFormattedText(), alignLeft, y - 11, 0xc8c8c8);
                     } else if (stack.getItem() instanceof ItemScubaTank) {
                         ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
-                        drawString(MekanismLang.MODE.translate(OnOff.of(scubaTank.getFlowing(stack), true)), alignLeft, y - 20, 0xc8c8c8);
-                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.OXYGEN, scubaTank.getStored(stack)), alignLeft, y - 11, 0xc8c8c8);
+                        //TODO: Lang Strings
+                        drawString(TextComponentUtil.build("Mode: ", OnOff.of(scubaTank.getFlowing(stack), true)).getFormattedText(), alignLeft, y - 20, 0xc8c8c8);
+                        drawString(TextComponentUtil.build("Oxygen: ", scubaTank.getStored(stack)).getFormattedText(), alignLeft, y - 11, 0xc8c8c8);
                     }
                 }
 
                 // Traverse a copy of jetpack state and do animations
                 for (UUID uuid : Mekanism.playerState.getActiveJetpacks()) {
                     PlayerEntity p = minecraft.world.getPlayerByUuid(uuid);
+
                     if (p == null) {
                         continue;
                     }
+
                     Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
+
                     float random = (rand.nextFloat() - 0.5F) * 0.1F;
-                    Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.func_225608_bj_() ? 20 : 0).rotateYaw(p.renderYawOffset);
-                    Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.func_225608_bj_() ? 20 : 0).rotateYaw(p.renderYawOffset);
-                    Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.func_225608_bj_() ? 25 : 0).rotateYaw(p.renderYawOffset);
+
+                    Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
+                    Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).rotatePitch(p.isSneaking() ? 20 : 0).rotateYaw(p.renderYawOffset);
+                    Pos3D vCenter = new Pos3D((rand.nextFloat() - 0.5F) * 0.4F, -0.86, -0.30).rotatePitch(p.isSneaking() ? 25 : 0).rotateYaw(p.renderYawOffset);
 
                     Pos3D rLeft = vLeft.scale(random);
                     Pos3D rRight = vRight.scale(random);
@@ -133,16 +138,16 @@ public class RenderTickHandler {
                     mRight = mRight.translate(rRight);
 
                     Pos3D v = playerPos.translate(vLeft).translate(new Pos3D(p.getMotion()));
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+                    spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
+                    spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mLeft.x, mLeft.y, mLeft.z);
 
                     v = playerPos.translate(vRight).translate(new Pos3D(p.getMotion()));
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+                    spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
+                    spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mRight.x, mRight.y, mRight.z);
 
                     v = playerPos.translate(vCenter).translate(new Pos3D(p.getMotion()));
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
-                    world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+                    spawnAndSetParticle(ParticleTypes.FLAME, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
+                    spawnAndSetParticle(ParticleTypes.SMOKE, world, v.x, v.y, v.z, mCenter.x, mCenter.y, mCenter.z);
                 }
 
                 // Traverse a copy of gasmask state and do animations
@@ -155,11 +160,14 @@ public class RenderTickHandler {
 
                         Pos3D playerPos = new Pos3D(p).translate(0, 1.7, 0);
 
+                        float xRand = (rand.nextFloat() - 0.5F) * 0.08F;
+                        float yRand = (rand.nextFloat() - 0.5F) * 0.05F;
+
                         Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(new Pos3D(p.getLook(1))).translate(0, -0.2, 0);
                         Pos3D motion = vec.scale(0.2).translate(new Pos3D(p.getMotion()));
 
                         Pos3D v = playerPos.translate(vec);
-                        world.addParticle((BasicParticleType) MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+                        spawnAndSetParticle(ParticleTypes.BUBBLE, world, v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                     }
                 }
 
@@ -182,7 +190,7 @@ public class RenderTickHandler {
                                     flameXCoord += 0.25F;
                                     flameXCoord -= 0.45F;
                                     flameZCoord += 0.15F;
-                                    if (p.func_225608_bj_()) {
+                                    if (p.isSneaking()) {
                                         flameYCoord -= 0.55F;
                                         flameZCoord -= 0.15F;
                                     }
@@ -191,9 +199,7 @@ public class RenderTickHandler {
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
                                 }
                                 Pos3D mergedVec = playerPos.translate(flameVec);
-                                //TODO: The particle is a bit offset
-                                world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
-                                      mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
+                                spawnAndSetParticle(ParticleTypes.FLAME, world, mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
                             }
                         }
                     }
@@ -202,15 +208,27 @@ public class RenderTickHandler {
         }
     }
 
-    private void drawString(ITextComponent textComponent, boolean leftSide, int y, int color) {
-        String s = textComponent.getFormattedText();
+    public void spawnAndSetParticle(ParticleType<?> s, World world, double x, double y, double z, double velX, double velY, double velZ) {
+        //TODO: Fix this
+        /*Particle fx = null;
+        if (s.equals(ParticleTypes.FLAME)) {
+            fx = new EntityJetpackFlameFX(world, x, y, z, velX, velY, velZ);
+        } else if (s.equals(ParticleTypes.SMOKE)) {
+            fx = new EntityJetpackSmokeFX(world, x, y, z, velX, velY, velZ);
+        } else if (s.equals(ParticleTypes.BUBBLE)) {
+            fx = new EntityScubaBubbleFX(world, x, y, z, velX, velY, velZ);
+        }
+        minecraft.particles.addEffect(fx);*/
+    }
+
+    private void drawString(String s, boolean leftSide, int y, int color) {
         FontRenderer font = minecraft.fontRenderer;
         // Note that we always offset by 2 pixels when left or right aligned
         if (leftSide) {
             font.drawStringWithShadow(s, 2, y, color);
         } else {
             int width = font.getStringWidth(s) + 2;
-            font.drawStringWithShadow(s, minecraft.func_228018_at_().getScaledWidth() - width, y, color);
+            font.drawStringWithShadow(s, minecraft.mainWindow.getScaledWidth() - width, y, color);
         }
     }
 }

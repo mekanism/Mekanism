@@ -1,25 +1,21 @@
 package mekanism.client.render;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -30,7 +26,8 @@ import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.ILightReader;
+import net.minecraft.world.IEnviromentBlockReader;
+import org.lwjgl.opengl.GL11;
 
 /*
  * Adapted from BuildCraft
@@ -101,8 +98,8 @@ public class RenderResizableCuboid {
         return faces;
     }
 
-    public static void setWorldRendererRGB(IVertexBuilder wr, Vec3d color) {
-        wr.func_227885_a_((float) color.x, (float) color.y, (float) color.z, 1F);
+    public static void setWorldRendererRGB(BufferBuilder wr, Vec3d color) {
+        wr.color((float) color.x, (float) color.y, (float) color.z, 1f);
     }
 
     public static Vec3d vec3(double value) {
@@ -131,41 +128,59 @@ public class RenderResizableCuboid {
     /**
      * This will render a cuboid from its middle.
      */
-    public void renderCubeFromCentre(Model3D cuboid, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, int argb) {
-        matrix.func_227860_a_();
-        matrix.func_227861_a_(-cuboid.sizeX() / 2D, -cuboid.sizeY() / 2D, -cuboid.sizeZ() / 2D);
-        renderCube(cuboid, matrix, renderer, stateBuilder, argb, EnumShadeArgument.NONE, null, null, null);
-        matrix.func_227865_b_();
+    public void renderCubeFromCentre(Model3D cuboid) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translatef((float) -cuboid.sizeX() / 2F, (float) -cuboid.sizeY() / 2F, (float) -cuboid.sizeZ() / 2F);
+        renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
+        GlStateManager.popMatrix();
     }
 
-    public void renderCube(Model3D cuboid, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, int argb) {
-        renderCube(cuboid, matrix, renderer, stateBuilder, argb, EnumShadeArgument.NONE, null, null, null);
+    public void renderCube(Model3D cuboid) {
+        renderCube(cuboid, EnumShadeArgument.NONE, null, null, null);
     }
 
-    public void renderCube(Model3D cube, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, int argb, EnumShadeArgument shadeTypes,
-          IBlockLocation formula, IFacingLocation faceFormula, ILightReader world) {
+    public void renderCube(Model3D cube, EnumShadeArgument shadeTypes, IBlockLocation formula, IFacingLocation faceFormula, IEnviromentBlockReader world) {
         if (faceFormula == null) {
             faceFormula = DefaultFacingLocation.INSTANCE;
         }
+
         TextureAtlasSprite[] sprites = cube.textures;
+
         int[] flips = cube.textureFlips;
         if (flips == null) {
             flips = new int[6];
         }
+
         Vec3d textureStart = new Vec3d(cube.textureStartX / 16D, cube.textureStartY / 16D, cube.textureStartZ / 16D);
         Vec3d textureSize = new Vec3d(cube.textureSizeX / 16D, cube.textureSizeY / 16D, cube.textureSizeZ / 16D);
         Vec3d textureOffset = new Vec3d(cube.textureOffsetX / 16D, cube.textureOffsetY / 16D, cube.textureOffsetZ / 16D);
         Vec3d size = new Vec3d(cube.sizeX(), cube.sizeY(), cube.sizeZ());
-        IVertexBuilder builder = renderer.getBuffer(MekanismRenderType.resizableCuboid(stateBuilder, shadeTypes.vertexFormat));
+
+        manager.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+
+        Tessellator tess = Tessellator.getInstance();
+        BufferBuilder wr = tess.getBuffer();
+
+        GlStateManager.enableAlphaTest();
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        GlStateManager.disableLighting();
+
+        wr.begin(GL11.GL_QUADS, shadeTypes.vertexFormat);
+
         for (Direction face : EnumUtils.DIRECTIONS) {
             if (cube.shouldSideRender(face)) {
-                renderCuboidFace(matrix, builder, argb, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
+                renderCuboidFace(wr, face, sprites, flips, textureStart, textureSize, size, textureOffset, shadeTypes, formula, faceFormula, world);
             }
         }
+
+        tess.draw();
+
+        GlStateManager.enableLighting();
+        GlStateManager.disableAlphaTest();
     }
 
-    private void renderCuboidFace(MatrixStack matrix, IVertexBuilder builder, int argb, Direction face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart,
-          Vec3d textureSize, Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula, ILightReader access) {
+    private void renderCuboidFace(BufferBuilder wr, Direction face, TextureAtlasSprite[] sprites, int[] flips, Vec3d textureStart, Vec3d textureSize,
+          Vec3d size, Vec3d textureOffset, EnumShadeArgument shadeTypes, IBlockLocation locationFormula, IFacingLocation faceFormula, IEnviromentBlockReader access) {
         int ordinal = face.ordinal();
         if (sprites[ordinal] == null) {
             return;
@@ -183,27 +198,23 @@ public class RenderResizableCuboid {
          * light it properly this way */
         face = face.getAxisDirection() == AxisDirection.NEGATIVE ? face : face.getOpposite();
 
-        float red = MekanismRenderer.getRed(argb);
-        float green = MekanismRenderer.getGreen(argb);
-        float blue = MekanismRenderer.getBlue(argb);
-        float alpha = MekanismRenderer.getAlpha(argb);
         Direction opposite = face.getOpposite();
-        Matrix4f matrix4f = matrix.func_227866_c_().func_227870_a_();
-        for (RenderInfo ri : renderInfoList) {
-            renderPoint(matrix4f, builder, face, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
-            renderPoint(matrix4f, builder, face, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
-            renderPoint(matrix4f, builder, face, u, v, other, ri, false, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
-            renderPoint(matrix4f, builder, face, u, v, other, ri, false, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
 
-            renderPoint(matrix4f, builder, opposite, u, v, other, ri, false, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
-            renderPoint(matrix4f, builder, opposite, u, v, other, ri, false, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
-            renderPoint(matrix4f, builder, opposite, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
-            renderPoint(matrix4f, builder, opposite, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
+        for (RenderInfo ri : renderInfoList) {
+            renderPoint(wr, face, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes);
+            renderPoint(wr, face, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes);
+            renderPoint(wr, face, u, v, other, ri, false, true, locationFormula, faceFormula, access, shadeTypes);
+            renderPoint(wr, face, u, v, other, ri, false, false, locationFormula, faceFormula, access, shadeTypes);
+
+            renderPoint(wr, opposite, u, v, other, ri, false, false, locationFormula, faceFormula, access, shadeTypes);
+            renderPoint(wr, opposite, u, v, other, ri, false, true, locationFormula, faceFormula, access, shadeTypes);
+            renderPoint(wr, opposite, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes);
+            renderPoint(wr, opposite, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes);
         }
     }
 
-    private void renderPoint(Matrix4f matrix4f, IVertexBuilder builder, Direction face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV,
-          IBlockLocation locationFormula, IFacingLocation faceFormula, ILightReader access, EnumShadeArgument shadeTypes, float red, float green, float blue, float alpha) {
+    private void renderPoint(BufferBuilder wr, Direction face, Axis u, Axis v, double other, RenderInfo ri, boolean minU, boolean minV, IBlockLocation locationFormula,
+          IFacingLocation faceFormula, IEnviromentBlockReader access, EnumShadeArgument shadeTypes) {
         int U_ARRAY = minU ? U_MIN : U_MAX;
         int V_ARRAY = minV ? V_MIN : V_MAX;
 
@@ -211,24 +222,27 @@ public class RenderResizableCuboid {
         vertex = withValue(vertex, v, ri.xyz[V_ARRAY]);
         vertex = withValue(vertex, face.getAxis(), other);
 
-        builder.func_227888_a_(matrix4f, (float) vertex.x, (float) vertex.y, (float) vertex.z)
-              .func_225583_a_(ri.uv[U_ARRAY], ri.uv[V_ARRAY])
-              .func_227885_a_(red, green, blue, alpha);
+        wr.pos(vertex.x, vertex.y, vertex.z);
+        wr.tex(ri.uv[U_ARRAY], ri.uv[V_ARRAY]);
+
         if (shadeTypes.isEnabled(EnumShadeType.FACE)) {
-            setWorldRendererRGB(builder, aoMap.get(faceFormula.transformToWorld(face)));
+            setWorldRendererRGB(wr, aoMap.get(faceFormula.transformToWorld(face)));
         }
+
         if (shadeTypes.isEnabled(EnumShadeType.AMBIENT_OCCLUSION)) {
-            applyLocalAO(builder, faceFormula.transformToWorld(face), locationFormula, access, shadeTypes, vertex);
+            applyLocalAO(wr, faceFormula.transformToWorld(face), locationFormula, access, shadeTypes, vertex);
         } else if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
             Vec3d transVertex = locationFormula.transformToWorld(vertex);
             BlockPos pos = convertFloor(transVertex);
-            int combinedLight = WorldRenderer.func_228421_a_(access, pos);
-            builder.func_225587_b_(combinedLight >> 16 & 65535, combinedLight & 65535);
+            BlockState block = access.getBlockState(pos);
+            int combindedLight = block.getPackedLightmapCoords(access, pos);
+            wr.lightmap(combindedLight >> 16 & 65535, combindedLight & 65535);
         }
-        builder.endVertex();
+
+        wr.endVertex();
     }
 
-    private void applyLocalAO(@Nonnull IVertexBuilder builder, Direction face, IBlockLocation locationFormula, ILightReader access, EnumShadeArgument shadeTypes, Vec3d vertex) {
+    private void applyLocalAO(BufferBuilder wr, Direction face, IBlockLocation locationFormula, IEnviromentBlockReader access, EnumShadeArgument shadeTypes, Vec3d vertex) {
         // This doesn't work. At all.
         boolean allAround = false;
 
@@ -240,12 +254,13 @@ public class RenderResizableCuboid {
         double totalDist = 0;
         Vec3d transVertex = locationFormula.transformToWorld(vertex);
         BlockPos pos = convertFloor(transVertex);
-        BlockState blockState = access.getBlockState(pos);
-        int combinedLight = WorldRenderer.func_228421_a_(access, pos);
+        BlockState state = access.getBlockState(pos);
+        int combindedLight = state.getPackedLightmapCoords(access, pos);
 
-        skyLight[0] = combinedLight / 0x10000;
-        blockLight[0] = combinedLight % 0x10000;
-        colorMultiplier[0] = blockState.getAmbientOcclusionLightValue(access, pos);
+        skyLight[0] = combindedLight / 0x10000;
+        blockLight[0] = combindedLight % 0x10000;
+        //TODO: Check light value via voxelshape
+        colorMultiplier[0] = 0;//state.getAmbientOcclusionLightValue();
         distances[0] = transVertex.distanceTo(convertMiddle(pos));
 
         int index = 0;
@@ -253,14 +268,15 @@ public class RenderResizableCuboid {
         for (Direction otherFace : testArray) {
             Vec3d nearestOther = vertex.add(convert(otherFace));
             pos = convertFloor(locationFormula.transformToWorld(nearestOther));
-            blockState = access.getBlockState(pos);
-            combinedLight = WorldRenderer.func_228421_a_(access, pos);
+            state = access.getBlockState(pos);
+            combindedLight = state.getPackedLightmapCoords(access, pos);
 
             index++;
 
-            skyLight[index] = combinedLight / 0x10000;
-            blockLight[index] = combinedLight % 0x10000;
-            colorMultiplier[index] = blockState.getAmbientOcclusionLightValue(access, pos);
+            skyLight[index] = combindedLight / 0x10000;
+            blockLight[index] = combindedLight % 0x10000;
+            //TODO: Check light value via voxelshape
+            colorMultiplier[index] = 0;//state.getAmbientOcclusionLightValue();
             // The extra 0.1 is to stop any 1 divided by 0 errors
             distances[index] = 1 / (transVertex.distanceTo(convertMiddle(pos)) + 0.1);
             totalDist += distances[index];
@@ -268,7 +284,7 @@ public class RenderResizableCuboid {
 
         double avgBlockLight = 0;
         double avgSkyLight = 0;
-        double avgColorMultiplier = 0;
+        float avgColorMultiplier = 0;
         for (int i = 0; i < numPositions; i++) {
             double part = distances[i] / totalDist;
             avgBlockLight += blockLight[i] * part;
@@ -279,7 +295,7 @@ public class RenderResizableCuboid {
         if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
             int capBlockLight = (int) avgBlockLight;
             int capSkyLight = (int) avgSkyLight;
-            builder.func_225587_b_(capBlockLight, capSkyLight);
+            wr.lightmap(capBlockLight, capSkyLight);
         }
 
         Vec3d color;
@@ -289,7 +305,7 @@ public class RenderResizableCuboid {
             color = VEC_ONE;
         }
         color = multiply(color, avgColorMultiplier);
-        setWorldRendererRGB(builder, color);
+        setWorldRendererRGB(wr, color);
     }
 
     /**
@@ -438,7 +454,7 @@ public class RenderResizableCuboid {
                 list[i * arr.length + j] = used;
             }
         }
-        return new BakedQuad(list, -1, face, sprite, true);
+        return new BakedQuad(list, -1, face, sprite, true, DefaultVertexFormats.ITEM);
     }
 
     /**
@@ -608,16 +624,14 @@ public class RenderResizableCuboid {
         final VertexFormat vertexFormat;
 
         EnumShadeArgument(EnumShadeType... types) {
-            List<VertexFormatElement> elements = new ArrayList<>();
-            elements.add(DefaultVertexFormats.POSITION_3F);
-            elements.add(DefaultVertexFormats.TEX_2F);
-            elements.add(DefaultVertexFormats.COLOR_4UB);
+            this.vertexFormat = new VertexFormat();
+            vertexFormat.addElement(DefaultVertexFormats.POSITION_3F);
+            vertexFormat.addElement(DefaultVertexFormats.TEX_2F);
             for (EnumShadeType type : types) {
-                if (!elements.contains(type.element)) {
-                    elements.add(type.element);
+                if (!vertexFormat.getElements().contains(type.element)) {
+                    vertexFormat.addElement(type.element);
                 }
             }
-            this.vertexFormat = new VertexFormat(ImmutableList.copyOf(elements));
             this.types = ImmutableSet.copyOf(types);
         }
 

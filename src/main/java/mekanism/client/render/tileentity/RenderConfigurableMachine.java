@@ -1,23 +1,22 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.DisplayInteger;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -27,40 +26,54 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
+import org.lwjgl.opengl.GL11;
 
 public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntityRenderer<S> {
 
-    private static Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+    private Minecraft minecraft = Minecraft.getInstance();
 
-    public static void resetCachedOverlays() {
-        cachedOverlays.clear();
-    }
+    private Map<Direction, Map<TransmissionType, DisplayInteger>> cachedOverlays = new EnumMap<>(Direction.class);
 
-    public RenderConfigurableMachine(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderConfigurableMachine() {
+        rendererDispatcher = TileEntityRendererDispatcher.instance;
     }
 
     @Override
-    public void func_225616_a_(@Nonnull S configurable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
+    public void render(S configurable, double x, double y, double z, float partialTick, int destroyStage) {
+        ItemStack itemStack = minecraft.player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
         if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
-            BlockRayTraceResult pos = MekanismUtils.rayTrace(Minecraft.getInstance().player);
-            if (!pos.getType().equals(Type.MISS)) {
+            //TODO: Properly figure out which one the player is looking at
+            BlockRayTraceResult pos = null;//minecraft.player.rayTrace(8.0D, 1.0F);
+            if (pos != null) {
                 BlockPos bp = pos.getPos();
                 TransmissionType type = Objects.requireNonNull(((ItemConfigurator) item).getState(itemStack).getTransmission(), "Configurating state requires transmission type");
                 if (configurable.getConfig().supports(type)) {
                     if (bp.equals(configurable.getPos())) {
                         DataType dataType = configurable.getConfig().getDataType(type, RelativeSide.fromDirections(configurable.getOrientation(), pos.getFace()));
                         if (dataType != null) {
-                            matrix.func_227860_a_();
+                            GlStateManager.pushMatrix();
+                            GlStateManager.enableCull();
+                            GlStateManager.disableLighting();
                             GlowInfo glowInfo = MekanismRenderer.enableGlow();
-                            Model3D overlayModel = getOverlayModel(pos.getFace(), type);
-                            MekanismRenderer.renderObject(overlayModel, matrix, renderer, MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                                  MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F));
+                            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+                            GlStateManager.disableAlphaTest();
+                            GlStateManager.enableBlend();
+                            GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+
+                            MekanismRenderer.color(dataType.getColor(), 0.6F);
+                            bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                            GlStateManager.translatef((float) x, (float) y, (float) z);
+                            int display = getOverlayDisplay(pos.getFace(), type).display;
+                            GlStateManager.callList(display);
+                            MekanismRenderer.resetColor();
+
+                            GlStateManager.disableBlend();
+                            GlStateManager.enableAlphaTest();
                             MekanismRenderer.disableGlow(glowInfo);
-                            matrix.func_227865_b_();
+                            GlStateManager.enableLighting();
+                            GlStateManager.disableCull();
+                            GlStateManager.popMatrix();
                         }
                     }
                 }
@@ -68,7 +81,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         }
     }
 
-    private Model3D getOverlayModel(Direction side, TransmissionType type) {
+    private DisplayInteger getOverlayDisplay(Direction side, TransmissionType type) {
         if (cachedOverlays.containsKey(side) && cachedOverlays.get(side).containsKey(type)) {
             return cachedOverlays.get(side).get(type);
         }
@@ -77,11 +90,13 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
         toReturn.baseBlock = Blocks.STONE;
         toReturn.setTexture(MekanismRenderer.overlays.get(type));
 
+        DisplayInteger display = DisplayInteger.createAndStart();
+
         if (cachedOverlays.containsKey(side)) {
-            cachedOverlays.get(side).put(type, toReturn);
+            cachedOverlays.get(side).put(type, display);
         } else {
-            Map<TransmissionType, Model3D> map = new EnumMap<>(TransmissionType.class);
-            map.put(type, toReturn);
+            Map<TransmissionType, DisplayInteger> map = new EnumMap<>(TransmissionType.class);
+            map.put(type, display);
             cachedOverlays.put(side, map);
         }
 
@@ -141,6 +156,10 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 toReturn.maxZ = 1;
                 break;
         }
-        return toReturn;
+
+        MekanismRenderer.renderObject(toReturn);
+        GlStateManager.endList();
+
+        return display;
     }
 }

@@ -4,8 +4,8 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.armor.CustomArmor;
-import mekanism.client.render.armor.GasMaskArmor;
 import mekanism.client.render.item.gear.RenderGasMask;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.entity.Entity;
@@ -42,7 +42,9 @@ public class ItemGasMask extends ArmorItem implements ISpecialGear {
     @Override
     @OnlyIn(Dist.CLIENT)
     public CustomArmor getGearModel() {
-        return GasMaskArmor.GAS_MASK;
+        ModelCustomArmor model = ModelCustomArmor.INSTANCE;
+        model.modelType = ModelCustomArmor.ArmorModel.GASMASK;
+        return model;
     }
 
     @ParametersAreNonnullByDefault

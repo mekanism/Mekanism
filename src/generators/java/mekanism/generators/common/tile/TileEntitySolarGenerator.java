@@ -52,7 +52,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (world == null) {
             return;
         }
-        Biome b = world.func_225523_d_().func_226836_a_(getPos());
+        Biome b = world.getDimension().getBiome(getPos());
 
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler

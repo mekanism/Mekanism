@@ -1,5 +1,6 @@
 package mekanism.common.world;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.Random;
 import mekanism.api.providers.IBlockProvider;
@@ -22,22 +23,21 @@ import net.minecraft.world.gen.feature.SphereReplaceConfig;
 import net.minecraft.world.gen.placement.CountRangeConfig;
 import net.minecraft.world.gen.placement.FrequencyConfig;
 import net.minecraft.world.gen.placement.Placement;
+import net.minecraftforge.common.BiomeManager;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class GenHandler {
 
     public static void setupWorldGeneration() {
-        ForgeRegistries.BIOMES.forEach(biome -> {
-            if (isValidBiome(biome)) {
-                addGeneration(biome);
+        for (BiomeManager.BiomeType type : BiomeManager.BiomeType.values()) {
+            ImmutableList<BiomeManager.BiomeEntry> biomes = BiomeManager.getBiomes(type);
+            if (biomes != null) {
+                for (BiomeManager.BiomeEntry entry : biomes) {
+                    addGeneration(entry.biome);
+                }
             }
-        });
-    }
-
-    private static boolean isValidBiome(Biome biome) {
-        //TODO: Decide if we want to stop the generation when the category is Category.NONE as well
-        // we probably do not so that in case mods do not categorize their biome, we can still add our ore
-        return biome.getCategory() != Category.THEEND && biome.getCategory() != Category.NETHER;
+        }
     }
 
     private static void addGeneration(Biome biome) {
@@ -49,20 +49,21 @@ public class GenHandler {
         addSaltGeneration(biome, MekanismBlocks.SALT_BLOCK, MekanismConfig.world.salt);
     }
 
+
     private static void addOreGeneration(Biome biome, IBlockProvider blockProvider, OreConfig oreConfig) {
         if (oreConfig.shouldGenerate.get()) {
-            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.func_225566_b_(new OreFeatureConfig(FillerBlockType.NATURAL_STONE,
-                  blockProvider.getBlock().getDefaultState(), oreConfig.maxVeinSize.get())).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(
-                  new CountRangeConfig(oreConfig.perChunk.get(), oreConfig.bottomOffset.get(), oreConfig.topOffset.get(), oreConfig.maxHeight.get()))));
+            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE,
+                    new OreFeatureConfig(FillerBlockType.NATURAL_STONE, blockProvider.getBlock().getDefaultState(), oreConfig.maxVeinSize.get()), Placement.COUNT_RANGE,
+                    new CountRangeConfig(oreConfig.perChunk.get(), oreConfig.bottomOffset.get(), oreConfig.topOffset.get(), oreConfig.maxHeight.get())));
         }
     }
 
     private static void addSaltGeneration(Biome biome, IBlockProvider blockProvider, SaltConfig saltConfig) {
         if (saltConfig.shouldGenerate.get()) {
             BlockState state = blockProvider.getBlock().getDefaultState();
-            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.DISK.func_225566_b_(new SphereReplaceConfig(state, saltConfig.maxVeinSize.get(),
-                  saltConfig.ySize.get(), Lists.newArrayList(Blocks.DIRT.getDefaultState(), Blocks.CLAY.getDefaultState(), state)))
-                  .func_227228_a_(Placement.COUNT_TOP_SOLID.func_227446_a_(new FrequencyConfig(saltConfig.perChunk.get()))));
+            //TODO: Does this need to include the above state in the targets or is dirt fine
+            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.DISK,
+                    new SphereReplaceConfig(state, saltConfig.maxVeinSize.get(), saltConfig.ySize.get(), Lists.newArrayList(Blocks.DIRT.getDefaultState())), Placement.COUNT_TOP_SOLID, new FrequencyConfig(saltConfig.perChunk.get())));
         }
     }
 

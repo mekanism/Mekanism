@@ -4,8 +4,8 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.client.render.ModelCustomArmor;
 import mekanism.client.render.armor.CustomArmor;
-import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.item.gear.RenderArmoredJetpack;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
@@ -31,7 +31,9 @@ public class ItemArmoredJetpack extends ItemJetpack {
     @Override
     @OnlyIn(Dist.CLIENT)
     public CustomArmor getGearModel() {
-        return JetpackArmor.ARMORED_JETPACK;
+        ModelCustomArmor model = ModelCustomArmor.INSTANCE;
+        model.modelType = ModelCustomArmor.ArmorModel.ARMOREDJETPACK;
+        return model;
     }
 
     @ParametersAreNonnullByDefault

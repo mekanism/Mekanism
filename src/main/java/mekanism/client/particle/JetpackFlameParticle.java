@@ -1,15 +1,16 @@
 package mekanism.client.particle;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.Nonnull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.FlameParticle;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public class JetpackFlameParticle extends FlameParticle {
 
@@ -23,9 +24,10 @@ public class JetpackFlameParticle extends FlameParticle {
     }
 
     @Override
-    public void func_225606_a_(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void renderParticle(@Nonnull BufferBuilder buffer, @Nonnull ActiveRenderInfo renderInfo, float partialTicks, float rotationX, float rotationZ, float rotationYZ,
+                               float rotationXY, float rotationXZ) {
         if (age > 0) {
-            super.func_225606_a_(vertexBuilder, renderInfo, partialTicks);
+            super.renderParticle(buffer, renderInfo, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
         }
     }
 

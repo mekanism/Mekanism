@@ -32,8 +32,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
-    private static final AbstractGui gui = new AbstractGui() {
-    };
+    private static final GuiDummy gui = new GuiDummy();
 
     private IGuiHelper guiHelper;
     protected ResourceLocation guiLocation;
@@ -102,7 +101,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height) {
-        AbstractGui.blit(x, y, gui.getBlitOffset(), width, height, icon);
+        gui.blit(x, y, icon, width, height);
     }
 
     @Override
@@ -173,5 +172,13 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         GasStackRenderer renderer = new GasStackRenderer(stack.getAmount(), false, width, height, overlay ? fluidOverlay : null);
         group.init(slot, input, renderer, x, y, width, height, 0, 0);
         group.set(slot, stack);
+    }
+
+    public static class GuiDummy extends AbstractGui {
+
+        public void blit(int x, int y, TextureAtlasSprite sprite, int width, int height) {
+            //Have this helper method as blitOffset is protected
+            blit(x, y, blitOffset, width, height, sprite);
+        }
     }
 }

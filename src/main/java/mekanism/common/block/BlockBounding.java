@@ -83,14 +83,14 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Nonnull
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
-            return ActionResultType.FAIL;
+            return false;
         }
         BlockState state1 = world.getBlockState(mainPos);
         //TODO: Use proper ray trace result, currently is using the one we got but we probably should make one with correct position information
-        return state1.getBlock().func_225533_a_(state1, world, mainPos, player, hand, hit);
+        return state1.getBlock().onBlockActivated(state1, world, mainPos, player, hand, hit);
     }
 
     @Override

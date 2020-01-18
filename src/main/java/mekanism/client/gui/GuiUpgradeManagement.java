@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -118,10 +118,10 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     }
 
     private void renderText(ITextComponent component, int x, int y, float size) {
-        RenderSystem.pushMatrix();
-        RenderSystem.scalef(size, size, size);
+        GlStateManager.pushMatrix();
+        GlStateManager.scalef(size, size, size);
         drawString(component, (int) ((1F / size) * x), (int) ((1F / size) * y), 0x00CD00);
-        RenderSystem.popMatrix();
+        GlStateManager.popMatrix();
     }
 
     private void renderUpgrade(Upgrade type, int x, int y, float size) {
