@@ -26,6 +26,11 @@ import net.minecraftforge.common.Tags;
 @ParametersAreNonnullByDefault
 public class ToolsRecipeGenerator extends BaseRecipeGenerator {
 
+    private static final char AXE_CHAR = 'A';
+    private static final char PICKAXE_CHAR = 'P';
+    public static final char ROD_CHAR = 'R';
+    private static final char SHOVEL_CHAR = 'S';
+
     //Armor patterns
     private static final RecipePattern HELMET = RecipePattern.createPattern(TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
           TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT));
@@ -36,16 +41,16 @@ public class ToolsRecipeGenerator extends BaseRecipeGenerator {
     private static final RecipePattern BOOTS = RecipePattern.createPattern(TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
           TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT));
     //Tool Patterns
-    private static final RecipePattern AXE = RecipePattern.createPattern(DoubleLine.of(Pattern.INGOT, Pattern.INGOT),
-          DoubleLine.of(Pattern.INGOT, Pattern.ROD), DoubleLine.of(Pattern.EMPTY, Pattern.ROD));
-    private static final RecipePattern HOE = RecipePattern.createPattern(DoubleLine.of(Pattern.INGOT, Pattern.INGOT),
-          DoubleLine.of(Pattern.EMPTY, Pattern.ROD), DoubleLine.of(Pattern.EMPTY, Pattern.ROD));
+    private static final RecipePattern AXE = RecipePattern.createPattern(DoubleLine.of(Pattern.INGOT, Pattern.INGOT), DoubleLine.of(Pattern.INGOT, ROD_CHAR),
+          DoubleLine.of(Pattern.EMPTY, ROD_CHAR));
+    private static final RecipePattern HOE = RecipePattern.createPattern(DoubleLine.of(Pattern.INGOT, Pattern.INGOT), DoubleLine.of(Pattern.EMPTY, ROD_CHAR),
+          DoubleLine.of(Pattern.EMPTY, ROD_CHAR));
     private static final RecipePattern PICKAXE = RecipePattern.createPattern(TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
-          TripleLine.of(Pattern.EMPTY, Pattern.ROD, Pattern.EMPTY), TripleLine.of(Pattern.EMPTY, Pattern.ROD, Pattern.EMPTY));
-    private static final RecipePattern SHOVEL = RecipePattern.createPattern(Pattern.INGOT, Pattern.ROD, Pattern.ROD);
-    private static final RecipePattern SWORD = RecipePattern.createPattern(Pattern.INGOT, Pattern.INGOT, Pattern.ROD);
-    private static final RecipePattern PAXEL = RecipePattern.createPattern(TripleLine.of(Pattern.AXE, Pattern.PICKAXE, Pattern.SHOVEL),
-          TripleLine.of(Pattern.EMPTY, Pattern.ROD, Pattern.EMPTY), TripleLine.of(Pattern.EMPTY, Pattern.ROD, Pattern.EMPTY));
+          TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY), TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY));
+    private static final RecipePattern SHOVEL = RecipePattern.createPattern(Pattern.INGOT, ROD_CHAR, ROD_CHAR);
+    private static final RecipePattern SWORD = RecipePattern.createPattern(Pattern.INGOT, Pattern.INGOT, ROD_CHAR);
+    private static final RecipePattern PAXEL = RecipePattern.createPattern(TripleLine.of(AXE_CHAR, PICKAXE_CHAR, SHOVEL_CHAR),
+          TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY), TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY));
 
     public ToolsRecipeGenerator(DataGenerator gen) {
         super(gen, MekanismTools.MODID);
@@ -93,7 +98,7 @@ public class ToolsRecipeGenerator extends BaseRecipeGenerator {
         RecipeCriterion hasAxe = Criterion.has(axe);
         RecipeCriterion hasPickaxe = Criterion.has(pickaxe);
         RecipeCriterion hasShovel = Criterion.has(shovel);
-        ExtendedShapedRecipeBuilder.shapedRecipe(paxel).pattern(PAXEL).key(Pattern.AXE, axe).key(Pattern.PICKAXE, pickaxe).key(Pattern.SHOVEL, shovel).key(Pattern.ROD, rod)
+        ExtendedShapedRecipeBuilder.shapedRecipe(paxel).pattern(PAXEL).key(AXE_CHAR, axe).key(PICKAXE_CHAR, pickaxe).key(SHOVEL_CHAR, shovel).key(ROD_CHAR, rod)
               .addCriterion(hasAxe).addCriterion(hasPickaxe).addCriterion(hasShovel).build(consumer, MekanismTools.rl(baseToolsPath + "paxel"));
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
@@ -114,8 +119,8 @@ public class ToolsRecipeGenerator extends BaseRecipeGenerator {
     }
 
     private void registerVanillaPaxel(Consumer<IFinishedRecipe> consumer, IItemProvider paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(paxel).pattern(PAXEL).key(Pattern.AXE, axe).key(Pattern.PICKAXE, pickaxe).key(Pattern.SHOVEL, shovel)
-              .key(Pattern.ROD, Tags.Items.RODS_WOODEN).addCriterion(Criterion.has(axe)).addCriterion(Criterion.has(pickaxe)).addCriterion(Criterion.has(shovel)).build(consumer);
+        ExtendedShapedRecipeBuilder.shapedRecipe(paxel).pattern(PAXEL).key(AXE_CHAR, axe).key(PICKAXE_CHAR, pickaxe).key(SHOVEL_CHAR, shovel)
+              .key(ROD_CHAR, Tags.Items.RODS_WOODEN).addCriterion(Criterion.has(axe)).addCriterion(Criterion.has(pickaxe)).addCriterion(Criterion.has(shovel)).build(consumer);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = nugget.getRegistryName().getPath() + "_from_";
@@ -129,6 +134,6 @@ public class ToolsRecipeGenerator extends BaseRecipeGenerator {
     }
 
     private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, IItemProvider tool, Tag<Item> ingot, Tag<Item> rod, RecipeCriterion criterion) {
-        return ExtendedShapedRecipeBuilder.shapedRecipe(tool).pattern(pattern).key(Pattern.INGOT, ingot).key(Pattern.ROD, rod).addCriterion(criterion);
+        return ExtendedShapedRecipeBuilder.shapedRecipe(tool).pattern(pattern).key(Pattern.INGOT, ingot).key(ROD_CHAR, rod).addCriterion(criterion);
     }
 }

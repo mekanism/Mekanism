@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:fence_gates/plastic"
+    },
+    "D": {
+      "tag": "forge:dyes/cyan"
+    }
+  },
+  "result": {
+    "item": "mekanismadditions:cyan_plastic_fence_gate",
+    "count": 4
+  }
+}

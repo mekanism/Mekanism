@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/slick/purple"
+    ]
+  },
+  "criteria": {
+    "has_purple_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:purple_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/slick/purple"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_purple_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/reinforced/cyan"
+    ]
+  },
+  "criteria": {
+    "has_cyan_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:cyan_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/reinforced/cyan"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_cyan_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

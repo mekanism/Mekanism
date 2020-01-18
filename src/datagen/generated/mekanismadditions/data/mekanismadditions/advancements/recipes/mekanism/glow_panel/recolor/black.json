@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:glow_panel/recolor/black"
+    ]
+  },
+  "criteria": {
+    "has_glow_panel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanismadditions:glow_panels"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:glow_panel/recolor/black"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_glow_panel",
+      "has_the_recipe"
+    ]
+  ]
+}

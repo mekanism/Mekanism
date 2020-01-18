@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:balloon/recolor/lime"
+    ]
+  },
+  "criteria": {
+    "has_balloon": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanismadditions:balloons"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:balloon/recolor/lime"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_balloon",
+      "has_the_recipe"
+    ]
+  ]
+}

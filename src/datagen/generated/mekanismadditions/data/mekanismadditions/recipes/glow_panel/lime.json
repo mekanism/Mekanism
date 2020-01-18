@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PHP",
+    "HDH",
+    "GHG"
+  ],
+  "key": {
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "P": {
+      "tag": "forge:glass_panes"
+    },
+    "G": {
+      "tag": "forge:dusts/glowstone"
+    },
+    "D": {
+      "tag": "forge:dyes/lime"
+    }
+  },
+  "result": {
+    "item": "mekanismadditions:lime_glow_panel",
+    "count": 2
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/reinforced/blue"
+    ]
+  },
+  "criteria": {
+    "has_blue_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:blue_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/reinforced/blue"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_blue_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}

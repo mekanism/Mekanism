@@ -2,16 +2,6 @@ package mekanism.additions.client;
 
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.block.BlockGlowPanel;
-import mekanism.additions.common.block.plastic.BlockPlastic;
-import mekanism.additions.common.block.plastic.BlockPlasticFence;
-import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
-import mekanism.additions.common.block.plastic.BlockPlasticGlow;
-import mekanism.additions.common.block.plastic.BlockPlasticReinforced;
-import mekanism.additions.common.block.plastic.BlockPlasticRoad;
-import mekanism.additions.common.block.plastic.BlockPlasticSlab;
-import mekanism.additions.common.block.plastic.BlockPlasticSlick;
-import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -41,197 +31,78 @@ public class AdditionsLangGenerator extends BaseLanguageProvider {
     private void addItems() {
         add(AdditionsItems.BABY_SKELETON_SPAWN_EGG, "Baby Skeleton Spawn Egg");
         add(AdditionsItems.WALKIE_TALKIE, "Walkie-Talkie");
-        //Balloons
-        addBalloon(AdditionsItems.BLACK_BALLOON);
-        addBalloon(AdditionsItems.RED_BALLOON);
-        addBalloon(AdditionsItems.GREEN_BALLOON);
-        addBalloon(AdditionsItems.BROWN_BALLOON);
-        addBalloon(AdditionsItems.BLUE_BALLOON);
-        addBalloon(AdditionsItems.PURPLE_BALLOON);
-        addBalloon(AdditionsItems.CYAN_BALLOON);
-        addBalloon(AdditionsItems.LIGHT_GRAY_BALLOON);
-        addBalloon(AdditionsItems.GRAY_BALLOON);
-        addBalloon(AdditionsItems.PINK_BALLOON);
-        addBalloon(AdditionsItems.LIME_BALLOON);
-        addBalloon(AdditionsItems.YELLOW_BALLOON);
-        addBalloon(AdditionsItems.LIGHT_BLUE_BALLOON);
-        addBalloon(AdditionsItems.MAGENTA_BALLOON);
-        addBalloon(AdditionsItems.ORANGE_BALLOON);
-        addBalloon(AdditionsItems.WHITE_BALLOON);
+        addBalloons(AdditionsItems.BLACK_BALLOON, AdditionsItems.RED_BALLOON, AdditionsItems.GREEN_BALLOON, AdditionsItems.BROWN_BALLOON, AdditionsItems.BLUE_BALLOON,
+              AdditionsItems.PURPLE_BALLOON, AdditionsItems.CYAN_BALLOON, AdditionsItems.LIGHT_GRAY_BALLOON, AdditionsItems.GRAY_BALLOON, AdditionsItems.PINK_BALLOON,
+              AdditionsItems.LIME_BALLOON, AdditionsItems.YELLOW_BALLOON, AdditionsItems.LIGHT_BLUE_BALLOON, AdditionsItems.MAGENTA_BALLOON, AdditionsItems.ORANGE_BALLOON,
+              AdditionsItems.WHITE_BALLOON);
     }
 
     private void addBlocks() {
         add(AdditionsBlocks.OBSIDIAN_TNT, "Obsidian TNT");
         //Glow Panels
-        addGlowPanel(AdditionsBlocks.BLACK_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.RED_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.GREEN_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.BROWN_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.BLUE_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.PURPLE_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.CYAN_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.LIGHT_GRAY_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.GRAY_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.PINK_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.LIME_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.YELLOW_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.LIGHT_BLUE_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.MAGENTA_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.ORANGE_GLOW_PANEL);
-        addGlowPanel(AdditionsBlocks.WHITE_GLOW_PANEL);
+        addColoredBlocks("Glow Panel", AdditionsBlocks.BLACK_GLOW_PANEL, AdditionsBlocks.RED_GLOW_PANEL, AdditionsBlocks.GREEN_GLOW_PANEL,
+              AdditionsBlocks.BROWN_GLOW_PANEL, AdditionsBlocks.BLUE_GLOW_PANEL, AdditionsBlocks.PURPLE_GLOW_PANEL, AdditionsBlocks.CYAN_GLOW_PANEL,
+              AdditionsBlocks.LIGHT_GRAY_GLOW_PANEL, AdditionsBlocks.GRAY_GLOW_PANEL, AdditionsBlocks.PINK_GLOW_PANEL, AdditionsBlocks.LIME_GLOW_PANEL,
+              AdditionsBlocks.YELLOW_GLOW_PANEL, AdditionsBlocks.LIGHT_BLUE_GLOW_PANEL, AdditionsBlocks.MAGENTA_GLOW_PANEL, AdditionsBlocks.ORANGE_GLOW_PANEL,
+              AdditionsBlocks.WHITE_GLOW_PANEL);
         //Plastic Blocks
-        addPlasticBlock(AdditionsBlocks.BLACK_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.RED_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.GREEN_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.BROWN_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.BLUE_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.PURPLE_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.CYAN_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.LIGHT_GRAY_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.GRAY_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.PINK_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.LIME_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.YELLOW_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.LIGHT_BLUE_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.MAGENTA_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.ORANGE_PLASTIC_BLOCK);
-        addPlasticBlock(AdditionsBlocks.WHITE_PLASTIC_BLOCK);
+        addColoredBlocks("Plastic Block", AdditionsBlocks.BLACK_PLASTIC_BLOCK, AdditionsBlocks.RED_PLASTIC_BLOCK, AdditionsBlocks.GREEN_PLASTIC_BLOCK,
+              AdditionsBlocks.BROWN_PLASTIC_BLOCK, AdditionsBlocks.BLUE_PLASTIC_BLOCK, AdditionsBlocks.PURPLE_PLASTIC_BLOCK, AdditionsBlocks.CYAN_PLASTIC_BLOCK,
+              AdditionsBlocks.LIGHT_GRAY_PLASTIC_BLOCK, AdditionsBlocks.GRAY_PLASTIC_BLOCK, AdditionsBlocks.PINK_PLASTIC_BLOCK, AdditionsBlocks.LIME_PLASTIC_BLOCK,
+              AdditionsBlocks.YELLOW_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_BLUE_PLASTIC_BLOCK, AdditionsBlocks.MAGENTA_PLASTIC_BLOCK, AdditionsBlocks.ORANGE_PLASTIC_BLOCK,
+              AdditionsBlocks.WHITE_PLASTIC_BLOCK);
         //Slick Plastic
-        addSlickPlasticBlock(AdditionsBlocks.BLACK_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.RED_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.GREEN_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.BROWN_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.BLUE_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.PURPLE_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.CYAN_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.LIGHT_GRAY_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.GRAY_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.PINK_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.LIME_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.YELLOW_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.LIGHT_BLUE_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.MAGENTA_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.ORANGE_SLICK_PLASTIC_BLOCK);
-        addSlickPlasticBlock(AdditionsBlocks.WHITE_SLICK_PLASTIC_BLOCK);
+        addColoredBlocks("Slick Plastic Block", AdditionsBlocks.BLACK_SLICK_PLASTIC_BLOCK, AdditionsBlocks.RED_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.GREEN_SLICK_PLASTIC_BLOCK, AdditionsBlocks.BROWN_SLICK_PLASTIC_BLOCK, AdditionsBlocks.BLUE_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.PURPLE_SLICK_PLASTIC_BLOCK, AdditionsBlocks.CYAN_SLICK_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_GRAY_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.GRAY_SLICK_PLASTIC_BLOCK, AdditionsBlocks.PINK_SLICK_PLASTIC_BLOCK, AdditionsBlocks.LIME_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.YELLOW_SLICK_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_BLUE_SLICK_PLASTIC_BLOCK, AdditionsBlocks.MAGENTA_SLICK_PLASTIC_BLOCK,
+              AdditionsBlocks.ORANGE_SLICK_PLASTIC_BLOCK, AdditionsBlocks.WHITE_SLICK_PLASTIC_BLOCK);
         //Glow Plastic Blocks
-        addGlowPlasticBlock(AdditionsBlocks.BLACK_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.RED_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.GREEN_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.BROWN_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.BLUE_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.PURPLE_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.CYAN_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.GRAY_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.PINK_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.LIME_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.YELLOW_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.MAGENTA_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.ORANGE_PLASTIC_GLOW_BLOCK);
-        addGlowPlasticBlock(AdditionsBlocks.WHITE_PLASTIC_GLOW_BLOCK);
+        addColoredBlocks("Glow Plastic Block", AdditionsBlocks.BLACK_PLASTIC_GLOW_BLOCK, AdditionsBlocks.RED_PLASTIC_GLOW_BLOCK,
+              AdditionsBlocks.GREEN_PLASTIC_GLOW_BLOCK, AdditionsBlocks.BROWN_PLASTIC_GLOW_BLOCK, AdditionsBlocks.BLUE_PLASTIC_GLOW_BLOCK,
+              AdditionsBlocks.PURPLE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.CYAN_PLASTIC_GLOW_BLOCK, AdditionsBlocks.LIGHT_GRAY_PLASTIC_GLOW_BLOCK,
+              AdditionsBlocks.GRAY_PLASTIC_GLOW_BLOCK, AdditionsBlocks.PINK_PLASTIC_GLOW_BLOCK, AdditionsBlocks.LIME_PLASTIC_GLOW_BLOCK,
+              AdditionsBlocks.YELLOW_PLASTIC_GLOW_BLOCK, AdditionsBlocks.LIGHT_BLUE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.MAGENTA_PLASTIC_GLOW_BLOCK,
+              AdditionsBlocks.ORANGE_PLASTIC_GLOW_BLOCK, AdditionsBlocks.WHITE_PLASTIC_GLOW_BLOCK);
         //Reinforced Plastic Blocks
-        addReinforcedPlasticBlock(AdditionsBlocks.BLACK_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.RED_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.GREEN_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.BROWN_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.BLUE_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.PURPLE_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.CYAN_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.GRAY_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.PINK_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.LIME_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.YELLOW_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.MAGENTA_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.ORANGE_REINFORCED_PLASTIC_BLOCK);
-        addReinforcedPlasticBlock(AdditionsBlocks.WHITE_REINFORCED_PLASTIC_BLOCK);
+        addColoredBlocks("Reinforced Plastic Block", AdditionsBlocks.BLACK_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.RED_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.GREEN_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.BROWN_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.BLUE_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.PURPLE_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.CYAN_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_GRAY_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.GRAY_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.PINK_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.LIME_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.YELLOW_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.LIGHT_BLUE_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.MAGENTA_REINFORCED_PLASTIC_BLOCK,
+              AdditionsBlocks.ORANGE_REINFORCED_PLASTIC_BLOCK, AdditionsBlocks.WHITE_REINFORCED_PLASTIC_BLOCK);
         //Plastic Road
-        addPlasticRoad(AdditionsBlocks.BLACK_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.RED_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.GREEN_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.BROWN_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.BLUE_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.PURPLE_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.CYAN_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.LIGHT_GRAY_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.GRAY_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.PINK_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.LIME_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.YELLOW_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.LIGHT_BLUE_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.MAGENTA_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.ORANGE_PLASTIC_ROAD);
-        addPlasticRoad(AdditionsBlocks.WHITE_PLASTIC_ROAD);
+        addColoredBlocks("Plastic Road", AdditionsBlocks.BLACK_PLASTIC_ROAD, AdditionsBlocks.RED_PLASTIC_ROAD, AdditionsBlocks.GREEN_PLASTIC_ROAD,
+              AdditionsBlocks.BROWN_PLASTIC_ROAD, AdditionsBlocks.BLUE_PLASTIC_ROAD, AdditionsBlocks.PURPLE_PLASTIC_ROAD, AdditionsBlocks.CYAN_PLASTIC_ROAD,
+              AdditionsBlocks.LIGHT_GRAY_PLASTIC_ROAD, AdditionsBlocks.GRAY_PLASTIC_ROAD, AdditionsBlocks.PINK_PLASTIC_ROAD, AdditionsBlocks.LIME_PLASTIC_ROAD,
+              AdditionsBlocks.YELLOW_PLASTIC_ROAD, AdditionsBlocks.LIGHT_BLUE_PLASTIC_ROAD, AdditionsBlocks.MAGENTA_PLASTIC_ROAD, AdditionsBlocks.ORANGE_PLASTIC_ROAD,
+              AdditionsBlocks.WHITE_PLASTIC_ROAD);
         //Plastic Stairs
-        addPlasticStairs(AdditionsBlocks.BLACK_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.RED_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.GREEN_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.BROWN_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.BLUE_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.PURPLE_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.CYAN_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.LIGHT_GRAY_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.GRAY_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.PINK_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.LIME_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.YELLOW_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.LIGHT_BLUE_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.MAGENTA_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.ORANGE_PLASTIC_STAIRS);
-        addPlasticStairs(AdditionsBlocks.WHITE_PLASTIC_STAIRS);
+        addColoredBlocks("Plastic Stairs", AdditionsBlocks.BLACK_PLASTIC_STAIRS, AdditionsBlocks.RED_PLASTIC_STAIRS, AdditionsBlocks.GREEN_PLASTIC_STAIRS,
+              AdditionsBlocks.BROWN_PLASTIC_STAIRS, AdditionsBlocks.BLUE_PLASTIC_STAIRS, AdditionsBlocks.PURPLE_PLASTIC_STAIRS, AdditionsBlocks.CYAN_PLASTIC_STAIRS,
+              AdditionsBlocks.LIGHT_GRAY_PLASTIC_STAIRS, AdditionsBlocks.GRAY_PLASTIC_STAIRS, AdditionsBlocks.PINK_PLASTIC_STAIRS, AdditionsBlocks.LIME_PLASTIC_STAIRS,
+              AdditionsBlocks.YELLOW_PLASTIC_STAIRS, AdditionsBlocks.LIGHT_BLUE_PLASTIC_STAIRS, AdditionsBlocks.MAGENTA_PLASTIC_STAIRS,
+              AdditionsBlocks.ORANGE_PLASTIC_STAIRS, AdditionsBlocks.WHITE_PLASTIC_STAIRS);
         //Plastic Slabs
-        addPlasticSlab(AdditionsBlocks.BLACK_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.RED_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.GREEN_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.BROWN_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.BLUE_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.PURPLE_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.CYAN_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.LIGHT_GRAY_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.GRAY_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.PINK_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.LIME_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.YELLOW_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.LIGHT_BLUE_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.MAGENTA_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.ORANGE_PLASTIC_SLAB);
-        addPlasticSlab(AdditionsBlocks.WHITE_PLASTIC_SLAB);
+        addColoredBlocks("Plastic Slab", AdditionsBlocks.BLACK_PLASTIC_SLAB, AdditionsBlocks.RED_PLASTIC_SLAB, AdditionsBlocks.GREEN_PLASTIC_SLAB,
+              AdditionsBlocks.BROWN_PLASTIC_SLAB, AdditionsBlocks.BLUE_PLASTIC_SLAB, AdditionsBlocks.PURPLE_PLASTIC_SLAB, AdditionsBlocks.CYAN_PLASTIC_SLAB,
+              AdditionsBlocks.LIGHT_GRAY_PLASTIC_SLAB, AdditionsBlocks.GRAY_PLASTIC_SLAB, AdditionsBlocks.PINK_PLASTIC_SLAB, AdditionsBlocks.LIME_PLASTIC_SLAB,
+              AdditionsBlocks.YELLOW_PLASTIC_SLAB, AdditionsBlocks.LIGHT_BLUE_PLASTIC_SLAB, AdditionsBlocks.MAGENTA_PLASTIC_SLAB, AdditionsBlocks.ORANGE_PLASTIC_SLAB,
+              AdditionsBlocks.WHITE_PLASTIC_SLAB);
         //Plastic Fence
-        addPlasticFence(AdditionsBlocks.BLACK_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.RED_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.GREEN_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.BROWN_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.BLUE_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.PURPLE_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.CYAN_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.GRAY_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.PINK_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.LIME_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.YELLOW_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.LIGHT_BLUE_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.MAGENTA_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.ORANGE_PLASTIC_FENCE);
-        addPlasticFence(AdditionsBlocks.WHITE_PLASTIC_FENCE);
-        //Plastic Fence Gate
-        addPlasticFenceGate(AdditionsBlocks.BLACK_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.RED_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.GREEN_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.BROWN_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.BLUE_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.PURPLE_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.CYAN_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.GRAY_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.PINK_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.LIME_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.YELLOW_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.LIGHT_BLUE_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.MAGENTA_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.ORANGE_PLASTIC_FENCE_GATE);
-        addPlasticFenceGate(AdditionsBlocks.WHITE_PLASTIC_FENCE_GATE);
+        addColoredBlocks("Plastic Barrier", AdditionsBlocks.BLACK_PLASTIC_FENCE, AdditionsBlocks.RED_PLASTIC_FENCE, AdditionsBlocks.GREEN_PLASTIC_FENCE,
+              AdditionsBlocks.BROWN_PLASTIC_FENCE, AdditionsBlocks.BLUE_PLASTIC_FENCE, AdditionsBlocks.PURPLE_PLASTIC_FENCE, AdditionsBlocks.CYAN_PLASTIC_FENCE,
+              AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE, AdditionsBlocks.GRAY_PLASTIC_FENCE, AdditionsBlocks.PINK_PLASTIC_FENCE, AdditionsBlocks.LIME_PLASTIC_FENCE,
+              AdditionsBlocks.YELLOW_PLASTIC_FENCE, AdditionsBlocks.LIGHT_BLUE_PLASTIC_FENCE, AdditionsBlocks.MAGENTA_PLASTIC_FENCE, AdditionsBlocks.ORANGE_PLASTIC_FENCE,
+              AdditionsBlocks.WHITE_PLASTIC_FENCE);
+              //Plastic Fence Gate
+        addColoredBlocks("Plastic Gate", AdditionsBlocks.BLACK_PLASTIC_FENCE_GATE, AdditionsBlocks.RED_PLASTIC_FENCE_GATE, AdditionsBlocks.GREEN_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.BROWN_PLASTIC_FENCE_GATE, AdditionsBlocks.BLUE_PLASTIC_FENCE_GATE, AdditionsBlocks.PURPLE_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.CYAN_PLASTIC_FENCE_GATE, AdditionsBlocks.LIGHT_GRAY_PLASTIC_FENCE_GATE, AdditionsBlocks.GRAY_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.PINK_PLASTIC_FENCE_GATE, AdditionsBlocks.LIME_PLASTIC_FENCE_GATE, AdditionsBlocks.YELLOW_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.LIGHT_BLUE_PLASTIC_FENCE_GATE, AdditionsBlocks.MAGENTA_PLASTIC_FENCE_GATE, AdditionsBlocks.ORANGE_PLASTIC_FENCE_GATE,
+              AdditionsBlocks.WHITE_PLASTIC_FENCE_GATE);
     }
 
     private void addEntities() {
@@ -246,51 +117,17 @@ public class AdditionsLangGenerator extends BaseLanguageProvider {
         add(AdditionsLang.KEY_VOICE, "Voice");
     }
 
-    private void addGlowPanel(BlockRegistryObject<BlockGlowPanel, ItemBlockColoredName> glowPanel) {
-        addColoredBlock(glowPanel, " Glow Panel");
+    @SafeVarargs
+    private final void addBalloons(ItemRegistryObject<ItemBalloon>... balloonROs) {
+        for (ItemRegistryObject<ItemBalloon> balloonRO : balloonROs) {
+            add(balloonRO.getTranslationKey(), balloonRO.getItem().getColor().getEnglishName() + " Balloon");
+        }
     }
 
-    private void addPlasticBlock(BlockRegistryObject<BlockPlastic, ItemBlockColoredName> plasticBlock) {
-        addColoredBlock(plasticBlock, " Plastic Block");
-    }
-
-    private void addSlickPlasticBlock(BlockRegistryObject<BlockPlasticSlick, ItemBlockColoredName> slickPlastic) {
-        addColoredBlock(slickPlastic, " Slick Plastic Block");
-    }
-
-    private void addGlowPlasticBlock(BlockRegistryObject<BlockPlasticGlow, ItemBlockColoredName> plasticGlow) {
-        addColoredBlock(plasticGlow, " Glow Plastic Block");
-    }
-
-    private void addReinforcedPlasticBlock(BlockRegistryObject<BlockPlasticReinforced, ItemBlockColoredName> reinforcedPlastic) {
-        addColoredBlock(reinforcedPlastic, " Reinforced Plastic Block");
-    }
-
-    private void addPlasticRoad(BlockRegistryObject<BlockPlasticRoad, ItemBlockColoredName> plasticRoad) {
-        addColoredBlock(plasticRoad, " Plastic Road");
-    }
-
-    private void addPlasticStairs(BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName> plasticStairs) {
-        addColoredBlock(plasticStairs, " Plastic Stairs");
-    }
-
-    private void addPlasticSlab(BlockRegistryObject<BlockPlasticSlab, ItemBlockColoredName> plasticSlab) {
-        addColoredBlock(plasticSlab, " Plastic Slab");
-    }
-
-    private void addPlasticFence(BlockRegistryObject<BlockPlasticFence, ItemBlockColoredName> plasticFence) {
-        addColoredBlock(plasticFence, " Plastic Barrier");
-    }
-
-    private void addPlasticFenceGate(BlockRegistryObject<BlockPlasticFenceGate, ItemBlockColoredName> plasticFenceGate) {
-        addColoredBlock(plasticFenceGate, " Plastic Gate");
-    }
-
-    private void addBalloon(ItemRegistryObject<ItemBalloon> balloonRO) {
-        add(balloonRO.getTranslationKey(), balloonRO.getItem().getColor().getEnglishName() + " Balloon");
-    }
-
-    private <BLOCK extends Block & IColoredBlock> void addColoredBlock(BlockRegistryObject<BLOCK, ItemBlockColoredName> blockRO, String suffix) {
-        add(blockRO.getTranslationKey(), blockRO.getBlock().getColor().getEnglishName() + suffix);
+    @SafeVarargs
+    private final <BLOCK extends Block & IColoredBlock> void addColoredBlocks(String suffix, BlockRegistryObject<BLOCK, ItemBlockColoredName>... blockROs) {
+        for (BlockRegistryObject<BLOCK, ItemBlockColoredName> blockRO : blockROs) {
+            add(blockRO.getTranslationKey(), blockRO.getBlock().getColor().getEnglishName() + " " + suffix);
+        }
     }
 }

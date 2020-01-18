@@ -22,6 +22,7 @@ public class AdditionsDataGenerator {
             //Server side data generators
             gen.addProvider(new AdditionsLootGenerator(gen));
             gen.addProvider(new AdditionsTagGenerator(gen));
+            gen.addProvider(new AdditionsRecipeGenerator(gen));
         }
     }
 }

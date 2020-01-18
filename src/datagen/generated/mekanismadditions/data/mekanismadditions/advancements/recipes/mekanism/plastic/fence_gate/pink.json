@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismadditions:plastic/fence_gate/pink"
+    ]
+  },
+  "criteria": {
+    "has_pink_plastic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanismadditions:pink_plastic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismadditions:plastic/fence_gate/pink"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_pink_plastic",
+      "has_the_recipe"
+    ]
+  ]
+}
