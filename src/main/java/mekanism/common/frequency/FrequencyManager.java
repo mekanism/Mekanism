@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
@@ -34,6 +35,8 @@ public class FrequencyManager {
 
     private Set<Frequency> frequencies = new HashSet<>();
 
+    //Note: This can be null on the client side
+    @Nullable
     private FrequencyDataHandler dataHandler;
 
     private UUID ownerUUID;
@@ -81,7 +84,9 @@ public class FrequencyManager {
         for (Frequency iterFreq : frequencies) {
             if (freq.equals(iterFreq)) {
                 iterFreq.activeCoords.add(coord);
-                dataHandler.markDirty();
+                if (dataHandler != null) {
+                    dataHandler.markDirty();
+                }
                 return iterFreq;
             }
         }
@@ -94,7 +99,9 @@ public class FrequencyManager {
             Frequency iterFreq = iter.next();
             if (iterFreq.name.equals(name) && iterFreq.ownerUUID.equals(owner)) {
                 iter.remove();
-                dataHandler.markDirty();
+                if (dataHandler != null) {
+                    dataHandler.markDirty();
+                }
             }
         }
     }
@@ -104,7 +111,9 @@ public class FrequencyManager {
             Frequency iterFreq = iter.next();
             if (iterFreq.name.equals(name)) {
                 iter.remove();
-                dataHandler.markDirty();
+                if (dataHandler != null) {
+                    dataHandler.markDirty();
+                }
             }
         }
     }
@@ -112,7 +121,9 @@ public class FrequencyManager {
     public void deactivate(Coord4D coord) {
         for (Frequency freq : frequencies) {
             freq.activeCoords.remove(coord);
-            dataHandler.markDirty();
+            if (dataHandler != null) {
+                dataHandler.markDirty();
+            }
         }
     }
 
@@ -120,7 +131,9 @@ public class FrequencyManager {
         for (Frequency iterFreq : frequencies) {
             if (freq.equals(iterFreq)) {
                 iterFreq.activeCoords.add(coord);
-                dataHandler.markDirty();
+                if (dataHandler != null) {
+                    dataHandler.markDirty();
+                }
                 return iterFreq;
             }
         }
@@ -129,7 +142,9 @@ public class FrequencyManager {
             freq.activeCoords.add(coord);
             freq.valid = true;
             frequencies.add(freq);
-            dataHandler.markDirty();
+            if (dataHandler != null) {
+                dataHandler.markDirty();
+            }
             return freq;
         }
         return null;
@@ -139,7 +154,6 @@ public class FrequencyManager {
         String name = getName();
         if (dataHandler == null) {
             AbstractChunkProvider chunkProvider = world.getChunkProvider();
-            //TODO: Is this fine or do we have to handle the other cases also
             if (chunkProvider instanceof ServerChunkProvider) {
                 DimensionSavedDataManager savedData = ((ServerChunkProvider) chunkProvider).getSavedData();
                 dataHandler = savedData.getOrCreate(() -> new FrequencyDataHandler(name), name);
@@ -161,7 +175,9 @@ public class FrequencyManager {
 
     public void addFrequency(Frequency freq) {
         frequencies.add(freq);
-        dataHandler.markDirty();
+        if (dataHandler != null) {
+            dataHandler.markDirty();
+        }
     }
 
     public boolean containsFrequency(String name) {
