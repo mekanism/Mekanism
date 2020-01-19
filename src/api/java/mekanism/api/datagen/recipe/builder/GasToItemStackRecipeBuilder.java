@@ -1,6 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -10,6 +11,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -37,6 +39,10 @@ public class GasToItemStackRecipeBuilder extends MekanismRecipeBuilder<GasToItem
     @Override
     public GasToItemStackRecipeResult getResult(ResourceLocation id) {
         return new GasToItemStackRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+    }
+
+    public void build(Consumer<IFinishedRecipe> consumer) {
+        build(consumer, output.getItem().getRegistryName());
     }
 
     public static class GasToItemStackRecipeResult extends RecipeResult {

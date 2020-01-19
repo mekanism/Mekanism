@@ -2,6 +2,8 @@ package mekanism.common.recipe;
 
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.providers.IItemProvider;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
@@ -18,10 +20,21 @@ public class Criterion {
     public static final RecipeCriterion HAS_REFINED_GLOWSTONE = has("refined_glowstone", MekanismTags.Items.INGOTS_REFINED_GLOWSTONE);
     public static final RecipeCriterion HAS_REFINED_OBSIDIAN = has("refined_obsidian", MekanismTags.Items.INGOTS_REFINED_OBSIDIAN);
     public static final RecipeCriterion HAS_STEEL = has("steel", MekanismTags.Items.INGOTS_STEEL);
+    public static final RecipeCriterion HAS_TIN = has("tin", MekanismTags.Items.INGOTS_TIN);
+    public static final RecipeCriterion HAS_COPPER = has("copper", MekanismTags.Items.INGOTS_COPPER);
     public static final RecipeCriterion HAS_BASIC_CIRCUIT = has("basic_circuit", MekanismTags.Items.CIRCUITS_BASIC);
     public static final RecipeCriterion HAS_ADVANCED_CIRCUIT = has("advanced_circuit", MekanismTags.Items.CIRCUITS_ADVANCED);
     public static final RecipeCriterion HAS_ELITE_CIRCUIT = has("elite_circuit", MekanismTags.Items.CIRCUITS_ELITE);
     public static final RecipeCriterion HAS_ULTIMATE_CIRCUIT = has("ultimate_circuit", MekanismTags.Items.CIRCUITS_ULTIMATE);
+    public static final RecipeCriterion HAS_INFUSED_ALLOY = has("infused_alloy", MekanismTags.Items.ALLOYS_INFUSED);
+    public static final RecipeCriterion HAS_REINFORCED_ALLOY = has("reinforced_alloy", MekanismTags.Items.ALLOYS_REINFORCED);
+    public static final RecipeCriterion HAS_ATOMIC_ALLOY = has("atomic_alloy", MekanismTags.Items.ALLOYS_ATOMIC);
+    public static final RecipeCriterion HAS_ENERGY_TABLET = has(MekanismItems.ENERGY_TABLET);
+    public static final RecipeCriterion HAS_ELECTROLYTIC_CORE = has(MekanismItems.ELECTROLYTIC_CORE);
+    public static final RecipeCriterion HAS_STEEL_CASING = has(MekanismBlocks.STEEL_CASING);
+    public static final RecipeCriterion HAS_BIO_FUEL = has("bio_fuel", MekanismTags.Items.FUELS_BIO);
+
+    public static final RecipeCriterion HAS_METALLURGIC_INFUSER = has(MekanismBlocks.METALLURGIC_INFUSER);
 
     private static InventoryChangeTrigger.Instance hasItem(net.minecraft.util.IItemProvider itemIn) {
         return hasItem(ItemPredicate.Builder.create().item(itemIn).build());

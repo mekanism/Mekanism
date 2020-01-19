@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CGC",
+    "FTF",
+    "FFF"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "G": {
+      "tag": "forge:glass_panes"
+    },
+    "F": {
+      "item": "mekanismgenerators:reactor_frame"
+    },
+    "T": {
+      "item": "mekanism:basic_gas_tank"
+    }
+  },
+  "result": {
+    "item": "mekanismgenerators:reactor_controller"
+  }
+}

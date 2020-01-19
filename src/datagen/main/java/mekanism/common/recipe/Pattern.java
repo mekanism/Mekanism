@@ -10,9 +10,13 @@ public class Pattern {
     public static final char ALLOY = 'A';
     public static final char CIRCUIT = 'C';
     public static final char DYE = 'D';
+    public static final char ENERGY = 'E';
     public static final char GLOWSTONE = 'G';
     public static final char INGOT = 'I';
     public static final char OSMIUM = 'O';
     public static final char REDSTONE = 'R';
     public static final char STEEL = 'S';
+    public static final char TANK = 'T';
+    public static final char WOOD = 'W';
+    public static final char STEEL_CASING = 'X';
 }

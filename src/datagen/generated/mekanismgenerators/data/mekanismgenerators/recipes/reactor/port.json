@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " F ",
+    "FCF",
+    " F "
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "F": {
+      "item": "mekanismgenerators:reactor_frame"
+    }
+  },
+  "result": {
+    "item": "mekanismgenerators:reactor_port",
+    "count": 2
+  }
+}

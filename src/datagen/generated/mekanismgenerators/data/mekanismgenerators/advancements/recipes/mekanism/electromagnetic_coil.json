@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanismgenerators:electromagnetic_coil"
+    ]
+  },
+  "criteria": {
+    "has_steel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/steel"
+          }
+        ]
+      }
+    },
+    "has_energy_tablet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:energy_tablet"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanismgenerators:electromagnetic_coil"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_steel",
+      "has_energy_tablet",
+      "has_the_recipe"
+    ]
+  ]
+}

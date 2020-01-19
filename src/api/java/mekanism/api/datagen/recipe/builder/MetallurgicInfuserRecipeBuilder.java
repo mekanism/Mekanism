@@ -1,6 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -11,6 +12,7 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -41,6 +43,10 @@ public class MetallurgicInfuserRecipeBuilder extends MekanismRecipeBuilder<Metal
     public MetallurgicInfuserRecipeResult getResult(ResourceLocation id) {
         return new MetallurgicInfuserRecipeResult(id, itemInput, infusionInput, output, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + output.getItem().getGroup().getPath() + "/" + id.getPath()), serializerName);
+    }
+
+    public void build(Consumer<IFinishedRecipe> consumer) {
+        build(consumer, output.getItem().getRegistryName());
     }
 
     public static class MetallurgicInfuserRecipeResult extends RecipeResult {

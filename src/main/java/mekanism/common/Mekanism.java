@@ -56,6 +56,10 @@ import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.resources.IFutureReloadListener;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.SimpleReloadableResourceManager;
+import net.minecraft.tags.NetworkTagManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -234,7 +238,26 @@ public class Mekanism {
     }
 
     private void serverAboutToStart(FMLServerAboutToStartEvent event) {
-        event.getServer().getResourceManager().addReloadListener(getTagManager());
+        IReloadableResourceManager resourceManager = event.getServer().getResourceManager();
+        boolean added = false;
+        if (resourceManager instanceof SimpleReloadableResourceManager) {
+            //Note: We "hack" it so that our tag manager gets registered directly after the normal tag manager
+            // to ensure that it is before the recipe manager and that the custom tags can be properly resolved
+            //TODO: It would make sense to eventually make a PR to forge to make custom tags easier to do
+            SimpleReloadableResourceManager manager = (SimpleReloadableResourceManager) resourceManager;
+            for (int i = 0; i < manager.reloadListeners.size(); i++) {
+                IFutureReloadListener listener = manager.reloadListeners.get(i);
+                if (listener instanceof NetworkTagManager) {
+                    manager.reloadListeners.add(i + 1, getTagManager());
+                    added = true;
+                    break;
+                }
+            }
+        }
+        if (!added) {
+            //Fallback to trying to just add it even though this is probably too late to do so properly
+            resourceManager.addReloadListener(getTagManager());
+        }
     }
 
     private void serverAboutToStartLowest(FMLServerAboutToStartEvent event) {

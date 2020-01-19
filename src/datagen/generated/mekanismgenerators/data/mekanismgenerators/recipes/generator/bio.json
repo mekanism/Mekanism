@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RAR",
+    "BCB",
+    "IAI"
+  ],
+  "key": {
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "B": {
+      "tag": "forge:fuels/bio"
+    }
+  },
+  "result": {
+    "item": "mekanismgenerators:bio_generator"
+  }
+}

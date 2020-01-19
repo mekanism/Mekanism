@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#A#",
+    "#A#",
+    "III"
+  ],
+  "key": {
+    "#": {
+      "item": "mekanismgenerators:solar_generator"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "mekanismgenerators:advanced_solar_generator"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " O ",
+    "OAO",
+    "ECE"
+  ],
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    }
+  },
+  "result": {
+    "item": "mekanismgenerators:wind_generator"
+  }
+}

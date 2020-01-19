@@ -66,7 +66,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
             if (prevPos != null) {
                 manager.deregisterChunk(chunkPos, prevPos);
             }
-            chunkProvider.func_217222_b(TICKET_TYPE, chunkPos, TICKET_DISTANCE, this);
+            chunkProvider.releaseTicket(TICKET_TYPE, chunkPos, TICKET_DISTANCE, this);
             chunkIt.remove();
         }
         this.hasRegistered = false;
@@ -81,7 +81,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         prevWorld = world;
 
         for (ChunkPos chunkPos : tile.getChunkSet()) {
-            chunkProvider.func_217228_a(TICKET_TYPE, chunkPos, TICKET_DISTANCE, this);
+            chunkProvider.registerTicket(TICKET_TYPE, chunkPos, TICKET_DISTANCE, this);
             manager.registerChunk(chunkPos, prevPos);
             chunkSet.add(chunkPos);
         }
