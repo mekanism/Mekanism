@@ -232,7 +232,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     @Override
     public void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, @Nonnull AlloyTier tier) {
         if (getWorld() != null && getTransmitter().hasTransmitterNetwork()) {
-            int upgraded = 0;
             N transmitterNetwork = getTransmitter().getTransmitterNetwork();
             List<IGridTransmitter<A, N, BUFFER>> list = new ArrayList<>(transmitterNetwork.getTransmitters());
             list.sort((o1, o2) -> {
@@ -243,13 +242,14 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                 }
                 return 0;
             });
+            int upgraded = 0;
             for (IGridTransmitter<A, N, BUFFER> iter : list) {
                 if (iter instanceof TransmitterImpl) {
                     TransmitterImpl<A, N, BUFFER> transmitter = (TransmitterImpl<A, N, BUFFER>) iter;
                     TileEntityTransmitter<A, N, BUFFER> t = transmitter.containingTile;
                     if (t.canUpgrade(tier)) {
                         BlockState state = t.getBlockState();
-                        BlockState upgradeState = upgradeResult(state, tier.getBaseTier());
+                        BlockState upgradeState = t.upgradeResult(state, tier.getBaseTier());
                         if (state == upgradeState) {
                             //Skip if it would not actually upgrade anything
                             continue;
@@ -276,8 +276,8 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                 }
             }
             if (upgraded > 0) {
-                //TODO: Do we want to invalidate the network/have it rebuild to make sure it is properly combined/not including old data
-                // We might be needing to invalidate it up above
+                //Invalidate the network so that it properly has new references to everything
+                transmitterNetwork.invalidate();
                 if (!player.isCreative()) {
                     stack.shrink(1);
                     if (stack.getCount() == 0) {
