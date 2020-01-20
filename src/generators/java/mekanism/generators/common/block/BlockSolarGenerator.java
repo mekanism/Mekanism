@@ -10,6 +10,7 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -39,8 +40,9 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+//TODO: Figure out if there is another way to do this than having this be IStateActive?
 public class BlockSolarGenerator extends BlockMekanism implements IHasGui<TileEntitySolarGenerator>, IBlockElectric, IHasInventory, IHasSecurity, IBlockSound,
-      IHasTileEntity<TileEntitySolarGenerator>, IStateWaterLogged, IHasDescription {
+      IHasTileEntity<TileEntitySolarGenerator>, IStateWaterLogged, IHasDescription, IStateActive {
 
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(0, 9, 0, 16, 11, 16),//solarPanel

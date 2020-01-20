@@ -12,6 +12,7 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
+import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -45,8 +46,9 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+//TODO: Figure out if there is another way to do this than having this be IStateActive?
 public class BlockBioGenerator extends BlockMekanism implements IHasGui<TileEntityBioGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity,
-      IBlockSound, IHasTileEntity<TileEntityBioGenerator>, ISupportsComparator, IStateWaterLogged, IHasDescription {
+      IBlockSound, IHasTileEntity<TileEntityBioGenerator>, ISupportsComparator, IStateWaterLogged, IHasDescription, IStateActive {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
