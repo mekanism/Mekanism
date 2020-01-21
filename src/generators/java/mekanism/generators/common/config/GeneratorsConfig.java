@@ -79,14 +79,16 @@ public class GeneratorsConfig implements IMekanismConfig {
         windGenerationDimBlacklist = builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
               .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> {
                   if (o instanceof String) {
-                      String string = (String) o;
-                      ResourceLocation dim = new ResourceLocation(string.toLowerCase());
-                      DimensionType dimensionType = DimensionType.byName(dim);
-                      //byName defaults to overworld if it does not match. So make sure overworld was actually the one specified
-                      if (dimensionType == DimensionType.OVERWORLD) {
-                          return dim.equals(DimensionType.OVERWORLD.getRegistryName());
+                      String string = ((String) o).toLowerCase();
+                      if (ResourceLocation.isResouceNameValid(string)) {
+                          ResourceLocation dim = new ResourceLocation(string);
+                          DimensionType dimensionType = DimensionType.byName(dim);
+                          //byName defaults to overworld if it does not match. So make sure overworld was actually the one specified
+                          if (dimensionType == DimensionType.OVERWORLD) {
+                              return dim.equals(DimensionType.OVERWORLD.getRegistryName());
+                          }
+                          return true;
                       }
-                      return true;
                   }
                   return false;
               });

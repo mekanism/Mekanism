@@ -24,7 +24,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
-import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -33,6 +32,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(MekanismAdditions.MODID)
 public class MekanismAdditions implements IModule {
@@ -92,16 +92,21 @@ public class MekanismAdditions implements IModule {
     private void commonSetup(FMLCommonSetupEvent event) {
         //Set up VoiceServerManager
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
+            //TODO: Will we need to move the voice server enabled config option to common once we get around to porting the voice server
             voiceManager = new VoiceServerManager();
         }
         //Add baby skeleton to spawn table
         if (MekanismAdditionsConfig.common.spawnBabySkeletons.get()) {
-            SpawnListEntry spawnListEntry = new SpawnListEntry(AdditionsEntityTypes.BABY_SKELETON.get(), 40, 1, 3);
-            //TODO: Do we want this to look at all biomes?
-            for (Biome biome : BiomeProvider.BIOMES_TO_SPAWN_IN) {
-                List<SpawnListEntry> monsterSpawns = biome.getSpawns(EntityClassification.MONSTER);
-                if (!monsterSpawns.isEmpty()) {
-                    monsterSpawns.add(spawnListEntry);
+            SpawnListEntry spawnListEntry = new SpawnListEntry(AdditionsEntityTypes.BABY_SKELETON.get(), MekanismAdditionsConfig.common.babySkeletonWeight.get(),
+                  MekanismAdditionsConfig.common.babySkeletonMinSize.get(), MekanismAdditionsConfig.common.babySkeletonMaxSize.get());
+            List<? extends String> blackListedBiomes = MekanismAdditionsConfig.common.babySkeletonBlackList.get();
+            for (Biome biome : ForgeRegistries.BIOMES) {
+                if (!blackListedBiomes.contains(biome.getRegistryName().toString())) {
+                    List<SpawnListEntry> monsterSpawns = biome.getSpawns(EntityClassification.MONSTER);
+                    if (monsterSpawns.stream().anyMatch(monsterSpawn -> monsterSpawn.entityType == EntityType.SKELETON)) {
+                        //If skeletons can spawn in this biome add the baby skeleton to be able to spawn in it
+                        monsterSpawns.add(spawnListEntry);
+                    }
                 }
             }
         }
