@@ -509,12 +509,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               MekanismItems.SALT.getItemStack()
         ).addCriterion(Criterion.HAS_CHEMICAL_CRYSTALLIZER)
               .build(consumer, Mekanism.rl(basePath + "salt"));
-        //Sulfur
+        //Lithium
         GasToItemStackRecipeBuilder.crystallizing(
               GasStackIngredient.from(MekanismGases.LITHIUM, 100),
-              MekanismItems.SULFUR_DUST.getItemStack()
+              MekanismItems.LITHIUM_DUST.getItemStack()
         ).addCriterion(Criterion.HAS_CHEMICAL_CRYSTALLIZER)
-              .build(consumer, Mekanism.rl(basePath + "sulfur"));
+              .build(consumer, Mekanism.rl(basePath + "lithium"));
     }
 
     private void addEnergyCubeRecipes(Consumer<IFinishedRecipe> consumer) {

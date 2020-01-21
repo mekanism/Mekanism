@@ -5,6 +5,6 @@
     "gas": "mekanism:lithium"
   },
   "output": {
-    "item": "mekanism:dust_sulfur"
+    "item": "mekanism:dust_lithium"
   }
 }
