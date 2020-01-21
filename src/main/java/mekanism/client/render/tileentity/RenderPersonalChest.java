@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalChest> {
@@ -42,7 +41,7 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
         matrix.func_227860_a_();
         if (tile.getWorld() != null && !tile.isRemoved()) {
             matrix.func_227861_a_(0.5D, 0.5D, 0.5D);
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-tile.getWorld().getBlockState(tile.getPos()).get(BlockStateProperties.HORIZONTAL_FACING).getHorizontalAngle()));
+            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-tile.getDirection().getHorizontalAngle()));
             matrix.func_227861_a_(-0.5D, -0.5D, -0.5D);
         }
         float lidAngle = tile.prevLidAngle + (tile.lidAngle - tile.prevLidAngle) * partialTick;
