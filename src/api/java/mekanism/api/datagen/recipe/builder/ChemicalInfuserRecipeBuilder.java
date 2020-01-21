@@ -37,7 +37,7 @@ public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<Chemical
     }
 
     @Override
-    public ChemicalInfuserRecipeResult getResult(ResourceLocation id) {
+    protected ChemicalInfuserRecipeResult getResult(ResourceLocation id) {
         return new ChemicalInfuserRecipeResult(id, leftInput, rightInput, output, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }

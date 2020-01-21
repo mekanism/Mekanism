@@ -73,7 +73,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     }
 
     @Override
-    public PressurizedReactionRecipeResult getResult(ResourceLocation id) {
+    protected PressurizedReactionRecipeResult getResult(ResourceLocation id) {
         return new PressurizedReactionRecipeResult(id, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }

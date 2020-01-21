@@ -1,0 +1,24 @@
+{
+  "type": "mekanism:enriching",
+  "input": [
+    {
+      "ingredient": {
+        "item": "minecraft:oxeye_daisy"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:azure_bluet"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:white_tulip"
+      }
+    }
+  ],
+  "output": {
+    "item": "minecraft:light_gray_dye",
+    "count": 2
+  }
+}

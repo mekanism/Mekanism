@@ -61,7 +61,7 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
     }
 
     @Override
-    public SawmillRecipeResult getResult(ResourceLocation id) {
+    protected SawmillRecipeResult getResult(ResourceLocation id) {
         return new SawmillRecipeResult(id, input, mainOutput, secondaryOutput, secondaryChance, outputType, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }

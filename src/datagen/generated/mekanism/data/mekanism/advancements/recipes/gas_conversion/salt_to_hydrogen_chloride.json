@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:gas_conversion/salt_to_hydrogen_chloride"
+    ]
+  },
+  "criteria": {
+    "has_salt": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/salt"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:gas_conversion/salt_to_hydrogen_chloride"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_salt",
+      "has_the_recipe"
+    ]
+  ]
+}

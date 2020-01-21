@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "_C_",
+    "A A",
+    "___"
+  ],
+  "key": {
+    "_": {
+      "tag": "forge:cobblestone"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "A": {
+      "tag": "mekanism:alloys/basic"
+    }
+  },
+  "result": {
+    "item": "mekanism:basic_bin"
+  }
+}

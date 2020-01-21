@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:factory/advanced/combining"
+    ]
+  },
+  "criteria": {
+    "has_basic_combining_factory": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:basic_combining_factory"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:factory/advanced/combining"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_basic_combining_factory",
+      "has_the_recipe"
+    ]
+  ]
+}

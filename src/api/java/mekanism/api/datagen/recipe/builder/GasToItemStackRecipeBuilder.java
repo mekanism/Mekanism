@@ -37,7 +37,7 @@ public class GasToItemStackRecipeBuilder extends MekanismRecipeBuilder<GasToItem
     }
 
     @Override
-    public GasToItemStackRecipeResult getResult(ResourceLocation id) {
+    protected GasToItemStackRecipeResult getResult(ResourceLocation id) {
         return new GasToItemStackRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 

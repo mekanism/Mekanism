@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:factory/ultimate/combining"
+    ]
+  },
+  "criteria": {
+    "has_elite_combining_factory": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:elite_combining_factory"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:factory/ultimate/combining"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_elite_combining_factory",
+      "has_the_recipe"
+    ]
+  ]
+}

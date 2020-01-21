@@ -1,6 +1,5 @@
 package mekanism.common.registries;
 
-import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -387,8 +386,7 @@ public class MekanismBlocks {
 
     private static <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> registerTieredBlock(ITier tier, String suffix,
           Supplier<? extends BLOCK> blockSupplier, Function<BLOCK, ITEM> itemCreator) {
-        //Ensure the name is lower case as with concatenating with values from enums it may not be
-        return BLOCKS.register(tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT) + suffix, blockSupplier, itemCreator);
+        return BLOCKS.register(tier.getBaseTier().getLowerName() + suffix, blockSupplier, itemCreator);
     }
 
     private static BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> registerOre(Resource resource) {

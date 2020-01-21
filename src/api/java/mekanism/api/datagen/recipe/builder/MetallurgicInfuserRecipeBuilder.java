@@ -40,7 +40,7 @@ public class MetallurgicInfuserRecipeBuilder extends MekanismRecipeBuilder<Metal
     }
 
     @Override
-    public MetallurgicInfuserRecipeResult getResult(ResourceLocation id) {
+    protected MetallurgicInfuserRecipeResult getResult(ResourceLocation id) {
         return new MetallurgicInfuserRecipeResult(id, itemInput, infusionInput, output, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + output.getItem().getGroup().getPath() + "/" + id.getPath()), serializerName);
     }

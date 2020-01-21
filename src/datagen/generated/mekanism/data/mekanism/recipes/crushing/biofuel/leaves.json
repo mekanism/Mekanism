@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "amount": 10,
+    "ingredient": {
+      "tag": "minecraft:leaves"
+    }
+  },
+  "output": {
+    "item": "mekanism:bio_fuel"
+  }
+}

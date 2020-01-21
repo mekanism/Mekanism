@@ -52,8 +52,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(GLASS_CHAR, GLASS_CHAR, GLASS_CHAR),
                     TripleLine.of(Pattern.REDSTONE, Pattern.ALLOY, Pattern.REDSTONE),
-                    TripleLine.of(Pattern.OSMIUM, Pattern.OSMIUM, Pattern.OSMIUM)))
-              .key(GLASS_CHAR, Tags.Items.GLASS_PANES)
+                    TripleLine.of(Pattern.OSMIUM, Pattern.OSMIUM, Pattern.OSMIUM))
+              ).key(GLASS_CHAR, Tags.Items.GLASS_PANES)
               .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
@@ -64,8 +64,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
                     TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY),
-                    TripleLine.of(Pattern.OSMIUM, Pattern.ENERGY, Pattern.OSMIUM)))
-              .key(Pattern.CONSTANT, GeneratorsItems.SOLAR_PANEL)
+                    TripleLine.of(Pattern.OSMIUM, Pattern.ENERGY, Pattern.OSMIUM))
+              ).key(Pattern.CONSTANT, GeneratorsItems.SOLAR_PANEL)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
@@ -77,8 +77,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
-                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT)))
-              .key(Pattern.CONSTANT, GeneratorsBlocks.SOLAR_GENERATOR)
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+              ).key(Pattern.CONSTANT, GeneratorsBlocks.SOLAR_GENERATOR)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .addCriterion(Criterion.has(GeneratorsBlocks.SOLAR_GENERATOR))
@@ -88,8 +88,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.REDSTONE, Pattern.ALLOY, Pattern.REDSTONE),
                     TripleLine.of(BIO_FUEL_CHAR, Pattern.CIRCUIT, BIO_FUEL_CHAR),
-                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT)))
-              .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT))
+              ).key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
@@ -102,8 +102,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.OSMIUM, Pattern.ALLOY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.STEEL_CASING, ELECTROLYTIC_CORE_CHAR, Pattern.STEEL_CASING),
-                    TripleLine.of(Pattern.OSMIUM, Pattern.ALLOY, Pattern.OSMIUM)))
-              .key(ELECTROLYTIC_CORE_CHAR, MekanismItems.ELECTROLYTIC_CORE)
+                    TripleLine.of(Pattern.OSMIUM, Pattern.ALLOY, Pattern.OSMIUM))
+              ).key(ELECTROLYTIC_CORE_CHAR, MekanismItems.ELECTROLYTIC_CORE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
@@ -116,8 +116,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
                     TripleLine.of(Pattern.WOOD, Pattern.OSMIUM, Pattern.WOOD),
-                    TripleLine.of(COPPER_CHAR, FURNACE_CHAR, COPPER_CHAR)))
-              .key(Pattern.WOOD, ItemTags.PLANKS)
+                    TripleLine.of(COPPER_CHAR, FURNACE_CHAR, COPPER_CHAR))
+              ).key(Pattern.WOOD, ItemTags.PLANKS)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
               .key(COPPER_CHAR, MekanismTags.Items.INGOTS_COPPER)
@@ -131,8 +131,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.OSMIUM, Pattern.EMPTY),
                     TripleLine.of(Pattern.OSMIUM, Pattern.ALLOY, Pattern.OSMIUM),
-                    TripleLine.of(Pattern.ENERGY, Pattern.CIRCUIT, Pattern.ENERGY)))
-              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+                    TripleLine.of(Pattern.ENERGY, Pattern.CIRCUIT, Pattern.ENERGY))
+              ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
@@ -148,16 +148,16 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_GOLD, 4),
               InfusionIngredient.from(MekanismTags.InfuseTypes.CARBON, 10),
-              GeneratorsItems.HOHLRAUM.getItemStack())
-              .addCriterion(Criterion.HAS_METALLURGIC_INFUSER)
+              GeneratorsItems.HOHLRAUM.getItemStack()
+        ).addCriterion(Criterion.HAS_METALLURGIC_INFUSER)
               .build(consumer);
         //Laser Focus Matrix
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.LASER_FOCUS_MATRIX, 2)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY),
                     TripleLine.of(GLASS_CHAR, Pattern.REDSTONE, GLASS_CHAR),
-                    TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY)))
-              .key(GLASS_CHAR, GeneratorsBlocks.REACTOR_GLASS)
+                    TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY))
+              ).key(GLASS_CHAR, GeneratorsBlocks.REACTOR_GLASS)
               .key(Pattern.REDSTONE, Tags.Items.STORAGE_BLOCKS_REDSTONE)
               .addCriterion(Criterion.has(GeneratorsBlocks.REACTOR_GLASS))
               .build(consumer);
@@ -166,8 +166,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL_CASING, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL_CASING, Pattern.ALLOY, Pattern.STEEL_CASING),
-                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL_CASING, Pattern.EMPTY)))
-              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL_CASING, Pattern.EMPTY))
+              ).key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
               .addCriterion(Criterion.HAS_ATOMIC_ALLOY)
               .addCriterion(Criterion.HAS_STEEL_CASING)
@@ -178,8 +178,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
                     TripleLine.of(FRAME_CHAR, GLASS_CHAR, FRAME_CHAR),
-                    TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY)))
-              .key(GLASS_CHAR, Tags.Items.GLASS)
+                    TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY))
+              ).key(GLASS_CHAR, Tags.Items.GLASS)
               .key(FRAME_CHAR, GeneratorsBlocks.REACTOR_FRAME)
               .addCriterion(hasFrame)
               .build(consumer, MekanismGenerators.rl("reactor/glass"));
@@ -188,8 +188,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY),
                     TripleLine.of(FRAME_CHAR, Pattern.CIRCUIT, FRAME_CHAR),
-                    TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY)))
-              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+                    TripleLine.of(Pattern.EMPTY, FRAME_CHAR, Pattern.EMPTY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(FRAME_CHAR, GeneratorsBlocks.REACTOR_FRAME)
               .addCriterion(hasFrame)
               .addCriterion(Criterion.HAS_ULTIMATE_CIRCUIT)
@@ -199,8 +199,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.REDSTONE, Pattern.EMPTY),
                     TripleLine.of(Pattern.REDSTONE, FRAME_CHAR, Pattern.REDSTONE),
-                    TripleLine.of(Pattern.EMPTY, Pattern.REDSTONE, Pattern.EMPTY)))
-              .key(FRAME_CHAR, GeneratorsBlocks.REACTOR_FRAME)
+                    TripleLine.of(Pattern.EMPTY, Pattern.REDSTONE, Pattern.EMPTY))
+              ).key(FRAME_CHAR, GeneratorsBlocks.REACTOR_FRAME)
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
               .addCriterion(hasFrame)
               .build(consumer, MekanismGenerators.rl("reactor/logic_adapter"));
@@ -209,8 +209,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CIRCUIT, GLASS_CHAR, Pattern.CIRCUIT),
                     TripleLine.of(FRAME_CHAR, Pattern.TANK, FRAME_CHAR),
-                    TripleLine.of(FRAME_CHAR, FRAME_CHAR, FRAME_CHAR)))
-              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+                    TripleLine.of(FRAME_CHAR, FRAME_CHAR, FRAME_CHAR))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
               .key(GLASS_CHAR, Tags.Items.GLASS_PANES)
               .key(FRAME_CHAR, GeneratorsBlocks.REACTOR_FRAME)
               .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
@@ -224,8 +224,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
                     TripleLine.of(Pattern.INGOT, Pattern.ENERGY, Pattern.INGOT),
-                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL)))
-              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
+              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, Tags.Items.INGOTS_GOLD)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .addCriterion(Criterion.HAS_STEEL)
@@ -236,8 +236,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.ALLOY, Pattern.CIRCUIT),
-                    TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL)))
-              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+                    TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL))
+              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
               .addCriterion(Criterion.HAS_STEEL)
@@ -249,8 +249,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
                     TripleLine.of(Pattern.INGOT, BUCKET_CHAR, Pattern.INGOT),
-                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL)))
-              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
+              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_TIN)
               .key(BUCKET_CHAR, Items.BUCKET)
               .addCriterion(Criterion.HAS_STEEL)
@@ -261,8 +261,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL),
-                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY)))
-              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
+              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .addCriterion(Criterion.HAS_INFUSED_ALLOY)
               .addCriterion(Criterion.HAS_STEEL)
@@ -272,8 +272,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL),
                     TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL),
-                    TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL)))
-              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+                    TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL))
+              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .addCriterion(Criterion.HAS_INFUSED_ALLOY)
               .addCriterion(Criterion.HAS_STEEL)
@@ -283,8 +283,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL, Pattern.OSMIUM, Pattern.STEEL),
-                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY)))
-              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
+              ).key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .addCriterion(Criterion.HAS_STEEL)
               .addCriterion(Criterion.HAS_OSMIUM)
@@ -295,8 +295,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
                     TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
-                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY)))
-              .key(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+              ).key(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
               .addCriterion(Criterion.HAS_ADVANCED_CIRCUIT)
               .addCriterion(hasCasing)
@@ -306,8 +306,8 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
                     TripleLine.of(Pattern.CONSTANT, IRON_BARS_CHAR, Pattern.CONSTANT),
-                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY)))
-              .key(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+              ).key(Pattern.CONSTANT, GeneratorsBlocks.TURBINE_CASING)
               .key(IRON_BARS_CHAR, Items.IRON_BARS)
               .addCriterion(hasCasing)
               .build(consumer, MekanismGenerators.rl("turbine/vent"));

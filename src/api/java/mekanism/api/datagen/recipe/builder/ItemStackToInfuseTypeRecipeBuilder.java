@@ -35,7 +35,7 @@ public class ItemStackToInfuseTypeRecipeBuilder extends MekanismRecipeBuilder<It
     }
 
     @Override
-    public ItemStackToInfuseTypeRecipeResult getResult(ResourceLocation id) {
+    protected ItemStackToInfuseTypeRecipeResult getResult(ResourceLocation id) {
         return new ItemStackToInfuseTypeRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 

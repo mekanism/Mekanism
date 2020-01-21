@@ -59,7 +59,7 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
     }
 
     @Override
-    public RotaryRecipeResult getResult(ResourceLocation id) {
+    protected RotaryRecipeResult getResult(ResourceLocation id) {
         return new RotaryRecipeResult(id, fluidInput, gasInput, gasOutput, fluidOutput, direction, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }

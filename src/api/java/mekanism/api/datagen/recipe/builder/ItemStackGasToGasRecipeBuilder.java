@@ -38,7 +38,7 @@ public class ItemStackGasToGasRecipeBuilder extends MekanismRecipeBuilder<ItemSt
     }
 
     @Override
-    public ItemStackGasToGasRecipeResult getResult(ResourceLocation id) {
+    protected ItemStackGasToGasRecipeResult getResult(ResourceLocation id) {
         return new ItemStackGasToGasRecipeResult(id, itemInput, gasInput, output, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }

@@ -35,7 +35,7 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
     }
 
     @Override
-    public FluidToFluidRecipeResult getResult(ResourceLocation id) {
+    protected FluidToFluidRecipeResult getResult(ResourceLocation id) {
         return new FluidToFluidRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 

@@ -100,8 +100,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.EMPTY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.STEEL, Pattern.CIRCUIT, Pattern.STEEL),
-                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY)))
-              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
+              ).key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
@@ -112,8 +112,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR),
                     TripleLine.of(TNT_CHAR, TNT_CHAR, TNT_CHAR),
-                    TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR)))
-              .key(OBSIDIAN_CHAR, Tags.Items.OBSIDIAN)
+                    TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
+              ).key(OBSIDIAN_CHAR, Tags.Items.OBSIDIAN)
               .key(TNT_CHAR, Items.TNT)
               .addCriterion(Criterion.has(Items.OBSIDIAN))
               .addCriterion(Criterion.has(Items.TNT))
@@ -155,9 +155,16 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         EnumColor color = result.getItem().getColor();
         String colorString = color.getRegistryPrefix();
         Tag<Item> dye = color.getDyeTag();
-        ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 2).addIngredient(Tags.Items.LEATHER).addIngredient(Tags.Items.STRING).addIngredient(dye)
-              .addCriterion(HAS_LEATHER).build(consumer, MekanismAdditions.rl(basePath + colorString));
-        ExtendedShapelessRecipeBuilder.shapelessRecipe(result).addIngredient(AdditionsTags.Items.BALLOONS).addIngredient(dye).addCriterion(HAS_BALLOON)
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 2)
+              .addIngredient(Tags.Items.LEATHER)
+              .addIngredient(Tags.Items.STRING)
+              .addIngredient(dye)
+              .addCriterion(HAS_LEATHER)
+              .build(consumer, MekanismAdditions.rl(basePath + colorString));
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(result)
+              .addIngredient(AdditionsTags.Items.BALLOONS)
+              .addIngredient(dye)
+              .addCriterion(HAS_BALLOON)
               .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
     }
 
@@ -452,8 +459,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         //Enriching recipes
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(plastic),
-              result.getItemStack())
-              .addCriterion(hasPlastic)
+              result.getItemStack()
+        ).addCriterion(hasPlastic)
               .build(consumer, MekanismAdditions.rl(basePath + "enriching/" + colorString));
         //Recolor recipes
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, color.getDyeTag(), HAS_SLICK_PLASTIC, basePath + "recolor/" + colorString);

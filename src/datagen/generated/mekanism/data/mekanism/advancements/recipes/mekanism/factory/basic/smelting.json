@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:factory/basic/smelting"
+    ]
+  },
+  "criteria": {
+    "has_energized_smelter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:energized_smelter"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:factory/basic/smelting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_energized_smelter",
+      "has_the_recipe"
+    ]
+  ]
+}

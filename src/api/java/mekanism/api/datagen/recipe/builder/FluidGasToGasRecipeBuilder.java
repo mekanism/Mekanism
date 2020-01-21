@@ -38,7 +38,7 @@ public class FluidGasToGasRecipeBuilder extends MekanismRecipeBuilder<FluidGasTo
     }
 
     @Override
-    public FluidGasToGasRecipeResult getResult(ResourceLocation id) {
+    protected FluidGasToGasRecipeResult getResult(ResourceLocation id) {
         return new FluidGasToGasRecipeResult(id, fluidInput, gasInput, output, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }

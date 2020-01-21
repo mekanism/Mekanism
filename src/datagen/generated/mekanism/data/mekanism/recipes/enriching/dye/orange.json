@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:orange_tulip"
+    }
+  },
+  "output": {
+    "item": "minecraft:orange_dye",
+    "count": 2
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:crushing/chiseled_stone_bricks_to_stone_bricks"
+    ]
+  },
+  "criteria": {
+    "has_crusher": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:crusher"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:crushing/chiseled_stone_bricks_to_stone_bricks"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_crusher",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:crystallizing/salt"
+    ]
+  },
+  "criteria": {
+    "has_chemical_crystallizer": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:chemical_crystallizer"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:crystallizing/salt"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chemical_crystallizer",
+      "has_the_recipe"
+    ]
+  ]
+}

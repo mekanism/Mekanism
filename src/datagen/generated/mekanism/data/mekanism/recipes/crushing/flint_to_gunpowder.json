@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:flint"
+    }
+  },
+  "output": {
+    "item": "minecraft:gunpowder"
+  }
+}

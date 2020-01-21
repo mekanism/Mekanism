@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:gas_conversion",
+  "input": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/osmium"
+    }
+  },
+  "output": {
+    "gas": "mekanism:liquid_osmium",
+    "amount": 1800
+  }
+}

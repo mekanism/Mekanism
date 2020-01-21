@@ -26,6 +26,7 @@ public class Criterion {
     public static final RecipeCriterion HAS_ADVANCED_CIRCUIT = has("advanced_circuit", MekanismTags.Items.CIRCUITS_ADVANCED);
     public static final RecipeCriterion HAS_ELITE_CIRCUIT = has("elite_circuit", MekanismTags.Items.CIRCUITS_ELITE);
     public static final RecipeCriterion HAS_ULTIMATE_CIRCUIT = has("ultimate_circuit", MekanismTags.Items.CIRCUITS_ULTIMATE);
+    public static final RecipeCriterion HAS_BASIC_ALLOY = has("basic_alloy", MekanismTags.Items.ALLOYS_BASIC);
     public static final RecipeCriterion HAS_INFUSED_ALLOY = has("infused_alloy", MekanismTags.Items.ALLOYS_INFUSED);
     public static final RecipeCriterion HAS_REINFORCED_ALLOY = has("reinforced_alloy", MekanismTags.Items.ALLOYS_REINFORCED);
     public static final RecipeCriterion HAS_ATOMIC_ALLOY = has("atomic_alloy", MekanismTags.Items.ALLOYS_ATOMIC);
@@ -35,6 +36,13 @@ public class Criterion {
     public static final RecipeCriterion HAS_BIO_FUEL = has("bio_fuel", MekanismTags.Items.FUELS_BIO);
 
     public static final RecipeCriterion HAS_METALLURGIC_INFUSER = has(MekanismBlocks.METALLURGIC_INFUSER);
+    public static final RecipeCriterion HAS_SOLAR_NEUTRON_ACTIVATOR = has(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
+    public static final RecipeCriterion HAS_CHEMICAL_CRYSTALLIZER = has(MekanismBlocks.CHEMICAL_CRYSTALLIZER);
+    public static final RecipeCriterion HAS_CHEMICAL_INFUSER = has(MekanismBlocks.CHEMICAL_INFUSER);
+    public static final RecipeCriterion HAS_COMBINER = has(MekanismBlocks.COMBINER);
+    public static final RecipeCriterion HAS_CRUSHER = has(MekanismBlocks.CRUSHER);
+    public static final RecipeCriterion HAS_ENRICHMENT_CHAMBER = has(MekanismBlocks.ENRICHMENT_CHAMBER);
+    public static final RecipeCriterion HAS_THERMAL_EVAPORATION_CONTROLLER = has(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
 
     private static InventoryChangeTrigger.Instance hasItem(net.minecraft.util.IItemProvider itemIn) {
         return hasItem(ItemPredicate.Builder.create().item(itemIn).build());

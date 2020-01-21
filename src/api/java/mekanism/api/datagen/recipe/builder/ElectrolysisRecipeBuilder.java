@@ -46,7 +46,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
     }
 
     @Override
-    public ElectrolysisRecipeResult getResult(ResourceLocation id) {
+    protected ElectrolysisRecipeResult getResult(ResourceLocation id) {
         return new ElectrolysisRecipeResult(id, input, energyUsage, leftGasOutput, rightGasOutput, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:factory/elite/crushing"
+    ]
+  },
+  "criteria": {
+    "has_advanced_crushing_factory": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:advanced_crushing_factory"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:factory/elite/crushing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_advanced_crushing_factory",
+      "has_the_recipe"
+    ]
+  ]
+}

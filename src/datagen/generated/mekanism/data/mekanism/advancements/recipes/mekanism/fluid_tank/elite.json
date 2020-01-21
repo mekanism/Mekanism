@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:fluid_tank/elite"
+    ]
+  },
+  "criteria": {
+    "has_reinforced_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/reinforced"
+          }
+        ]
+      }
+    },
+    "has_advanced_fluid_tank": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:advanced_fluid_tank"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:fluid_tank/elite"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_reinforced_alloy",
+      "has_advanced_fluid_tank",
+      "has_the_recipe"
+    ]
+  ]
+}

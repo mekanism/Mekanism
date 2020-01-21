@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:combining/dye/orange"
+    ]
+  },
+  "criteria": {
+    "has_combiner": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:combiner"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:combining/dye/orange"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_combiner",
+      "has_the_recipe"
+    ]
+  ]
+}

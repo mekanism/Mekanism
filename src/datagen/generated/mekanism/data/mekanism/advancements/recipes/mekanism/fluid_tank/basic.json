@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:fluid_tank/basic"
+    ]
+  },
+  "criteria": {
+    "has_basic_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/basic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:fluid_tank/basic"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_basic_alloy",
+      "has_the_recipe"
+    ]
+  ]
+}

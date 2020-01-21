@@ -39,7 +39,7 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
     }
 
     @Override
-    public CombinerRecipeResult getResult(ResourceLocation id) {
+    protected CombinerRecipeResult getResult(ResourceLocation id) {
         return new CombinerRecipeResult(id, mainInput, extraInput, output, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + output.getItem().getGroup().getPath() + "/" + id.getPath()), serializerName);
     }

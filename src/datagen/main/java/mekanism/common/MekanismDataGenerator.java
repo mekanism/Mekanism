@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.client.MekanismLangProvider;
 import mekanism.common.loot.MekanismLootProvider;
+import mekanism.common.recipe.MekanismRecipeProvider;
 import mekanism.common.tag.MekanismTagProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,6 +24,7 @@ public class MekanismDataGenerator {
             //Server side data generators
             gen.addProvider(new MekanismLootProvider(gen));
             gen.addProvider(new MekanismTagProvider(gen));
+            gen.addProvider(new MekanismRecipeProvider(gen));
         }
     }
 }

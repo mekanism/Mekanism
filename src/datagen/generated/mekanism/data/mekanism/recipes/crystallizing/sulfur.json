@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crystallizing",
+  "input": {
+    "amount": 100,
+    "gas": "mekanism:lithium"
+  },
+  "output": {
+    "item": "mekanism:dust_sulfur"
+  }
+}

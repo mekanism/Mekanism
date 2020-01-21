@@ -12,8 +12,6 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 
-//TODO: Evaluate the bio fuel recipes, and maybe add sweet berry bush/coral to it (and maybe bamboo sapling, and honey). Also add missing flowers that don't get
-// caught by the small flowers tag
 @ParametersAreNonnullByDefault
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
