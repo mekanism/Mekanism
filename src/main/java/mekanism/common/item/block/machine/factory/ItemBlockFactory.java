@@ -9,7 +9,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IFactory;
-import mekanism.common.block.machine.factory.BlockFactory;
+import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;

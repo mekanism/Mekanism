@@ -20,7 +20,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.block.machine.BlockFluidTank;
-import mekanism.common.block.machine.factory.BlockFactory;
+import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;

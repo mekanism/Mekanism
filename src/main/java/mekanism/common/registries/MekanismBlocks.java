@@ -68,7 +68,7 @@ import mekanism.common.block.machine.BlockRotaryCondensentrator;
 import mekanism.common.block.machine.BlockSeismicVibrator;
 import mekanism.common.block.machine.BlockSolarNeutronActivator;
 import mekanism.common.block.machine.BlockTeleporter;
-import mekanism.common.block.machine.factory.BlockFactory;
+import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.block.transmitter.BlockDiversionTransporter;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
 import mekanism.common.block.transmitter.BlockMechanicalPipe;

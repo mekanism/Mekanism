@@ -1,4 +1,4 @@
-package mekanism.common.block.machine.factory;
+package mekanism.common.block.machine;
 
 import java.util.EnumSet;
 import java.util.Random;
@@ -208,14 +208,62 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
 
     @Override
     public double getStorage() {
-        //TODO: Fix this
-        return tier.processes * 1000;// * Math.max(0.5D * type.getEnergyStorage(), type.getEnergyUsage());
+        double baseStorage = 0;
+        switch (type) {
+            case ENRICHING:
+                baseStorage = MekanismConfig.storage.enrichmentChamber.get();
+                break;
+            case CRUSHING:
+                baseStorage = MekanismConfig.storage.crusher.get();
+                break;
+            case COMPRESSING:
+                baseStorage = MekanismConfig.storage.osmiumCompressor.get();
+                break;
+            case COMBINING:
+                baseStorage = MekanismConfig.storage.combiner.get();
+                break;
+            case PURIFYING:
+                baseStorage = MekanismConfig.storage.purificationChamber.get();
+                break;
+            case INJECTING:
+                baseStorage = MekanismConfig.storage.chemicalInjectionChamber.get();
+                break;
+            case INFUSING:
+                baseStorage = MekanismConfig.storage.metallurgicInfuser.get();
+                break;
+            case SAWING:
+                baseStorage = MekanismConfig.storage.precisionSawmill.get();
+                break;
+            case SMELTING:
+                baseStorage = MekanismConfig.storage.energizedSmelter.get();
+                break;
+        }
+        return tier.processes * Math.max(0.5D * baseStorage, getUsage());
     }
 
     @Override
     public double getUsage() {
-        //TODO: Fix this
-        return 10;//type.getEnergyUsage();
+        switch (type) {
+            case ENRICHING:
+                return MekanismConfig.storage.enrichmentChamber.get();
+            case CRUSHING:
+                return MekanismConfig.storage.crusher.get();
+            case COMPRESSING:
+                return MekanismConfig.storage.osmiumCompressor.get();
+            case COMBINING:
+                return MekanismConfig.storage.combiner.get();
+            case PURIFYING:
+                return MekanismConfig.storage.purificationChamber.get();
+            case INJECTING:
+                return MekanismConfig.storage.chemicalInjectionChamber.get();
+            case INFUSING:
+                return MekanismConfig.storage.metallurgicInfuser.get();
+            case SAWING:
+                return MekanismConfig.storage.precisionSawmill.get();
+            default:
+            case SMELTING:
+                return MekanismConfig.storage.energizedSmelter.get();
+        }
     }
 
     @Override

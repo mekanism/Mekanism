@@ -22,7 +22,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ProcessInfo;
-import mekanism.common.block.machine.factory.BlockFactory;
+import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
