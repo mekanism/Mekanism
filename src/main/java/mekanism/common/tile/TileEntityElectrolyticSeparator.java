@@ -230,6 +230,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     }
 
     @Override
+    public void recalculateUpgrades(Upgrade upgrade) {
+        if (upgrade != Upgrade.SPEED) {
+            //NO-OP speed upgrade as it is used for batch speed upgrades, and should not be changing the total amount produced
+            super.recalculateUpgrades(upgrade);
+        }
+    }
+
+    @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
             byte type = dataStream.readByte();
