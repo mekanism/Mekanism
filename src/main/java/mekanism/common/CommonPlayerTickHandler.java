@@ -9,6 +9,7 @@ import mekanism.common.item.gear.ItemGasMask;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -133,7 +134,7 @@ public class CommonPlayerTickHandler {
             if (player.getAir() == max) {
                 for (EffectInstance effect : player.getActivePotionEffects()) {
                     for (int i = 0; i < 9; i++) {
-                        effect.tick(player);
+                        effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
                     }
                 }
             }

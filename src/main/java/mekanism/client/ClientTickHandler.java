@@ -29,6 +29,7 @@ import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -263,7 +264,7 @@ public class ClientTickHandler {
                 if (minecraft.player.getAir() == max) {
                     for (EffectInstance effect : minecraft.player.getActivePotionEffects()) {
                         for (int i = 0; i < 9; i++) {
-                            effect.tick(minecraft.player);
+                            effect.tick(minecraft.player, () -> MekanismUtils.onChangedPotionEffect(minecraft.player, effect, true));
                         }
                     }
                 }

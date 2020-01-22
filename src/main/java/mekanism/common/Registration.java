@@ -29,7 +29,7 @@ public class Registration {
     }
 
     @SubscribeEvent
-    public static void onFileChange(ModConfig.ConfigReloading configEvent) {
+    public static void onFileChange(ModConfig.Reloading configEvent) {
         //TODO: Handle reloading
     }
 }

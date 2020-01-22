@@ -52,7 +52,7 @@ public class MekanismTools implements IModule {
         return new ResourceLocation(MekanismTools.MODID, path);
     }
 
-    private void onConfigReload(ModConfig.ConfigReloading configEvent) {
+    private void onConfigReload(ModConfig.Reloading configEvent) {
         //TODO: Handle reloading
     }
 

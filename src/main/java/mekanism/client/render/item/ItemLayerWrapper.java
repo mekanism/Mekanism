@@ -61,6 +61,11 @@ public class ItemLayerWrapper implements IBakedModel {
     }
 
     @Override
+    public boolean func_230044_c_() {
+        return internal.func_230044_c_();
+    }
+
+    @Override
     public boolean isGui3d() {
         return internal.isGui3d();
     }

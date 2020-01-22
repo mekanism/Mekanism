@@ -95,7 +95,7 @@ public class MekanismGenerators implements IModule {
         SynchronizedTurbineData.clientRotationMap.clear();
     }
 
-    private void onConfigReload(ModConfig.ConfigReloading configEvent) {
+    private void onConfigReload(ModConfig.Reloading configEvent) {
         //TODO: Handle reloading
         /*if (event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID)) {
             proxy.loadConfiguration();

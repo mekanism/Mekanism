@@ -139,7 +139,7 @@ public class MekanismAdditions implements IModule {
         }
     }
 
-    private void onConfigReload(ModConfig.ConfigReloading configEvent) {
+    private void onConfigReload(ModConfig.Reloading configEvent) {
         //TODO: Handle reloading
     }
 }

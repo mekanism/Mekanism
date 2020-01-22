@@ -35,6 +35,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -44,6 +45,8 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
@@ -942,6 +945,18 @@ public final class MekanismUtils {
     public static void dismantleBlock(BlockState state, World world, BlockPos pos, TileEntity tile) {
         Block.spawnDrops(state, world, pos, tile);
         world.removeBlock(pos, false);
+    }
+
+    /**
+     * Copy of LivingEntity#onChangedPotionEffect(EffectInstance, boolean) due to not being able to AT the field.
+     */
+    public static void onChangedPotionEffect(LivingEntity entity, EffectInstance id, boolean reapply) {
+        entity.potionsNeedUpdate = true;
+        if (reapply && !entity.world.isRemote) {
+            Effect effect = id.getPotion();
+            effect.removeAttributesModifiersFromEntity(entity, entity.getAttributes(), id.getAmplifier());
+            effect.applyAttributesModifiersToEntity(entity, entity.getAttributes(), id.getAmplifier());
+        }
     }
 
     /**
