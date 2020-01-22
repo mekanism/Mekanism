@@ -23,9 +23,9 @@ public class JetpackFlameParticle extends FlameParticle {
     }
 
     @Override
-    public void func_225606_a_(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void renderParticle(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
         if (age > 0) {
-            super.func_225606_a_(vertexBuilder, renderInfo, partialTicks);
+            super.renderParticle(vertexBuilder, renderInfo, partialTicks);
         }
     }
 

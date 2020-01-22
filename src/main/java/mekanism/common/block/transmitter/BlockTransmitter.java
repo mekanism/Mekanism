@@ -38,7 +38,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateWa
 
     @Nonnull
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         ItemStack stack = player.getHeldItem(hand);
         if (stack.isEmpty()) {
             return ActionResultType.PASS;

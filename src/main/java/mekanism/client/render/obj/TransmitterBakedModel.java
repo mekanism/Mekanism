@@ -94,7 +94,7 @@ public class TransmitterBakedModel implements IBakedModel {
 
                 RenderType layer = MinecraftForgeClient.getRenderLayer();
                 boolean hasColor = false;
-                if (extraData.hasProperty(ModelProperties.COLOR) && layer == RenderType.func_228645_f_()) {
+                if (extraData.hasProperty(ModelProperties.COLOR) && layer == RenderType.translucent()) {
                     //Only try getting the color property for ones that will have a color
                     Boolean color = extraData.getData(ModelProperties.COLOR);
                     hasColor = color != null && color;
@@ -136,7 +136,7 @@ public class TransmitterBakedModel implements IBakedModel {
         TextureAtlasSprite particle = spriteGetter.apply(configuration.resolveTexture("particle"));
         IModelBuilder<?> builder = IModelBuilder.of(configuration, overrides, particle);
         addPartQuads(configuration, builder, internal);
-        if (glass != null && hasColor && MinecraftForgeClient.getRenderLayer() == RenderType.func_228645_f_()) {
+        if (glass != null && hasColor && MinecraftForgeClient.getRenderLayer() == RenderType.translucent()) {
             addPartQuads(configuration, builder, glass);
         }
         return builder.build();

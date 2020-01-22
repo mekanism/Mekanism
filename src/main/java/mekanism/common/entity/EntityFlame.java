@@ -76,17 +76,17 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
         ticksExisted++;
 
-        prevPosX = func_226277_ct_();
-        prevPosY = func_226278_cu_();
-        prevPosZ = func_226281_cx_();
+        prevPosX = getPosX();
+        prevPosY = getPosY();
+        prevPosZ = getPosZ();
 
         prevRotationPitch = rotationPitch;
         prevRotationYaw = rotationYaw;
 
         Vec3d motion = getMotion();
-        func_226288_n_(func_226277_ct_() + motion.getX(), func_226278_cu_() + motion.getY(), func_226281_cx_() + motion.getZ());
+        setRawPosition(getPosX() + motion.getX(), getPosY() + motion.getY(), getPosZ() + motion.getZ());
 
-        setPosition(func_226277_ct_(), func_226278_cu_(), func_226281_cx_());
+        setPosition(getPosX(), getPosY(), getPosZ());
 
         calculateVector();
         if (ticksExisted > LIFESPAN) {

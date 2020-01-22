@@ -157,7 +157,7 @@ public class BlockRotaryCondensentrator extends BlockMekanism implements IBlockE
 
     @Nonnull
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         if (world.isRemote) {
             return ActionResultType.SUCCESS;
         }

@@ -112,7 +112,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
-        return Minecraft.getInstance().func_228015_a_(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(spriteLocation);
+        return Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(spriteLocation);
     }
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
@@ -128,10 +128,10 @@ public class MekanismRenderer {
     public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder,
           int argb) {
         if (object != null) {
-            matrix.func_227860_a_();
-            matrix.func_227861_a_(object.minX, object.minY, object.minZ);
+            matrix.push();
+            matrix.translate(object.minX, object.minY, object.minZ);
             RenderResizableCuboid.INSTANCE.renderCube(object, matrix, renderer, stateBuilder, argb);
-            matrix.func_227865_b_();
+            matrix.pop();
         }
     }
 
@@ -299,16 +299,16 @@ public class MekanismRenderer {
     public static void rotate(MatrixStack matrix, Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(north));
+                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(north));
                 break;
             case SOUTH:
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(south));
+                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(south));
                 break;
             case WEST:
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(west));
+                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(west));
                 break;
             case EAST:
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(east));
+                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(east));
                 break;
         }
     }
@@ -324,7 +324,7 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().func_229223_g_().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+        if (!event.getMap().getBasePath().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -354,7 +354,7 @@ public class MekanismRenderer {
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Post event) {
         AtlasTexture map = event.getMap();
-        if (!map.func_229223_g_().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+        if (!map.getBasePath().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {

@@ -23,7 +23,7 @@ public final class MinerVisualRenderer {
     }
 
     public static void render(@Nonnull TileEntityDigitalMiner miner, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer) {
-        matrix.func_227860_a_();
+        matrix.push();
         List<Model3D> models = getModels(new MinerRenderData(miner));
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
         RenderType.State.Builder stateBuilder = MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
@@ -33,7 +33,7 @@ public final class MinerVisualRenderer {
             MekanismRenderer.renderObject(model, matrix, renderer, stateBuilder, MekanismRenderer.getColorARGB(1, 1, 1, 0.8F));
         }
         MekanismRenderer.disableGlow(glowInfo);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 
     private static List<Model3D> getModels(MinerRenderData data) {

@@ -63,7 +63,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityLogisticalTransporter transporter, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
+    public void render(@Nonnull TileEntityLogisticalTransporter transporter, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
           int light, int overlayLight) {
         if (MekanismConfig.client.opaqueTransmitters.get()) {
             return;
@@ -71,7 +71,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         Collection<TransporterStack> inTransit = transporter.getTransmitter().getTransit();
         BlockPos pos = transporter.getPos();
         if (!inTransit.isEmpty()) {
-            matrix.func_227860_a_();
+            matrix.push();
             //TODO: Do we have to make a new entity item each time we render
             //entityItem.hoverStart = 0;
             entityItem.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
@@ -82,31 +82,31 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             for (TransporterStack stack : reducedTransit) {
                 entityItem.setItem(stack.itemStack);
                 float[] stackPos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partial);
-                matrix.func_227860_a_();
-                matrix.func_227861_a_(stackPos[0], stackPos[1], stackPos[2]);
-                matrix.func_227862_a_(0.75F, 0.75F, 0.75F);
-                this.renderer.func_225623_a_(entityItem, 0, 0, matrix, renderer, MekanismRenderer.FULL_LIGHT);
-                matrix.func_227865_b_();
+                matrix.push();
+                matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
+                matrix.scale(0.75F, 0.75F, 0.75F);
+                this.renderer.render(entityItem, 0, 0, matrix, renderer, MekanismRenderer.FULL_LIGHT);
+                matrix.pop();
                 if (stack.color != null) {
                     modelBox.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
                 }
             }
-            matrix.func_227865_b_();
+            matrix.pop();
         }
         if (transporter instanceof TileEntityDiversionTransporter) {
             ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
                 BlockRayTraceResult rayTraceResult = MekanismUtils.rayTrace(Minecraft.getInstance().player);
                 if (!rayTraceResult.getType().equals(Type.MISS) && rayTraceResult.getPos().equals(pos)) {
-                    matrix.func_227860_a_();
-                    matrix.func_227862_a_(0.5F, 0.5F, 0.5F);
-                    matrix.func_227861_a_(0.5, 0.5, 0.5);
+                    matrix.push();
+                    matrix.scale(0.5F, 0.5F, 0.5F);
+                    matrix.translate(0.5, 0.5, 0.5);
                     GlowInfo glowInfo = MekanismRenderer.enableGlow();
                     int mode = ((TileEntityDiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
                     MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer,
                           MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), MekanismRenderer.getColorARGB(255, 255, 255, 0.8F));
                     MekanismRenderer.disableGlow(glowInfo);
-                    matrix.func_227865_b_();
+                    matrix.pop();
                 }
             }
         }

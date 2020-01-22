@@ -19,18 +19,18 @@ public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
-        matrix.func_227860_a_();
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.push();
+        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-90));
+            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-90));
         } else if (transformType != TransformType.GUI) {
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90));
+            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
         }
-        matrix.func_227861_a_(0.35, 0.1, 0);
+        matrix.translate(0.35, 0.1, 0);
         //Scale the model to the correct size
-        matrix.func_227862_a_(0.352F, 0.352F, 0.352F);
+        matrix.scale(0.352F, 0.352F, 0.352F);
         digitalMiner.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, "energyStored") > 0);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 
     @Override

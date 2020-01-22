@@ -17,13 +17,13 @@ public class FreeRunnerArmor extends CustomArmor {
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
         if (isChild) {
-            matrix.func_227860_a_();
+            matrix.push();
             float f1 = 1.0F / field_228225_h_;
-            matrix.func_227862_a_(f1, f1, f1);
-            matrix.func_227861_a_(0.0D, field_228226_i_ / 16.0F, 0.0D);
+            matrix.scale(f1, f1, f1);
+            matrix.translate(0.0D, field_228226_i_ / 16.0F, 0.0D);
             renderLeg(matrix, renderer, light, overlayLight, hasEffect, true);
             renderLeg(matrix, renderer, light, overlayLight, hasEffect, false);
-            matrix.func_227865_b_();
+            matrix.pop();
         } else {
             renderLeg(matrix, renderer, light, overlayLight, hasEffect, true);
             renderLeg(matrix, renderer, light, overlayLight, hasEffect, false);
@@ -35,16 +35,16 @@ public class FreeRunnerArmor extends CustomArmor {
             //If the model isn't meant to be shown don't bother rendering it
             return;
         }
-        matrix.func_227860_a_();
+        matrix.push();
         if (left) {
-            bipedLeftLeg.func_228307_a_(matrix);
+            bipedLeftLeg.setAnglesAndRotation(matrix);
         } else {
-            bipedRightLeg.func_228307_a_(matrix);
+            bipedRightLeg.setAnglesAndRotation(matrix);
         }
-        matrix.func_227861_a_(0, 0, 0.06);
-        matrix.func_227862_a_(1.02F, 1.02F, 1.02F);
-        matrix.func_227861_a_(left ? -0.1375 : 0.1375, -0.75, -0.0625);
+        matrix.translate(0, 0, 0.06);
+        matrix.scale(1.02F, 1.02F, 1.02F);
+        matrix.translate(left ? -0.1375 : 0.1375, -0.75, -0.0625);
         model.renderLeg(matrix, renderer, light, overlayLight, hasEffect, left);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 }

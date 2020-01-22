@@ -43,7 +43,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityMechanicalPipe pipe, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+    public void render(@Nonnull TileEntityMechanicalPipe pipe, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
           int overlayLight) {
         if (MekanismConfig.client.opaqueTransmitters.get()) {
             return;
@@ -65,7 +65,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
         float scale = Math.min(pipe.currentScale, 1);
         if (scale > 0.01 && !fluidStack.isEmpty()) {
-            matrix.func_227860_a_();
+            matrix.push();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluidStack);
             boolean gas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
             for (Direction side : EnumUtils.DIRECTIONS) {
@@ -77,7 +77,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                               MekanismRenderer.getColorARGB(fluidStack, scale));
                     }
                 } else if (connectionType != ConnectionType.NONE) {
-                    matrix.func_227861_a_(0.5, 0.5, 0.5);
+                    matrix.translate(0.5, 0.5, 0.5);
                     int color = MekanismRenderer.getColorARGB(fluidStack, pipe.currentScale);
                     float red = MekanismRenderer.getRed(color);
                     float green = MekanismRenderer.getGreen(color);
@@ -85,7 +85,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                     float alpha = MekanismRenderer.getAlpha(color);
                     renderModel(pipe, matrix, renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE)), red, green, blue, alpha, light,
                           overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidType.STILL), Collections.singletonList(side.getName() + connectionType.getName().toUpperCase()));
-                    matrix.func_227861_a_(-0.5, -0.5, -0.5);
+                    matrix.translate(-0.5, -0.5, -0.5);
                 }
             }
             Model3D model = getModel(null, fluidStack, getStage(scale, gas));
@@ -94,7 +94,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                       MekanismRenderer.getColorARGB(fluidStack, scale));
             }
             MekanismRenderer.disableGlow(glowInfo);
-            matrix.func_227865_b_();
+            matrix.pop();
         }
     }
 

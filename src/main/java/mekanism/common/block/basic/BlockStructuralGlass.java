@@ -63,7 +63,7 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IH
 
     @Nonnull
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         TileEntityStructuralGlass tile = MekanismUtils.getTileEntity(TileEntityStructuralGlass.class, world, pos);
         if (tile != null) {
             if (world.isRemote) {

@@ -38,7 +38,7 @@ public class LaserParticle extends SpriteTexturedParticle {
     }
 
     @Override
-    public void func_225606_a_(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
+    public void renderParticle(IVertexBuilder vertexBuilder, ActiveRenderInfo renderInfo, float partialTicks) {
         Vec3d view = renderInfo.getProjectedView();
         float newX = (float) (MathHelper.lerp(partialTicks, prevPosX, posX) - view.getX());
         float newY = (float) (MathHelper.lerp(partialTicks, prevPosY, posY) - view.getY());
@@ -72,10 +72,10 @@ public class LaserParticle extends SpriteTexturedParticle {
     }
 
     private void drawComponent(IVertexBuilder vertexBuilder, Vector3f[] resultVector, float uMin, float uMax, float vMin, float vMax) {
-        vertexBuilder.func_225582_a_(resultVector[0].getX(), resultVector[0].getY(), resultVector[0].getZ()).func_225583_a_(uMax, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        vertexBuilder.func_225582_a_(resultVector[1].getX(), resultVector[1].getY(), resultVector[1].getZ()).func_225583_a_(uMax, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        vertexBuilder.func_225582_a_(resultVector[2].getX(), resultVector[2].getY(), resultVector[2].getZ()).func_225583_a_(uMin, vMin).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
-        vertexBuilder.func_225582_a_(resultVector[3].getX(), resultVector[3].getY(), resultVector[3].getZ()).func_225583_a_(uMin, vMax).func_227885_a_(particleRed, particleGreen, particleBlue, particleAlpha).func_225587_b_(240, 240).endVertex();
+        vertexBuilder.pos(resultVector[0].getX(), resultVector[0].getY(), resultVector[0].getZ()).tex(uMax, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        vertexBuilder.pos(resultVector[1].getX(), resultVector[1].getY(), resultVector[1].getZ()).tex(uMax, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        vertexBuilder.pos(resultVector[2].getX(), resultVector[2].getY(), resultVector[2].getZ()).tex(uMin, vMin).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
+        vertexBuilder.pos(resultVector[3].getX(), resultVector[3].getY(), resultVector[3].getZ()).tex(uMin, vMax).color(particleRed, particleGreen, particleBlue, particleAlpha).lightmap(240, 240).endVertex();
     }
 
     @Nonnull

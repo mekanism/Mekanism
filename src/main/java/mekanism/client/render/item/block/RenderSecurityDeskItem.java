@@ -18,14 +18,14 @@ public class RenderSecurityDeskItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90));
+            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
         } else {
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-90));
+            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-90));
         }
-        matrix.func_227862_a_(0.8F, 0.8F, 0.8F);
-        matrix.func_227861_a_(0, -0.8, 0);
+        matrix.scale(0.8F, 0.8F, 0.8F);
+        matrix.translate(0, -0.8, 0);
         securityDesk.render(matrix, renderer, light, overlayLight);
     }
 

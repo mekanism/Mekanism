@@ -22,11 +22,11 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityReactorController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+    public void render(@Nonnull TileEntityReactorController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
           int overlayLight) {
         if (tile.isBurning()) {
-            matrix.func_227860_a_();
-            matrix.func_227861_a_(0.5, -1.5, 0.5);
+            matrix.push();
+            matrix.translate(0.5, -1.5, 0.5);
 
             long scaledTemp = Math.round(tile.getPlasmaTemp() / 1E8);
             float ticks = MekanismClient.ticksPassed + partialTick;
@@ -39,19 +39,19 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
             scale = 1 - 0.9 * Math.sin(Math.toRadians(ticks * 4 * scaledTemp + 90F));
             renderPart(matrix, renderer, overlayLight, EnumColor.ORANGE, scale, ticks, scaledTemp, 5, -3, -35, 106);
 
-            matrix.func_227865_b_();
+            matrix.pop();
         }
     }
 
     private void renderPart(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int overlayLight, EnumColor color, double scale, float ticks,
           long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
         float ticksScaledTemp = ticks * scaledTemp;
-        matrix.func_227860_a_();
-        matrix.func_227862_a_((float) scale, (float) scale, (float) scale);
-        matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(ticksScaledTemp * mult1 + shift1));
-        matrix.func_227863_a_(RenderEnergyCube.coreVec.func_229187_a_(ticksScaledTemp * mult2 + shift2));
+        matrix.push();
+        matrix.scale((float) scale, (float) scale, (float) scale);
+        matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(ticksScaledTemp * mult1 + shift1));
+        matrix.rotate(RenderEnergyCube.coreVec.func_229187_a_(ticksScaledTemp * mult2 + shift2));
         core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, color, 1);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 
     @Override

@@ -24,12 +24,12 @@ public class RobitAIPickup extends RobitAIBase {
             return false;
         }
         //TODO: Check if pathing is correct and what the param is for
-        if (closest != null && closest.getDistanceSq(closest) > 100 && thePathfinder.getPathToEntityLiving(closest, 0) != null) {
+        if (closest != null && closest.getDistanceSq(closest) > 100 && thePathfinder.getPathToEntity(closest, 0) != null) {
             return true;
         }
         List<ItemEntity> items = theRobit.world.getEntitiesWithinAABB(ItemEntity.class,
-              new AxisAlignedBB(theRobit.func_226277_ct_() - 10, theRobit.func_226278_cu_() - 10, theRobit.func_226281_cx_() - 10,
-                    theRobit.func_226277_ct_() + 10, theRobit.func_226278_cu_() + 10, theRobit.func_226281_cx_() + 10));
+              new AxisAlignedBB(theRobit.getPosX() - 10, theRobit.getPosY() - 10, theRobit.getPosZ() - 10,
+                    theRobit.getPosX() + 10, theRobit.getPosY() + 10, theRobit.getPosZ() + 10));
         Iterator<ItemEntity> iter = items.iterator();
         //Cached for slight performance
         double closestDistance = -1;
@@ -40,7 +40,7 @@ public class RobitAIPickup extends RobitAIBase {
             if (distance <= 10) {
                 if (closestDistance == -1 || distance < closestDistance) {
                     //TODO: Check if pathing is correct and what the param is for
-                    if (thePathfinder.getPathToEntityLiving(entity, 0) != null) {
+                    if (thePathfinder.getPathToEntity(entity, 0) != null) {
                         closest = entity;
                         closestDistance = distance;
                     }

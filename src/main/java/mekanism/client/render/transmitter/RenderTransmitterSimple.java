@@ -20,12 +20,12 @@ public abstract class RenderTransmitterSimple<T extends TileEntityTransmitter<?,
     protected abstract void renderContents(MatrixStack matrix, IVertexBuilder renderer, T transmitter, int light, int overlayLight);
 
     protected void render(@Nonnull T transmitter, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, int glow) {
-        matrix.func_227860_a_();
+        matrix.push();
         IVertexBuilder buffer = renderer.getBuffer(MekanismRenderType.transmitterContents(AtlasTexture.LOCATION_BLOCKS_TEXTURE));
-        matrix.func_227861_a_(0.5, 0.5, 0.5);
+        matrix.translate(0.5, 0.5, 0.5);
         GlowInfo glowInfo = MekanismRenderer.enableGlow(glow);
         renderContents(matrix, buffer, transmitter, light, overlayLight);
         MekanismRenderer.disableGlow(glowInfo);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 }

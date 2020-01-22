@@ -38,7 +38,7 @@ public abstract class MekKeyHandler {
     public static boolean getIsKeyPressed(KeyBinding keyBinding) {
         try {
             int keyCode = keyBinding.getKey().getKeyCode();
-            long windowHandle = Minecraft.getInstance().func_228018_at_().getHandle();
+            long windowHandle = Minecraft.getInstance().getMainWindow().getHandle();
             //GLFW.glfwGetMouseButton(windowHandle, )
             //TODO: Fix this
             return keyCode < 0 ? false/* Mouse.isButtonDown(keyCode + 100)*/ : InputMappings.isKeyDown(windowHandle, keyCode);

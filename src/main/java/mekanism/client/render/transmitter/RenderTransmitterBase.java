@@ -57,7 +57,7 @@ public abstract class RenderTransmitterBase<T extends TileEntityTransmitter<?, ?
         //TODO: Can we somehow cache any of this method
         IBakedModel bakedModel = MekanismRenderer.contentsModel.bake(new VisibleModelConfiguration(contentsConfiguration, visible), ModelLoader.instance(),
               material -> icon, ModelRotation.X0_Y0, ItemOverrideList.EMPTY, MODEL_LOCATION);
-        Entry entry = matrix.func_227866_c_();
+        Entry entry = matrix.getLast();
         //Get all the sides
         for (BakedQuad quad : bakedModel.getQuads(transmitter.getBlockState(), null, Minecraft.getInstance().world.getRandom(), transmitter.getModelData())) {
             builder.addVertexData(entry, quad, red, green, blue, alpha, light, overlayLight);

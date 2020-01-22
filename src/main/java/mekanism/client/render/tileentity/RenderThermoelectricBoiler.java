@@ -32,7 +32,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityBoilerCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+    public void render(@Nonnull TileEntityBoilerCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
           int overlayLight) {
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null &&
             tile.structure.upperRenderLocation != null) {
@@ -47,24 +47,24 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 data.fluidType = WATER;
 
                 if (data.height >= 1 && !waterStored.isEmpty()) {
-                    matrix.func_227860_a_();
-                    matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+                    matrix.push();
+                    matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
                     Model3D fluidModel = FluidRenderer.getFluidModel(data, tile.prevWaterScale);
                     MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                           MekanismRenderer.getColorARGB(data.fluidType, (float) waterStored.getAmount() / (float) tile.clientWaterCapacity));
                     MekanismRenderer.disableGlow(glowInfo);
-                    matrix.func_227865_b_();
+                    matrix.pop();
 
                     for (ValveData valveData : tile.valveViewing) {
-                        matrix.func_227860_a_();
-                        matrix.func_227861_a_(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
+                        matrix.push();
+                        matrix.translate(valveData.location.x - pos.getX(), valveData.location.y - pos.getY(), valveData.location.z - pos.getZ());
                         GlowInfo valveGlowInfo = MekanismRenderer.enableGlow(waterStored);
                         Model3D valveModel = FluidRenderer.getValveModel(ValveRenderData.get(data, valveData));
                         MekanismRenderer.renderObject(valveModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                               MekanismRenderer.getColorARGB(data.fluidType));
                         MekanismRenderer.disableGlow(valveGlowInfo);
-                        matrix.func_227865_b_();
+                        matrix.pop();
                     }
                 }
             }
@@ -80,14 +80,14 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
                 if (data.height >= 1 && !tile.structure.steamStored.isEmpty()) {
-                    matrix.func_227860_a_();
-                    matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+                    matrix.push();
+                    matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.steamStored);
                     Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
                     MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                           MekanismRenderer.getColorARGB(tile.structure.steamStored, (float) tile.structure.steamStored.getAmount() / (float) tile.clientSteamCapacity));
                     MekanismRenderer.disableGlow(glowInfo);
-                    matrix.func_227865_b_();
+                    matrix.pop();
                 }
             }
         }

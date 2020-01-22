@@ -18,9 +18,9 @@ public class RenderGasGeneratorItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-        matrix.func_227861_a_(0, -1, 0);
-        matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90));
+        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.translate(0, -1, 0);
+        matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
         gasGenerator.render(matrix, renderer, light, overlayLight);
     }
 

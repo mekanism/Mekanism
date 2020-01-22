@@ -23,13 +23,13 @@ public class RenderScubaTank extends MekanismItemStackRenderer {
     @Override
     protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
-        matrix.func_227860_a_();
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-        matrix.func_227863_a_(Vector3f.field_229180_c_.func_229187_a_(90));
-        matrix.func_227862_a_(1.6F, 1.6F, 1.6F);
-        matrix.func_227861_a_(0.2, -0.5, 0);
+        matrix.push();
+        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.field_229180_c_.func_229187_a_(90));
+        matrix.scale(1.6F, 1.6F, 1.6F);
+        matrix.translate(0.2, -0.5, 0);
         scubaTank.render(matrix, renderer, light, overlayLight, stack.hasEffect());
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 
     @Nonnull

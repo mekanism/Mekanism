@@ -18,9 +18,9 @@ public class RenderSeismicVibratorItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
-        matrix.func_227862_a_(0.6F, 0.6F, 0.6F);
-        matrix.func_227861_a_(0, -0.55, 0);
+        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.scale(0.6F, 0.6F, 0.6F);
+        matrix.translate(0, -0.55, 0);
         seismicVibrator.render(matrix, renderer, light, overlayLight, 0);
     }
 

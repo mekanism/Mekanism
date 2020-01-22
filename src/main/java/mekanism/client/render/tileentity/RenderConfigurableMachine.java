@@ -42,7 +42,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
     }
 
     @Override
-    public void func_225616_a_(@Nonnull S configurable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    public void render(@Nonnull S configurable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
         if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
@@ -54,13 +54,13 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                     if (bp.equals(configurable.getPos())) {
                         DataType dataType = configurable.getConfig().getDataType(type, RelativeSide.fromDirections(configurable.getOrientation(), pos.getFace()));
                         if (dataType != null) {
-                            matrix.func_227860_a_();
+                            matrix.push();
                             GlowInfo glowInfo = MekanismRenderer.enableGlow();
                             Model3D overlayModel = getOverlayModel(pos.getFace(), type);
                             MekanismRenderer.renderObject(overlayModel, matrix, renderer, MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                                   MekanismRenderer.getColorARGB(dataType.getColor(), 0.6F));
                             MekanismRenderer.disableGlow(glowInfo);
-                            matrix.func_227865_b_();
+                            matrix.pop();
                         }
                     }
                 }

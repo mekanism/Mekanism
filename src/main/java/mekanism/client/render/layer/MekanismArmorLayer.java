@@ -39,22 +39,22 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
             ArmorItem armorItem = (ArmorItem) item;
             if (armorItem.getEquipmentSlot() == slot) {
                 CustomArmor model = ((ISpecialGear) item).getGearModel();
-                getEntityModel().func_217148_a((BipedModel<T>) model);
+                getEntityModel().setModelAttributes((BipedModel<T>) model);
                 model.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTick);
                 setModelSlotVisible((A) model, slot);
-                model.func_225597_a_(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+                model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
                 renderArmor(matrix, renderer, light, stack.hasEffect(), model);
             }
         }
     }
 
     private void renderArmor(MatrixStack matrix, IRenderTypeBuffer renderer, int light, boolean hasEffect, CustomArmor model) {
-        model.render(matrix, renderer, light, OverlayTexture.field_229196_a_, hasEffect);
+        model.render(matrix, renderer, light, OverlayTexture.DEFAULT_LIGHT, hasEffect);
     }
 
     @Nonnull
     @Override
-    public A func_215337_a(EquipmentSlotType slot) {
+    public A getModelFromSlot(EquipmentSlotType slot) {
         return slot == EquipmentSlotType.LEGS ? this.modelLeggings : this.modelArmor;
     }
 }

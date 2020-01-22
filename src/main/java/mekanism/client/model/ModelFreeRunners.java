@@ -25,43 +25,43 @@ public class ModelFreeRunners extends Model {
     private final ModelRenderer SupportR;
 
     public ModelFreeRunners() {
-        super(RenderType::func_228634_a_);
+        super(RenderType::entitySolid);
         textureWidth = 64;
         textureHeight = 32;
 
         SpringL = new ModelRenderer(this, 8, 0);
-        SpringL.func_228304_a_(1.5F, 18F, 0F, 1, 6, 1, false);
+        SpringL.addBox(1.5F, 18F, 0F, 1, 6, 1, false);
         SpringL.setRotationPoint(0F, 0F, 0F);
         SpringL.setTextureSize(64, 32);
         SpringL.mirror = true;
         setRotation(SpringL, 0.1047198F, 0F, 0F);
         SpringR = new ModelRenderer(this, 8, 0);
-        SpringR.func_228304_a_(-2.5F, 18F, 0F, 1, 6, 1, false);
+        SpringR.addBox(-2.5F, 18F, 0F, 1, 6, 1, false);
         SpringR.setRotationPoint(0F, 0F, 0F);
         SpringR.setTextureSize(64, 32);
         SpringR.mirror = true;
         setRotation(SpringR, 0.1047198F, 0F, 0F);
         SpringR.mirror = false;
         BraceL = new ModelRenderer(this, 12, 0);
-        BraceL.func_228304_a_(0.2F, 18F, -0.8F, 4, 2, 3, false);
+        BraceL.addBox(0.2F, 18F, -0.8F, 4, 2, 3, false);
         BraceL.setRotationPoint(0F, 0F, 0F);
         BraceL.setTextureSize(64, 32);
         BraceL.mirror = true;
         setRotation(BraceL, 0F, 0F, 0F);
         BraceR = new ModelRenderer(this, 12, 0);
-        BraceR.func_228304_a_(-4.2F, 18F, -0.8F, 4, 2, 3, false);
+        BraceR.addBox(-4.2F, 18F, -0.8F, 4, 2, 3, false);
         BraceR.setRotationPoint(0F, 0F, 0F);
         BraceR.setTextureSize(64, 32);
         BraceR.mirror = true;
         setRotation(BraceR, 0F, 0F, 0F);
         SupportL = new ModelRenderer(this, 0, 0);
-        SupportL.func_228304_a_(1F, 16.5F, -4.2F, 2, 4, 2, false);
+        SupportL.addBox(1F, 16.5F, -4.2F, 2, 4, 2, false);
         SupportL.setRotationPoint(0F, 0F, 0F);
         SupportL.setTextureSize(64, 32);
         SupportL.mirror = true;
         setRotation(SupportL, 0.296706F, 0F, 0F);
         SupportR = new ModelRenderer(this, 0, 0);
-        SupportR.func_228304_a_(-3F, 16.5F, -4.2F, 2, 4, 2, false);
+        SupportR.addBox(-3F, 16.5F, -4.2F, 2, 4, 2, false);
         SupportR.setRotationPoint(0F, 0F, 0F);
         SupportR.setTextureSize(64, 32);
         SupportR.mirror = true;
@@ -70,7 +70,7 @@ public class ModelFreeRunners extends Model {
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        func_225598_a_(matrix, getVertexBuilder(renderer, hasEffect), light, overlayLight, 1, 1, 1, 1);
+        render(matrix, getVertexBuilder(renderer, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, boolean hasEffect) {
@@ -78,13 +78,13 @@ public class ModelFreeRunners extends Model {
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        SpringL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        BraceL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        SupportL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        SpringR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        BraceR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        SupportR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        SpringL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        BraceL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        SupportL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        SpringR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        BraceR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        SupportR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     public void renderLeg(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, boolean left) {
@@ -94,13 +94,13 @@ public class ModelFreeRunners extends Model {
         float blue = 1;
         float alpha = 1;
         if (left) {
-            SpringL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-            BraceL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-            SupportL.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            SpringL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            BraceL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            SupportL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         } else {
-            SpringR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-            BraceR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-            SupportR.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            SpringR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            BraceR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            SupportR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         }
     }
 

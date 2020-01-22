@@ -29,20 +29,20 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+    public void render(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
           int overlayLight) {
-        matrix.func_227860_a_();
-        matrix.func_227861_a_(0.5, 1.5, 0.5);
+        matrix.push();
+        matrix.translate(0.5, 1.5, 0.5);
 
-        matrix.func_227860_a_();
+        matrix.push();
         switch (tile.getDirection()) {
             case DOWN:
-                matrix.func_227863_a_(Vector3f.field_229178_a_.func_229187_a_(90));
-                matrix.func_227861_a_(0, 1, -1);
+                matrix.rotate(Vector3f.field_229178_a_.func_229187_a_(90));
+                matrix.translate(0, 1, -1);
                 break;
             case UP:
-                matrix.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90));
-                matrix.func_227861_a_(0, 1, 1);
+                matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(90));
+                matrix.translate(0, 1, 1);
                 break;
             default:
                 //Otherwise use the helper method for handling different face options because it is one of them
@@ -50,7 +50,7 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
                 break;
         }
 
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
         model.render(matrix, renderer, light, overlayLight, tile.tier, false);
 
         ConfigInfo config = tile.configComponent.getConfig(TransmissionType.ENERGY);
@@ -67,19 +67,19 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
                 model.renderSide(matrix, renderer, light, overlayLight, side, canInput, canOutput);
             }
         }
-        matrix.func_227865_b_();
+        matrix.pop();
 
         double energyPercentage = tile.getEnergy() / tile.getMaxEnergy();
         if (energyPercentage > 0.1) {
-            matrix.func_227861_a_(0, -1, 0);
+            matrix.translate(0, -1, 0);
             float ticks = MekanismClient.ticksPassed + partialTick;
-            matrix.func_227862_a_(0.4F, 0.4F, 0.4F);
-            matrix.func_227861_a_(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(4 * ticks));
-            matrix.func_227863_a_(coreVec.func_229187_a_(36F + 4 * ticks));
+            matrix.scale(0.4F, 0.4F, 0.4F);
+            matrix.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
+            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(4 * ticks));
+            matrix.rotate(coreVec.func_229187_a_(36F + 4 * ticks));
             core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), (float) energyPercentage);
         }
-        matrix.func_227865_b_();
-        MekanismRenderer.machineRenderer().func_225616_a_(tile, partialTick, matrix, renderer, light, overlayLight);
+        matrix.pop();
+        MekanismRenderer.machineRenderer().render(tile, partialTick, matrix, renderer, light, overlayLight);
     }
 }

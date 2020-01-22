@@ -20,7 +20,7 @@ public final class MultipartUtils {
     public static Pair<Vec3d, Vec3d> getRayTraceVectors(Entity entity) {
         float pitch = entity.rotationPitch;
         float yaw = entity.rotationYaw;
-        Vec3d start = new Vec3d(entity.func_226277_ct_(), entity.func_226278_cu_() + entity.getEyeHeight(), entity.func_226281_cx_());
+        Vec3d start = new Vec3d(entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ());
         float f1 = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
         float f2 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
         float f3 = -MathHelper.cos(-pitch * 0.017453292F);

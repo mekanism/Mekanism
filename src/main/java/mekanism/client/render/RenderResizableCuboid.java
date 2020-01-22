@@ -102,7 +102,7 @@ public class RenderResizableCuboid {
     }
 
     public static void setWorldRendererRGB(IVertexBuilder wr, Vec3d color) {
-        wr.func_227885_a_((float) color.x, (float) color.y, (float) color.z, 1F);
+        wr.color((float) color.x, (float) color.y, (float) color.z, 1F);
     }
 
     public static Vec3d vec3(double value) {
@@ -132,10 +132,10 @@ public class RenderResizableCuboid {
      * This will render a cuboid from its middle.
      */
     public void renderCubeFromCentre(Model3D cuboid, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, int argb) {
-        matrix.func_227860_a_();
-        matrix.func_227861_a_(-cuboid.sizeX() / 2D, -cuboid.sizeY() / 2D, -cuboid.sizeZ() / 2D);
+        matrix.push();
+        matrix.translate(-cuboid.sizeX() / 2D, -cuboid.sizeY() / 2D, -cuboid.sizeZ() / 2D);
         renderCube(cuboid, matrix, renderer, stateBuilder, argb, EnumShadeArgument.NONE, null, null, null);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 
     public void renderCube(Model3D cuboid, MatrixStack matrix, IRenderTypeBuffer renderer, RenderType.State.Builder stateBuilder, int argb) {
@@ -188,7 +188,7 @@ public class RenderResizableCuboid {
         float blue = MekanismRenderer.getBlue(argb);
         float alpha = MekanismRenderer.getAlpha(argb);
         Direction opposite = face.getOpposite();
-        Matrix4f matrix4f = matrix.func_227866_c_().func_227870_a_();
+        Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
         for (RenderInfo ri : renderInfoList) {
             renderPoint(matrix4f, builder, face, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
             renderPoint(matrix4f, builder, face, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
@@ -211,9 +211,9 @@ public class RenderResizableCuboid {
         vertex = withValue(vertex, v, ri.xyz[V_ARRAY]);
         vertex = withValue(vertex, face.getAxis(), other);
 
-        builder.func_227888_a_(matrix4f, (float) vertex.x, (float) vertex.y, (float) vertex.z)
-              .func_225583_a_(ri.uv[U_ARRAY], ri.uv[V_ARRAY])
-              .func_227885_a_(red, green, blue, alpha);
+        builder.pos(matrix4f, (float) vertex.x, (float) vertex.y, (float) vertex.z)
+              .tex(ri.uv[U_ARRAY], ri.uv[V_ARRAY])
+              .color(red, green, blue, alpha);
         if (shadeTypes.isEnabled(EnumShadeType.FACE)) {
             setWorldRendererRGB(builder, aoMap.get(faceFormula.transformToWorld(face)));
         }
@@ -222,8 +222,8 @@ public class RenderResizableCuboid {
         } else if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
             Vec3d transVertex = locationFormula.transformToWorld(vertex);
             BlockPos pos = convertFloor(transVertex);
-            int combinedLight = WorldRenderer.func_228421_a_(access, pos);
-            builder.func_225587_b_(combinedLight >> 16 & 65535, combinedLight & 65535);
+            int combinedLight = WorldRenderer.getCombinedLight(access, pos);
+            builder.lightmap(combinedLight >> 16 & 65535, combinedLight & 65535);
         }
         builder.endVertex();
     }
@@ -241,7 +241,7 @@ public class RenderResizableCuboid {
         Vec3d transVertex = locationFormula.transformToWorld(vertex);
         BlockPos pos = convertFloor(transVertex);
         BlockState blockState = access.getBlockState(pos);
-        int combinedLight = WorldRenderer.func_228421_a_(access, pos);
+        int combinedLight = WorldRenderer.getCombinedLight(access, pos);
 
         skyLight[0] = combinedLight / 0x10000;
         blockLight[0] = combinedLight % 0x10000;
@@ -254,7 +254,7 @@ public class RenderResizableCuboid {
             Vec3d nearestOther = vertex.add(convert(otherFace));
             pos = convertFloor(locationFormula.transformToWorld(nearestOther));
             blockState = access.getBlockState(pos);
-            combinedLight = WorldRenderer.func_228421_a_(access, pos);
+            combinedLight = WorldRenderer.getCombinedLight(access, pos);
 
             index++;
 
@@ -279,7 +279,7 @@ public class RenderResizableCuboid {
         if (shadeTypes.isEnabled(EnumShadeType.LIGHT)) {
             int capBlockLight = (int) avgBlockLight;
             int capSkyLight = (int) avgSkyLight;
-            builder.func_225587_b_(capBlockLight, capSkyLight);
+            builder.lightmap(capBlockLight, capSkyLight);
         }
 
         Vec3d color;

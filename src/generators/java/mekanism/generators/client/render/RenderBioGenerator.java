@@ -34,22 +34,22 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityBioGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    public void render(@Nonnull TileEntityBioGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         if (tile.bioFuelSlot.fluidStored > 0) {
-            matrix.func_227860_a_();
+            matrix.push();
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             //TODO: FIXME, you can see through the back. Might have to make the main "model" into json and then just render the fluid as a TER
             MekanismRenderer.renderObject(getModel(tile.getDirection(), tile.getScaledFuelLevel(stages - 1)), matrix, renderer,
                   MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), -1);
             MekanismRenderer.disableGlow(glowInfo);
-            matrix.func_227865_b_();
+            matrix.pop();
         }
-        matrix.func_227860_a_();
-        matrix.func_227861_a_(0.5, 1.5, 0.5);
+        matrix.push();
+        matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 180, 0, 270, 90);
-        matrix.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
         model.render(matrix, renderer, light, overlayLight);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 
     @SuppressWarnings("incomplete-switch")

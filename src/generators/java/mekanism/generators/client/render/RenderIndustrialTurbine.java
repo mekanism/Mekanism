@@ -29,7 +29,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityTurbineCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
+    public void render(@Nonnull TileEntityTurbineCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
           int overlayLight) {
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null) {
             RenderTurbineRotor.internalRender = true;
@@ -42,10 +42,10 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
                 if (rotor == null) {
                     break;
                 }
-                matrix.func_227860_a_();
-                matrix.func_227861_a_(complexPos.getX() - pos.getX(), complexPos.getY() - pos.getY(), complexPos.getZ() - pos.getZ());
-                field_228858_b_.func_228852_a_(rotor, matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight);
-                matrix.func_227865_b_();
+                matrix.push();
+                matrix.translate(complexPos.getX() - pos.getX(), complexPos.getY() - pos.getY(), complexPos.getZ() - pos.getZ());
+                renderDispatcher.renderNullable(rotor, matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight);
+                matrix.pop();
             }
 
             RenderTurbineRotor.internalRender = false;
@@ -63,14 +63,14 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
                 data.fluidType = STEAM;
 
                 if (data.location != null && data.height >= 1 && !tile.structure.fluidStored.isEmpty()) {
-                    matrix.func_227860_a_();
-                    matrix.func_227861_a_(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
+                    matrix.push();
+                    matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.fluidStored);
                     Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
                     MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                           MekanismRenderer.getColorARGB(tile.structure.fluidStored, (float) tile.structure.fluidStored.getAmount() / (float) tile.structure.getFluidCapacity()));
                     MekanismRenderer.disableGlow(glowInfo);
-                    matrix.func_227865_b_();
+                    matrix.pop();
                 }
             }
         }

@@ -31,16 +31,16 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
     }
 
     @Override
-    public void func_225616_a_(@Nonnull TileEntityTeleporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    public void render(@Nonnull TileEntityTeleporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         if (tile.shouldRender && tile.getWorld() != null) {
-            matrix.func_227860_a_();
+            matrix.push();
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             //TODO: Improve how it calculates which direction it is facing? In case there are multiple teleporters touching?
             Model3D overlayModel = getOverlayModel(tile.getWorld().getBlockState(tile.getPos().west()).getBlock() instanceof BlockTeleporterFrame);
             MekanismRenderer.renderObject(overlayModel, matrix, renderer, MekanismRenderType.configurableMachineState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
                   MekanismRenderer.getColorARGB(EnumColor.PURPLE, 0.75F));
             MekanismRenderer.disableGlow(glowInfo);
-            matrix.func_227865_b_();
+            matrix.pop();
         }
     }
 

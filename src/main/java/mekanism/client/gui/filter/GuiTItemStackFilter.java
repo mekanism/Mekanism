@@ -79,7 +79,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 64, 11, getButtonLocation("default"),
               () -> filter.allowDefault = !filter.allowDefault, getOnHover(MekanismLang.FILTER_ALLOW_DEFAULT)));
         addButton(new ColorButton(this, getGuiLeft() + 12, getGuiTop() + 44, 16, 16, () -> filter.color,
-              () -> filter.color = InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
+              () -> filter.color = InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
               () -> filter.color = TransporterUtils.decrement(filter.color)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 128, getGuiTop() + 44, 11, 14, getButtonLocation("silk_touch"),
               () -> filter.sizeMode = !filter.sizeMode,
@@ -166,10 +166,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && overTypeInput(mouseX - getGuiLeft(), mouseY - getGuiTop())) {
             ItemStack stack = minecraft.player.inventory.getItemStack();
-            if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 filter.setItemStack(stack.copy());
                 filter.getItemStack().setCount(1);
-            } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.func_228018_at_().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                 filter.setItemStack(ItemStack.EMPTY);
             }
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

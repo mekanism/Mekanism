@@ -81,6 +81,6 @@ public class AdditionsBlockLootTables extends BaseBlockLootTables {
         Block tnt = AdditionsBlocks.OBSIDIAN_TNT.getBlock();
         registerLootTable(tnt, LootTable.builder().addLootPool(withSurvivesExplosion(tnt, LootPool.builder().rolls(ConstantRange.of(1))
               .addEntry(ItemLootEntry.builder(tnt).acceptCondition(BlockStateProperty.builder(tnt)
-                    .func_227567_a_(StatePropertiesPredicate.Builder.func_227191_a_().func_227195_a_(TNTBlock.UNSTABLE, false)))))));
+                    .fromProperties(StatePropertiesPredicate.Builder.newBuilder().withBoolProp(TNTBlock.UNSTABLE, false)))))));
     }
 }

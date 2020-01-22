@@ -45,13 +45,13 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         FluidStack fluid = itemFluidTank.getFluidStack(stack);
         float fluidScale = (float) fluid.getAmount() / itemFluidTank.getCapacity(stack);
 
-        matrix.func_227860_a_();
+        matrix.push();
         if (!fluid.isEmpty() && fluidScale > 0) {
             if (tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;
             }
-            matrix.func_227860_a_();
-            matrix.func_227861_a_(-0.5, -0.5, -0.5);
+            matrix.push();
+            matrix.translate(-0.5, -0.5, -0.5);
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
             int modelNumber;
             int color;
@@ -64,15 +64,15 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             }
             MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer, MekanismRenderType.renderFluidTankState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), color);
             MekanismRenderer.disableGlow(glowInfo);
-            matrix.func_227865_b_();
+            matrix.pop();
         }
 
-        matrix.func_227861_a_(0, -0.9, 0);
-        matrix.func_227862_a_(0.9F, 0.8F, 0.9F);
+        matrix.translate(0, -0.9, 0);
+        matrix.scale(0.9F, 0.8F, 0.9F);
         //Scale to to size of item
-        matrix.func_227862_a_(1.168F, 1.168F, 1.168F);
+        matrix.scale(1.168F, 1.168F, 1.168F);
         fluidTank.render(matrix, renderer, light, overlayLight, tier);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 
     private Model3D getFluidModel(@Nonnull FluidStack fluid, int stage) {

@@ -112,7 +112,7 @@ public class BlockBin extends BlockMekanism implements IHasModel, IStateFacing, 
 
     @Nonnull
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
         TileEntityBin bin = MekanismUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             return ActionResultType.PASS;

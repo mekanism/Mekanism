@@ -30,27 +30,27 @@ public abstract class MekanismItemStackRenderer extends ItemStackTileEntityRende
     protected void renderWithTransform(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         TransformType transformType = getTransform(stack);
         if (transformType == TransformType.GUI) {
-            matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180));
+            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(180));
         }
 
         renderBlockSpecific(stack, matrix, renderer, light, overlayLight, transformType);
 
         if (!earlyExit()) {
             if (transformType == TransformType.GUI) {
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90));
+                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
             } else {
-                matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180));
+                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(180));
             }
             renderItemSpecific(stack, matrix, renderer, light, overlayLight, transformType);
         }
     }
 
     @Override
-    public void func_228364_a_(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        matrix.func_227860_a_();
-        matrix.func_227861_a_(0.5, 0.5, 0.5);
-        matrix.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180));
+    public void render(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+        matrix.push();
+        matrix.translate(0.5, 0.5, 0.5);
+        matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(180));
         renderWithTransform(stack, matrix, renderer, light, overlayLight);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 }

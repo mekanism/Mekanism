@@ -21,22 +21,22 @@ public class ScubaTankArmor extends CustomArmor {
             return;
         }
         if (isChild) {
-            matrix.func_227860_a_();
+            matrix.push();
             float f1 = 1.0F / field_228225_h_;
-            matrix.func_227862_a_(f1, f1, f1);
-            matrix.func_227861_a_(0.0D, field_228226_i_ / 16.0F, 0.0D);
+            matrix.scale(f1, f1, f1);
+            matrix.translate(0.0D, field_228226_i_ / 16.0F, 0.0D);
             renderTank(matrix, renderer, light, overlayLight, hasEffect);
-            matrix.func_227865_b_();
+            matrix.pop();
         } else {
             renderTank(matrix, renderer, light, overlayLight, hasEffect);
         }
     }
 
     private void renderTank(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        matrix.func_227860_a_();
-        bipedBody.func_228307_a_(matrix);
-        matrix.func_227861_a_(0, 0, 0.06);
+        matrix.push();
+        bipedBody.setAnglesAndRotation(matrix);
+        matrix.translate(0, 0, 0.06);
         model.render(matrix, renderer, light, overlayLight, hasEffect);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 }

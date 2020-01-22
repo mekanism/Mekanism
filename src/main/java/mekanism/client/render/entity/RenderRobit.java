@@ -18,7 +18,7 @@ public class RenderRobit extends MobRenderer<EntityRobit, ModelRobit> {
     @Nonnull
     @Override
     public ResourceLocation getEntityTexture(@Nonnull EntityRobit robit) {
-        if ((Math.abs(robit.func_226277_ct_() - robit.prevPosX) + Math.abs(robit.func_226277_ct_() - robit.prevPosX)) > 0.001) {
+        if ((Math.abs(robit.getPosX() - robit.prevPosX) + Math.abs(robit.getPosX() - robit.prevPosX)) > 0.001) {
             if (robit.ticksExisted % 3 == 0) {
                 robit.texTick = !robit.texTick;
             }

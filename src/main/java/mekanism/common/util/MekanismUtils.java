@@ -406,7 +406,7 @@ public final class MekanismUtils {
         TileEntity tile = getTileEntity(world, pos);
         if (!(tile instanceof IActiveState) || ((IActiveState) tile).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
             //Update all light types at the position
-            world.func_225524_e_().checkBlock(pos);
+            world.getLightManager().checkBlock(pos);
         }
     }
 
@@ -563,11 +563,11 @@ public final class MekanismUtils {
      * @return head location
      */
     private static Vec3d getHeadVec(PlayerEntity player) {
-        double posY = player.func_226278_cu_() + player.getEyeHeight();
+        double posY = player.getPosY() + player.getEyeHeight();
         if (player.isCrouching()) {
             posY -= 0.08;
         }
-        return new Vec3d(player.func_226277_ct_(), posY, player.func_226281_cx_());
+        return new Vec3d(player.getPosX(), posY, player.getPosZ());
     }
 
     public static ITextComponent getEnergyDisplayShort(double energy) {

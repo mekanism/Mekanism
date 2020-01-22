@@ -21,12 +21,12 @@ public class ModelTransporterBox extends Model {
     private final ModelRenderer box;
 
     public ModelTransporterBox() {
-        super(RenderType::func_228640_c_);
+        super(RenderType::entityCutoutNoCull);
         textureWidth = 64;
         textureHeight = 64;
 
         box = new ModelRenderer(this, 0, 0);
-        box.func_228304_a_(0F, 0F, 0F, 7, 7, 7, false);
+        box.addBox(0F, 0F, 0F, 7, 7, 7, false);
         box.setRotationPoint(-3.5F, 0, -3.5F);
         box.setTextureSize(64, 64);
         box.mirror = true;
@@ -34,17 +34,17 @@ public class ModelTransporterBox extends Model {
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float x, float y, float z, EnumColor color) {
-        matrix.func_227860_a_();
+        matrix.push();
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        matrix.func_227861_a_(x, y, z);
-        func_225598_a_(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+        matrix.translate(x, y, z);
+        render(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, color.getColor(0), color.getColor(1), color.getColor(2), 1);
         MekanismRenderer.disableGlow(glowInfo);
-        matrix.func_227865_b_();
+        matrix.pop();
     }
 
     @Override
-    public void func_225598_a_(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        box.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        box.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {

@@ -197,9 +197,9 @@ public class ClientTickHandler {
                 Entry<PlayerEntity, TeleportData> entry = iter.next();
                 PlayerEntity player = entry.getKey();
                 for (int i = 0; i < 100; i++) {
-                    double x = player.func_226277_ct_() + rand.nextDouble() - 0.5D;
-                    double y = player.func_226278_cu_() + rand.nextDouble() * 2 - 2D;
-                    double z = player.func_226281_cx_() + rand.nextDouble() - 0.5D;
+                    double x = player.getPosX() + rand.nextDouble() - 0.5D;
+                    double y = player.getPosY() + rand.nextDouble() * 2 - 2D;
+                    double z = player.getPosZ() + rand.nextDouble() - 0.5D;
                     minecraft.world.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
                 }
 
