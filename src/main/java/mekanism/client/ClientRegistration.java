@@ -244,7 +244,7 @@ public class ClientRegistration {
         //Block render layers
         //Cutout
         ClientRegistrationUtil.setRenderLayer(RenderType.func_228643_e_(), MekanismBlocks.STRUCTURAL_GLASS, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
-              MekanismBlocks.CHARGEPAD,
+              MekanismBlocks.CHARGEPAD, MekanismBlocks.ELECTROLYTIC_SEPARATOR,
               //Fluid Tanks
               MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK,
