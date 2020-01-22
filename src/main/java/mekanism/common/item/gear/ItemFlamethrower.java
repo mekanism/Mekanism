@@ -34,11 +34,11 @@ public class ItemFlamethrower extends Item implements IGasItem {
     public int TRANSFER_RATE = 16;
 
     public ItemFlamethrower(Properties properties) {
-        super(properties.maxStackSize(1).setNoRepair().setTEISR(() -> getTEISR()));
+        super(properties.maxStackSize(1).setNoRepair().setISTER(() -> getISTER()));
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderFlameThrower::new;
     }

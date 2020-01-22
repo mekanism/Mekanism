@@ -56,6 +56,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.ILightReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -79,7 +80,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
     }
 
     @Override
-    public int getLightValue(BlockState state, ILightReader world, BlockPos pos) {
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         int ambientLight = 0;
         TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
         if (tile != null) {
@@ -88,7 +89,10 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
             }
             FluidStack fluid = tile.fluidTank.getFluid();
             if (!fluid.isEmpty()) {
-                ambientLight = Math.max(ambientLight, fluid.getFluid().getAttributes().getLuminosity(world, pos));
+                FluidAttributes fluidAttributes = fluid.getFluid().getAttributes();
+                //TODO: Decide if we want to always be using the luminosity of the stack
+                ambientLight = Math.max(ambientLight, world instanceof ILightReader ? fluidAttributes.getLuminosity((ILightReader) world, pos)
+                                                                                    : fluidAttributes.getLuminosity(fluid));
             }
         }
         return ambientLight;

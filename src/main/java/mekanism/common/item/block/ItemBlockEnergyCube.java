@@ -37,11 +37,11 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCube> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<EnergyCubeTier> {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setNoRepair().setTEISR(() -> getTEISR()));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setNoRepair().setISTER(() -> getISTER()));
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderEnergyCubeItem::new;
     }

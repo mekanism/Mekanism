@@ -49,7 +49,6 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ILightReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
@@ -116,7 +115,7 @@ public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHa
     }
 
     @Override
-    public int getLightValue(BlockState state, ILightReader world, BlockPos pos) {
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get()) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).wasActiveRecently()) {

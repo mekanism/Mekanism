@@ -65,11 +65,11 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     //TODO: Set some tool types?
     public ItemAtomicDisassembler(Properties properties) {
-        super(MekanismConfig.general.disassemblerBatteryCapacity.get(), properties.setNoRepair().setTEISR(() -> getTEISR()));
+        super(MekanismConfig.general.disassemblerBatteryCapacity.get(), properties.setNoRepair().setISTER(() -> getISTER()));
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderAtomicDisassembler::new;
     }

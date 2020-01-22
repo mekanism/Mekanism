@@ -44,11 +44,11 @@ public class ItemScubaTank extends ArmorItem implements IGasItem, ISpecialGear {
     public int TRANSFER_RATE = 16;
 
     public ItemScubaTank(Properties properties) {
-        super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, properties.setTEISR(() -> getTEISR()).setNoRepair());
+        super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, properties.setISTER(() -> getISTER()).setNoRepair());
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderScubaTank::new;
     }

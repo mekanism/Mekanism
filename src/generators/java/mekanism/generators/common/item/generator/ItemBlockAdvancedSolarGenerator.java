@@ -37,11 +37,11 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockAdvancedSolarGenerator extends ItemBlockAdvancedTooltip<BlockAdvancedSolarGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockAdvancedSolarGenerator(BlockAdvancedSolarGenerator block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setTEISR(() -> getTEISR()));
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(() -> getISTER()));
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderAdvancedSolarGeneratorItem::new;
     }

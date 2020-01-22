@@ -24,11 +24,11 @@ public class ItemGasMask extends ArmorItem implements ISpecialGear {
     public static final GasMaskMaterial GAS_MASK_MATERIAL = new GasMaskMaterial();
 
     public ItemGasMask(Properties properties) {
-        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, properties.setTEISR(() -> getTEISR()).setNoRepair());
+        super(GAS_MASK_MATERIAL, EquipmentSlotType.HEAD, properties.setISTER(() -> getISTER()).setNoRepair());
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderGasMask::new;
     }

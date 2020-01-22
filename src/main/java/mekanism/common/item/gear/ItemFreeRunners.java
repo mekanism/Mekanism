@@ -50,11 +50,11 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpeci
     public double MAX_ELECTRICITY = 64_000;
 
     public ItemFreeRunners(Properties properties) {
-        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.setTEISR(() -> getTEISR()).setNoRepair());
+        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.setISTER(() -> getISTER()).setNoRepair());
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderFreeRunners::new;
     }

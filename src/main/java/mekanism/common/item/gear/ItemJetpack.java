@@ -48,11 +48,11 @@ public class ItemJetpack extends ArmorItem implements IGasItem, ISpecialGear {
     public final int TRANSFER_RATE = 16;
 
     public ItemJetpack(Properties properties) {
-        this(JETPACK_MATERIAL, properties.setTEISR(() -> getTEISR()));
+        this(JETPACK_MATERIAL, properties.setISTER(() -> getISTER()));
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderJetpack::new;
     }

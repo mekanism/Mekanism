@@ -18,11 +18,11 @@ public class ItemArmoredJetpack extends ItemJetpack {
     public static final ArmoredJetpackMaterial ARMORED_JETPACK_MATERIAL = new ArmoredJetpackMaterial();
 
     public ItemArmoredJetpack(Properties properties) {
-        super(ARMORED_JETPACK_MATERIAL, properties.setTEISR(() -> getTEISR()));
+        super(ARMORED_JETPACK_MATERIAL, properties.setISTER(() -> getISTER()));
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderArmoredJetpack::new;
     }

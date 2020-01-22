@@ -15,11 +15,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockSecurityDesk> {
 
     public ItemBlockSecurityDesk(BlockSecurityDesk block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().setTEISR(() -> getTEISR()));
+        super(block, ItemDeferredRegister.getMekBaseProperties().setISTER(() -> getISTER()));
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getTEISR() {
+    private static Callable<ItemStackTileEntityRenderer> getISTER() {
         //NOTE: This extra method is needed to avoid classloading issues on servers
         return RenderSecurityDeskItem::new;
     }

@@ -73,6 +73,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
 
+    private boolean updateClientLight = false;
+
     public TileEntityFluidTank(IBlockProvider blockProvider) {
         super(blockProvider);
     }
@@ -105,6 +107,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
                 //If we have any fluid in the tank make sure we end up rendering it
                 prevScale = targetScale;
             }
+            if (updateClientLight) {
+                MekanismUtils.recheckLighting(world, pos);
+                updateClientLight = false;
+            }
         } else {
             if (valve > 0) {
                 valve--;
@@ -117,6 +123,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             if (fluidTank.getFluidAmount() != prevAmount) {
                 MekanismUtils.saveChunk(this);
                 needsPacket = true;
+                if (prevAmount == 0 || fluidTank.getFluidAmount() == 0) {
+                    //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
+                    // as the fluid may have changed and have a light value
+                    //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
+                    //TODO: Do we even need this on the sever side of things
+                    MekanismUtils.recheckLighting(world, pos);
+                }
             }
 
             prevAmount = fluidTank.getFluidAmount();
@@ -217,6 +230,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
                 valveFluid = FluidStack.EMPTY;
             }
             TileUtils.readTankData(dataStream, fluidTank);
+            //Set the client's light to update just in case the value changed
+            //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
+            updateClientLight = true;
         }
     }
 

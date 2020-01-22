@@ -57,6 +57,7 @@ import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.ILightReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -406,8 +407,18 @@ public final class MekanismUtils {
         TileEntity tile = getTileEntity(world, pos);
         if (!(tile instanceof IActiveState) || ((IActiveState) tile).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
             //Update all light types at the position
-            world.getLightManager().checkBlock(pos);
+            recheckLighting(world, pos);
         }
+    }
+
+    /**
+     * Rechecks the lighting at a specific block's position
+     *
+     * @param world - world the block is in
+     * @param pos   - coordinates
+     */
+    public static void recheckLighting(@Nonnull ILightReader world, @Nonnull BlockPos pos) {
+        world.getLightManager().checkBlock(pos);
     }
 
     /**
