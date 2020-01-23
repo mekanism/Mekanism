@@ -145,7 +145,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                         return true;
                     }
                     return false;
-                }, this, 8 + slotX * 18, 98 + slotY * 18);
+                }, item -> true, this, 8 + slotX * 18, 98 + slotY * 18);
                 builder.addSlot(inputSlot);
                 inputSlots.add(inputSlot);
             }

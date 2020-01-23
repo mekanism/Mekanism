@@ -123,7 +123,7 @@ public class BasicInventorySlot implements IInventorySlot {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
             //TODO: Even if it is valid for this to throw a runtime exception should we be printing an error instead and just refusing to accept the stack
-            throw new RuntimeException("Invalid stack for slot.");
+            throw new RuntimeException("Invalid stack for slot: " + stack.getItem().getRegistryName() + " " + stack.getCount() + " " + stack.getTag());
         }
         onContentsChanged();
     }
