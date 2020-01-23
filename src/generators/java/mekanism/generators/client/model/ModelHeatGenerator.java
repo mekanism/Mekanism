@@ -21,7 +21,7 @@ public class ModelHeatGenerator extends Model {
     private static final RenderType RENDER_TYPE_ON = MekanismRenderType.mekStandard(OVERLAY_ON);
     private static final RenderType RENDER_TYPE_OFF = MekanismRenderType.mekStandard(OVERLAY_OFF);
 
-    private final RenderType RENDER_TYPE = func_228282_a_(GENERATOR_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(GENERATOR_TEXTURE);
 
     private final ModelRenderer drum;
     private final ModelRenderer ring1;

@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelTransporterBox extends Model {
 
     private static final ResourceLocation BOX_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "transporter_box.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(BOX_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(BOX_TEXTURE);
     private final ModelRenderer box;
 
     public ModelTransporterBox() {

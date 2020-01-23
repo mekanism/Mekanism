@@ -44,7 +44,7 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
         if (tile.getHousedBlades() > 0) {
             matrix.push();
             matrix.translate(0.5, -1, 0.5);
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(tile.rotationLower));
+            matrix.rotate(Vector3f.YP.rotationDegrees(tile.rotationLower));
             model.render(matrix, renderer, light, overlayLight, baseIndex);
             matrix.pop();
         }
@@ -52,7 +52,7 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
         if (tile.getHousedBlades() == 2) {
             matrix.push();
             matrix.translate(0.5, -0.5, 0.5);
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(tile.rotationUpper));
+            matrix.rotate(Vector3f.YP.rotationDegrees(tile.rotationUpper));
             model.render(matrix, renderer, light, overlayLight, baseIndex + 1);
             matrix.pop();
         }

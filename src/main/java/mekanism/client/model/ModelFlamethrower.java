@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelFlamethrower extends Model {
 
     private static final ResourceLocation FLAMETHROWER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "flamethrower.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(FLAMETHROWER_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(FLAMETHROWER_TEXTURE);
 
     private final ModelRenderer RingButtom;
     private final ModelRenderer RingTop;

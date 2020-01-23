@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelBalloon extends Model {
 
     public static final ResourceLocation BALLOON_TEXTURE = MekanismAdditions.rl("textures/item/balloon.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(BALLOON_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(BALLOON_TEXTURE);
 
     private final ModelRenderer Balloon2;
     private final ModelRenderer Balloon1;
@@ -64,7 +64,7 @@ public class ModelBalloon extends Model {
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, EnumColor color) {
         matrix.push();
         //Flip the balloon so it is facing up instead of down
-        matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(180));
+        matrix.rotate(Vector3f.XP.rotationDegrees(180));
         IVertexBuilder vertexBuilder = renderer.getBuffer(RENDER_TYPE);
         render(matrix, vertexBuilder, light, OverlayTexture.DEFAULT_LIGHT, color.getColor(0), color.getColor(1), color.getColor(2), 1);
         matrix.pop();

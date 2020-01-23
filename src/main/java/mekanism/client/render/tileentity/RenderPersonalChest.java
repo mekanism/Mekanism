@@ -41,7 +41,7 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
         matrix.push();
         if (tile.getWorld() != null && !tile.isRemoved()) {
             matrix.translate(0.5D, 0.5D, 0.5D);
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-tile.getDirection().getHorizontalAngle()));
+            matrix.rotate(Vector3f.YP.rotationDegrees(-tile.getDirection().getHorizontalAngle()));
             matrix.translate(-0.5D, -0.5D, -0.5D);
         }
         float lidAngle = tile.prevLidAngle + (tile.lidAngle - tile.prevLidAngle) * partialTick;

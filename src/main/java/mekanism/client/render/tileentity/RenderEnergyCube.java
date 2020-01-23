@@ -37,11 +37,11 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         matrix.push();
         switch (tile.getDirection()) {
             case DOWN:
-                matrix.rotate(Vector3f.field_229178_a_.func_229187_a_(90));
+                matrix.rotate(Vector3f.XN.rotationDegrees(90));
                 matrix.translate(0, 1, -1);
                 break;
             case UP:
-                matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(90));
+                matrix.rotate(Vector3f.XP.rotationDegrees(90));
                 matrix.translate(0, 1, 1);
                 break;
             default:
@@ -50,7 +50,7 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
                 break;
         }
 
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         model.render(matrix, renderer, light, overlayLight, tile.tier, false);
 
         ConfigInfo config = tile.configComponent.getConfig(TransmissionType.ENERGY);
@@ -75,8 +75,8 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
             float ticks = MekanismClient.ticksPassed + partialTick;
             matrix.scale(0.4F, 0.4F, 0.4F);
             matrix.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(4 * ticks));
-            matrix.rotate(coreVec.func_229187_a_(36F + 4 * ticks));
+            matrix.rotate(Vector3f.YP.rotationDegrees(4 * ticks));
+            matrix.rotate(coreVec.rotationDegrees(36F + 4 * ticks));
             core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), (float) energyPercentage);
         }
         matrix.pop();

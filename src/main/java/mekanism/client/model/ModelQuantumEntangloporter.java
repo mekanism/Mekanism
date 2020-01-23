@@ -18,7 +18,7 @@ public class ModelQuantumEntangloporter extends Model {
     private static final ResourceLocation ENTANGLOPORTER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter.png");
     private static final ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "quantum_entangloporter_overlay.png");
     private static final RenderType RENDER_TYPE_OVERLAY = MekanismRenderType.mekStandard(OVERLAY);
-    private final RenderType RENDER_TYPE = func_228282_a_(ENTANGLOPORTER_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(ENTANGLOPORTER_TEXTURE);
 
     private final ModelRenderer portTop;
     private final ModelRenderer portBottom;

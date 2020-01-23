@@ -24,7 +24,7 @@ public class RenderSeismicVibrator extends TileEntityRenderer<TileEntitySeismicV
         matrix.push();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         float actualRate = (float) Math.sin((tile.clientPiston + (tile.getActive() ? partialTick : 0)) / 5F);
         model.render(matrix, renderer, light, overlayLight, Math.max(0, actualRate));
         matrix.pop();

@@ -18,7 +18,7 @@ public class ModelArmoredJetpack extends Model {
 
     private static final ResourceLocation JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
     private static final RenderType WING_RENDER_TYPE = MekanismRenderType.mekStandard(JETPACK_TEXTURE);
-    private final RenderType RENDER_TYPE = func_228282_a_(JETPACK_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(JETPACK_TEXTURE);
 
     private final ModelRenderer Packtop;
     private final ModelRenderer Packbottom;
@@ -241,7 +241,7 @@ public class ModelArmoredJetpack extends Model {
     }
 
     private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, RenderType renderType, boolean hasEffect) {
-        return ItemRenderer.func_229113_a_(renderer, renderType, false, hasEffect);
+        return ItemRenderer.getBuffer(renderer, renderType, false, hasEffect);
     }
 
     @Override

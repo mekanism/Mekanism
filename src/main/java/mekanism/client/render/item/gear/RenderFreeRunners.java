@@ -24,8 +24,8 @@ public class RenderFreeRunners extends MekanismItemStackRenderer {
     protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         matrix.push();
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
-        matrix.rotate(Vector3f.field_229180_c_.func_229187_a_(90));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+        matrix.rotate(Vector3f.YN.rotationDegrees(90));
         matrix.scale(2.0F, 2.0F, 2.0F);
         matrix.translate(0.2, -1.43, 0.12);
         freeRunners.render(matrix, renderer, light, overlayLight, stack.hasEffect());

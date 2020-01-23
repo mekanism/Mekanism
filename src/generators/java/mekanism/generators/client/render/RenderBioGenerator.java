@@ -47,7 +47,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
         matrix.push();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 180, 0, 270, 90);
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         model.render(matrix, renderer, light, overlayLight);
         matrix.pop();
     }

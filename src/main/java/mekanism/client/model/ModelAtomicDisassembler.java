@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelAtomicDisassembler extends Model {
 
     private static final ResourceLocation DISASSEMBLER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "atomic_disassembler.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(DISASSEMBLER_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(DISASSEMBLER_TEXTURE);
 
     private final ModelRenderer Shape1;
     private final ModelRenderer Shape2;

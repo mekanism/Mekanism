@@ -22,7 +22,7 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
     }
 
     @Override
-    public void func_225628_a_(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, T entity, float limbSwing, float limbSwingAmount,
+    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, T entity, float limbSwing, float limbSwingAmount,
           float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
         func_229129_a_(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.CHEST, light);
         func_229129_a_(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.LEGS, light);

@@ -19,7 +19,7 @@ public class ModelFluidTank extends Model {
 
     private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "fluid_tank.png");
     private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(TANK_TEXTURE);
-    private final RenderType RENDER_TYPE = func_228282_a_(TANK_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(TANK_TEXTURE);
 
     private final ModelRenderer Base;
     private final ModelRenderer PoleFL;

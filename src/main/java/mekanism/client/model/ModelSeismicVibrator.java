@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelSeismicVibrator extends Model {
 
     private static final ResourceLocation VIBRATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "seismic_vibrator.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(VIBRATOR_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(VIBRATOR_TEXTURE);
 
     private final ModelRenderer plate3;
     private final ModelRenderer baseBack;

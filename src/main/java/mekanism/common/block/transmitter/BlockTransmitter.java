@@ -45,7 +45,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateWa
         }
         IMekWrench wrenchHandler = Wrenches.getHandler(stack);
         if (wrenchHandler != null) {
-            if (wrenchHandler.canUseWrench(stack, player, hit.getPos()) && player.func_225608_bj_()) {
+            if (wrenchHandler.canUseWrench(stack, player, hit.getPos()) && player.isShiftKeyDown()) {
                 if (!world.isRemote) {
                     MekanismUtils.dismantleBlock(state, world, pos);
                 }

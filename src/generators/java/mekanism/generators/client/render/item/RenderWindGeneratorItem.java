@@ -24,23 +24,23 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         matrix.push();
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(180));
+            matrix.rotate(Vector3f.YP.rotationDegrees(180));
             matrix.translate(0, 0.4, 0);
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-45));
+                matrix.rotate(Vector3f.YP.rotationDegrees(-45));
             } else {
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(45));
+                matrix.rotate(Vector3f.YP.rotationDegrees(45));
             }
-            matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(50));
+            matrix.rotate(Vector3f.XP.rotationDegrees(50));
             matrix.scale(2, 2, 2);
             matrix.translate(0, -0.4, 0);
         } else {
             if (transformType == TransformType.GUI) {
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
+                matrix.rotate(Vector3f.YP.rotationDegrees(90));
             } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(180));
+                matrix.rotate(Vector3f.YP.rotationDegrees(180));
             }
             matrix.translate(0, 0.4, 0);
         }

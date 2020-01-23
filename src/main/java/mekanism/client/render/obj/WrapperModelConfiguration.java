@@ -46,6 +46,11 @@ public class WrapperModelConfiguration implements IModelConfiguration {
     }
 
     @Override
+    public boolean isSideLit() {
+        return false;
+    }
+
+    @Override
     public boolean useSmoothLighting() {
         return internal.useSmoothLighting();
     }

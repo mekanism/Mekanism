@@ -19,7 +19,7 @@ public class RenderResistiveHeaterItem extends MekanismItemStackRenderer {
     @Override
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0.05, -0.96, 0.05);
         resistiveHeater.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, "energyStored") > 0);
     }

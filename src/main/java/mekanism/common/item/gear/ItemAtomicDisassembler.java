@@ -186,7 +186,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.func_225608_bj_()) {
+        if (player.isShiftKeyDown()) {
             if (!world.isRemote) {
                 toggleMode(stack);
                 Mode mode = getMode(stack);
@@ -203,7 +203,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (player != null && !player.func_225608_bj_()) {
+        if (player != null && !player.isShiftKeyDown()) {
             Hand hand = context.getHand();
             ItemStack stack = player.getHeldItem(hand);
             int diameter = getMode(stack).getDiameter();

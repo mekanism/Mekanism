@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelWindGenerator extends Model {
 
     private static final ResourceLocation GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(GENERATOR_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(GENERATOR_TEXTURE);
 
     private final ModelRenderer head;
     private final ModelRenderer plateConnector2;

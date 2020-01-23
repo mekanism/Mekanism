@@ -299,16 +299,16 @@ public class MekanismRenderer {
     public static void rotate(MatrixStack matrix, Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(north));
+                matrix.rotate(Vector3f.YP.rotationDegrees(north));
                 break;
             case SOUTH:
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(south));
+                matrix.rotate(Vector3f.YP.rotationDegrees(south));
                 break;
             case WEST:
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(west));
+                matrix.rotate(Vector3f.YP.rotationDegrees(west));
                 break;
             case EAST:
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(east));
+                matrix.rotate(Vector3f.YP.rotationDegrees(east));
                 break;
         }
     }

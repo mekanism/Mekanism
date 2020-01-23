@@ -22,7 +22,7 @@ public class ModelDigitalMiner extends Model {
     private static final RenderType RENDER_TYPE_ON = MekanismRenderType.mekStandard(OVERLAY_ON);
     private static final RenderType RENDER_TYPE_OFF = MekanismRenderType.mekStandard(OVERLAY_OFF);
 
-    private final RenderType RENDER_TYPE = func_228282_a_(MINER_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(MINER_TEXTURE);
 
     private final ModelRenderer keyboard;
     private final ModelRenderer keyboardBottom;

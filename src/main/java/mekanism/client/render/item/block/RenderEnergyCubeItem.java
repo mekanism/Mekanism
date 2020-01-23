@@ -36,7 +36,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
             return;
         }
         matrix.push();
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.push();
         matrix.translate(0, -1, 0);
         //TODO: Instead of having this be a thing, make it do it from model like the block does?
@@ -62,8 +62,8 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         if (energyPercentage > 0.1) {
             matrix.scale(0.4F, 0.4F, 0.4F);
             matrix.translate(0, Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(4 * MekanismClient.ticksPassed));
-            matrix.rotate(RenderEnergyCube.coreVec.func_229187_a_(36F + 4 * MekanismClient.ticksPassed));
+            matrix.rotate(Vector3f.YP.rotationDegrees(4 * MekanismClient.ticksPassed));
+            matrix.rotate(RenderEnergyCube.coreVec.rotationDegrees(36F + 4 * MekanismClient.ticksPassed));
             core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tier.getBaseTier().getColor(), (float) energyPercentage);
         }
         matrix.pop();

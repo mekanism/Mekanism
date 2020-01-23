@@ -41,6 +41,11 @@ public class ContentsModelConfiguration implements IModelConfiguration {
     }
 
     @Override
+    public boolean isSideLit() {
+        return false;
+    }
+
+    @Override
     public boolean useSmoothLighting() {
         return false;
     }

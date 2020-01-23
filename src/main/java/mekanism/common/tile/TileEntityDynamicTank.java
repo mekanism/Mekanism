@@ -110,7 +110,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (!player.func_225608_bj_() && structure != null) {
+        if (!player.isShiftKeyDown() && structure != null) {
             if (manageInventory(player, hand, stack)) {
                 player.inventory.markDirty();
                 sendPacketToRenderer();

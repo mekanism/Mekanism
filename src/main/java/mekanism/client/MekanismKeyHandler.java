@@ -68,7 +68,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
             return;
         }
         if (kb == modeSwitchKey) {
-            if (player.func_225608_bj_()) {
+            if (player.isShiftKeyDown()) {
                 ItemStack toolStack = player.inventory.getCurrentItem();
                 Item item = toolStack.getItem();
                 if (item instanceof ItemConfigurator) {
@@ -106,13 +106,13 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
             if (chestItem instanceof ItemJetpack) {
                 ItemJetpack jetpack = (ItemJetpack) chestItem;
-                if (player.func_225608_bj_()) {
+                if (player.isShiftKeyDown()) {
                     jetpack.setMode(chestStack, JetpackMode.DISABLED);
                 } else {
                     jetpack.incrementMode(chestStack);
                 }
 
-                Mekanism.packetHandler.sendToServer(PacketJetpackData.MODE_CHANGE(player.func_225608_bj_()));
+                Mekanism.packetHandler.sendToServer(PacketJetpackData.MODE_CHANGE(player.isShiftKeyDown()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             } else if (chestItem instanceof ItemScubaTank) {
                 ItemScubaTank scubaTank = (ItemScubaTank) chestItem;
@@ -126,12 +126,12 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
             if (feetItem instanceof ItemFreeRunners) {
                 ItemFreeRunners freeRunners = (ItemFreeRunners) feetItem;
-                if (player.func_225608_bj_()) {
+                if (player.isShiftKeyDown()) {
                     freeRunners.setMode(feetStack, ItemFreeRunners.FreeRunnerMode.DISABLED);
                 } else {
                     freeRunners.incrementMode(feetStack);
                 }
-                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.MODE, null, player.func_225608_bj_()));
+                Mekanism.packetHandler.sendToServer(new PacketFreeRunnerData(PacketFreeRunnerData.FreeRunnerPacket.MODE, null, player.isShiftKeyDown()));
                 SoundHandler.playSound(MekanismSounds.HYDRAULIC.getSoundEvent());
             }
         }

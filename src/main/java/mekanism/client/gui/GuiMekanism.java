@@ -208,7 +208,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             try {
                 RenderSystem.pushMatrix();
                 RenderSystem.enableDepthTest();
-                RenderHelper.func_227780_a_();
+                RenderHelper.enableStandardItemLighting();
                 if (scale != 1) {
                     RenderSystem.scalef(scale, scale, scale);
                 }

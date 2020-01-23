@@ -20,11 +20,11 @@ public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         matrix.push();
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-90));
+            matrix.rotate(Vector3f.YP.rotationDegrees(-90));
         } else if (transformType != TransformType.GUI) {
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
+            matrix.rotate(Vector3f.YP.rotationDegrees(90));
         }
         matrix.translate(0.35, 0.1, 0);
         //Scale the model to the correct size

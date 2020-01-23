@@ -14,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelSolarNeutronActivator extends Model {
 
     private static final ResourceLocation ACTIVATOR_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "solar_neutron_activator.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(ACTIVATOR_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(ACTIVATOR_TEXTURE);
 
     private final ModelRenderer pole;
     private final ModelRenderer panel3;

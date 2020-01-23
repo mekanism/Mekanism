@@ -19,8 +19,8 @@ public class RenderAdvancedSolarGeneratorItem extends MekanismItemStackRenderer 
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         //TODO: Adjust this some, especially in third person we can make this look better
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
-        matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+        matrix.rotate(Vector3f.YP.rotationDegrees(90));
         matrix.translate(0, 0.2F, 0);
         //Shrink the size of the model
         matrix.scale(0.352F, 0.352F, 0.352F);

@@ -48,8 +48,8 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
         float ticksScaledTemp = ticks * scaledTemp;
         matrix.push();
         matrix.scale((float) scale, (float) scale, (float) scale);
-        matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(ticksScaledTemp * mult1 + shift1));
-        matrix.rotate(RenderEnergyCube.coreVec.func_229187_a_(ticksScaledTemp * mult2 + shift2));
+        matrix.rotate(Vector3f.YP.rotationDegrees(ticksScaledTemp * mult1 + shift1));
+        matrix.rotate(RenderEnergyCube.coreVec.rotationDegrees(ticksScaledTemp * mult2 + shift2));
         core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, color, 1);
         matrix.pop();
     }

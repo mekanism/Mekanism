@@ -200,7 +200,7 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
             if (wrenchHandler != null) {
                 if (wrenchHandler.canUseWrench(stack, player, hit.getPos())) {
                     if (SecurityUtils.canAccess(player, tile)) {
-                        if (player.func_225608_bj_()) {
+                        if (player.isShiftKeyDown()) {
                             MekanismUtils.dismantleBlock(state, world, pos);
                             return ActionResultType.SUCCESS;
                         }

@@ -25,7 +25,7 @@ public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMine
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
         matrix.translate(0, 0, -1);
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         model.render(matrix, renderer, light, overlayLight, tile.getActive());
         matrix.pop();
         if (tile.clientRendering) {

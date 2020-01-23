@@ -18,7 +18,7 @@ public class ModelGasMask extends Model {
 
     private static final ResourceLocation MASK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
     private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(MASK_TEXTURE);
-    private final RenderType RENDER_TYPE = func_228282_a_(MASK_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(MASK_TEXTURE);
 
     private final ModelRenderer helmetfeed;
     private final ModelRenderer tubeback;
@@ -233,7 +233,7 @@ public class ModelGasMask extends Model {
     }
 
     private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, RenderType renderType, boolean hasEffect) {
-        return ItemRenderer.func_229113_a_(renderer, renderType, false, hasEffect);
+        return ItemRenderer.getBuffer(renderer, renderType, false, hasEffect);
     }
 
     @Override

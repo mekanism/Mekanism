@@ -27,25 +27,25 @@ public class RenderAtomicDisassembler extends MekanismItemStackRenderer {
           TransformType transformType) {
         matrix.push();
         matrix.scale(1.4F, 1.4F, 1.4F);
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         if (transformType == TransformType.THIRD_PERSON_RIGHT_HAND || transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
             if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-90));
+                matrix.rotate(Vector3f.YP.rotationDegrees(-90));
             }
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(45));
-            matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(50));
+            matrix.rotate(Vector3f.YP.rotationDegrees(45));
+            matrix.rotate(Vector3f.XP.rotationDegrees(50));
             matrix.scale(2, 2, 2);
             matrix.translate(0, -0.4, 0.4);
         } else if (transformType == TransformType.GUI) {
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(225));
-            matrix.rotate(guiVec.func_229187_a_(45));
+            matrix.rotate(Vector3f.YP.rotationDegrees(225));
+            matrix.rotate(guiVec.rotationDegrees(45));
             matrix.scale(0.6F, 0.6F, 0.6F);
             matrix.translate(0, -0.2, 0);
         } else {
             if (transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
+                matrix.rotate(Vector3f.YP.rotationDegrees(90));
             }
-            matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(45));
+            matrix.rotate(Vector3f.YP.rotationDegrees(45));
             matrix.translate(0, -0.7, 0);
         }
         atomicDisassembler.render(matrix, renderer, light, overlayLight);

@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelChemicalCrystallizer extends Model {
 
     private static final ResourceLocation CRYSTALLIZER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "chemical_crystallizer.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(CRYSTALLIZER_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(CRYSTALLIZER_TEXTURE);
     private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(CRYSTALLIZER_TEXTURE);
 
     private final ModelRenderer tray;

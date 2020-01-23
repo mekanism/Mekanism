@@ -35,9 +35,9 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         float f5 = (float) (5 + i * 10) / 32F;
         float scale = 0.05625F * (0.8F + size);
         matrix.push();
-        matrix.rotate(Vector3f.field_229181_d_.func_229187_a_((flame.prevRotationYaw + (flame.rotationYaw - flame.prevRotationYaw) * partialTick) - 90F));
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(flame.prevRotationPitch + (flame.rotationPitch - flame.prevRotationPitch) * partialTick));
-        matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(45));
+        matrix.rotate(Vector3f.YP.rotationDegrees((flame.prevRotationYaw + (flame.rotationYaw - flame.prevRotationYaw) * partialTick) - 90F));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(flame.prevRotationPitch + (flame.rotationPitch - flame.prevRotationPitch) * partialTick));
+        matrix.rotate(Vector3f.XP.rotationDegrees(45));
         matrix.scale(scale, scale, scale);
         matrix.translate(-4, 0, 0);
 
@@ -45,8 +45,8 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         IVertexBuilder builder = renderer.getBuffer(MekanismRenderType.renderFlame(getEntityTexture(flame)));
         float actualAlpha = 1 - alpha;
         for (int j = 0; j < 4; j++) {
-            matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(90));
-            builder.func_227887_a_(matrix.getLast().getNormalMatrix(), 0, 0, scale);
+            matrix.rotate(Vector3f.XP.rotationDegrees(90));
+            builder.normal(matrix.getLast().getNormalMatrix(), 0, 0, scale);
             Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
             builder.pos(matrix4f, -8, -2, 0).tex(f2, f4).color(1, 1, 1, actualAlpha).endVertex();
             builder.pos(matrix4f, 8, -2, 0).tex(f3, f4).color(1, 1, 1, actualAlpha).endVertex();

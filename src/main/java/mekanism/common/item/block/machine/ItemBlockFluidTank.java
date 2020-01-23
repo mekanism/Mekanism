@@ -147,7 +147,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         ItemStack stack = player.getHeldItem(hand);
         if (getBucketMode(stack)) {
             if (SecurityUtils.canAccess(player, stack)) {
-                RayTraceResult rayTraceResult = rayTrace(world, player, !player.func_225608_bj_() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
+                RayTraceResult rayTraceResult = rayTrace(world, player, !player.isShiftKeyDown() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
                 //It can be null if there is nothing in range
                 if (rayTraceResult.getType() == Type.BLOCK) {
                     BlockRayTraceResult result = (BlockRayTraceResult) rayTraceResult;
@@ -155,7 +155,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                     if (!world.isBlockModifiable(player, pos)) {
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
-                    if (!player.func_225608_bj_()) {
+                    if (!player.isShiftKeyDown()) {
                         if (!player.canPlayerEdit(pos, result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
@@ -242,7 +242,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
             return false;
         }
         BlockState state = world.getBlockState(pos);
-        boolean isReplaceable = state.func_227032_a_(fluid);
+        boolean isReplaceable = state.isReplaceable(fluid);
         boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
         if (world.isAirBlock(pos) || isReplaceable || canContainFluid) {
             if (world.getDimension().doesWaterVaporize() && fluid.isIn(FluidTags.WATER)) {

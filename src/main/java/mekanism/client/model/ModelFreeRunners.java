@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelFreeRunners extends Model {
 
     private static final ResourceLocation FREE_RUNNER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(FREE_RUNNER_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(FREE_RUNNER_TEXTURE);
 
     private final ModelRenderer SpringL;
     private final ModelRenderer SpringR;
@@ -74,7 +74,7 @@ public class ModelFreeRunners extends Model {
     }
 
     private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, boolean hasEffect) {
-        return ItemRenderer.func_229113_a_(renderer, RENDER_TYPE, false, hasEffect);
+        return ItemRenderer.getBuffer(renderer, RENDER_TYPE, false, hasEffect);
     }
 
     @Override

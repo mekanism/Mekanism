@@ -182,7 +182,7 @@ public class ClientTickHandler {
             }
 
             ItemStack bootStack = minecraft.player.getItemStackFromSlot(EquipmentSlotType.FEET);
-            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !minecraft.player.func_225608_bj_()) {
+            if (!bootStack.isEmpty() && bootStack.getItem() instanceof ItemFreeRunners && freeRunnerOn && !minecraft.player.isShiftKeyDown()) {
                 minecraft.player.stepHeight = 1.002F;
             } else if (minecraft.player.stepHeight == 1.002F) {
                 minecraft.player.stepHeight = 0.6F;
@@ -274,7 +274,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onMouseEvent(MouseScrollEvent event) {
-        if (MekanismConfig.client.allowConfiguratorModeScroll.get() && minecraft.player != null && minecraft.player.func_225608_bj_()) {
+        if (MekanismConfig.client.allowConfiguratorModeScroll.get() && minecraft.player != null && minecraft.player.isShiftKeyDown()) {
             ItemStack stack = minecraft.player.getHeldItemMainhand();
             if (stack.getItem() instanceof ItemConfigurator) {
                 double delta = event.getScrollDelta();

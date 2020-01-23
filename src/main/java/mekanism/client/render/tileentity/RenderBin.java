@@ -28,7 +28,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
         //position of the block covering the front side
         BlockPos coverPos = tile.getPos().offset(facing);
         //if the bin has an item stack and the face isn't covered by a solid side
-        if (!tile.clientStack.isEmpty() && !tile.getWorld().getBlockState(coverPos).func_224755_d(tile.getWorld(), coverPos, facing.getOpposite())) {
+        if (!tile.clientStack.isEmpty() && !tile.getWorld().getBlockState(coverPos).isSolidSide(tile.getWorld(), coverPos, facing.getOpposite())) {
             String amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate().getFormattedText()
                                                                : Integer.toString(tile.clientStack.getCount());
             matrix.push();
@@ -38,15 +38,15 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
                     break;
                 case SOUTH:
                     matrix.translate(0.27, 0.83, 1.0001);
-                    matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(180));
+                    matrix.rotate(Vector3f.YP.rotationDegrees(180));
                     break;
                 case WEST:
                     matrix.translate(-0.0001, 0.83, 0.27);
-                    matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
+                    matrix.rotate(Vector3f.YP.rotationDegrees(90));
                     break;
                 case EAST:
                     matrix.translate(1.0001, 0.83, 0.73);
-                    matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-90));
+                    matrix.rotate(Vector3f.YP.rotationDegrees(-90));
                     break;
                 default:
                     break;
@@ -55,7 +55,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             float scale = 0.03125F;
             float scaler = 0.9F;
             matrix.scale(scale * scaler, scale * scaler, -0.0001F);
-            matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
+            matrix.rotate(Vector3f.ZP.rotationDegrees(180));
             matrix.translate(8, 8, 3);
             matrix.scale(16, -16, 16);
             //TODO: The lighting seems a bit off but it is close enough for now
@@ -72,29 +72,29 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
         switch (side) {
             case SOUTH:
                 matrix.translate(0, 1, 0);
-                matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(90));
+                matrix.rotate(Vector3f.XP.rotationDegrees(90));
                 break;
             case NORTH:
                 matrix.translate(1, 1, 1);
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(180));
-                matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(90));
+                matrix.rotate(Vector3f.YP.rotationDegrees(180));
+                matrix.rotate(Vector3f.XP.rotationDegrees(90));
                 break;
             case EAST:
                 matrix.translate(0, 1, 1);
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(90));
-                matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(90));
+                matrix.rotate(Vector3f.YP.rotationDegrees(90));
+                matrix.rotate(Vector3f.XP.rotationDegrees(90));
                 break;
             case WEST:
                 matrix.translate(1, 1, 0);
-                matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(-90));
-                matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(90));
+                matrix.rotate(Vector3f.YP.rotationDegrees(-90));
+                matrix.rotate(Vector3f.XP.rotationDegrees(90));
                 break;
         }
 
         float displayWidth = 1;
         float displayHeight = 1;
         matrix.translate(displayWidth / 2, 1, displayHeight / 2);
-        matrix.rotate(Vector3f.field_229179_b_.func_229187_a_(-90));
+        matrix.rotate(Vector3f.XP.rotationDegrees(-90));
 
         FontRenderer font = renderDispatcher.getFontRenderer();
 

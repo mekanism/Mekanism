@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 public class ModelScubaTank extends Model {
 
     private static final ResourceLocation TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
-    private final RenderType RENDER_TYPE = func_228282_a_(TANK_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(TANK_TEXTURE);
 
     private final ModelRenderer tankL;
     private final ModelRenderer tankR;
@@ -94,7 +94,7 @@ public class ModelScubaTank extends Model {
     }
 
     private IVertexBuilder getVertexBuilder(@Nonnull IRenderTypeBuffer renderer, boolean hasEffect) {
-        return ItemRenderer.func_229113_a_(renderer, RENDER_TYPE, false, hasEffect);
+        return ItemRenderer.getBuffer(renderer, RENDER_TYPE, false, hasEffect);
     }
 
     @Override

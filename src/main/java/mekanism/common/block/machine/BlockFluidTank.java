@@ -112,7 +112,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
             return ActionResultType.SUCCESS;
         }
         //Handle filling fluid tank
-        if (!player.func_225608_bj_()) {
+        if (!player.isShiftKeyDown()) {
             if (SecurityUtils.canAccess(player, tile)) {
                 ItemStack stack = player.getHeldItem(hand);
                 if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack) && manageInventory(player, (TileEntityFluidTank) tile, hand, stack)) {

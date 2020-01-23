@@ -18,7 +18,7 @@ public class ModelSecurityDesk extends Model {
     private static final ResourceLocation DESK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "security_desk.png");
     private static final ResourceLocation OVERLAY = MekanismUtils.getResource(ResourceType.RENDER, "security_desk_overlay.png");
     private static final RenderType RENDER_TYPE_OVERLAY = MekanismRenderType.mekStandard(OVERLAY);
-    private final RenderType RENDER_TYPE = func_228282_a_(DESK_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(DESK_TEXTURE);
 
     private final ModelRenderer deskTop;
     private final ModelRenderer deskBase;

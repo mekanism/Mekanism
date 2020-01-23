@@ -88,7 +88,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                     if (info != null) {
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getOrientation(), side);
                         DataType dataType = info.getDataType(relativeSide);
-                        if (!player.func_225608_bj_()) {
+                        if (!player.isShiftKeyDown()) {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(), dataType,
                                         dataType.getColor().getColoredName())));
@@ -113,7 +113,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                 }
                 if (SecurityUtils.canAccess(player, tile)) {
                     return CapabilityUtils.getCapabilityHelper(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).getIfPresentElse(config -> {
-                              if (player.func_225608_bj_()) {
+                              if (player.isShiftKeyDown()) {
                                   return config.onSneakRightClick(player, side);
                               }
                               return config.onRightClick(player, side);
@@ -154,9 +154,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                 if (rotations != null && rotations.length > 0) {
                     List<Direction> l = Arrays.asList(rotations);
                     //TODO: Convert direction to Rotation
-                    /*if (!player.func_225608_bj_() && l.contains(side)) {
+                    /*if (!player.isShiftKeyDown() && l.contains(side)) {
                         block.rotate(state, world, pos, side);
-                    } else if (player.func_225608_bj_() && l.contains(side.getOpposite())) {
+                    } else if (player.isShiftKeyDown() && l.contains(side.getOpposite())) {
                         block.rotate(state, world, pos, side.getOpposite());
                     }*/
                 }

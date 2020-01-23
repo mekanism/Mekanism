@@ -24,8 +24,8 @@ public class RenderGasMask extends MekanismItemStackRenderer {
     protected void renderItemSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         matrix.push();
-        matrix.rotate(Vector3f.field_229183_f_.func_229187_a_(180));
-        matrix.rotate(Vector3f.field_229180_c_.func_229187_a_(90));
+        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+        matrix.rotate(Vector3f.YN.rotationDegrees(90));
         matrix.translate(0.1, 0.2, 0);
         gasMask.render(matrix, renderer, light, overlayLight, stack.hasEffect());
         matrix.pop();

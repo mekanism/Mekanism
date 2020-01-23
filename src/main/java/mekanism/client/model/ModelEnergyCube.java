@@ -26,7 +26,7 @@ public class ModelEnergyCube extends Model {
     private static final RenderType RENDER_TYPE_OFF = MekanismRenderType.mekStandard(OVERLAY_OFF);
     private static final RenderType RENDER_TYPE_BASE = MekanismRenderType.mekStandard(BASE_OVERLAY);
 
-    private final RenderType RENDER_TYPE = func_228282_a_(CUBE_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(CUBE_TEXTURE);
 
     private final ModelRenderer[] leds1;
     private final ModelRenderer[] leds2;
@@ -427,7 +427,7 @@ public class ModelEnergyCube extends Model {
 
         private static final ResourceLocation CORE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
 
-        private final RenderType RENDER_TYPE = func_228282_a_(CORE_TEXTURE);
+        private final RenderType RENDER_TYPE = getRenderType(CORE_TEXTURE);
         private ModelRenderer cube;
 
         public ModelEnergyCore() {

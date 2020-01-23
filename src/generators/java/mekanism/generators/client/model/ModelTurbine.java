@@ -16,7 +16,7 @@ public class ModelTurbine extends Model {
     private static final ResourceLocation TURBINE_TEXTURE = MekanismGenerators.rl("render/turbine.png");
     private static float BLADE_ROTATE = 0.418879F;
 
-    private final RenderType RENDER_TYPE = func_228282_a_(TURBINE_TEXTURE);
+    private final RenderType RENDER_TYPE = getRenderType(TURBINE_TEXTURE);
 
     private final ModelRenderer rod;
     private final ModelRenderer extension_north;
@@ -71,7 +71,7 @@ public class ModelTurbine extends Model {
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, int index) {
         matrix.push();
-        matrix.rotate(Vector3f.field_229181_d_.func_229187_a_(index * 5));
+        matrix.rotate(Vector3f.YP.rotationDegrees(index * 5));
         float scale = index * 0.5F;
         float widthDiv = 16;
         IVertexBuilder vertexBuilder = renderer.getBuffer(RENDER_TYPE);

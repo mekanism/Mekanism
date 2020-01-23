@@ -406,7 +406,7 @@ public final class MekanismUtils {
         BlockState blockState = world.getBlockState(pos);
         //TODO: Fix this as it is not ideal to just pretend the block was previously air to force it to update
         // Maybe should use notifyUpdate
-        world.func_225319_b(pos, Blocks.AIR.getDefaultState(), blockState);
+        world.markBlockRangeForRenderUpdate(pos, Blocks.AIR.getDefaultState(), blockState);
         TileEntity tile = getTileEntity(world, pos);
         if (!(tile instanceof IActiveState) || ((IActiveState) tile).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
             //Update all light types at the position

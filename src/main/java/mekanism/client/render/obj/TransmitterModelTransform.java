@@ -14,31 +14,31 @@ public class TransmitterModelTransform implements IModelTransform {
 
     public TransmitterModelTransform(IModelTransform internal, Direction dir) {
         TransformationMatrix matrix = new TransformationMatrix(null, new Quaternion(vecForDirection(dir), 90, true), null, null);
-        this.matrix = internal.func_225615_b_().func_227985_a_(matrix);
+        this.matrix = internal.getRotation().compose(matrix);
         this.isUvLock = internal.isUvLock();
     }
 
     private static Vector3f vecForDirection(Direction dir) {
         switch (dir) {
             case EAST:
-                return Vector3f.field_229178_a_;
+                return Vector3f.XN;
             case WEST:
-                return Vector3f.field_229179_b_;
+                return Vector3f.XP;
             case UP:
-                return Vector3f.field_229180_c_;
+                return Vector3f.YN;
             case DOWN:
-                return Vector3f.field_229181_d_;
+                return Vector3f.YP;
             case SOUTH:
-                return Vector3f.field_229182_e_;
+                return Vector3f.ZN;
             case NORTH:
-                return Vector3f.field_229183_f_;
+                return Vector3f.ZP;
         }
         return new Vector3f(0, 0, 0);
     }
 
     @Nonnull
     @Override
-    public TransformationMatrix func_225615_b_() {
+    public TransformationMatrix getRotation() {
         return matrix;
     }
 

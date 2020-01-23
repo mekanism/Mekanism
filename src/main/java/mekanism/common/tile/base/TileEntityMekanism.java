@@ -332,7 +332,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                         SecurityUtils.displayNoAccess(player);
                         return WrenchResult.NO_SECURITY;
                     }
-                    if (player.func_225608_bj_()) {
+                    if (player.isShiftKeyDown()) {
                         MekanismUtils.dismantleBlock(state, getWorld(), pos, this);
                         return WrenchResult.DISMANTLED;
                     }
@@ -352,7 +352,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     public ActionResultType openGui(PlayerEntity player) {
         //Everything that calls this has isRemote being false but add the check just in case anyways
-        if (hasGui() && !isRemote() && !player.func_225608_bj_()) {
+        if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
                 return ActionResultType.FAIL;

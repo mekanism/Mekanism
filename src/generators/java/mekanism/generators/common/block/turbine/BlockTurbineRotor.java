@@ -85,7 +85,7 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
         }
         ItemStack stack = player.getHeldItem(hand);
         TileEntityTurbineRotor rod = (TileEntityTurbineRotor) tile;
-        if (!player.func_225608_bj_()) {
+        if (!player.isShiftKeyDown()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
                 if (rod.addBlade()) {
                     if (!player.isCreative()) {

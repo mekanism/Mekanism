@@ -49,11 +49,11 @@ public class LaserParticle extends SpriteTexturedParticle {
         float vMax = getMaxV();
         //TODO: Do we need to disable cull, we previously had it disabled, was that for purposes of rendering when underwater
         // if it even showed under water before or what
-        Quaternion quaternion = direction.func_229384_a_();
-        quaternion.multiply(Vector3f.field_229181_d_.func_229193_c_(RADIAN_45));
+        Quaternion quaternion = direction.getRotation();
+        quaternion.multiply(Vector3f.YP.rotation(RADIAN_45));
         drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ), uMin, uMax, vMin, vMax);
         Quaternion quaternion2 = new Quaternion(quaternion);
-        quaternion2.multiply(Vector3f.field_229181_d_.func_229193_c_(RADIAN_90));
+        quaternion2.multiply(Vector3f.YP.rotation(RADIAN_90));
         drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ), uMin, uMax, vMin, vMax);
     }
 
@@ -65,7 +65,7 @@ public class LaserParticle extends SpriteTexturedParticle {
               new Vector3f(particleScale, -halfLength, 0)
         };
         for (Vector3f vec : resultVector) {
-            vec.func_214905_a(quaternion);
+            vec.transform(quaternion);
             vec.add(newX, newY, newZ);
         }
         return resultVector;

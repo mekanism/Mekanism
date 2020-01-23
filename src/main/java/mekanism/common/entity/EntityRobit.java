@@ -369,7 +369,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public ActionResultType applyPlayerInteraction(PlayerEntity player, Vec3d vec, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
-        if (player.func_225608_bj_()) {
+        if (player.isShiftKeyDown()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 if (!world.isRemote) {
                     drop();
