@@ -209,6 +209,19 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nonnull
     @Override
     @Deprecated
+    public VoxelShape getRenderShape(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+        try {
+            return super.getRenderShape(state, world, pos);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //TODO: Try and see if this causes any errors https://github.com/mekanism/Mekanism/issues/5792
+            // ChunkRenderCache doesn't have safety checking if our main pos is out of the range of the cache
+            return VoxelShapes.empty();
+        }
+    }
+
+    @Nonnull
+    @Override
+    @Deprecated
     public IFluidState getFluidState(BlockState state) {
         return getFluid(state);
     }
