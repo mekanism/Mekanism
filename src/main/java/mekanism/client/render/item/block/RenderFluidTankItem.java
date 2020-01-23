@@ -71,6 +71,8 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         matrix.scale(0.9F, 0.8F, 0.9F);
         //Scale to to size of item
         matrix.scale(1.168F, 1.168F, 1.168F);
+        //Shift the fluid slightly so that is visible with the min amount in
+        matrix.translate(0, -0.06, 0);
         fluidTank.render(matrix, renderer, light, overlayLight, tier);
         matrix.pop();
     }

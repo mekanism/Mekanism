@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.render.item.block.RenderFluidTankItem;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.FluidItemWrapper;
 import mekanism.common.base.IFluidItemWrapper;
@@ -22,27 +22,34 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.IBucketPickupHandler;
+import net.minecraft.block.ILiquidContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.FlowingFluid;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -57,6 +64,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank> implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem,
@@ -89,9 +97,9 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         if (!fluidStack.isEmpty()) {
             int amount = fluidStack.getAmount();
             if (amount == Integer.MAX_VALUE) {
-                tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
-            } else {
                 tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
+            } else {
+                tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
             }
         } else {
             tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
@@ -133,68 +141,72 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         return super.onItemUse(context);
     }
 
-    public boolean tryPlaceContainedLiquid(World world, ItemStack stack, BlockPos pos) {
-        FluidStack fluidStack = getFluidStack(stack);
-        if (fluidStack.isEmpty() || !fluidStack.getFluid().getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
-            return false;
-        }
-        Material material = world.getBlockState(pos).getMaterial();
-        boolean flag = !material.isSolid();
-        if (!world.isAirBlock(pos) && !flag) {
-            return false;
-        }
-        if (world.getDimension().doesWaterVaporize() && fluidStack.getFluid() == Fluids.WATER) {
-            world.playSound(null, pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F,
-                  2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
-            for (int l = 0; l < 8; l++) {
-                world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(),
-                      pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);
-            }
-        } else {
-            if (!world.isRemote && flag && !material.isLiquid()) {
-                world.destroyBlock(pos, true);
-            }
-            world.setBlockState(pos, MekanismUtils.getFlowingBlockState(fluidStack));
-        }
-        return true;
-    }
-
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (getBucketMode(stack)) {
             if (SecurityUtils.canAccess(player, stack)) {
-                //TODO: Handle picking up and putting down, for now just setting it as source only but this is almost certainly wrong
-                RayTraceResult rayTraceResult = rayTrace(world, player, FluidMode.SOURCE_ONLY);
+                RayTraceResult rayTraceResult = rayTrace(world, player, !player.func_225608_bj_() ? FluidMode.SOURCE_ONLY : FluidMode.NONE);
                 //It can be null if there is nothing in range
-                if (rayTraceResult.getType() != Type.MISS && rayTraceResult instanceof BlockRayTraceResult) {
-                    BlockRayTraceResult pos = (BlockRayTraceResult) rayTraceResult;
-                    Coord4D coord = new Coord4D(pos.getPos(), world);
-                    if (!world.getDimension().canMineBlock(player, coord.getPos())) {
+                if (rayTraceResult.getType() == Type.BLOCK) {
+                    BlockRayTraceResult result = (BlockRayTraceResult) rayTraceResult;
+                    BlockPos pos = result.getPos();
+                    if (!world.isBlockModifiable(player, pos)) {
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
                     if (!player.func_225608_bj_()) {
-                        if (!player.canPlayerEdit(coord.getPos(), pos.getFace(), stack)) {
+                        if (!player.canPlayerEdit(pos, result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        //TODO: Use/check IBucketPickupHandler
-                        FluidStack fluid = MekanismUtils.getFluid(world, coord.getPos(), false);
-                        if (!fluid.isEmpty()) {
+                        IFluidState fluidState = world.getFluidState(pos);
+                        if (!fluidState.isEmpty() && fluidState.isSource()) {
+                            //Just in case someone does weird things and has a fluid state that is empty and a source
+                            // only allow collecting from non empty sources
+                            //TODO: Move some of this back into a util method in MekanismUtils?
+                            // This is semi similar to the code in TileEntityElectricPump
+                            Fluid fluid = fluidState.getFluid();
+                            FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                             FluidStack stored = getFluidStack(stack);
-                            if (stored.isEmpty() || getFluidStack(stack).isFluidEqual(fluid)) {
+                            int capacity = getCapacity(stack);
+                            //Note: we get the block state from the world and not the fluid state
+                            // so that we can get the proper block in case it is fluid logged
+                            BlockState blockState = world.getBlockState(pos);
+                            Block block = blockState.getBlock();
+                            if (block instanceof IFluidBlock) {
+                                fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);
+                                if (!validFluid(stored, fluidStack, capacity)) {
+                                    //If the fluid is not valid, pass on doing anything
+                                    return new ActionResult<>(ActionResultType.PASS, stack);
+                                }
+                                //Actually drain it
+                                fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
+                            } else if (block instanceof IBucketPickupHandler && validFluid(stored, fluidStack, capacity)) {
+                                //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
+                                // otherwise we assume the type from the fluid state is correct
+                                fluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
+                                //Update the fluid stack in case something somehow changed about the type
+                                // making sure that we replace to heavy water if we got heavy water
+                                fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
+                                if (!validFluid(stored, fluidStack, capacity)) {
+                                    Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
+                                          fluidState.getFluid(), pos, world, fluid);
+                                    return new ActionResult<>(ActionResultType.FAIL, stack);
+                                }
+                            }
+                            if (!fluidStack.isEmpty() && (stored.isEmpty() || stored.isFluidEqual(fluidStack))) {
                                 int needed = getCapacity(stack) - stored.getAmount();
-                                if (fluid.getAmount() > needed) {
+                                if (fluidStack.getAmount() > needed) {
                                     return new ActionResult<>(ActionResultType.FAIL, stack);
                                 }
                                 if (stored.isEmpty()) {
-                                    setFluidStack(fluid, stack);
+                                    setFluidStack(fluidStack, stack);
                                 } else {
                                     FluidStack newStack = getFluidStack(stack);
-                                    newStack.setAmount(newStack.getAmount() + fluid.getAmount());
+                                    newStack.setAmount(newStack.getAmount() + fluidStack.getAmount());
                                     setFluidStack(newStack, stack);
                                 }
-                                world.removeBlock(coord.getPos(), false);
+                                return new ActionResult<>(ActionResultType.SUCCESS, stack);
                             }
                         }
                     } else {
@@ -202,24 +214,78 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                         if (stored.getAmount() < FluidAttributes.BUCKET_VOLUME) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        Coord4D trans = coord.offset(pos.getFace());
-                        if (!player.canPlayerEdit(trans.getPos(), pos.getFace(), stack)) {
+                        if (!player.canPlayerEdit(pos.offset(result.getFace()), result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        if (tryPlaceContainedLiquid(world, stack, trans.getPos())
-                            && !player.isCreative()) {
-                            FluidStack newStack = stored.copy();
-                            newStack.setAmount(newStack.getAmount() - FluidAttributes.BUCKET_VOLUME);
-                            setFluidStack(newStack.getAmount() > 0 ? newStack : FluidStack.EMPTY, stack);
+                        FluidStack fluidStack = getFluidStack(stack);
+                        if (!fluidStack.isEmpty() && tryPlaceContainedLiquid(player, world, pos, fluidStack, result.getFace())) {
+                            if (!player.isCreative()) {
+                                FluidStack newStack = stored.copy();
+                                newStack.setAmount(newStack.getAmount() - FluidAttributes.BUCKET_VOLUME);
+                                setFluidStack(newStack.getAmount() > 0 ? newStack : FluidStack.EMPTY, stack);
+                            }
+                            return new ActionResult<>(ActionResultType.SUCCESS, stack);
                         }
                     }
                 }
-                return new ActionResult<>(ActionResultType.SUCCESS, stack);
             } else {
                 SecurityUtils.displayNoAccess(player);
             }
         }
         return new ActionResult<>(ActionResultType.PASS, stack);
+    }
+
+    private boolean tryPlaceContainedLiquid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
+        Fluid fluid = fluidStack.getFluid();
+        if (!fluid.getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
+            //If there is no fluid or it cannot be placed in the world just
+            return false;
+        }
+        BlockState state = world.getBlockState(pos);
+        boolean isReplaceable = state.func_227032_a_(fluid);
+        boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
+        if (world.isAirBlock(pos) || isReplaceable || canContainFluid) {
+            if (world.getDimension().doesWaterVaporize() && fluid.isIn(FluidTags.WATER)) {
+                world.playSound(player, pos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+                for (int l = 0; l < 8; l++) {
+                    world.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(), pos.getY() + Math.random(), pos.getZ() + Math.random(), 0, 0, 0);
+                }
+            } else if (canContainFluid) {
+                if (((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, ((FlowingFluid) fluid).getStillFluidState(false))) {
+                    playEmptySound(player, world, pos, fluidStack);
+                }
+            } else {
+                if (!world.isRemote && isReplaceable && !state.getMaterial().isLiquid()) {
+                    world.destroyBlock(pos, true);
+                }
+                playEmptySound(player, world, pos, fluidStack);
+                world.setBlockState(pos, fluid.getDefaultState().getBlockState(), 11);
+            }
+            return true;
+        } else {
+            return side != null && tryPlaceContainedLiquid(player, world, pos.offset(side), fluidStack, null);
+        }
+    }
+
+    private void playEmptySound(@Nullable PlayerEntity player, IWorld worldIn, BlockPos pos, @Nonnull FluidStack fluidStack) {
+        SoundEvent soundevent = fluidStack.getFluid().getAttributes().getEmptySound();
+        if (soundevent == null) {
+            soundevent = fluidStack.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY;
+        }
+        worldIn.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+    }
+
+    private boolean validFluid(@Nonnull FluidStack stored, @Nonnull FluidStack fluidStack, int capacity) {
+        if (!fluidStack.isEmpty() && (stored.isEmpty() || stored.isFluidEqual(fluidStack))) {
+            if (stored.isEmpty()) {
+                return true;
+            }
+            if (stored.isFluidEqual(fluidStack)) {
+                return stored.getAmount() + fluidStack.getAmount() <= capacity;
+            }
+            return false;
+        }
+        return false;
     }
 
     public void setBucketMode(ItemStack itemStack, boolean bucketMode) {

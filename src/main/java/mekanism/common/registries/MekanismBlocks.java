@@ -120,7 +120,7 @@ import mekanism.common.item.block.machine.ItemBlockRotaryCondensentrator;
 import mekanism.common.item.block.machine.ItemBlockSeismicVibrator;
 import mekanism.common.item.block.machine.ItemBlockSolarNeutronActivator;
 import mekanism.common.item.block.machine.ItemBlockTeleporter;
-import mekanism.common.item.block.machine.factory.ItemBlockFactory;
+import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.item.block.transmitter.ItemBlockDiversionTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockLogisticalTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockMechanicalPipe;

@@ -100,7 +100,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public double getReach(PlayerEntity player) {
-        return Minecraft.getInstance().playerController.getBlockReachDistance();
+        return Minecraft.getInstance().playerController == null ? 8 : Minecraft.getInstance().playerController.getBlockReachDistance();
     }
 
     @Override

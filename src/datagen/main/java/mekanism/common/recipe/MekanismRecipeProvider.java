@@ -24,7 +24,7 @@ import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
-import mekanism.common.item.block.machine.factory.ItemBlockFactory;
+import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.recipe.RecipePattern.TripleLine;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.registration.impl.BlockRegistryObject;

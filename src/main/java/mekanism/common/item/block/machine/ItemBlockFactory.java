@@ -1,4 +1,4 @@
-package mekanism.common.item.block.machine.factory;
+package mekanism.common.item.block.machine;
 
 import java.util.List;
 import java.util.Map;

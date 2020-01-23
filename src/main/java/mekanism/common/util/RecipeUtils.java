@@ -3,7 +3,7 @@ package mekanism.common.util;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.common.base.IFactory;
 import mekanism.common.base.IFactory.RecipeType;
-import mekanism.common.item.block.machine.factory.ItemBlockFactory;
+import mekanism.common.item.block.machine.ItemBlockFactory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
