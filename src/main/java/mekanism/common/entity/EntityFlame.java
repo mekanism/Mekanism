@@ -1,15 +1,19 @@
 package mekanism.common.entity;
 
+import java.util.Collections;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.Pos3D;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.registries.MekanismEntityTypes;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.TNTBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
@@ -24,8 +28,16 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceContext.BlockMode;
+import net.minecraft.util.math.RayTraceContext.FluidMode;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.WorldEvents;
@@ -95,84 +107,78 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
     }
 
     private void calculateVector() {
-        //TODO: Reimplement this
-        /*Vec3d localVec = new Vec3d(posX, posY, posZ);
+        Vec3d localVec = new Vec3d(getPosX(), getPosY(), getPosZ());
         Vec3d motion = getMotion();
-        Vec3d motionVec = new Vec3d(posX + motion.getX() * 2, posY + motion.getY() * 2, posZ + motion.getZ() * 2);
-        BlockRayTraceResult mop = world.rayTraceBlocks(localVec, motionVec, true, false, false);
-        localVec = new Vec3d(posX, posY, posZ);
-        motionVec = new Vec3d(posX + motion.getX(), posY + motion.getY(), posZ + motion.getZ());
-        if (mop != null) {
-            motionVec = mop.getHitVec();
+        Vec3d motionVec = new Vec3d(getPosX() + motion.getX() * 2, getPosY() + motion.getY() * 2, getPosZ() + motion.getZ() * 2);
+        BlockRayTraceResult blockRayTrace = world.rayTraceBlocks(new RayTraceContext(localVec, motionVec, BlockMode.COLLIDER, FluidMode.ANY, this));
+        localVec = new Vec3d(getPosX(), getPosY(), getPosZ());
+        motionVec = new Vec3d(getPosX() + motion.getX(), getPosY() + motion.getY(), getPosZ() + motion.getZ());
+        if (blockRayTrace.getType() != Type.MISS) {
+            motionVec = blockRayTrace.getHitVec();
         }
-
         Entity entity = null;
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(getMotion()).grow(1.0D, 1.0D, 1.0D));
         double entityDist = 0.0D;
-
-        for (Entity entity1 : list) {
-            if ((entity1 instanceof ItemEntity || entity1.canBeCollidedWith()) && entity1 != owner) {
+        for (Entity foundEntity : world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(getMotion()).grow(1.0D, 1.0D, 1.0D))) {
+            if ((foundEntity instanceof ItemEntity || foundEntity.canBeCollidedWith()) && foundEntity != owner) {
                 float boundsScale = 0.3F;
-                AxisAlignedBB newBounds = entity1.getBoundingBox().expand(boundsScale, boundsScale, boundsScale);
+                AxisAlignedBB newBounds = foundEntity.getBoundingBox().expand(boundsScale, boundsScale, boundsScale);
                 //TODO: Verify this is correct
                 BlockRayTraceResult result = AxisAlignedBB.rayTrace(Collections.singleton(newBounds), localVec, motionVec, getPosition());
-
-                if (result != null) {
+                if (result != null && result.getType() != Type.MISS) {
                     double dist = localVec.distanceTo(result.getHitVec());
                     if (dist < entityDist || entityDist == 0) {
-                        entity = entity1;
+                        entity = foundEntity;
                         entityDist = dist;
                     }
                 }
             }
         }
-
         if (entity != null) {
-            mop = new RayTraceResult(entity);
-        }
-
-        if (mop != null && mop.entityHit instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) mop.entityHit;
-            if (player.capabilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
-                mop = null;
+            if (entity instanceof PlayerEntity) {
+                PlayerEntity player = (PlayerEntity) entity.getEntity();
+                if (player.abilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
+                    return;
+                }
             }
-        }
-
-        if (mop != null) {
-            if (mop instanceof EntityRayTraceResult) {
-                EntityRayTraceResult entityResult = (EntityRayTraceResult) mop;
-                if (entityResult.getEntity() != null && !entityResult.getEntity().isImmuneToFire()) {
-                    if (entityResult.getEntity() instanceof ItemEntity && mode != ItemFlamethrower.FlamethrowerMode.COMBAT) {
-                        if (entityResult.getEntity().ticksExisted > 100) {
-                            if (!smeltItem((ItemEntity) entityResult.getEntity())) {
-                                burn(entityResult.getEntity());
-                            }
-                        }
-                    } else {
-                        burn(entityResult.getEntity());
+            if (!entity.getEntity().isImmuneToFire()) {
+                if (entity.getEntity() instanceof ItemEntity && mode != ItemFlamethrower.FlamethrowerMode.COMBAT) {
+                    if (entity.getEntity().ticksExisted > 100 && !smeltItem((ItemEntity) entity.getEntity())) {
+                        burn(entity.getEntity());
                     }
-                }
-            } else if (mop instanceof BlockRayTraceResult) {
-                BlockRayTraceResult blockResult = mop;
-                boolean fluid = MekanismUtils.isFluid(world, new Coord4D(blockResult, world)) || MekanismUtils.isDeadFluid(world, new Coord4D(blockResult, world));
-
-                Coord4D sideCoord = new Coord4D(blockResult.getPos().offset(blockResult.getFace()), world);
-
-                if (MekanismConfig.general.aestheticWorldDamage.get() && !fluid && MekanismUtils.isValidReplaceableBlock(world, sideCoord.getPos())) {
-                    if (mode != ItemFlamethrower.FlamethrowerMode.COMBAT && !smeltBlock(new Coord4D(blockResult, world))) {
-                        if (mode == ItemFlamethrower.FlamethrowerMode.INFERNO && !world.isRemote) {
-                            world.setBlockState(sideCoord.getPos(), Blocks.FIRE.getDefaultState());
-                        }
-                    }
-                }
-
-                if (fluid) {
-                    spawnParticlesAt(new Pos3D(this));
-                    playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
+                } else {
+                    burn(entity.getEntity());
                 }
             }
             remove();
-        }*/
+        } else if (blockRayTrace.getType() != Type.MISS) {
+            BlockPos hitPos = blockRayTrace.getPos();
+            Direction hitSide = blockRayTrace.getFace();
+            boolean fluid = MekanismUtils.isFluid(world, hitPos) || MekanismUtils.isDeadFluid(world, hitPos);
+            if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !fluid) {
+                if (mode != FlamethrowerMode.COMBAT && !smeltBlock(hitPos)) {
+                    BlockState hitState = world.getBlockState(hitPos);
+                    if (hitState.isFlammable(world, hitPos, hitSide)) {
+                        //Attempt to light the block on fire if it is flammable
+                        PlayerEntity shooter = owner instanceof PlayerEntity ? (PlayerEntity) owner : null;
+                        hitState.catchFire(world, hitPos, hitSide, shooter);
+                        if (hitState.getBlock() instanceof TNTBlock) {
+                            world.removeBlock(hitPos, false);
+                        }
+                    } else {
+                        BlockPos sidePos = hitPos.offset(hitSide);
+                        if (mode == FlamethrowerMode.INFERNO && MekanismUtils.isValidReplaceableBlock(world, sidePos)) {
+                            //Otherwise light a fire next to the block
+                            world.setBlockState(sidePos, Blocks.FIRE.getDefaultState());
+                        }
+                    }
+                }
+            }
+            if (fluid) {
+                spawnParticlesAt(getPosition());
+                playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
+            }
+            remove();
+        }
     }
 
     private boolean smeltItem(ItemEntity item) {
@@ -181,18 +187,18 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
             ItemStack result = recipe.get().getRecipeOutput();
             item.setItem(StackUtils.size(result, item.getItem().getCount()));
             item.ticksExisted = 0;
-            spawnParticlesAt(new Pos3D(item));
+            spawnParticlesAt(item.getPosition());
             playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, 1.0F, 1.0F);
             return true;
         }
         return false;
     }
 
-    private boolean smeltBlock(Coord4D block) {
-        if (world.isAirBlock(block.getPos())) {
+    private boolean smeltBlock(BlockPos blockPos) {
+        if (world.isAirBlock(blockPos)) {
             return false;
         }
-        ItemStack stack = new ItemStack(world.getBlockState(block.getPos()).getBlock());
+        ItemStack stack = new ItemStack(world.getBlockState(blockPos).getBlock());
         if (stack.isEmpty()) {
             return false;
         }
@@ -204,20 +210,19 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         }
         if (recipe.isPresent()) {
             if (!world.isRemote) {
-                BlockState state = world.getBlockState(block.getPos());
+                BlockState state = world.getBlockState(blockPos);
                 ItemStack result = recipe.get().getRecipeOutput();
                 if (result.getItem() instanceof BlockItem) {
-                    world.setBlockState(block.getPos(), Block.getBlockFromItem(result.getItem().getItem()).getDefaultState());
+                    world.setBlockState(blockPos, Block.getBlockFromItem(result.getItem().getItem()).getDefaultState());
                 } else {
-                    world.removeBlock(block.getPos(), false);
-                    ItemEntity item = new ItemEntity(world, block.x + 0.5, block.y + 0.5, block.z + 0.5, result.copy());
+                    world.removeBlock(blockPos, false);
+                    ItemEntity item = new ItemEntity(world, blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());
                     item.setMotion(0, 0, 0);
                     world.addEntity(item);
                 }
-
-                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, block.getPos(), Block.getStateId(state));
+                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockPos, Block.getStateId(state));
             }
-            spawnParticlesAt(new Pos3D(block).translate(0.5, 0.5, 0.5));
+            spawnParticlesAt(blockPos.add(0.5, 0.5, 0.5));
             return true;
         }
         return false;
@@ -235,10 +240,10 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         return DamageSource.causeThrownDamage(this, owner);
     }
 
-    private void spawnParticlesAt(Pos3D pos) {
+    private void spawnParticlesAt(BlockPos pos) {
         for (int i = 0; i < 10; i++) {
-            world.addParticle(ParticleTypes.SMOKE, pos.x + (rand.nextFloat() - 0.5), pos.y + (rand.nextFloat() - 0.5),
-                  pos.z + (rand.nextFloat() - 0.5), 0, 0, 0);
+            world.addParticle(ParticleTypes.SMOKE, pos.getX() + (rand.nextFloat() - 0.5), pos.getY() + (rand.nextFloat() - 0.5),
+                  pos.getZ() + (rand.nextFloat() - 0.5), 0, 0, 0);
         }
     }
 

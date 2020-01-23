@@ -19,6 +19,7 @@ import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +29,7 @@ import net.minecraft.particles.BasicParticleType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -52,19 +54,17 @@ public class RenderTickHandler {
 
                 PlayerEntity player = minecraft.player;
                 World world = minecraft.player.world;
-                //TODO: Fix block player is hovering
-                BlockRayTraceResult pos = null;//player.rayTrace(40.0D, 1.0F);
-                if (pos != null) {
+                BlockRayTraceResult pos = MekanismUtils.rayTrace(player);
+                if (pos.getType() != Type.MISS) {
                     BlockPos blockPos = pos.getPos();
-                    if (world.isBlockLoaded(blockPos)) {
+                    if (MekanismUtils.isBlockLoaded(world, blockPos)) {
                         Block block = world.getBlockState(blockPos).getBlock();
-                        if (block != null && MekanismAPI.debug && minecraft.currentScreen == null && !minecraft.gameSettings.showDebugInfo) {
+                        if (block != Blocks.AIR && MekanismAPI.debug && minecraft.currentScreen == null && !minecraft.gameSettings.showDebugInfo) {
                             String tileDisplay = "";
                             TileEntity tile = MekanismUtils.getTileEntity(world, blockPos);
                             if (tile != null && tile.getClass() != null) {
                                 tileDisplay = tile.getClass().getSimpleName();
                             }
-
                             font.drawStringWithShadow("Block: " + block.getTranslationKey(), 1, 1, 0x404040);
                             font.drawStringWithShadow("Metadata: " + world.getBlockState(blockPos), 1, 10, 0x404040);
                             font.drawStringWithShadow("Location: " + MekanismUtils.getCoordDisplay(blockPos), 1, 19, 0x404040);
@@ -191,7 +191,6 @@ public class RenderTickHandler {
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).rotateYaw(p.renderYawOffset);
                                 }
                                 Pos3D mergedVec = playerPos.translate(flameVec);
-                                //TODO: The particle is a bit offset
                                 world.addParticle((BasicParticleType) MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
                                       mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
                             }
