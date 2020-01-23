@@ -185,7 +185,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
             energySlot.discharge(this);
 
-            if (MekanismUtils.canFunction(this) && running && getEnergy() >= getEnergyPerTick() && searcher.state == State.FINISHED && oresToMine.size() > 0) {
+            if (MekanismUtils.canFunction(this) && running && getEnergy() >= getEnergyPerTick() && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
                 setActive(true);
                 if (delay > 0) {
                     delay--;
@@ -467,7 +467,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         }
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingCoord().getPos();
-            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(radius, maxY - minY, radius)), getWorld().getDimension().getType());
+            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(getDiameter(), maxY - minY + 1, getDiameter())), getWorld().getDimension().getType());
             searcher.start();
         }
         running = true;
