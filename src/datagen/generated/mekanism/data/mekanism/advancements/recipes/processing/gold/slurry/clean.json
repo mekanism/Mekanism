@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/gold/slurry/clean"
+    ]
+  },
+  "criteria": {
+    "has_chemical_washer": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:chemical_washer"
+          }
+        ]
+      }
+    },
+    "has_gold_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ores/gold"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:processing/gold/slurry/clean"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chemical_washer",
+      "has_gold_ore",
+      "has_the_recipe"
+    ]
+  ]
+}

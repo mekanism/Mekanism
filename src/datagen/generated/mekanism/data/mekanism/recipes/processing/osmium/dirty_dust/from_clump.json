@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "tag": "mekanism:clumps/osmium"
+    }
+  },
+  "output": {
+    "item": "mekanism:dirty_dust_osmium"
+  }
+}

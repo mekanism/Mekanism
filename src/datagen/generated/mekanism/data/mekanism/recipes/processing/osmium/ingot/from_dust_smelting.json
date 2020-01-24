@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "tag": "forge:dusts/osmium"
+  },
+  "result": "mekanism:ingot_osmium",
+  "experience": 0.5,
+  "cookingtime": 200
+}

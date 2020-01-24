@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:storage_blocks/tin"
+    }
+  ],
+  "result": {
+    "item": "mekanism:ingot_tin",
+    "count": 9
+  }
+}

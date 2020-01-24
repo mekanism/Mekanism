@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crystallizing",
+  "input": {
+    "amount": 200,
+    "gas": "mekanism:clean_tin_slurry"
+  },
+  "output": {
+    "item": "mekanism:crystal_tin"
+  }
+}

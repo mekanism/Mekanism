@@ -38,9 +38,11 @@ public class Criterion {
     public static final RecipeCriterion HAS_METALLURGIC_INFUSER = has(MekanismBlocks.METALLURGIC_INFUSER);
     public static final RecipeCriterion HAS_SOLAR_NEUTRON_ACTIVATOR = has(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
     public static final RecipeCriterion HAS_CHEMICAL_CRYSTALLIZER = has(MekanismBlocks.CHEMICAL_CRYSTALLIZER);
+    public static final RecipeCriterion HAS_CHEMICAL_DISSOLUTION_CHAMBER = has(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER);
     public static final RecipeCriterion HAS_CHEMICAL_INFUSER = has(MekanismBlocks.CHEMICAL_INFUSER);
     public static final RecipeCriterion HAS_CHEMICAL_INJECTION_CHAMBER = has(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
     public static final RecipeCriterion HAS_CHEMICAL_OXIDIZER = has(MekanismBlocks.CHEMICAL_OXIDIZER);
+    public static final RecipeCriterion HAS_CHEMICAL_WASHER = has(MekanismBlocks.CHEMICAL_WASHER);
     public static final RecipeCriterion HAS_COMBINER = has(MekanismBlocks.COMBINER);
     public static final RecipeCriterion HAS_CRUSHER = has(MekanismBlocks.CRUSHER);
     public static final RecipeCriterion HAS_ELECTROLYTIC_SEPARATOR = has(MekanismBlocks.ELECTROLYTIC_SEPARATOR);

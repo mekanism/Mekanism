@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/gold/ingot/from_dust_blasting"
+    ]
+  },
+  "criteria": {
+    "has_gold_ore": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ores/gold"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:processing/gold/ingot/from_dust_blasting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_gold_ore",
+      "has_the_recipe"
+    ]
+  ]
+}

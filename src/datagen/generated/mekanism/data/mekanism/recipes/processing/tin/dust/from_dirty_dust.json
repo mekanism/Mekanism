@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "tag": "mekanism:dirty_dusts/tin"
+    }
+  },
+  "output": {
+    "item": "mekanism:dust_tin"
+  }
+}

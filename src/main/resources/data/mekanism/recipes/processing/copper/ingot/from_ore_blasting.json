@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:blasting",
-  "ingredient": {
-    "item": "mekanism:copper_ore"
-  },
-  "result": "mekanism:ingot_copper",
-  "experience": 1.0,
-  "cookingtime": 100
-}
