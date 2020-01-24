@@ -636,6 +636,12 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new ItemStack(Items.GUNPOWDER)
         ).addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
               .build(consumer, Mekanism.rl(basePath + "sulfur_to_gunpowder"));
+        //Obsidian -> obsidian dust
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Tags.Items.OBSIDIAN),
+              MekanismItems.OBSIDIAN_DUST.getItemStack(4)
+        ).addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
+              .build(consumer, Mekanism.rl(basePath + "obsidian_to_obsidian_dust"));
     }
 
     private void addEnrichingDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
