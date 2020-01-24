@@ -231,9 +231,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
-        if (upgrade != Upgrade.SPEED) {
-            //NO-OP speed upgrade as it is used for batch speed upgrades, and should not be changing the total amount produced
-            super.recalculateUpgrades(upgrade);
+        //Don't call super as we no-op speed upgrades as it is used for batch speed upgrades, and should not be changing the total amount produced
+        // and only increase the max energy storage for the separator not also decrease energy per tick
+        if (upgrade == Upgrade.ENERGY) {
+            setMaxEnergy(MekanismUtils.getMaxEnergy(this, getBaseStorage()));
+            setEnergy(Math.min(getMaxEnergy(), getEnergy()));
         }
     }
 
