@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:oak_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:oak_planks",
+    "count": 3
+  }
+}

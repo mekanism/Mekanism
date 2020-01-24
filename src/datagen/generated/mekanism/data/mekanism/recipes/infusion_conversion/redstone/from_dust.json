@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "output": {
+    "infuse_type": "mekanism:redstone",
+    "amount": 10
+  }
+}

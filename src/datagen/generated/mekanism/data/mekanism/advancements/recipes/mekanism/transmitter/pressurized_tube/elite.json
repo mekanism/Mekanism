@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:transmitter/pressurized_tube/elite"
+    ]
+  },
+  "criteria": {
+    "has_advanced_pressurized_tube": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:advanced_pressurized_tube"
+          }
+        ]
+      }
+    },
+    "has_reinforced_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/reinforced"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:transmitter/pressurized_tube/elite"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_advanced_pressurized_tube",
+      "has_reinforced_alloy",
+      "has_the_recipe"
+    ]
+  ]
+}

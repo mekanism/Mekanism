@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "amount": 4,
+    "ingredient": {
+      "item": "minecraft:torch"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:stick"
+  },
+  "secondaryOutput": {
+    "item": "minecraft:coal"
+  },
+  "secondaryChance": 1.0
+}

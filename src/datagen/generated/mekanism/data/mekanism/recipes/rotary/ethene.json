@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "amount": 1,
+    "tag": "forge:ethene"
+  },
+  "gasOutput": {
+    "gas": "mekanism:ethene",
+    "amount": 1
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:ethene"
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:ethene",
+    "amount": 1
+  }
+}

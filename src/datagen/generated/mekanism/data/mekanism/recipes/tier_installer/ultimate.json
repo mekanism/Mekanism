@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACA",
+    "IPI",
+    "ACA"
+  ],
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "C": {
+      "tag": "forge:circuits/ultimate"
+    },
+    "I": {
+      "tag": "forge:gems/diamond"
+    },
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    }
+  },
+  "result": {
+    "item": "mekanism:ultimate_tier_installer"
+  }
+}

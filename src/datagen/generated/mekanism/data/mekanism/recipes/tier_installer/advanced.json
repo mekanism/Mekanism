@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACA",
+    "IPI",
+    "ACA"
+  ],
+  "key": {
+    "P": {
+      "tag": "minecraft:planks"
+    },
+    "C": {
+      "tag": "forge:circuits/advanced"
+    },
+    "I": {
+      "tag": "forge:ingots/osmium"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    }
+  },
+  "result": {
+    "item": "mekanism:advanced_tier_installer"
+  }
+}

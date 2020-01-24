@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EPE",
+    "P#P",
+    "EPE"
+  ],
+  "key": {
+    "P": {
+      "item": "mekanism:basic_induction_cell"
+    },
+    "#": {
+      "item": "mekanism:advanced_energy_cube"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    }
+  },
+  "result": {
+    "item": "mekanism:advanced_induction_cell"
+  }
+}

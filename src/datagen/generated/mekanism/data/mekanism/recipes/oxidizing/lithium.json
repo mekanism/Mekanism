@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:oxidizing",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/lithium"
+    }
+  },
+  "output": {
+    "gas": "mekanism:lithium",
+    "amount": 100
+  }
+}

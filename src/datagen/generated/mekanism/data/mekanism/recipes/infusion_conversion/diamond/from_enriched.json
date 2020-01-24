@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "tag": "mekanism:enriched/diamond"
+    }
+  },
+  "output": {
+    "infuse_type": "mekanism:diamond",
+    "amount": 80
+  }
+}

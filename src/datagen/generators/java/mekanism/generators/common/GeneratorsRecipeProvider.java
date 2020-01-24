@@ -28,7 +28,6 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
 
     private static final char GLASS_CHAR = 'G';
     private static final char IRON_BARS_CHAR = 'B';
-    private static final char BUCKET_CHAR = 'B';
     private static final char BIO_FUEL_CHAR = 'B';
     private static final char FRAME_CHAR = 'F';
     private static final char ELECTROLYTIC_CORE_CHAR = 'C';
@@ -248,11 +247,11 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.SATURATING_CONDENSER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
-                    TripleLine.of(Pattern.INGOT, BUCKET_CHAR, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.BUCKET, Pattern.INGOT),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL))
               ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_TIN)
-              .key(BUCKET_CHAR, Items.BUCKET)
+              .key(Pattern.BUCKET, Items.BUCKET)
               .addCriterion(Criterion.HAS_STEEL)
               .addCriterion(Criterion.HAS_TIN)
               .build(consumer);

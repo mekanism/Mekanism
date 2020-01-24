@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:metallurgic_infusing/alloy/atomic"
+    ]
+  },
+  "criteria": {
+    "has_metallurgic_infuser": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:metallurgic_infuser"
+          }
+        ]
+      }
+    },
+    "has_reinforced_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/reinforced"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:metallurgic_infusing/alloy/atomic"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_metallurgic_infuser",
+      "has_reinforced_alloy",
+      "has_the_recipe"
+    ]
+  ]
+}

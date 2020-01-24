@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:storage_blocks/charcoal"
+    ]
+  },
+  "criteria": {
+    "has_charcoal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:charcoal"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:storage_blocks/charcoal"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_charcoal",
+      "has_the_recipe"
+    ]
+  ]
+}

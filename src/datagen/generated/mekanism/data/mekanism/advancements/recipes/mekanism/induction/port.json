@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:induction/port"
+    ]
+  },
+  "criteria": {
+    "has_elite_circuit": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:circuits/elite"
+          }
+        ]
+      }
+    },
+    "has_induction_casing": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:induction_casing"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:induction/port"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_elite_circuit",
+      "has_induction_casing",
+      "has_the_recipe"
+    ]
+  ]
+}

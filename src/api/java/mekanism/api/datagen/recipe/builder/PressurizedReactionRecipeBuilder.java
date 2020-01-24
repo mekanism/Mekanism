@@ -64,7 +64,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputGas, duration, outputItem, outputGas);
     }
 
-    public PressurizedReactionRecipeBuilder energyUsage(double energyRequired) {
+    public PressurizedReactionRecipeBuilder energyRequired(double energyRequired) {
         if (energyRequired < 0) {
             throw new IllegalArgumentException("Required energy must be at least zero");
         }

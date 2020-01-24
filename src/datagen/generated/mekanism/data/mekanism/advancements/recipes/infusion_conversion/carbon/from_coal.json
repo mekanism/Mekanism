@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:infusion_conversion/carbon/from_coal"
+    ]
+  },
+  "criteria": {
+    "has_coal_dust": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/coal"
+          }
+        ]
+      }
+    },
+    "has_coal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:coal"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:infusion_conversion/carbon/from_coal"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_coal_dust",
+      "has_coal",
+      "has_the_recipe"
+    ]
+  ]
+}

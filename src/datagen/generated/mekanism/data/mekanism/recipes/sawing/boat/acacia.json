@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:acacia_boat"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:acacia_planks",
+    "count": 5
+  }
+}

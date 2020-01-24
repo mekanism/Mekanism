@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:gas_tank/basic"
+    ]
+  },
+  "criteria": {
+    "has_basic_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/basic"
+          }
+        ]
+      }
+    },
+    "has_osmium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/osmium"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:gas_tank/basic"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_basic_alloy",
+      "has_osmium",
+      "has_the_recipe"
+    ]
+  ]
+}

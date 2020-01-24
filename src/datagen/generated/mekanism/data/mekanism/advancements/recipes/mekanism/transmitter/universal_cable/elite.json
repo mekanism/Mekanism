@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:transmitter/universal_cable/elite"
+    ]
+  },
+  "criteria": {
+    "has_advanced_universal_cable": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:advanced_universal_cable"
+          }
+        ]
+      }
+    },
+    "has_reinforced_alloy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "mekanism:alloys/reinforced"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:transmitter/universal_cable/elite"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_advanced_universal_cable",
+      "has_reinforced_alloy",
+      "has_the_recipe"
+    ]
+  ]
+}

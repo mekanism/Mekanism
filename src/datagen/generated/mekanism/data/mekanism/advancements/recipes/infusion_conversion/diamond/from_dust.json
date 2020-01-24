@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:infusion_conversion/diamond/from_dust"
+    ]
+  },
+  "criteria": {
+    "has_diamond_dust": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/diamond"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:infusion_conversion/diamond/from_dust"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_diamond_dust",
+      "has_the_recipe"
+    ]
+  ]
+}

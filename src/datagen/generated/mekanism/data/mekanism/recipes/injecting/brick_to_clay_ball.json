@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:ingots/brick"
+    }
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:steam"
+  },
+  "output": {
+    "item": "minecraft:clay_ball"
+  }
+}

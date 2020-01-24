@@ -1,15 +1,18 @@
 package mekanism.common.recipe.builder;
 
+import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.common.recipe.RecipePattern;
 import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -71,5 +74,17 @@ public class ExtendedShapedRecipeBuilder extends ShapedRecipeBuilder {
     public ExtendedShapedRecipeBuilder setGroup(String group) {
         super.setGroup(group);
         return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated Deprecating this method to make it easier to see when it is accidentally called, as it is probably an accident and was an attempt to call {@link
+     * #build(Consumer, ResourceLocation)}
+     */
+    @Override
+    @Deprecated
+    public void build(Consumer<IFinishedRecipe> consumer, String save) {
+        super.build(consumer, save);
     }
 }

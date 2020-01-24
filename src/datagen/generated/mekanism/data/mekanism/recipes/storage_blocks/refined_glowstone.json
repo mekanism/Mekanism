@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:ingots/refined_glowstone"
+    }
+  },
+  "result": {
+    "item": "mekanism:block_refined_glowstone"
+  }
+}

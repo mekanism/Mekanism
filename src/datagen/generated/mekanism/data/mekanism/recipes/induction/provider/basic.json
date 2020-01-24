@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LCL",
+    "C#C",
+    "LCL"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "L": {
+      "tag": "forge:dusts/lithium"
+    },
+    "#": {
+      "item": "mekanism:basic_energy_cube"
+    }
+  },
+  "result": {
+    "item": "mekanism:basic_induction_provider"
+  }
+}

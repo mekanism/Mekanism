@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "fluidInput": {
+    "amount": 1,
+    "tag": "forge:sulfur_trioxide"
+  },
+  "gasOutput": {
+    "gas": "mekanism:sulfur_trioxide",
+    "amount": 1
+  },
+  "gasInput": {
+    "amount": 1,
+    "gas": "mekanism:sulfur_trioxide"
+  },
+  "fluidOutput": {
+    "fluid": "mekanism:sulfur_trioxide",
+    "amount": 1
+  }
+}

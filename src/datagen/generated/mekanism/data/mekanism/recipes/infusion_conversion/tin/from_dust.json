@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/tin"
+    }
+  },
+  "output": {
+    "infuse_type": "mekanism:tin",
+    "amount": 10
+  }
+}

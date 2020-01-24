@@ -33,6 +33,16 @@ public class ItemTierInstaller extends Item {
         this.toTier = toTier;
     }
 
+    @Nullable
+    public BaseTier getFromTier() {
+        return fromTier;
+    }
+
+    @Nonnull
+    public BaseTier getToTier() {
+        return toTier;
+    }
+
     @Nonnull
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {

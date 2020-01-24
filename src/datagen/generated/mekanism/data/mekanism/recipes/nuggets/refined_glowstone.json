@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:ingots/refined_glowstone"
+    }
+  ],
+  "result": {
+    "item": "mekanism:nugget_refined_glowstone",
+    "count": 9
+  }
+}

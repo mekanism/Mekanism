@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:separating",
+  "input": {
+    "amount": 10,
+    "tag": "forge:brine"
+  },
+  "energyUsage": 400.0,
+  "leftGasOutput": {
+    "gas": "mekanism:sodium",
+    "amount": 1
+  },
+  "rightGasOutput": {
+    "gas": "mekanism:chlorine",
+    "amount": 1
+  }
+}

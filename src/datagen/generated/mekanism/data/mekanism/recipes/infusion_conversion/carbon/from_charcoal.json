@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:infusion_conversion",
+  "input": [
+    {
+      "ingredient": {
+        "item": "minecraft:charcoal"
+      }
+    },
+    {
+      "ingredient": {
+        "tag": "forge:dusts/charcoal"
+      }
+    }
+  ],
+  "output": {
+    "infuse_type": "mekanism:carbon",
+    "amount": 20
+  }
+}

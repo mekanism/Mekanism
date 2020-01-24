@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:induction/cell/ultimate"
+    ]
+  },
+  "criteria": {
+    "has_elite_induction_cell": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:elite_induction_cell"
+          }
+        ]
+      }
+    },
+    "has_ultimate_energy_cube": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:ultimate_energy_cube"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:induction/cell/ultimate"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_elite_induction_cell",
+      "has_ultimate_energy_cube",
+      "has_the_recipe"
+    ]
+  ]
+}

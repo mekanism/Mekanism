@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:reaction/wood_gasification/logs"
+    ]
+  },
+  "criteria": {
+    "has_pressurized_reaction_chamber": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:pressurized_reaction_chamber"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:reaction/wood_gasification/logs"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_pressurized_reaction_chamber",
+      "has_the_recipe"
+    ]
+  ]
+}

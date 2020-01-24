@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:nuggets/tin"
+    ]
+  },
+  "criteria": {
+    "has_tin": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/tin"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:nuggets/tin"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_tin",
+      "has_the_recipe"
+    ]
+  ]
+}

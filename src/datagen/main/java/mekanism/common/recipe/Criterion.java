@@ -39,9 +39,16 @@ public class Criterion {
     public static final RecipeCriterion HAS_SOLAR_NEUTRON_ACTIVATOR = has(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
     public static final RecipeCriterion HAS_CHEMICAL_CRYSTALLIZER = has(MekanismBlocks.CHEMICAL_CRYSTALLIZER);
     public static final RecipeCriterion HAS_CHEMICAL_INFUSER = has(MekanismBlocks.CHEMICAL_INFUSER);
+    public static final RecipeCriterion HAS_CHEMICAL_INJECTION_CHAMBER = has(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
+    public static final RecipeCriterion HAS_CHEMICAL_OXIDIZER = has(MekanismBlocks.CHEMICAL_OXIDIZER);
     public static final RecipeCriterion HAS_COMBINER = has(MekanismBlocks.COMBINER);
     public static final RecipeCriterion HAS_CRUSHER = has(MekanismBlocks.CRUSHER);
+    public static final RecipeCriterion HAS_ELECTROLYTIC_SEPARATOR = has(MekanismBlocks.ELECTROLYTIC_SEPARATOR);
     public static final RecipeCriterion HAS_ENRICHMENT_CHAMBER = has(MekanismBlocks.ENRICHMENT_CHAMBER);
+    public static final RecipeCriterion HAS_PRECISION_SAWMILL = has(MekanismBlocks.PRECISION_SAWMILL);
+    public static final RecipeCriterion HAS_PRESSURIZED_REACTION_CHAMBER = has(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
+    public static final RecipeCriterion HAS_PURIFICATION_CHAMBER = has(MekanismBlocks.PURIFICATION_CHAMBER);
+    public static final RecipeCriterion HAS_ROTARY_CONDENSENTRATOR = has(MekanismBlocks.ROTARY_CONDENSENTRATOR);
     public static final RecipeCriterion HAS_THERMAL_EVAPORATION_CONTROLLER = has(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
 
     private static InventoryChangeTrigger.Instance hasItem(net.minecraft.util.IItemProvider itemIn) {

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "S#S"
+  ],
+  "key": {
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "#": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "result": {
+    "item": "mekanism:basic_universal_cable"
+  }
+}

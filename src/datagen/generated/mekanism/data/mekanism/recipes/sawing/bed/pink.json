@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:pink_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:oak_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:pink_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}
