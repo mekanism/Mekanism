@@ -26,7 +26,7 @@ item.TeleportationCore.name=テレポーテーションコア
 item.Configurator.name=コンフィギュレーター
 item.NetworkReader.name=ネットワークリーダー
 item.Jetpack.name=ジェットパック
-item.ScubaTank.name=潜水タンク
+item.ScubaTank.name=スキューバタンク
 item.GasMask.name=ガスマスク
 item.Dictionary.name=鉱石辞書
 item.ElectrolyticCore.name=電解コア
@@ -102,24 +102,24 @@ tile.BasicBlock.ThermalEvaporationValve.name=加温蒸発濃縮バルブ
 
 # Basic Block 2 (second ID iteration)
 tile.BasicBlock2.ThermalEvaporationBlock.name=加温蒸発濃縮ブロック
-tile.BasicBlock2.InductionCasing.name=インダクションケース
-tile.BasicBlock2.InductionPort.name=インダクションポート
-tile.BasicBlock2.InductionCellBasic.name=基本インダクションセル
-tile.BasicBlock2.InductionCellAdvanced.name=発展インダクションセル
-tile.BasicBlock2.InductionCellElite.name=精鋭インダクションセル
-tile.BasicBlock2.InductionCellUltimate.name=究極インダクションセル
-tile.BasicBlock2.InductionProviderBasic.name=基本インダクションプロバイダー
-tile.BasicBlock2.InductionProviderAdvanced.name=発展インダクションプロバイダー
-tile.BasicBlock2.InductionProviderElite.name=精鋭インダクションプロバイダー
-tile.BasicBlock2.InductionProviderUltimate.name=究極インダクションプロバイダー
+tile.BasicBlock2.InductionCasing.name=誘導ケーシング
+tile.BasicBlock2.InductionPort.name=誘導ポート
+tile.BasicBlock2.InductionCellBasic.name=基本誘導セル
+tile.BasicBlock2.InductionCellAdvanced.name=発展誘導セル
+tile.BasicBlock2.InductionCellElite.name=精鋭誘導セル
+tile.BasicBlock2.InductionCellUltimate.name=究極誘導セル
+tile.BasicBlock2.InductionProviderBasic.name=基本誘導プロバイダー
+tile.BasicBlock2.InductionProviderAdvanced.name=発展誘導プロバイダー
+tile.BasicBlock2.InductionProviderElite.name=精鋭誘導プロバイダー
+tile.BasicBlock2.InductionProviderUltimate.name=究極誘導プロバイダー
 tile.BasicBlock2.SuperheatingElement.name=発熱ブロック
 tile.BasicBlock2.PressureDisperser.name=減圧ブロック
 tile.BasicBlock2.BoilerCasing.name=ボイラーケース
 tile.BasicBlock2.BoilerValve.name=ボイラーバルブ
-tile.BasicBlock2.SecurityDesk.name=セキュリティーデスク
+tile.BasicBlock2.SecurityDesk.name=セキュリティデスク
 
 # Machine Block
-tile.MachineBlock.EnrichmentChamber.name=品質向上チャンバー
+tile.MachineBlock.EnrichmentChamber.name=高品質化チャンバー
 tile.MachineBlock.OsmiumCompressor.name=オスミウム圧縮機
 tile.MachineBlock.Combiner.name=結合機
 tile.MachineBlock.Crusher.name=粉砕機
@@ -194,10 +194,10 @@ tile.Transmitter.EliteLogisticalTransporter.name=精鋭物流トランスポー�
 tile.Transmitter.UltimateLogisticalTransporter.name=究極物流トランスポーター
 tile.Transmitter.RestrictiveTransporter.name=制限トランスポーター
 tile.Transmitter.DiversionTransporter.name=迂回トランスポーター
-tile.Transmitter.BasicThermodynamicConductor.name=基本熱力学的伝導体
-tile.Transmitter.AdvancedThermodynamicConductor.name=発展熱力学的伝導体
-tile.Transmitter.EliteThermodynamicConductor.name=精鋭熱力学的伝導体
-tile.Transmitter.UltimateThermodynamicConductor.name=究極熱力学的伝導体
+tile.Transmitter.BasicThermodynamicConductor.name=基本熱力学的伝導管
+tile.Transmitter.AdvancedThermodynamicConductor.name=発展熱力学的伝導管
+tile.Transmitter.EliteThermodynamicConductor.name=精鋭熱力学的伝導管
+tile.Transmitter.UltimateThermodynamicConductor.name=究極熱力学的伝導管
 
 # Energy Cubes
 tile.EnergyCubeBasic.name=基本エネルギーキューブ
@@ -459,8 +459,8 @@ gui.delay=遅延
 gui.noDelay=遅延なし
 gui.formed=構成済み
 gui.incomplete=未構成
-gui.inductionMatrix=インダクションマトリックス
-gui.matrixStats=インダクションマトリックスの状態
+gui.inductionMatrix=誘導マトリックス
+gui.matrixStats=誘導マトリックスの状態
 gui.boilerStats=ボイラーの状態
 gui.main=メイン画面
 gui.receiving=インプット
@@ -563,7 +563,7 @@ gui.factory.autoSort=自動分配
 
 # Recipe types
 gui.factory.Smelting=製錬
-gui.factory.Enriching=品質向上
+gui.factory.Enriching=高品質化
 gui.factory.Crushing=粉砕
 gui.factory.Compressing=オスミウム圧縮
 gui.factory.Combining=結合
