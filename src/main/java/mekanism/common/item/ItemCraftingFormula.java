@@ -9,7 +9,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.TextComponentUtil;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -28,12 +27,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemCraftingFormula extends Item {
 
-    public static ModelResourceLocation MODEL = new ModelResourceLocation(Mekanism.rl("crafting_formula"), "inventory");
-    public static ModelResourceLocation INVALID_MODEL = new ModelResourceLocation(Mekanism.rl("crafting_formula_invalid"), "inventory");
-    public static ModelResourceLocation ENCODED_MODEL = new ModelResourceLocation(Mekanism.rl("crafting_formula_encoded"), "inventory");
-
     public ItemCraftingFormula(Properties properties) {
         super(properties);
+        this.addPropertyOverride(Mekanism.rl("invalid"), (stack, world, entity) -> getInventory(stack) != null && isInvalid(stack) ? 1F : 0F);
+        this.addPropertyOverride(Mekanism.rl("encoded"), (stack, world, entity) -> getInventory(stack) != null && !isInvalid(stack) ? 1F : 0F);
     }
 
     @Override
