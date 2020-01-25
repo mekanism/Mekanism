@@ -1517,7 +1517,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
         //from ore
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(dirtyDustTag),
+              ItemStackIngredient.from(oreTag),
               dust.getItemStack(2)
         ).addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
               .addCriterion(hasOre)
@@ -2100,7 +2100,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_STEEL)
               .build(consumer, Mekanism.rl(basePath + "diversion_transporter"));
         //Restrictive
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESTRICTIVE_TRANSPORTER)
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, Items.IRON_BARS)
@@ -2145,7 +2145,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITieredBlock<?>, ?> transmitter,
           Tag<Item> itemTag) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(transmitter)
+        ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, itemTag)
@@ -2155,7 +2155,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addBasicTransmitterRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITieredBlock<?>, ?> transmitter,
           Item item) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(transmitter)
+        ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, item)
@@ -2165,7 +2165,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTransmitterUpgradeRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<? extends ITieredBlock<?>, ?> transmitter,
           IItemProvider previousTransmitter, Tag<Item> alloyTag, RecipeCriterion alloyCriterion) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(transmitter)
+        ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(TRANSMITTER_UPGRADE_PATTERN)
               .key(Pattern.PREVIOUS, previousTransmitter)
               .key(Pattern.ALLOY, alloyTag)

@@ -12,6 +12,7 @@
     }
   },
   "result": {
-    "item": "mekanism:restrictive_transporter"
+    "item": "mekanism:restrictive_transporter",
+    "count": 2
   }
 }

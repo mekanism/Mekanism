@@ -12,6 +12,7 @@
     }
   },
   "result": {
-    "item": "mekanism:basic_universal_cable"
+    "item": "mekanism:basic_universal_cable",
+    "count": 8
   }
 }

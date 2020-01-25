@@ -12,6 +12,7 @@
     }
   },
   "result": {
-    "item": "mekanism:basic_thermodynamic_conductor"
+    "item": "mekanism:basic_thermodynamic_conductor",
+    "count": 8
   }
 }

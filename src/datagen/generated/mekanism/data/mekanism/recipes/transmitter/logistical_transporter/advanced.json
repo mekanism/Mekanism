@@ -14,6 +14,7 @@
     }
   },
   "result": {
-    "item": "mekanism:advanced_logistical_transporter"
+    "item": "mekanism:advanced_logistical_transporter",
+    "count": 8
   }
 }

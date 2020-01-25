@@ -14,6 +14,7 @@
     }
   },
   "result": {
-    "item": "mekanism:elite_logistical_transporter"
+    "item": "mekanism:elite_logistical_transporter",
+    "count": 8
   }
 }

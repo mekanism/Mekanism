@@ -14,6 +14,7 @@
     }
   },
   "result": {
-    "item": "mekanism:advanced_pressurized_tube"
+    "item": "mekanism:advanced_pressurized_tube",
+    "count": 8
   }
 }

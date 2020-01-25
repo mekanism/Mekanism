@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "ingredient": {
-      "tag": "mekanism:dirty_dusts/tin"
+      "tag": "forge:ores/tin"
     }
   },
   "output": {

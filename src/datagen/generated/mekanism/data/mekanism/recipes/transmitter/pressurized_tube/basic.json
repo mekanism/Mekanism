@@ -12,6 +12,7 @@
     }
   },
   "result": {
-    "item": "mekanism:basic_pressurized_tube"
+    "item": "mekanism:basic_pressurized_tube",
+    "count": 8
   }
 }
