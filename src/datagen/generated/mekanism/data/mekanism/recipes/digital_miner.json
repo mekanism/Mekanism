@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACA",
+    "SRS",
+    "TXT"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    },
+    "S": {
+      "item": "mekanism:logistical_sorter"
+    },
+    "T": {
+      "item": "mekanism:teleportation_core"
+    },
+    "R": {
+      "item": "mekanism:robit"
+    }
+  },
+  "result": {
+    "item": "mekanism:digital_miner"
+  }
+}

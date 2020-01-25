@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACA",
+    "I#I",
+    "ACA"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/gold"
+    },
+    "C": {
+      "tag": "forge:circuits/elite"
+    },
+    "A": {
+      "tag": "mekanism:alloys/reinforced"
+    },
+    "#": {
+      "item": "mekanism:purification_chamber"
+    }
+  },
+  "result": {
+    "item": "mekanism:chemical_injection_chamber"
+  }
+}

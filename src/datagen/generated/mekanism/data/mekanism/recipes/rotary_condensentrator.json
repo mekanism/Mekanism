@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GCG",
+    "TE#",
+    "GCG"
+  ],
+  "key": {
+    "G": {
+      "tag": "forge:glass"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "T": {
+      "item": "mekanism:basic_gas_tank"
+    },
+    "#": {
+      "item": "mekanism:basic_fluid_tank"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    }
+  },
+  "result": {
+    "item": "mekanism:rotary_condensentrator"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "#"
+  ],
+  "key": {
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "#": {
+      "item": "minecraft:book"
+    }
+  },
+  "result": {
+    "item": "mekanism:dictionary"
+  }
+}

@@ -70,7 +70,12 @@ import net.minecraftforge.common.Tags;
 @ParametersAreNonnullByDefault
 public class MekanismRecipeProvider extends BaseRecipeProvider {
 
+    private static final char DIAMOND_CHAR = 'D';
     private static final char GLASS_CHAR = 'G';
+    private static final char PERSONAL_CHEST_CHAR = 'P';
+    private static final char ROBIT_CHAR = 'R';
+    private static final char SORTER_CHAR = 'S';
+    private static final char TELEPORTATION_CORE_CHAR = 'T';
 
     private static final RecipePattern BIN_PATTERN = RecipePattern.createPattern(
           TripleLine.of(Pattern.COBBLESTONE, Pattern.CIRCUIT, Pattern.COBBLESTONE),
@@ -2435,6 +2440,811 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addMiscRecipes(Consumer<IFinishedRecipe> consumer) {
-        //TODO: IMPLEMENT
+        //Atomic disassembler
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ATOMIC_DISASSEMBLER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+              ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.CONSTANT, MekanismTags.Items.ALLOYS_ATOMIC)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Boiler casing
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BOILER_CASING, 4)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
+                    TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
+              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
+              .addCriterion(Criterion.HAS_STEEL)
+              .build(consumer);
+        //Boiler valve
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BOILER_VALVE, 2)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+              ).key(Pattern.CONSTANT, MekanismBlocks.BOILER_CASING)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
+              .addCriterion(Criterion.has(MekanismBlocks.BOILER_CASING))
+              .build(consumer);
+        //Cardboard box
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CARDBOARD_BOX)
+              .pattern(RecipePattern.createPattern(
+                    DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
+                    DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
+              ).key(Pattern.CONSTANT, MekanismTags.Items.SAWDUST)
+              .addCriterion(Criterion.has("sawdust", MekanismTags.Items.SAWDUST))
+              .build(consumer);
+        //Charcoal
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(Items.CHARCOAL, 9)
+              .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL)
+              .addCriterion(Criterion.has("charcoal_block", MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL))
+              .build(consumer, Mekanism.rl("charcoal"));
+        //Chargepad
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARGEPAD)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.STEEL, Pattern.ENERGY, Pattern.STEEL))
+              ).key(Pattern.CONSTANT, Items.STONE_PRESSURE_PLATE)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Chemical crystallizer
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT))
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .build(consumer);
+        //Chemical dissolution chamber
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT))
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.CONSTANT, MekanismTags.Items.ALLOYS_ATOMIC)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .build(consumer);
+        //Chemical infuser
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_INFUSER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.TANK, Pattern.STEEL_CASING, Pattern.TANK),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .build(consumer);
+        //Chemical injection chamber
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(Pattern.INGOT, Tags.Items.INGOTS_GOLD)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_REINFORCED)
+              .key(Pattern.CONSTANT, MekanismBlocks.PURIFICATION_CHAMBER)
+              .addCriterion(Criterion.HAS_PURIFICATION_CHAMBER)
+              .build(consumer);
+        //Chemical oxidizer
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_OXIDIZER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(PERSONAL_CHEST_CHAR, Pattern.CONSTANT, Pattern.TANK),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
+              .key(PERSONAL_CHEST_CHAR, MekanismTags.Items.CHESTS_PERSONAL)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .build(consumer);
+        //Chemical washer
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_WASHER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.BUCKET, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT))
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.BUCKET, Items.BUCKET)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Combiner
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.COMBINER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.COBBLESTONE, Pattern.STEEL_CASING, Pattern.COBBLESTONE),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_REINFORCED)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Configuration card
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.CONFIGURATION_CARD)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.ALLOY, Pattern.EMPTY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.EMPTY, Pattern.ALLOY, Pattern.EMPTY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .build(consumer);
+        //Configurator
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.CONFIGURATOR)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+              ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.INGOT, Tags.Items.GEMS_LAPIS)
+              .key(Pattern.CONSTANT, Tags.Items.RODS_WOODEN)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Crafting formula
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.CRAFTING_FORMULA)
+              .addIngredient(Items.PAPER)
+              .addIngredient(MekanismTags.Items.CIRCUITS_BASIC)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .build(consumer);
+        //Crusher
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CRUSHER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE),
+                    TripleLine.of(Pattern.BUCKET, Pattern.STEEL_CASING, Pattern.BUCKET),
+                    TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE))
+              ).key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.BUCKET, Items.LAVA_BUCKET)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Dictionary
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.DICTIONARY)
+              .pattern(RecipePattern.createPattern(
+                    Pattern.CIRCUIT,
+                    Pattern.CONSTANT)
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.CONSTANT, Items.BOOK)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .build(consumer);
+        //Digital miner
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DIGITAL_MINER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(SORTER_CHAR, ROBIT_CHAR, SORTER_CHAR),
+                    TripleLine.of(TELEPORTATION_CORE_CHAR, Pattern.STEEL_CASING, TELEPORTATION_CORE_CHAR))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(SORTER_CHAR, MekanismBlocks.LOGISTICAL_SORTER)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .key(ROBIT_CHAR, MekanismItems.ROBIT)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Dynamic tank
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DYNAMIC_TANK, 4)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
+                    TripleLine.of(Pattern.STEEL, Pattern.BUCKET, Pattern.STEEL),
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
+              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.BUCKET, Items.BUCKET)
+              .addCriterion(Criterion.HAS_STEEL)
+              .build(consumer);
+        //Dynamic valve
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DYNAMIC_VALVE, 2)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
+              ).key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .addCriterion(Criterion.has(MekanismBlocks.DYNAMIC_TANK))
+              .build(consumer);
+        //Electric bow
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ELECTRIC_BOW)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.EMPTY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.EMPTY, Pattern.ENERGY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.EMPTY))
+              ).key(Pattern.CONSTANT, Tags.Items.STRING)
+              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Electric pump
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTRIC_PUMP)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.BUCKET, Pattern.EMPTY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
+                    TripleLine.of(Pattern.OSMIUM, Pattern.OSMIUM, Pattern.OSMIUM))
+              ).key(Pattern.BUCKET, Items.BUCKET)
+              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Electrolytic core
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ELECTROLYTIC_CORE)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY),
+                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY))
+              ).key(Pattern.OSMIUM, MekanismTags.Items.DUSTS_OSMIUM)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_GOLD)
+              .key(Pattern.INGOT, MekanismTags.Items.DUSTS_IRON)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .build(consumer);
+        //Electrolytic separator
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTROLYTIC_SEPARATOR)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.REDSTONE, Pattern.INGOT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.INGOT, Pattern.REDSTONE, Pattern.INGOT))
+              ).key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
+              .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.CONSTANT, MekanismItems.ELECTROLYTIC_CORE)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .addCriterion(Criterion.has(MekanismItems.ELECTROLYTIC_CORE))
+              .build(consumer);
+        //Energized smelter
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ENERGIZED_SMELTER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(GLASS_CHAR, Pattern.STEEL_CASING, GLASS_CHAR),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Energy tablet
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ENERGY_TABLET)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.REDSTONE, Pattern.INGOT, Pattern.REDSTONE),
+                    TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.REDSTONE, Pattern.INGOT, Pattern.REDSTONE))
+              ).key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .key(Pattern.INGOT, Tags.Items.INGOTS_GOLD)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .build(consumer);
+        //Enrichment chamber
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ENRICHMENT_CHAMBER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Flamethrower
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.FLAMETHROWER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.STEEL),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT))
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
+              .key(Pattern.CONSTANT, MekanismTags.Items.INGOTS_BRONZE)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_TIN)
+              .key(Pattern.STEEL, Items.FLINT_AND_STEEL)
+              .addCriterion(Criterion.HAS_ADVANCED_CIRCUIT)
+              .build(consumer);
+        //Fluidic plenisher
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FLUIDIC_PLENISHER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+              ).key(Pattern.PREVIOUS, MekanismBlocks.ELECTRIC_PUMP)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_TIN)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .build(consumer);
+        //Formulaic assemblicator
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FORMULAIC_ASSEMBLICATOR)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, Pattern.PREVIOUS, Pattern.STEEL),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
+              ).key(Pattern.CONSTANT, Tags.Items.CHESTS_WOODEN)
+              .key(Pattern.PREVIOUS, Items.CRAFTING_TABLE)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Free runners
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.FREE_RUNNERS)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.EMPTY, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.EMPTY, Pattern.ALLOY),
+                    TripleLine.of(Pattern.ENERGY, Pattern.EMPTY, Pattern.ENERGY))
+              ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Fuelwood heater
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FUELWOOD_HEATER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, Pattern.CIRCUIT, Pattern.STEEL),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.STEEL_CASING, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
+              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.CONSTANT, Items.FURNACE)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Gas mask
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.GAS_MASK)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
+                    TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR),
+                    TripleLine.of(Pattern.STEEL, Pattern.EMPTY, Pattern.STEEL))
+              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .addCriterion(Criterion.HAS_STEEL)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .build(consumer);
+        //Gauge dropper
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.GAUGE_DROPPER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.OSMIUM, Pattern.EMPTY),
+                    TripleLine.of(GLASS_CHAR, Pattern.EMPTY, GLASS_CHAR),
+                    TripleLine.of(GLASS_CHAR, GLASS_CHAR, GLASS_CHAR))
+              ).key(GLASS_CHAR, Tags.Items.GLASS_PANES)
+              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .addCriterion(Criterion.HAS_OSMIUM)
+              .build(consumer);
+        RecipeCriterion hasPellet = Criterion.has(MekanismItems.HDPE_PELLET);
+        //HDPE rod
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_ROD)
+              .pattern(RecipePattern.createPattern(
+                    DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
+                    DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
+              ).key(Pattern.CONSTANT, MekanismItems.HDPE_PELLET)
+              .addCriterion(hasPellet)
+              .build(consumer);
+        //HDPE sheet
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_SHEET)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.EMPTY, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
+              ).key(Pattern.CONSTANT, MekanismItems.HDPE_PELLET)
+              .addCriterion(hasPellet)
+              .build(consumer);
+        //HDPE stick
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_STICK)
+              .pattern(RecipePattern.createPattern(
+                    Pattern.CONSTANT,
+                    Pattern.CONSTANT)
+              ).key(Pattern.CONSTANT, MekanismItems.HDPE_ROD)
+              .addCriterion(Criterion.has(MekanismItems.HDPE_ROD))
+              .build(consumer);
+        //Jetpack
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.JETPACK)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, Pattern.CIRCUIT, Pattern.STEEL),
+                    TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_TIN)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .build(consumer);
+        //Jetpack armored
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ARMORED_JETPACK)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CONSTANT, Pattern.EMPTY, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.INGOT, Pattern.STEEL, Pattern.INGOT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.PREVIOUS, Pattern.EMPTY))
+              ).key(Pattern.PREVIOUS, MekanismItems.JETPACK)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_BRONZE)
+              .key(Pattern.STEEL, MekanismTags.Items.STORAGE_BLOCKS_STEEL)
+              .key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_DIAMOND)
+              .addCriterion(Criterion.has(MekanismItems.JETPACK))
+              .build(consumer);
+        //Laser
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.EMPTY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.EMPTY))
+              ).key(Pattern.CONSTANT, Tags.Items.GEMS_DIAMOND)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_REINFORCED)
+              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Laser amplifier
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_AMPLIFIER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL),
+                    TripleLine.of(Pattern.STEEL, Pattern.ENERGY, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
+              ).key(Pattern.CONSTANT, Tags.Items.GEMS_DIAMOND)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.ENERGY, MekanismBlocks.BASIC_ENERGY_CUBE)
+              .addCriterion(Criterion.has(MekanismBlocks.BASIC_ENERGY_CUBE))
+              .build(consumer);
+        //Laser tractor beam
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_TRACTOR_BEAM)
+              .pattern(RecipePattern.createPattern(
+                    PERSONAL_CHEST_CHAR,
+                    Pattern.CONSTANT)
+              ).key(PERSONAL_CHEST_CHAR, MekanismTags.Items.CHESTS_PERSONAL)
+              .key(Pattern.CONSTANT, MekanismBlocks.LASER_AMPLIFIER)
+              .addCriterion(Criterion.has(MekanismBlocks.LASER_AMPLIFIER))
+              .build(consumer);
+        //Logistical sorter
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LOGISTICAL_SORTER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+              ).key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.CONSTANT, Items.PISTON)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .build(consumer);
+        //Metallurgic infuser
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.METALLURGIC_INFUSER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.REDSTONE, Pattern.OSMIUM, Pattern.REDSTONE),
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT))
+              ).key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
+              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .key(Pattern.CONSTANT, Items.FURNACE)
+              .addCriterion(Criterion.HAS_OSMIUM)
+              .build(consumer);
+        //Network reader
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.NETWORK_READER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
+              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Oredictionificator
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.OREDICTIONIFICATOR)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
+              ).key(GLASS_CHAR, Tags.Items.GLASS_PANES)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.PREVIOUS, MekanismItems.DICTIONARY)
+              .key(Pattern.CONSTANT, Tags.Items.CHESTS_WOODEN)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .build(consumer);
+        //Osmium compressor
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.OSMIUM_COMPRESSOR)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.BUCKET, Pattern.STEEL_CASING, Pattern.BUCKET),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(Pattern.BUCKET, Items.BUCKET)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Paper
+        ExtendedShapedRecipeBuilder.shapedRecipe(Items.PAPER, 6)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
+              ).key(Pattern.CONSTANT, MekanismTags.Items.SAWDUST)
+              .addCriterion(Criterion.has("sawdust", MekanismTags.Items.SAWDUST))
+              .build(consumer, Mekanism.rl("paper"));
+        //Personal chest
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PERSONAL_CHEST)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.CIRCUIT, Pattern.PREVIOUS),
+                    TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
+              ).key(Pattern.PREVIOUS, Tags.Items.CHESTS_WOODEN)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(GLASS_CHAR, Tags.Items.GLASS)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .build(consumer);
+        //Portable teleporter
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.PORTABLE_TELEPORTER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.ENERGY, Pattern.EMPTY),
+                    TripleLine.of(Pattern.CIRCUIT, TELEPORTATION_CORE_CHAR, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.EMPTY, Pattern.ENERGY, Pattern.EMPTY))
+              ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Precision sawmill
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PRECISION_SAWMILL)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
+                    TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT))
+              ).key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Pressure disperser
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PRESSURE_DISPERSER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL))
+              ).key(Pattern.CONSTANT, Items.IRON_BARS)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .build(consumer);
+        //Pressurized reaction chamber
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.TANK, Pattern.CONSTANT, Pattern.TANK))
+              ).key(Pattern.PREVIOUS, MekanismBlocks.ENRICHMENT_CHAMBER)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
+              .addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
+              .build(consumer);
+        //Purification chamber
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PURIFICATION_CHAMBER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.OSMIUM, Pattern.PREVIOUS, Pattern.OSMIUM),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(Pattern.PREVIOUS, MekanismBlocks.ENRICHMENT_CHAMBER)
+              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
+              .build(consumer);
+        //Quantum entangloporter
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.QUANTUM_ENTANGLOPORTER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT),
+                    TripleLine.of(Pattern.ALLOY, TELEPORTATION_CORE_CHAR, Pattern.ALLOY),
+                    TripleLine.of(Pattern.INGOT, Pattern.CIRCUIT, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .addCriterion(Criterion.HAS_ULTIMATE_CIRCUIT)
+              .addCriterion(Criterion.HAS_ATOMIC_ALLOY)
+              .build(consumer);
+        //Rail
+        ExtendedShapedRecipeBuilder.shapedRecipe(Items.RAIL, 24)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.OSMIUM, Pattern.EMPTY, Pattern.OSMIUM),
+                    TripleLine.of(Pattern.OSMIUM, Pattern.CONSTANT, Pattern.OSMIUM),
+                    TripleLine.of(Pattern.OSMIUM, Pattern.EMPTY, Pattern.OSMIUM))
+              ).key(Pattern.CONSTANT, Tags.Items.RODS_WOODEN)
+              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .addCriterion(Criterion.HAS_OSMIUM)
+              .build(consumer, Mekanism.rl("rails"));
+        //Resistive heater
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESISTIVE_HEATER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.REDSTONE, Pattern.INGOT),
+                    TripleLine.of(Pattern.REDSTONE, Pattern.STEEL_CASING, Pattern.REDSTONE),
+                    TripleLine.of(Pattern.INGOT, Pattern.ENERGY, Pattern.INGOT))
+              ).key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_TIN)
+              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Robit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ROBIT)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
+                    TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
+                    TripleLine.of(Pattern.INGOT, PERSONAL_CHEST_CHAR, Pattern.INGOT))
+              ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
+              .key(PERSONAL_CHEST_CHAR, MekanismTags.Items.CHESTS_PERSONAL)
+              .addCriterion(Criterion.HAS_ATOMIC_ALLOY)
+              .build(consumer);
+        //Rotary condensentrator
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ROTARY_CONDENSENTRATOR)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR),
+                    TripleLine.of(Pattern.TANK, Pattern.ENERGY, Pattern.CONSTANT),
+                    TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR))
+              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CONSTANT, MekanismBlocks.BASIC_FLUID_TANK)
+              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Scuba tank
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SCUBA_TANK)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.CIRCUIT, Pattern.EMPTY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.TANK, Pattern.ALLOY),
+                    TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
+              ).key(Pattern.TANK, MekanismBlocks.BASIC_GAS_TANK)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
+              .addCriterion(Criterion.HAS_INFUSED_ALLOY)
+              .build(consumer);
+        //Security desk
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SECURITY_DESK)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.STEEL, TELEPORTATION_CORE_CHAR, Pattern.STEEL))
+              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Seismic reader
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SEISMIC_READER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL),
+                    TripleLine.of(Pattern.STEEL, Pattern.ENERGY, Pattern.STEEL),
+                    TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL))
+              ).key(Pattern.CONSTANT, Tags.Items.GEMS_LAPIS)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
+              .addCriterion(Criterion.HAS_ENERGY_TABLET)
+              .build(consumer);
+        //Seismic vibrator
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SEISMIC_VIBRATOR)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+              ).key(Pattern.CONSTANT, Tags.Items.GEMS_LAPIS)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_TIN)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Solar neutron activator
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+              ).key(Pattern.INGOT, MekanismTags.Items.INGOTS_BRONZE)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_REINFORCED)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Steel casing
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.STEEL_CASING)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
+                    TripleLine.of(GLASS_CHAR, Pattern.OSMIUM, GLASS_CHAR),
+                    TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL))
+              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .addCriterion(Criterion.HAS_OSMIUM)
+              .addCriterion(Criterion.HAS_STEEL)
+              .build(consumer);
+        //Structural glass
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.STRUCTURAL_GLASS, 4)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
+                    TripleLine.of(Pattern.STEEL, GLASS_CHAR, Pattern.STEEL),
+                    TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
+              ).key(GLASS_CHAR, Tags.Items.GLASS)
+              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .addCriterion(Criterion.HAS_STEEL)
+              .build(consumer);
+        //Superheating element
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SUPERHEATING_ELEMENT)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY))
+              ).key(Pattern.INGOT, MekanismTags.Items.INGOTS_COPPER)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Teleportation core
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.TELEPORTATION_CORE)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.INGOT, DIAMOND_CHAR, Pattern.INGOT),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT))
+              ).key(Pattern.CONSTANT, Tags.Items.GEMS_LAPIS)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
+              .key(Pattern.INGOT, Tags.Items.INGOTS_GOLD)
+              .key(DIAMOND_CHAR, Tags.Items.GEMS_DIAMOND)
+              .addCriterion(Criterion.HAS_ATOMIC_ALLOY)
+              .build(consumer);
+        //Teleporter
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.TELEPORTER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT),
+                    TripleLine.of(Pattern.STEEL_CASING, TELEPORTATION_CORE_CHAR, Pattern.STEEL_CASING),
+                    TripleLine.of(Pattern.CIRCUIT, Pattern.STEEL_CASING, Pattern.CIRCUIT))
+              ).key(TELEPORTATION_CORE_CHAR, MekanismItems.TELEPORTATION_CORE)
+              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .addCriterion(Criterion.HAS_STEEL_CASING)
+              .build(consumer);
+        //Teleporter frame
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.TELEPORTER_FRAME, 9)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.GLOWSTONE, Pattern.INGOT),
+                    TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
+              ).key(Pattern.GLOWSTONE, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE)
+              .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
+              .addCriterion(Criterion.HAS_REFINED_GLOWSTONE)
+              .addCriterion(Criterion.HAS_REFINED_OBSIDIAN)
+              .build(consumer);
     }
 }

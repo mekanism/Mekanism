@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "O O",
+    "O#O",
+    "O O"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:rods/wooden"
+    },
+    "O": {
+      "tag": "forge:ingots/osmium"
+    }
+  },
+  "result": {
+    "item": "minecraft:rail",
+    "count": 24
+  }
+}

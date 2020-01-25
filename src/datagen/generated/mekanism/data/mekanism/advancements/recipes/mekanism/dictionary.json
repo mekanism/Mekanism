@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:dictionary"
+    ]
+  },
+  "criteria": {
+    "has_basic_circuit": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:circuits/basic"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:dictionary"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_basic_circuit",
+      "has_the_recipe"
+    ]
+  ]
+}

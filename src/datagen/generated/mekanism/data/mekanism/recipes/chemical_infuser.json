@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACA",
+    "TXT",
+    "ACA"
+  ],
+  "key": {
+    "T": {
+      "item": "mekanism:basic_gas_tank"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
+  },
+  "result": {
+    "item": "mekanism:chemical_infuser"
+  }
+}

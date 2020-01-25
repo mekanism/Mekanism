@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    "ATA",
+    "SSS"
+  ],
+  "key": {
+    "T": {
+      "item": "mekanism:basic_gas_tank"
+    },
+    "C": {
+      "tag": "forge:circuits/basic"
+    },
+    "A": {
+      "tag": "mekanism:alloys/infused"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    }
+  },
+  "result": {
+    "item": "mekanism:scuba_tank"
+  }
+}

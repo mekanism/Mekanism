@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SE#",
+    "SSS"
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:gems/diamond"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "E": {
+      "item": "mekanism:basic_energy_cube"
+    }
+  },
+  "result": {
+    "item": "mekanism:laser_amplifier"
+  }
+}

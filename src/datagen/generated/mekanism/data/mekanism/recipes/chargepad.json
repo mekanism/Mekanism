@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "SES"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:stone_pressure_plate"
+    },
+    "S": {
+      "tag": "forge:ingots/steel"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    }
+  },
+  "result": {
+    "item": "mekanism:chargepad"
+  }
+}

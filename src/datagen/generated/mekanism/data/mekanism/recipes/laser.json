@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AE ",
+    "AX#",
+    "AE "
+  ],
+  "key": {
+    "#": {
+      "tag": "forge:gems/diamond"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    },
+    "A": {
+      "tag": "mekanism:alloys/reinforced"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    }
+  },
+  "result": {
+    "item": "mekanism:laser"
+  }
+}
