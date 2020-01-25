@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "tag": "forge:gems/diamond"
+    }
+  },
+  "output": {
+    "item": "mekanism:dust_diamond"
+  }
+}

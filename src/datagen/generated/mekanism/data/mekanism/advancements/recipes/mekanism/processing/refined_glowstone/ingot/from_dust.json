@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "mekanism:processing/refined_glowstone/ingot/from_dust"
+    ]
+  },
+  "criteria": {
+    "has_osmium_compressor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "mekanism:osmium_compressor"
+          }
+        ]
+      }
+    },
+    "has_glowstone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:dusts/glowstone"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "mekanism:processing/refined_glowstone/ingot/from_dust"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_osmium_compressor",
+      "has_glowstone",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/emerald"
+    }
+  },
+  "output": {
+    "item": "minecraft:emerald"
+  }
+}

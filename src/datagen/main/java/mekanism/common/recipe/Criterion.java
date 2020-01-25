@@ -47,6 +47,7 @@ public class Criterion {
     public static final RecipeCriterion HAS_CRUSHER = has(MekanismBlocks.CRUSHER);
     public static final RecipeCriterion HAS_ELECTROLYTIC_SEPARATOR = has(MekanismBlocks.ELECTROLYTIC_SEPARATOR);
     public static final RecipeCriterion HAS_ENRICHMENT_CHAMBER = has(MekanismBlocks.ENRICHMENT_CHAMBER);
+    public static final RecipeCriterion HAS_OSMIUM_COMPRESSOR = has(MekanismBlocks.OSMIUM_COMPRESSOR);
     public static final RecipeCriterion HAS_PRECISION_SAWMILL = has(MekanismBlocks.PRECISION_SAWMILL);
     public static final RecipeCriterion HAS_PRESSURIZED_REACTION_CHAMBER = has(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
     public static final RecipeCriterion HAS_PURIFICATION_CHAMBER = has(MekanismBlocks.PURIFICATION_CHAMBER);

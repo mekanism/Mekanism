@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 8,
+    "ingredient": {
+      "tag": "forge:dusts/quartz"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:netherrack"
+    }
+  },
+  "output": {
+    "item": "minecraft:nether_quartz_ore"
+  }
+}

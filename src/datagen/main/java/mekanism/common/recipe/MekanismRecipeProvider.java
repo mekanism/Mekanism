@@ -66,6 +66,7 @@ import net.minecraftforge.common.Tags;
 
 //TODO: Figure out what we want to do with compat recipes
 //TODO: Clean this up some to use methods in places that the code is just copy pasted, example: circuits
+// and some of the different ore processing code
 @ParametersAreNonnullByDefault
 public class MekanismRecipeProvider extends BaseRecipeProvider {
 
@@ -1428,26 +1429,26 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addOreProcessingRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "processing/";
-        addOreProcessingTypeRecipes(consumer, basePath + "copper/", MekanismBlocks.COPPER_ORE, MekanismTags.Items.ORES_COPPER, MekanismGases.COPPER_SLURRY,
+        addOreProcessingIngotRecipes(consumer, basePath + "copper/", MekanismBlocks.COPPER_ORE, MekanismTags.Items.ORES_COPPER, MekanismGases.COPPER_SLURRY,
               MekanismItems.COPPER_CRYSTAL, MekanismTags.Items.CRYSTALS_COPPER, MekanismItems.COPPER_SHARD, MekanismTags.Items.SHARDS_COPPER, MekanismItems.COPPER_CLUMP,
               MekanismTags.Items.CLUMPS_COPPER, MekanismItems.DIRTY_COPPER_DUST, MekanismTags.Items.DIRTY_DUSTS_COPPER, MekanismItems.COPPER_DUST,
               MekanismTags.Items.DUSTS_COPPER, MekanismItems.COPPER_INGOT, MekanismTags.Items.INGOTS_COPPER, MekanismTags.Items.NUGGETS_COPPER,
               MekanismTags.Items.STORAGE_BLOCKS_COPPER, true);
-        addOreProcessingTypeRecipes(consumer, basePath + "osmium/", MekanismBlocks.OSMIUM_ORE, MekanismTags.Items.ORES_OSMIUM, MekanismGases.OSMIUM_SLURRY,
+        addOreProcessingIngotRecipes(consumer, basePath + "osmium/", MekanismBlocks.OSMIUM_ORE, MekanismTags.Items.ORES_OSMIUM, MekanismGases.OSMIUM_SLURRY,
               MekanismItems.OSMIUM_CRYSTAL, MekanismTags.Items.CRYSTALS_OSMIUM, MekanismItems.OSMIUM_SHARD, MekanismTags.Items.SHARDS_OSMIUM, MekanismItems.OSMIUM_CLUMP,
               MekanismTags.Items.CLUMPS_OSMIUM, MekanismItems.DIRTY_OSMIUM_DUST, MekanismTags.Items.DIRTY_DUSTS_OSMIUM, MekanismItems.OSMIUM_DUST,
               MekanismTags.Items.DUSTS_OSMIUM, MekanismItems.OSMIUM_INGOT, MekanismTags.Items.INGOTS_OSMIUM, MekanismTags.Items.NUGGETS_OSMIUM,
               MekanismTags.Items.STORAGE_BLOCKS_OSMIUM, true);
-        addOreProcessingTypeRecipes(consumer, basePath + "tin/", MekanismBlocks.TIN_ORE, MekanismTags.Items.ORES_TIN, MekanismGases.TIN_SLURRY,
+        addOreProcessingIngotRecipes(consumer, basePath + "tin/", MekanismBlocks.TIN_ORE, MekanismTags.Items.ORES_TIN, MekanismGases.TIN_SLURRY,
               MekanismItems.TIN_CRYSTAL, MekanismTags.Items.CRYSTALS_TIN, MekanismItems.TIN_SHARD, MekanismTags.Items.SHARDS_TIN, MekanismItems.TIN_CLUMP,
               MekanismTags.Items.CLUMPS_TIN, MekanismItems.DIRTY_TIN_DUST, MekanismTags.Items.DIRTY_DUSTS_TIN, MekanismItems.TIN_DUST,
               MekanismTags.Items.DUSTS_TIN, MekanismItems.TIN_INGOT, MekanismTags.Items.INGOTS_TIN, MekanismTags.Items.NUGGETS_TIN,
               MekanismTags.Items.STORAGE_BLOCKS_TIN, true);
-        addOreProcessingTypeRecipes(consumer, basePath + "iron/", Items.IRON_ORE, Tags.Items.ORES_IRON, MekanismGases.IRON_SLURRY,
+        addOreProcessingIngotRecipes(consumer, basePath + "iron/", Items.IRON_ORE, Tags.Items.ORES_IRON, MekanismGases.IRON_SLURRY,
               MekanismItems.IRON_CRYSTAL, MekanismTags.Items.CRYSTALS_IRON, MekanismItems.IRON_SHARD, MekanismTags.Items.SHARDS_IRON, MekanismItems.IRON_CLUMP,
               MekanismTags.Items.CLUMPS_IRON, MekanismItems.DIRTY_IRON_DUST, MekanismTags.Items.DIRTY_DUSTS_IRON, MekanismItems.IRON_DUST,
               MekanismTags.Items.DUSTS_IRON, Items.IRON_INGOT, Tags.Items.INGOTS_IRON, Tags.Items.NUGGETS_IRON, Tags.Items.STORAGE_BLOCKS_IRON, false);
-        addOreProcessingTypeRecipes(consumer, basePath + "gold/", Items.GOLD_ORE, Tags.Items.ORES_GOLD, MekanismGases.GOLD_SLURRY,
+        addOreProcessingIngotRecipes(consumer, basePath + "gold/", Items.GOLD_ORE, Tags.Items.ORES_GOLD, MekanismGases.GOLD_SLURRY,
               MekanismItems.GOLD_CRYSTAL, MekanismTags.Items.CRYSTALS_GOLD, MekanismItems.GOLD_SHARD, MekanismTags.Items.SHARDS_GOLD, MekanismItems.GOLD_CLUMP,
               MekanismTags.Items.CLUMPS_GOLD, MekanismItems.DIRTY_GOLD_DUST, MekanismTags.Items.DIRTY_DUSTS_GOLD, MekanismItems.GOLD_DUST,
               MekanismTags.Items.DUSTS_GOLD, Items.GOLD_INGOT, Tags.Items.INGOTS_GOLD, Tags.Items.NUGGETS_GOLD, Tags.Items.STORAGE_BLOCKS_GOLD, false);
@@ -1458,10 +1459,23 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               MekanismItems.ENRICHED_IRON.getItemStack()
         ).addCriterion(Criterion.HAS_METALLURGIC_INFUSER)
               .build(consumer, Mekanism.rl(basePath + "iron/enriched"));
-        //TODO: IMPLEMENT the remainder of these
+        addBronzeProcessingRecipes(consumer, basePath + "bronze/");
+        addCoalOreProcessingRecipes(consumer, basePath + "coal/");
+        addOreProcessingGemRecipes(consumer, basePath + "diamond/", Items.DIAMOND_ORE, Tags.Items.ORES_DIAMOND, MekanismItems.DIAMOND_DUST,
+              MekanismTags.Items.DUSTS_DIAMOND, Items.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 3, Tags.Items.COBBLESTONE);
+        addOreProcessingGemRecipes(consumer, basePath + "emerald/", Items.EMERALD_ORE, Tags.Items.ORES_EMERALD, MekanismItems.EMERALD_DUST,
+              MekanismTags.Items.DUSTS_EMERALD, Items.EMERALD, Tags.Items.GEMS_EMERALD, 2, 3, Tags.Items.COBBLESTONE);
+        addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Items.LAPIS_ORE, Tags.Items.ORES_LAPIS, MekanismItems.LAPIS_LAZULI_DUST,
+              MekanismTags.Items.DUSTS_LAPIS_LAZULI, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 16, Tags.Items.COBBLESTONE);
+        addOreProcessingGemRecipes(consumer, basePath + "quartz/", Items.NETHER_QUARTZ_ORE, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
+              MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 8, Tags.Items.NETHERRACK);
+        addRedstoneProcessingRecipes(consumer, basePath + "redstone/");
+        addRefinedGlowstoneProcessingRecipes(consumer, basePath + "refined_glowstone/");
+        addRefinedObsidianProcessingRecipes(consumer, basePath + "refined_obsidian/");
+        addSteelProcessingRecipes(consumer, basePath + "steel/");
     }
 
-    private void addOreProcessingTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, net.minecraft.util.IItemProvider ore, Tag<Item> oreTag,
+    private void addOreProcessingIngotRecipes(Consumer<IFinishedRecipe> consumer, String basePath, net.minecraft.util.IItemProvider ore, Tag<Item> oreTag,
           SlurryRegistryObject<?, ?> slurry, IItemProvider crystal, Tag<Item> crystalTag, IItemProvider shard, Tag<Item> shardTag, IItemProvider clump, Tag<Item> clumpTag,
           IItemProvider dirtyDust, Tag<Item> dirtyDustTag, IItemProvider dust, Tag<Item> dustTag, net.minecraft.util.IItemProvider ingot, Tag<Item> ingotTag,
           Tag<Item> nuggetTag, Tag<Item> blockTag, boolean notVanilla) {
@@ -1585,6 +1599,232 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ).addCriterion(Criterion.HAS_CHEMICAL_DISSOLUTION_CHAMBER)
               .addCriterion(hasOre)
               .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
+    }
+
+    private void addCoalOreProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        RecipeCriterion hasCoalDust = Criterion.has("coal_dust", MekanismTags.Items.DUSTS_COAL);
+        //from dust
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL),
+              new ItemStack(Items.COAL)
+        ).addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
+              .addCriterion(hasCoalDust)
+              .build(consumer, Mekanism.rl(basePath + "from_dust"));
+        //from ore
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Tags.Items.ORES_COAL),
+              new ItemStack(Items.COAL, 2)
+        ).addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
+              .addCriterion(Criterion.has("coal_dust", Tags.Items.ORES_COAL))
+              .build(consumer, Mekanism.rl(basePath + "from_ore"));
+        //to dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(Items.COAL),
+              MekanismItems.COAL_DUST.getItemStack()
+        ).addCriterion(Criterion.HAS_CRUSHER)
+              .addCriterion(Criterion.has(Items.COAL))
+              .build(consumer, Mekanism.rl(basePath + "to_dust"));
+        //to ore
+        CombinerRecipeBuilder.combining(
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL, 3),
+              ItemStackIngredient.from(Tags.Items.COBBLESTONE),
+              new ItemStack(Items.COAL_ORE)
+        ).addCriterion(Criterion.HAS_COMBINER)
+              .addCriterion(hasCoalDust)
+              .build(consumer, Mekanism.rl(basePath + "to_ore"));
+    }
+
+    private void addOreProcessingGemRecipes(Consumer<IFinishedRecipe> consumer, String basePath, net.minecraft.util.IItemProvider ore, Tag<Item> oreTag,
+          IItemProvider dust, Tag<Item> dustTag, net.minecraft.util.IItemProvider gem, Tag<Item> gemTag, int fromOre, int toOre, Tag<Item> combineType) {
+        //from dust
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(dustTag),
+              new ItemStack(gem)
+        ).addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
+              .build(consumer, Mekanism.rl(basePath + "from_dust"));
+        //from ore
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(oreTag),
+              new ItemStack(gem, fromOre)
+        ).addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
+              .build(consumer, Mekanism.rl(basePath + "from_ore"));
+        //to dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(gemTag),
+              dust.getItemStack()
+        ).addCriterion(Criterion.HAS_CRUSHER)
+              .build(consumer, Mekanism.rl(basePath + "to_dust"));
+        //to ore
+        CombinerRecipeBuilder.combining(
+              ItemStackIngredient.from(dustTag, toOre),
+              ItemStackIngredient.from(combineType),
+              new ItemStack(ore)
+        ).addCriterion(Criterion.HAS_COMBINER)
+              .build(consumer, Mekanism.rl(basePath + "to_ore"));
+    }
+
+    private void addBronzeProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Dust
+        //from infusing
+        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_COPPER, 3),
+              InfusionIngredient.from(MekanismTags.InfuseTypes.TIN, 10),
+              MekanismItems.BRONZE_DUST.getItemStack(4)
+        ).addCriterion(Criterion.HAS_METALLURGIC_INFUSER)
+              .addCriterion(Criterion.has("copper_dust", MekanismTags.Items.DUSTS_COPPER))
+              .addCriterion(Criterion.has("tin_dust", MekanismTags.Items.DUSTS_TIN))
+              .build(consumer, Mekanism.rl(basePath + "dust/from_infusing"));
+        //from ingot
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(MekanismTags.Items.INGOTS_BRONZE),
+              MekanismItems.BRONZE_DUST.getItemStack()
+        ).addCriterion(Criterion.HAS_CRUSHER)
+              .addCriterion(Criterion.HAS_TIN)
+              .addCriterion(Criterion.HAS_COPPER)
+              .build(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
+        //Ingot
+        //from block
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.BRONZE_INGOT, 9)
+              .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_BRONZE)
+              .addCriterion(Criterion.has("bronze_block", MekanismTags.Items.STORAGE_BLOCKS_BRONZE))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
+        //from dust
+        addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_BRONZE), MekanismItems.BRONZE_INGOT, 0.5F, 200,
+              Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"),
+              Criterion.has("bronze_dust", MekanismTags.Items.DUSTS_BRONZE));
+        //from infusing
+        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+              ItemStackIngredient.from(MekanismTags.Items.INGOTS_COPPER, 3),
+              InfusionIngredient.from(MekanismTags.InfuseTypes.TIN, 10),
+              MekanismItems.BRONZE_INGOT.getItemStack(4)
+        ).addCriterion(Criterion.HAS_METALLURGIC_INFUSER)
+              .addCriterion(Criterion.HAS_TIN)
+              .addCriterion(Criterion.HAS_COPPER)
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_infusing"));
+        //from nuggets
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.BRONZE_INGOT)
+              .pattern(STORAGE_PATTERN)
+              .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_BRONZE)
+              .addCriterion(Criterion.has("bronze_nugget", MekanismTags.Items.NUGGETS_BRONZE))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
+    }
+
+    private void addRedstoneProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //from ore
+        ItemStackToItemStackRecipeBuilder.enriching(
+              ItemStackIngredient.from(Tags.Items.ORES_REDSTONE),
+              new ItemStack(Items.REDSTONE, 12)
+        ).addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
+              .addCriterion(Criterion.has("redstone_ore", Tags.Items.ORES_REDSTONE))
+              .build(consumer, Mekanism.rl(basePath + "from_ore"));
+        //to ore
+        CombinerRecipeBuilder.combining(
+              ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE, 16),
+              ItemStackIngredient.from(Tags.Items.COBBLESTONE),
+              new ItemStack(Items.REDSTONE_ORE)
+        ).addCriterion(Criterion.HAS_COMBINER)
+              .addCriterion(Criterion.has("redstone", Tags.Items.DUSTS_REDSTONE))
+              .build(consumer, Mekanism.rl(basePath + "to_ore"));
+    }
+
+    private void addRefinedGlowstoneProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Ingot
+        //from block
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.REFINED_GLOWSTONE_INGOT, 9)
+              .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_REFINED_GLOWSTONE)
+              .addCriterion(Criterion.has("refined_glowstone_block", MekanismTags.Items.STORAGE_BLOCKS_REFINED_GLOWSTONE))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
+        //from dust
+        ItemStackGasToItemStackRecipeBuilder.compressing(
+              ItemStackIngredient.from(Tags.Items.DUSTS_GLOWSTONE),
+              GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1),
+              MekanismItems.REFINED_GLOWSTONE_INGOT.getItemStack()
+        ).addCriterion(Criterion.HAS_OSMIUM_COMPRESSOR)
+              .addCriterion(Criterion.has("glowstone", Tags.Items.DUSTS_GLOWSTONE))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
+        //from nuggets
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.REFINED_GLOWSTONE_INGOT)
+              .pattern(STORAGE_PATTERN)
+              .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE)
+              .addCriterion(Criterion.has("refined_glowstone_nugget", MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
+        //Ingot -> dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(MekanismTags.Items.INGOTS_REFINED_GLOWSTONE),
+              new ItemStack(Items.GLOWSTONE_DUST)
+        ).addCriterion(Criterion.HAS_CRUSHER)
+              .addCriterion(Criterion.HAS_REFINED_GLOWSTONE)
+              .build(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
+    }
+
+    private void addRefinedObsidianProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Dust
+        //from ingot
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(MekanismTags.Items.INGOTS_REFINED_OBSIDIAN),
+              MekanismItems.REFINED_OBSIDIAN_DUST.getItemStack()
+        ).addCriterion(Criterion.HAS_CRUSHER)
+              .addCriterion(Criterion.HAS_REFINED_OBSIDIAN)
+              .build(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
+        //from obsidian dust
+        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_OBSIDIAN),
+              InfusionIngredient.from(MekanismTags.InfuseTypes.DIAMOND, 10),
+              MekanismItems.REFINED_OBSIDIAN_DUST.getItemStack()
+        ).addCriterion(Criterion.HAS_METALLURGIC_INFUSER)
+              .build(consumer, Mekanism.rl(basePath + "dust/from_obsidian_dust"));
+        //Ingot
+        //from block
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.REFINED_OBSIDIAN_INGOT, 9)
+              .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_REFINED_OBSIDIAN)
+              .addCriterion(Criterion.has("refined_obsidian_block", MekanismTags.Items.STORAGE_BLOCKS_REFINED_OBSIDIAN))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
+        //from dust
+        ItemStackGasToItemStackRecipeBuilder.compressing(
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
+              GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1),
+              MekanismItems.REFINED_OBSIDIAN_INGOT.getItemStack()
+        ).addCriterion(Criterion.HAS_OSMIUM_COMPRESSOR)
+              .addCriterion(Criterion.has("refined_obsidian_dust", MekanismTags.Items.DUSTS_REFINED_OBSIDIAN))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
+        //from nuggets
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.REFINED_OBSIDIAN_INGOT)
+              .pattern(STORAGE_PATTERN)
+              .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN)
+              .addCriterion(Criterion.has("refined_obsidian_nugget", MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
+    }
+
+    private void addSteelProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Ingot
+        //from block
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.STEEL_INGOT, 9)
+              .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_STEEL)
+              .addCriterion(Criterion.has("steel_block", MekanismTags.Items.STORAGE_BLOCKS_STEEL))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
+        //from dust
+        addSmeltingBlastingRecipes(consumer, Ingredient.fromTag(MekanismTags.Items.DUSTS_STEEL), MekanismItems.STEEL_INGOT, 0.5F, 200,
+              Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"),
+              Criterion.has("steel_dust", MekanismTags.Items.DUSTS_STEEL));
+        //from nuggets
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STEEL_INGOT)
+              .pattern(STORAGE_PATTERN)
+              .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_STEEL)
+              .addCriterion(Criterion.has("steel_nugget", MekanismTags.Items.NUGGETS_STEEL))
+              .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
+        //Enriched iron -> dust
+        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+              ItemStackIngredient.from(MekanismItems.ENRICHED_IRON),
+              InfusionIngredient.from(MekanismTags.InfuseTypes.CARBON, 10),
+              MekanismItems.STEEL_DUST.getItemStack()
+        ).addCriterion(Criterion.HAS_METALLURGIC_INFUSER)
+              .build(consumer, Mekanism.rl(basePath + "enriched_iron_to_dust"));
+        //Ingot -> dust
+        ItemStackToItemStackRecipeBuilder.crushing(
+              ItemStackIngredient.from(MekanismTags.Items.INGOTS_STEEL),
+              MekanismItems.STEEL_DUST.getItemStack()
+        ).addCriterion(Criterion.HAS_CRUSHER)
+              .build(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
     }
 
     private void addPurificationChamberRecipes(Consumer<IFinishedRecipe> consumer) {

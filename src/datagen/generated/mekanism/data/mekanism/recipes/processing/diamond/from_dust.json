@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "tag": "forge:dusts/diamond"
+    }
+  },
+  "output": {
+    "item": "minecraft:diamond"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 3,
+    "ingredient": {
+      "tag": "forge:dusts/emerald"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "tag": "forge:cobblestone"
+    }
+  },
+  "output": {
+    "item": "minecraft:emerald_ore"
+  }
+}
