@@ -96,7 +96,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     protected void recheckSettings() {
-        Biome b = world.func_225523_d_().func_226836_a_(getPos());
+        Biome b = world.getBiomeManager().getBiome(getPos());
         needsRainCheck = b.getPrecipitation() != RainType.NONE;
         settingsChecked = true;
     }

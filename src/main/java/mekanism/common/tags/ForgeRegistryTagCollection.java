@@ -54,6 +54,6 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
             }
             tagMap.put(resourceLocation, builder.build(resourceLocation));
         }
-        this.func_223507_b(tagMap);
+        this.toImmutable(tagMap);
     }
 }

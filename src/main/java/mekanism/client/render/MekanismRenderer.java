@@ -247,7 +247,7 @@ public class MekanismRenderer {
     @Nonnull
     public static GlowInfo enableGlow(int glow) {
         //TODO: Decide if for fullbright glow we want to just disable the lightmap instead of using this method for glow
-        //to modify the state properly we would add .func_228719_a_(field_228529_u_)
+        //to modify the state properly we would add .lightmap(LIGHTMAP_DISABLED)
         //TODO: Do we need to make sure optifine is not loaded
         if (/*!FMLClientHandler.instance().hasOptifine() && */glow > 0) {
             GlowInfo info = new GlowInfo(GlStateManager.lastBrightnessX, GlStateManager.lastBrightnessY, true);

@@ -66,7 +66,7 @@ public class GenHandler {
     @Nullable
     private static ConfiguredFeature<?, ?> getOreFeature(IBlockProvider blockProvider, OreConfig oreConfig) {
         if (oreConfig.shouldGenerate.get()) {
-            return Feature.ORE.func_225566_b_(new OreFeatureConfig(FillerBlockType.NATURAL_STONE,
+            return Feature.ORE.withConfiguration(new OreFeatureConfig(FillerBlockType.NATURAL_STONE,
                   blockProvider.getBlock().getDefaultState(), oreConfig.maxVeinSize.get())).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(
                   new CountRangeConfig(oreConfig.perChunk.get(), oreConfig.bottomOffset.get(), oreConfig.topOffset.get(), oreConfig.maxHeight.get())));
         }
@@ -77,7 +77,7 @@ public class GenHandler {
     private static ConfiguredFeature<?, ?> getSaltFeature(IBlockProvider blockProvider, SaltConfig saltConfig) {
         if (saltConfig.shouldGenerate.get()) {
             BlockState state = blockProvider.getBlock().getDefaultState();
-            return Feature.DISK.func_225566_b_(new SphereReplaceConfig(state, saltConfig.maxVeinSize.get(),
+            return Feature.DISK.withConfiguration(new SphereReplaceConfig(state, saltConfig.maxVeinSize.get(),
                   saltConfig.ySize.get(), Lists.newArrayList(Blocks.DIRT.getDefaultState(), Blocks.CLAY.getDefaultState(), state)))
                   .func_227228_a_(Placement.COUNT_TOP_SOLID.func_227446_a_(new FrequencyConfig(saltConfig.perChunk.get())));
         }

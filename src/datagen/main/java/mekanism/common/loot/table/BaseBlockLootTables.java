@@ -72,7 +72,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
         // For example, when writing this we added dump mode for gas tanks to getting transferred to the item
         for (IBlockProvider blockProvider : blockProviders) {
             Block block = blockProvider.getBlock();
-            CopyNbt.Builder nbtBuilder = CopyNbt.func_215881_a(Source.BLOCK_ENTITY);
+            CopyNbt.Builder nbtBuilder = CopyNbt.builder(Source.BLOCK_ENTITY);
             boolean hasData = false;
             @Nullable
             TileEntity tile = null;
@@ -84,30 +84,30 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 tile = ((IHasTileEntity<?>) block).getTileType().create();
             }
             if (block instanceof IHasSecurity) {
-                nbtBuilder.func_216056_a("ownerUUID", ItemDataUtils.DATA_ID + ".ownerUUID");
-                nbtBuilder.func_216056_a("securityMode", ItemDataUtils.DATA_ID + ".security");
+                nbtBuilder.replaceOperation("ownerUUID", ItemDataUtils.DATA_ID + ".ownerUUID");
+                nbtBuilder.replaceOperation("securityMode", ItemDataUtils.DATA_ID + ".security");
                 hasData = true;
             }
             if (block instanceof ISupportsUpgrades) {
-                nbtBuilder.func_216056_a("componentUpgrade", ItemDataUtils.DATA_ID + ".componentUpgrade");
+                nbtBuilder.replaceOperation("componentUpgrade", ItemDataUtils.DATA_ID + ".componentUpgrade");
                 hasData = true;
             }
             if (tile instanceof ISideConfiguration) {
-                nbtBuilder.func_216056_a("componentConfig", ItemDataUtils.DATA_ID + ".componentConfig");
-                nbtBuilder.func_216056_a("componentEjector", ItemDataUtils.DATA_ID + ".componentEjector");
+                nbtBuilder.replaceOperation("componentConfig", ItemDataUtils.DATA_ID + ".componentConfig");
+                nbtBuilder.replaceOperation("componentEjector", ItemDataUtils.DATA_ID + ".componentEjector");
                 hasData = true;
             }
             if (tile instanceof ISustainedData) {
                 Set<Entry<String, String>> remapEntries = ((ISustainedData) tile).getTileDataRemap().entrySet();
                 for (Entry<String, String> remapEntry : remapEntries) {
-                    nbtBuilder.func_216056_a(remapEntry.getKey(), ItemDataUtils.DATA_ID + "." + remapEntry.getValue());
+                    nbtBuilder.replaceOperation(remapEntry.getKey(), ItemDataUtils.DATA_ID + "." + remapEntry.getValue());
                 }
                 if (!remapEntries.isEmpty()) {
                     hasData = true;
                 }
             }
             if (block instanceof ISupportsRedstone) {
-                nbtBuilder.func_216056_a("controlType", ItemDataUtils.DATA_ID + ".controlType");
+                nbtBuilder.replaceOperation("controlType", ItemDataUtils.DATA_ID + ".controlType");
                 hasData = true;
             }
             //TODO: If anything for inventories doesn't work we may have to check if the tile is an ISustainedInventory
@@ -119,14 +119,14 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 if (!(tile instanceof IItemHandler) || ((IItemHandler) tile).getSlots() > 0) {
                     //If we don't actually handle saving an inventory (such as the quantum entangloporter, don't actually add it as something to copy)
                     if (!(tile instanceof TileEntityMekanism) || ((TileEntityMekanism) tile).handleInventory()) {
-                        nbtBuilder.func_216056_a("Items", ItemDataUtils.DATA_ID + ".Items");
+                        nbtBuilder.replaceOperation("Items", ItemDataUtils.DATA_ID + ".Items");
                         hasData = true;
                     }
                 }
             }
             if (tile instanceof ISustainedTank) {
                 //TODO: Should this use a similar system to ISustainedData
-                nbtBuilder.func_216056_a("fluidTank", ItemDataUtils.DATA_ID + ".fluidTank");
+                nbtBuilder.replaceOperation("fluidTank", ItemDataUtils.DATA_ID + ".fluidTank");
                 hasData = true;
             }
             if (block instanceof IBlockElectric) {
@@ -134,13 +134,13 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 // we want to copy the energy information
                 if (!(tile instanceof TileEntityMultiblock<?>)) {
                     //TODO: Eventually make these use the same key of energyStored?
-                    nbtBuilder.func_216056_a("electricityStored", ItemDataUtils.DATA_ID + ".energyStored");
+                    nbtBuilder.replaceOperation("electricityStored", ItemDataUtils.DATA_ID + ".energyStored");
                     hasData = true;
                 }
             }
             if (block instanceof BlockCardboardBox) {
                 //TODO: Do this better so that it doesn't have to be as hard coded to being a cardboard box
-                nbtBuilder.func_216056_a("storedData", ItemDataUtils.DATA_ID + ".blockData");
+                nbtBuilder.replaceOperation("storedData", ItemDataUtils.DATA_ID + ".blockData");
                 hasData = true;
             }
             if (!hasData) {

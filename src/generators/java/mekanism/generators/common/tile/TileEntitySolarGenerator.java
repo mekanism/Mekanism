@@ -52,7 +52,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         if (world == null) {
             return;
         }
-        Biome b = world.func_225523_d_().func_226836_a_(getPos());
+        Biome b = world.getBiomeManager().getBiome(getPos());
 
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
@@ -130,7 +130,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     //TODO: re-evaluate
-    //Vanilla copy of ClientWorld#func_228326_g_ used to be World#getSunBrightness
+    //Vanilla copy of ClientWorld#getSunBrightness used to be World#getSunBrightness
     private float getSunBrightness(World world, float partialTicks) {
         float f = world.getCelestialAngle(partialTicks);
         float f1 = 1.0F - (MathHelper.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.2F);

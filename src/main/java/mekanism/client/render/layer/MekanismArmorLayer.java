@@ -22,17 +22,8 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, T entity, float limbSwing, float limbSwingAmount,
-          float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
-        func_229129_a_(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.CHEST, light);
-        func_229129_a_(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.LEGS, light);
-        func_229129_a_(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.FEET, light);
-        func_229129_a_(matrix, renderer, entity, limbSwing, limbSwingAmount, partialTick, ageInTicks, netHeadYaw, headPitch, EquipmentSlotType.HEAD, light);
-    }
-
-    //TODO: Once there are mappings/the bot supports returning this maybe try to just AT this instead of having to also copy the above method.
-    private void func_229129_a_(MatrixStack matrix, IRenderTypeBuffer renderer, T entity, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks,
-          float netHeadYaw, float headPitch, EquipmentSlotType slot, int light) {
+    protected void renderArmorPart(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, T entity, float limbSwing, float limbSwingAmount, float partialTick,
+          float ageInTicks, float netHeadYaw, float headPitch, @Nonnull EquipmentSlotType slot, int light) {
         ItemStack stack = entity.getItemStackFromSlot(slot);
         Item item = stack.getItem();
         if (item instanceof ISpecialGear && item instanceof ArmorItem) {
@@ -43,13 +34,9 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends BipedModel<T>,
                 model.setLivingAnimations(entity, limbSwing, limbSwingAmount, partialTick);
                 setModelSlotVisible((A) model, slot);
                 model.render(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                renderArmor(matrix, renderer, light, stack.hasEffect(), model);
+                model.render(matrix, renderer, light, OverlayTexture.DEFAULT_LIGHT, stack.hasEffect());
             }
         }
-    }
-
-    private void renderArmor(MatrixStack matrix, IRenderTypeBuffer renderer, int light, boolean hasEffect, CustomArmor model) {
-        model.render(matrix, renderer, light, OverlayTexture.DEFAULT_LIGHT, hasEffect);
     }
 
     @Nonnull

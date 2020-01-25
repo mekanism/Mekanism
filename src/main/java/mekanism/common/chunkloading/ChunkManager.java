@@ -84,7 +84,7 @@ public class ChunkManager extends WorldSavedData {
 
                 //option 2 - add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
                 /*ChunkPos pos = new ChunkPos(key);
-                world.getChunkProvider().func_217228_a(INITIAL_LOAD_TICKET_TYPE, pos, TileComponentChunkLoader.TICKET_DISTANCE, pos);*/
+                world.getChunkProvider().registerTicket(INITIAL_LOAD_TICKET_TYPE, pos, TileComponentChunkLoader.TICKET_DISTANCE, pos);*/
             });
         }
     }

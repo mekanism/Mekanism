@@ -59,8 +59,6 @@ public class ModelQuantumEntangloporter extends Model {
     private final ModelRenderer corner6;
     private final ModelRenderer corner7;
     private final ModelRenderer corner8;
-    //private final ModelRenderer portRightLarge;
-    //private final ModelRenderer portLeftLarge;
 
     public ModelQuantumEntangloporter() {
         super(RenderType::entitySolid);
@@ -301,18 +299,6 @@ public class ModelQuantumEntangloporter extends Model {
         corner8.setTextureSize(128, 64);
         corner8.mirror = true;
         setRotation(corner8, 0F, 0F, 0F);
-        /*portRightLarge = new ModelRenderer(this, 68, 0);
-        portRightLarge.mirror = true;
-        portRightLarge.func_228304_a_(0F, 0F, 0F, 1, 10, 10, false);
-        portRightLarge.setRotationPoint(7F, 11F, -5F);
-        portRightLarge.setTextureSize(128, 64);
-        setRotation(portRightLarge, 0F, 0F, 0F);
-        portLeftLarge = new ModelRenderer(this, 68, 0);
-        portLeftLarge.func_228304_a_(0F, 0F, 0F, 1, 10, 10, false);
-        portLeftLarge.setRotationPoint(-8F, 11F, -5F);
-        portLeftLarge.setTextureSize(128, 64);
-        portLeftLarge.mirror = true;
-        setRotation(portLeftLarge, 0F, 0F, 0F);*/
     }
 
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean renderMain) {
@@ -368,8 +354,6 @@ public class ModelQuantumEntangloporter extends Model {
         corner6.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         corner7.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         corner8.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        //portRightLarge.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        //portLeftLarge.func_228309_a_(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
