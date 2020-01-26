@@ -67,7 +67,7 @@ import net.minecraft.world.World;
 public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntityEnergyCube>, IStateFacing, ITieredBlock<EnergyCubeTier>, IBlockElectric, IHasInventory,
       IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntityEnergyCube>, ISupportsComparator, IStateWaterLogged, IHasDescription, IUpgradeableBlock {
 
-    private static final VoxelShape[] bounds = new VoxelShape[128];
+    private static final VoxelShape[] bounds = new VoxelShape[256];
 
     static {
         VoxelShape frame = VoxelShapeUtils.combine(
@@ -120,26 +120,32 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
               makeCuboidShape(3, 1, 5, 13, 2, 11),//connectorBottomToggle
               makeCuboidShape(4, 0, 4, 12, 1, 12)//portBottomToggle
         );
-        //TODO: FIXME when it is facing up or down, a couple of the sides have the voxelshape in the wrong spot
         VoxelShape frameRotated = VoxelShapeUtils.rotate(frame, Rotation.CLOCKWISE_90);
         VoxelShape topRotated = VoxelShapeUtils.rotate(topPanel, Rotation.CLOCKWISE_90);
         VoxelShape bottomRotated = VoxelShapeUtils.rotate(bottomPanel, Rotation.CLOCKWISE_90);
-        for (int rotated = 0; rotated < 2; rotated++) {
-            //If we need to rotate the top and bottom frames
-            boolean rotate = rotated == 1;
-            VoxelShape baseFrame = rotate ? frameRotated : frame;
+        VoxelShape frameRotatedAlt = VoxelShapeUtils.rotate(frame, Direction.NORTH);
+        VoxelShape rightRotated = VoxelShapeUtils.rotate(rightPanel, Direction.NORTH);
+        VoxelShape leftRotated = VoxelShapeUtils.rotate(leftPanel, Direction.NORTH);
+        for (int rotated = 0; rotated < 3; rotated++) {
+            //If we don't need to rotate anything, this is zero
+            // If we need to rotate the top and bottom frames, this is one
+            // If we need to rotate the left and right frames, this is two
+            boolean rotateVertical = rotated == 1;
+            boolean rotateHorizontal = rotated == 2;
+            VoxelShape baseFrame = rotateVertical ? frameRotated : rotateHorizontal ? frameRotatedAlt : frame;
             for (int top = 0; top < 2; top++) {
-                VoxelShape withTop = top == 0 ? baseFrame : VoxelShapes.or(baseFrame, rotate ? topRotated : topPanel);
+                VoxelShape withTop = top == 0 ? baseFrame : VoxelShapes.or(baseFrame, rotateVertical ? topRotated : topPanel);
                 for (int bottom = 0; bottom < 2; bottom++) {
-                    VoxelShape withBottom = bottom == 0 ? withTop : VoxelShapes.or(withTop, rotate ? bottomRotated : bottomPanel);
+                    VoxelShape withBottom = bottom == 0 ? withTop : VoxelShapes.or(withTop, rotateVertical ? bottomRotated : bottomPanel);
                     for (int front = 0; front < 2; front++) {
                         VoxelShape withFront = front == 0 ? withBottom : VoxelShapes.or(withBottom, frontPanel);
                         for (int back = 0; back < 2; back++) {
                             VoxelShape withBack = back == 0 ? withFront : VoxelShapes.or(withFront, backPanel);
                             for (int left = 0; left < 2; left++) {
-                                VoxelShape withLeft = left == 0 ? withBack : VoxelShapes.or(withBack, rightPanel);
+                                VoxelShape withLeft = left == 0 ? withBack : VoxelShapes.or(withBack, rotateHorizontal ? leftRotated : leftPanel);
                                 for (int right = 0; right < 2; right++) {
-                                    bounds[getIndex(rotated, top, bottom, front, back, left, right)] = right == 0 ? withLeft : VoxelShapes.or(withLeft, leftPanel);
+                                    VoxelShape withRight = right == 0 ? withLeft : VoxelShapes.or(withLeft, rotateHorizontal ? rightRotated : rightPanel);
+                                    bounds[getIndex(top, bottom, front, back, left, right, rotateVertical, rotateHorizontal)] = withRight;
                                 }
                             }
                         }
@@ -152,14 +158,17 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
     /**
      * 0 for an input is equivalent to false, 1 is equivalent to true
      */
-    private static int getIndex(int rotated, int top, int bottom, int front, int back, int left, int right) {
-        return (((((rotated | top << 1) | bottom << 2) | front << 3) | back << 4) | left << 5) | right << 6;
+    private static int getIndex(int top, int bottom, int front, int back, int left, int right, boolean rotateVertical, boolean rotateHorizontal) {
+        return ((((((top | bottom << 1) | front << 2) | back << 3) | left << 4) | right << 5) | (rotateVertical ? 1 : 0) << 6) | (rotateHorizontal ? 1 : 0) << 7;
     }
 
     private final EnergyCubeTier tier;
 
     public BlockEnergyCube(EnergyCubeTier tier) {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(2F, 4F));
+        //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the energy cube
+        // this may change based on what sides are enabled
+        //TODO: We still need to fix trying to place things like torches on the side
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(2F, 4F).variableOpacity());
         this.tier = tier;
     }
 
@@ -238,21 +247,29 @@ public class BlockEnergyCube extends BlockMekanism implements IHasGui<TileEntity
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         TileEntityEnergyCube energyCube = MekanismUtils.getTileEntity(TileEntityEnergyCube.class, world, pos, true);
+        int index;
         if (energyCube == null) {
-            return bounds[0];
+            //Default to facing north all enabled
+            index = getIndex(1, 1, 1, 1, 1, 1, false, false);
+        } else {
+            ConfigInfo energyConfig = energyCube.configComponent.getConfig(TransmissionType.ENERGY);
+            if (energyConfig == null) {
+                //Default to facing north all enabled
+                index = getIndex(1, 1, 1, 1, 1, 1, false, false);
+            } else {
+                Direction facing = getDirection(state);
+                index = getIndex(
+                      isSideEnabled(energyConfig, facing, Direction.UP),//top
+                      isSideEnabled(energyConfig, facing, Direction.DOWN),//bottom
+                      isSideEnabled(energyConfig, facing, Direction.SOUTH),//front
+                      isSideEnabled(energyConfig, facing, Direction.NORTH),//back
+                      isSideEnabled(energyConfig, facing, Direction.EAST),//left
+                      isSideEnabled(energyConfig, facing, Direction.WEST),//right
+                      facing == Direction.EAST || facing == Direction.WEST,
+                      facing == Direction.DOWN || facing == Direction.UP
+                );
+            }
         }
-        ConfigInfo energyConfig = energyCube.configComponent.getConfig(TransmissionType.ENERGY);
-        if (energyConfig == null) {
-            return bounds[0];
-        }
-        Direction facing = getDirection(state);
-        int index = getIndex(facing == Direction.EAST || facing == Direction.WEST ? 1 : 0,
-              isSideEnabled(energyConfig, facing, Direction.UP),//top
-              isSideEnabled(energyConfig, facing, Direction.DOWN),//bottom
-              isSideEnabled(energyConfig, facing, Direction.SOUTH),//front
-              isSideEnabled(energyConfig, facing, Direction.NORTH),//back
-              isSideEnabled(energyConfig, facing, Direction.WEST),//left
-              isSideEnabled(energyConfig, facing, Direction.EAST));//right
         return bounds[index];
     }
 
