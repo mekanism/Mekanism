@@ -1,25 +1,21 @@
 package mekanism.common.tile.component.config.slot;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class FluidSlotInfo implements ISlotInfo {
+public class FluidSlotInfo extends BaseSlotInfo {
 
     //TODO: Should it be a fluid tank instead
     private final List<FluidTank> tanks;
 
-    public FluidSlotInfo() {
-        tanks = Collections.emptyList();
+    public FluidSlotInfo(boolean canInput, boolean canOutput, FluidTank... tanks) {
+        this(canInput, canOutput, Arrays.asList(tanks));
     }
 
-    public FluidSlotInfo(FluidTank... tanks) {
-        this(Arrays.asList(tanks));
-    }
-
-    public FluidSlotInfo(List<FluidTank> tanks) {
+    public FluidSlotInfo(boolean canInput, boolean canOutput, List<FluidTank> tanks) {
+        super(canInput, canOutput);
         this.tanks = tanks;
     }
 

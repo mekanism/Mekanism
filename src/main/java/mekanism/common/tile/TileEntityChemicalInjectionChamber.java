@@ -20,7 +20,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
         configComponent.addSupported(TransmissionType.GAS);
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {
-            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(gasTank));
+            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(true, false, gasTank));
             //Set default config directions
             gasConfig.fill(DataType.INPUT);
             gasConfig.setCanEject(false);

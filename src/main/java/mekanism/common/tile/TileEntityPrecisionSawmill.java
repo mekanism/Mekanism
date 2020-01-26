@@ -50,9 +50,9 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(inputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(outputSlot, secondaryOutputSlot));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(energySlot));
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot, secondaryOutputSlot));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
             itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
             itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
@@ -61,7 +61,7 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo());
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }

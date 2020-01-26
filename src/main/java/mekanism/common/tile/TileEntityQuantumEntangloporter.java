@@ -90,8 +90,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
             Supplier<List<IInventorySlot>> slotSupplier = () -> hasFrequency() ? frequency.inventorySlots : Collections.emptyList();
-            itemConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Inventory(slotSupplier));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Inventory(slotSupplier));
+            itemConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Inventory(true, false, slotSupplier));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Inventory(false, true, slotSupplier));
             //Set default config directions
             itemConfig.fill(DataType.INPUT);
             itemConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
@@ -100,8 +100,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         ConfigInfo fluidConfig = configComponent.getConfig(TransmissionType.FLUID);
         if (fluidConfig != null) {
             Supplier<List<FluidTank>> tankSupplier = () -> hasFrequency() ? Collections.singletonList(frequency.storedFluid) : Collections.emptyList();
-            fluidConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Fluid(tankSupplier));
-            fluidConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Fluid(tankSupplier));
+            fluidConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Fluid(true, false, tankSupplier));
+            fluidConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Fluid(false, true, tankSupplier));
             //Set default config directions
             fluidConfig.fill(DataType.INPUT);
             fluidConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
@@ -110,8 +110,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {
             Supplier<List<GasTank>> tankSupplier = () -> hasFrequency() ? Collections.singletonList(frequency.storedGas) : Collections.emptyList();
-            gasConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Gas(tankSupplier));
-            gasConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Gas(tankSupplier));
+            gasConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Gas(true, false, tankSupplier));
+            gasConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Gas(false, true, tankSupplier));
             //Set default config directions
             gasConfig.fill(DataType.INPUT);
             gasConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
@@ -119,8 +119,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Energy());
-            energyConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Energy());
+            energyConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Energy(true, false));
+            energyConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Energy(false, true));
             //Set default config directions
             energyConfig.fill(DataType.INPUT);
             energyConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
@@ -128,7 +128,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
         if (heatConfig != null) {
-            heatConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Heat());
+            //TODO: Figure out why the quantum entangloporter doesn't seem to allow extracting heat, and can only accept it?
+            heatConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Heat(true, false));
             //Set default config directions
             heatConfig.fill(DataType.INPUT);
             heatConfig.setCanEject(false);

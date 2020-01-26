@@ -73,10 +73,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(inputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(outputSlot));
-            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(infusionSlot));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(energySlot));
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
+            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, infusionSlot));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
             itemConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
             itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);

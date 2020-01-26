@@ -1,23 +1,23 @@
 package mekanism.common.tile.component.config.slot;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.inventory.slot.IInventorySlot;
 
-public class InventorySlotInfo implements ISlotInfo {
+/**
+ * @implNote DataTypes that are not strictly input or output we set as being able to both input and output and allow the slots to determine if something can be
+ * inserted/outputted from them.
+ */
+public class InventorySlotInfo extends BaseSlotInfo {
 
     private final List<IInventorySlot> inventorySlots;
 
-    public InventorySlotInfo() {
-        inventorySlots = Collections.emptyList();
+    public InventorySlotInfo(boolean canInput, boolean canOutput, IInventorySlot... slots) {
+        this(canInput, canOutput, Arrays.asList(slots));
     }
 
-    public InventorySlotInfo(IInventorySlot... slots) {
-        this(Arrays.asList(slots));
-    }
-
-    public InventorySlotInfo(List<IInventorySlot> slots) {
+    public InventorySlotInfo(boolean canInput, boolean canOutput, List<IInventorySlot> slots) {
+        super(canInput, canOutput);
         inventorySlots = slots;
     }
 

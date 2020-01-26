@@ -149,9 +149,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     outputSlots.add(info.getSecondaryOutputSlot());
                 }
             }
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(inputSlots));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(outputSlots));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(energySlot));
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlots));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlots));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
             itemConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
             itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
@@ -159,14 +159,14 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
             IInventorySlot extraSlot = getExtraSlot();
             if (extraSlot != null) {
-                itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(extraSlot));
+                itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
                 itemConfig.setDataType(RelativeSide.BOTTOM, DataType.EXTRA);
             }
         }
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo());
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }

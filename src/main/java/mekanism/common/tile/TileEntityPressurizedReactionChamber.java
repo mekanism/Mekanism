@@ -87,9 +87,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(inputSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(outputSlot));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(energySlot));
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlot));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
             itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
             itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
@@ -98,7 +98,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
         ConfigInfo fluidConfig = configComponent.getConfig(TransmissionType.FLUID);
         if (fluidConfig != null) {
-            fluidConfig.addSlotInfo(DataType.INPUT, new FluidSlotInfo(inputFluidTank));
+            fluidConfig.addSlotInfo(DataType.INPUT, new FluidSlotInfo(true, false, inputFluidTank));
             //Set default config directions
             fluidConfig.setDataType(RelativeSide.BACK, DataType.INPUT);
 
@@ -107,8 +107,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {
-            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(inputGasTank));
-            gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(outputGasTank));
+            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(true, false, inputGasTank));
+            gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(false, true, outputGasTank));
             //Set default config directions
             gasConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
             gasConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
@@ -116,7 +116,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo());
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }

@@ -91,9 +91,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(inputSlots));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(outputSlots));
-            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(energySlot));
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, false, inputSlots));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(false, true, outputSlots));
+            itemConfig.addSlotInfo(DataType.ENERGY, new InventorySlotInfo(true, true, energySlot));
             //Set default config directions
             itemConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
             itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
@@ -102,7 +102,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo());
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
             energyConfig.fill(DataType.INPUT);
             energyConfig.setCanEject(false);
         }

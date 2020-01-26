@@ -61,8 +61,9 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(chargeSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(dischargeSlot));
+            //Note: we allow inputting and outputting in both directions as the slot is a processing slot
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, true, chargeSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, dischargeSlot));
             //Set default config directions
             itemConfig.setDataType(RelativeSide.LEFT, DataType.INPUT);
             itemConfig.setDataType(RelativeSide.RIGHT, DataType.OUTPUT);
@@ -72,8 +73,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
 
         ConfigInfo energyConfig = configComponent.getConfig(TransmissionType.ENERGY);
         if (energyConfig != null) {
-            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo());
-            energyConfig.addSlotInfo(DataType.OUTPUT, new EnergySlotInfo());
+            energyConfig.addSlotInfo(DataType.INPUT, new EnergySlotInfo(true, false));
+            energyConfig.addSlotInfo(DataType.OUTPUT, new EnergySlotInfo(false, true));
             //Set default config directions
             energyConfig.fill(DataType.INPUT);
             energyConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);

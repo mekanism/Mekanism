@@ -85,8 +85,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
         if (itemConfig != null) {
-            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(drainSlot));
-            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(fillSlot));
+            //Note: we allow inputting and outputting in both directions as the slot is a processing slot
+            itemConfig.addSlotInfo(DataType.INPUT, new InventorySlotInfo(true, true, drainSlot));
+            itemConfig.addSlotInfo(DataType.OUTPUT, new InventorySlotInfo(true, true, fillSlot));
             //Set default config directions
             itemConfig.setDataType(RelativeSide.TOP, DataType.INPUT);
             itemConfig.setDataType(RelativeSide.BOTTOM, DataType.OUTPUT);
@@ -96,8 +97,8 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {
-            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(gasTank));
-            gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(gasTank));
+            gasConfig.addSlotInfo(DataType.INPUT, new GasSlotInfo(true, false, gasTank));
+            gasConfig.addSlotInfo(DataType.OUTPUT, new GasSlotInfo(false, true, gasTank));
             //Set default config directions
             gasConfig.fill(DataType.INPUT);
             gasConfig.setDataType(RelativeSide.FRONT, DataType.OUTPUT);
