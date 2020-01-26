@@ -4,7 +4,6 @@
     "amount": 2,
     "tag": "minecraft:water"
   },
-  "energyUsage": 400.0,
   "leftGasOutput": {
     "gas": "mekanism:hydrogen",
     "amount": 2

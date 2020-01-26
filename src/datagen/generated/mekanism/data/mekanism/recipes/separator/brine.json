@@ -4,7 +4,6 @@
     "amount": 10,
     "tag": "forge:brine"
   },
-  "energyUsage": 400.0,
   "leftGasOutput": {
     "gas": "mekanism:sodium",
     "amount": 1

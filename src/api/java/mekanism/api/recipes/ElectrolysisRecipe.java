@@ -23,12 +23,12 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     private final FluidStackIngredient input;
     private final GasStack leftGasOutput;
     private final GasStack rightGasOutput;
-    private final double energyUsage;
+    private final double energyMultiplier;
 
-    public ElectrolysisRecipe(ResourceLocation id, FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput) {
+    public ElectrolysisRecipe(ResourceLocation id, FluidStackIngredient input, double energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
         super(id);
         this.input = input;
-        this.energyUsage = energyUsage;
+        this.energyMultiplier = energyMultiplier;
         this.leftGasOutput = leftGasOutput;
         this.rightGasOutput = rightGasOutput;
     }
@@ -54,14 +54,14 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
         return Pair.of(leftGasOutput.copy(), rightGasOutput.copy());
     }
 
-    public double getEnergyUsage() {
-        return energyUsage;
+    public double getEnergyMultiplier() {
+        return energyMultiplier;
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         input.write(buffer);
-        buffer.writeDouble(energyUsage);
+        buffer.writeDouble(energyMultiplier);
         leftGasOutput.writeToPacket(buffer);
         rightGasOutput.writeToPacket(buffer);
     }

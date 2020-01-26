@@ -96,9 +96,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     private int currentRedstoneLevel;
 
-    //TODO: Remove this
-    private double BASE_ENERGY_PER_TICK;
-
     private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
@@ -109,7 +106,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     public TileEntityElectrolyticSeparator() {
         super(MekanismBlocks.ELECTROLYTIC_SEPARATOR);
-        BASE_ENERGY_PER_TICK = super.getBaseUsage();
 
         inputHandler = InputHelper.getInputHandler(fluidTank, 0);
         outputHandler = OutputHelper.getOutputHandler(leftTank, rightTank);
@@ -133,11 +129,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         //TODO: Make accessible for automation
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35));
         return builder.build();
-    }
-
-    @Override
-    public double getBaseUsage() {
-        return BASE_ENERGY_PER_TICK;
     }
 
     @Override
@@ -209,16 +200,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Nullable
     @Override
     public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
-        //TODO: Is this fine, or do we need it somewhere that will get called in more places than ONLY when the cache is being made
-        boolean update = BASE_ENERGY_PER_TICK != recipe.getEnergyUsage();
-        BASE_ENERGY_PER_TICK = recipe.getEnergyUsage();
-        if (update) {
-            recalculateUpgrades(Upgrade.ENERGY);
-        }
         return new ElectrolysisCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+              .setEnergyRequirements(() -> getEnergyPerTick() * recipe.getEnergyMultiplier(), this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax == 0) {

@@ -4,7 +4,7 @@
     "amount": 2,
     "tag": "forge:heavy_water"
   },
-  "energyUsage": 800.0,
+  "energyMultiplier": 2.0,
   "leftGasOutput": {
     "gas": "mekanism:deuterium",
     "amount": 2

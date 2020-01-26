@@ -14,8 +14,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class ElectrolysisIRecipe extends ElectrolysisRecipe {
 
-    public ElectrolysisIRecipe(ResourceLocation id, FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput) {
-        super(id, input, energyUsage, leftGasOutput, rightGasOutput);
+    public ElectrolysisIRecipe(ResourceLocation id, FluidStackIngredient input, double energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput) {
+        super(id, input, energyMultiplier, leftGasOutput, rightGasOutput);
     }
 
     @Nonnull

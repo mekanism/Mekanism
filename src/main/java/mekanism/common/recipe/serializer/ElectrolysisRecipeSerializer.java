@@ -31,28 +31,28 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
         FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
         GasStack leftGasOutput = SerializerHelper.getGasStack(json, "leftGasOutput");
         GasStack rightGasOutput = SerializerHelper.getGasStack(json, "rightGasOutput");
-        double energyUsage = 0;
-        if (json.has("energyUsage")) {
-            JsonElement energy = json.get("energyUsage");
+        double energyMultiplier = 1;
+        if (json.has("energyMultiplier")) {
+            JsonElement energy = json.get("energyMultiplier");
             if (!JSONUtils.isNumber(energy)) {
-                throw new JsonSyntaxException("Expected energyUsage to be a non negative number.");
+                throw new JsonSyntaxException("Expected energyMultiplier to be a number greater than or equal to one.");
             }
-            energyUsage = energy.getAsJsonPrimitive().getAsDouble();
-            if (energyUsage < 0) {
-                throw new JsonSyntaxException("Expected secondaryChance to be non negative.");
+            energyMultiplier = energy.getAsJsonPrimitive().getAsDouble();
+            if (energyMultiplier < 1) {
+                throw new JsonSyntaxException("Expected energyMultiplier to be at least one.");
             }
         }
-        return this.factory.create(recipeId, inputIngredient, energyUsage, leftGasOutput, rightGasOutput);
+        return this.factory.create(recipeId, inputIngredient, energyMultiplier, leftGasOutput, rightGasOutput);
     }
 
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             FluidStackIngredient input = FluidStackIngredient.read(buffer);
-            double energy = buffer.readDouble();
+            double energyMultiplier = buffer.readDouble();
             GasStack leftGasOutput = GasStack.readFromPacket(buffer);
             GasStack rightGasOutput = GasStack.readFromPacket(buffer);
-            return this.factory.create(recipeId, input, energy, leftGasOutput, rightGasOutput);
+            return this.factory.create(recipeId, input, energyMultiplier, leftGasOutput, rightGasOutput);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading electrolysis recipe from packet.", e);
             throw e;
@@ -71,6 +71,6 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
 
     public interface IFactory<T extends ElectrolysisRecipe> {
 
-        T create(ResourceLocation id, FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput);
+        T create(ResourceLocation id, FluidStackIngredient input, double energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput);
     }
 }

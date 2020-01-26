@@ -21,7 +21,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
     private final FluidStackIngredient input;
     private final GasStack leftGasOutput;
     private final GasStack rightGasOutput;
-    private double energyUsage;
+    private double energyMultiplier = 1;
 
     protected ElectrolysisRecipeBuilder(FluidStackIngredient input, GasStack leftGasOutput, GasStack rightGasOutput) {
         super(new ResourceLocation(MekanismAPI.MEKANISM_MODID, "separating"));
@@ -37,17 +37,17 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         return new ElectrolysisRecipeBuilder(input, leftGasOutput, rightGasOutput);
     }
 
-    public ElectrolysisRecipeBuilder energyUsage(double energyUsage) {
-        if (energyUsage < 0) {
-            throw new IllegalArgumentException("Energy usage must be at least zero");
+    public ElectrolysisRecipeBuilder energyMultiplier(double multiplier) {
+        if (multiplier < 1) {
+            throw new IllegalArgumentException("Energy multiplier must be greater than or equal to one");
         }
-        this.energyUsage = energyUsage;
+        this.energyMultiplier = multiplier;
         return this;
     }
 
     @Override
     protected ElectrolysisRecipeResult getResult(ResourceLocation id) {
-        return new ElectrolysisRecipeResult(id, input, energyUsage, leftGasOutput, rightGasOutput, advancementBuilder,
+        return new ElectrolysisRecipeResult(id, input, energyMultiplier, leftGasOutput, rightGasOutput, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
@@ -56,13 +56,13 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         private final FluidStackIngredient input;
         private final GasStack leftGasOutput;
         private final GasStack rightGasOutput;
-        private final double energyUsage;
+        private final double energyMultiplier;
 
-        public ElectrolysisRecipeResult(ResourceLocation id, FluidStackIngredient input, double energyUsage, GasStack leftGasOutput, GasStack rightGasOutput,
+        public ElectrolysisRecipeResult(ResourceLocation id, FluidStackIngredient input, double energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput,
               Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
             super(id, advancementBuilder, advancementId, serializerName);
             this.input = input;
-            this.energyUsage = energyUsage;
+            this.energyMultiplier = energyMultiplier;
             this.leftGasOutput = leftGasOutput;
             this.rightGasOutput = rightGasOutput;
         }
@@ -70,9 +70,9 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         @Override
         public void serialize(@Nonnull JsonObject json) {
             json.add("input", input.serialize());
-            if (energyUsage > 0) {
-                //Only add energy usage if it is not zero, as otherwise it will default to zero
-                json.addProperty("energyUsage", energyUsage);
+            if (energyMultiplier > 1) {
+                //Only add energy usage if it is greater than one, as otherwise it will default to one
+                json.addProperty("energyMultiplier", energyMultiplier);
             }
             json.add("leftGasOutput", SerializerHelper.serializeGasStack(leftGasOutput));
             json.add("rightGasOutput", SerializerHelper.serializeGasStack(rightGasOutput));

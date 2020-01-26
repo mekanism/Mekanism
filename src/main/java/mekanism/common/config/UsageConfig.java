@@ -31,7 +31,6 @@ public class UsageConfig implements IMekanismConfig {
     public final ConfigValue<Double> pressurizedReactionBase;
     public final ConfigValue<Double> fluidicPlenisher;
     public final ConfigValue<Double> laser;
-    public final ConfigValue<Double> heavyWaterElectrolysis;
     public final ConfigValue<Double> formulaicAssemblicator;
 
     public final ConfigValue<Integer> teleporterBase;
@@ -64,7 +63,6 @@ public class UsageConfig implements IMekanismConfig {
         fluidicPlenisher = builder.comment("Energy per operation tick (Joules).").define("fluidicPlenisher", 100D);
         laser = builder.comment("Energy per operation tick (Joules).").define("laser", 5_000D);
         formulaicAssemblicator = builder.comment("Energy per operation tick (Joules).").define("formulaicAssemblicator", 100D);
-        heavyWaterElectrolysis = builder.comment("Energy needed for one [recipe unit] of heavy water production (Joules).").define("heavyWaterElectrolysis", 800D);
 
         builder.comment("Teleporter").push(TELEPORTER_CATEGORY);
 

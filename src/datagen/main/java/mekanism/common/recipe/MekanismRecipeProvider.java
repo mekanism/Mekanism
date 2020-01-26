@@ -2206,15 +2206,14 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               FluidStackIngredient.from(MekanismTags.Fluids.BRINE, 10),
               MekanismGases.SODIUM.getGasStack(1),
               MekanismGases.CHLORINE.getGasStack(1)
-        ).energyUsage(400)
-              .addCriterion(Criterion.HAS_ELECTROLYTIC_SEPARATOR)
+        ).addCriterion(Criterion.HAS_ELECTROLYTIC_SEPARATOR)
               .build(consumer, Mekanism.rl(basePath + "brine"));
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
               FluidStackIngredient.from(MekanismTags.Fluids.HEAVY_WATER, 2),
               MekanismGases.DEUTERIUM.getGasStack(2),
               MekanismGases.OXYGEN.getGasStack(1)
-        ).energyUsage(800)
+        ).energyMultiplier(2)
               .addCriterion(Criterion.HAS_ELECTROLYTIC_SEPARATOR)
               .build(consumer, Mekanism.rl(basePath + "heavy_water"));
         //Water
@@ -2222,8 +2221,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               FluidStackIngredient.from(FluidTags.WATER, 2),
               MekanismGases.HYDROGEN.getGasStack(2),
               MekanismGases.OXYGEN.getGasStack(1)
-        ).energyUsage(400)
-              .addCriterion(Criterion.HAS_ELECTROLYTIC_SEPARATOR)
+        ).addCriterion(Criterion.HAS_ELECTROLYTIC_SEPARATOR)
               .build(consumer, Mekanism.rl(basePath + "water"));
     }
 
@@ -2354,7 +2352,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addLogisticalTransporterRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        addBasicTransmitterRecipe(consumer, basePath, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, Tags.Items.DUSTS_REDSTONE);
+        addBasicTransmitterRecipe(consumer, basePath, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismTags.Items.CIRCUITS_BASIC);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismTags.Items.ALLOYS_INFUSED, Criterion.HAS_INFUSED_ALLOY);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismTags.Items.ALLOYS_REINFORCED, Criterion.HAS_REINFORCED_ALLOY);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismTags.Items.ALLOYS_ATOMIC, Criterion.HAS_ATOMIC_ALLOY);
@@ -2382,7 +2380,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addUniversalCableRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        addBasicTransmitterRecipe(consumer, basePath, MekanismBlocks.BASIC_UNIVERSAL_CABLE, MekanismTags.Items.INGOTS_STEEL);
+        addBasicTransmitterRecipe(consumer, basePath, MekanismBlocks.BASIC_UNIVERSAL_CABLE, Tags.Items.DUSTS_REDSTONE);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, MekanismBlocks.BASIC_UNIVERSAL_CABLE, MekanismTags.Items.ALLOYS_INFUSED, Criterion.HAS_INFUSED_ALLOY);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ELITE_UNIVERSAL_CABLE, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, MekanismTags.Items.ALLOYS_REINFORCED, Criterion.HAS_REINFORCED_ALLOY);
         addTransmitterUpgradeRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, MekanismBlocks.ELITE_UNIVERSAL_CABLE, MekanismTags.Items.ALLOYS_ATOMIC, Criterion.HAS_ATOMIC_ALLOY);
