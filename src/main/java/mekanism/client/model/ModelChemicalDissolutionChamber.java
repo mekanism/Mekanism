@@ -229,24 +229,29 @@ public class ModelChemicalDissolutionChamber extends ModelBase
 
 	public void render(float size)
 	{
+		render(size, false);
+	}
+
+	public void render(float size, boolean inventory)
+	{
 		MekanismRenderer.blendOn();
 		
 		support2.render(size);
-		vat5.render(size);
+		if (!inventory) { vat5.render(size);
 		top2.render(size);
-		top.render(size);
+		top.render(size);}
 		base.render(size);
-		vat2.render(size);
+		if (!inventory) { vat2.render(size);
 		vat3.render(size);
 		vat6.render(size);
 		vat9.render(size);
 		vat8.render(size);
 		vat7.render(size);
-		vat4.render(size);
+		vat4.render(size);}
 		backEdge2.render(size);
 		back.render(size);
 		backEdge1.render(size);
-		vents.render(size);
+		if (!inventory) { vents.render(size);
 		support1.render(size);
 		vat1.render(size);
 		nozzle8.render(size);
@@ -260,7 +265,7 @@ public class ModelChemicalDissolutionChamber extends ModelBase
 		nozzle1.render(size);
 		glass.render(size);
 		portToggle1.render(size);
-		portToggle2.render(size);
+		portToggle2.render(size);}
 		
 		MekanismRenderer.blendOff();
 	}

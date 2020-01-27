@@ -527,7 +527,11 @@ public class MekanismRenderer
     
     public static void renderCustomItem(RenderBlocks renderer, ItemStack stack)
     {
+    	//if (mekanism.api.MekanismConfig.client.reducerendermachines) renderItem(stack);
+    	/*if (mekanism.api.MekanismConfig.client.reducerendermachines) {
     	Block block = Block.getBlockFromItem(stack.getItem());
+    	if (block instanceof ICustomBlockIcon) RenderManager.instance.itemRenderer.renderItemIn2D(Tessellator.instance, ((ICustomBlockIcon)block).getIcon(stack, 2).getMaxU(), ((ICustomBlockIcon)block).getIcon(stack, 2).getMinV(), ((ICustomBlockIcon)block).getIcon(stack, 2).getMinU(), ((ICustomBlockIcon)block).getIcon(stack, 2).getMaxV(), ((ICustomBlockIcon)block).getIcon(stack, 2).getIconWidth(), ((ICustomBlockIcon)block).getIcon(stack, 2).getIconHeight(), 0.0625F);
+    	} else {*/Block block = Block.getBlockFromItem(stack.getItem());
     	
     	if(block instanceof ICustomBlockIcon)
     	{
@@ -535,6 +539,76 @@ public class MekanismRenderer
     		prepareItemRender(renderer, stack.getItemDamage(), Block.getBlockFromItem(stack.getItem()));
     		
             try {
+    	        //if (!mekanism.api.MekanismConfig.client.reducerendermachines) {
+    	        if (mekanism.api.MekanismConfig.client.reducerendermachines) {
+    	        Tessellator tessellator = Tessellator.instance;
+    	        GL11.glPushMatrix();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 1.0F, 0.0F);
+    	        renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 1));
+    	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
+    	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 2));
+    	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+    	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 4));
+    	        tessellator.draw();
+    	        //GL11.glPushMatrix();
+    	        double xStart = 0, yStart = 0;
+    	        double xEnd = 1, yEnd = 1;
+    	        double z = 1;
+    	        float nx = 0f, ny = 0f, nz = 0f;
+    	        IIcon icon = custom.getIcon(stack, 2);
+
+		float minU = icon.getMinU();
+    	        float maxU = icon.getMaxU();
+    	        float minV = icon.getMinV();
+    	        float maxV = icon.getMaxV();
+    	        /*tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
+    	        tessellator.addVertexWithUV(0.0D, 0.0D, 0.0D, (double)maxU, (double)maxV);
+    	        tessellator.addVertexWithUV(1.0D, 0.0D, 0.0D, (double)minU, (double)maxV);
+    	        tessellator.addVertexWithUV(1.0D, 1.0D, 0.0D, (double)minU, (double)minV);
+    	        tessellator.addVertexWithUV(0.0D, 1.0D, 0.0D, (double)maxU, (double)minV);
+    	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
+    	        tessellator.addVertexWithUV(0.0D, 1.0D, (double)(0.0F - 0.0625F), (double)maxU, (double)minV);
+    	        tessellator.addVertexWithUV(1.0D, 1.0D, (double)(0.0F - 0.0625F), (double)minU, (double)minV);
+    	        tessellator.addVertexWithUV(1.0D, 0.0D, (double)(0.0F - 0.0625F), (double)minU, (double)maxV);
+    	        tessellator.addVertexWithUV(0.0D, 0.0D, (double)(0.0F - 0.0625F), (double)maxU, (double)maxV);
+    	        tessellator.draw();*/
+    	        /*tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
+    	        
+    	        //0.5000098 0.5156152 0.71876955 0.74998045
+
+    	        tessellator.addVertexWithUV(0D, 1D, z, minU, maxV);
+    	        tessellator.addVertexWithUV(1D, 1D, z, maxU, maxV);
+    	        tessellator.addVertexWithUV(1D, 0D, z, maxU, minV);
+    	        tessellator.addVertexWithUV(0D, 0D, z, minU, minV);*/
+    	        /*tessellator.setNormal(nx, ny, nz);
+
+    	        if (nz > 0.0F) 
+    	        {
+    	            tessellator.addVertexWithUV(xStart, yStart, z, icon.getMinU(), icon.getMinV());
+    	            tessellator.addVertexWithUV(xEnd, yStart, z, icon.getMaxU(), icon.getMinV());
+    	            tessellator.addVertexWithUV(xEnd, yEnd, z, icon.getMaxU(), icon.getMaxV());
+    	            tessellator.addVertexWithUV(xStart, yEnd, z, icon.getMinU(), icon.getMaxV());
+    	        } 
+    	        else 
+    	        {
+    	            tessellator.addVertexWithUV(xStart, yEnd, z, icon.getMinU(), icon.getMaxV());
+    	            tessellator.addVertexWithUV(xEnd, yEnd, z, icon.getMaxU(), icon.getMaxV());
+    	            tessellator.addVertexWithUV(xEnd, yStart, z, icon.getMaxU(), icon.getMinV());
+    	            tessellator.addVertexWithUV(xStart, yStart, z, icon.getMinU(), icon.getMinV());
+    	        }*/
+
+    	        /*tessellator.draw();*/
+    	        GL11.glPopMatrix();
+    	        } else {
     	        Tessellator tessellator = Tessellator.instance;
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(0.0F, -1.0F, 0.0F);
@@ -559,11 +633,34 @@ public class MekanismRenderer
     	        tessellator.startDrawingQuads();
     	        tessellator.setNormal(1.0F, 0.0F, 0.0F);
     	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, custom.getIcon(stack, 5));
+    	        /*} else {
+    	        Tessellator tessellator = Tessellator.instance;
+    	        IIcon iicon = custom.getIcon(stack, 0);
+    	        float minU = iicon.getMinU();
+    	        float maxU = iicon.getMaxU();
+    	        float minV = iicon.getMinV();
+    	        float maxV = iicon.getMaxV();
     	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
+    	        tessellator.addVertexWithUV(0.0D, 0.0D, 0.0D, (double)maxU, (double)maxV);
+    	        tessellator.addVertexWithUV(1.0D, 0.0D, 0.0D, (double)minU, (double)maxV);
+    	        tessellator.addVertexWithUV(1.0D, 1.0D, 0.0D, (double)minU, (double)minV);
+    	        tessellator.addVertexWithUV(0.0D, 1.0D, 0.0D, (double)maxU, (double)minV);
+    	        tessellator.draw();
+    	        tessellator.startDrawingQuads();
+    	        tessellator.setNormal(0.0F, 0.0F, -1.0F);
+    	        tessellator.addVertexWithUV(0.0D, 1.0D, (double)(0.0F - 0.0625F), (double)maxU, (double)minV);
+    	        tessellator.addVertexWithUV(1.0D, 1.0D, (double)(0.0F - 0.0625F), (double)minU, (double)minV);
+    	        tessellator.addVertexWithUV(1.0D, 0.0D, (double)(0.0F - 0.0625F), (double)minU, (double)maxV);
+    	        tessellator.addVertexWithUV(0.0D, 0.0D, (double)(0.0F - 0.0625F), (double)maxU, (double)maxV);
+    	        tessellator.draw();
+    	        }*/}
             } catch(Exception e) {}
             
             GL11.glTranslatef(0.5F, 0.5F, 0.5F);
     	}
+    	//}
     }
     
 	/**
@@ -578,6 +675,21 @@ public class MekanismRenderer
 		prepareItemRender(renderer, metadata, block);
 		
         try {
+	        if (mekanism.api.MekanismConfig.client.reducerendermachines) {
+	        Tessellator tessellator = Tessellator.instance;
+	        tessellator.startDrawingQuads();
+	        tessellator.setNormal(0.0F, 1.0F, 0.0F);
+	        renderer.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(1, metadata));
+	        tessellator.draw();
+	        tessellator.startDrawingQuads();
+	        tessellator.setNormal(0.0F, 0.0F, 1.0F);
+	        renderer.renderFaceZPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(2, metadata));
+	        tessellator.draw();
+	        tessellator.startDrawingQuads();
+	        tessellator.setNormal(-1.0F, 0.0F, 0.0F);
+	        renderer.renderFaceXNeg(block, 0.0D, 0.0D, 0.0D, block.getIcon(4, metadata));
+	        tessellator.draw();
+	        } else {
 	        Tessellator tessellator = Tessellator.instance;
 	        tessellator.startDrawingQuads();
 	        tessellator.setNormal(0.0F, -1.0F, 0.0F);
@@ -603,6 +715,7 @@ public class MekanismRenderer
 	        tessellator.setNormal(1.0F, 0.0F, 0.0F);
 	        renderer.renderFaceXPos(block, 0.0D, 0.0D, 0.0D, block.getIcon(5, metadata));
 	        tessellator.draw();
+	        }
         } catch(Exception e) {}
         
         GL11.glTranslatef(0.5F, 0.5F, 0.5F);

@@ -92,7 +92,7 @@ public class RenderEnergyCube extends TileEntitySpecialRenderer
 		if(tileEntity.getEnergy()/tileEntity.getMaxEnergy() > 0.1)
 		{
 			GL11.glPushMatrix();
-			GL11.glTranslated(x + 0.5, y + 0.5, z + 0.5);
+			GL11.glTranslatef((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f);
 			bindTexture(coreTexture);
 
 			MekanismRenderer.blendOn();

@@ -91,7 +91,7 @@ public class BlockGenerator extends BlockContainer implements ISpecialBounds, IB
 	
 	public IIcon BASE_ICON;
 	
-	public Random machineRand = new Random();
+	public Random machineRand = new org.bogdang.modifications.random.XSTR();
 
 	public BlockGenerator()
 	{

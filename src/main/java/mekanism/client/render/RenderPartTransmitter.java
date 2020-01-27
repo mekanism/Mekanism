@@ -178,7 +178,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 
 				float[] pos = TransporterUtils.getStackPosition(transporter.getTransmitter(), stack, partialTick*transporter.tier.speed);
 
-				GL11.glTranslated(vec.x + pos[0], vec.y + pos[1] - entityItem.yOffset, vec.z + pos[2]);
+				GL11.glTranslatef((float)vec.x + pos[0], (float)vec.y + pos[1] - entityItem.yOffset, (float)vec.z + pos[2]);
 				GL11.glScalef(0.75F, 0.75F, 0.75F);
 
 				renderer.doRender(entityItem, 0, 0, 0, 0, 0);
@@ -250,7 +250,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.reset();
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
-		GL11.glTranslated(pos.x, pos.y, pos.z);
+		GL11.glTranslatef((float)pos.x, (float)pos.y, (float)pos.z);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -274,7 +274,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.reset();
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
-		GL11.glTranslated(pos.x, pos.y, pos.z);
+		GL11.glTranslatef((float)pos.x, (float)pos.y, (float)pos.z);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{
@@ -332,7 +332,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 			MekanismRenderer.colorFluid(fluid);
 
 			CCRenderState.changeTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslated(pos.x, pos.y, pos.z);
+			GL11.glTranslatef((float)pos.x, (float)pos.y, (float)pos.z);
 
 			boolean gas = fluid.isGaseous();
 
@@ -520,7 +520,7 @@ public class RenderPartTransmitter implements IIconSelfRegister
 		CCRenderState.reset();
 		CCRenderState.useNormals = true;
 		CCRenderState.startDrawing();
-		GL11.glTranslated(pos.x, pos.y, pos.z);
+		GL11.glTranslatef((float)pos.x, (float)pos.y, (float)pos.z);
 
 		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
 		{

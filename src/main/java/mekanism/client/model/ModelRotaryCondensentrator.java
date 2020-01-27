@@ -172,24 +172,29 @@ public class ModelRotaryCondensentrator extends ModelBase
 
 	public void render(float size)
 	{
-		portRight.render(size);
-		tankRight.render(size);
+		render(size, false);
+	}
+
+	public void render(float size, boolean inventory)
+	{
+		if (!inventory) { portRight.render(size);
+		tankRight.render(size);}
 		base.render(size);
-		pipe.render(size);
+		if (!inventory) pipe.render(size);
 		middle.render(size);
 		shaft.render(size);
-		portLeft.render(size);
-		tankLeft.render(size);
+		if (!inventory) { portLeft.render(size);
+		tankLeft.render(size);}
 		support4.render(size);
 		bridge.render(size);
-		tube8.render(size);
+		if (!inventory) { tube8.render(size);
 		tube7.render(size);
 		tube6.render(size);
 		tube5.render(size);
 		tube4.render(size);
 		tube3.render(size);
 		tube2.render(size);
-		tube1.render(size);
+		tube1.render(size);}
 		top.render(size);
 		support3.render(size);
 		support2.render(size);

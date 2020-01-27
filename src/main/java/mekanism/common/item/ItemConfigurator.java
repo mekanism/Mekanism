@@ -46,7 +46,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, ITool
 	public final int ENERGY_PER_CONFIGURE = 400;
 	public final int ENERGY_PER_ITEM_DUMP = 8;
 
-	private Random random = new Random();
+	private Random random = new org.bogdang.modifications.random.XSTR();
 
 	public ItemConfigurator()
 	{

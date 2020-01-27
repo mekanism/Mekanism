@@ -57,7 +57,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 		if(tileEntity.getHousedBlades() > 0)
 		{
 			GL11.glPushMatrix();
-			GL11.glTranslated(x + 0.5, y - 1, z + 0.5);
+			GL11.glTranslatef((float)x + 0.5f, (float)y - 1f, (float)z + 0.5f);
 			GL11.glRotatef(tileEntity.rotationLower, 0.0F, 1.0F, 0.0F);
 			model.render(0.0625F, baseIndex);
 			GL11.glPopMatrix();
@@ -66,7 +66,7 @@ public class RenderTurbineRotor extends TileEntitySpecialRenderer
 		if(tileEntity.getHousedBlades() == 2)
 		{
 			GL11.glPushMatrix();
-			GL11.glTranslated(x + 0.5, y - 0.5, z + 0.5);
+			GL11.glTranslatef((float)x + 0.5f, (float)y - 0.5f, (float)z + 0.5f);
 			GL11.glRotatef(tileEntity.rotationUpper, 0.0F, 1.0F, 0.0F);
 			model.render(0.0625F, baseIndex+1);
 			GL11.glPopMatrix();
