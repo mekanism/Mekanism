@@ -165,7 +165,7 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
                                     fluidFound.grow(stored.getAmount());
                                 } else {
                                     //If there are multiple types of fluids just return empty
-                                    //TODO: Fix the case of if our new item can support multiple fluids
+                                    //TODO: Fix the case of if our new item can support multiple fluids (none of our items currently do so)
                                     return ItemStack.EMPTY;
                                 }
                             }
@@ -221,23 +221,28 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
         }
         //Transfer stored upgrades
         if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof ISupportsUpgrades) {
-            //TODO: Fix this as it does not seem to work properly
+            //TODO: Fix this not transferring upgrade items that are in the upgrade slot itself and haven't finished being installed
             Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
             for (int i = 0; i < invLength; i++) {
                 ItemStack stack = inv.getStackInSlot(i);
                 if (!stack.isEmpty() && stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ISupportsUpgrades) {
-                    Map<Upgrade, Integer> stackMap = Upgrade.buildMap(ItemDataUtils.getDataMapIfPresent(stack));
-                    for (Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
-                        if (entry != null && entry.getKey() != null && entry.getValue() != null) {
-                            Integer val = upgrades.get(entry.getKey());
-                            upgrades.put(entry.getKey(), Math.min(entry.getKey().getMax(), (val != null ? val : 0) + entry.getValue()));
+                    CompoundNBT componentUpgrade = ItemDataUtils.getCompound(stack, "componentUpgrade");
+                    if (!componentUpgrade.isEmpty()) {
+                        Map<Upgrade, Integer> stackMap = Upgrade.buildMap(componentUpgrade);
+                        for (Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
+                            if (entry != null && entry.getKey() != null && entry.getValue() != null) {
+                                Integer val = upgrades.get(entry.getKey());
+                                upgrades.put(entry.getKey(), Math.min(entry.getKey().getMax(), (val != null ? val : 0) + entry.getValue()));
+                            }
                         }
                     }
                 }
             }
             if (!upgrades.isEmpty()) {
                 //Only transfer upgrades if we were able to find any
-                Upgrade.saveMap(upgrades, ItemDataUtils.getDataMap(toReturn));
+                CompoundNBT nbt = new CompoundNBT();
+                Upgrade.saveMap(upgrades, nbt);
+                ItemDataUtils.setCompound(toReturn, "componentUpgrade", nbt);
             }
         }
         return toReturn;
