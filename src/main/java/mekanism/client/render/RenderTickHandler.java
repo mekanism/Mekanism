@@ -33,7 +33,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class RenderTickHandler
 {
-	public Random rand = new Random();
+	public Random rand = new org.bogdang.modifications.random.XSTR();
 	public Minecraft mc = Minecraft.getMinecraft();
 
 	@SubscribeEvent

@@ -201,25 +201,30 @@ public class ModelLogisticalSorter extends ModelBase
 
 	public void render(float size, boolean active)
 	{
+		render(size, active, false);
+	}
+
+	public void render(float size, boolean active, boolean inventory)
+	{
 		portBack.render(size);
 		portBackLarge.render(size);
-		connectorBack.render(size);
+		if (!inventory) connectorBack.render(size);
 		portFront.render(size);
-		ring1.render(size);
+		if (!inventory) { ring1.render(size);
 		ring2.render(size);
 		ring3.render(size);
 		ring4.render(size);
 		ring5.render(size);
 		ring6.render(size);
 		ring7.render(size);
-		pistonBar1.render(size);
+		pistonBar1.render(size);}
 		pipe.render(size);
 		pistonBase1.render(size);
 		pistonBrace1.render(size);
-		pistonConnector1.render(size);
+		if (!inventory) pistonConnector1.render(size);
 		pistonBrace2.render(size);
-		pistonConnector2.render(size);
-		pistonBar2.render(size);
+		if (!inventory) { pistonConnector2.render(size);
+		pistonBar2.render(size);}
 		pistonBase2.render(size);
 		panel2.render(size);
 		
@@ -228,10 +233,10 @@ public class ModelLogisticalSorter extends ModelBase
 			MekanismRenderer.glowOn();
 		}
 		
-		led4.render(size);
+		if (!inventory) { led4.render(size);
 		led3.render(size);
 		led2.render(size);
-		led1.render(size);
+		led1.render(size);}
 		
 		if(active)
 		{

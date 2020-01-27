@@ -28,7 +28,7 @@ public class EntityObsidianTNT extends Entity
 
 		setPosition(x, y, z);
 
-		float randPi = (float)(Math.random()*Math.PI*2);
+		float randPi = (float)((new org.bogdang.modifications.random.XSTR()).nextFloat()*Math.PI*2);
 
 		motionX = -(Math.sin(randPi))*0.02F;
 		motionY = 0.2;

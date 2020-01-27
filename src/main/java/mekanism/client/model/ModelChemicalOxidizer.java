@@ -88,16 +88,21 @@ public class ModelChemicalOxidizer extends ModelBase
 
 	public void render(float size)
 	{
+		render(size, false);
+	}
+
+	public void render(float size, boolean inventory)
+	{
 		stand.render(size);
 		tank.render(size);
-		pipe2.render(size);
+		if (!inventory) { pipe2.render(size);
 		bridge.render(size);
-		pipe1.render(size);
+		pipe1.render(size);}
 		tower2.render(size);
 		tower1.render(size);
 		base.render(size);
-		connector.render(size);
-		connectorToggle.render(size);
+		if (!inventory) { connector.render(size);
+		connectorToggle.render(size);}
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

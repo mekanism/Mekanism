@@ -17,7 +17,7 @@ public class SparkleAnimation
 {
 	public TileEntity pointer;
 
-	public Random random = new Random();
+	public Random random = new org.bogdang.modifications.random.XSTR();
 
 	public Set<Coord4D> iteratedNodes = new HashSet<Coord4D>();
 	

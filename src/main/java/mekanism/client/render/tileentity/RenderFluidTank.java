@@ -50,7 +50,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer
 			push();
 			
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslated(x, y, z);
+			GL11.glTranslatef((float)x, (float)y, (float)z);
 	
 			MekanismRenderer.glowOn(fluid.getLuminosity());
 			MekanismRenderer.colorFluid(fluid);
@@ -77,7 +77,7 @@ public class RenderFluidTank extends TileEntitySpecialRenderer
 			push();
 			
 			bindTexture(MekanismRenderer.getBlocksTexture());
-			GL11.glTranslated(x, y, z);
+			GL11.glTranslatef((float)x, (float)y, (float)z);
 			
 			MekanismRenderer.glowOn(valveFluid.getLuminosity());
 			MekanismRenderer.colorFluid(valveFluid);

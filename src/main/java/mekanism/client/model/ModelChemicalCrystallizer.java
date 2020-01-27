@@ -138,10 +138,15 @@ public class ModelChemicalCrystallizer extends ModelBase
 
 	public void render(float size)
 	{
+		render(size, false);
+	}
+
+	public void render(float size, boolean inventory)
+	{
 		MekanismRenderer.blendOn();
 		
 		tray.render(size);
-		support4.render(size);
+		if (!inventory) { support4.render(size);
 		rimBack.render(size);
 		portRight.render(size);
 		rimRight.render(size);
@@ -150,11 +155,11 @@ public class ModelChemicalCrystallizer extends ModelBase
 		portLeft.render(size);
 		support3.render(size);
 		support2.render(size);
-		support1.render(size);
+		support1.render(size);}
 		tank.render(size);
-		rod1.render(size);
+		if (!inventory) { rod1.render(size);
 		rod2.render(size);
-		rod3.render(size);
+		rod3.render(size);}
 		base.render(size);
 		Shape1.render(size);
 		

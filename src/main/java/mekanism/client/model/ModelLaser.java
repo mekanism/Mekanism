@@ -155,26 +155,31 @@ public class ModelLaser extends ModelBase
 
 	public void render(float size)
 	{
-		connector.render(size);
+		render(size, false);
+	}
+
+	public void render(float size, boolean inventory)
+	{
+		if (!inventory) connector.render(size);
 		center.render(size);
 		shaft.render(size);
-		ring1.render(size);
+		if (!inventory) { ring1.render(size);
 		port.render(size);
 		rod1.render(size);
 		fin1.render(size);
 		fin2.render(size);
 		fin3.render(size);
 		fin4.render(size);
-		ring2.render(size);
+		ring2.render(size);}
 		body.render(size);
-		rod2.render(size);
+		if (!inventory) { rod2.render(size);
 		wire.render(size);
 		rod3.render(size);
 		fin5.render(size);
 		fin6.render(size);
 		fin7.render(size);
 		fin8.render(size);
-		rod4.render(size);
+		rod4.render(size);}
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z) 

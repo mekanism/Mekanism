@@ -59,18 +59,18 @@ public class RenderBin extends TileEntitySpecialRenderer
 				switch(ForgeDirection.getOrientation(tileEntity.facing))
 				{
 					case NORTH:
-						GL11.glTranslated(x + 0.73, y + 0.83, z - 0.01);
+						GL11.glTranslatef((float)x + 0.73f, (float)y + 0.83f, (float)z - 0.01f);
 						break;
 					case SOUTH:
-						GL11.glTranslated(x + 0.27, y + 0.83, z + 1.01);
+						GL11.glTranslatef((float)x + 0.27f, (float)y + 0.83f, (float)z + 1.01f);
 						GL11.glRotatef(180, 0, 1, 0);
 						break;
 					case WEST:
-						GL11.glTranslated(x - 0.01, y + 0.83, z + 0.27);
+						GL11.glTranslatef((float)x - 0.01f, (float)y + 0.83f, (float)z + 0.27f);
 						GL11.glRotatef(90, 0, 1, 0);
 						break;
 					case EAST:
-						GL11.glTranslated(x + 1.01, y + 0.83, z + 0.73);
+						GL11.glTranslatef((float)x + 1.01f, (float)y + 0.83f, (float)z + 0.73f);
 						GL11.glRotatef(-90, 0, 1, 0);
 						break;
 				}
@@ -107,7 +107,7 @@ public class RenderBin extends TileEntitySpecialRenderer
 
 		float displayWidth = 1 - (2 / 16);
 		float displayHeight = 1 - (2 / 16);
-		GL11.glTranslated(x, y, z);
+		GL11.glTranslatef((float)x, (float)y, (float)z);
 
 		switch(side)
 		{

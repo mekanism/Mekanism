@@ -312,20 +312,25 @@ public class ModelQuantumEntangloporter extends ModelBase
 		portLeftLarge.mirror = true;
 		setRotation(portLeftLarge, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size, TextureManager manager)
+	{
+		render(size, manager, false);
+	}
+	
+	public void render(float size, TextureManager manager, boolean inventory)
 	{
 		GL11.glPushMatrix();
 		MekanismRenderer.blendOn();
 		
-		doRender(size);
+		doRender(size, inventory);
 		
 		manager.bindTexture(OVERLAY);
 		GL11.glScalef(1.001F, 1.001F, 1.001F);
 		GL11.glTranslatef(0, -0.0011F, 0);
 		MekanismRenderer.glowOn();
 		
-		doRender(size);
+		doRender(size, inventory);
 		
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
@@ -334,14 +339,19 @@ public class ModelQuantumEntangloporter extends ModelBase
 
 	public void doRender(float size)
 	{
-		portTop.render(size);
+		doRender(size, false);
+	}
+
+	public void doRender(float size, boolean inventory)
+	{
+		if (!inventory) { portTop.render(size);
 		portBottom.render(size);
 		portLeft.render(size);
 		portRight.render(size);
 		portBack.render(size);
-		portFront.render(size);
+		portFront.render(size);}
 		energyCubeCore.render(size);
-		frameEdge1.render(size);
+		if (!inventory) { frameEdge1.render(size);
 		frameEdge2.render(size);
 		frameEdge3.render(size);
 		frameEdge4.render(size);
@@ -372,7 +382,7 @@ public class ModelQuantumEntangloporter extends ModelBase
 		corner5.render(size);
 		corner6.render(size);
 		corner7.render(size);
-		corner8.render(size);
+		corner8.render(size);}
 		//portRightLarge.render(size);
 		//portLeftLarge.render(size);
 	}

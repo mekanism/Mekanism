@@ -74,20 +74,25 @@ public class ModelChargepad extends ModelBase
 		pillar1.mirror = true;
 		setRotation(pillar1, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size, TextureManager manager)
+	{
+		render(size, manager, false);
+	}
+	
+	public void render(float size, TextureManager manager, boolean inventory)
 	{
 		GL11.glPushMatrix();
 		MekanismRenderer.blendOn();
 		
-		doRender(size);
+		doRender(size, inventory);
 		
 		manager.bindTexture(OVERLAY);
 		GL11.glScalef(1.001F, 1.001F, 1.001F);
 		GL11.glTranslatef(0, -0.0011F, 0);
 		MekanismRenderer.glowOn();
 		
-		doRender(size);
+		doRender(size, inventory);
 		
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
@@ -96,13 +101,18 @@ public class ModelChargepad extends ModelBase
 
 	private void doRender(float size) 
 	{
+		doRender(size, false);
+	}
+
+	private void doRender(float size, boolean inventory) 
+	{
 		base.render(size);
-		port.render(size);
+		if (!inventory) { port.render(size);
 		plug.render(size);
 		connector.render(size);
 		stand.render(size);
 		pillar2.render(size);
-		pillar1.render(size);
+		pillar1.render(size);}
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z)

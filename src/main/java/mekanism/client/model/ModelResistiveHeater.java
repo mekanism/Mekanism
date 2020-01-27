@@ -166,31 +166,41 @@ public class ModelResistiveHeater extends ModelBase
 		portLeft.mirror = true;
 		setRotation(portLeft, 0F, 0F, 0F);
 	}
-	
+
 	public void render(float size, boolean on, TextureManager manager)
+	{
+		render(size, on, manager, false);
+	}
+	
+	public void render(float size, boolean on, TextureManager manager, boolean inventory)
 	{
 		GL11.glPushMatrix();
 		MekanismRenderer.blendOn();
 		
-		doRender(size);
+		doRender(size, inventory);
 		
 		manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
 		GL11.glScalef(1.001F, 1.001F, 1.001F);
 		GL11.glTranslatef(0, -0.0011F, 0);
 		MekanismRenderer.glowOn();
 		
-		doRender(size);
+		doRender(size, inventory);
 		
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
 		GL11.glPopMatrix();
 	}
 
-	private void doRender(float size)
+	private void doRender(float size) 
+	{
+		doRender(size, false);
+	}
+
+	private void doRender(float size, boolean inventory)
 	{
 		wallLeft.render(size);
 		base.render(size);
-		fin10.render(size);
+		if (!inventory) { fin10.render(size);
 		portRight.render(size);
 		fin9.render(size);
 		fin2.render(size);
@@ -205,9 +215,9 @@ public class ModelResistiveHeater extends ModelBase
 		fin1.render(size);
 		bar1.render(size);
 		bar4.render(size);
-		bar3.render(size);
+		bar3.render(size);}
 		wallRight.render(size);
-		portLeft.render(size);
+		if (!inventory) portLeft.render(size);
 	}
 
 	private void setRotation(ModelRenderer model, float x, float y, float z) 

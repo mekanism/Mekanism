@@ -82,6 +82,7 @@ public class MekanismConfig
 		public static boolean enableAmbientLighting;
 		public static int ambientLightingLevel;
 		public static boolean opaqueTransmitters = false;
+		public static boolean reducerendermachines = false;
 	}
 	
 	public static class machines

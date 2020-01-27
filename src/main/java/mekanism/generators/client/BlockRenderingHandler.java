@@ -45,7 +45,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			if(metadata == GeneratorType.BIO_GENERATOR.meta)
 			{
 				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-				GL11.glTranslated(0.0F, -1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "BioGenerator.png"));
 				bioGenerator.render(0.0625F);
 			}
@@ -61,14 +61,14 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			{
 				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 				GL11.glRotatef(90F, 0.0F, -1.0F, 0.0F);
-				GL11.glTranslated(0.0F, -1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "SolarGenerator.png"));
 				solarGenerator.render(0.0625F);
 			}
 			else if(metadata == GeneratorType.HEAT_GENERATOR.meta)
 			{
 				GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-				GL11.glTranslated(0.0F, -1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "HeatGenerator.png"));
 				heatGenerator.render(0.0625F, false, mc.renderEngine);
 			}
@@ -76,7 +76,7 @@ public class BlockRenderingHandler implements ISimpleBlockRenderingHandler
 			{
 				GL11.glRotatef(180F, 0.0F, 1.0F, 1.0F);
 				GL11.glRotatef(90F, -1.0F, 0.0F, 0.0F);
-				GL11.glTranslated(0.0F, -1.0F, 0.0F);
+				GL11.glTranslatef(0.0F, -1.0F, 0.0F);
 				GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
 				mc.renderEngine.bindTexture(MekanismUtils.getResource(ResourceType.RENDER, "GasGenerator.png"));
 				gasGenerator.render(0.0625F);

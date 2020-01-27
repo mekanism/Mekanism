@@ -421,20 +421,25 @@ public class ModelDigitalMiner extends ModelBase
 		monitor3.mirror = true;
 		setRotation(monitor3, 0.0872665F, 0.2094395F, 0F);
 	}
-	
+
 	public void render(float size, boolean on, TextureManager manager)
+	{
+		render(size, on, manager, false);
+	}
+	
+	public void render(float size, boolean on, TextureManager manager, boolean inventory)
 	{
 		GL11.glPushMatrix();
 		MekanismRenderer.blendOn();
 		
-		doRender(size);
+		doRender(size, inventory);
 		
 		manager.bindTexture(on ? OVERLAY_ON : OVERLAY_OFF);
 		GL11.glScalef(1.001F, 1.001F, 1.001F);
 		GL11.glTranslatef(0, -0.0011F, 0);
 		MekanismRenderer.glowOn();
 		
-		doRender(size);
+		doRender(size, inventory);
 		
 		MekanismRenderer.glowOff();
 		MekanismRenderer.blendOff();
@@ -443,7 +448,12 @@ public class ModelDigitalMiner extends ModelBase
 
 	private void doRender(float size) 
 	{
-		keyboard.render(size);
+		doRender(size, false);
+	}
+
+	private void doRender(float size, boolean inventory) 
+	{
+		if (!inventory) { keyboard.render(size);
 		keyboardBottom.render(size);
 		keyboardSupportExt1.render(size);
 		keyboardSupportExt2.render(size);
@@ -461,10 +471,10 @@ public class ModelDigitalMiner extends ModelBase
 		monitor2.render(size);
 		monitor3.render(size);
 		monitorMount1.render(size);
-		monitorMount2.render(size);
+		monitorMount2.render(size);}
 		frame1.render(size);
 		frame3.render(size);
-		plate5.render(size);
+		if (!inventory) { plate5.render(size);
 		bracket1.render(size);
 		bracket2.render(size);
 		bracket3.render(size);
@@ -476,17 +486,17 @@ public class ModelDigitalMiner extends ModelBase
 		bracketPlate1.render(size);
 		bracketPlate2.render(size);
 		bracketPlate3.render(size);
-		bracketPlate4.render(size);
+		bracketPlate4.render(size);}
 		supportBeam1.render(size);
 		supportBeam2.render(size);
 		supportBeam3.render(size);
 		supportBeam4.render(size);
-		foot1.render(size);
+		if (!inventory) { foot1.render(size);
 		foot2.render(size);
 		foot3.render(size);
-		foot4.render(size);
+		foot4.render(size);}
 		core.render(size);
-		powerCable1a.render(size);
+		if (!inventory) { powerCable1a.render(size);
 		powerCable1b.render(size);
 		powerCable2.render(size);
 		powerCable3.render(size);
@@ -494,7 +504,7 @@ public class ModelDigitalMiner extends ModelBase
 		powerConnector2a.render(size);
 		powerConnector2b.render(size);
 		powerCpnnector3a.render(size);
-		powerConnector3b.render(size);
+		powerConnector3b.render(size);}
 		frame2a.render(size);
 		frame2b.render(size);
 		frame2c.render(size);

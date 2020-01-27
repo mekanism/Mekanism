@@ -75,7 +75,7 @@ public class RenderIndustrialTurbine extends TileEntitySpecialRenderer
 				{
 					push();
 	
-					GL11.glTranslated(getX(data.location.xCoord), getY(data.location.yCoord), getZ(data.location.zCoord));
+					GL11.glTranslatef((float)getX(data.location.xCoord), (float)getY(data.location.yCoord), (float)getZ(data.location.zCoord));
 					
 					MekanismRenderer.glowOn(tileEntity.structure.fluidStored.getFluid().getLuminosity());
 					MekanismRenderer.colorFluid(tileEntity.structure.fluidStored.getFluid());

@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class StatUtils
 {
-	public static Random rand = new Random();
+	public static Random rand = new org.bogdang.modifications.random.XSTR();
 
 	public static int inversePoisson(double mean)
 	{
