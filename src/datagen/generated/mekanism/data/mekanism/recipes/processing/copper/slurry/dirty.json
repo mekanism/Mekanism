@@ -11,6 +11,6 @@
   },
   "output": {
     "gas": "mekanism:dirty_copper_slurry",
-    "amount": 1
+    "amount": 1000
   }
 }

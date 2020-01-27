@@ -1600,7 +1600,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         ItemStackGasToGasRecipeBuilder.dissolution(
               ItemStackIngredient.from(oreTag),
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
-              slurry.getDirtySlurry().getGasStack(1)
+              slurry.getDirtySlurry().getGasStack(1_000)
         ).addCriterion(Criterion.HAS_CHEMICAL_DISSOLUTION_CHAMBER)
               .addCriterion(hasOre)
               .build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
