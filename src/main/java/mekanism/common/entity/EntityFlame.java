@@ -1,6 +1,5 @@
 package mekanism.common.entity;
 
-import java.util.Collections;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.Pos3D;
@@ -18,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
@@ -29,10 +29,11 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
@@ -116,24 +117,10 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
         if (blockRayTrace.getType() != Type.MISS) {
             motionVec = blockRayTrace.getHitVec();
         }
-        Entity entity = null;
-        double entityDist = 0.0D;
-        for (Entity foundEntity : world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().expand(getMotion()).grow(1.0D, 1.0D, 1.0D))) {
-            if ((foundEntity instanceof ItemEntity || foundEntity.canBeCollidedWith()) && foundEntity != owner) {
-                float boundsScale = 0.3F;
-                AxisAlignedBB newBounds = foundEntity.getBoundingBox().expand(boundsScale, boundsScale, boundsScale);
-                //TODO: Verify this is correct
-                BlockRayTraceResult result = AxisAlignedBB.rayTrace(Collections.singleton(newBounds), localVec, motionVec, getPosition());
-                if (result != null && result.getType() != Type.MISS) {
-                    double dist = localVec.distanceTo(result.getHitVec());
-                    if (dist < entityDist || entityDist == 0) {
-                        entity = foundEntity;
-                        entityDist = dist;
-                    }
-                }
-            }
-        }
-        if (entity != null) {
+        EntityRayTraceResult entityResult = ProjectileHelper.rayTraceEntities(world, this, localVec, motionVec,
+              getBoundingBox().expand(getMotion()).grow(1.0D, 1.0D, 1.0D), EntityPredicates.NOT_SPECTATING);
+        if (entityResult != null) {
+            Entity entity = entityResult.getEntity();
             if (entity instanceof PlayerEntity) {
                 PlayerEntity player = (PlayerEntity) entity.getEntity();
                 if (player.abilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
