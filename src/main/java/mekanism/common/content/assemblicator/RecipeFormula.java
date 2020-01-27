@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 
@@ -23,7 +23,7 @@ public class RecipeFormula {
             input.set(i, StackUtils.size(inv.get(i), 1));
         }
         resetToRecipe();
-        recipe = RecipeUtils.getRecipeFromGrid(dummy, world);
+        recipe = getRecipeFromGrid(dummy, world);
     }
 
     public RecipeFormula(World world, List<IInventorySlot> craftingGridSlots) {
@@ -35,7 +35,7 @@ public class RecipeFormula {
             }
         }
         resetToRecipe();
-        recipe = RecipeUtils.getRecipeFromGrid(dummy, world);
+        recipe = getRecipeFromGrid(dummy, world);
     }
 
     private void resetToRecipe() {
@@ -92,5 +92,9 @@ public class RecipeFormula {
 
     public boolean isFormulaEqual(World world, RecipeFormula formula) {
         return formula.getRecipe(world) == getRecipe(world);
+    }
+
+    private static ICraftingRecipe getRecipeFromGrid(CraftingInventory inv, World world) {
+        return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, inv, world).get();
     }
 }

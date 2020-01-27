@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 @MethodsReturnNonnullByDefault
 public class ExtendedShapedRecipeBuilder extends ShapedRecipeBuilder {
 
-    private ExtendedShapedRecipeBuilder(IItemProvider result, int count) {
+    protected ExtendedShapedRecipeBuilder(IItemProvider result, int count) {
         super(result, count);
     }
 

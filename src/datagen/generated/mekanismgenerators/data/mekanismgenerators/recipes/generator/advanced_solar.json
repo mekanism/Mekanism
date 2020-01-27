@@ -1,12 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "#A#",
-    "#A#",
+    "PAP",
+    "PAP",
     "III"
   ],
   "key": {
-    "#": {
+    "P": {
       "item": "mekanismgenerators:solar_generator"
     },
     "A": {

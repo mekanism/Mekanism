@@ -17,7 +17,7 @@ import net.minecraft.util.ResourceLocation;
 @MethodsReturnNonnullByDefault
 public class ExtendedShapelessRecipeBuilder extends ShapelessRecipeBuilder {
 
-    private ExtendedShapelessRecipeBuilder(IItemProvider result, int count) {
+    protected ExtendedShapelessRecipeBuilder(IItemProvider result, int count) {
         super(result, count);
     }
 

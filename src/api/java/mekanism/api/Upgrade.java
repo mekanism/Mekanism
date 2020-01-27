@@ -38,14 +38,12 @@ public enum Upgrade implements IHasTranslationKey {
 
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundNBT nbtTags) {
         Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
-        if (nbtTags != null) {
-            if (nbtTags.contains("upgrades", NBT.TAG_LIST)) {
-                ListNBT list = nbtTags.getList("upgrades", NBT.TAG_COMPOUND);
-                for (int tagCount = 0; tagCount < list.size(); tagCount++) {
-                    CompoundNBT compound = list.getCompound(tagCount);
-                    Upgrade upgrade = values()[compound.getInt("type")];
-                    upgrades.put(upgrade, compound.getInt("amount"));
-                }
+        if (nbtTags != null && nbtTags.contains("upgrades", NBT.TAG_LIST)) {
+            ListNBT list = nbtTags.getList("upgrades", NBT.TAG_COMPOUND);
+            for (int tagCount = 0; tagCount < list.size(); tagCount++) {
+                CompoundNBT compound = list.getCompound(tagCount);
+                Upgrade upgrade = values()[compound.getInt("type")];
+                upgrades.put(upgrade, compound.getInt("amount"));
             }
         }
         return upgrades;

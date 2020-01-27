@@ -12,6 +12,7 @@ import mekanism.common.recipe.Pattern;
 import mekanism.common.recipe.RecipePattern;
 import mekanism.common.recipe.RecipePattern.TripleLine;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
+import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
@@ -74,10 +75,10 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         //Advanced Solar Generator
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR)
               .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
-                    TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.ALLOY, Pattern.PREVIOUS),
+                    TripleLine.of(Pattern.PREVIOUS, Pattern.ALLOY, Pattern.PREVIOUS),
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT))
-              ).key(Pattern.CONSTANT, GeneratorsBlocks.SOLAR_GENERATOR)
+              ).key(Pattern.PREVIOUS, GeneratorsBlocks.SOLAR_GENERATOR)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .addCriterion(Criterion.has(GeneratorsBlocks.SOLAR_GENERATOR))
@@ -126,7 +127,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.has(Items.FURNACE))
               .build(consumer, MekanismGenerators.rl("generator/heat"));
         //Wind
-        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.WIND_GENERATOR)
+        MekDataShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.WIND_GENERATOR)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.OSMIUM, Pattern.EMPTY),
                     TripleLine.of(Pattern.OSMIUM, Pattern.ALLOY, Pattern.OSMIUM),

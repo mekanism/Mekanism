@@ -43,6 +43,7 @@ import mekanism.common.recipe.RecipePattern.DoubleLine;
 import mekanism.common.recipe.RecipePattern.TripleLine;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
+import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
@@ -190,7 +191,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredBin(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockBin, ?> bin, IItemProvider previousBin, Tag<Item> circuitTag,
           Tag<Item> alloyTag, RecipeCriterion circuitCriterion) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(bin)
+        MekDataShapedRecipeBuilder.shapedRecipe(bin)
               .pattern(BIN_PATTERN)
               .key(Pattern.PREVIOUS, previousBin)
               .key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE)
@@ -582,7 +583,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredEnergyCube(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockEnergyCube, ?> energyCube,
           IItemProvider previousEnergyCube, Tag<Item> ingotTag, Tag<Item> alloyTag) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(energyCube)
+        MekDataShapedRecipeBuilder.shapedRecipe(energyCube)
               .pattern(ENERGY_CUBE_PATTERN)
               .key(Pattern.PREVIOUS, previousEnergyCube)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
@@ -918,7 +919,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addFactoryRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFactory, ?> factory,
           IItemProvider toUpgrade, Tag<Item> ingotTag, Tag<Item> alloyTag, Tag<Item> circuitTag) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(factory)
+        MekDataShapedRecipeBuilder.shapedRecipe(factory)
               .pattern(TIER_PATTERN)
               .key(Pattern.PREVIOUS, toUpgrade)
               .key(Pattern.CIRCUIT, circuitTag)
@@ -947,7 +948,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredFluidTank(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockFluidTank, ?> tank, IItemProvider previousTank,
           Tag<Item> alloyTag, RecipeCriterion alloyCriterion) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(tank)
+        MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(FLUID_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
@@ -1011,7 +1012,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredGasTank(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockGasTank, ?> tank, IItemProvider previousTank,
           Tag<Item> alloyTag, RecipeCriterion alloyCriterion) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(tank)
+        MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(GAS_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)
               .key(Pattern.OSMIUM, MekanismTags.Items.INGOTS_OSMIUM)
@@ -1051,7 +1052,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addInductionCellRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Basic needs to be handled slightly differently
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_INDUCTION_CELL)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.BASIC_INDUCTION_CELL)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.LITHIUM, Pattern.ENERGY, Pattern.LITHIUM),
                     TripleLine.of(Pattern.ENERGY, Pattern.CONSTANT, Pattern.ENERGY),
@@ -1068,7 +1069,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addTieredInductionCellRecipe(Consumer<IFinishedRecipe> consumer, String basePath, BlockRegistryObject<BlockInductionCell, ?> cell,
           IItemProvider previousCell, IItemProvider energyCube) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(cell)
+        MekDataShapedRecipeBuilder.shapedRecipe(cell)
               .pattern(INDUCTION_CELL_PATTERN)
               .key(Pattern.PREVIOUS, previousCell)
               .key(Pattern.CONSTANT, energyCube)
@@ -2439,7 +2440,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addMiscRecipes(Consumer<IFinishedRecipe> consumer) {
         //Atomic disassembler
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ATOMIC_DISASSEMBLER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ATOMIC_DISASSEMBLER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
@@ -2484,7 +2485,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.has("charcoal_block", MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL))
               .build(consumer, Mekanism.rl("charcoal"));
         //Chargepad
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARGEPAD)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARGEPAD)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT),
                     TripleLine.of(Pattern.STEEL, Pattern.ENERGY, Pattern.STEEL))
@@ -2494,7 +2495,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_ENERGY_TABLET)
               .build(consumer);
         //Chemical crystallizer
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_CRYSTALLIZER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
@@ -2507,7 +2508,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
               .build(consumer);
         //Chemical dissolution chamber
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CIRCUIT, Pattern.TANK, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
@@ -2520,7 +2521,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_INFUSED_ALLOY)
               .build(consumer);
         //Chemical infuser
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_INFUSER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_INFUSER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(Pattern.TANK, Pattern.STEEL_CASING, Pattern.TANK),
@@ -2534,7 +2535,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_INFUSED_ALLOY)
               .build(consumer);
         //Chemical injection chamber
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
@@ -2546,7 +2547,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_PURIFICATION_CHAMBER)
               .build(consumer);
         //Chemical oxidizer
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_OXIDIZER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_OXIDIZER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(PERSONAL_CHEST_CHAR, Pattern.CONSTANT, Pattern.TANK),
@@ -2559,7 +2560,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_INFUSED_ALLOY)
               .build(consumer);
         //Chemical washer
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_WASHER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_WASHER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CIRCUIT, Pattern.BUCKET, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
@@ -2634,7 +2635,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
               .build(consumer);
         //Digital miner
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DIGITAL_MINER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DIGITAL_MINER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(SORTER_CHAR, ROBIT_CHAR, SORTER_CHAR),
@@ -2668,7 +2669,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.has(MekanismBlocks.DYNAMIC_TANK))
               .build(consumer);
         //Electric bow
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ELECTRIC_BOW)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ELECTRIC_BOW)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.EMPTY),
                     TripleLine.of(Pattern.CONSTANT, Pattern.EMPTY, Pattern.ENERGY),
@@ -2679,7 +2680,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_ENERGY_TABLET)
               .build(consumer);
         //Electric pump
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTRIC_PUMP)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ELECTRIC_PUMP)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.BUCKET, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.ALLOY),
@@ -2751,7 +2752,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer);
         //Flamethrower
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.FLAMETHROWER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.FLAMETHROWER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.STEEL),
@@ -2764,7 +2765,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_ADVANCED_CIRCUIT)
               .build(consumer);
         //Fluidic plenisher
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FLUIDIC_PLENISHER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.FLUIDIC_PLENISHER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.INGOT, Pattern.INGOT),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT),
@@ -2788,7 +2789,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer);
         //Free runners
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.FREE_RUNNERS)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.FREE_RUNNERS)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CIRCUIT, Pattern.EMPTY, Pattern.CIRCUIT),
                     TripleLine.of(Pattern.ALLOY, Pattern.EMPTY, Pattern.ALLOY),
@@ -2859,7 +2860,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.has(MekanismItems.HDPE_ROD))
               .build(consumer);
         //Jetpack
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.JETPACK)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.JETPACK)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.STEEL, Pattern.CIRCUIT, Pattern.STEEL),
                     TripleLine.of(Pattern.INGOT, Pattern.TANK, Pattern.INGOT),
@@ -2871,7 +2872,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
               .build(consumer);
         //Jetpack armored
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ARMORED_JETPACK)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ARMORED_JETPACK)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.CONSTANT, Pattern.EMPTY, Pattern.CONSTANT),
                     TripleLine.of(Pattern.INGOT, Pattern.STEEL, Pattern.INGOT),
@@ -2883,7 +2884,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.has(MekanismItems.JETPACK))
               .build(consumer);
         //Laser
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.STEEL_CASING, Pattern.CONSTANT),
@@ -2895,7 +2896,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer);
         //Laser amplifier
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_AMPLIFIER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_AMPLIFIER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.STEEL, Pattern.STEEL, Pattern.STEEL),
                     TripleLine.of(Pattern.STEEL, Pattern.ENERGY, Pattern.CONSTANT),
@@ -2938,7 +2939,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_OSMIUM)
               .build(consumer);
         //Network reader
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.NETWORK_READER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.NETWORK_READER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, GLASS_CHAR, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
@@ -2994,7 +2995,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_BASIC_CIRCUIT)
               .build(consumer);
         //Portable teleporter
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.PORTABLE_TELEPORTER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.PORTABLE_TELEPORTER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.ENERGY, Pattern.EMPTY),
                     TripleLine.of(Pattern.CIRCUIT, TELEPORTATION_CORE_CHAR, Pattern.CIRCUIT),
@@ -3028,7 +3029,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_INFUSED_ALLOY)
               .build(consumer);
         //Pressurized reaction chamber
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.STEEL, Pattern.ALLOY, Pattern.STEEL),
                     TripleLine.of(Pattern.CIRCUIT, Pattern.PREVIOUS, Pattern.CIRCUIT),
@@ -3042,7 +3043,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_ENRICHMENT_CHAMBER)
               .build(consumer);
         //Purification chamber
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PURIFICATION_CHAMBER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PURIFICATION_CHAMBER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(Pattern.OSMIUM, Pattern.PREVIOUS, Pattern.OSMIUM),
@@ -3077,7 +3078,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_OSMIUM)
               .build(consumer, Mekanism.rl("rails"));
         //Resistive heater
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESISTIVE_HEATER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESISTIVE_HEATER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.REDSTONE, Pattern.INGOT),
                     TripleLine.of(Pattern.REDSTONE, Pattern.STEEL_CASING, Pattern.REDSTONE),
@@ -3090,7 +3091,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_ENERGY_TABLET)
               .build(consumer);
         //Robit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.ROBIT)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ROBIT)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.ENERGY, Pattern.ALLOY, Pattern.ENERGY),
@@ -3103,7 +3104,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_ATOMIC_ALLOY)
               .build(consumer);
         //Rotary condensentrator
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ROTARY_CONDENSENTRATOR)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ROTARY_CONDENSENTRATOR)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(GLASS_CHAR, Pattern.CIRCUIT, GLASS_CHAR),
                     TripleLine.of(Pattern.TANK, Pattern.ENERGY, Pattern.CONSTANT),
@@ -3116,7 +3117,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_ENERGY_TABLET)
               .build(consumer);
         //Scuba tank
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SCUBA_TANK)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.SCUBA_TANK)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.CIRCUIT, Pattern.EMPTY),
                     TripleLine.of(Pattern.ALLOY, Pattern.TANK, Pattern.ALLOY),
@@ -3142,7 +3143,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .addCriterion(Criterion.HAS_STEEL_CASING)
               .build(consumer);
         //Seismic reader
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.SEISMIC_READER)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.SEISMIC_READER)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL),
                     TripleLine.of(Pattern.STEEL, Pattern.ENERGY, Pattern.STEEL),

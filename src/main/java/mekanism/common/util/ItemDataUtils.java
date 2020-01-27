@@ -9,6 +9,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO: Use ItemStack#getOrCreateTag in various places
 //TODO: Move constants to some sort of constant file
+//TODO: For some things like energy (example energy tablet), do we want to make the NBT go away once it is fully drained again
+// this probably would be the best way to do it for mod compat with auto crafters
 public final class ItemDataUtils {
 
     public static final String DATA_ID = "mekData";

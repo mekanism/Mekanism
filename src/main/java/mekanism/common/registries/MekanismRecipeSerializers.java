@@ -17,6 +17,7 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.MekanismShapedRecipe;
 import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;
 import mekanism.common.recipe.impl.ChemicalInfuserIRecipe;
 import mekanism.common.recipe.impl.ChemicalOxidizerIRecipe;
@@ -50,6 +51,7 @@ import mekanism.common.recipe.serializer.ItemStackGasToItemStackRecipeSerializer
 import mekanism.common.recipe.serializer.ItemStackToGasRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToInfuseTypeRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToItemStackRecipeSerializer;
+import mekanism.common.recipe.serializer.MekanismShapedRecipeSerializer;
 import mekanism.common.recipe.serializer.MetallurgicInfuserRecipeSerializer;
 import mekanism.common.recipe.serializer.PressurizedReactionRecipeSerializer;
 import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
@@ -101,4 +103,6 @@ public class MekanismRecipeSerializers {
     public static final IRecipeSerializerRegistryObject<RotaryRecipe> ROTARY = RECIPE_SERIALIZERS.register("rotary", () -> new RotaryRecipeSerializer<>(new RotaryIRecipe.Factory()));
 
     public static final IRecipeSerializerRegistryObject<SawmillRecipe> SAWING = RECIPE_SERIALIZERS.register("sawing", () -> new SawmillRecipeSerializer<>(SawmillIRecipe::new));
+
+    public static final IRecipeSerializerRegistryObject<MekanismShapedRecipe> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", MekanismShapedRecipeSerializer::new);
 }
