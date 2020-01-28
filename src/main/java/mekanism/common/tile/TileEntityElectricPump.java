@@ -140,7 +140,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
 
             if (!fluidTank.isEmpty()) {
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos.up());
-                CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
+                CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
                     FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
                     fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), FluidAction.EXECUTE);
                 });

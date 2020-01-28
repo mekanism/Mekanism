@@ -11,7 +11,6 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
@@ -222,7 +221,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             return false;
         }
         ItemStack copyStack = StackUtils.size(itemStack, 1);
-        Optional<IFluidHandlerItem> fluidHandlerItem = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(copyStack));
+        Optional<IFluidHandlerItem> fluidHandlerItem = MekanismUtils.toOptional(FluidUtil.getFluidHandler(copyStack));
         if (fluidHandlerItem.isPresent()) {
             IFluidHandlerItem handler = fluidHandlerItem.get();
             FluidStack fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);

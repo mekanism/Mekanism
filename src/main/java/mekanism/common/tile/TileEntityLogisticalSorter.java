@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
@@ -12,6 +13,7 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
@@ -142,15 +144,15 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     public TransitResponse emitItemToTransporter(TileEntity front, TransitRequest request, EnumColor filterColor, int min) {
-        return CapabilityUtils.getCapabilityHelper(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()).getIfPresentElseDo(
-              transporter -> {
-                  if (roundRobin) {
-                      return TransporterUtils.insertRR(this, transporter, request, filterColor, true, min);
-                  }
-                  return TransporterUtils.insert(this, transporter, request, filterColor, true, min);
-              },
-              () -> InventoryUtils.putStackInInventory(front, request, getDirection(), false)
-        );
+        Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(front, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()));
+        if (capability.isPresent()) {
+            ILogisticalTransporter transporter = capability.get();
+            if (roundRobin) {
+                return TransporterUtils.insertRR(this, transporter, request, filterColor, true, min);
+            }
+            return TransporterUtils.insert(this, transporter, request, filterColor, true, min);
+        }
+        return InventoryUtils.putStackInInventory(front, request, getDirection(), false);
     }
 
     @Nonnull

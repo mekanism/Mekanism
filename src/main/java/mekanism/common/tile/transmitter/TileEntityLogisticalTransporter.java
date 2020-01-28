@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,6 +18,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
@@ -94,9 +96,14 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public boolean isValidTransmitter(TileEntity tile) {
-        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).matches(
-              transporter -> super.isValidTransmitter(tile) && (getTransmitter().getColor() == null || transporter.getColor() == null ||
-                                                                getTransmitter().getColor() == transporter.getColor()));
+        Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
+        if (capability.isPresent()) {
+            ILogisticalTransporter transporter = capability.get();
+            if (getTransmitter().getColor() == null || transporter.getColor() == null || getTransmitter().getColor() == transporter.getColor()) {
+                return super.isValidTransmitter(tile);
+            }
+        }
+        return false;
     }
 
     @Override

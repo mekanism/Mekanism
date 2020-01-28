@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
@@ -44,6 +45,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -148,7 +150,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     private void activeEmit() {
         if (!fluidTank.isEmpty()) {
             TileEntity tile = MekanismUtils.getTileEntity(getWorld(), pos.down());
-            CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
+            CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
                 fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), tier == FluidTankTier.CREATIVE ? FluidAction.SIMULATE : FluidAction.EXECUTE);
             });
@@ -181,10 +183,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     public int pushUp(@Nonnull FluidStack fluid, FluidAction fluidAction) {
         TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
         if (tile != null) {
-            return CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).getIfPresentElse(
-                  handler -> PipeUtils.canFill(handler, fluid) ? handler.fill(fluid, fluidAction) : 0,
-                  0
-            );
+            Optional<IFluidHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN));
+            if (capability.isPresent()) {
+                IFluidHandler handler = capability.get();
+                if (PipeUtils.canFill(handler, fluid)) {
+                    return handler.fill(fluid, fluidAction);
+                }
+            }
         }
         return 0;
     }

@@ -3,6 +3,7 @@ package mekanism.common.tile.component;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -13,6 +14,7 @@ import mekanism.api.gas.GasTank;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
@@ -142,10 +144,13 @@ public class TileComponentEjector implements ITileComponent {
                 continue;
             }
             TransitRequest finalEjectMap = ejectMap;
-            TransitResponse response = CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()).getIfPresentElseDo(
-                  transporter -> TransporterUtils.insert(this.tile, transporter, finalEjectMap, outputColor, true, 0),
-                  () -> InventoryUtils.putStackInInventory(tile, finalEjectMap, side, false)
-            );
+            TransitResponse response;
+            Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, side.getOpposite()));
+            if (capability.isPresent()) {
+                response = TransporterUtils.insert(this.tile, capability.get(), finalEjectMap, outputColor, true, 0);
+            } else {
+                response = InventoryUtils.putStackInInventory(tile, finalEjectMap, side, false);
+            }
             if (!response.isEmpty()) {
                 response.getInvStack(this.tile, side).use();
                 //Set map to null so next loop recalculates the eject map so that all sides get a chance to be ejected to

@@ -2,6 +2,7 @@ package mekanism.common.network;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -10,7 +11,6 @@ import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.transmitters.grid.EnergyNetwork;
@@ -82,17 +82,18 @@ public class PacketTransmitterUpdate {
                 return;
             }
             TileEntity tileEntity = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
-            LazyOptionalHelper<IGridTransmitter> capabilityHelper = CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null);
-            capabilityHelper.ifPresent(transmitter -> {
+            Optional<IGridTransmitter<?, ?, ?>> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, null));
+            if (capability.isPresent()) {
+                //TODO: Evaluate this stuff and see if we can do it in a way that is fine for generics
+                IGridTransmitter transmitter = capability.get();
                 if (message.packetType == PacketType.UPDATE) {
                     DynamicNetwork<?, ?, ?> network = transmitter.hasTransmitterNetwork() && !message.newNetwork ? transmitter.getTransmitterNetwork() : transmitter.createEmptyNetwork();
                     network.register();
                     transmitter.setTransmitterNetwork(network);
                     for (Coord4D coord : message.transmitterCoords) {
                         TileEntity tile = MekanismUtils.getTileEntity(player.world, coord.getPos());
-                        CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(
-                              gridTransmitter -> gridTransmitter.setTransmitterNetwork(network)
-                        );
+                        CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null)
+                              .ifPresent(gridTransmitter -> ((IGridTransmitter) gridTransmitter).setTransmitterNetwork(network));
                     }
                     network.updateCapacity();
                     return;
@@ -118,7 +119,7 @@ public class PacketTransmitterUpdate {
                         net.didTransfer = message.didFluidTransfer;
                     }
                 }
-            });
+            }
         });
         context.get().setPacketHandled(true);
     }

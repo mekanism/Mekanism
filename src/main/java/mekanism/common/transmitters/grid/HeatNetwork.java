@@ -1,11 +1,11 @@
 package mekanism.common.transmitters.grid;
 
 import java.util.Collection;
+import java.util.Optional;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.util.CapabilityUtils;
@@ -75,10 +75,10 @@ public class HeatNetwork extends DynamicNetwork<IHeatTransfer, HeatNetwork, Void
         if (!isRemote()) {
             for (IGridTransmitter<IHeatTransfer, HeatNetwork, Void> transmitter : transmitters) {
                 if (transmitter instanceof TransmitterImpl) {
-                    LazyOptionalHelper<IHeatTransfer> capabilityHelper = CapabilityUtils.getCapabilityHelper(((TransmitterImpl<?, ?, ?>) transmitter).getTileEntity(),
-                          Capabilities.HEAT_TRANSFER_CAPABILITY, null);
-                    if (capabilityHelper.isPresent()) {
-                        IHeatTransfer heatTransmitter = capabilityHelper.getValue();
+                    Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(((TransmitterImpl<?, ?, ?>) transmitter).getTileEntity(),
+                          Capabilities.HEAT_TRANSFER_CAPABILITY, null));
+                    if (capability.isPresent()) {
+                        IHeatTransfer heatTransmitter = capability.get();
                         double[] d = heatTransmitter.simulateHeat();
                         newHeatTransferred += d[0];
                         newHeatLost += d[1];

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,6 +66,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.UsernameCache;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -108,6 +110,21 @@ public final class MekanismUtils {
                 return MekanismBlocks.CREATIVE_GAS_TANK.getItemStack();
         }
         return ItemStack.EMPTY;
+    }
+
+    /**
+     * Converts a {@link LazyOptional} to a normal {@link Optional}. This is useful for if we are going to resolve the value anyways if it is present.
+     *
+     * @param lazyOptional The lazy optional to convert
+     * @param <T>          The type of the optional
+     *
+     * @return A normal {@link Optional} or {@link Optional#empty()} if the lazy optional is not present.
+     */
+    public static <T> Optional<T> toOptional(@Nonnull LazyOptional<T> lazyOptional) {
+        if (lazyOptional.isPresent()) {
+            return Optional.of(lazyOptional.orElseThrow(() -> new RuntimeException("Failed to retrieve value of lazy optional when it claimed it was present.")));
+        }
+        return Optional.empty();
     }
 
     /**

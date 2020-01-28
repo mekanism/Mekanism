@@ -14,8 +14,8 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.inventory.slot.IInventorySlot;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -41,7 +41,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(fluidHandler, "Fluid handler cannot be null");
         Objects.requireNonNull(isValidFluid, "Fluid validity check cannot be null");
         return new FluidInventorySlot(fluidHandler, isValidFluid, alwaysFalse, stack -> {
-            Optional<IFluidHandlerItem> cap = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(stack));
+            Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 boolean allEmpty = true;
@@ -72,7 +72,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(isValidFluid, "Fluid validity check cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new FluidInventorySlot(fluidHandler, isValidFluid, alwaysFalse, stack -> {
-            Optional<IFluidHandlerItem> cap = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(stack));
+            Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
             if (cap.isPresent()) {
                 boolean mode = modeSupplier.getAsBoolean();
                 //Mode == true if fluid to gas
@@ -97,7 +97,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
             if (capability.isPresent()) {
                 if (modeSupplier.getAsBoolean()) {
                     //Input tank, so we want to fill it
-                    IFluidHandlerItem fluidHandlerItem = LazyOptionalHelper.toOptional(capability).get();
+                    IFluidHandlerItem fluidHandlerItem = MekanismUtils.toOptional(capability).get();
                     for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
                         FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                         if (!fluidInTank.isEmpty() && isValidFluid.test(fluidInTank)) {
@@ -120,7 +120,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(fluidHandler, "Fluid handler cannot be null");
         Objects.requireNonNull(isValidFluid, "Fluid validity check cannot be null");
         return new FluidInventorySlot(fluidHandler, isValidFluid, alwaysFalse, stack -> {
-            Optional<IFluidHandlerItem> cap = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(stack));
+            Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
                 for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
@@ -151,7 +151,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
         //TODO: Stacked buckets are not accepted by this because FluidBucketWrapper#fill returns false if it is stacked
         // One potential fix would be to copy it to a size of 1
         return new FluidInventorySlot(fluidHandler, alwaysFalse, stack -> {
-            Optional<IFluidHandlerItem> cap = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(stack));
+            Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
             if (cap.isPresent()) {
                 IFluidHandlerItem itemFluidHandler = cap.get();
                 boolean allEmpty = true;
@@ -173,7 +173,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
 
     //TODO: Should we make this also have the fluid type have to match a desired type???
     private static boolean isNonFullFluidContainer(LazyOptional<IFluidHandlerItem> capability) {
-        Optional<IFluidHandlerItem> cap = LazyOptionalHelper.toOptional(capability);
+        Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(capability);
         if (cap.isPresent()) {
             IFluidHandlerItem fluidHandler = cap.get();
             for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
@@ -214,7 +214,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
     public void fillTank(IInventorySlot outputSlot) {
         if (!isEmpty()) {
             //Try filling from the tank's item
-            Optional<IFluidHandlerItem> capability = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(current));
+            Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(current));
             if (capability.isPresent()) {
                 IFluidHandlerItem itemFluidHandler = capability.get();
                 int itemTanks = itemFluidHandler.getTanks();
@@ -332,7 +332,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
             return false;
         }
         ItemStack inputCopy = StackUtils.size(current, 1);
-        Optional<IFluidHandlerItem> cap = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(inputCopy));
+        Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(inputCopy));
         if (!cap.isPresent()) {
             //The capability should be present based on checks that happen before this method, but if for some reason it isn't just exit
             return false;
@@ -368,7 +368,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
         }
 
         ItemStack input = StackUtils.size(current, 1);
-        Optional<IFluidHandlerItem> cap = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(input));
+        Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(input));
         if (!cap.isPresent()) {
             //The capability should be present based on checks that happen before this method, but if for some reason it isn't just exit
             return false;
@@ -424,7 +424,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
     public void fillTank() {
         if (getCount() == 1) {
             //Try filling from the tank's item
-            Optional<IFluidHandlerItem> capability = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(current));
+            Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(current));
             if (capability.isPresent()) {
                 IFluidHandlerItem itemFluidHandler = capability.get();
                 int tanks = itemFluidHandler.getTanks();

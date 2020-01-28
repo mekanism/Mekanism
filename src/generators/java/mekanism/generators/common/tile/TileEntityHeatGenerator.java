@@ -2,6 +2,7 @@ package mekanism.generators.common.tile;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -313,7 +314,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public IHeatTransfer getAdjacent(Direction side) {
         if (side == Direction.DOWN) {
             TileEntity adj = MekanismUtils.getTileEntity(getWorld(), pos.down());
-            return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
+            Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()));
+            if (capability.isPresent()) {
+                return capability.get();
+            }
         }
         return null;
     }

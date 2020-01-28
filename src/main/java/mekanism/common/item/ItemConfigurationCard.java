@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.text.EnumColor;
@@ -53,15 +54,12 @@ public class ItemConfigurationCard extends Item {
             BlockPos pos = context.getPos();
             Direction side = context.getFace();
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-            if (CapabilityUtils.getCapabilityHelper(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
+            if (CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
                 if (SecurityUtils.canAccess(player, tile)) {
                     ItemStack stack = player.getHeldItem(context.getHand());
                     if (player.isShiftKeyDown()) {
-                        CompoundNBT data = CapabilityUtils.getCapabilityHelper(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).getIfPresentElseDo(
-                              special -> special.getConfigurationData(getBaseData(tile)),
-                              () -> getBaseData(tile)
-                        );
-
+                        Optional<ISpecialConfigData> configData = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side));
+                        CompoundNBT data = configData.isPresent() ? configData.get().getConfigurationData(getBaseData(tile)) : getBaseData(tile);
                         if (data != null) {
                             data.putString("dataType", getNameFromTile(tile, side));
                             setData(stack, data);
@@ -74,9 +72,7 @@ public class ItemConfigurationCard extends Item {
                     if (data != null) {
                         if (getNameFromTile(tile, side).equals(getDataType(stack))) {
                             setBaseData(data, tile);
-                            CapabilityUtils.getCapabilityHelper(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(
-                                  special -> special.setConfigurationData(data)
-                            );
+                            CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(special -> special.setConfigurationData(data));
                             updateTile(tile);
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO, Translation.of(getDataType(stack)))));
@@ -96,7 +92,7 @@ public class ItemConfigurationCard extends Item {
 
     private <TILE extends TileEntity & ITileNetwork> void updateTile(TileEntity tile) {
         //Check the capability in case for some reason the tile doesn't want to expose the fact it has it
-        CapabilityUtils.getCapabilityHelper(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
+        CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
             if (network instanceof TileEntity) {
                 //Ensure the implementation is still a tile entity
                 Mekanism.packetHandler.sendUpdatePacket((TILE) network);
@@ -127,14 +123,15 @@ public class ItemConfigurationCard extends Item {
     }
 
     private String getNameFromTile(TileEntity tile, Direction side) {
+        Optional<ISpecialConfigData> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side));
+        if (capability.isPresent()) {
+            return capability.get().getDataType();
+        }
         String ret = Integer.toString(tile.hashCode());
         if (tile instanceof TileEntityMekanism) {
             ret = ((TileEntityMekanism) tile).getBlockType().getTranslationKey();
         }
-        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).getIfPresentElse(
-              ISpecialConfigData::getDataType,
-              ret
-        );
+        return ret;
     }
 
     public void setData(ItemStack stack, CompoundNBT data) {

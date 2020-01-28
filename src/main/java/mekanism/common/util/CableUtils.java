@@ -1,7 +1,10 @@
 package mekanism.common.util;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.EnergyAcceptorWrapper;
 import mekanism.common.base.IEnergyWrapper;
@@ -18,9 +21,8 @@ import net.minecraftforge.energy.IEnergyStorage;
 public final class CableUtils {
 
     public static boolean isCable(TileEntity tile) {
-        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).matches(
-              gridTransmitter -> TransmissionType.checkTransmissionType(gridTransmitter, TransmissionType.ENERGY)
-        );
+        return CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).filter(transmitter ->
+              TransmissionType.checkTransmissionType(transmitter, TransmissionType.ENERGY)).isPresent();
     }
 
     /**
@@ -36,7 +38,7 @@ public final class CableUtils {
             return false;
         }
         return isAcceptor(cableEntity, tile, side) || isOutputter(cableEntity, tile, side) ||
-               (MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tile, CapabilityEnergy.ENERGY, side.getOpposite()).isPresent());
+               (MekanismUtils.useForge() && CapabilityUtils.getCapability(tile, CapabilityEnergy.ENERGY, side.getOpposite()).isPresent());
     }
 
     /**
@@ -71,22 +73,35 @@ public final class CableUtils {
         }
 
         Direction opposite = side.getOpposite();
-
-        if (CapabilityUtils.getCapabilityHelper(tile, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, opposite).matches(outputter -> outputter.canOutputEnergy(opposite))) {
+        Optional<IStrictEnergyOutputter> energyOutputter = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.ENERGY_OUTPUTTER_CAPABILITY, opposite));
+        if (energyOutputter.isPresent() && energyOutputter.get().canOutputEnergy(opposite)) {
             return true;
         }
-        return MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tile, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canExtract);
+        if (MekanismUtils.useForge()) {
+            Optional<IEnergyStorage> forgeEnergy = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityEnergy.ENERGY, opposite));
+            if (forgeEnergy.isPresent() && forgeEnergy.get().canExtract()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean isAcceptor(TileEntity source, TileEntity tile, Direction side) {
         Direction opposite = side.getOpposite();
-        if (CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, opposite).isPresent()) {
+        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, opposite).isPresent()) {
             return false;
         }
-        if (CapabilityUtils.getCapabilityHelper(tile, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, opposite).matches(acceptor -> acceptor.canReceiveEnergy(opposite))) {
+        Optional<IStrictEnergyAcceptor> energyAcceptor = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, opposite));
+        if (energyAcceptor.isPresent() && energyAcceptor.get().canReceiveEnergy(opposite)) {
             return true;
         }
-        return MekanismUtils.useForge() && CapabilityUtils.getCapabilityHelper(tile, CapabilityEnergy.ENERGY, opposite).matches(IEnergyStorage::canReceive);
+        if (MekanismUtils.useForge()) {
+            Optional<IEnergyStorage> forgeEnergy = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityEnergy.ENERGY, opposite));
+            if (forgeEnergy.isPresent() && forgeEnergy.get().canReceive()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void emit(IEnergyWrapper emitter) {

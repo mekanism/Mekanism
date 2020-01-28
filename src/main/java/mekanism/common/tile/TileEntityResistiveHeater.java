@@ -164,7 +164,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public IHeatTransfer getAdjacent(Direction side) {
         TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-        return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
+        return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
     @Nonnull

@@ -118,7 +118,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             }
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
             for (Direction side : sides) {
-                CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
+                CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
                     if (PipeUtils.canFill(acceptor, fluidToSend)) {
                         target.addHandler(side, acceptor);
                     }

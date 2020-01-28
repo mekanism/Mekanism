@@ -1,5 +1,6 @@
 package mekanism.common.inventory.slot;
 
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
@@ -11,7 +12,6 @@ import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -37,9 +37,10 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             return ((IEnergizedItem) stack.getItem()).getEnergy(stack) == 0;
         }
         if (MekanismUtils.useForge()) {
-            LazyOptionalHelper<IEnergyStorage> forgeCapability = new LazyOptionalHelper<>(stack.getCapability(CapabilityEnergy.ENERGY));
+            Optional<IEnergyStorage> forgeCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityEnergy.ENERGY));
             if (forgeCapability.isPresent()) {
-                return forgeCapability.matches(storage -> !storage.canExtract() || storage.extractEnergy(1, true) == 0);
+                IEnergyStorage storage = forgeCapability.get();
+                return !storage.canExtract() || storage.extractEnergy(1, true) == 0;
             }
         }
         return true;
@@ -53,7 +54,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             }
         }
         if (MekanismUtils.useForge()) {
-            if (new LazyOptionalHelper<>(stack.getCapability(CapabilityEnergy.ENERGY)).matches(capability -> capability.extractEnergy(1, true) > 0)) {
+            Optional<IEnergyStorage> forgeCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityEnergy.ENERGY));
+            if (forgeCapability.isPresent() && forgeCapability.get().extractEnergy(1, true) > 0) {
                 return true;
             }
         }
@@ -70,9 +72,10 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             return energized.getEnergy(stack) == energized.getMaxEnergy(stack);
         }
         if (MekanismUtils.useForge()) {
-            LazyOptionalHelper<IEnergyStorage> forgeCapability = new LazyOptionalHelper<>(stack.getCapability(CapabilityEnergy.ENERGY));
+            Optional<IEnergyStorage> forgeCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityEnergy.ENERGY));
             if (forgeCapability.isPresent()) {
-                return forgeCapability.matches(storage -> !storage.canReceive() || storage.receiveEnergy(1, true) == 0);
+                IEnergyStorage storage = forgeCapability.get();
+                return !storage.canReceive() || storage.receiveEnergy(1, true) == 0;
             }
         }
         return true;
@@ -88,8 +91,13 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 }
             }
         }
-        return MekanismUtils.useForge() && new LazyOptionalHelper<>(stack.getCapability(CapabilityEnergy.ENERGY))
-              .matches(capability -> capability.receiveEnergy(1, true) > 0);
+        if (MekanismUtils.useForge()) {
+            Optional<IEnergyStorage> forgeCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityEnergy.ENERGY));
+            if (forgeCapability.isPresent() && forgeCapability.get().receiveEnergy(1, true) > 0) {
+                return true;
+            }
+        }
+        return false;
     };
     private static final Predicate<@NonNull ItemStack> validPredicate = stack -> {
         //Used to be ChargeUtils#isEnergyItem
@@ -98,7 +106,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             return true;
         }
         if (MekanismUtils.useForge()) {
-            if (new LazyOptionalHelper<>(stack.getCapability(CapabilityEnergy.ENERGY)).matches(IEnergyStorage::canExtract)) {
+            Optional<IEnergyStorage> forgeCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityEnergy.ENERGY));
+            if (forgeCapability.isPresent() && forgeCapability.get().canExtract()) {
                 return true;
             }
         }
@@ -149,19 +158,16 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 }
             }
             if (MekanismUtils.useForge()) {
-                LazyOptionalHelper<IEnergyStorage> forgeCapability = new LazyOptionalHelper<>(current.getCapability(CapabilityEnergy.ENERGY));
-                boolean discharged = forgeCapability.getIfPresentElse(storage -> {
+                Optional<IEnergyStorage> forgeCapability = MekanismUtils.toOptional(current.getCapability(CapabilityEnergy.ENERGY));
+                if (forgeCapability.isPresent()) {
+                    IEnergyStorage storage = forgeCapability.get();
                     if (storage.canExtract()) {
                         int needed = ForgeEnergyIntegration.toForge(storer.getMaxEnergy() - storer.getEnergy());
                         storer.setEnergy(storer.getEnergy() + ForgeEnergyIntegration.fromForge(storage.extractEnergy(needed, false)));
-                        return true;
+                        onContentsChanged();
+                        //Exit early as we successfully discharged
+                        return;
                     }
-                    return false;
-                }, false);
-                if (discharged) {
-                    onContentsChanged();
-                    //Exit early as we successfully discharged
-                    return;
                 }
             }
             if (current.getItem() == Items.REDSTONE && storer.getEnergy() + MekanismConfig.general.ENERGY_PER_REDSTONE.get() <= storer.getMaxEnergy()) {
@@ -191,19 +197,16 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                 }
             }
             if (MekanismUtils.useForge()) {
-                LazyOptionalHelper<IEnergyStorage> forgeCapability = new LazyOptionalHelper<>(current.getCapability(CapabilityEnergy.ENERGY));
-                boolean charged = forgeCapability.getIfPresentElse(storage -> {
+                Optional<IEnergyStorage> forgeCapability = MekanismUtils.toOptional(current.getCapability(CapabilityEnergy.ENERGY));
+                if (forgeCapability.isPresent()) {
+                    IEnergyStorage storage = forgeCapability.get();
                     if (storage.canReceive()) {
                         int stored = ForgeEnergyIntegration.toForge(storer.getEnergy());
                         storer.setEnergy(storer.getEnergy() - ForgeEnergyIntegration.fromForge(storage.receiveEnergy(stored, false)));
-                        return true;
+                        onContentsChanged();
+                        //Exit early as we successfully discharged
+                        return;
                     }
-                    return false;
-                }, false);
-                if (charged) {
-                    onContentsChanged();
-                    //TODO: IC2 or other energy integrations, uncomment this so that we can add another if block below the useForge if block
-                    //return;
                 }
             }
         }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -507,7 +508,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
                 TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-                return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
+                Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()));
+                if (capability.isPresent()) {
+                    return capability.get();
+                }
             }
         }
         return null;

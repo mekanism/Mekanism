@@ -1,6 +1,7 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
@@ -80,7 +81,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public boolean isValidAcceptor(TileEntity tile, Direction side) {
-        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).isPresent();
+        return CapabilityUtils.getCapability(tile, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).isPresent();
     }
 
     @Override
@@ -107,7 +108,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
 
     @Override
     public IHeatTransfer getCachedAcceptor(Direction side) {
-        return CapabilityUtils.getCapabilityHelper(getCachedTile(side), Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
+        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
     @Override
@@ -168,7 +169,10 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     public IHeatTransfer getAdjacent(Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             TileEntity adj = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
+            Optional<IHeatTransfer> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()));
+            if (capability.isPresent()) {
+                return capability.get();
+            }
         }
         return null;
     }

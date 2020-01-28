@@ -2,6 +2,7 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
@@ -35,6 +36,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAcceptorWrapper, EnergyNetwork, EnergyStack> implements IStrictEnergyAcceptor,
       IStrictEnergyStorage {
@@ -69,20 +71,21 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
                 for (Direction side : sides) {
                     TileEntity outputter = connectedOutputters[side.ordinal()];
                     if (outputter != null) {
-                        CapabilityUtils.getCapabilityHelper(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()).ifPresentElse(
-                              //Strict Energy
-                              strictStorage -> {
-                                  double received = draw(Math.min(strictStorage.getEnergy(), maxDraw));
-                                  strictStorage.setEnergy(strictStorage.getEnergy() - received);
-                              },
-                              () -> CapabilityUtils.getCapabilityHelper(outputter, CapabilityEnergy.ENERGY, side.getOpposite()).ifPresent(
-                                    //Forge Energy
-                                    forgeStorage -> {
-                                        double received = draw(ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(maxDraw), true)));
-                                        forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(received), false);
-                                    }
-                              )
-                        );
+                        Optional<IStrictEnergyStorage> storageCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()));
+                        if (storageCapability.isPresent()) {
+                            IStrictEnergyStorage strictStorage = storageCapability.get();
+                            double received = draw(Math.min(strictStorage.getEnergy(), maxDraw));
+                            strictStorage.setEnergy(strictStorage.getEnergy() - received);
+                            continue;
+                        }
+                        Optional<IEnergyStorage> forgeCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(outputter, CapabilityEnergy.ENERGY, side.getOpposite()));
+                        if (forgeCapability.isPresent()) {
+                            //Forge Energy
+                            IEnergyStorage forgeStorage = forgeCapability.get();
+                            double received = draw(ForgeEnergyIntegration.fromForge(forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(maxDraw), true)));
+                            forgeStorage.extractEnergy(ForgeEnergyIntegration.toForge(received), false);
+                            //TODO: When adding support for more power types put a continue statement here
+                        }
                     }
                 }
             }

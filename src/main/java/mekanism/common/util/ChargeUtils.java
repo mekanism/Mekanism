@@ -1,9 +1,9 @@
 package mekanism.common.util;
 
+import java.util.Optional;
 import mekanism.api.energy.EnergizedItemManager;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.energy.IStrictEnergyStorage;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -25,19 +25,16 @@ public final class ChargeUtils {
                 return;
             }
             if (MekanismUtils.useForge()) {
-                LazyOptionalHelper<IEnergyStorage> forgeCapability = new LazyOptionalHelper<>(stack.getCapability(CapabilityEnergy.ENERGY));
-                boolean charged = forgeCapability.getIfPresentElse(storage -> {
+                Optional<IEnergyStorage> forgeCapability = MekanismUtils.toOptional(stack.getCapability(CapabilityEnergy.ENERGY));
+                if (forgeCapability.isPresent()) {
+                    IEnergyStorage storage = forgeCapability.get();
                     if (storage.canReceive()) {
                         int stored = ForgeEnergyIntegration.toForge(storer.getEnergy());
                         storer.setEnergy(storer.getEnergy() - ForgeEnergyIntegration.fromForge(storage.receiveEnergy(stored, false)));
-                        return true;
+                        //Exit early as we successfully charged
+                        return;
                     }
-                    return false;
-                }, false);
-                //TODO: IC2 or other energy integrations, uncomment this so that we can add another if block below the useForge if block
-                /*if (charged) {
-                    return;
-                }*/
+                }
             }
         }
     }

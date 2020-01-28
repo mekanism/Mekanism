@@ -1,12 +1,15 @@
 package mekanism.common.item;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.IHeatTransfer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.DynamicNetwork;
+import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -46,46 +49,50 @@ public class ItemNetworkReader extends ItemEnergized {
                 }
                 Coord4D tileCoord = Coord4D.get(tileEntity);
                 Direction opposite = context.getFace().getOpposite();
-                CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, opposite).ifPresentElse(transmitter -> {
-                          player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
-                                MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)));
-                          player.sendMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkSize()));
-                          player.sendMessage(MekanismLang.NETWORK_READER_ACCEPTORS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkAcceptorSize()));
-                          player.sendMessage(MekanismLang.NETWORK_READER_NEEDED.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkNeeded()));
-                          player.sendMessage(MekanismLang.NETWORK_READER_BUFFER.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkBuffer()));
-                          player.sendMessage(MekanismLang.NETWORK_READER_THROUGHPUT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkFlow()));
-                          player.sendMessage(MekanismLang.NETWORK_READER_CAPACITY.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkCapacity()));
-                          CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, opposite).ifPresent(
-                                transfer -> player.sendMessage(MekanismLang.NETWORK_READER_ABOVE_AMBIENT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transfer.getTemp())));
-                          player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
-                      }, () -> CapabilityUtils.getCapabilityHelper(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, opposite).ifPresentElse(transfer -> {
-                          MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
-                                MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM));
-                          player.sendMessage(MekanismLang.NETWORK_READER_ABOVE_AMBIENT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transfer.getTemp()));
-                          player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
-                      }, () -> {
-                          Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new HashSet<>();
-                          for (Direction iterSide : EnumUtils.DIRECTIONS) {
-                              Coord4D coord = tileCoord.offset(iterSide);
-                              TileEntity tile = MekanismUtils.getTileEntity(world, coord.getPos());
-                              Direction iterSideOpposite = iterSide.getOpposite();
-                              CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSideOpposite).ifPresent(transmitter -> {
-                                  if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSideOpposite)) &&
-                                      !iteratedNetworks.contains(transmitter.getTransmitterNetwork())) {
-                                      player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
-                                            MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, transmitter.getTransmissionType())));
-                                      player.sendMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
-                                            transmitter.getTransmitterNetwork().getAcceptorDirections().get(coord.offset(iterSideOpposite)).toString()));
-                                      player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
-                                      iteratedNetworks.add(transmitter.getTransmitterNetwork());
-                                  }
-                              });
-                          }
-                      })
-                );
+                Optional<IGridTransmitter<?, ?, ?>> gridTransmitter = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileEntity, Capabilities.GRID_TRANSMITTER_CAPABILITY, opposite));
+                if (gridTransmitter.isPresent()) {
+                    IGridTransmitter<?, ?, ?> transmitter = gridTransmitter.get();
+                    player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
+                          MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)));
+                    player.sendMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkSize()));
+                    player.sendMessage(MekanismLang.NETWORK_READER_ACCEPTORS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkAcceptorSize()));
+                    player.sendMessage(MekanismLang.NETWORK_READER_NEEDED.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkNeeded()));
+                    player.sendMessage(MekanismLang.NETWORK_READER_BUFFER.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkBuffer()));
+                    player.sendMessage(MekanismLang.NETWORK_READER_THROUGHPUT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkFlow()));
+                    player.sendMessage(MekanismLang.NETWORK_READER_CAPACITY.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitter.getTransmitterNetworkCapacity()));
+                    CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, opposite).ifPresent(transfer ->
+                          player.sendMessage(MekanismLang.NETWORK_READER_ABOVE_AMBIENT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transfer.getTemp())));
+                    player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
+                } else {
+                    Optional<IHeatTransfer> heatTransfer = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileEntity, Capabilities.HEAT_TRANSFER_CAPABILITY, opposite));
+                    if (heatTransfer.isPresent()) {
+                        IHeatTransfer transfer = heatTransfer.get();
+                        MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
+                              MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM));
+                        player.sendMessage(MekanismLang.NETWORK_READER_ABOVE_AMBIENT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transfer.getTemp()));
+                        player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
+                    } else {
+                        Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new HashSet<>();
+                        for (Direction iterSide : EnumUtils.DIRECTIONS) {
+                            Coord4D coord = tileCoord.offset(iterSide);
+                            TileEntity tile = MekanismUtils.getTileEntity(world, coord.getPos());
+                            Direction iterSideOpposite = iterSide.getOpposite();
+                            CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, iterSideOpposite).ifPresent(transmitter -> {
+                                if (transmitter.getTransmitterNetwork().getPossibleAcceptors().contains(coord.offset(iterSideOpposite)) &&
+                                    !iteratedNetworks.contains(transmitter.getTransmitterNetwork())) {
+                                    player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------",
+                                          MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, transmitter.getTransmissionType())));
+                                    player.sendMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
+                                          transmitter.getTransmitterNetwork().getAcceptorDirections().get(coord.offset(iterSideOpposite)).toString()));
+                                    player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
+                                    iteratedNetworks.add(transmitter.getTransmitterNetwork());
+                                }
+                            });
+                        }
+                    }
+                }
                 return ActionResultType.SUCCESS;
             }
-
             if (player.isShiftKeyDown() && MekanismAPI.debug) {
                 MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "----------",
                       MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.DEBUG_TITLE));

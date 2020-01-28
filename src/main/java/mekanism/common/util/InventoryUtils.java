@@ -153,11 +153,11 @@ public final class InventoryUtils {
 
     public static boolean isItemHandler(TileEntity tile, Direction side) {
         //TODO: Remove this?? given sometimes it may make more sense to just get and keep value
-        return CapabilityUtils.getCapabilityHelper(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent();
+        return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent();
     }
 
     public static IItemHandler getItemHandler(TileEntity tile, Direction side) {
-        //TODO: Do this better
-        return CapabilityUtils.getCapabilityHelper(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).getValue();
+        //TODO: Do this better, so that we check things are not null before using this? So that checks can be done a bit better
+        return MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)).orElse(null);
     }
 }

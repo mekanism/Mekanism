@@ -45,7 +45,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
                 if (structure.steamStored.getAmount() > 0) {
                     EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
                         if (!(tile instanceof TileEntityBoilerValve)) {
-                            CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                            CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                                 if (PipeUtils.canFill(handler, structure.steamStored)) {
                                     structure.steamStored.setAmount(structure.steamStored.getAmount() - handler.fill(structure.steamStored, FluidAction.EXECUTE));
                                     if (structure.steamStored.getAmount() <= 0) {

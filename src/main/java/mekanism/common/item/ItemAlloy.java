@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import javax.annotation.Nonnull;
+import mekanism.api.IAlloyInteraction;
 import mekanism.api.tier.AlloyTier;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -14,6 +15,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
 
 public class ItemAlloy extends Item {
 
@@ -32,16 +34,14 @@ public class ItemAlloy extends Item {
             World world = context.getWorld();
             BlockPos pos = context.getPos();
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-            return CapabilityUtils.getCapabilityHelper(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getFace()).getIfPresentElse(
-                  interaction -> {
-                      if (!world.isRemote) {
-                          Hand hand = context.getHand();
-                          interaction.onAlloyInteraction(player, hand, player.getHeldItem(hand), tier);
-                      }
-                      return ActionResultType.SUCCESS;
-                  },
-                  ActionResultType.PASS
-            );
+            LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getFace());
+            if (capability.isPresent()) {
+                if (!world.isRemote) {
+                    Hand hand = context.getHand();
+                    MekanismUtils.toOptional(capability).get().onAlloyInteraction(player, hand, player.getHeldItem(hand), tier);
+                }
+                return ActionResultType.SUCCESS;
+            }
         }
         return ActionResultType.PASS;
     }

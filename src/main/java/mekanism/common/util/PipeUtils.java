@@ -21,10 +21,10 @@ public final class PipeUtils {
     public static final IFluidTank[] EMPTY = new IFluidTank[]{};
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (tile == null || CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
+        if (tile == null || CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
             return false;
         }
-        return CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).matches(container -> container.getTanks() > 0);
+        return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).filter(fluidHandler -> fluidHandler.getTanks() > 0).isPresent();
     }
 
     /**
@@ -35,7 +35,7 @@ public final class PipeUtils {
     public static IFluidHandler[] getConnectedAcceptors(BlockPos pos, World world) {
         final IFluidHandler[] acceptors = new IFluidHandler[]{null, null, null, null, null, null};
         EmitUtils.forEachSide(world, pos, EnumSet.allOf(Direction.class), (tile, side) ->
-              acceptors[side.ordinal()] = CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).getValue());
+              CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> acceptors[side.ordinal()] = handler));
         return acceptors;
     }
 
@@ -61,7 +61,7 @@ public final class PipeUtils {
             final Direction accessSide = side.getOpposite();
 
             //Collect cap
-            CapabilityUtils.getCapabilityHelper(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
+            CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
                 if (canFill(handler, stack)) {
                     target.addHandler(accessSide, handler);
                 }

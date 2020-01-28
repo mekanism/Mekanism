@@ -3,10 +3,12 @@ package mekanism.common.item;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.IMekWrench;
 import mekanism.api.RelativeSide;
@@ -112,14 +114,14 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                     return ActionResultType.SUCCESS;
                 }
                 if (SecurityUtils.canAccess(player, tile)) {
-                    return CapabilityUtils.getCapabilityHelper(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).getIfPresentElse(config -> {
-                              if (player.isShiftKeyDown()) {
-                                  return config.onSneakRightClick(player, side);
-                              }
-                              return config.onRightClick(player, side);
-                          },
-                          ActionResultType.PASS
-                    );
+                    Optional<IConfigurable> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side));
+                    if (capability.isPresent()) {
+                        IConfigurable config = capability.get();
+                        if (player.isShiftKeyDown()) {
+                            return config.onSneakRightClick(player, side);
+                        }
+                        return config.onRightClick(player, side);
+                    }
                 } else {
                     SecurityUtils.displayNoAccess(player);
                     return ActionResultType.SUCCESS;

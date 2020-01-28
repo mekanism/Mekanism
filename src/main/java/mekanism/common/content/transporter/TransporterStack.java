@@ -2,21 +2,25 @@ package mekanism.common.content.transporter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
+import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterStack {
@@ -234,11 +238,15 @@ public class TransporterStack {
 
     public boolean canInsertToTransporter(TileEntity tile, Direction from) {
         Direction opposite = from.getOpposite();
-        return CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, opposite).matches(transporter ->
-              CapabilityUtils.getCapabilityHelper(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, opposite).matches(connection ->
-                    connection.canConnectMutual(opposite) && (transporter.getColor() == color || transporter.getColor() == null)
-              )
-        );
+        LazyOptional<ILogisticalTransporter> transporterCap = CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, opposite);
+        if (transporterCap.isPresent()) {
+            Optional<IBlockableConnection> blockableConnection = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, opposite));
+            if (blockableConnection.isPresent()) {
+                ILogisticalTransporter transporter = MekanismUtils.toOptional(transporterCap).get();
+                return blockableConnection.get().canConnectMutual(opposite) && (transporter.getColor() == color || transporter.getColor() == null);
+            }
+        }
+        return false;
     }
 
     public boolean canInsertToTransporter(ILogisticalTransporter transporter, Direction side) {

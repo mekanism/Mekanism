@@ -87,7 +87,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
                 IFluidTank tank = getReactor().getSteamTank();
                 EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
                     if (!(tile instanceof TileEntityReactorPort)) {
-                        CapabilityUtils.getCapabilityHelper(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                        CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                             if (PipeUtils.canFill(handler, tank.getFluid())) {
                                 tank.drain(handler.fill(tank.getFluid(), FluidAction.EXECUTE), FluidAction.EXECUTE);
                             }
@@ -277,7 +277,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         if (adj instanceof TileEntityReactorBlock) {
             return null;
         }
-        return CapabilityUtils.getCapabilityHelper(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite()).getValue();
+        return MekanismUtils.toOptional(CapabilityUtils.getCapability(adj, Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
     @Override

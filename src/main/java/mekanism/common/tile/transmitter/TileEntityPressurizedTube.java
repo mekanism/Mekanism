@@ -25,6 +25,7 @@ import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -283,7 +284,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
 
     @Override
     public IGasHandler getCachedAcceptor(Direction side) {
-        return CapabilityUtils.getCapabilityHelper(getCachedTile(side), Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite()).getValue();
+        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.GAS_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mekanism.common.base;
 
+import java.util.Optional;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.capabilities.Capabilities;
@@ -16,22 +17,28 @@ public abstract class EnergyAcceptorWrapper implements IStrictEnergyAcceptor {
     public Coord4D coord;
 
     public static EnergyAcceptorWrapper get(TileEntity tile, Direction side) {
-        if (tile == null || tile.getWorld() == null) {
-            return null;
-        }
-        EnergyAcceptorWrapper wrapper = CapabilityUtils.getCapabilityHelper(tile, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side).getIfPresentElseDo(
-              MekanismAcceptor::new,
-              () -> {
-                  if (MekanismUtils.useForge()) {
-                      return CapabilityUtils.getCapabilityHelper(tile, CapabilityEnergy.ENERGY, side).getIfPresent(ForgeAcceptor::new);
-                  }
-                  return null;
-              }
-        );
+        EnergyAcceptorWrapper wrapper = getNoCoord(tile, side);
         if (wrapper != null) {
             wrapper.coord = Coord4D.get(tile);
         }
         return wrapper;
+    }
+
+    private static EnergyAcceptorWrapper getNoCoord(TileEntity tile, Direction side) {
+        if (tile == null || tile.getWorld() == null) {
+            return null;
+        }
+        Optional<IStrictEnergyAcceptor> energyAcceptorCap = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.ENERGY_ACCEPTOR_CAPABILITY, side));
+        if (energyAcceptorCap.isPresent()) {
+            return new MekanismAcceptor(energyAcceptorCap.get());
+        }
+        if (MekanismUtils.useForge()) {
+            Optional<IEnergyStorage> forgeEnergyCap = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityEnergy.ENERGY, side));
+            if (forgeEnergyCap.isPresent()) {
+                return new ForgeAcceptor(forgeEnergyCap.get());
+            }
+        }
+        return null;
     }
 
     public abstract boolean needsEnergy(Direction side);

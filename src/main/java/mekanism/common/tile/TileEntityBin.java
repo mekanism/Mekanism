@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -8,6 +9,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
@@ -91,10 +93,13 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
                 if (getActive()) {
                     TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
                     ItemStack bottomStack = binSlot.getBottomStack();
-                    TransitResponse response = CapabilityUtils.getCapabilityHelper(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP).getIfPresentElseDo(
-                          transporter -> TransporterUtils.insert(this, transporter, TransitRequest.getFromStack(bottomStack), null, true, 0),
-                          () -> InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false)
-                    );
+                    TransitResponse response;
+                    Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP));
+                    if (capability.isPresent()) {
+                        response = TransporterUtils.insert(this, capability.get(), TransitRequest.getFromStack(bottomStack), null, true, 0);
+                    } else {
+                        response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false);
+                    }
                     if (!response.isEmpty() && tier != BinTier.CREATIVE) {
                         int sendingAmount = response.getSendingAmount();
                         if (binSlot.shrinkStack(sendingAmount, Action.EXECUTE) != sendingAmount) {

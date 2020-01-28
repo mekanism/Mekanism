@@ -13,7 +13,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
@@ -141,7 +140,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
 
     private boolean manageInventory(PlayerEntity player, TileEntityFluidTank tile, Hand hand, ItemStack itemStack) {
         ItemStack copyStack = StackUtils.size(itemStack, 1);
-        Optional<IFluidHandlerItem> fluidHandlerItem = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(copyStack));
+        Optional<IFluidHandlerItem> fluidHandlerItem = MekanismUtils.toOptional(FluidUtil.getFluidHandler(copyStack));
         if (fluidHandlerItem.isPresent()) {
             IFluidHandlerItem handler = fluidHandlerItem.get();
             FluidStack fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);

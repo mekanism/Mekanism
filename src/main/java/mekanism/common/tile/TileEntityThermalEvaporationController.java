@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,7 +19,6 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
@@ -411,9 +411,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public boolean addSolarPanel(TileEntity tile, int i) {
         if (tile != null && !tile.isRemoved()) {
-            LazyOptionalHelper<IEvaporationSolar> capabilityHelper = CapabilityUtils.getCapabilityHelper(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN);
-            capabilityHelper.ifPresent(solar -> solars[i] = solar);
-            return capabilityHelper.isPresent();
+            Optional<IEvaporationSolar> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN));
+            if (capability.isPresent()) {
+                solars[i] = capability.get();
+                return true;
+            }
         }
         return false;
     }

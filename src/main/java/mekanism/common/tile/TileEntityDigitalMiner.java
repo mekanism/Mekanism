@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
@@ -26,6 +27,7 @@ import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IAdvancedBoundingBlock;
+import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -269,10 +271,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 TileEntity ejectInv = getEjectInv();
                 TileEntity ejectTile = getEjectTile();
                 if (ejectInv != null && ejectTile != null) {
-                    TransitResponse response = CapabilityUtils.getCapabilityHelper(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()).getIfPresentElseDo(
-                          transporter -> TransporterUtils.insert(ejectTile, transporter, ejectMap, null, true, 0),
-                          () -> InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false)
-                    );
+                    TransitResponse response;
+                    Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()));
+                    if (capability.isPresent()) {
+                        response = TransporterUtils.insert(ejectTile, capability.get(), ejectMap, null, true, 0);
+                    } else {
+                        response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false);
+                    }
                     if (!response.isEmpty()) {
                         response.getInvStack(ejectTile, getOppositeDirection()).use();
                     }

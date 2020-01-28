@@ -44,7 +44,7 @@ public class LaserManager {
         if (mop.getType() != Type.MISS) {
             to = new Pos3D(mop.getHitVec());
             TileEntity tile = MekanismUtils.getTileEntity(world, mop.getPos());
-            CapabilityUtils.getCapabilityHelper(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).ifPresent(receptor -> {
+            CapabilityUtils.getCapability(tile, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()).ifPresent(receptor -> {
                 if (!receptor.canLasersDig()) {
                     receptor.receiveLaserEnergy(energy, mop.getFace());
                 }

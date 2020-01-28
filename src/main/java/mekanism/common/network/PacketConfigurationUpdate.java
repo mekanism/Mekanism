@@ -9,7 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -22,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketConfigurationUpdate {
@@ -61,7 +61,7 @@ public class PacketConfigurationUpdate {
         context.get().enqueueWork(() -> {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             if (tile instanceof ISideConfiguration) {
-                LazyOptionalHelper<ITileNetwork> capabilityHelper = CapabilityUtils.getCapabilityHelper(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
+                LazyOptional<ITileNetwork> capability = CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
                 ISideConfiguration config = (ISideConfiguration) tile;
 
                 if (message.packetType == ConfigurationPacket.EJECT) {
@@ -84,7 +84,7 @@ public class PacketConfigurationUpdate {
                     }
 
                     tile.markDirty();
-                    capabilityHelper.ifPresent(
+                    capability.ifPresent(
                           network -> Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(message.coord4D, network.getNetworkedData()), tile.getWorld(),
                                 message.coord4D.getPos())
                     );
@@ -113,7 +113,7 @@ public class PacketConfigurationUpdate {
                 } else if (message.packetType == ConfigurationPacket.STRICT_INPUT) {
                     config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
                 }
-                capabilityHelper.ifPresent(network -> {
+                capability.ifPresent(network -> {
                     for (PlayerEntity p : ((TileEntityMekanism) config).playersUsing) {
                         Mekanism.packetHandler.sendTo(new PacketTileEntity(message.coord4D, network.getNetworkedData()), (ServerPlayerEntity) p);
                     }

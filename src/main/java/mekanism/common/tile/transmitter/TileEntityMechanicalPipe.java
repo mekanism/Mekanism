@@ -20,6 +20,7 @@ import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -236,7 +237,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
 
     @Override
     public IFluidHandler getCachedAcceptor(Direction side) {
-        return CapabilityUtils.getCapabilityHelper(getCachedTile(side), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).getValue();
+        return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
     public int getAvailablePull() {

@@ -1,6 +1,7 @@
 package mekanism.common.transmitters;
 
 import java.util.Collection;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -44,12 +45,13 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
         if (!containingTile.canConnectMutual(side)) {
             return null;
         }
-        return CapabilityUtils.getCapabilityHelper(potentialTransmitterTile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).getIfPresent(transmitter -> {
-            if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType()) && containingTile.isValidTransmitter(potentialTransmitterTile)) {
-                return sideCoord;
-            }
-            return null;
-        });
+        Optional<IGridTransmitter<?, ?, ?>> gridTransmitter = MekanismUtils.toOptional(CapabilityUtils.getCapability(potentialTransmitterTile,
+              Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()));
+        if (gridTransmitter.isPresent() && TransmissionType.checkTransmissionType(gridTransmitter.get(), getTransmissionType()) &&
+            containingTile.isValidTransmitter(potentialTransmitterTile)) {
+            return sideCoord;
+        }
+        return null;
     }
 
     @Override
@@ -86,12 +88,15 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     @Override
     public NETWORK getExternalNetwork(Coord4D from) {
-        return CapabilityUtils.getCapabilityHelper(MekanismUtils.getTileEntity(world(), from.getPos()), Capabilities.GRID_TRANSMITTER_CAPABILITY, null).getIfPresent(transmitter -> {
+        Optional<IGridTransmitter<?, ?, ?>> gridTransmitter = MekanismUtils.toOptional(CapabilityUtils.getCapability(MekanismUtils.getTileEntity(world(), from.getPos()),
+              Capabilities.GRID_TRANSMITTER_CAPABILITY, null));
+        if (gridTransmitter.isPresent()) {
+            IGridTransmitter<?, ?, ?> transmitter = gridTransmitter.get();
             if (TransmissionType.checkTransmissionType(transmitter, getTransmissionType())) {
                 return ((IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>) transmitter).getTransmitterNetwork();
             }
-            return null;
-        });
+        }
+        return null;
     }
 
     @Override

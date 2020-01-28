@@ -47,7 +47,7 @@ public class PacketTileEntity {
         }
         context.get().enqueueWork(() -> {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
-            CapabilityUtils.getCapabilityHelper(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
+            CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
                 try {
                     network.handlePacketData(message.storedBuffer);
                 } catch (Exception e) {

@@ -33,13 +33,13 @@ public class PacketDataRequest {
             if (tile instanceof TileEntityMultiblock) {
                 ((TileEntityMultiblock<?>) tile).sendStructure = true;
             }
-            CapabilityUtils.getCapabilityHelper(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(transmitter -> {
+            CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(transmitter -> {
                 transmitter.setRequestsUpdate();
                 if (transmitter.hasTransmitterNetwork()) {
                     transmitter.getTransmitterNetwork().addUpdate(player);
                 }
             });
-            CapabilityUtils.getCapabilityHelper(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(
+            CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(
                   network -> Mekanism.packetHandler.sendTo(new PacketTileEntity(tile, network.getNetworkedData()), (ServerPlayerEntity) player)
             );
         });

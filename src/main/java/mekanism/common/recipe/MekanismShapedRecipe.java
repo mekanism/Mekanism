@@ -12,11 +12,11 @@ import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
-import mekanism.common.base.LazyOptionalHelper;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -142,14 +142,14 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
             }
         }
         //Transfer contained fluid
-        Optional<IFluidHandlerItem> cap = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(toReturn));
+        Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(toReturn));
         if (cap.isPresent()) {
             IFluidHandlerItem fluidContainerItem = cap.get();
             FluidStack fluidFound = FluidStack.EMPTY;
             for (int i = 0; i < invLength; i++) {
                 ItemStack stack = inv.getStackInSlot(i);
                 if (!stack.isEmpty()) {
-                    Optional<IFluidHandlerItem> capability = LazyOptionalHelper.toOptional(FluidUtil.getFluidHandler(stack));
+                    Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
                     if (capability.isPresent()) {
                         IFluidHandlerItem fluidHandlerItem = capability.get();
                         for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
