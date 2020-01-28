@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -7,10 +8,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -31,6 +30,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.IChunk;
 import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder {
@@ -41,7 +42,15 @@ public final class TransporterPathfinder {
             return Collections.emptyList();
         }
         List<AcceptorData> acceptors = network.calculateAcceptors(request, stack);
-        return acceptors.stream().map(data -> getPath(data, start, stack, min)).filter(Objects::nonNull).sorted().collect(Collectors.toList());
+        List<Destination> paths = new ArrayList<>();
+        for (AcceptorData data : acceptors) {
+            Destination path = getPath(data, start, stack, min);
+            if (path != null) {
+                paths.add(path);
+            }
+        }
+        Collections.sort(paths);
+        return paths;
     }
 
     private static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack) {
@@ -340,10 +349,24 @@ public final class TransporterPathfinder {
             fScore.put(start, gScore.get(start) + getEstimate(start, finalNode));
 
             int blockCount = 0;
-
+            Map<Long, IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 Coord4D neighbor = start.offset(direction);
-                TileEntity neighborTile = MekanismUtils.getTileEntity(world, neighbor.getPos());
+                //We get the chunk rather than the world so we can cache the chunk improving the overall
+                // performance for retrieving a bunch of chunks in the general vicinity
+                BlockPos neighborPos = neighbor.getPos();
+                int chunkX = neighborPos.getX() >> 4;
+                int chunkZ = neighborPos.getZ() >> 4;
+                long combinedChunk = (((long) chunkX) << 32) | (chunkZ & 0xffffffffL);
+                IChunk chunk = chunkMap.get(combinedChunk);
+                if (chunk == null) {
+                    //Get the chunk but don't force load it
+                    chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
+                    if (chunk != null) {
+                        chunkMap.put(combinedChunk, chunk);
+                    }
+                }
+                TileEntity neighborTile = MekanismUtils.getTileEntity(chunk, neighborPos);
                 if (!transportStack.canInsertToTransporter(neighborTile, direction) && (!neighbor.equals(finalNode) || !destChecker.isValid(transportStack, direction, neighborTile))) {
                     blockCount++;
                 }
@@ -371,8 +394,21 @@ public final class TransporterPathfinder {
 
                 openSet.remove(currentNode);
                 closedSet.add(currentNode);
-
-                TileEntity currentNodeTile = MekanismUtils.getTileEntity(world, currentNode.getPos());
+                //We get the chunk rather than the world so we can cache the chunk improving the overall
+                // performance for retrieving a bunch of chunks in the general vicinity
+                BlockPos currentNodePos = currentNode.getPos();
+                int chunkX = currentNodePos.getX() >> 4;
+                int chunkZ = currentNodePos.getZ() >> 4;
+                long combinedChunk = (((long) chunkX) << 32) | (chunkZ & 0xFFFFFFFFL);
+                IChunk chunk = chunkMap.get(combinedChunk);
+                if (chunk == null) {
+                    //Get the chunk but don't force load it
+                    chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
+                    if (chunk != null) {
+                        chunkMap.put(combinedChunk, chunk);
+                    }
+                }
+                TileEntity currentNodeTile = MekanismUtils.getTileEntity(chunk, currentNodePos);
                 Optional<ILogisticalTransporter> currentNodeTransporter = MekanismUtils.toOptional(CapabilityUtils.getCapability(currentNodeTile,
                       Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
                 directionsToCheck.clear();
@@ -380,7 +416,21 @@ public final class TransporterPathfinder {
                     Coord4D neighbor = currentNode.offset(direction);
                     int ordinal = direction.ordinal();
                     neighbors[ordinal] = neighbor;
-                    TileEntity neighborEntity = MekanismUtils.getTileEntity(world, neighbor.getPos());
+                    //We get the chunk rather than the world so we can cache the chunk improving the overall
+                    // performance for retrieving a bunch of chunks in the general vicinity
+                    BlockPos neighborPos = neighbor.getPos();
+                    int innerChunkX = neighborPos.getX() >> 4;
+                    int innerChunkZ = neighborPos.getZ() >> 4;
+                    long innerCombinedChunk = (((long) innerChunkX) << 32) | (innerChunkZ & 0xFFFFFFFFL);
+                    IChunk innerChunk = chunkMap.get(innerCombinedChunk);
+                    if (innerChunk == null) {
+                        //Get the chunk but don't force load it
+                        innerChunk = world.getChunk(innerChunkX, innerChunkZ, ChunkStatus.FULL, false);
+                        if (innerChunk != null) {
+                            chunkMap.put(innerCombinedChunk, innerChunk);
+                        }
+                    }
+                    TileEntity neighborEntity = MekanismUtils.getTileEntity(innerChunk, neighborPos);
                     neighborEntities[ordinal] = neighborEntity;
                     if (currentNodeTransporter.isPresent()) {
                         ILogisticalTransporter transporter = currentNodeTransporter.get();
