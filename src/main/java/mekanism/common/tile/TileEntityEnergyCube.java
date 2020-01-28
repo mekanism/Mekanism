@@ -7,7 +7,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.BlockEnergyCube;
@@ -33,7 +32,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, IConfigCardAccess, IComparatorSupport {
+public class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, IConfigCardAccess {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
     /**
@@ -159,14 +158,8 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
 
     @Override
     public void setEnergy(double energy) {
-        if (tier == EnergyCubeTier.CREATIVE && energy != Double.MAX_VALUE) {
-            return;
-        }
-        super.setEnergy(energy);
-        int newRedstoneLevel = getRedstoneLevel();
-        if (newRedstoneLevel != currentRedstoneLevel) {
-            markDirty();
-            currentRedstoneLevel = newRedstoneLevel;
+        if (tier != EnergyCubeTier.CREATIVE || energy == Double.MAX_VALUE) {
+            super.setEnergy(energy);
         }
     }
 

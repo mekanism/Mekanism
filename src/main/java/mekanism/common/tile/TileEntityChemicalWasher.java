@@ -24,7 +24,6 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
@@ -46,7 +45,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -56,7 +54,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChemicalWasher extends TileEntityMekanism implements IGasHandler, IFluidHandlerWrapper, ISustainedData, ITankManager, IComparatorSupport,
+public class TileEntityChemicalWasher extends TileEntityMekanism implements IGasHandler, IFluidHandlerWrapper, ISustainedData, ITankManager,
       ITileCachedRecipeHolder<FluidGasToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
@@ -68,7 +66,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
 
     public CachedRecipe<FluidGasToGasRecipe> cachedRecipe;
 
-    private int currentRedstoneLevel;
     public double clientEnergyUsed;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
@@ -120,14 +117,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
             //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
             clientEnergyUsed = prev - getEnergy();
             TileUtils.emitGas(this, outputTank, gasOutput, getRightSide());
-            World world = getWorld();
-            if (world != null) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
-                }
-            }
         }
     }
 

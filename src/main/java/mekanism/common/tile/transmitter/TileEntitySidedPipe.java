@@ -101,6 +101,18 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     }
 
     @Override
+    public void markDirty() {
+        //Copy of the base impl of markDirty in TileEntity, except as none of our transmitters supports comparators
+        // don't bother doing notifying neighbors
+        if (world != null) {
+            //TODO: Do we even really need to be updating the cachedBlockState?
+            cachedBlockState = world.getBlockState(pos);
+            world.markChunkDirty(pos, this);
+            //TODO: Test if this majorly breaks things
+        }
+    }
+
+    @Override
     public void tick() {
         if (isRemote()) {
             if (delayTicks == 5) {

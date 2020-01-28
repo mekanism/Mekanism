@@ -5,7 +5,6 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.boiler.BoilerSteamTank;
 import mekanism.common.content.boiler.BoilerTank;
@@ -19,7 +18,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -27,12 +25,11 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper, IComputerIntegration, IComparatorSupport {
+public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper, IComputerIntegration {
 
     private static final String[] methods = new String[]{"isFormed", "getSteam", "getWater", "getBoilRate", "getMaxBoilRate", "getTemp"};
     public BoilerTank waterTank;
     public BoilerTank steamTank;
-    private int currentRedstoneLevel;
 
     public TileEntityBoilerValve() {
         super(MekanismBlocks.BOILER_VALVE);
@@ -58,14 +55,6 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
                             });
                         }
                     });
-                }
-                World world = getWorld();
-                if (world != null) {
-                    int newRedstoneLevel = getRedstoneLevel();
-                    if (newRedstoneLevel != currentRedstoneLevel) {
-                        world.updateComparatorOutputLevel(pos, getBlockType());
-                        currentRedstoneLevel = newRedstoneLevel;
-                    }
                 }
             }
         }

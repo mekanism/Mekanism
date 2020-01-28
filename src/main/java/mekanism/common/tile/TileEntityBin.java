@@ -8,7 +8,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
@@ -36,7 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityBin extends TileEntityMekanism implements IActiveState, IConfigurable, IComparatorSupport {
+public class TileEntityBin extends TileEntityMekanism implements IActiveState, IConfigurable {
 
     public int addTicks = 0;
 
@@ -146,7 +145,6 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     public void markDirty() {
         super.markDirty();
         if (!isRemote()) {
-            MekanismUtils.saveChunk(this);
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
@@ -159,11 +157,6 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     @Override
     public boolean lightUpdate() {
         return true;
-    }
-
-    @Override
-    public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(getItemCount(), binSlot.getLimit(binSlot.getStack()));
     }
 
     @Override

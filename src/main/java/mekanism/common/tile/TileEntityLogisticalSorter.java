@@ -12,7 +12,6 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
@@ -45,12 +44,11 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration, IComparatorSupport,
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration,
       ITileFilterHolder<TransporterFilter<?>> {
 
     private HashList<TransporterFilter<?>> filters = new HashList<>();
@@ -61,7 +59,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public int rrIndex = 0;
     public int delayTicks;
     public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "setSingleItem"};
-    private int currentRedstoneLevel;
 
     public TileEntityLogisticalSorter() {
         super(MekanismBlocks.LOGISTICAL_SORTER);
@@ -139,15 +136,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             if (playersUsing.size() > 0) {
                 for (PlayerEntity player : playersUsing) {
                     Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-                }
-            }
-
-            World world = getWorld();
-            if (world != null) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
                 }
             }
         }
@@ -582,6 +570,12 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public int getRedstoneLevel() {
         return getActive() ? 15 : 0;
+    }
+
+    @Override
+    public int getCurrentRedstoneLevel() {
+        //We don't cache the redstone level for the logistical sorter
+        return getRedstoneLevel();
     }
 
     @Override

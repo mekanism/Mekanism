@@ -10,7 +10,6 @@ import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IActiveState;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
@@ -50,7 +49,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidHandlerWrapper, ISustainedTank, IFluidContainerManager,
-      ITankManager, IComparatorSupport {
+      ITankManager {
 
     public FluidTank fluidTank;
 
@@ -121,7 +120,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             }
 
             if (fluidTank.getFluidAmount() != prevAmount) {
-                MekanismUtils.saveChunk(this);
+                markDirty();
                 needsPacket = true;
                 if (prevAmount == 0 || fluidTank.getFluidAmount() == 0) {
                     //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
@@ -138,12 +137,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             }
             if (getActive()) {
                 activeEmit();
-            }
-
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                markDirty();
-                currentRedstoneLevel = newRedstoneLevel;
             }
             if (needsPacket) {
                 Mekanism.packetHandler.sendUpdatePacket(this);

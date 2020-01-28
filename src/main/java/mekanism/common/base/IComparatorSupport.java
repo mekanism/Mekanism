@@ -1,8 +1,14 @@
 package mekanism.common.base;
 
-//TODO: Move a bunch of this stuff upwards towards TileEntityMekanism in terms of keeping track of current redstone values??
+//TODO: Go through and fix anything that might have gotten broken when optimizing the TPS
+// somethings like the teleporter and laser amplifier may not be properly caching as well as the logistical sorter
 public interface IComparatorSupport {
 
-    //TODO: Evaluate if this logic can be moved into the Block itself
+    default boolean supportsComparator() {
+        return true;
+    }
+
     int getRedstoneLevel();
+
+    int getCurrentRedstoneLevel();
 }

@@ -10,7 +10,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.FluidSlot;
 import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
@@ -27,7 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -35,9 +33,8 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IComparatorSupport {
+public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
     private static IFluidTank[] ALL_TANKS = new IFluidTank[0];
@@ -45,8 +42,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
      * The FluidSlot biofuel instance for this generator.
      */
     public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);
-
-    private int currentRedstoneLevel;
 
     private FuelInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
@@ -106,16 +101,6 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             setEnergy(getEnergy() + MekanismGeneratorsConfig.generators.bioGeneration.get());
         } else if (!isRemote()) {
             setActive(false);
-        }
-        if (!isRemote()) {
-            World world = getWorld();
-            if (world != null) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
-                }
-            }
         }
     }
 
@@ -242,10 +227,5 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Override
     public IFluidTank[] getAllTanks() {
         return ALL_TANKS;
-    }
-
-    @Override
-    public int getRedstoneLevel() {
-        return ItemHandlerHelper.calcRedstoneFromInventory(this);
     }
 }

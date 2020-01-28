@@ -26,7 +26,6 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -52,7 +51,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager,
-      IComparatorSupport, ITileCachedRecipeHolder<GasToGasRecipe> {
+      ITileCachedRecipeHolder<GasToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
 
@@ -63,7 +62,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     private CachedRecipe<GasToGasRecipe> cachedRecipe;
 
-    private int currentRedstoneLevel;
     private boolean settingsChecked;
     private boolean needsRainCheck;
 
@@ -121,15 +119,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
                 //TODO: Why do we have to be sending updates to the client anyways?
                 // I believe we send when state changes, and otherwise we only should have to be sending if recipe actually processes
                 Mekanism.packetHandler.sendUpdatePacket(this);
-            }
-
-            World world = getWorld();
-            if (world != null) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
-                }
             }
         }
     }

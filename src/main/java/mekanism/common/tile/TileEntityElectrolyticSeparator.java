@@ -24,7 +24,6 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
@@ -47,7 +46,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -59,7 +57,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
-      ITankManager, IComparatorSupport, ITileCachedRecipeHolder<ElectrolysisRecipe> {
+      ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen",
                                                          "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
@@ -93,8 +91,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     public GasMode dumpRight = GasMode.IDLE;
     public CachedRecipe<ElectrolysisRecipe> cachedRecipe;
     public double clientEnergyUsed;
-
-    private int currentRedstoneLevel;
 
     private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
@@ -150,14 +146,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
             int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
             handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
             handleTank(rightTank, dumpRight, getRightSide(), dumpAmount);
-            World world = getWorld();
-            if (world != null) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
-                }
-            }
         }
     }
 

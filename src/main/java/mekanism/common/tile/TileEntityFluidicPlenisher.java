@@ -15,7 +15,6 @@ import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -37,7 +36,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -48,8 +46,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank,
-      IComparatorSupport {
+public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank {
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
@@ -66,8 +63,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
      * How many ticks this machine has been operating for.
      */
     public int operatingTicks;
-
-    private int currentRedstoneLevel;
 
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
@@ -123,15 +118,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                         }
                     }
                     operatingTicks = 0;
-                }
-            }
-
-            World world = getWorld();
-            if (world != null) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
                 }
             }
         }

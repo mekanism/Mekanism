@@ -21,7 +21,6 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
@@ -57,7 +56,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, IComputerIntegration, IComparatorSupport, ISustainedData {
+public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, IComputerIntegration, ISustainedData {
 
     private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
     /**
@@ -155,14 +154,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
             int newGasAmount = gasTank.getStored();
             if (newGasAmount != currentGasAmount) {
-                MekanismUtils.saveChunk(this);
+                markDirty();
             }
             currentGasAmount = newGasAmount;
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                markDirty();
-                currentRedstoneLevel = newRedstoneLevel;
-            }
         }
     }
 

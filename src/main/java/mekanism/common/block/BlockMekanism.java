@@ -259,9 +259,11 @@ public abstract class BlockMekanism extends Block {
         if (hasComparatorInputOverride(blockState)) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
             //Double check the tile actually has comparator support
-            //TODO: Eventually make it so this is not needed
             if (tile instanceof IComparatorSupport) {
-                return ((IComparatorSupport) tile).getRedstoneLevel();
+                IComparatorSupport comparatorTile = (IComparatorSupport) tile;
+                if (comparatorTile.supportsComparator()) {
+                    return comparatorTile.getCurrentRedstoneLevel();
+                }
             }
         }
         return 0;

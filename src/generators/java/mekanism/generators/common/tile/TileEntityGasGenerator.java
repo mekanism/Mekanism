@@ -17,7 +17,6 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -33,11 +32,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ISustainedData, IComparatorSupport {
+public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ISustainedData {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
     /**
@@ -52,7 +50,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     public int maxBurnTicks;
     public double generationRate = 0;
     public int clientUsed;
-    private int currentRedstoneLevel;
 
     private GasInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
@@ -131,14 +128,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                 }
                 clientUsed = 0;
                 setActive(false);
-            }
-            World world = getWorld();
-            if (world != null) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
-                }
             }
         }
     }

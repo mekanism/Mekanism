@@ -4,7 +4,6 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.content.tank.DynamicFluidTank;
 import mekanism.common.registries.MekanismBlocks;
@@ -12,7 +11,6 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.Direction;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -20,31 +18,15 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper, IComparatorSupport {
+public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper {
 
     //TODO: Move the dynamic fluid tank to SynchronizedTankData??
     // There is no real sense in having them be separate
     public DynamicFluidTank fluidTank;
-    private int currentRedstoneLevel;
 
     public TileEntityDynamicValve() {
         super(MekanismBlocks.DYNAMIC_VALVE);
         fluidTank = new DynamicFluidTank(this);
-    }
-
-    @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            World world = getWorld();
-            if (world != null) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
-                }
-            }
-        }
     }
 
     @Override

@@ -14,7 +14,6 @@ import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -34,8 +33,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration,
-      IComparatorSupport {
+public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration {
 
     public static final double MAX_ENERGY = 5E9;
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy"};
@@ -49,7 +47,6 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     public Coord4D digging;
     public double diggingProgress;
     public boolean emittingRedstone;
-    public int currentRedstoneLevel;
     public RedstoneOutput outputMode = RedstoneOutput.OFF;
 
     public TileEntityLaserAmplifier() {
@@ -139,11 +136,6 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
             if (outputMode != RedstoneOutput.ENTITY_DETECTION) {
                 emittingRedstone = false;
-            }
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                markDirty();
-                currentRedstoneLevel = newRedstoneLevel;
             }
             if (emittingRedstone != prevRedstone) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType());

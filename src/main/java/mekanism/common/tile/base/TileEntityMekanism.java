@@ -19,6 +19,7 @@ import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.inventory.IMekanismInventory;
@@ -27,6 +28,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
@@ -88,13 +90,15 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: Should methods that TileEntityMekanism implements but aren't used because of the block this tile is for
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
-      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, IUpgradeableTile {
+      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, IUpgradeableTile,
+      IComparatorSupport {
     //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
@@ -116,6 +120,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     protected IBlockProvider blockProvider;
 
+    private boolean supportsComparator;
     private boolean supportsUpgrades;
     private boolean supportsRedstone;
     private boolean canBeUpgraded;
@@ -130,12 +135,16 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //Variables for handling ITileRedstone
     //TODO: Move these to private variables?
     public boolean redstone = false;
-    public boolean redstoneLastTick = false;
+    private boolean redstoneLastTick = false;
     /**
      * This machine's current RedstoneControl type.
      */
     private RedstoneControl controlType = RedstoneControl.DISABLED;
     //End variables ITileRedstone
+
+    //Variables for handling IComparatorSupport
+    private int currentRedstoneLevel;
+    //End variables IComparatorSupport
 
     //Variables for handling ITileUpgradable
     //TODO: Convert this to being private
@@ -238,6 +247,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         hasSecurity = block instanceof IHasSecurity;
         //TODO: Is this the proper way of doing it
         isActivatable = hasSound || block instanceof IStateActive;
+        supportsComparator = block instanceof ISupportsComparator;
     }
 
     /**
@@ -261,6 +271,11 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public final boolean supportsUpgrades() {
         return supportsUpgrades;
+    }
+
+    @Override
+    public final boolean supportsComparator() {
+        return supportsComparator;
     }
 
     @Override
@@ -320,6 +335,27 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         //TODO: Is this useful or should the gui title be got a different way
         // We can probably do it via the containers name
         return TextComponentUtil.translate(getBlockType().getTranslationKey());
+    }
+
+    @Override
+    public void markDirty() {
+        //Copy of the base impl of markDirty in TileEntity, except only updates comparator state when something changed
+        // and if our block supports having a comparator signal, instead of always doing it
+        if (world != null) {
+            //TODO: Do we even really need to be updating the cachedBlockState?
+            cachedBlockState = world.getBlockState(pos);
+            world.markChunkDirty(pos, this);
+            if (supportsComparator()) {
+                if (!cachedBlockState.isAir(world, pos)) {
+                    //TODO: Do we only want to/need to do this on the server?
+                    int newRedstoneLevel = getRedstoneLevel();
+                    if (newRedstoneLevel != currentRedstoneLevel) {
+                        world.updateComparatorOutputLevel(pos, getBlockType());
+                        currentRedstoneLevel = newRedstoneLevel;
+                    }
+                }
+            }
+        }
     }
 
     public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
@@ -707,6 +743,29 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
     //End methods ITileRedstone
 
+    //Methods for implementing IComparatorSupport
+    @Override
+    public int getRedstoneLevel() {
+        if (supportsComparator()) {
+            if (hasInventory()) {
+                return ItemHandlerHelper.calcRedstoneFromInventory(this);
+            }
+            //TODO: Do we want some other defaults as well?
+        }
+        return 0;
+    }
+
+    @Override
+    public int getCurrentRedstoneLevel() {
+        if (supportsComparator()) {
+            //TODO: Should we just always return currentRedstoneLevel as it gets initialized to zero
+            // so cannot be anything else if we don't support a comparator
+            return currentRedstoneLevel;
+        }
+        return 0;
+    }
+    //End methods IComparatorSupport
+
     //Methods for implementing ITileUpgradable
     @Nonnull
     @Override
@@ -852,7 +911,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public void setEnergy(double energy) {
         if (isElectric()) {
             electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
-            MekanismUtils.saveChunk(this);
+            markDirty();
         }
     }
 

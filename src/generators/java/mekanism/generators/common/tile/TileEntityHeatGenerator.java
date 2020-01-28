@@ -11,7 +11,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -48,7 +47,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer, IComparatorSupport {
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
     /**
@@ -62,7 +61,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public double producingEnergy;
     public double lastTransferLoss;
     public double lastEnvironmentLoss;
-    private int currentRedstoneLevel;
 
     private FuelInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
@@ -127,15 +125,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             lastTransferLoss = loss[0];
             lastEnvironmentLoss = loss[1];
             producingEnergy = getEnergy() - prev;
-
-            World world = getWorld();
-            if (world != null) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
-                }
-            }
         }
     }
 

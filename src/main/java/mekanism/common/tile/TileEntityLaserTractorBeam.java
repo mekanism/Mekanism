@@ -13,7 +13,6 @@ import mekanism.client.ClientLaserManager;
 import mekanism.common.LaserManager;
 import mekanism.common.LaserManager.LaserInfo;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -33,9 +32,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityLaserTractorBeam extends TileEntityMekanism implements ILaserReceptor, IComparatorSupport {
+public class TileEntityLaserTractorBeam extends TileEntityMekanism implements ILaserReceptor {
 
     public static final double MAX_ENERGY = 5E9;
     public double collectedEnergy = 0;
@@ -189,10 +187,5 @@ public class TileEntityLaserTractorBeam extends TileEntityMekanism implements IL
             return Capabilities.LASER_RECEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public int getRedstoneLevel() {
-        return ItemHandlerHelper.calcRedstoneFromInventory(this);
     }
 }

@@ -45,7 +45,6 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> implements IGasHandler, ISustainedData, ITankManager {
 
@@ -275,10 +274,5 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public Object[] getTanks() {
         return new Object[]{injectTank, outputTank};
-    }
-
-    @Override
-    public int getRedstoneLevel() {
-        return ItemHandlerHelper.calcRedstoneFromInventory(this);
     }
 }

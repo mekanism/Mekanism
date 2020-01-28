@@ -11,7 +11,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -41,7 +40,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler, IComparatorSupport {
+public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler {
 
     private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
     public AxisAlignedBB teleportBounds = null;
@@ -504,5 +503,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @Override
     public int getRedstoneLevel() {
         return shouldRender ? 15 : 0;
+    }
+
+    @Override
+    public int getCurrentRedstoneLevel() {
+        //We don't cache the redstone level for the teleporter
+        return getRedstoneLevel();
     }
 }

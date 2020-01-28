@@ -18,7 +18,6 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ProcessInfo;
@@ -57,10 +56,9 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
-      IComparatorSupport, ITileCachedRecipeHolder<RECIPE> {
+      ITileCachedRecipeHolder<RECIPE> {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
     private final CachedRecipe<RECIPE>[] cachedRecipes;
@@ -604,11 +602,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public String getDataType() {
         return getName().getFormattedText();
-    }
-
-    @Override
-    public int getRedstoneLevel() {
-        return ItemHandlerHelper.calcRedstoneFromInventory(this);
     }
 
     public boolean hasSecondaryResourceBar() {
