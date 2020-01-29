@@ -18,7 +18,9 @@ public class MekanismGases {
 
     public static final GasRegistryObject<Gas> HYDROGEN = GASES.register(ChemicalConstants.HYDROGEN);
     public static final GasRegistryObject<Gas> OXYGEN = GASES.register(ChemicalConstants.OXYGEN);
+    //TODO: Figure out how we want to handle the existence of steam and water vapor
     public static final GasRegistryObject<Gas> STEAM = GASES.register("steam", () -> new Gas(GasAttributes.builder(Mekanism.rl("block/liquid/liquid_steam"))));
+    public static final GasRegistryObject<Gas> WATER_VAPOR = GASES.register("water_vapor", () -> new Gas(GasAttributes.builder(Mekanism.rl("block/liquid/liquid_steam"))));
     public static final GasRegistryObject<Gas> CHLORINE = GASES.register(ChemicalConstants.CHLORINE);
     public static final GasRegistryObject<Gas> SULFUR_DIOXIDE = GASES.register(ChemicalConstants.SULFUR_DIOXIDE);
     public static final GasRegistryObject<Gas> SULFUR_TRIOXIDE = GASES.register(ChemicalConstants.SULFUR_TRIOXIDE);

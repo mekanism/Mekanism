@@ -1,6 +1,7 @@
 package mekanism.common.recipe;
 
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
@@ -56,6 +57,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -228,7 +230,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Sulfuric Acid
         ChemicalInfuserRecipeBuilder.chemicalInfusing(
               GasStackIngredient.from(MekanismGases.SULFUR_TRIOXIDE, 1),
-              GasStackIngredient.from(MekanismGases.STEAM, 1),
+              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
               MekanismGases.SULFURIC_ACID.getGasStack(1)
         ).addCriterion(Criterion.HAS_CHEMICAL_INFUSER)
               .build(consumer, Mekanism.rl(basePath + "sulfuric_acid"));
@@ -1253,14 +1255,14 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Brick -> clay ball
         ItemStackGasToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Tags.Items.INGOTS_BRICK),
-              GasStackIngredient.from(MekanismGases.STEAM, 1),
+              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY_BALL)
         ).addCriterion(Criterion.HAS_CHEMICAL_INJECTION_CHAMBER)
               .build(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
         //Dirt -> clay
         ItemStackGasToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Items.DIRT),
-              GasStackIngredient.from(MekanismGases.STEAM, 1),
+              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY)
         ).addCriterion(Criterion.HAS_CHEMICAL_INJECTION_CHAMBER)
               .build(consumer, Mekanism.rl(basePath + "dirt_to_clay"));
@@ -1274,7 +1276,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Terracotta -> clay
         ItemStackGasToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(Items.TERRACOTTA),
-              GasStackIngredient.from(MekanismGases.STEAM, 1),
+              GasStackIngredient.from(MekanismGases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY)
         ).addCriterion(Criterion.HAS_CHEMICAL_INJECTION_CHAMBER)
               .build(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
@@ -1986,6 +1988,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE, MekanismTags.Fluids.SULFUR_TRIOXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID, MekanismTags.Fluids.SULFURIC_ACID);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.TRITIUM, MekanismFluids.TRITIUM, MekanismTags.Fluids.TRITIUM);
+        addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.WATER_VAPOR, new IFluidProvider() {
+            @Nonnull
+            @Override
+            public Fluid getFluid() {
+                return Fluids.WATER;
+            }
+        }, FluidTags.WATER);
     }
 
     private void addRotaryCondensentratorRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput, Tag<Fluid> fluidInput) {

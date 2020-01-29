@@ -252,6 +252,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.HYDROGEN, "Hydrogen");
         add(MekanismGases.OXYGEN, "Oxygen");
         add(MekanismGases.STEAM, "Steam");
+        add(MekanismGases.WATER_VAPOR, "Water Vapor");
         add(MekanismGases.CHLORINE, "Chlorine");
         add(MekanismGases.SULFUR_DIOXIDE, "Sulfur Dioxide");
         add(MekanismGases.SULFUR_TRIOXIDE, "Sulfur Trioxide");

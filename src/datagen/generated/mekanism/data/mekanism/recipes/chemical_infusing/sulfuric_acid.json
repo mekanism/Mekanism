@@ -6,7 +6,7 @@
   },
   "rightInput": {
     "amount": 1,
-    "gas": "mekanism:steam"
+    "gas": "mekanism:water_vapor"
   },
   "output": {
     "gas": "mekanism:sulfuric_acid",
