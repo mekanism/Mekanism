@@ -49,7 +49,6 @@ public class MekanismAPI {
     private static Set<Block> cardboardBoxIgnore = new HashSet<>();
     //Ignore all mod blocks
     private static Set<String> cardboardBoxModIgnore = new HashSet<>();
-    private static MekanismRecipeHelper helper = null;
 
     @Nonnull
     public static final Gas EMPTY_GAS = new EmptyGas();
@@ -102,24 +101,6 @@ public class MekanismAPI {
 
     public static Set<Block> getBoxIgnore() {
         return cardboardBoxIgnore;
-    }
-
-    /**
-     * Get the instance of the recipe helper to directly add recipes.
-     *
-     * Do NOT copy/repackage this method into your package, nor use the class directly as it may change.
-     *
-     * @return {@link MekanismRecipeHelper} The handler.
-     */
-    public static MekanismRecipeHelper recipeHelper() {
-        if (helper == null) {
-            try {
-                helper = (MekanismRecipeHelper) Class.forName("mekanism.common.recipe.APIHandler").newInstance();
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                LogManager.getLogger("MekanismAPI").error("Could not find API Handler", e);
-            }
-        }
-        return helper;
     }
 
     public static void addBoxBlacklistMod(@Nonnull String modid) {

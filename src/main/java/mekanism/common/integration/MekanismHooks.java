@@ -1,7 +1,9 @@
 package mekanism.common.integration;
 
 import mekanism.common.integration.wrenches.Wrenches;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -33,6 +35,7 @@ public final class MekanismHooks {
     public boolean MCMPLoaded = false;
     public boolean MetallurgyLoaded = false;
     public boolean OCLoaded = false;
+    public boolean TOPLoaded = false;
 
     public void hookPreInit() {
         ModList modList = ModList.get();
@@ -45,13 +48,18 @@ public final class MekanismHooks {
         MetallurgyLoaded = modList.isLoaded(METALLURGY_MOD_ID);
         MALoaded = modList.isLoaded(MYSTICALAGRICULTURE_MOD_ID);
         OCLoaded = modList.isLoaded(OPENCOMPUTERS_MOD_ID);
+        TOPLoaded = modList.isLoaded(TOP_MOD_ID);
+    }
+
+    public void sendIMCMessages(InterModEnqueueEvent event) {
+        if (TOPLoaded) {
+            InterModComms.sendTo(TOP_MOD_ID, "getTheOneProbe", TOPProvider::new);
+        }
     }
 
     public void hookCommonSetup() {
         //TODO
-        //Register TOP handler
-        /*FMLInterModComms.sendFunctionMessage(TOP_MOD_ID, "getTheOneProbe", "mekanism.common.integration.TOPProvider");
-        if (OCLoaded) {
+        /*if (OCLoaded) {
             loadOCDrivers();
         }
         if (AE2Loaded) {

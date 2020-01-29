@@ -30,7 +30,6 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.integration.IMCHandler;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketDataRequest;
@@ -74,7 +73,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
@@ -184,7 +183,7 @@ public class Mekanism {
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
-        modEventBus.addListener(this::handleIMC);
+        modEventBus.addListener(this::imcQueue);
         //TODO: Register other listeners and various stuff that is needed
 
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
@@ -287,8 +286,8 @@ public class Mekanism {
         TransmitterNetworkRegistry.reset();
     }
 
-    public void handleIMC(InterModProcessEvent event) {
-        new IMCHandler().onIMCEvent(event.getIMCStream());
+    private void imcQueue(InterModEnqueueEvent event) {
+        hooks.sendIMCMessages(event);
     }
 
     public void preInit() {

@@ -273,17 +273,11 @@ dependencies {
 
     compileOnly "org.jetbrains:annotations:${jb_annotations}"
 
-    // compile against the JEI API but do not include it at runtime
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
-    // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    /*runtimeOnly fg.deobf(project.dependencies.create("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}") {
-        transitive = false
-    })*/
-    /*compileOnly fg.deobf(project.dependencies.create("mcjty.theoneprobe:TheOneProbe-1.14:${top_version}:api") {
-        transitive = false
-    })*/
+    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}:api")
+    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}")
 
     //compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
@@ -472,6 +466,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 relations {
                     optionalDependency "jei"
                     optionalDependency "biomes-o-plenty"
+                    optionalDependency "the-one-probe"
                 }
             }
             addArtifact apiJar

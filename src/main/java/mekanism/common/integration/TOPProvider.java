@@ -1,5 +1,6 @@
-/*package mekanism.common.integration;
+package mekanism.common.integration;
 
+import java.util.Optional;
 import java.util.function.Function;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -10,28 +11,30 @@ import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasTankInfo;
+import mekanism.api.gas.IGasHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-@SuppressWarnings("unused")//IMC bound
-public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProvider {
+//Registered via IMC
+@SuppressWarnings("unused")
+public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, Void> {
 
     @Override
-    public Void apply(ITheOneProbe iTheOneProbe) {
-        iTheOneProbe.registerProvider(this);
+    public Void apply(ITheOneProbe probe) {
+        probe.registerProvider(this);
         return null;
     }
 
     @Override
     public String getID() {
-        return Mekanism.MODID;
+        return Mekanism.MODID + ":gas";
     }
 
     @Override
@@ -41,8 +44,9 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
         }
         TileEntity tile = MekanismUtils.getTileEntity(world, data.getPos());
         if (tile != null) {
-            CapabilityUtils.getCapabilityHelper(tile, Capabilities.GAS_HANDLER_CAPABILITY, null).ifPresent(handler -> {
-                GasTankInfo[] tanks = handler.getTankInfo();
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, null));
+            if (capability.isPresent()) {
+                GasTankInfo[] tanks = capability.get().getTankInfo();
                 for (GasTankInfo tank : tanks) {
                     IProgressStyle style = probeInfo.defaultProgressStyle().suffix("mB");
                     if (!tank.getStack().isEmpty()) {
@@ -62,7 +66,7 @@ public class TOPProvider implements Function<ITheOneProbe, Void>, IProbeInfoProv
                     }
                     probeInfo.progress(tank.getStored(), tank.getCapacity(), style);
                 }
-            });
+            }
         }
     }
-}*/
+}
