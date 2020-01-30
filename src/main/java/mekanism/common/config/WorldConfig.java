@@ -20,7 +20,7 @@ public class WorldConfig implements IMekanismConfig {
     WorldConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("World generation settings for Mekanism. This config is not synced from server to client").push("world_generation");
-        enableRegeneration = builder.comment("Allows chunks to retrogen Mekanism ore blocks.").define("enableRegeneration", false);
+        enableRegeneration = builder.comment("Allows chunks to retrogen Mekanism ore blocks.").worldRestart().define("enableRegeneration", false);
         userGenVersion = builder.comment("Change this value to cause Mekanism to regen its ore in all loaded chunks.").defineInRange("userWorldGenVersion", 0, 0, Integer.MAX_VALUE);
         copper = new OreConfig(builder, "copper", true, 16, 8, 0, 0, 60);
         osmium = new OreConfig(builder, "osmium", true, 12, 8, 0, 0, 60);

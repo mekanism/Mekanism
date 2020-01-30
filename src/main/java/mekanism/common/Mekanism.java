@@ -39,11 +39,13 @@ import mekanism.common.recipe.RecipeCacheManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismEntityTypes;
+import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.registries.MekanismPlacements;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -197,6 +199,8 @@ public class Mekanism {
         MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         MekanismSounds.SOUND_EVENTS.register(modEventBus);
         MekanismParticleTypes.PARTICLE_TYPES.register(modEventBus);
+        MekanismPlacements.PLACEMENTS.register(modEventBus);
+        MekanismFeatures.FEATURES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
         //Delay adding the deferred registers for infuse types and gases until after their registries are actually assigned
         modEventBus.addListener(EventPriority.LOW, this::addCustomRegistryDeferredRegisters);

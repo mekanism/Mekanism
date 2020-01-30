@@ -22,7 +22,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public class BlockBasicMultiblock extends BlockMekanism {
@@ -53,7 +52,7 @@ public class BlockBasicMultiblock extends BlockMekanism {
     public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
         TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile != null) {
-            if (world instanceof IWorldReader ? !((IWorldReader) world).isRemote() : EffectiveSide.get() == LogicalSide.SERVER) {
+            if (world instanceof IWorldReader ? !((IWorldReader) world).isRemote() : EffectiveSide.get().isServer()) {
                 if (tile.structure != null) {
                     return false;
                 }

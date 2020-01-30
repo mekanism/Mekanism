@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.world.GenHandler;
@@ -12,16 +13,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
 
 public class CommonWorldTickHandler {
 
     private static final long maximumDeltaTimeNanoSecs = 16_000_000; // 16 milliseconds
 
+    //TODO: Check for concurrent modification issues? As addRegenChunk gets called from ChunkDataEvent.Load which is now fired from the async thread
     private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
 
     public void addRegenChunk(DimensionType dimension, ChunkPos chunkCoord) {
@@ -46,7 +47,7 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent
     public void onTick(WorldTickEvent event) {
-        if (event.side == LogicalSide.SERVER) {
+        if (event.side.isServer()) {
             if (event.phase == Phase.START) {
                 tickStart(event.world);
             } else if (event.phase == Phase.END) {
@@ -67,7 +68,7 @@ public class CommonWorldTickHandler {
         if (!world.isRemote) {
             MultiblockManager.tick(world);
             FrequencyManager.tick(world);
-            if (chunkRegenMap == null) {
+            if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;
             }
             ResourceLocation dimensionName = world.getDimension().getType().getRegistryName();
@@ -85,8 +86,9 @@ public class CommonWorldTickHandler {
                     long xSeed = fmlRandom.nextLong() >> 2 + 1L;
                     long zSeed = fmlRandom.nextLong() >> 2 + 1L;
                     fmlRandom.setSeed((xSeed * nextChunk.x + zSeed * nextChunk.z) ^ world.getSeed());
-                    GenHandler.generate(world, ((ServerChunkProvider) world.getChunkProvider()).getChunkGenerator(), fmlRandom, nextChunk.x, nextChunk.z);
-                    Mekanism.logger.info("Regenerating ores at chunk " + nextChunk);
+                    if (GenHandler.generate((ServerWorld) world, fmlRandom, nextChunk.x, nextChunk.z)) {
+                        Mekanism.logger.info("Regenerating ores at chunk " + nextChunk);
+                    }
                 }
                 if (chunksToGen.isEmpty()) {
                     chunkRegenMap.remove(dimensionName);

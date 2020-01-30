@@ -21,7 +21,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 /**
@@ -45,7 +44,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
 
     public boolean isRemote() {
         //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
-        return getWorld() == null ? EffectiveSide.get() == LogicalSide.CLIENT : getWorld().isRemote();
+        return getWorld() == null ? EffectiveSide.get().isClient() : getWorld().isRemote();
     }
 
     public void setMainLocation(BlockPos pos) {

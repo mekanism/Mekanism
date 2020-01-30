@@ -27,7 +27,6 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
 
 public class CommonPlayerTickHandler {
 
@@ -70,7 +69,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onTick(PlayerTickEvent event) {
-        if (event.phase == Phase.END && event.side == LogicalSide.SERVER) {
+        if (event.phase == Phase.END && event.side.isServer()) {
             tickEnd(event.player);
         }
     }

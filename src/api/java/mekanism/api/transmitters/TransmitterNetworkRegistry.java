@@ -14,7 +14,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.LogicalSide;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -80,7 +79,7 @@ public class TransmitterNetworkRegistry {
 
     @SubscribeEvent
     public void onTick(ServerTickEvent event) {
-        if (event.phase == Phase.END && event.side == LogicalSide.SERVER) {
+        if (event.phase == Phase.END && event.side.isServer()) {
             tickEnd();
         }
     }

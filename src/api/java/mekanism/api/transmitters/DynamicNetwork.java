@@ -20,7 +20,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, NETWORK, BUFFER>, BUFFER> implements IClientTicker, INetworkDataHandler, IHasTextComponent {
@@ -121,7 +120,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
 
     public boolean isRemote() {
         //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
-        return world == null ? EffectiveSide.get() == LogicalSide.CLIENT : world.isRemote;
+        return world == null ? EffectiveSide.get().isClient() : world.isRemote;
     }
 
     public abstract void absorbBuffer(IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter);

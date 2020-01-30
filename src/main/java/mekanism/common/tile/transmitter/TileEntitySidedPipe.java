@@ -47,7 +47,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -98,7 +97,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
 
     public boolean isRemote() {
         //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
-        return getWorld() == null ? EffectiveSide.get() == LogicalSide.CLIENT : getWorld().isRemote();
+        return getWorld() == null ? EffectiveSide.get().isClient() : getWorld().isRemote();
     }
 
     @Override

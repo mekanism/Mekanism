@@ -71,7 +71,6 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Contract;
@@ -865,7 +864,7 @@ public final class MekanismUtils {
     @Nonnull
     public static String getLastKnownUsername(UUID uuid) {
         String ret = UsernameCache.getLastKnownUsername(uuid);
-        if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get() == LogicalSide.SERVER) { // see if MC/Yggdrasil knows about it?!
+        if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get().isServer()) { // see if MC/Yggdrasil knows about it?!
             GameProfile gp = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getProfileByUUID(uuid);
             if (gp != null) {
                 ret = gp.getName();
