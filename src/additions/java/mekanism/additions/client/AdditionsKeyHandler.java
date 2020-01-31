@@ -23,7 +23,9 @@ public class AdditionsKeyHandler extends MekKeyHandler {
     public static KeyBinding voiceKey = new KeyBinding(AdditionsLang.KEY_VOICE.getTranslationKey(), GLFW.GLFW_KEY_U, MekanismKeyHandler.keybindCategory);
 
     private static Builder BINDINGS = new Builder()
-          .addBinding(voiceKey, true);
+          .addBinding(voiceKey, true)
+          //We add the mode switch key to keys we listen to, but we do not register it again to the ClientRegistry
+          .addBinding(MekanismKeyHandler.modeSwitchKey, false);
 
     public AdditionsKeyHandler() {
         super(BINDINGS);

@@ -1,8 +1,6 @@
 package mekanism.additions.common.item;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
@@ -11,7 +9,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -28,17 +25,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemWalkieTalkie extends Item implements IItemNetwork {
 
-    public static ModelResourceLocation OFF_MODEL = new ModelResourceLocation(MekanismAdditions.rl("walkie_talkie"), "inventory");
-
-    public static Map<Integer, ModelResourceLocation> CHANNEL_MODELS = new HashMap<>();
-
     public ItemWalkieTalkie(Item.Properties properties) {
         super(properties.maxStackSize(1));
-    }
-
-    public static ModelResourceLocation getModel(int channel) {
-        CHANNEL_MODELS.computeIfAbsent(channel, c -> new ModelResourceLocation(MekanismAdditions.rl("walkie_talkie_ch" + c), "inventory"));
-        return CHANNEL_MODELS.get(channel);
+        this.addPropertyOverride(MekanismAdditions.rl("channel"), (stack, world, entity) -> getOn(stack) ? getChannel(stack) : 0);
     }
 
     @Override
