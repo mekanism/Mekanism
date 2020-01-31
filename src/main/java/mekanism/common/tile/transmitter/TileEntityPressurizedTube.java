@@ -1,6 +1,7 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -84,13 +85,16 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public void tick() {
         if (!isRemote()) {
             updateShare();
-            IGasHandler[] connectedAcceptors = GasUtils.getConnectedAcceptors(getPos(), getWorld());
-            for (Direction side : getConnections(ConnectionType.PULL)) {
-                IGasHandler container = connectedAcceptors[side.ordinal()];
-                if (container != null) {
-                    GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), Action.SIMULATE);
-                    if (!received.isEmpty() && takeGas(received, Action.SIMULATE) == received.getAmount()) {
-                        container.drawGas(side.getOpposite(), takeGas(received, Action.EXECUTE), Action.EXECUTE);
+            List<Direction> connections = getConnections(ConnectionType.PULL);
+            if (!connections.isEmpty()) {
+                IGasHandler[] connectedAcceptors = GasUtils.getConnectedAcceptors(getPos(), getWorld());
+                for (Direction side : connections) {
+                    IGasHandler container = connectedAcceptors[side.ordinal()];
+                    if (container != null) {
+                        GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), Action.SIMULATE);
+                        if (!received.isEmpty() && takeGas(received, Action.SIMULATE) == received.getAmount()) {
+                            container.drawGas(side.getOpposite(), takeGas(received, Action.EXECUTE), Action.EXECUTE);
+                        }
                     }
                 }
             }
@@ -226,6 +230,17 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public GasStack getBuffer() {
         return buffer == null ? GasStack.EMPTY : buffer.getStack();
+    }
+
+    @Nonnull
+    @Override
+    public GasStack getBufferWithFallback() {
+        GasStack buffer = getBuffer();
+        //If we don't have a buffer try falling back to the network's buffer
+        if (buffer.isEmpty() && getTransmitter().hasTransmitterNetwork()) {
+            return getTransmitter().getTransmitterNetwork().getBuffer();
+        }
+        return buffer;
     }
 
     @Override

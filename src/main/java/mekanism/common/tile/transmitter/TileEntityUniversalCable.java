@@ -64,11 +64,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
             }
         } else {
             updateShare();
-            List<Direction> sides = getConnections(ConnectionType.PULL);
-            if (!sides.isEmpty()) {
+            List<Direction> connections = getConnections(ConnectionType.PULL);
+            if (!connections.isEmpty()) {
                 TileEntity[] connectedOutputters = CableUtils.getConnectedOutputters(this, getPos(), getWorld());
                 double maxDraw = tier.getCableCapacity();
-                for (Direction side : sides) {
+                for (Direction side : connections) {
                     TileEntity outputter = connectedOutputters[side.ordinal()];
                     if (outputter != null) {
                         Optional<IStrictEnergyStorage> storageCapability = MekanismUtils.toOptional(CapabilityUtils.getCapability(outputter, Capabilities.ENERGY_STORAGE_CAPABILITY, side.getOpposite()));
@@ -167,8 +167,20 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
         return new EnergyNetwork();
     }
 
+    @Nonnull
     @Override
     public EnergyStack getBuffer() {
+        return buffer;
+    }
+
+    @Nonnull
+    @Override
+    public EnergyStack getBufferWithFallback() {
+        EnergyStack buffer = getBuffer();
+        //If we don't have a buffer try falling back to the network's buffer
+        if (buffer.amount == 0 && getTransmitter().hasTransmitterNetwork()) {
+            return getTransmitter().getTransmitterNetwork().getBuffer();
+        }
         return buffer;
     }
 
