@@ -4,7 +4,6 @@ import java.util.Random;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
-import mekanism.client.ClientTickHandler;
 import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -74,7 +73,9 @@ public class RenderTickHandler {
                     }
                 }
 
-                //todo use vanilla status bar text?
+                //TODO: use vanilla status bar text? Note, the vanilla status bar text stays a lot longer than we have our message
+                // display for, so we would need to somehow modify it. This can be done via ATs but does cause it to always appear
+                // to be more faded in color, and blinks to full color just before disappearing
                 if (modeSwitchTimer > 1 && minecraft.currentScreen == null && player.getHeldItemMainhand().getItem() instanceof ItemConfigurator) {
                     ItemStack stack = player.getHeldItemMainhand();
                     ConfiguratorMode mode = ((ItemConfigurator) stack.getItem()).getState(stack);
@@ -88,10 +89,6 @@ public class RenderTickHandler {
                 }
 
                 modeSwitchTimer = Math.max(modeSwitchTimer - 1, 0);
-
-                if (modeSwitchTimer == 0) {
-                    ClientTickHandler.wheelStatus = 0;
-                }
 
                 if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()) {
                     ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);

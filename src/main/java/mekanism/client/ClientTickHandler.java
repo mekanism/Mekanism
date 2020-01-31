@@ -54,7 +54,6 @@ public class ClientTickHandler {
     public static Random rand = new Random();
     public static Set<IClientTicker> tickingSet = new HashSet<>();
     public static Map<PlayerEntity, TeleportData> portableTeleports = new HashMap<>();
-    public static double wheelStatus = 0;
     public boolean initHoliday = false;
     public boolean shouldReset = false;
 
@@ -281,8 +280,7 @@ public class ClientTickHandler {
                 if (delta != 0) {
                     ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
                     RenderTickHandler.modeSwitchTimer = 100;
-                    wheelStatus += delta;
-                    int newVal = configurator.getState(stack).ordinal() + ((int) wheelStatus) % EnumUtils.CONFIGURATOR_MODES.length;
+                    int newVal = configurator.getState(stack).ordinal() + ((int) delta) % EnumUtils.CONFIGURATOR_MODES.length;
                     if (newVal > 0) {
                         newVal = newVal % EnumUtils.CONFIGURATOR_MODES.length;
                     } else if (newVal < 0) {
