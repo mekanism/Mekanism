@@ -73,6 +73,7 @@ public class MekanismAPI {
         event.getRegistry().register(EMPTY_INFUSE_TYPE);
     }
 
+    //TODO: Rewrite handling of blacklist for cardboard box, and also add support for a tag to be able to be used for blacklisting blocks
     public static boolean isBlockCompatible(@Nonnull Block block) {
         if (cardboardBoxModIgnore.contains(Objects.requireNonNull(block.getRegistryName()).getNamespace())) {
             return false;

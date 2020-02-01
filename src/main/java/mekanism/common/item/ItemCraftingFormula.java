@@ -29,8 +29,8 @@ public class ItemCraftingFormula extends Item {
 
     public ItemCraftingFormula(Properties properties) {
         super(properties);
-        this.addPropertyOverride(Mekanism.rl("invalid"), (stack, world, entity) -> getInventory(stack) != null && isInvalid(stack) ? 1F : 0F);
-        this.addPropertyOverride(Mekanism.rl("encoded"), (stack, world, entity) -> getInventory(stack) != null && !isInvalid(stack) ? 1F : 0F);
+        this.addPropertyOverride(Mekanism.rl("invalid"), (stack, world, entity) -> getInventory(stack) != null && isInvalid(stack) ? 1 : 0);
+        this.addPropertyOverride(Mekanism.rl("encoded"), (stack, world, entity) -> getInventory(stack) != null && !isInvalid(stack) ? 1 : 0);
     }
 
     @Override

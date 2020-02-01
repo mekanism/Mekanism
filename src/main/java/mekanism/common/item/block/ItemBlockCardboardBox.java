@@ -4,6 +4,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
+import mekanism.common.CommonPlayerTracker;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
@@ -21,6 +23,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -30,12 +33,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
-    private static boolean isMonitoring;
-
     public ItemBlockCardboardBox(BlockCardboardBox block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(16));
-        //TODO: Listen to event as needed
-        //MinecraftForge.EVENT_BUS.register(this);
+        this.addPropertyOverride(Mekanism.rl("storage"), (stack, world, entity) -> getBlockData(stack) == null ? 0 : 1);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         BlockData data = getBlockData(stack);
         if (data != null) {
             try {
-                tooltip.add(MekanismLang.BLOCK.translate(data.block));
+                tooltip.add(MekanismLang.BLOCK.translate(data.blockState.getBlock()));
                 if (data.tileTag != null) {
                     tooltip.add(MekanismLang.TILE.translate(data.tileTag.getString("id")));
                 }
@@ -56,22 +56,19 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        if (player == null) {
+        if (stack.isEmpty() || player == null) {
             return ActionResultType.PASS;
         }
         World world = context.getWorld();
         BlockPos pos = context.getPos();
-        ItemStack stack = player.getHeldItem(context.getHand());
-        if (!player.isShiftKeyDown() && !world.isAirBlock(pos) && stack.getDamage() == 0) {
+        if (getBlockData(stack) == null && !player.isShiftKeyDown() && !world.isAirBlock(pos)) {
             BlockState state = world.getBlockState(pos);
             Block block = state.getBlock();
             if (!world.isRemote && MekanismAPI.isBlockCompatible(block) && state.getBlockHardness(world, pos) != -1) {
-                BlockData data = new BlockData();
-                data.block = block;
-                isMonitoring = true;
-                TileEntityCardboardBox tile = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
+                BlockData data = new BlockData(state);
+                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                 if (tile != null) {
                     CompoundNBT tag = new CompoundNBT();
                     tile.write(tag);
@@ -80,16 +77,17 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 if (!player.isCreative()) {
                     stack.shrink(1);
                 }
-
+                CommonPlayerTracker.monitoringCardboardBox = true;
                 // First, set the block to air to give the underlying block a chance to process
                 // any updates (esp. if it's a tile entity backed block). Ideally, we could avoid
                 // double updates, but if the block we are wrapping has multiple stacked blocks,
                 // we need to make sure it has a chance to update.
                 world.removeBlock(pos, false);
                 world.setBlockState(pos, getBlock().getDefaultState().with(BlockStateHelper.storageProperty, true));
-                isMonitoring = false;
-                if (tile != null) {
-                    tile.storedData = data;
+                CommonPlayerTracker.monitoringCardboardBox = false;
+                TileEntityCardboardBox box = MekanismUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
+                if (box != null) {
+                    box.storedData = data;
                 }
                 return ActionResultType.SUCCESS;
             }
@@ -118,19 +116,11 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     }
 
     public BlockData getBlockData(ItemStack stack) {
-        if (!ItemDataUtils.hasData(stack, "blockData")) {
-            return null;
+        if (ItemDataUtils.hasData(stack, "blockData")) {
+            return BlockData.read(ItemDataUtils.getCompound(stack, "blockData"));
         }
-        return BlockData.read(ItemDataUtils.getCompound(stack, "blockData"));
+        return null;
     }
-
-    //TODO
-    /*@SubscribeEvent
-    public void onEntitySpawn(EntityJoinWorldEvent event) {
-        if (event.getEntity() instanceof ItemEntity && isMonitoring) {
-            event.setCanceled(true);
-        }
-    }*/
 
     @Override
     public int getItemStackLimit(ItemStack stack) {
