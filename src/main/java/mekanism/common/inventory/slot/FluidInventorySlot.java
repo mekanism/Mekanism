@@ -44,20 +44,19 @@ public class FluidInventorySlot extends BasicInventorySlot {
             Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
             if (cap.isPresent()) {
                 IFluidHandlerItem fluidHandlerItem = cap.get();
-                boolean allEmpty = true;
+                boolean hasEmpty = false;
                 for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
                     FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
-                    if (!fluidInTank.isEmpty()) {
-                        if (isValidFluid.test(fluidInTank) && fluidHandler.fill(fluidInTank, FluidAction.SIMULATE) > 0) {
-                            //True if the items contents are valid and we can fill the tank with any of our contents
-                            return true;
-                        }
-                        allEmpty = false;
+                    if (fluidInTank.isEmpty()) {
+                        hasEmpty = true;
+                    } else if (isValidFluid.test(fluidInTank) && fluidHandler.fill(fluidInTank, FluidAction.SIMULATE) > 0) {
+                        //True if the items contents are valid and we can fill the tank with any of our contents
+                        return true;
                     }
                 }
-                //If all are empty then we want to try and drain the tank so return true
-                // but if we are not all empty and didn't find a valid one then we return false
-                return allEmpty;
+                //If we have no valid fluids/can't fill the tank with it, we return if there is at least
+                // one empty tank in the item so that we can then drain into it
+                return hasEmpty;
             }
             return false;
         }, stack -> FluidUtil.getFluidHandler(stack).isPresent(), inventory, x, y);
