@@ -9,6 +9,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.Mekanism;
+import mekanism.common.base.CreativeFluidTank;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidContainerManager;
@@ -69,8 +70,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     public boolean needsPacket;
 
-    public int currentRedstoneLevel;
-
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
 
@@ -83,7 +82,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     protected void presetVariables() {
         tier = ((BlockFluidTank) getBlockType()).getTier();
-        fluidTank = new FluidTank(tier.getStorage());
+        fluidTank = tier == FluidTankTier.CREATIVE ? new CreativeFluidTank() : new FluidTank(tier.getStorage());
     }
 
     @Nonnull
@@ -134,9 +133,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             }
 
             prevAmount = fluidTank.getFluidAmount();
-            if (!inputSlot.isEmpty()) {
-                manageInventory();
-            }
+            inputSlot.handleTank(outputSlot, editMode);
             if (getActive()) {
                 activeEmit();
             }
@@ -154,29 +151,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
                 fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), tier == FluidTankTier.CREATIVE ? FluidAction.SIMULATE : FluidAction.EXECUTE);
             });
-        }
-    }
-
-    private void manageInventory() {
-        if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
-            FluidStack ret = FluidContainerUtils.handleContainerItem(this, editMode, fluidTank.getFluid(), getCurrentNeeded(), inputSlot, outputSlot);
-
-            if (!ret.isEmpty()) {
-                fluidTank.setFluid(PipeUtils.copy(ret, Math.min(fluidTank.getCapacity(), ret.getAmount())));
-                if (tier == FluidTankTier.CREATIVE) {
-                    FluidStack fluid = fluidTank.getFluid();
-                    if (!fluid.isEmpty()) {
-                        fluid.setAmount(Integer.MAX_VALUE);
-                    }
-                } else {
-                    int rejects = Math.max(0, ret.getAmount() - fluidTank.getCapacity());
-                    if (rejects > 0) {
-                        pushUp(PipeUtils.copy(ret, rejects), FluidAction.EXECUTE);
-                    }
-                }
-            } else if (tier != FluidTankTier.CREATIVE) {
-                fluidTank.setFluid(FluidStack.EMPTY);
-            }
         }
     }
 
@@ -240,10 +214,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     public int getCurrentNeeded() {
-        int needed = fluidTank.getCapacity() - fluidTank.getFluidAmount();
         if (tier == FluidTankTier.CREATIVE) {
             return Integer.MAX_VALUE;
         }
+        int needed = fluidTank.getSpace();
         TileEntityFluidTank topTank = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
         if (topTank != null) {
             if (!fluidTank.isEmpty() && !topTank.fluidTank.isEmpty()) {
@@ -251,7 +225,16 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
                     return needed;
                 }
             }
-            needed += topTank.getCurrentNeeded();
+            if (topTank.tier == FluidTankTier.CREATIVE) {
+                //Don't allow creative tanks to be taken into stacked amount as it causes weird things to occur
+                return needed;
+            }
+            int aboveNeeded = topTank.getCurrentNeeded();
+            if ((long) needed + aboveNeeded > Integer.MAX_VALUE) {
+                //If we would overflow, just return we need max value
+                return Integer.MAX_VALUE;
+            }
+            needed += aboveNeeded;
         }
         return needed;
     }

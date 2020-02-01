@@ -30,7 +30,6 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
-import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
@@ -103,7 +102,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
         if (world.isRemote) {
             return ActionResultType.SUCCESS;
         }
-        TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, world, pos, true);
         if (tile == null) {
             return ActionResultType.PASS;
         }
@@ -114,7 +113,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
         if (!player.isShiftKeyDown()) {
             if (SecurityUtils.canAccess(player, tile)) {
                 ItemStack stack = player.getHeldItem(hand);
-                if (!stack.isEmpty() && FluidContainerUtils.isFluidContainer(stack) && manageInventory(player, (TileEntityFluidTank) tile, hand, stack)) {
+                if (!stack.isEmpty() && manageInventory(player, tile, hand, stack)) {
                     player.inventory.markDirty();
                     return ActionResultType.SUCCESS;
                 }
@@ -143,7 +142,16 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
         Optional<IFluidHandlerItem> fluidHandlerItem = MekanismUtils.toOptional(FluidUtil.getFluidHandler(copyStack));
         if (fluidHandlerItem.isPresent()) {
             IFluidHandlerItem handler = fluidHandlerItem.get();
-            FluidStack fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+            FluidStack fluidInItem;
+            if (tile.fluidTank.isEmpty()) {
+                //If we don't have a fluid stored try draining in general
+                fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+            } else {
+                //Otherwise try draining the same type of fluid we have stored
+                // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
+                // second tank but just asking to drain a specific amount
+                fluidInItem = handler.drain(new FluidStack(tile.fluidTank.getFluid(), Integer.MAX_VALUE), FluidAction.SIMULATE);
+            }
             if (fluidInItem.isEmpty()) {
                 if (!tile.fluidTank.isEmpty()) {
                     int filled = handler.fill(tile.fluidTank.getFluid(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
@@ -157,12 +165,8 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                             player.dropItem(container, false, true);
                             itemStack.shrink(1);
                         }
-                        //TODO: Switch to getting the capability for the tile and then draining that way, so that we
-                        // don't need special casing here for the creative tank, and instead can let the creative tank
-                        // special case itself
-                        if (tile.tier != FluidTankTier.CREATIVE) {
-                            tile.fluidTank.drain(filled, FluidAction.EXECUTE);
-                        }
+                        //Note: if our FluidTank is creative it has a special FluidTank impl that will not actually drain it
+                        tile.fluidTank.drain(filled, FluidAction.EXECUTE);
                         return true;
                     }
                 }
@@ -190,13 +194,8 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                         filled = true;
                     }
                     if (filled) {
-                        int toFill = tile.fluidTank.getCapacity() - tile.fluidTank.getFluidAmount();
-                        //TODO: Switch to getting the capability for the tile and then draining that way, so that we
-                        // don't need special casing here for the creative tank, and instead can let the creative tank
-                        // special case itself
-                        if (tile.tier != FluidTankTier.CREATIVE) {
-                            toFill = Math.min(toFill, drained.getAmount());
-                        }
+                        int toFill = Math.min(tile.fluidTank.getSpace(), drained.getAmount());
+                        //Note: if our FluidTank is creative it has a special FluidTank impl that will properly handle modifying the contents
                         tile.fluidTank.fill(PipeUtils.copy(drained, toFill), FluidAction.EXECUTE);
                         if (drained.getAmount() - toFill > 0) {
                             tile.pushUp(PipeUtils.copy(fluidInItem, drained.getAmount() - toFill), FluidAction.EXECUTE);

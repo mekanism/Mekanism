@@ -39,10 +39,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
      * This Energy Cube's tier.
      */
     public EnergyCubeTier tier;//TODO: Make this private
-    /**
-     * The redstone level this Energy Cube is outputting at.
-     */
-    public int currentRedstoneLevel;
     public int prevScale;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;

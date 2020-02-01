@@ -2,24 +2,20 @@ package mekanism.common.util;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
-import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class FluidContainerUtils {
 
@@ -61,116 +57,6 @@ public final class FluidContainerUtils {
             return FluidStack.EMPTY;
         }
         return handler.drain(needed, FluidAction.EXECUTE);
-    }
-
-    @Nonnull
-    private static FluidStack handleContainerItemFill(TileEntity tile, @Nonnull FluidStack stack, IInventorySlot inSlot, IInventorySlot outSlot) {
-        if (!stack.isEmpty()) {
-            ItemStack inputCopy = StackUtils.size(inSlot.getStack(), 1);
-            Optional<IFluidHandlerItem> fluidHandlerItem = MekanismUtils.toOptional(FluidUtil.getFluidHandler(inputCopy));
-            int drained = 0;
-            if (fluidHandlerItem.isPresent()) {
-                IFluidHandlerItem handler = fluidHandlerItem.get();
-                drained = handler.fill(stack, FluidAction.EXECUTE);
-                inputCopy = handler.getContainer();
-            }
-            if (outSlot.isEmpty()) {
-                stack.setAmount(stack.getAmount() - drained);
-                outSlot.setStack(inputCopy);
-            } else {
-                ItemStack outputStack = outSlot.getStack();
-                if (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() >= outSlot.getLimit(outputStack)) {
-                    //We won't be able to move our container to the output slot so exit
-                    return stack;
-                }
-                stack.setAmount(stack.getAmount() - drained);
-                if (outSlot.growStack(1, Action.EXECUTE) != 1) {
-                    //TODO: Print warning about failing to increase size of stack
-                }
-            }
-            if (inSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                //TODO: Print warning about failing to shrink size of stack
-            }
-            tile.markDirty();
-        }
-        return stack;
-    }
-
-    @Nonnull
-    private static FluidStack handleContainerItemEmpty(TileEntity tile, @Nonnull FluidStack stored, int needed, IInventorySlot inSlot, IInventorySlot outSlot) {
-        final Fluid storedFinal = stored.getFluid();
-        final ItemStack input = StackUtils.size(inSlot.getStack(), 1);
-        Optional<IFluidHandlerItem> fluidHandlerItem = MekanismUtils.toOptional(FluidUtil.getFluidHandler(input));
-        if (!fluidHandlerItem.isPresent()) {
-            return stored;
-        }
-        IFluidHandlerItem handler = fluidHandlerItem.get();
-        FluidStack ret = extractFluid(needed, handler, new FluidChecker() {
-            @Override
-            public boolean isValid(Fluid f) {
-                return storedFinal == Fluids.EMPTY || storedFinal == f;
-            }
-        });
-
-        ItemStack inputCopy = handler.getContainer();
-        ItemStack outputStack = outSlot.getStack();
-        Optional<FluidStack> containerFluid = MekanismUtils.toOptional(FluidUtil.getFluidContained(inputCopy));
-        boolean noFluid = !containerFluid.isPresent() || containerFluid.get().isEmpty();
-        if (noFluid && !inputCopy.isEmpty()) {
-            if (!outputStack.isEmpty() && (!ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy) || outputStack.getCount() == outSlot.getLimit(outputStack))) {
-                return stored;
-            }
-        }
-
-        if (!ret.isEmpty()) {
-            if (stored.isEmpty()) {
-                stored = ret;
-            } else {
-                stored.setAmount(stored.getAmount() + ret.getAmount());
-            }
-            needed -= ret.getAmount();
-            tile.markDirty();
-        }
-
-        if (noFluid || needed == 0) {
-            if (!inputCopy.isEmpty()) {
-                if (outputStack.isEmpty()) {
-                    outSlot.setStack(inputCopy);
-                } else if (ItemHandlerHelper.canItemStacksStack(outputStack, inputCopy)) {
-                    if (outSlot.growStack(1, Action.EXECUTE) != 1) {
-                        //TODO: Print warning about failing to increase size of stack
-                    }
-                }
-            }
-            if (inSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                //TODO: Print warning about failing to shrink size of stack
-            }
-            tile.markDirty();
-        } else {
-            inSlot.setStack(inputCopy);
-        }
-        return stored;
-    }
-
-    @Nonnull
-    public static FluidStack handleContainerItem(TileEntityMekanism tile, ContainerEditMode editMode, @Nonnull FluidStack stack, int needed,
-          IInventorySlot inSlot, IInventorySlot outSlot) {
-        //TODO: Can these two methods be cleaned up by offloading checks to the IInventorySlots
-        if (editMode == ContainerEditMode.FILL) {
-            return handleContainerItemFill(tile, stack, inSlot, outSlot);
-        } else if (editMode == ContainerEditMode.EMPTY) {
-            return handleContainerItemEmpty(tile, stack, needed, inSlot, outSlot);
-        } else if (editMode == ContainerEditMode.BOTH) {
-            Optional<FluidStack> fluidStack = MekanismUtils.toOptional(FluidUtil.getFluidContained(inSlot.getStack()));
-            if (fluidStack.isPresent() && !fluidStack.get().isEmpty()) {
-                //If we support either mode and our container is not empty, then drain
-                return handleContainerItemEmpty(tile, stack, needed, inSlot, outSlot);
-            } else {
-                //If we have an empty container and support either mode, then fill
-                return handleContainerItemFill(tile, stack, inSlot, outSlot);
-            }
-        }
-        return stack;
     }
 
     public enum ContainerEditMode implements IIncrementalEnum<ContainerEditMode>, IHasTextComponent {

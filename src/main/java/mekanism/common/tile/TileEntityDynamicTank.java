@@ -15,9 +15,9 @@ import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
@@ -91,19 +91,19 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                     sendPacketToRenderer();
                 }
                 structure.prevFluid = structure.fluidStored.isEmpty() ? FluidStack.EMPTY : structure.fluidStored.copy();
-                manageInventory();
+                //TODO: Remove shouldn't be needed anymore once we finish implementing the inventory again for the dynamic tank
+                //int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - structure.fluidStored.getAmount();
+                List<IInventorySlot> inventorySlots = structure.getInventorySlots();
+                //TODO: No magic numbers??
+                FluidInventorySlot inputSlot = (FluidInventorySlot) inventorySlots.get(0);
+                //TODO: Note - this does not work due to it not updating the fluid stored or anything
+                inputSlot.handleTank(inventorySlots.get(1), structure.editMode);
+                //TODO: Remove shouldn't be needed anymore once we finish implementing the inventory again for the dynamic tank
+                /*if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
+                    structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.editMode, structure.fluidStored, needed, inputSlot, inventorySlots.get(1));
+                    Mekanism.packetHandler.sendUpdatePacket(this);
+                }*/
             }
-        }
-    }
-
-    public void manageInventory() {
-        int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - structure.fluidStored.getAmount();
-        List<IInventorySlot> inventorySlots = structure.getInventorySlots();
-        //TODO: No magic numbers??
-        IInventorySlot inputSlot = inventorySlots.get(0);
-        if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
-            structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.editMode, structure.fluidStored, needed, inputSlot, inventorySlots.get(1));
-            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 
@@ -224,7 +224,16 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         Optional<IFluidHandlerItem> fluidHandlerItem = MekanismUtils.toOptional(FluidUtil.getFluidHandler(copyStack));
         if (fluidHandlerItem.isPresent()) {
             IFluidHandlerItem handler = fluidHandlerItem.get();
-            FluidStack fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+            FluidStack fluidInItem;
+            if (structure.fluidStored.isEmpty()) {
+                //If we don't have a fluid stored try draining in general
+                fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
+            } else {
+                //Otherwise try draining the same type of fluid we have stored
+                // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
+                // second tank but just asking to drain a specific amount
+                fluidInItem = handler.drain(new FluidStack(structure.fluidStored, Integer.MAX_VALUE), FluidAction.SIMULATE);
+            }
             if (fluidInItem.isEmpty()) {
                 if (!structure.fluidStored.isEmpty()) {
                     int filled = handler.fill(structure.fluidStored, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);

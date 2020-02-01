@@ -70,8 +70,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
     public int currentGasAmount;
 
-    public int currentRedstoneLevel;
-
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 

@@ -15,6 +15,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
@@ -203,6 +204,43 @@ public class FluidInventorySlot extends BasicInventorySlot {
     @Override
     protected ContainerSlotType getSlotType() {
         return ContainerSlotType.EXTRA;
+    }
+
+    public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode) {
+        if (!isEmpty()) {
+            //TODO: If we are filling the tank and it is full let it fill tanks above itself
+            /*int rejects = Math.max(0, ret.getAmount() - fluidTank.getCapacity());
+            if (rejects > 0) {
+                pushUp(PipeUtils.copy(ret, rejects), FluidAction.EXECUTE);
+            }*/
+            if (editMode == ContainerEditMode.FILL) {
+                drainTank(outputSlot);
+            } else if (editMode == ContainerEditMode.EMPTY) {
+                fillTank(outputSlot);
+            } else if (editMode == ContainerEditMode.BOTH) {
+                Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(current));
+                if (cap.isPresent()) {
+                    IFluidHandlerItem fluidHandlerItem = cap.get();
+                    boolean hasEmpty = false;
+                    for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
+                        FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
+                        if (fluidInTank.isEmpty()) {
+                            hasEmpty = true;
+                        } else if (isValidFluid.test(fluidInTank) && fluidHandler.fill(fluidInTank, FluidAction.SIMULATE) > 0) {
+                            //If we support either mode and our container is not empty, then drain the item into the tank
+                            fillTank(outputSlot);
+                            return;
+                        }
+                    }
+                    //If we have no valid fluids/can't fill the tank with it, we return if there is at least
+                    // one empty tank in the item so that we can then drain into it
+                    if (hasEmpty) {
+                        //If we have an empty container and support either mode, then fill the container
+                        drainTank(outputSlot);
+                    }
+                }
+            }
+        }
     }
 
     /**
