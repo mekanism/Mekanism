@@ -50,11 +50,6 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IH
     }
 
     @Override
-    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
-        return false;
-    }
-
-    @Override
     @Deprecated
     public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
         //Not structural glass
@@ -83,5 +78,33 @@ public class BlockStructuralGlass extends BlockMekanism implements IHasModel, IH
     @Override
     public ILangEntry getDescription() {
         return MekanismLang.DESCRIPTION_STRUCTURAL_GLASS;
+    }
+
+    @Override
+    @Deprecated
+    public float getAmbientOcclusionLightValue(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
+        return 1.0F;
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
+        return true;
+    }
+
+    @Override
+    @Deprecated
+    public boolean causesSuffocation(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+        return false;
+    }
+
+    @Override
+    @Deprecated
+    public boolean isNormalCube(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+        return false;
+    }
+
+    @Override
+    public boolean canCreatureSpawn(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlacementType type, @Nullable EntityType<?> entityType) {
+        return false;
     }
 }
