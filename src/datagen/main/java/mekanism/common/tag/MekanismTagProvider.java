@@ -9,6 +9,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Items;
 import net.minecraft.tags.Tag;
@@ -22,6 +23,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     @Override
     protected void registerTags() {
+        addBoxBlacklist();
         addToTag(MekanismTags.Items.BATTERIES, MekanismItems.ENERGY_TABLET);
         addRods();
         addFuels();
@@ -41,6 +43,43 @@ public class MekanismTagProvider extends BaseTagProvider {
         addFluids();
         addSlurryTags(MekanismGases.IRON_SLURRY, MekanismGases.GOLD_SLURRY, MekanismGases.OSMIUM_SLURRY, MekanismGases.COPPER_SLURRY, MekanismGases.TIN_SLURRY);
         addInfuseTags();
+    }
+
+    private void addBoxBlacklist() {
+        addToTag(MekanismTags.Blocks.CARDBOARD_BLACKLIST,
+              MekanismBlocks.CARDBOARD_BOX,
+              MekanismBlocks.BOUNDING_BLOCK,
+              MekanismBlocks.ADVANCED_BOUNDING_BLOCK,
+              MekanismBlocks.SECURITY_DESK,
+              MekanismBlocks.DIGITAL_MINER,
+              MekanismBlocks.SEISMIC_VIBRATOR,
+              MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR
+        );
+        getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST).add(
+              Blocks.WHITE_BED,
+              Blocks.ORANGE_BED,
+              Blocks.MAGENTA_BED,
+              Blocks.LIGHT_BLUE_BED,
+              Blocks.YELLOW_BED,
+              Blocks.LIME_BED,
+              Blocks.PINK_BED,
+              Blocks.GRAY_BED,
+              Blocks.LIGHT_GRAY_BED,
+              Blocks.CYAN_BED,
+              Blocks.PURPLE_BED,
+              Blocks.BLUE_BED,
+              Blocks.BROWN_BED,
+              Blocks.GREEN_BED,
+              Blocks.RED_BED,
+              Blocks.BLACK_BED,
+              Blocks.OAK_DOOR,
+              Blocks.SPRUCE_DOOR,
+              Blocks.BIRCH_DOOR,
+              Blocks.JUNGLE_DOOR,
+              Blocks.ACACIA_DOOR,
+              Blocks.DARK_OAK_DOOR,
+              Blocks.IRON_DOOR
+        );
     }
 
     private void addRods() {

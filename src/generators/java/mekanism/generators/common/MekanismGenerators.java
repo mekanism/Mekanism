@@ -1,6 +1,5 @@
 package mekanism.generators.common;
 
-import mekanism.api.MekanismAPI;
 import mekanism.common.FuelHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
@@ -43,7 +42,6 @@ public class MekanismGenerators implements IModule {
         Mekanism.modulesLoaded.add(instance = this);
         MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        MinecraftForge.EVENT_BUS.addListener(this::onBlacklistUpdate);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigReload);
 
@@ -100,11 +98,5 @@ public class MekanismGenerators implements IModule {
         /*if (event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID)) {
             proxy.loadConfiguration();
         }*/
-    }
-
-    private void onBlacklistUpdate(MekanismAPI.BoxBlacklistEvent event) {
-        // Mekanism Generators multiblock structures
-        MekanismAPI.addBoxBlacklist(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR);
-        MekanismAPI.addBoxBlacklist(GeneratorsBlocks.WIND_GENERATOR);
     }
 }

@@ -21,6 +21,7 @@ public class GeneratorsDataGenerator {
         if (event.includeServer()) {
             //Server side data generators
             gen.addProvider(new GeneratorsLootProvider(gen));
+            gen.addProvider(new GeneratorsTagProvider(gen));
             gen.addProvider(new GeneratorsRecipeProvider(gen));
         }
     }

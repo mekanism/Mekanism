@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import java.io.File;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
@@ -14,7 +13,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketPortableTeleporter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -113,21 +111,11 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public File getMinecraftDir() {
-        return Minecraft.getInstance().gameDir;
-    }
-
-    @Override
     public PlayerEntity getPlayer(Supplier<Context> context) {
         if (context.get().getDirection() == NetworkDirection.PLAY_TO_SERVER || context.get().getDirection() == NetworkDirection.LOGIN_TO_SERVER) {
             return context.get().getSender();
         }
         return Minecraft.getInstance().player;
-    }
-
-    @Override
-    public FontRenderer getFontRenderer() {
-        return Minecraft.getInstance().fontRenderer;
     }
 
     //TODO

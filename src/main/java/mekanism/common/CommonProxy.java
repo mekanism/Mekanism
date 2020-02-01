@@ -1,14 +1,10 @@
 package mekanism.common;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.api.MekanismAPI;
 import mekanism.client.SparkleAnimation.INodeChecker;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketPortableTeleporter;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -16,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 /**
@@ -72,22 +67,7 @@ public class CommonProxy {
         return 0;
     }
 
-    /**
-     * Gets the Minecraft base directory.
-     *
-     * @return base directory
-     */
-    public File getMinecraftDir() {
-        //TODO: Check if this is correct, honestly cardboard box blacklist should be rewritten how the file works
-        return FMLPaths.GAMEDIR.get().toFile();
-    }
-
     public void onConfigSync(boolean fromPacket) {
-        if (MekanismConfig.general.cardboardSpawners.get()) {
-            MekanismAPI.removeBoxBlacklist(Blocks.SPAWNER);
-        } else {
-            MekanismAPI.addBoxBlacklist(Blocks.SPAWNER);
-        }
         //TODO: Move this to additions and fix. Currently there is no config sync so there isn't a great spot to put this
         /*if (MekanismConfig.general.voiceServerEnabled.get() && Mekanism.voiceManager == null) {
             Mekanism.voiceManager = new VoiceServerManager();
@@ -111,10 +91,6 @@ public class CommonProxy {
 
     public PlayerEntity getPlayer(Supplier<Context> context) {
         return context.get().getSender();
-    }
-
-    public Object getFontRenderer() {
-        return null;
     }
 
     public void throwApiPresentException() {

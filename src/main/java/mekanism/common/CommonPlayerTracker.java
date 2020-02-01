@@ -2,7 +2,6 @@ package mekanism.common;
 
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockCardboardBox;
-import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketFlamethrowerData;
 import mekanism.common.network.PacketFreeRunnerData;
@@ -45,7 +44,6 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         if (!event.getPlayer().world.isRemote) {
-            Mekanism.packetHandler.sendTo(new PacketBoxBlacklist(), (ServerPlayerEntity) event.getPlayer());
             syncChangedData((ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(SecurityPacket.FULL, null, null), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketMekanismTags(Mekanism.instance.getTagManager()), (ServerPlayerEntity) event.getPlayer());

@@ -1,5 +1,7 @@
 package mekanism.common.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.util.UnitDisplayUtils.EnergyType;
 import mekanism.common.util.UnitDisplayUtils.TempType;
@@ -23,7 +25,7 @@ public class GeneralConfig implements IMekanismConfig {
 
     public final BooleanValue logPackets;
     public final BooleanValue dynamicTankEasterEgg;
-    public final BooleanValue cardboardSpawners;
+    public final ConfigValue<List<String>> cardboardModBlacklist;
     public final ConfigValue<Integer> UPDATE_DELAY;
     public final ConfigValue<Double> FROM_IC2;
     public final ConfigValue<Double> TO_IC2;
@@ -90,7 +92,8 @@ public class GeneralConfig implements IMekanismConfig {
 
         logPackets = builder.comment("Log Mekanism packet names. Debug setting.").define("logPackets", false);
         dynamicTankEasterEgg = builder.comment("Audible sparkles.").define("dynamicTankEasterEgg", false);
-        cardboardSpawners = builder.comment("Allows vanilla spawners to be moved with a Cardboard Box.").define("cardboardSpawners", true);
+        cardboardModBlacklist = builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box.")
+              .define("cardboardModBlacklist", new ArrayList<>());
         //TODO: Unused
         UPDATE_DELAY = builder.comment("How many ticks must pass until a block's active state can sync with the client.").define("UPDATE_DELAY", 10);
 

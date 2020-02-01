@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
@@ -55,7 +54,6 @@ import mekanism.common.transmitters.grid.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.transmitters.grid.FluidNetwork.FluidTransferEvent;
 import mekanism.common.transmitters.grid.GasNetwork.GasTransferEvent;
 import mekanism.common.world.GenHandler;
-import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
@@ -177,7 +175,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onTransmittersAddedEvent);
         MinecraftForge.EVENT_BUS.addListener(this::onNetworkClientRequest);
         MinecraftForge.EVENT_BUS.addListener(this::onClientTickUpdate);
-        MinecraftForge.EVENT_BUS.addListener(this::onBlacklistUpdate);
         MinecraftForge.EVENT_BUS.addListener(this::chunkSave);
         MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
         MinecraftForge.EVENT_BUS.addListener(this::onWorldLoad);
@@ -355,9 +352,6 @@ public class Mekanism {
         //Fake player info
         logger.info("Fake player readout: UUID = " + gameProfile.getId().toString() + ", name = " + gameProfile.getName());
 
-        //TODO
-        MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
-
         //Completion notification
         logger.info("Loading complete.");
 
@@ -415,69 +409,6 @@ public class Mekanism {
             }
         } catch (Exception ignored) {
         }
-    }
-
-    private void onBlacklistUpdate(BoxBlacklistEvent event) {
-        event.blacklist(MekanismBlocks.CARDBOARD_BOX);
-
-        // Mekanism multiblock structures
-        event.blacklist(MekanismBlocks.BOUNDING_BLOCK);
-        event.blacklist(MekanismBlocks.ADVANCED_BOUNDING_BLOCK);
-        event.blacklist(MekanismBlocks.SECURITY_DESK);
-        event.blacklist(MekanismBlocks.DIGITAL_MINER);
-        event.blacklist(MekanismBlocks.SEISMIC_VIBRATOR);
-        event.blacklist(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
-
-        // Minecraft unobtainable
-        event.blacklist(Blocks.BEDROCK);
-        event.blacklist(Blocks.NETHER_PORTAL);
-        event.blacklist(Blocks.END_PORTAL);
-        event.blacklist(Blocks.END_PORTAL_FRAME);
-
-        // Minecraft multiblock structures
-        event.blacklist(Blocks.WHITE_BED);
-        event.blacklist(Blocks.ORANGE_BED);
-        event.blacklist(Blocks.MAGENTA_BED);
-        event.blacklist(Blocks.LIGHT_BLUE_BED);
-        event.blacklist(Blocks.YELLOW_BED);
-        event.blacklist(Blocks.LIME_BED);
-        event.blacklist(Blocks.PINK_BED);
-        event.blacklist(Blocks.GRAY_BED);
-        event.blacklist(Blocks.LIGHT_GRAY_BED);
-        event.blacklist(Blocks.CYAN_BED);
-        event.blacklist(Blocks.PURPLE_BED);
-        event.blacklist(Blocks.BLUE_BED);
-        event.blacklist(Blocks.BROWN_BED);
-        event.blacklist(Blocks.GREEN_BED);
-        event.blacklist(Blocks.RED_BED);
-        event.blacklist(Blocks.BLACK_BED);
-        event.blacklist(Blocks.OAK_DOOR);
-        event.blacklist(Blocks.SPRUCE_DOOR);
-        event.blacklist(Blocks.BIRCH_DOOR);
-        event.blacklist(Blocks.JUNGLE_DOOR);
-        event.blacklist(Blocks.ACACIA_DOOR);
-        event.blacklist(Blocks.DARK_OAK_DOOR);
-        event.blacklist(Blocks.IRON_DOOR);
-
-        //Extra Utils 2
-        event.blacklist(new ResourceLocation("extrautils2", "machine"));
-
-        //ImmEng multiblocks
-        event.blacklist(new ResourceLocation("immersiveengineering", "metal_device0"));
-        event.blacklist(new ResourceLocation("immersiveengineering", "metal_device1"));
-        event.blacklist(new ResourceLocation("immersiveengineering", "wooden_device0"));
-        event.blacklist(new ResourceLocation("immersiveengineering", "wooden_device1"));
-        event.blacklist(new ResourceLocation("immersiveengineering", "connector"));
-        event.blacklist(new ResourceLocation("immersiveengineering", "metal_multiblock"));
-
-        //IC2
-        event.blacklist(new ResourceLocation("ic2", "te"));
-
-        event.blacklistMod("storagedrawers");//without packing tape, you're gonna have a bad time
-        event.blacklistMod("colossalchests");
-
-        //TODO
-        BoxBlacklistParser.load();
     }
 
     private void chunkSave(ChunkDataEvent.Save event) {

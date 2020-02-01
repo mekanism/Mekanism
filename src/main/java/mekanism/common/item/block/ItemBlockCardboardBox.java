@@ -2,7 +2,6 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonPlayerTracker;
 import mekanism.common.Mekanism;
@@ -10,12 +9,13 @@ import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.block.states.BlockStateHelper;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.ItemDeferredRegister;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -65,8 +65,10 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         BlockPos pos = context.getPos();
         if (getBlockData(stack) == null && !player.isShiftKeyDown() && !world.isAirBlock(pos)) {
             BlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
-            if (!world.isRemote && MekanismAPI.isBlockCompatible(block) && state.getBlockHardness(world, pos) != -1) {
+            if (!world.isRemote && state.getBlockHardness(world, pos) != -1) {
+                if (state.isIn(MekanismTags.Blocks.CARDBOARD_BLACKLIST) || MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace())) {
+                    return ActionResultType.FAIL;
+                }
                 BlockData data = new BlockData(state);
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                 if (tile != null) {

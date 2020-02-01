@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 import mekanism.api.Range4D;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.network.PacketBoxBlacklist;
 import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketContainerEditMode;
@@ -161,7 +160,6 @@ public class PacketHandler {
         registerMessage(PacketJetpackData.class, PacketJetpackData::encode, PacketJetpackData::decode, PacketJetpackData::handle);
         registerMessage(PacketKey.class, PacketKey::encode, PacketKey::decode, PacketKey::handle);
         registerMessage(PacketScubaTankData.class, PacketScubaTankData::encode, PacketScubaTankData::decode, PacketScubaTankData::handle);
-        registerMessage(PacketBoxBlacklist.class, PacketBoxBlacklist::encode, PacketBoxBlacklist::decode, PacketBoxBlacklist::handle);
         registerMessage(PacketContainerEditMode.class, PacketContainerEditMode::encode, PacketContainerEditMode::decode, PacketContainerEditMode::handle);
         registerMessage(PacketFlamethrowerData.class, PacketFlamethrowerData::encode, PacketFlamethrowerData::decode, PacketFlamethrowerData::handle);
         registerMessage(PacketDropperUse.class, PacketDropperUse::encode, PacketDropperUse::decode, PacketDropperUse::handle);

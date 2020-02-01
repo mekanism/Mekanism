@@ -3,8 +3,6 @@ package mekanism.client;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import mekanism.api.MekanismAPI;
-import mekanism.api.MekanismAPI.BoxBlacklistEvent;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
@@ -12,7 +10,6 @@ import mekanism.common.network.PacketKey;
 import mekanism.common.security.SecurityData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.common.MinecraftForge;
 
 //TODO: Figure out why this extends Mekanism, given it only adds static methods
 public class MekanismClient {
@@ -36,10 +33,6 @@ public class MekanismClient {
 
         ClientTickHandler.tickingSet.clear();
         ClientTickHandler.portableTeleports.clear();
-
-        MekanismAPI.getBoxIgnore().clear();
-        MekanismAPI.getBoxModIgnore().clear();
-        MinecraftForge.EVENT_BUS.post(new BoxBlacklistEvent());
 
         Mekanism.playerState.clear();
         Mekanism.activeVibrators.clear();

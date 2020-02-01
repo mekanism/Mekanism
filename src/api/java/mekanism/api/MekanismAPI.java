@@ -1,22 +1,14 @@
 package mekanism.api;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.gas.EmptyGas;
 import mekanism.api.gas.Gas;
 import mekanism.api.infuse.EmptyInfuseType;
 import mekanism.api.infuse.InfuseType;
-import mekanism.api.providers.IBlockProvider;
-import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -45,10 +37,6 @@ public class MekanismAPI {
      * Mekanism debug mode
      */
     public static boolean debug = false;
-    //Add a BlockInfo value here if you don't want a certain block to be picked up by cardboard boxes
-    private static Set<Block> cardboardBoxIgnore = new HashSet<>();
-    //Ignore all mod blocks
-    private static Set<String> cardboardBoxModIgnore = new HashSet<>();
 
     @Nonnull
     public static final Gas EMPTY_GAS = new EmptyGas();
@@ -71,79 +59,5 @@ public class MekanismAPI {
     public static void registerInfuseTypes(RegistryEvent.Register<InfuseType> event) {
         //Register EMPTY InfuseType
         event.getRegistry().register(EMPTY_INFUSE_TYPE);
-    }
-
-    //TODO: Rewrite handling of blacklist for cardboard box, and also add support for a tag to be able to be used for blacklisting blocks
-    public static boolean isBlockCompatible(@Nonnull Block block) {
-        if (cardboardBoxModIgnore.contains(Objects.requireNonNull(block.getRegistryName()).getNamespace())) {
-            return false;
-        }
-        return cardboardBoxIgnore.stream().noneMatch(i -> i == block);
-    }
-
-    public static void addBoxBlacklist(@Nonnull IBlockProvider blockProvider) {
-        addBoxBlacklist(blockProvider.getBlock());
-    }
-
-    public static void addBoxBlacklist(@Nullable Block block) {
-        //Allow block to be null but don't do anything if it is
-        if (block != null) {
-            cardboardBoxIgnore.add(block);
-        }
-    }
-
-    public static void removeBoxBlacklist(@Nonnull IBlockProvider blockProvider) {
-        removeBoxBlacklist(blockProvider.getBlock());
-    }
-
-    public static void removeBoxBlacklist(@Nonnull Block block) {
-        cardboardBoxIgnore.remove(block);
-    }
-
-    public static Set<Block> getBoxIgnore() {
-        return cardboardBoxIgnore;
-    }
-
-    public static void addBoxBlacklistMod(@Nonnull String modid) {
-        cardboardBoxModIgnore.add(modid);
-    }
-
-    public static void removeBoxBlacklistMod(@Nonnull String modid) {
-        cardboardBoxModIgnore.remove(modid);
-    }
-
-    public static Set<String> getBoxModIgnore() {
-        return cardboardBoxModIgnore;
-    }
-
-    public static class BoxBlacklistEvent extends Event {
-
-        public void blacklist(@Nonnull ResourceLocation blockLocation) {
-            blacklist(ForgeRegistries.BLOCKS.getValue(blockLocation));
-        }
-
-        public void blacklist(@Nonnull IBlockProvider blockProvider) {
-            addBoxBlacklist(blockProvider);
-        }
-
-        public void blacklist(@Nullable Block block) {
-            addBoxBlacklist(block);
-        }
-
-        public void blacklistMod(@Nonnull String modid) {
-            addBoxBlacklistMod(modid);
-        }
-
-        public void removeBlacklist(@Nonnull IBlockProvider blockProvider) {
-            removeBoxBlacklist(blockProvider);
-        }
-
-        public void removeBlacklist(@Nonnull Block block) {
-            removeBoxBlacklist(block);
-        }
-
-        public void removeModBlacklist(@Nonnull String modid) {
-            removeBoxBlacklistMod(modid);
-        }
     }
 }
