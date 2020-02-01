@@ -152,7 +152,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     public int emit(@Nonnull GasStack stack, Action action) {
-        if (!buffer.isEmpty() && !buffer.isTypeEqual(stack)) {
+        if (stack.isEmpty() || (!buffer.isEmpty() && !buffer.isTypeEqual(stack))) {
             return 0;
         }
         int toUse = Math.min(getGasNeeded(), stack.getAmount());
