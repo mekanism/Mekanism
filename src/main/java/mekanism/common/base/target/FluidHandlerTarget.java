@@ -2,7 +2,6 @@ package mekanism.common.base.target;
 
 import mekanism.api.annotations.NonNull;
 import mekanism.common.base.SplitInfo;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -16,7 +15,7 @@ public class FluidHandlerTarget extends Target<IFluidHandler, Integer, @NonNull 
 
     @Override
     protected void acceptAmount(Direction side, SplitInfo<Integer> splitInfo, Integer amount) {
-        splitInfo.send(handlers.get(side).fill(PipeUtils.copy(extra, amount), FluidAction.EXECUTE));
+        splitInfo.send(handlers.get(side).fill(new FluidStack(extra, amount), FluidAction.EXECUTE));
     }
 
     @Override

@@ -24,7 +24,7 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
     @Override
     public void render(@Nonnull TileEntityThermalEvaporationController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
           int light, int overlayLight) {
-        if (tile.structured && tile.height - 2 >= 1 && tile.inputTank.getFluidAmount() > 0) {
+        if (tile.structured && tile.height - 2 >= 1 && !tile.inputTank.isEmpty()) {
             RenderData data = new RenderData();
             data.location = tile.getRenderLocation();
             data.height = tile.height - 2;
@@ -49,6 +49,6 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
 
     @Override
     public boolean isGlobalRenderer(TileEntityThermalEvaporationController tile) {
-        return tile.structured && tile.height - 2 >= 1 && tile.inputTank.getFluidAmount() > 0;
+        return tile.structured && tile.height - 2 >= 1 && !tile.inputTank.isEmpty();
     }
 }

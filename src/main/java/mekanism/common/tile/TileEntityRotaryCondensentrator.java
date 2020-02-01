@@ -391,7 +391,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                       return Math.min(Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded()), possibleProcess);
                   }
                   //Gas to fluid
-                  return Math.min(Math.min(gasTank.getStored(), fluidTank.getCapacity() - fluidTank.getFluidAmount()), possibleProcess);
+                  return Math.min(Math.min(gasTank.getStored(), fluidTank.getSpace()), possibleProcess);
               });
     }
 }

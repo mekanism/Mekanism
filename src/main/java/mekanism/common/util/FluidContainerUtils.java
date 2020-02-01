@@ -37,7 +37,7 @@ public final class FluidContainerUtils {
         Optional<IFluidHandlerItem> fluidHandlerItem = MekanismUtils.toOptional(FluidUtil.getFluidHandler(slot.getStack()));
         if (fluidHandlerItem.isPresent()) {
             IFluidHandlerItem handler = fluidHandlerItem.get();
-            FluidStack ret = extractFluid(tileTank.getCapacity() - tileTank.getFluidAmount(), handler, checker);
+            FluidStack ret = extractFluid(tileTank.getSpace(), handler, checker);
             slot.setStack(handler.getContainer());
             return ret;
         }

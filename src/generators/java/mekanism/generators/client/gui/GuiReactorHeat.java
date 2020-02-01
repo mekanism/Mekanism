@@ -97,7 +97,7 @@ public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
-                return (tile.getCaseTemp() > 0 && tile.waterTank.getFluidAmount() > 0 && tile.steamTank.getFluidAmount() < tile.steamTank.getCapacity()) ? 1 : 0;
+                return (tile.getCaseTemp() > 0 && !tile.waterTank.isEmpty() && tile.steamTank.getFluidAmount() < tile.steamTank.getCapacity()) ? 1 : 0;
             }
         }, ProgressBar.SMALL_RIGHT, this, resource, 81, 90));
         addButton(new GuiFluidGauge(() -> tile.waterTank, Type.SMALL, this, resource, 115, 84));

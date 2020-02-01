@@ -31,7 +31,6 @@ import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -196,9 +195,9 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                     if (filled) {
                         int toFill = Math.min(tile.fluidTank.getSpace(), drained.getAmount());
                         //Note: if our FluidTank is creative it has a special FluidTank impl that will properly handle modifying the contents
-                        tile.fluidTank.fill(PipeUtils.copy(drained, toFill), FluidAction.EXECUTE);
+                        tile.fluidTank.fill(new FluidStack(drained, toFill), FluidAction.EXECUTE);
                         if (drained.getAmount() - toFill > 0) {
-                            tile.pushUp(PipeUtils.copy(fluidInItem, drained.getAmount() - toFill), FluidAction.EXECUTE);
+                            tile.pushUp(new FluidStack(fluidInItem, drained.getAmount() - toFill), FluidAction.EXECUTE);
                         }
                         return true;
                     }

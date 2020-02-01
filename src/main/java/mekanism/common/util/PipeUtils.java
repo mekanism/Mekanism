@@ -77,10 +77,6 @@ public final class PipeUtils {
         return 0;
     }
 
-    public static FluidStack copy(@Nonnull FluidStack fluid, int amount) {
-        return new FluidStack(fluid, amount);
-    }
-
     public static boolean canFill(IFluidHandler handler, @Nonnull FluidStack stack) {
         //TODO: Check this
         return handler.fill(stack, FluidAction.SIMULATE) > 0;

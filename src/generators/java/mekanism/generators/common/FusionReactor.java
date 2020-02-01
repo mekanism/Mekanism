@@ -165,7 +165,7 @@ public class FusionReactor {
         if (activelyCooled) {
             double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
             int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
-            waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getCapacity() - getSteamTank().getFluidAmount()));
+            waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getSpace()));
             if (waterToVaporize > 0) {
                 getWaterTank().drain(waterToVaporize, FluidAction.EXECUTE);
                 getSteamTank().fill(MekanismFluids.STEAM.getFluidStack(waterToVaporize), FluidAction.EXECUTE);

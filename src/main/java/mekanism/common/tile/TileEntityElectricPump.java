@@ -122,7 +122,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {
-                    if (fluidTank.isEmpty() || fluidTank.getFluidAmount() + FluidAttributes.BUCKET_VOLUME <= fluidTank.getCapacity()) {
+                    if (fluidTank.isEmpty() || FluidAttributes.BUCKET_VOLUME <= fluidTank.getSpace()) {
                         if (!suck()) {
                             suckedLastOperation = false;
                             reset();
@@ -251,7 +251,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 return true;
             }
             if (fluidTank.getFluid().isFluidEqual(fluidStack)) {
-                return !recheckSize || fluidTank.getFluidAmount() + fluidStack.getAmount() <= fluidTank.getCapacity();
+                return !recheckSize || fluidStack.getAmount() <= fluidTank.getSpace();
             }
             return false;
         }

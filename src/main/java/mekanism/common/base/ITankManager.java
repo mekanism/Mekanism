@@ -80,11 +80,11 @@ public interface ITankManager {
 
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 1) { //Extract fluid from dropper
-                        if (!storedGas.isEmpty() || fluidTank.getCapacity() - fluidTank.getFluidAmount() == 0) {
+                        if (!storedGas.isEmpty() || fluidTank.getSpace() == 0) {
                             return;
                         }
 
-                        int toExtract = Math.min(fluidTank.getCapacity() - fluidTank.getFluidAmount(), dropperStored);
+                        int toExtract = Math.min(fluidTank.getSpace(), dropperStored);
                         FluidUtil.getFluidHandler(stack).ifPresent(handler -> fluidTank.fill(handler.drain(toExtract, FluidAction.EXECUTE), FluidAction.EXECUTE));
 
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);

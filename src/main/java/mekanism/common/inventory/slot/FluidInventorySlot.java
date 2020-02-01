@@ -208,11 +208,6 @@ public class FluidInventorySlot extends BasicInventorySlot {
 
     public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode) {
         if (!isEmpty()) {
-            //TODO: If we are filling the tank and it is full let it fill tanks above itself
-            /*int rejects = Math.max(0, ret.getAmount() - fluidTank.getCapacity());
-            if (rejects > 0) {
-                pushUp(PipeUtils.copy(ret, rejects), FluidAction.EXECUTE);
-            }*/
             if (editMode == ContainerEditMode.FILL) {
                 drainTank(outputSlot);
             } else if (editMode == ContainerEditMode.EMPTY) {

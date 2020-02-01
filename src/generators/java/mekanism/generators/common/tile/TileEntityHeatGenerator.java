@@ -95,7 +95,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
                 } else {
                     int fuel = getFuel(fuelStack);
                     if (fuel > 0) {
-                        int fuelNeeded = lavaTank.getCapacity() - lavaTank.getFluidAmount();
+                        int fuelNeeded = lavaTank.getSpace();
                         if (fuel <= fuelNeeded) {
                             lavaTank.fill(new FluidStack(Fluids.LAVA, fuel), FluidAction.EXECUTE);
                             ItemStack containerItem = fuelStack.getItem().getContainerItem(fuelStack);
@@ -221,7 +221,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             case 4:
                 return new Object[]{lavaTank.getFluidAmount()};
             case 5:
-                return new Object[]{lavaTank.getCapacity() - lavaTank.getFluidAmount()};
+                return new Object[]{lavaTank.getSpace()};
             default:
                 throw new NoSuchMethodException();
         }

@@ -293,7 +293,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
             case 4:
                 return new Object[]{fluidTank.getFluidAmount()};
             case 5:
-                return new Object[]{fluidTank.getCapacity() - fluidTank.getFluidAmount()};
+                return new Object[]{fluidTank.getSpace()};
             case 6:
                 return new Object[]{leftTank.getStored()};
             case 7:

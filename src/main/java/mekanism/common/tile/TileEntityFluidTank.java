@@ -89,7 +89,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputSlot = FluidInventorySlot.input(fluidTank, fluid -> true, this, 146, 19), RelativeSide.TOP);
+        builder.addSlot(inputSlot = FluidInventorySlot.input(new StackedFluidHandler(), fluid -> true, this, 146, 19), RelativeSide.TOP);
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 146, 51), RelativeSide.BOTTOM);
         return builder.build();
     }
@@ -103,7 +103,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             float targetScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
             if (Math.abs(prevScale - targetScale) > 0.01) {
                 prevScale = (9 * prevScale + targetScale) / 10;
-            } else if (fluidTank.getFluidAmount() > 0 && prevScale == 0) {
+            } else if (!fluidTank.isEmpty() && prevScale == 0) {
                 //If we have any fluid in the tank make sure we end up rendering it
                 prevScale = targetScale;
             }
@@ -308,7 +308,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         }
         int filled = fluidTank.fill(resource, fluidAction);
         if (filled < resource.getAmount() && !getActive()) {
-            filled += pushUp(PipeUtils.copy(resource, resource.getAmount() - filled), fluidAction);
+            filled += pushUp(new FluidStack(resource, resource.getAmount() - filled), fluidAction);
         }
         if (filled > 0 && from == Direction.UP) {
             if (valve == 0) {
@@ -408,5 +408,55 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public FluidTankUpgradeData getUpgradeData() {
         return new FluidTankUpgradeData(redstone, inputSlot, outputSlot, editMode, fluidTank.getFluid(), getComponents());
+    }
+
+    private class StackedFluidHandler implements IFluidHandler {
+
+        @Override
+        public int getTanks() {
+            return fluidTank.getTanks();
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack getFluidInTank(int tank) {
+            return fluidTank.getFluidInTank(tank);
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return fluidTank.getTankCapacity(tank);
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
+            return fluidTank.isFluidValid(tank, stack);
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            int filled = fluidTank.fill(resource, action);
+            //Push the fluid upwards
+            if (filled < resource.getAmount() && !getActive()) {
+                TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
+                //Except if the above tank is creative as then weird things happen
+                if (tile != null && tile.tier != FluidTankTier.CREATIVE) {
+                    filled += pushUp(new FluidStack(resource, resource.getAmount() - filled), action);
+                }
+            }
+            return filled;
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return fluidTank.drain(resource, action);
+        }
+
+        @Nonnull
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return fluidTank.drain(maxDrain, action);
+        }
     }
 }

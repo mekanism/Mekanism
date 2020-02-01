@@ -22,7 +22,6 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
@@ -314,7 +313,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
             return 0;
         }
         if (getBaseTier(container) == BaseTier.CREATIVE) {
-            setFluidStack(PipeUtils.copy(resource, Integer.MAX_VALUE), container);
+            setFluidStack(new FluidStack(resource, Integer.MAX_VALUE), container);
             return resource.getAmount();
         }
         FluidStack stored = getFluidStack(container);
@@ -329,7 +328,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         }
         if (fluidAction.execute()) {
             int fillAmount = toFill + stored.getAmount();
-            setFluidStack(PipeUtils.copy(resource, fillAmount), container);
+            setFluidStack(new FluidStack(resource, fillAmount), container);
         }
         return toFill;
     }
@@ -341,7 +340,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         if (stored.isEmpty()) {
             return FluidStack.EMPTY;
         }
-        FluidStack toDrain = PipeUtils.copy(stored, Math.min(stored.getAmount(), maxDrain));
+        FluidStack toDrain = new FluidStack(stored, Math.min(stored.getAmount(), maxDrain));
         if (fluidAction.execute() && getBaseTier(container) != BaseTier.CREATIVE) {
             stored.setAmount(stored.getAmount() - toDrain.getAmount());
             setFluidStack(stored.getAmount() > 0 ? stored : FluidStack.EMPTY, container);

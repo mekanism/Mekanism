@@ -66,7 +66,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller != null && controller.outputTank.getFluidAmount() > 0 && FluidContainerUtils.canDrain(controller.outputTank.getFluid(), fluid);
+        return controller != null && !controller.outputTank.isEmpty() && FluidContainerUtils.canDrain(controller.outputTank.getFluid(), fluid);
     }
 
     @Override

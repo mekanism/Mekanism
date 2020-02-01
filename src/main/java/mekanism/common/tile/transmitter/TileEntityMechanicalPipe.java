@@ -108,7 +108,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
             if (transmitterNetwork.firstTransmitter().equals(getTransmitter())) {
                 toSave += remain;
             }
-            return PipeUtils.copy(transmitterNetwork.buffer, toSave);
+            return new FluidStack(transmitterNetwork.buffer, toSave);
         }
         return FluidStack.EMPTY;
     }
@@ -271,7 +271,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         if (getTransmitter().hasTransmitterNetwork()) {
             return Math.min(getPullAmount(), getTransmitter().getTransmitterNetwork().getFluidNeeded());
         }
-        return Math.min(getPullAmount(), buffer.getCapacity() - buffer.getFluidAmount());
+        return Math.min(getPullAmount(), buffer.getSpace());
     }
 
     public int takeFluid(@Nonnull FluidStack fluid, FluidAction fluidAction) {
