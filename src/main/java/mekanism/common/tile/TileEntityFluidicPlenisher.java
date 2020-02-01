@@ -6,7 +6,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
@@ -32,6 +31,7 @@ import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -50,8 +50,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
-    public Set<Coord4D> activeNodes = new LinkedHashSet<>();
-    public Set<Coord4D> usedNodes = new HashSet<>();
+    public Set<BlockPos> activeNodes = new LinkedHashSet<>();
+    public Set<BlockPos> usedNodes = new HashSet<>();
     public boolean finishedCalc;
     public FluidTank fluidTank;
     /**
@@ -107,11 +107,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                     if (!finishedCalc) {
                         doPlenish();
                     } else {
-                        Coord4D below = Coord4D.get(this).offset(Direction.DOWN);
-
+                        BlockPos below = getPos().offset(Direction.DOWN);
                         if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= FluidAttributes.BUCKET_VOLUME) {
-                            if (fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, below.getPos(), fluidTank.getFluid())) {
-                                world.setBlockState(below.getPos(), MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
+                            if (fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, below, fluidTank.getFluid())) {
+                                //TODO: Set fluid state??
+                                world.setBlockState(below, MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
                                 setEnergy(getEnergy() - getEnergyPerTick());
                                 fluidTank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
                             }
@@ -130,7 +130,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         }
         if (activeNodes.isEmpty()) {
             if (usedNodes.isEmpty()) {
-                Coord4D below = Coord4D.get(this).offset(Direction.DOWN);
+                BlockPos below = getPos().offset(Direction.DOWN);
                 if (!canReplace(below, true, true)) {
                     finishedCalc = true;
                     return;
@@ -142,37 +142,35 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             }
         }
 
-        Set<Coord4D> toRemove = new HashSet<>();
-        for (Coord4D coord : activeNodes) {
-            BlockPos coordPos = coord.getPos();
-            if (world.isBlockLoaded(coordPos)) {
+        Set<BlockPos> toRemove = new HashSet<>();
+        for (BlockPos coordPos : activeNodes) {
+            if (MekanismUtils.isBlockLoaded(world, coordPos)) {
                 FluidStack fluid = fluidTank.getFluid();
-                if (canReplace(coord, true, false) && !fluid.isEmpty()) {
+                if (canReplace(coordPos, true, false) && !fluid.isEmpty()) {
                     world.setBlockState(coordPos, MekanismUtils.getFlowingBlockState(fluid));
                     fluidTank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
                 }
 
                 for (Direction dir : dirs) {
-                    Coord4D sideCoord = coord.offset(dir);
-                    if (world.isBlockLoaded(sideCoord.getPos()) && canReplace(sideCoord, true, true)) {
-                        activeNodes.add(sideCoord);
+                    BlockPos sidePos = coordPos.offset(dir);
+                    if (MekanismUtils.isBlockLoaded(world, sidePos) && canReplace(sidePos, true, true)) {
+                        activeNodes.add(sidePos);
                     }
                 }
-                toRemove.add(coord);
+                toRemove.add(coordPos);
                 break;
             } else {
-                toRemove.add(coord);
+                toRemove.add(coordPos);
             }
         }
         usedNodes.addAll(toRemove);
         activeNodes.removeAll(toRemove);
     }
 
-    public boolean canReplace(Coord4D coord, boolean checkNodes, boolean isPathfinding) {
-        if (checkNodes && usedNodes.contains(coord)) {
+    public boolean canReplace(BlockPos pos, boolean checkNodes, boolean isPathfinding) {
+        if (checkNodes && usedNodes.contains(pos)) {
             return false;
         }
-        BlockPos pos = coord.getPos();
         if (world.isAirBlock(pos) || MekanismUtils.isDeadFluid(world, pos)) {
             return true;
         }
@@ -211,18 +209,16 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         }
 
         ListNBT activeList = new ListNBT();
-        for (Coord4D wrapper : activeNodes) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            wrapper.write(tagCompound);
-            activeList.add(tagCompound);
+        for (BlockPos wrapper : activeNodes) {
+            activeList.add(NBTUtil.writeBlockPos(wrapper));
         }
         if (!activeList.isEmpty()) {
             nbtTags.put("activeNodes", activeList);
         }
 
         ListNBT usedList = new ListNBT();
-        for (Coord4D obj : usedNodes) {
-            activeList.add(obj.write(new CompoundNBT()));
+        for (BlockPos obj : usedNodes) {
+            activeList.add(NBTUtil.writeBlockPos(obj));
         }
         if (!activeList.isEmpty()) {
             nbtTags.put("usedNodes", usedList);
@@ -242,16 +238,15 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
         if (nbtTags.contains("activeNodes")) {
             ListNBT tagList = nbtTags.getList("activeNodes", NBT.TAG_COMPOUND);
-
             for (int i = 0; i < tagList.size(); i++) {
-                activeNodes.add(Coord4D.read(tagList.getCompound(i)));
+                activeNodes.add(NBTUtil.readBlockPos(tagList.getCompound(i)));
             }
         }
         if (nbtTags.contains("usedNodes")) {
             ListNBT tagList = nbtTags.getList("usedNodes", NBT.TAG_COMPOUND);
 
             for (int i = 0; i < tagList.size(); i++) {
-                usedNodes.add(Coord4D.read(tagList.getCompound(i)));
+                usedNodes.add(NBTUtil.readBlockPos(tagList.getCompound(i)));
             }
         }
     }
