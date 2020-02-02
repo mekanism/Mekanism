@@ -3,6 +3,7 @@ package mekanism.common.block;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateWaterLogged;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -12,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.chunk.ChunkRenderCache;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
@@ -199,24 +201,28 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             //If we don't have a main pos, then act as if the block is empty so that we can move into it properly
             return VoxelShapes.empty();
         }
-        BlockState mainState = world.getBlockState(mainPos);
+        BlockState mainState;
+        try {
+            mainState = world.getBlockState(mainPos);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            //Note: ChunkRenderCache is client side only, though it does not seem to have any class loading issues on the server
+            // due to this exception not being caught in that specific case
+            if (world instanceof ChunkRenderCache) {
+                //Workaround for when the main spot of the miner is out of bounds of the ChunkRenderCache thus causing an
+                // ArrayIndexOutOfBoundException on the client as seen by:
+                // https://github.com/mekanism/Mekanism/issues/5792
+                // https://github.com/mekanism/Mekanism/issues/5844
+                world = ((ChunkRenderCache) world).world;
+                mainState = world.getBlockState(mainPos);
+            } else {
+                Mekanism.logger.error("Error getting bounding block shape, for position {}, with main position {}. World of type {}", pos, mainPos, world.getClass().getName());
+                return VoxelShapes.empty();
+            }
+        }
         VoxelShape shape = mainState.getShape(world, mainPos, context);
         BlockPos offset = pos.subtract(mainPos);
         //TODO: Can we somehow cache the withOffset? It potentially would have to then be moved into the Tile, but that is probably fine
         return shape.withOffset(-offset.getX(), -offset.getY(), -offset.getZ());
-    }
-
-    @Nonnull
-    @Override
-    @Deprecated
-    public VoxelShape getRenderShape(BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        try {
-            return super.getRenderShape(state, world, pos);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            //TODO: Try and see if this causes any errors https://github.com/mekanism/Mekanism/issues/5792
-            // ChunkRenderCache doesn't have safety checking if our main pos is out of the range of the cache
-            return VoxelShapes.empty();
-        }
     }
 
     @Nonnull
