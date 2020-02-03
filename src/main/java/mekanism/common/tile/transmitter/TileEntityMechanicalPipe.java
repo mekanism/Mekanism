@@ -205,6 +205,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
         return buffer == null ? FluidStack.EMPTY : buffer.getFluid();
     }
 
+    @Override
+    public boolean noBufferOrFallback() {
+        return getBufferWithFallback().isEmpty();
+    }
+
     @Nonnull
     @Override
     public FluidStack getBufferWithFallback() {

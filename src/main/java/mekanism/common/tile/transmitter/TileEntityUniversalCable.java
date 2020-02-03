@@ -173,6 +173,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
         return buffer;
     }
 
+    @Override
+    public boolean noBufferOrFallback() {
+        return getBufferWithFallback().amount == 0;
+    }
+
     @Nonnull
     @Override
     public EnergyStack getBufferWithFallback() {

@@ -203,7 +203,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         }
         GasStack buffer = getBufferWithFallback();
         GasStack otherBuffer = ((TileEntityPressurizedTube) tile).getBufferWithFallback();
-        return buffer == null || otherBuffer == null || buffer.isTypeEqual(otherBuffer);
+        return buffer.isEmpty() || otherBuffer.isEmpty() || buffer.isTypeEqual(otherBuffer);
     }
 
     @Override
@@ -230,6 +230,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public GasStack getBuffer() {
         return buffer == null ? GasStack.EMPTY : buffer.getStack();
+    }
+
+    @Override
+    public boolean noBufferOrFallback() {
+        return getBufferWithFallback().isEmpty();
     }
 
     @Nonnull

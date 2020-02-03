@@ -188,7 +188,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
                     // from the first pipe checking when it attempts to reconnect, and then the second
                     // pipe still is going to be checking the connection.
 
-                    if (getBufferWithFallback() == null) {
+                    if (noBufferOrFallback()) {
                         //If we don't have any use them as primary network
                         N tempNetwork = network;
                         network = otherNetwork;
@@ -310,6 +310,14 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
 
     @Nullable
     public abstract BUFFER getBuffer();
+
+    /**
+     *
+     * @return True if the buffer with fallback is null (or empty)
+     */
+    public boolean noBufferOrFallback() {
+        return getBufferWithFallback() == null;
+    }
 
     @Nullable
     public BUFFER getBufferWithFallback() {
