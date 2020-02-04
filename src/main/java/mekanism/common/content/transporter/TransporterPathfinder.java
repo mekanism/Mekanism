@@ -35,7 +35,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder {
 
-    public static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, TransitRequest request, int min) {
+    private static List<Destination> getPaths(ILogisticalTransporter start, TransporterStack stack, TransitRequest request, int min) {
         InventoryNetwork network = start.getTransmitterNetwork();
         if (network == null) {
             return Collections.emptyList();
@@ -132,13 +132,14 @@ public final class TransporterPathfinder {
     }
 
     public static Pair<List<Coord4D>, Path> getIdlePath(ILogisticalTransporter start, TransporterStack stack) {
+        Map<Long, IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
         if (stack.homeLocation != null) {
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
                 public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
                     return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
                 }
-            }, start.world(), stack.homeLocation, start.coord(), stack, new Long2ObjectOpenHashMap<>());
+            }, start.world(), stack.homeLocation, start.coord(), stack, chunkMap);
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
                 return Pair.of(path, Path.HOME);
@@ -147,7 +148,7 @@ public final class TransporterPathfinder {
         }
 
         IdlePath d = new IdlePath(start.world(), start.coord(), stack);
-        Destination dest = d.find();
+        Destination dest = d.find(chunkMap);
         if (dest == null) {
             return null;
         }
@@ -166,10 +167,9 @@ public final class TransporterPathfinder {
             transportStack = stack;
         }
 
-        public Destination find() {
+        public Destination find(Map<Long, IChunk> chunkMap) {
             ArrayList<Coord4D> ret = new ArrayList<>();
             ret.add(start);
-            Map<Long, IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
             TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, start);
             if (transportStack.idleDir == null) {
                 Direction newSide = findSide(chunkMap);
