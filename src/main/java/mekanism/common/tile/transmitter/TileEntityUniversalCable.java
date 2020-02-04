@@ -159,7 +159,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
 
     @Override
     public boolean isValidAcceptor(TileEntity acceptor, Direction side) {
-        return CableUtils.isValidAcceptorOnSide(MekanismUtils.getTileEntity(getWorld(), getPos()), acceptor, side);
+        return CableUtils.isValidAcceptorOnSide(this, acceptor, side);
     }
 
     @Override

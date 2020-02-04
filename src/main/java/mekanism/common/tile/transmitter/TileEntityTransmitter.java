@@ -78,7 +78,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
         if (isRemote()) {
             if (!dataRequest) {
                 dataRequest = true;
-                MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(MekanismUtils.getTileEntity(getWorld(), getPos())));
+                MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(this));
             }
         }
     }

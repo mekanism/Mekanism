@@ -103,6 +103,9 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             Set<Integer> deletes = new HashSet<>();
             getTileEntity().pullItems();
             Coord4D coord = coord();
+            //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
+            // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
+            // collection to occur actually causing the tick time to go up slightly.
             for (Entry<Integer, TransporterStack> entry : transit.entrySet()) {
                 int stackId = entry.getKey();
                 TransporterStack stack = entry.getValue();
@@ -187,7 +190,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 
                 // Finally, notify clients and mark chunk for save
                 //TODO: Check
-                Mekanism.packetHandler.sendToAllTracking(msg, getTileEntity().getWorld(), coord.getPos());
+                Mekanism.packetHandler.sendToAllTracking(msg, world(), coord.getPos());
                 MekanismUtils.saveChunk(getTileEntity());
             }
         }
