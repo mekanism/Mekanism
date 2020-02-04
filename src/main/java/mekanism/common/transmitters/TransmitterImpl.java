@@ -42,7 +42,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
     public Coord4D getAdjacentConnectableTransmitterCoord(Direction side) {
         Coord4D sideCoord = coord().offset(side);
         TileEntity potentialTransmitterTile = MekanismUtils.getTileEntity(world(), sideCoord.getPos());
-        if (!containingTile.canConnectMutual(side)) {
+        if (!containingTile.canConnectMutual(side, potentialTransmitterTile)) {
             return null;
         }
         Optional<IGridTransmitter<?, ?, ?>> gridTransmitter = MekanismUtils.toOptional(CapabilityUtils.getCapability(potentialTransmitterTile,

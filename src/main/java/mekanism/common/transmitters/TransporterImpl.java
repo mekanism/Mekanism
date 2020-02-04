@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
@@ -128,7 +129,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                         if (next != null) {
                             if (!stack.isFinal(this)) {
                                 TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
-                                if (stack.canInsertToTransporter(tile, stack.getSide(this))) {
+                                if (stack.canInsertToTransporter(tile, stack.getSide(this), containingTile)) {
                                     CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).ifPresent(nextTile ->
                                           nextTile.entityEntering(stack, stack.progress % 100));
                                     deletes.add(stackId);
@@ -168,7 +169,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                     if (stack.isFinal(this)) {
                         tryRecalculate = checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.getPathType() == Path.NONE;
                     } else {
-                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(world(), stack.getNext(this).getPos()), stack.getSide(this));
+                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(world(), stack.getNext(this).getPos()), stack.getSide(this), containingTile);
                     }
                     if (tryRecalculate && !recalculate(stackId, stack, null)) {
                         deletes.add(stackId);
@@ -317,8 +318,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     @Override
-    public boolean canConnectMutual(Direction side) {
-        return getTileEntity().canConnectMutual(side);
+    public boolean canConnectMutual(Direction side, @Nullable TileEntity cachedTile) {
+        return getTileEntity().canConnectMutual(side, cachedTile);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package mekanism.common.capabilities.basic;
 
+import javax.annotation.Nullable;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -12,7 +14,7 @@ public class DefaultBlockableConnection implements IBlockableConnection {
     }
 
     @Override
-    public boolean canConnectMutual(Direction side) {
+    public boolean canConnectMutual(Direction side, @Nullable TileEntity cachedTile) {
         return false;
     }
 

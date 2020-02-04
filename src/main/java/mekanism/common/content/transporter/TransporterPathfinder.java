@@ -30,7 +30,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -169,23 +168,24 @@ public final class TransporterPathfinder {
         public Destination find() {
             ArrayList<Coord4D> ret = new ArrayList<>();
             ret.add(start);
+            Map<Long, IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+            TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, start);
             if (transportStack.idleDir == null) {
-                Direction newSide = findSide();
+                Direction newSide = findSide(chunkMap);
                 if (newSide == null) {
                     return null;
                 }
                 transportStack.idleDir = newSide;
-                loopSide(ret, newSide);
+                loopSide(chunkMap, ret, newSide, startTile);
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
             }
-            TileEntity tile = MekanismUtils.getTileEntity(world, start.offset(transportStack.idleDir).getPos());
-            if (transportStack.canInsertToTransporter(tile, transportStack.idleDir)) {
-                loopSide(ret, transportStack.idleDir);
+            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, start.offset(transportStack.idleDir));
+            if (transportStack.canInsertToTransporter(tile, transportStack.idleDir, startTile)) {
+                loopSide(chunkMap, ret, transportStack.idleDir, startTile);
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
             }
             TransitRequest request = TransitRequest.getFromTransport(transportStack);
-            Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(MekanismUtils.getTileEntity(world, start.getPos()),
-                  Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
+            Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(startTile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
             if (capability.isPresent()) {
                 Destination newPath = TransporterPathfinder.getNewBasePath(capability.get(), transportStack, request, 0);
                 if (newPath != null && newPath.getResponse() != null) {
@@ -194,46 +194,47 @@ public final class TransporterPathfinder {
                     return newPath;
                 }
             }
-            Direction newSide = findSide();
+            Direction newSide = findSide(chunkMap);
             if (newSide == null) {
                 return null;
             }
             transportStack.idleDir = newSide;
-            loopSide(ret, newSide);
+            loopSide(chunkMap, ret, newSide, startTile);
             return new Destination(ret, true, null, 0).setPathType(Path.NONE);
         }
 
-        private void loopSide(List<Coord4D> list, Direction side) {
-            int count = 1;
-            while (true) {
-                Coord4D coord = start.offset(side, count);
-                if (!transportStack.canInsertToTransporter(MekanismUtils.getTileEntity(world, coord.getPos()), side)) {
-                    break;
-                }
+        private void loopSide(Map<Long, IChunk> chunkMap, List<Coord4D> list, Direction side, TileEntity startTile) {
+            TileEntity lastTile = startTile;
+            Coord4D coord = start.offset(side);
+            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, coord);
+            while (transportStack.canInsertToTransporter(tile, side, lastTile)) {
+                lastTile = tile;
                 list.add(coord);
-                count++;
+                coord = coord.offset(side);
+                tile = MekanismUtils.getTileEntity(world, chunkMap, coord);
             }
         }
 
-        private Direction findSide() {
+        private Direction findSide(Map<Long, IChunk> chunkMap) {
             BlockPos startPos = start.getPos();
+            TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, startPos);
             if (transportStack.idleDir == null) {
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    TileEntity tile = MekanismUtils.getTileEntity(world, startPos.offset(side));
-                    if (transportStack.canInsertToTransporter(tile, side)) {
+                    TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, startPos.offset(side));
+                    if (transportStack.canInsertToTransporter(tile, side, startTile)) {
                         return side;
                     }
                 }
             } else {
                 Direction opposite = transportStack.idleDir.getOpposite();
                 for (Direction side : EnumSet.complementOf(EnumSet.of(opposite))) {
-                    TileEntity tile = MekanismUtils.getTileEntity(world, startPos.offset(side));
-                    if (transportStack.canInsertToTransporter(tile, side)) {
+                    TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, startPos.offset(side));
+                    if (transportStack.canInsertToTransporter(tile, side, startTile)) {
                         return side;
                     }
                 }
-                TileEntity tile = MekanismUtils.getTileEntity(world, startPos.offset(opposite));
-                if (transportStack.canInsertToTransporter(tile, opposite)) {
+                TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, startPos.offset(opposite));
+                if (transportStack.canInsertToTransporter(tile, opposite, startTile)) {
                     return opposite;
                 }
             }
@@ -264,6 +265,7 @@ public final class TransporterPathfinder {
 
         public Destination calculateScore(World world) {
             score = 0;
+            //TODO: Would we benefit from caching a chunkMap here, or maybe in the getPath as a whole?
             for (Coord4D location : path) {
                 CapabilityUtils.getCapability(MekanismUtils.getTileEntity(world, location.getPos()), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null)
                       .ifPresent(transporter -> score += transporter.getCost());
@@ -348,13 +350,13 @@ public final class TransporterPathfinder {
             gScore.put(start, 0D);
             //Note: This is gScore + estimate, but given our gScore starts at zero we just skip getting it back out
             fScore.put(start, getEstimate(start, finalNode));
-            //TODO: Optimize canConnect check for transporters to not get the world/chunk as much at least in cases we may already even know the tile
             boolean hasValidDirection = false;
             Map<Long, IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+            TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, start);
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 Coord4D neighbor = start.offset(direction);
-                TileEntity neighborTile = getTileEntity(chunkMap, neighbor);
-                if (transportStack.canInsertToTransporter(neighborTile, direction) || (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborTile))) {
+                TileEntity neighborTile = MekanismUtils.getTileEntity(world, chunkMap, neighbor);
+                if (transportStack.canInsertToTransporter(neighborTile, direction, startTile) || (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborTile))) {
                     //If we can insert into the transporter or the neighbor is the destination, mark that we have a valid note
                     //TODO: We may want to check if we actually have a connection to the neighbor for the final check?
                     hasValidDirection = true;
@@ -385,13 +387,12 @@ public final class TransporterPathfinder {
 
                 openSet.remove(currentNode);
                 closedSet.add(currentNode);
-                @Nullable
-                TileEntity currentNodeTile = null;
+                TileEntity currentNodeTile = MekanismUtils.getTileEntity(world, chunkMap, currentNode);
                 double currentScore = gScore.get(currentNode);
                 for (Direction direction : EnumUtils.DIRECTIONS) {
                     Coord4D neighbor = currentNode.offset(direction);
-                    TileEntity neighborEntity = getTileEntity(chunkMap, neighbor);
-                    if (transportStack.canInsertToTransporter(neighborEntity, direction)) {
+                    TileEntity neighborEntity = MekanismUtils.getTileEntity(world, chunkMap, neighbor);
+                    if (transportStack.canInsertToTransporter(neighborEntity, direction, currentNodeTile)) {
                         //If the neighbor is a transporter and the stack is valid for it
                         double tentativeG = currentScore;
                         Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(neighborEntity,
@@ -415,13 +416,8 @@ public final class TransporterPathfinder {
                         }
                     } else if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborEntity)) {
                         //Else if the neighbor is the destination
-                        if (currentNodeTile == null) {
-                            //Lazy get the tile
-                            currentNodeTile = getTileEntity(chunkMap, currentNode);
-                        }
                         Optional<ILogisticalTransporter> currentNodeTransporter = MekanismUtils.toOptional(CapabilityUtils.getCapability(currentNodeTile,
                               Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
-                        //TODO: Figure out if currentNodeTransporter can ever not be present (if so we may need to handle it)
                         if (currentNodeTransporter.isPresent()) {
                             ILogisticalTransporter transporter = currentNodeTransporter.get();
                             //TODO: Check if canEmitTo broken if it is a pipe connected to a pipe and they are both on "pull"
@@ -436,26 +432,6 @@ public final class TransporterPathfinder {
                 }
             }
             return false;
-        }
-
-        //TODO: Decide if we want to move This to a util method in MekanismUtils so that it can be used if we have a local cache of chunks
-        private TileEntity getTileEntity(Map<Long, IChunk> chunkMap, Coord4D coord) {
-            BlockPos pos = coord.getPos();
-            int chunkX = pos.getX() >> 4;
-            int chunkZ = pos.getZ() >> 4;
-            long combinedChunk = (((long) chunkX) << 32) | (chunkZ & 0xFFFFFFFFL);
-            //We get the chunk rather than the world so we can cache the chunk improving the overall
-            // performance for retrieving a bunch of chunks in the general vicinity
-            IChunk chunk = chunkMap.get(combinedChunk);
-            if (chunk == null) {
-                //Get the chunk but don't force load it
-                chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
-                if (chunk != null) {
-                    chunkMap.put(combinedChunk, chunk);
-                }
-            }
-            //Get the tile entity using the chunk we found/had cached
-            return MekanismUtils.getTileEntity(chunk, pos);
         }
 
         private List<Coord4D> reconstructPath(Map<Coord4D, Coord4D> naviMap, Coord4D currentNode) {

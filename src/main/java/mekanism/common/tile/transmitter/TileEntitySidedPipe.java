@@ -143,8 +143,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return connections;
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
-            if (canConnectMutual(side)) {
-                TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+            if (canConnectMutual(side, tile)) {
                 Optional<IGridTransmitter<?, ?, ?>> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()));
                 if (capability.isPresent() && TransmissionType.checkTransmissionType(capability.get(), getTransmitterType().getTransmission()) && isValidTransmitter(tile)) {
                     connections |= 1 << side.ordinal();
@@ -158,15 +158,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return false;
         }
-        if (canConnectMutual(side)) {
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
-            if (isValidAcceptor(tile, side)) {
-                if (cachedAcceptors[side.ordinal()] != tile) {
-                    cachedAcceptors[side.ordinal()] = tile;
-                    markDirtyAcceptor(side);
-                }
-                return true;
+        TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+        if (canConnectMutual(side, tile) && isValidAcceptor(tile, side)) {
+            if (cachedAcceptors[side.ordinal()] != tile) {
+                cachedAcceptors[side.ordinal()] = tile;
+                markDirtyAcceptor(side);
             }
+            return true;
         }
         if (cachedAcceptors[side.ordinal()] != null) {
             cachedAcceptors[side.ordinal()] = null;
@@ -179,8 +177,8 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return false;
         }
-        if (canConnectMutual(side)) {
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+        TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+        if (canConnectMutual(side, tile)) {
             Optional<IGridTransmitter<?, ?, ?>> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()));
             if (capability.isPresent()) {
                 return TransmissionType.checkTransmissionType(capability.get(), getTransmitterType().getTransmission()) && isValidTransmitter(tile);
@@ -197,14 +195,13 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         }
 
         for (Direction side : EnumUtils.DIRECTIONS) {
-            if (canConnectMutual(side)) {
-                BlockPos offset = getPos().offset(side);
+            BlockPos offset = getPos().offset(side);
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), offset);
+            if (canConnectMutual(side, tile)) {
                 if (!isRemote() && !getWorld().isBlockLoaded(offset)) {
                     forceUpdate = true;
                     continue;
                 }
-
-                TileEntity tile = MekanismUtils.getTileEntity(getWorld(), offset);
                 if (isValidAcceptor(tile, side)) {
                     if (cachedAcceptors[side.ordinal()] != tile) {
                         cachedAcceptors[side.ordinal()] = tile;
@@ -249,12 +246,15 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public abstract boolean isValidAcceptor(TileEntity tile, Direction side);
 
     @Override
-    public boolean canConnectMutual(Direction side) {
+    public boolean canConnectMutual(Direction side, @Nullable TileEntity cachedTile) {
         if (!canConnect(side)) {
             return false;
         }
-        BlockPos testPos = getPos().offset(side);
-        Optional<IBlockableConnection> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(MekanismUtils.getTileEntity(getWorld(), testPos),
+        if (cachedTile == null) {
+            //If we don't already have the tile that is on the side calculated, do so
+            cachedTile = MekanismUtils.getTileEntity(getWorld(), getPos().offset(side));
+        }
+        Optional<IBlockableConnection> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(cachedTile,
               Capabilities.BLOCKABLE_CONNECTION_CAPABILITY, side.getOpposite()));
         return capability.map(connection -> connection.canConnect(side.getOpposite())).orElse(true);
     }
