@@ -3,8 +3,8 @@ package mekanism.common.tier;
 import java.util.Locale;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
+import mekanism.common.config.value.CachedDoubleValue;
 import net.minecraft.util.IStringSerializable;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum EnergyCubeTier implements ITier, IStringSerializable {
     BASIC(BaseTier.BASIC, 2_000_000, 800),
@@ -16,8 +16,8 @@ public enum EnergyCubeTier implements ITier, IStringSerializable {
     private final double baseMaxEnergy;
     private final double baseOutput;
     private final BaseTier baseTier;
-    private DoubleValue storageReference;
-    private DoubleValue outputReference;
+    private CachedDoubleValue storageReference;
+    private CachedDoubleValue outputReference;
 
     EnergyCubeTier(BaseTier tier, double max, double out) {
         baseMaxEnergy = max;
@@ -54,7 +54,7 @@ public enum EnergyCubeTier implements ITier, IStringSerializable {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the EnergyCubeTier a reference to the actual config value object
      */
-    public void setConfigReference(DoubleValue storageReference, DoubleValue outputReference) {
+    public void setConfigReference(CachedDoubleValue storageReference, CachedDoubleValue outputReference) {
         this.storageReference = storageReference;
         this.outputReference = outputReference;
     }

@@ -1,5 +1,7 @@
 package mekanism.common.config;
 
+import mekanism.common.config.value.CachedConfigValue;
+import mekanism.common.config.value.CachedPrimitiveValue;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig;
 
@@ -10,6 +12,12 @@ public interface IMekanismConfig {
     ForgeConfigSpec getConfigSpec();
 
     ModConfig.Type getConfigType();
+
+    void clearCache();
+
+    <T> void addCachedValue(CachedConfigValue<T> configValue);
+
+    <T> void addCachedValue(CachedPrimitiveValue<T> configValue);
 
     /**
      * Should this config be added to the mods "config" files. Make this return false to only create the config. This will allow it to be tracked, but not override the

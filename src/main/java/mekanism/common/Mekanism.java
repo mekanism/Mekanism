@@ -21,6 +21,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.command.CommandMek;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.MekanismModConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
@@ -72,6 +73,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
@@ -182,6 +184,7 @@ public class Mekanism {
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
+        modEventBus.addListener(this::onConfigReload);
         modEventBus.addListener(this::imcQueue);
         //TODO: Register other listeners and various stuff that is needed
 
@@ -302,9 +305,6 @@ public class Mekanism {
             }
         }*/
 
-        //Load configuration
-        //proxy.loadConfiguration();
-        proxy.onConfigSync(false);
         hooks.hookPreInit();
 
         Capabilities.registerCapabilities();
@@ -431,13 +431,13 @@ public class Mekanism {
         }
     }
 
-    //TODO
-    /*private void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.getModID().equals(Mekanism.MODID)) {
-            proxy.loadConfiguration();
-            proxy.onConfigSync(false);
+    private void onConfigReload(ModConfig.Reloading configEvent) {
+        ModConfig config = configEvent.getConfig();
+        //Make sure it is for the same modid as us
+        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {
+            ((MekanismModConfig) config).clearCache();
         }
-    }*/
+    }
 
     private void onWorldLoad(WorldEvent.Load event) {
         playerState.init(event.getWorld());

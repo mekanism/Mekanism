@@ -2,7 +2,7 @@ package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import mekanism.common.config.value.CachedIntValue;
 
 public enum BinTier implements ITier {
     BASIC(BaseTier.BASIC, 4_096),
@@ -13,7 +13,7 @@ public enum BinTier implements ITier {
 
     private final int baseStorage;
     private final BaseTier baseTier;
-    private IntValue storageReference;
+    private CachedIntValue storageReference;
 
     BinTier(BaseTier tier, int s) {
         baseTier = tier;
@@ -36,7 +36,7 @@ public enum BinTier implements ITier {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the BinTier a reference to the actual config value object
      */
-    public void setConfigReference(IntValue storageReference) {
+    public void setConfigReference(CachedIntValue storageReference) {
         this.storageReference = storageReference;
     }
 }

@@ -67,16 +67,6 @@ public class CommonProxy {
         return 0;
     }
 
-    public void onConfigSync(boolean fromPacket) {
-        //TODO: Move this to additions and fix. Currently there is no config sync so there isn't a great spot to put this
-        /*if (MekanismConfig.general.voiceServerEnabled.get() && Mekanism.voiceManager == null) {
-            Mekanism.voiceManager = new VoiceServerManager();
-        }*/
-        if (fromPacket) {
-            Mekanism.logger.info("Received config from server.");
-        }
-    }
-
     public final WeakReference<PlayerEntity> getDummyPlayer(ServerWorld world) {
         return MekFakePlayer.getInstance(world);
     }

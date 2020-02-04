@@ -12,6 +12,7 @@ import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
+import mekanism.common.config.MekanismModConfig;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
@@ -24,6 +25,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -57,8 +59,8 @@ public class MekanismAdditions implements IModule {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::serverStarting);
-        modEventBus.addListener(this::serverStopping);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
         modEventBus.addListener(this::onConfigReload);
 
         AdditionsItems.ITEMS.register(modEventBus);
@@ -125,21 +127,36 @@ public class MekanismAdditions implements IModule {
         });
 
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
+
+        //TODO: Put this somewhere and fix. Used to happen after config sync
+        /*if (MekanismConfig.general.voiceServerEnabled.get() && Mekanism.voiceManager == null) {
+            Mekanism.voiceManager = new VoiceServerManager();
+        }*/
+        //TODO: Put this somewhere this was client side after config sync
+        /*if (fromPacket && MekanismConfig.general.voiceServerEnabled.get() && MekanismClient.voiceClient != null) {
+            MekanismClient.voiceClient.start();
+        }*/
     }
 
     private void serverStarting(FMLServerStartingEvent event) {
-        if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
+        //TODO
+        /*if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
             voiceManager.start();
-        }
+        }*/
     }
 
     private void serverStopping(FMLServerStoppingEvent event) {
-        if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
+        //TODO
+        /*if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
             voiceManager.stop();
-        }
+        }*/
     }
 
     private void onConfigReload(ModConfig.Reloading configEvent) {
-        //TODO: Handle reloading
+        ModConfig config = configEvent.getConfig();
+        //Make sure it is for the same modid as us
+        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {
+            ((MekanismModConfig) config).clearCache();
+        }
     }
 }

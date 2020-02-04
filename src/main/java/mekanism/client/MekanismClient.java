@@ -40,9 +40,6 @@ public class MekanismClient {
 
         SynchronizedBoilerData.clientHotMap.clear();
 
-        //MekanismConfigOld.setSyncedConfig(null);
-        Mekanism.proxy.onConfigSync(false);
-
         for (IModule module : Mekanism.modulesLoaded) {
             module.resetClient();
         }

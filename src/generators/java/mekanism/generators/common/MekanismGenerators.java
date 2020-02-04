@@ -5,6 +5,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.MekanismModConfig;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -94,9 +95,10 @@ public class MekanismGenerators implements IModule {
     }
 
     private void onConfigReload(ModConfig.Reloading configEvent) {
-        //TODO: Handle reloading
-        /*if (event.getModID().equals(MekanismGenerators.MODID) || event.getModID().equals(Mekanism.MODID)) {
-            proxy.loadConfiguration();
-        }*/
+        ModConfig config = configEvent.getConfig();
+        //Make sure it is for the same modid as us
+        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {
+            ((MekanismModConfig) config).clearCache();
+        }
     }
 }

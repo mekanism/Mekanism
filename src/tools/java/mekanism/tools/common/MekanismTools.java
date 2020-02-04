@@ -5,6 +5,7 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
+import mekanism.common.config.MekanismModConfig;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.entity.LivingEntity;
@@ -13,6 +14,7 @@ import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -41,7 +43,7 @@ public class MekanismTools implements IModule {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigReload);
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
-        modEventBus.addListener(this::onLivingSpecialSpawn);
+        MinecraftForge.EVENT_BUS.addListener(this::onLivingSpecialSpawn);
 
         ToolsItems.ITEMS.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
@@ -53,7 +55,11 @@ public class MekanismTools implements IModule {
     }
 
     private void onConfigReload(ModConfig.Reloading configEvent) {
-        //TODO: Handle reloading
+        ModConfig config = configEvent.getConfig();
+        //Make sure it is for the same modid as us
+        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {
+            ((MekanismModConfig) config).clearCache();
+        }
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

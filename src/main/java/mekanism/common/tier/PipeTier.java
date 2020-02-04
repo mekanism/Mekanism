@@ -2,8 +2,8 @@ package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
+import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.util.EnumUtils;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum PipeTier implements ITier {
     BASIC(BaseTier.BASIC, 1_000, 100),
@@ -14,8 +14,8 @@ public enum PipeTier implements ITier {
     private final int baseCapacity;
     private final int basePull;
     private final BaseTier baseTier;
-    private IntValue capacityReference;
-    private IntValue pullReference;
+    private CachedIntValue capacityReference;
+    private CachedIntValue pullReference;
 
     PipeTier(BaseTier tier, int capacity, int pullAmount) {
         baseCapacity = capacity;
@@ -56,7 +56,7 @@ public enum PipeTier implements ITier {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the PipeTier a reference to the actual config value object
      */
-    public void setConfigReference(IntValue capacityReference, IntValue pullReference) {
+    public void setConfigReference(CachedIntValue capacityReference, CachedIntValue pullReference) {
         this.capacityReference = capacityReference;
         this.pullReference = pullReference;
     }

@@ -2,8 +2,8 @@ package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
+import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.util.EnumUtils;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 //TODO: Should cable capacity be upped to a double
 public enum CableTier implements ITier {
@@ -14,7 +14,7 @@ public enum CableTier implements ITier {
 
     private final int baseCapacity;
     private final BaseTier baseTier;
-    private IntValue capacityReference;
+    private CachedIntValue capacityReference;
 
     CableTier(BaseTier tier, int capacity) {
         baseCapacity = capacity;
@@ -46,7 +46,7 @@ public enum CableTier implements ITier {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the CableTier a reference to the actual config value object
      */
-    public void setConfigReference(IntValue capacityReference) {
+    public void setConfigReference(CachedIntValue capacityReference) {
         this.capacityReference = capacityReference;
     }
 }

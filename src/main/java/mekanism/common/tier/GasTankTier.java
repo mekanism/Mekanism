@@ -3,8 +3,8 @@ package mekanism.common.tier;
 import java.util.Locale;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
+import mekanism.common.config.value.CachedIntValue;
 import net.minecraft.util.IStringSerializable;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 public enum GasTankTier implements ITier, IStringSerializable {
     BASIC(BaseTier.BASIC, 64_000, 256),
@@ -16,8 +16,8 @@ public enum GasTankTier implements ITier, IStringSerializable {
     private final int baseStorage;
     private final int baseOutput;
     private final BaseTier baseTier;
-    private IntValue storageReference;
-    private IntValue outputReference;
+    private CachedIntValue storageReference;
+    private CachedIntValue outputReference;
 
     GasTankTier(BaseTier tier, int s, int o) {
         baseStorage = s;
@@ -54,7 +54,7 @@ public enum GasTankTier implements ITier, IStringSerializable {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the GasTankTier a reference to the actual config value object
      */
-    public void setConfigReference(IntValue storageReference, IntValue outputReference) {
+    public void setConfigReference(CachedIntValue storageReference, CachedIntValue outputReference) {
         this.storageReference = storageReference;
         this.outputReference = outputReference;
     }

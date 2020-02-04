@@ -1,30 +1,33 @@
 package mekanism.additions.common.config;
 
-import mekanism.common.config.IMekanismConfig;
+import mekanism.common.config.BaseMekanismConfig;
+import mekanism.common.config.value.CachedBooleanValue;
+import mekanism.common.config.value.CachedIntValue;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
-public class AdditionsConfig implements IMekanismConfig {
+public class AdditionsConfig extends BaseMekanismConfig {
 
     private final ForgeConfigSpec configSpec;
 
-    public final IntValue obsidianTNTDelay;
-    public final ConfigValue<Integer> obsidianTNTBlastRadius;
-    public final BooleanValue voiceServerEnabled;
-    public final IntValue VOICE_PORT;
+    public final CachedIntValue obsidianTNTDelay;
+    public final CachedIntValue obsidianTNTBlastRadius;
+    public final CachedBooleanValue voiceServerEnabled;
+    public final CachedIntValue VOICE_PORT;
 
     AdditionsConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Mekanism Additions Config. This config is synced between server and client.").push("additions");
 
-        obsidianTNTDelay = builder.comment("Fuse time for Obsidian TNT.").defineInRange("obsidianTNTDelay", 100, 0, Integer.MAX_VALUE);
-        obsidianTNTBlastRadius = builder.comment("Radius of the explosion of Obsidian TNT.").define("obsidianTNTBlastRadius", 12);
+        obsidianTNTDelay = CachedIntValue.wrap(this, builder.comment("Fuse time for Obsidian TNT.")
+              .defineInRange("obsidianTNTDelay", 100, 0, Integer.MAX_VALUE));
+        obsidianTNTBlastRadius = CachedIntValue.wrap(this, builder.comment("Radius of the explosion of Obsidian TNT.")
+              .define("obsidianTNTBlastRadius", 12));
 
-        voiceServerEnabled = builder.comment("Enables the voice server for Walkie Talkies.").define("voiceServerEnabled", false);
-        VOICE_PORT = builder.comment("TCP port for the Voice server to listen on.").defineInRange("VoicePort", 36123, 1, 65535);
+        voiceServerEnabled = CachedBooleanValue.wrap(this, builder.comment("Enables the voice server for Walkie Talkies.")
+              .define("voiceServerEnabled", false));
+        VOICE_PORT = CachedIntValue.wrap(this, builder.comment("TCP port for the Voice server to listen on.")
+              .defineInRange("VoicePort", 36123, 1, 65535));
         builder.pop();
         configSpec = builder.build();
     }

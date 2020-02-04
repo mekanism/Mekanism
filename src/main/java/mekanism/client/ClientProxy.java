@@ -88,15 +88,6 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void onConfigSync(boolean fromPacket) {
-        super.onConfigSync(fromPacket);
-        //TODO: Move this to additions and fix. Currently there is no config sync so there isn't a great spot to put this
-        /*if (fromPacket && MekanismConfig.general.voiceServerEnabled.get() && MekanismClient.voiceClient != null) {
-            MekanismClient.voiceClient.start();
-        }*/
-    }
-
-    @Override
     public double getReach(PlayerEntity player) {
         return Minecraft.getInstance().playerController == null ? 8 : Minecraft.getInstance().playerController.getBlockReachDistance();
     }

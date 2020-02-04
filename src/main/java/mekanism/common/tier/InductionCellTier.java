@@ -2,7 +2,7 @@ package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
+import mekanism.common.config.value.CachedDoubleValue;
 
 public enum InductionCellTier implements ITier {
     BASIC(BaseTier.BASIC, 1E9D),
@@ -12,7 +12,7 @@ public enum InductionCellTier implements ITier {
 
     private final double baseMaxEnergy;
     private final BaseTier baseTier;
-    private DoubleValue storageReference;
+    private CachedDoubleValue storageReference;
 
     InductionCellTier(BaseTier tier, double max) {
         baseMaxEnergy = max;
@@ -35,7 +35,7 @@ public enum InductionCellTier implements ITier {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the InductionCellTier a reference to the actual config value object
      */
-    public void setConfigReference(DoubleValue storageReference) {
+    public void setConfigReference(CachedDoubleValue storageReference) {
         this.storageReference = storageReference;
     }
 }

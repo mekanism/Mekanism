@@ -2,16 +2,16 @@ package mekanism.generators.common.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.common.config.IMekanismConfig;
+import mekanism.common.config.BaseMekanismConfig;
+import mekanism.common.config.value.CachedConfigValue;
+import mekanism.common.config.value.CachedDoubleValue;
+import mekanism.common.config.value.CachedIntValue;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
-public class GeneratorsConfig implements IMekanismConfig {
+public class GeneratorsConfig extends BaseMekanismConfig {
 
     private static final String TURBINE_CATEGORY = "turbine";
     private static final String WIND_CATEGORY = "wind_generator";
@@ -20,63 +20,69 @@ public class GeneratorsConfig implements IMekanismConfig {
     private final ForgeConfigSpec configSpec;
 
     //TODO: Limits on remaining things?
-    public final DoubleValue advancedSolarGeneration;
-    public final DoubleValue bioGeneration;
-    public final DoubleValue heatGeneration;
-    public final DoubleValue heatGenerationLava;
-    public final DoubleValue heatGenerationNether;
-    public final DoubleValue solarGeneration;
-    public final ConfigValue<Integer> turbineBladesPerCoil;
-    public final ConfigValue<Double> turbineVentGasFlow;
-    public final ConfigValue<Double> turbineDisperserGasFlow;
-    public final ConfigValue<Integer> condenserRate;
-    public final DoubleValue energyPerFusionFuel;
-    public final DoubleValue windGenerationMin;
-    public final DoubleValue windGenerationMax;
-    public final ConfigValue<Integer> windGenerationMinY;
-    public final ConfigValue<Integer> windGenerationMaxY;
-    public final ConfigValue<List<? extends String>> windGenerationDimBlacklist;
+    public final CachedDoubleValue advancedSolarGeneration;
+    public final CachedDoubleValue bioGeneration;
+    public final CachedDoubleValue heatGeneration;
+    public final CachedDoubleValue heatGenerationLava;
+    public final CachedDoubleValue heatGenerationNether;
+    public final CachedDoubleValue solarGeneration;
+    public final CachedIntValue turbineBladesPerCoil;
+    public final CachedDoubleValue turbineVentGasFlow;
+    public final CachedDoubleValue turbineDisperserGasFlow;
+    public final CachedIntValue condenserRate;
+    public final CachedDoubleValue energyPerFusionFuel;
+    public final CachedDoubleValue windGenerationMin;
+    public final CachedDoubleValue windGenerationMax;
+    public final CachedIntValue windGenerationMinY;
+    public final CachedIntValue windGenerationMaxY;
+    public final CachedConfigValue<List<? extends String>> windGenerationDimBlacklist;
 
     GeneratorsConfig() {
-        Builder builder = new Builder();
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Mekanism Generators Config. This config is synced between server and client.").push("generators");
 
-        bioGeneration = builder.comment("Amount of energy in Joules the Bio Generator produces per tick.")
-              .defineInRange("bioGeneration", 350, 0, Double.MAX_VALUE);
-        energyPerFusionFuel = builder.comment("Affects the Injection Rate, Max Temp, and Ignition Temp.")
-              .defineInRange("energyPerFusionFuel", 5E6, 0, Double.MAX_VALUE);
-        solarGeneration = builder.comment("Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.")
-              .defineInRange("solarGeneration", 50, 0, Double.MAX_VALUE);
-        advancedSolarGeneration = builder.comment("Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.")
-              .defineInRange("advancedSolarGeneration", 300, 0, Double.MAX_VALUE);
+        bioGeneration = CachedDoubleValue.wrap(this, builder.comment("Amount of energy in Joules the Bio Generator produces per tick.")
+              .defineInRange("bioGeneration", 350, 0, Double.MAX_VALUE));
+        energyPerFusionFuel = CachedDoubleValue.wrap(this, builder.comment("Affects the Injection Rate, Max Temp, and Ignition Temp.")
+              .defineInRange("energyPerFusionFuel", 5E6, 0, Double.MAX_VALUE));
+        solarGeneration = CachedDoubleValue.wrap(this, builder.comment("Peak output for the Solar Generator. Note: It can go higher than this value in some extreme environments.")
+              .defineInRange("solarGeneration", 50, 0, Double.MAX_VALUE));
+        advancedSolarGeneration = CachedDoubleValue.wrap(this, builder.comment("Peak output for the Advanced Solar Generator. Note: It can go higher than this value in some extreme environments.")
+              .defineInRange("advancedSolarGeneration", 300, 0, Double.MAX_VALUE));
 
         builder.comment("Heat Generator Settings").push(HEAT_CATEGORY);
-        heatGeneration = builder.comment("Amount of energy in Joules the Heat Generator produces per tick. (heatGenerationLava * heatGenerationLava) + heatGenerationNether")
-              .defineInRange("heatGeneration", 150, 0, Double.MAX_VALUE);
-        heatGenerationLava = builder.comment("Multiplier of effectiveness of Lava in the Heat Generator.")
-              .defineInRange("heatGenerationLava", 5, 0, Double.MAX_VALUE);
-        heatGenerationNether = builder.comment("Add this amount of Joules to the energy produced by a heat generator if it is in the Nether.")
-              .defineInRange("heatGenerationNether", 100, 0, Double.MAX_VALUE);
+        heatGeneration = CachedDoubleValue.wrap(this, builder.comment("Amount of energy in Joules the Heat Generator produces per tick. (heatGenerationLava * heatGenerationLava) + heatGenerationNether")
+              .defineInRange("heatGeneration", 150, 0, Double.MAX_VALUE));
+        heatGenerationLava = CachedDoubleValue.wrap(this, builder.comment("Multiplier of effectiveness of Lava in the Heat Generator.")
+              .defineInRange("heatGenerationLava", 5, 0, Double.MAX_VALUE));
+        heatGenerationNether = CachedDoubleValue.wrap(this, builder.comment("Add this amount of Joules to the energy produced by a heat generator if it is in the Nether.")
+              .defineInRange("heatGenerationNether", 100, 0, Double.MAX_VALUE));
         builder.pop();
 
         builder.comment("Turbine Settings").push(TURBINE_CATEGORY);
-        turbineBladesPerCoil = builder.comment("The number of blades on each turbine coil per blade applied.").define("turbineBladesPerCoil", 4);
-        turbineVentGasFlow = builder.comment("The rate at which steam is vented into the turbine.").define("turbineVentGasFlow", 16_000D);
-        turbineDisperserGasFlow = builder.comment("The rate at which steam is dispersed into the turbine.").define("turbineDisperserGasFlow", 640D);
-        condenserRate = builder.comment("The rate at which steam is condensed in the turbine.").define("condenserRate", 32_000);
+        turbineBladesPerCoil = CachedIntValue.wrap(this, builder.comment("The number of blades on each turbine coil per blade applied.")
+              .define("turbineBladesPerCoil", 4));
+        turbineVentGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is vented into the turbine.")
+              .define("turbineVentGasFlow", 16_000D));
+        turbineDisperserGasFlow = CachedDoubleValue.wrap(this, builder.comment("The rate at which steam is dispersed into the turbine.")
+              .define("turbineDisperserGasFlow", 640D));
+        condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
+              .define("condenserRate", 32_000));
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);
-        windGenerationMin = builder.comment("Minimum base generation value of the Wind Generator.")
-              .defineInRange("windGenerationMin", 60, 0, Double.MAX_VALUE);
+        windGenerationMin = CachedDoubleValue.wrap(this, builder.comment("Minimum base generation value of the Wind Generator.")
+              .defineInRange("windGenerationMin", 60, 0, Double.MAX_VALUE));
         //TODO: Should this be capped by the min generator?
-        windGenerationMax = builder.comment("Maximum base generation value of the Wind Generator.")
-              .defineInRange("windGenerationMax", 480, 0, Double.MAX_VALUE);
-        windGenerationMinY = builder.comment("The minimum Y value that affects the Wind Generators Power generation.").define("windGenerationMinY", 24);
+        windGenerationMax = CachedDoubleValue.wrap(this, builder.comment("Maximum base generation value of the Wind Generator.")
+              .defineInRange("windGenerationMax", 480, 0, Double.MAX_VALUE));
+        windGenerationMinY = CachedIntValue.wrap(this, builder.comment("The minimum Y value that affects the Wind Generators Power generation.")
+              .define("windGenerationMinY", 24));
         //TODO: Test this, maybe make default supplier be 255 OR 1 higher than minY
-        windGenerationMaxY = builder.comment("The maximum Y value that affects the Wind Generators Power generation.").define("windGenerationMaxY", 255,
-              value -> value instanceof Integer && (Integer) value > windGenerationMinY.get());
-        windGenerationDimBlacklist = builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
+        windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
+              .define("windGenerationMaxY", 255,
+              value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
+        windGenerationDimBlacklist = CachedConfigValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
               .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> {
                   if (o instanceof String) {
                       String string = ((String) o).toLowerCase();
@@ -91,7 +97,7 @@ public class GeneratorsConfig implements IMekanismConfig {
                       }
                   }
                   return false;
-              });
+              }));
         builder.pop(2);
         configSpec = builder.build();
     }

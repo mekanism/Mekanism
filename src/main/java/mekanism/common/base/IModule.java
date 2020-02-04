@@ -24,22 +24,6 @@ public interface IModule {
      */
     String getName();
 
-    /*
-     * Writes this module's configuration to a ConfigSync packet.
-     *
-     * @param dataStream - the PacketBuffer of the sync packet
-     * @param config     - the configuration to write
-     */
-    //void writeConfig(PacketBuffer dataStream, MekanismConfigOld config);
-
-    /*
-     * Reads this module's configuration from the original ConfigSync packet.
-     *
-     * @param dataStream - the incoming PacketBuffer of the sync packet
-     * @param destConfig - configuration to read to
-     */
-    //void readConfig(PacketBuffer dataStream, MekanismConfigOld destConfig);*/
-
     /**
      * Called when the player returns to the main menu.
      */

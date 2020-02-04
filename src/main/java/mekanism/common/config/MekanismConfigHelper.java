@@ -17,7 +17,7 @@ public class MekanismConfigHelper {
      * Creates a mod config so that {@link net.minecraftforge.fml.config.ConfigTracker} will track it and sync server configs from server to client.
      */
     public static void registerConfig(ModContainer modContainer, IMekanismConfig config) {
-        MekanismModConfig modConfig = new MekanismModConfig(config.getConfigType(), config.getConfigSpec(), modContainer, config.getFileName());
+        MekanismModConfig modConfig = new MekanismModConfig(modContainer, config);
         if (config.addToContainer()) {
             modContainer.addConfig(modConfig);
         }

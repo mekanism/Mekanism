@@ -2,7 +2,7 @@ package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
+import mekanism.common.config.value.CachedDoubleValue;
 
 public enum InductionProviderTier implements ITier {
     BASIC(BaseTier.BASIC, 64_000),
@@ -12,7 +12,7 @@ public enum InductionProviderTier implements ITier {
 
     private final double baseOutput;
     private final BaseTier baseTier;
-    private DoubleValue outputReference;
+    private CachedDoubleValue outputReference;
 
     InductionProviderTier(BaseTier tier, double out) {
         baseOutput = out;
@@ -35,7 +35,7 @@ public enum InductionProviderTier implements ITier {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the InductionProviderTier a reference to the actual config value object
      */
-    public void setConfigReference(DoubleValue outputReference) {
+    public void setConfigReference(CachedDoubleValue outputReference) {
         this.outputReference = outputReference;
     }
 }

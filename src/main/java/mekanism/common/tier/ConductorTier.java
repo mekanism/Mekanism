@@ -3,8 +3,8 @@ package mekanism.common.tier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.ColorRGBA;
+import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.util.EnumUtils;
-import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 
 public enum ConductorTier implements ITier {
     BASIC(BaseTier.BASIC, 5, 1, 10, new ColorRGBA(0.2, 0.2, 0.2, 1)),
@@ -17,9 +17,9 @@ public enum ConductorTier implements ITier {
     private final double baseHeatCapacity;
     private final double baseConductionInsulation;
     private final BaseTier baseTier;
-    private DoubleValue conductionReference;
-    private DoubleValue capacityReference;
-    private DoubleValue insulationReference;
+    private CachedDoubleValue conductionReference;
+    private CachedDoubleValue capacityReference;
+    private CachedDoubleValue insulationReference;
 
     ConductorTier(BaseTier tier, double inversek, double inverseC, double insulationInversek, ColorRGBA color) {
         baseConduction = inversek;
@@ -75,7 +75,7 @@ public enum ConductorTier implements ITier {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the BinTier a reference to the actual config value object
      */
-    public void setConfigReference(DoubleValue conductionReference, DoubleValue capacityReference, DoubleValue insulationReference) {
+    public void setConfigReference(CachedDoubleValue conductionReference, CachedDoubleValue capacityReference, CachedDoubleValue insulationReference) {
         this.conductionReference = conductionReference;
         this.capacityReference = capacityReference;
         this.insulationReference = insulationReference;

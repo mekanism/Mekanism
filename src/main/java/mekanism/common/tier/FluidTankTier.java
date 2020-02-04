@@ -2,7 +2,7 @@ package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import mekanism.common.config.value.CachedIntValue;
 
 public enum FluidTankTier implements ITier {
     BASIC(BaseTier.BASIC, 14_000, 400),
@@ -14,8 +14,8 @@ public enum FluidTankTier implements ITier {
     private final int baseStorage;
     private final int baseOutput;
     private final BaseTier baseTier;
-    private IntValue storageReference;
-    private IntValue outputReference;
+    private CachedIntValue storageReference;
+    private CachedIntValue outputReference;
 
     FluidTankTier(BaseTier tier, int s, int o) {
         baseStorage = s;
@@ -47,7 +47,7 @@ public enum FluidTankTier implements ITier {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the FluidTankTier a reference to the actual config value object
      */
-    public void setConfigReference(IntValue storageReference, IntValue outputReference) {
+    public void setConfigReference(CachedIntValue storageReference, CachedIntValue outputReference) {
         this.storageReference = storageReference;
         this.outputReference = outputReference;
     }

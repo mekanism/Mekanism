@@ -4,7 +4,6 @@ import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import java.nio.file.Path;
 import java.util.function.Function;
 import mekanism.common.Mekanism;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.config.ConfigFileTypeHandler;
 import net.minecraftforge.fml.config.ModConfig;
@@ -19,13 +18,20 @@ public class MekanismModConfig extends ModConfig {
 
     private static final MekanismConfigFileTypeHandler MEK_TOML = new MekanismConfigFileTypeHandler();
 
-    public MekanismModConfig(Type type, ForgeConfigSpec spec, ModContainer container, String fileName) {
-        super(type, spec, container, Mekanism.MOD_NAME + "/" + fileName + ".toml");
+    private final IMekanismConfig mekanismConfig;
+
+    public MekanismModConfig(ModContainer container, IMekanismConfig config) {
+        super(config.getConfigType(), config.getConfigSpec(), container, Mekanism.MOD_NAME + "/" + config.getFileName() + ".toml");
+        this.mekanismConfig = config;
     }
 
     @Override
     public ConfigFileTypeHandler getHandler() {
         return MEK_TOML;
+    }
+
+    public void clearCache() {
+        mekanismConfig.clearCache();
     }
 
     private static class MekanismConfigFileTypeHandler extends ConfigFileTypeHandler {
