@@ -1,6 +1,5 @@
 package mekanism.common.base;
 
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -14,7 +13,7 @@ import net.minecraft.util.Direction;
 
 public interface ILogisticalTransporter extends IGridTransmitter<TileEntity, InventoryNetwork, Void>, IBlockableConnection {
 
-    TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min);
+    TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min);
 
     TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min);
 

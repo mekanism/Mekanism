@@ -252,9 +252,8 @@ public class TransporterStack {
         return false;
     }
 
-    public boolean canInsertToTransporter(ILogisticalTransporter transporter, Direction side) {
-        //TODO: Check if we ever have a tile already gotten that we can pass as cached
-        return (transporter.getColor() == color || transporter.getColor() == null) && transporter.canConnectMutual(side, null);
+    public boolean canInsertToTransporter(ILogisticalTransporter transporter, Direction side, @Nullable TileEntity tileFrom) {
+        return (transporter.getColor() == color || transporter.getColor() == null) && transporter.canConnectMutual(side, tileFrom);
     }
 
     public Coord4D getDest() {

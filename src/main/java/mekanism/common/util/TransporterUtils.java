@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import java.util.Arrays;
 import java.util.List;
-import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
@@ -28,8 +27,9 @@ public final class TransporterUtils {
         return InventoryUtils.isItemHandler(tile, side.getOpposite());
     }
 
+    //TODO: Decide if we want to inline this and insertRR
     public static TransitResponse insert(TileEntity outputter, ILogisticalTransporter transporter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        return transporter.insert(Coord4D.get(outputter), request, color, doEmit, min);
+        return transporter.insert(outputter, request, color, doEmit, min);
     }
 
     public static TransitResponse insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, TransitRequest request, EnumColor color, boolean doEmit, int min) {

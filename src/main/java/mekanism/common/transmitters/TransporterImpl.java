@@ -222,13 +222,14 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     @Override
-    public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min) {
+    public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
+        Coord4D original = Coord4D.get(outputter);
         Direction from = coord().sideDifference(original).getOpposite();
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = original;
         stack.homeLocation = original;
         stack.color = color;
-        if (!stack.canInsertToTransporter(this, from)) {
+        if (!stack.canInsertToTransporter(this, from, outputter)) {
             return TransitResponse.EMPTY;
         }
         TransitResponse response = stack.recalculatePath(request, this, min);
@@ -260,7 +261,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         stack.originalLocation = Coord4D.get(outputter);
         stack.homeLocation = Coord4D.get(outputter);
         stack.color = color;
-        if (!canReceiveFrom(outputter, from) || !stack.canInsertToTransporter(this, from)) {
+        if (!canReceiveFrom(outputter, from) || !stack.canInsertToTransporter(this, from, outputter)) {
             return TransitResponse.EMPTY;
         }
         TransitResponse response = stack.recalculateRRPath(request, outputter, this, min);

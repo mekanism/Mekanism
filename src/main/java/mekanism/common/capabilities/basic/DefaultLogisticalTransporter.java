@@ -29,7 +29,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min) {
+    public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         return TransitResponse.EMPTY;
     }
 
