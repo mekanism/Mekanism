@@ -148,9 +148,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         if (capability.isPresent()) {
             ILogisticalTransporter transporter = capability.get();
             if (roundRobin) {
-                return TransporterUtils.insertRR(this, transporter, request, filterColor, true, min);
+                return transporter.insertRR(this, request, filterColor, true, min);
             }
-            return TransporterUtils.insert(this, transporter, request, filterColor, true, min);
+            return transporter.insert(this, request, filterColor, true, min);
         }
         return InventoryUtils.putStackInInventory(front, request, getDirection(), false);
     }

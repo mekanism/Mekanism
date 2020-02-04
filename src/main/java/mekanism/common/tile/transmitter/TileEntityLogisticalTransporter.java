@@ -141,7 +141,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
                 // There's a stack available to insert into the network...
                 if (!request.isEmpty()) {
-                    TransitResponse response = TransporterUtils.insert(tile, getTransmitter(), request, getTransmitter().getColor(), true, 0);
+                    TransitResponse response = getTransmitter().insert(tile, request, getTransmitter().getColor(), true, 0);
 
                     // If the insert succeeded, remove the inserted count and try again for another 10 ticks
                     if (!response.isEmpty()) {

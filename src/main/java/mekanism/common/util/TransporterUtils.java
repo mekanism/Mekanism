@@ -5,11 +5,8 @@ import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.transporter.TransitRequest;
-import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -25,15 +22,6 @@ public final class TransporterUtils {
             return false;
         }
         return InventoryUtils.isItemHandler(tile, side.getOpposite());
-    }
-
-    //TODO: Decide if we want to inline this and insertRR
-    public static TransitResponse insert(TileEntity outputter, ILogisticalTransporter transporter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        return transporter.insert(outputter, request, color, doEmit, min);
-    }
-
-    public static TransitResponse insertRR(TileEntityLogisticalSorter outputter, ILogisticalTransporter transporter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        return transporter.insertRR(outputter, request, color, doEmit, min);
     }
 
     public static EnumColor increment(EnumColor color) {

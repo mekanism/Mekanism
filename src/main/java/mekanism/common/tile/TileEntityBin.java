@@ -24,7 +24,6 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -96,7 +95,7 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
                     TransitResponse response;
                     Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP));
                     if (capability.isPresent()) {
-                        response = TransporterUtils.insert(this, capability.get(), TransitRequest.getFromStack(bottomStack), null, true, 0);
+                        response = capability.get().insert(this, TransitRequest.getFromStack(bottomStack), null, true, 0);
                     } else {
                         response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false);
                     }
