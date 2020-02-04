@@ -55,7 +55,7 @@ public final class TransporterPathfinder {
 
     private static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack, Map<Long, IChunk> chunkMap) {
         for (int i = path.size() - 1; i > 0; i--) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, path.get(i).getPos());
+            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, path.get(i));
             Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
             if (capability.isPresent()) {
                 ILogisticalTransporter transporter = capability.get();
@@ -355,18 +355,20 @@ public final class TransporterPathfinder {
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 Coord4D neighbor = start.offset(direction);
                 TileEntity neighborTile = MekanismUtils.getTileEntity(world, chunkMap, neighbor);
-                if (transportStack.canInsertToTransporter(neighborTile, direction, startTile) || (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborTile))) {
-                    //If we can insert into the transporter or the neighbor is the destination, mark that we have a valid note
-                    //TODO: We may want to check if we actually have a connection to the neighbor for the final check?
+                if (transportStack.canInsertToTransporter(neighborTile, direction, startTile)) {
+                    //If we can insert into the transporter, mark that we have a valid path we can take
                     hasValidDirection = true;
                     break;
+                } else if (isValidDestination(start, startTile, direction, neighbor, neighborTile)) {
+                    //Otherwise if we are neighboring our destination, and we can emit to the location or it is going back
+                    // to its home location and can connect to it just exit early and return that this is the best path
+                    return true;
                 }
             }
             if (!hasValidDirection) {
                 //If there is no valid direction that the stack can go just exit
                 return false;
             }
-
             double maxSearchDistance = 2 * start.distanceTo(finalNode);
             while (!openSet.isEmpty()) {
                 Coord4D currentNode = null;
@@ -412,20 +414,35 @@ public final class TransporterPathfinder {
                             fScore.put(neighbor, tentativeG + neighbor.distanceTo(finalNode));
                             openSet.add(neighbor);
                         }
-                    } else if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborEntity)) {
-                        //Else if the neighbor is the destination
-                        Optional<ILogisticalTransporter> currentNodeTransporter = MekanismUtils.toOptional(CapabilityUtils.getCapability(currentNodeTile,
-                              Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
-                        if (currentNodeTransporter.isPresent()) {
-                            ILogisticalTransporter transporter = currentNodeTransporter.get();
-                            //TODO: Check if canEmitTo broken if it is a pipe connected to a pipe and they are both on "pull"
-                            if (transporter.canEmitTo(neighborEntity, direction) || (finalNode.equals(transportStack.homeLocation) && transporter.canConnect(direction))) {
-                                //And we can emit to the location or it is going back to its home location and can connect to it
-                                side = direction;
-                                results = reconstructPath(navMap, currentNode);
-                                return true;
-                            }
-                        }
+                    } else if (isValidDestination(currentNode, currentNodeTile, direction, neighbor, neighborEntity)) {
+                        //Else if the neighbor is the destination and we can send to it
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Checks if we have a valid connection to the destination and are able to emit to it. If we are this updates the side and results to the proper values.
+         *
+         * @return True if we found a valid connection to the destination and can insert into it, false otherwise
+         */
+        private boolean isValidDestination(Coord4D start, TileEntity startTile, Direction direction, Coord4D neighbor, TileEntity neighborTile) {
+            //Check to make sure that it is the destination
+            if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborTile)) {
+                Optional<ILogisticalTransporter> startTransporter = MekanismUtils.toOptional(CapabilityUtils.getCapability(startTile,
+                      Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
+                if (startTransporter.isPresent()) {
+                    ILogisticalTransporter transporter = startTransporter.get();
+                    if (transporter.canEmitTo(neighborTile, direction) || (finalNode.equals(transportStack.homeLocation) && transporter.canConnect(direction))) {
+                        //If it is and we can emit to it (normal or push mode),
+                        // or it is the home location of the stack (it is returning back due to not having been able to get to its destination)
+                        // and we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),
+                        // then this is the proper path so we mark it as so and return true indicating that we found and marked the ideal path
+                        side = direction;
+                        results = reconstructPath(navMap, start);
+                        return true;
                     }
                 }
             }

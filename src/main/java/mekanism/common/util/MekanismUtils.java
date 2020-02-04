@@ -890,7 +890,8 @@ public final class MekanismUtils {
      * @return tile entity if found, null if either not found or not loaded
      */
     @Nullable
-    public static TileEntity getTileEntity(@Nonnull IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull Coord4D coord) {
+    @Contract("null, _, _ -> null")
+    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull Coord4D coord) {
         return getTileEntity(world, chunkMap, coord.getPos());
     }
 
@@ -905,7 +906,12 @@ public final class MekanismUtils {
      * @return tile entity if found, null if either not found or not loaded
      */
     @Nullable
-    public static TileEntity getTileEntity(@Nonnull IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull BlockPos pos) {
+    @Contract("null, _, _ -> null")
+    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull BlockPos pos) {
+        if (world == null) {
+            //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
+            return null;
+        }
         int chunkX = pos.getX() >> 4;
         int chunkZ = pos.getZ() >> 4;
         long combinedChunk = (((long) chunkX) << 32) | (chunkZ & 0xFFFFFFFFL);

@@ -45,7 +45,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
-            TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, coord.getPos());
+            TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, coord);
             if (acceptor == null) {
                 continue;
             }
