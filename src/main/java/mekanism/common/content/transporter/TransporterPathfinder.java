@@ -349,7 +349,7 @@ public final class TransporterPathfinder {
             openSet.add(start);
             gScore.put(start, 0D);
             //Note: This is gScore + estimate, but given our gScore starts at zero we just skip getting it back out
-            fScore.put(start, getEstimate(start, finalNode));
+            fScore.put(start, start.distanceTo(finalNode));
             boolean hasValidDirection = false;
             TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, start);
             for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -367,9 +367,6 @@ public final class TransporterPathfinder {
                 return false;
             }
 
-            //TODO: The max search distance is what needs to be adjusted somehow if we want to fix the "bug" with some poor paths
-            // not being valid. The bigger issue is that there may be a path that fits but if there is a branch leading nowhere
-            // that is too long it then seems to break for some reason
             double maxSearchDistance = 2 * start.distanceTo(finalNode);
             while (!openSet.isEmpty()) {
                 Coord4D currentNode = null;
@@ -380,12 +377,18 @@ public final class TransporterPathfinder {
                         lowestFScore = fScore.get(node);
                     }
                 }
-                if (currentNode == null || start.distanceTo(currentNode) > maxSearchDistance) {
+                if (currentNode == null) {
+                    //If we have no current node, then exit
                     break;
                 }
-
+                //Remove the current node from unchecked and add it to checked
                 openSet.remove(currentNode);
                 closedSet.add(currentNode);
+                if (start.distanceTo(currentNode) > maxSearchDistance) {
+                    //If it is too far away for us to keep considering then continue on and see if we have another path that may be valid
+                    // Even if it currently has a bit higher of a score
+                    continue;
+                }
                 TileEntity currentNodeTile = MekanismUtils.getTileEntity(world, chunkMap, currentNode);
                 double currentScore = gScore.get(currentNode);
                 for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -396,10 +399,6 @@ public final class TransporterPathfinder {
                         double tentativeG = currentScore;
                         Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(neighborEntity,
                               Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, direction.getOpposite()));
-                        //TODO: FIXME - the score calculations are incorrect for some things so causes it to not actually even start transmitting
-                        // at least for a long transmission
-                        // Something is going on with the estimates (I believe for how it calculates the path) that if there is a potential path
-                        // that goes too far/is too long then it gives up
                         if (capability.isPresent()) {
                             tentativeG += capability.get().getCost();
                         }
@@ -410,7 +409,7 @@ public final class TransporterPathfinder {
                             navMap.put(neighbor, currentNode);
                             gScore.put(neighbor, tentativeG);
                             //Put the gScore plus estimate in the final score
-                            fScore.put(neighbor, tentativeG + getEstimate(neighbor, finalNode));
+                            fScore.put(neighbor, tentativeG + neighbor.distanceTo(finalNode));
                             openSet.add(neighbor);
                         }
                     } else if (neighbor.equals(finalNode) && destChecker.isValid(transportStack, direction, neighborEntity)) {
@@ -452,10 +451,6 @@ public final class TransporterPathfinder {
 
         public Direction getSide() {
             return side;
-        }
-
-        private double getEstimate(Coord4D start, Coord4D target2) {
-            return start.distanceTo(target2);
         }
 
         public static class DestChecker {
