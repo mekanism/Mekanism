@@ -1,8 +1,10 @@
 package mekanism.common.transmitters.grid;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -17,6 +19,7 @@ import mekanism.common.util.PipeUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fluids.FluidStack;
@@ -107,12 +110,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
         Set<FluidHandlerTarget> availableAcceptors = new HashSet<>();
         int totalHandlers = 0;
+        Map<Long, IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
         for (Coord4D coord : possibleAcceptors) {
             EnumSet<Direction> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), coord.getPos());
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), chunkMap, coord);
             if (tile == null) {
                 continue;
             }

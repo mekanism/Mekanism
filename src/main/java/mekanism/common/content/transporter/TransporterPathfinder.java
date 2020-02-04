@@ -40,10 +40,11 @@ public final class TransporterPathfinder {
         if (network == null) {
             return Collections.emptyList();
         }
-        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack);
+        Map<Long, IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+        List<AcceptorData> acceptors = network.calculateAcceptors(request, stack, chunkMap);
         List<Destination> paths = new ArrayList<>();
         for (AcceptorData data : acceptors) {
-            Destination path = getPath(data, start, stack, min);
+            Destination path = getPath(data, start, stack, min, chunkMap);
             if (path != null) {
                 paths.add(path);
             }
@@ -52,9 +53,9 @@ public final class TransporterPathfinder {
         return paths;
     }
 
-    private static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack) {
+    private static boolean checkPath(World world, List<Coord4D> path, TransporterStack stack, Map<Long, IChunk> chunkMap) {
         for (int i = path.size() - 1; i > 0; i--) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, path.get(i).getPos());
+            TileEntity tile = MekanismUtils.getTileEntity(world, chunkMap, path.get(i).getPos());
             Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null));
             if (capability.isPresent()) {
                 ILogisticalTransporter transporter = capability.get();
@@ -68,20 +69,20 @@ public final class TransporterPathfinder {
         return true;
     }
 
-    private static Destination getPath(AcceptorData data, ILogisticalTransporter start, TransporterStack stack, int min) {
+    private static Destination getPath(AcceptorData data, ILogisticalTransporter start, TransporterStack stack, int min, Map<Long, IChunk> chunkMap) {
         TransitResponse response = data.getResponse();
         if (response.getSendingAmount() >= min) {
             Coord4D dest = data.getLocation();
             List<Coord4D> test = PathfinderCache.getCache(start.coord(), dest, data.getSides());
-            if (test != null && checkPath(start.world(), test, stack)) {
-                return new Destination(test, false, response, 0).calculateScore(start.world());
+            if (test != null && checkPath(start.world(), test, stack, chunkMap)) {
+                return new Destination(test, false, response, 0).calculateScore(start.world(), chunkMap);
             }
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
                 public boolean isValid(TransporterStack stack, Direction dir, TileEntity tile) {
                     return InventoryUtils.canInsert(tile, stack.color, response.getStack(), dir, false);
                 }
-            }, start.world(), dest, start.coord(), stack);
+            }, start.world(), dest, start.coord(), stack, chunkMap);
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
                 PathfinderCache.addCachedPath(new PathData(start.coord(), dest, p.getSide()), path);
@@ -137,7 +138,7 @@ public final class TransporterPathfinder {
                 public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
                     return InventoryUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
                 }
-            }, start.world(), stack.homeLocation, start.coord(), stack);
+            }, start.world(), stack.homeLocation, start.coord(), stack, new Long2ObjectOpenHashMap<>());
             List<Coord4D> path = p.getPath();
             if (path.size() >= 2) {
                 return Pair.of(path, Path.HOME);
@@ -263,11 +264,10 @@ public final class TransporterPathfinder {
             return this;
         }
 
-        public Destination calculateScore(World world) {
+        public Destination calculateScore(World world, Map<Long, IChunk> chunkMap) {
             score = 0;
-            //TODO: Would we benefit from caching a chunkMap here, or maybe in the getPath as a whole?
             for (Coord4D location : path) {
-                CapabilityUtils.getCapability(MekanismUtils.getTileEntity(world, location.getPos()), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null)
+                CapabilityUtils.getCapability(MekanismUtils.getTileEntity(world, chunkMap, location.getPos()), Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null)
                       .ifPresent(transporter -> score += transporter.getCost());
             }
             return this;
@@ -323,7 +323,7 @@ public final class TransporterPathfinder {
         private List<Coord4D> results;
         private World world;
 
-        public Pathfinder(DestChecker checker, World world, Coord4D finishObj, Coord4D startObj, TransporterStack stack) {
+        public Pathfinder(DestChecker checker, World world, Coord4D finishObj, Coord4D startObj, TransporterStack stack, Map<Long, IChunk> chunkMap) {
             destChecker = checker;
             this.world = world;
 
@@ -342,16 +342,15 @@ public final class TransporterPathfinder {
 
             results = new ArrayList<>();
 
-            find(start);
+            find(chunkMap, start);
         }
 
-        public boolean find(Coord4D start) {
+        public boolean find(Map<Long, IChunk> chunkMap, Coord4D start) {
             openSet.add(start);
             gScore.put(start, 0D);
             //Note: This is gScore + estimate, but given our gScore starts at zero we just skip getting it back out
             fScore.put(start, getEstimate(start, finalNode));
             boolean hasValidDirection = false;
-            Map<Long, IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
             TileEntity startTile = MekanismUtils.getTileEntity(world, chunkMap, start);
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 Coord4D neighbor = start.offset(direction);
