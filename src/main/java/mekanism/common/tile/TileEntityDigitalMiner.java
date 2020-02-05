@@ -57,7 +57,6 @@ import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
 import mekanism.common.util.StackUtils;
-import mekanism.common.util.TransporterUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BushBlock;
@@ -274,7 +273,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                     TransitResponse response;
                     Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()));
                     if (capability.isPresent()) {
-                        response = TransporterUtils.insert(ejectTile, capability.get(), ejectMap, null, true, 0);
+                        response = capability.get().insert(ejectTile, ejectMap, null, true, 0);
                     } else {
                         response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false);
                     }

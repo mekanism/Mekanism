@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
@@ -102,6 +103,9 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             Set<Integer> deletes = new HashSet<>();
             getTileEntity().pullItems();
             Coord4D coord = coord();
+            //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
+            // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
+            // collection to occur actually causing the tick time to go up slightly.
             for (Entry<Integer, TransporterStack> entry : transit.entrySet()) {
                 int stackId = entry.getKey();
                 TransporterStack stack = entry.getValue();
@@ -128,7 +132,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                         if (next != null) {
                             if (!stack.isFinal(this)) {
                                 TileEntity tile = MekanismUtils.getTileEntity(world(), next.getPos());
-                                if (stack.canInsertToTransporter(tile, stack.getSide(this))) {
+                                if (stack.canInsertToTransporter(tile, stack.getSide(this), containingTile)) {
                                     CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, null).ifPresent(nextTile ->
                                           nextTile.entityEntering(stack, stack.progress % 100));
                                     deletes.add(stackId);
@@ -168,7 +172,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                     if (stack.isFinal(this)) {
                         tryRecalculate = checkPath(stack, Path.DEST, false) || checkPath(stack, Path.HOME, true) || stack.getPathType() == Path.NONE;
                     } else {
-                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(world(), stack.getNext(this).getPos()), stack.getSide(this));
+                        tryRecalculate = !stack.canInsertToTransporter(MekanismUtils.getTileEntity(world(), stack.getNext(this).getPos()), stack.getSide(this), containingTile);
                     }
                     if (tryRecalculate && !recalculate(stackId, stack, null)) {
                         deletes.add(stackId);
@@ -186,7 +190,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 
                 // Finally, notify clients and mark chunk for save
                 //TODO: Check
-                Mekanism.packetHandler.sendToAllTracking(msg, getTileEntity().getWorld(), coord.getPos());
+                Mekanism.packetHandler.sendToAllTracking(msg, world(), coord.getPos());
                 MekanismUtils.saveChunk(getTileEntity());
             }
         }
@@ -221,13 +225,14 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     @Override
-    public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min) {
+    public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
+        Coord4D original = Coord4D.get(outputter);
         Direction from = coord().sideDifference(original).getOpposite();
         TransporterStack stack = new TransporterStack();
         stack.originalLocation = original;
         stack.homeLocation = original;
         stack.color = color;
-        if (!stack.canInsertToTransporter(this, from)) {
+        if (!stack.canInsertToTransporter(this, from, outputter)) {
             return TransitResponse.EMPTY;
         }
         TransitResponse response = stack.recalculatePath(request, this, min);
@@ -259,7 +264,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         stack.originalLocation = Coord4D.get(outputter);
         stack.homeLocation = Coord4D.get(outputter);
         stack.color = color;
-        if (!canReceiveFrom(outputter, from) || !stack.canInsertToTransporter(this, from)) {
+        if (!canReceiveFrom(outputter, from) || !stack.canInsertToTransporter(this, from, outputter)) {
             return TransitResponse.EMPTY;
         }
         TransitResponse response = stack.recalculateRRPath(request, outputter, this, min);
@@ -317,8 +322,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     @Override
-    public boolean canConnectMutual(Direction side) {
-        return getTileEntity().canConnectMutual(side);
+    public boolean canConnectMutual(Direction side, @Nullable TileEntity cachedTile) {
+        return getTileEntity().canConnectMutual(side, cachedTile);
     }
 
     @Override

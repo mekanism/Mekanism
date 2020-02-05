@@ -233,11 +233,11 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      *
      * @return the distance to the defined Coord4D
      */
-    public int distanceTo(Coord4D obj) {
+    public double distanceTo(Coord4D obj) {
         int subX = x - obj.x;
         int subY = y - obj.y;
         int subZ = z - obj.z;
-        return (int) MathHelper.sqrt(subX * subX + subY * subY + subZ * subZ);
+        return MathHelper.sqrt(subX * subX + subY * subY + subZ * subZ);
     }
 
     /**

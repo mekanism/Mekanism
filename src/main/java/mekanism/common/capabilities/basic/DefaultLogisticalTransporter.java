@@ -1,6 +1,7 @@
 package mekanism.common.capabilities.basic;
 
 import java.util.Collection;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -28,7 +29,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public TransitResponse insert(Coord4D original, TransitRequest request, EnumColor color, boolean doEmit, int min) {
+    public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
         return TransitResponse.EMPTY;
     }
 
@@ -66,7 +67,7 @@ public class DefaultLogisticalTransporter implements ILogisticalTransporter {
     }
 
     @Override
-    public boolean canConnectMutual(Direction side) {
+    public boolean canConnectMutual(Direction side, @Nullable TileEntity cachedTile) {
         return false;
     }
 

@@ -65,6 +65,8 @@ import net.minecraft.world.ILightReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -875,6 +877,56 @@ public final class MekanismUtils {
             warnedFails.add(uuid);
         }
         return ret != null ? ret : "<???>";
+    }
+
+    /**
+     * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
+     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+     *
+     * @param world    - world
+     * @param chunkMap - cached chunk ma
+     * @param coord    - coordinates
+     *
+     * @return tile entity if found, null if either not found or not loaded
+     */
+    @Nullable
+    @Contract("null, _, _ -> null")
+    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull Coord4D coord) {
+        return getTileEntity(world, chunkMap, coord.getPos());
+    }
+
+    /**
+     * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
+     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+     *
+     * @param world    - world
+     * @param chunkMap - cached chunk ma
+     * @param pos      - position
+     *
+     * @return tile entity if found, null if either not found or not loaded
+     */
+    @Nullable
+    @Contract("null, _, _ -> null")
+    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull BlockPos pos) {
+        if (world == null) {
+            //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
+            return null;
+        }
+        int chunkX = pos.getX() >> 4;
+        int chunkZ = pos.getZ() >> 4;
+        long combinedChunk = (((long) chunkX) << 32) | (chunkZ & 0xFFFFFFFFL);
+        //We get the chunk rather than the world so we can cache the chunk improving the overall
+        // performance for retrieving a bunch of chunks in the general vicinity
+        IChunk chunk = chunkMap.get(combinedChunk);
+        if (chunk == null) {
+            //Get the chunk but don't force load it
+            chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
+            if (chunk != null) {
+                chunkMap.put(combinedChunk, chunk);
+            }
+        }
+        //Get the tile entity using the chunk we found/had cached
+        return getTileEntity(chunk, pos);
     }
 
     /**

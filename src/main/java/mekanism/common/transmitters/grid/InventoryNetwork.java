@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.transmitters.DynamicNetwork;
@@ -17,6 +18,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.chunk.IChunk;
 
 public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwork, Void> {
 
@@ -33,7 +35,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
         register();
     }
 
-    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack) {
+    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Map<Long, IChunk> chunkMap) {
         List<AcceptorData> toReturn = new ArrayList<>();
         for (Coord4D coord : possibleAcceptors) {
             if (coord == null || coord.equals(stack.homeLocation)) {
@@ -43,7 +45,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
             if (sides == null || sides.isEmpty()) {
                 continue;
             }
-            TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), coord.getPos());
+            TileEntity acceptor = MekanismUtils.getTileEntity(getWorld(), chunkMap, coord);
             if (acceptor == null) {
                 continue;
             }
