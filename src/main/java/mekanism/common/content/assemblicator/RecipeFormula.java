@@ -1,6 +1,7 @@
 package mekanism.common.content.assemblicator;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.util.MekanismUtils;
@@ -70,8 +71,8 @@ public class RecipeFormula {
         return false;
     }
 
-    public List<Integer> getIngredientIndices(World world, ItemStack stack) {
-        List<Integer> ret = new ArrayList<>();
+    public IntList getIngredientIndices(World world, ItemStack stack) {
+        IntList ret = new IntArrayList();
         for (int i = 0; i < 9; i++) {
             dummy.setInventorySlotContents(i, stack);
             if (recipe.matches(dummy, world)) {

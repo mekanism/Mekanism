@@ -1,10 +1,9 @@
 package mekanism.common.transmitters;
 
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
-import it.unimi.dsi.fastutil.ints.AbstractIntSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.IntConsumer;
@@ -46,7 +45,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 
     private EnumColor color;
 
-    private AbstractInt2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
+    private Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
 
     public TransporterImpl(TileEntityLogisticalTransporter multiPart) {
         super(multiPart);
@@ -101,7 +100,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 stack.progress = Math.min(100, stack.progress + getTileEntity().tier.getSpeed());
             }
         } else if (getTransmitterNetwork() != null) {
-            AbstractIntSet deletes = new IntOpenHashSet();
+            IntSet deletes = new IntOpenHashSet();
             getTileEntity().pullItems();
             Coord4D coord = coord();
             //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we

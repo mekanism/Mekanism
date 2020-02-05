@@ -1,6 +1,6 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.AbstractLong2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
@@ -110,7 +110,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
         Set<FluidHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
-        AbstractLong2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
         for (Coord4D coord : possibleAcceptors) {
             EnumSet<Direction> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {

@@ -1,6 +1,6 @@
 package mekanism.client.render;
 
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ public final class FluidRenderer {
 
     private static final int BLOCK_STAGES = 1000;
 
-    private static Map<RenderData, AbstractInt2ObjectMap<Model3D>> cachedCenterFluids = new Object2ObjectOpenHashMap<>();
+    private static Map<RenderData, Int2ObjectMap<Model3D>> cachedCenterFluids = new Object2ObjectOpenHashMap<>();
     private static Map<ValveRenderData, Model3D> cachedValveFluids = new Object2ObjectOpenHashMap<>();
 
     public static Model3D getFluidModel(RenderData data, double fluidScale) {
@@ -30,7 +30,7 @@ public final class FluidRenderer {
         } else {
             stage = Math.min(maxStages, (int) (fluidScale * maxStages));
         }
-        AbstractInt2ObjectMap<Model3D> cachedCenter;
+        Int2ObjectMap<Model3D> cachedCenter;
         if (cachedCenterFluids.containsKey(data)) {
             cachedCenter = cachedCenterFluids.get(data);
             if (cachedCenter.containsKey(stage)) {

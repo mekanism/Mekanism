@@ -1,6 +1,6 @@
 package mekanism.common.transmitters.grid;
 
-import it.unimi.dsi.fastutil.longs.AbstractLong2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -35,7 +35,7 @@ public class InventoryNetwork extends DynamicNetwork<TileEntity, InventoryNetwor
         register();
     }
 
-    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, AbstractLong2ObjectMap<IChunk> chunkMap) {
+    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<IChunk> chunkMap) {
         List<AcceptorData> toReturn = new ArrayList<>();
         for (Coord4D coord : possibleAcceptors) {
             if (coord == null || coord.equals(stack.homeLocation)) {

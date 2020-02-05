@@ -1,7 +1,7 @@
 package mekanism.common.tile.transmitter;
 
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
-import java.util.Set;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
@@ -74,7 +74,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     @Override
-    public TileNetworkList makeBatchPacket(AbstractInt2ObjectMap<TransporterStack> updates, Set<Integer> deletes) {
+    public TileNetworkList makeBatchPacket(Int2ObjectMap<TransporterStack> updates, IntSet deletes) {
         return addModes(super.makeBatchPacket(updates, deletes));
     }
 

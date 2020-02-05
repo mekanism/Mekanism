@@ -1,6 +1,6 @@
 package mekanism.common.content.miner;
 
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.BitSet;
@@ -31,7 +31,7 @@ public class ThreadMinerSearch extends Thread {
     public State state = State.IDLE;
 
     private Map<Chunk3D, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
-    private AbstractInt2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
+    private Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private Map<Block, MinerFilter<?>> acceptedItems = new Object2ObjectOpenHashMap<>();
     private DimensionType dimensionType;
     private Region chunkCache;

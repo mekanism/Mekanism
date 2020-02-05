@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -32,7 +31,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final double height = 0.45;
     private static final double offset = 0.015;
     //TODO: this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support. 6 is used for null side
-    private static Int2ObjectMap<FluidRenderMap<AbstractInt2ObjectMap<Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(7);
+    private static Int2ObjectMap<FluidRenderMap<Int2ObjectMap<Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(7);
 
     public RenderMechanicalPipe(TileEntityRendererDispatcher renderer) {
         super(renderer);
@@ -108,7 +107,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             return null;
         }
         int sideOrdinal = side != null ? side.ordinal() : 6;
-        FluidRenderMap<AbstractInt2ObjectMap<Model3D>> cachedFluids;
+        FluidRenderMap<Int2ObjectMap<Model3D>> cachedFluids;
         if (cachedLiquids.containsKey(sideOrdinal)) {
             cachedFluids = cachedLiquids.get(sideOrdinal);
             if (cachedFluids.containsKey(fluid) && cachedFluids.get(fluid).containsKey(stage)) {
@@ -193,7 +192,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (cachedFluids.containsKey(fluid)) {
             cachedFluids.get(fluid).put(stage, model);
         } else {
-            AbstractInt2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
+            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
             map.put(stage, model);
             cachedFluids.put(fluid, map);
         }

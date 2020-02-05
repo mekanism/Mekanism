@@ -1,6 +1,6 @@
 package mekanism.common.content.boiler;
 
-import it.unimi.dsi.fastutil.objects.AbstractObject2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer {
 
-    public static AbstractObject2BooleanMap<String> clientHotMap = new Object2BooleanOpenHashMap<>();
+    public static Object2BooleanMap<String> clientHotMap = new Object2BooleanOpenHashMap<>();
 
     public static double CASING_INSULATION_COEFFICIENT = 1;
     public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;

@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -128,14 +129,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                         return true;
                     }
                     //TODO: CLEAN THIS UP/FIX as some of this logic should probably be elsewhere
-                    List<Integer> indices = formula.getIngredientIndices(world, stack);
-                    if (indices.size() > 0) {
+                    IntList indices = formula.getIngredientIndices(world, stack);
+                    if (!indices.isEmpty()) {
                         if (stockControl) {
                             int filled = 0;
                             for (IInventorySlot stockSlot : inputSlots) {
                                 if (!stockSlot.isEmpty()) {
                                     //TODO: Does this need to copy the stack?
-                                    if (formula.isIngredientInPos(world, stockSlot.getStack(), indices.get(0))) {
+                                    if (formula.isIngredientInPos(world, stockSlot.getStack(), indices.getInt(0))) {
                                         filled++;
                                     }
                                 }

@@ -1,8 +1,8 @@
 package mekanism.common.command;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Set;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import net.minecraft.command.CommandSource;
@@ -17,7 +17,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class ChunkCommand {
 
-    private static Set<Long> chunkWatchers = new ObjectOpenHashSet<>();
+    private static LongSet chunkWatchers = new LongOpenHashSet();
 
     static ArgumentBuilder<CommandSource, ?> register() {
         MinecraftForge.EVENT_BUS.register(ChunkCommand.class);

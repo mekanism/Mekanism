@@ -2,7 +2,7 @@ package mekanism.client.render.obj;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class TransmitterBakedModel implements IBakedModel {
     private final ResourceLocation modelLocation;
     private final IBakedModel bakedVariant;
 
-    private AbstractInt2ObjectMap<List<BakedQuad>> modelCache = new Int2ObjectOpenHashMap<>();
+    private Int2ObjectMap<List<BakedQuad>> modelCache = new Int2ObjectOpenHashMap<>();
 
     public TransmitterBakedModel(OBJModel internal, @Nullable OBJModel glass, IModelConfiguration owner, ModelBakery bakery,
           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {

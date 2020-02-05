@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -92,7 +92,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
       ITileFilterHolder<MinerFilter<?>> {
 
     public Map<Chunk3D, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
-    public AbstractInt2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
+    public Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 

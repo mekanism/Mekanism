@@ -1,7 +1,7 @@
 package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import javax.annotation.Nonnull;
 import mekanism.client.model.ModelFluidTank;
@@ -27,7 +27,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
     public static ItemLayerWrapper model;
 
     private static ModelFluidTank fluidTank = new ModelFluidTank();
-    private static FluidRenderMap<AbstractInt2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
+    private static FluidRenderMap<Int2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
     private static int stages = 1400;
 
     public static void resetCachedModels() {
@@ -96,7 +96,7 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
         if (cachedCenterFluids.containsKey(fluid)) {
             cachedCenterFluids.get(fluid).put(stage, model);
         } else {
-            AbstractInt2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
+            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
             map.put(stage, model);
             cachedCenterFluids.put(fluid, map);
         }

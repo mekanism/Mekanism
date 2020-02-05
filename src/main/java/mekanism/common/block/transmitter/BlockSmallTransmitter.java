@@ -1,6 +1,6 @@
 package mekanism.common.block.transmitter;
 
-import it.unimi.dsi.fastutil.bytes.AbstractByte2ObjectMap;
+import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.EnumUtils;
@@ -16,7 +16,7 @@ import net.minecraft.world.IBlockReader;
 
 public abstract class BlockSmallTransmitter extends BlockTransmitter {
 
-    private static final AbstractByte2ObjectMap<VoxelShape> cachedShapes = new Byte2ObjectOpenHashMap<>();
+    private static final Byte2ObjectMap<VoxelShape> cachedShapes = new Byte2ObjectOpenHashMap<>();
     private static final VoxelShape center;
     public static AxisAlignedBB[] smallSides = new AxisAlignedBB[7];
 

@@ -3,8 +3,8 @@ package mekanism.client.gui.element;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.ArrayList;
-import java.util.List;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiGraph extends GuiTexturedElement {
 
-    private final List<Integer> graphData = new ArrayList<>();
+    private final IntList graphData = new IntArrayList();
     private final GraphDataHandler dataHandler;
 
     private int currentScale = 10;
@@ -34,7 +34,7 @@ public class GuiGraph extends GuiTexturedElement {
 
     public void addData(int data) {
         if (graphData.size() == width) {
-            graphData.remove(0);
+            graphData.removeInt(0);
         }
 
         graphData.add(data);
@@ -77,8 +77,9 @@ public class GuiGraph extends GuiTexturedElement {
     }
 
     public void drawGraph() {
-        for (int i = 0; i < graphData.size(); i++) {
-            int data = Math.min(currentScale, graphData.get(i));
+        int size = graphData.size();
+        for (int i = 0; i < size; i++) {
+            int data = Math.min(currentScale, graphData.getInt(i));
             int relativeHeight = (int) (((double) data / (double) currentScale) * height);
             guiObj.drawModalRectWithCustomSizedTexture(x + i, y + (height - relativeHeight), 10, 0, 1, 1, 12, 10);
 
@@ -89,7 +90,7 @@ public class GuiGraph extends GuiTexturedElement {
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
             for (int iter = 0; iter < displays; iter++) {
-                RenderSystem.color4f(1, 1, 1, 0.2F + (0.8F * ((float) i / (float) graphData.size())));
+                RenderSystem.color4f(1, 1, 1, 0.2F + (0.8F * ((float) i / (float) size)));
                 int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
                 guiObj.drawModalRectWithCustomSizedTexture(x + i, y + (height - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height, 12, 10);
             }

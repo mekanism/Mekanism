@@ -1,6 +1,6 @@
 package mekanism.generators.common.content.turbine;
 
-import it.unimi.dsi.fastutil.objects.AbstractObject2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -11,7 +11,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbineData> {
 
     public static final float ROTATION_THRESHOLD = 0.001F;
-    public static AbstractObject2FloatMap<String> clientRotationMap = new Object2FloatOpenHashMap<>();
+    public static Object2FloatMap<String> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     @Nonnull
     public FluidStack fluidStored = FluidStack.EMPTY;

@@ -1,10 +1,10 @@
 package mekanism.common.content.transporter;
 
-import it.unimi.dsi.fastutil.ints.AbstractInt2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -76,7 +76,7 @@ public class TransporterManager {
             // how the inventory would look after the insertion
 
             // Number of items in the destination
-            int destCount = inventoryInfo.stackSizes.get(i);
+            int destCount = inventoryInfo.stackSizes.getInt(i);
 
             // If the destination isn't empty and not stackable, move along
             if (destCount > 0 && !InventoryUtils.areItemsStackable(inventoryInfo.inventory.get(i), stack)) {
@@ -175,7 +175,7 @@ public class TransporterManager {
         // Now for each of the items in the request, simulate the insert, using the state from all the in-flight
         // items to ensure we have an accurate model of what will happen in future. We try each stack in the
         // request; it might be possible to not send the first item, but the second could work, etc.
-        for (Entry<HashedItem, Pair<Integer, AbstractInt2IntMap>> requestEntry : request.getItemMap().entrySet()) {
+        for (Entry<HashedItem, Pair<Integer, Int2IntMap>> requestEntry : request.getItemMap().entrySet()) {
             // Create a sending ItemStack with the hashed item type and total item count within the request
             ItemStack stack = requestEntry.getKey().getStack();
             int numToSend = requestEntry.getValue().getLeft();
@@ -196,7 +196,7 @@ public class TransporterManager {
     private static class InventoryInfo {
 
         public NonNullList<ItemStack> inventory;
-        public List<Integer> stackSizes = new ArrayList<>();
+        public IntList stackSizes = new IntArrayList();
 
         public InventoryInfo(IItemHandler handler) {
             inventory = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);

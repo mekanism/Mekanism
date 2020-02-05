@@ -1,6 +1,5 @@
 package mekanism.common.content.transporter;
 
-import it.unimi.dsi.fastutil.ints.AbstractInt2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import mekanism.common.Mekanism;
@@ -29,7 +28,7 @@ public final class InvStack {
      * A map associating the slot IDs in consideration to the amount of items in those slots we care about. Note that the associated item counts may not be the full count
      * of items in the actual inventory slots.
      */
-    private AbstractInt2IntMap itemMap = new Int2IntOpenHashMap();
+    private Int2IntMap itemMap = new Int2IntOpenHashMap();
 
     /** The item type of this InvStack. Will be null until we have an insertion via appendStack. */
     private HashedItem itemType;
@@ -46,7 +45,7 @@ public final class InvStack {
         this(inv, stack, getMap(slotID, stack), facing);
     }
 
-    public InvStack(TileEntity inv, ItemStack stack, AbstractInt2IntMap idMap, Direction facing) {
+    public InvStack(TileEntity inv, ItemStack stack, Int2IntMap idMap, Direction facing) {
         tile = inv;
         side = facing;
         itemMap = idMap;
@@ -115,8 +114,8 @@ public final class InvStack {
         use(getStack().getCount());
     }
 
-    private static AbstractInt2IntMap getMap(int slotID, ItemStack stack) {
-        AbstractInt2IntMap map = new Int2IntOpenHashMap();
+    private static Int2IntMap getMap(int slotID, ItemStack stack) {
+        Int2IntMap map = new Int2IntOpenHashMap();
         map.put(slotID, stack.getCount());
         return map;
     }
