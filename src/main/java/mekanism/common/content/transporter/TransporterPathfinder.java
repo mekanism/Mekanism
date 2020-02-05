@@ -1,11 +1,12 @@
 package mekanism.common.content.transporter;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -103,7 +104,7 @@ public final class TransporterPathfinder {
 
     public static Destination getNewRRPath(ILogisticalTransporter start, TransporterStack stack, TransitRequest request, TileEntityLogisticalSorter outputter, int min) {
         List<Destination> paths = getPaths(start, stack, request, min);
-        Map<Coord4D, Destination> destPaths = new HashMap<>();
+        Map<Coord4D, Destination> destPaths = new Object2ObjectOpenHashMap<>();
         for (Destination d : paths) {
             Coord4D dest = d.getPath().get(0);
             Destination destination = destPaths.get(dest);
@@ -312,7 +313,7 @@ public final class TransporterPathfinder {
 
         private final Set<Coord4D> openSet, closedSet;
         private final Map<Coord4D, Coord4D> navMap;
-        private final Map<Coord4D, Double> gScore, fScore;
+        private final Object2DoubleOpenHashMap<Coord4D> gScore, fScore;
         private final Coord4D start;
         private final Coord4D finalNode;
         private final TransporterStack transportStack;
@@ -332,13 +333,13 @@ public final class TransporterPathfinder {
 
             transportStack = stack;
 
-            openSet = new HashSet<>();
-            closedSet = new HashSet<>();
+            openSet = new ObjectOpenHashSet<>();
+            closedSet = new ObjectOpenHashSet<>();
 
-            navMap = new HashMap<>();
+            navMap = new Object2ObjectOpenHashMap<>();
 
-            gScore = new HashMap<>();
-            fScore = new HashMap<>();
+            gScore = new Object2DoubleOpenHashMap<>();
+            fScore = new Object2DoubleOpenHashMap<>();
 
             results = new ArrayList<>();
 
@@ -374,9 +375,9 @@ public final class TransporterPathfinder {
                 Coord4D currentNode = null;
                 double lowestFScore = 0;
                 for (Coord4D node : openSet) {
-                    if (currentNode == null || fScore.get(node) < lowestFScore) {
+                    if (currentNode == null || fScore.getDouble(node) < lowestFScore) {
                         currentNode = node;
-                        lowestFScore = fScore.get(node);
+                        lowestFScore = fScore.getDouble(node);
                     }
                 }
                 if (currentNode == null) {
@@ -392,7 +393,7 @@ public final class TransporterPathfinder {
                     continue;
                 }
                 TileEntity currentNodeTile = MekanismUtils.getTileEntity(world, chunkMap, currentNode);
-                double currentScore = gScore.get(currentNode);
+                double currentScore = gScore.getDouble(currentNode);
                 for (Direction direction : EnumUtils.DIRECTIONS) {
                     Coord4D neighbor = currentNode.offset(direction);
                     TileEntity neighborEntity = MekanismUtils.getTileEntity(world, chunkMap, neighbor);
@@ -404,10 +405,10 @@ public final class TransporterPathfinder {
                         if (capability.isPresent()) {
                             tentativeG += capability.get().getCost();
                         }
-                        if (closedSet.contains(neighbor) && tentativeG >= gScore.get(neighbor)) {
+                        if (closedSet.contains(neighbor) && tentativeG >= gScore.getDouble(neighbor)) {
                             continue;
                         }
-                        if (!openSet.contains(neighbor) || tentativeG < gScore.get(neighbor)) {
+                        if (!openSet.contains(neighbor) || tentativeG < gScore.getDouble(neighbor)) {
                             navMap.put(neighbor, currentNode);
                             gScore.put(neighbor, tentativeG);
                             //Put the gScore plus estimate in the final score
@@ -455,7 +456,7 @@ public final class TransporterPathfinder {
             if (naviMap.containsKey(currentNode)) {
                 path.addAll(reconstructPath(naviMap, naviMap.get(currentNode)));
             }
-            finalScore = gScore.get(currentNode) + currentNode.distanceTo(finalNode);
+            finalScore = gScore.getDouble(currentNode) + currentNode.distanceTo(finalNode);
             return path;
         }
 
