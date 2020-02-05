@@ -2,6 +2,7 @@ package mekanism.common.content.transporter;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class TransitRequest {
     public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int amount, Finder finder) {
         TransitRequest ret = new TransitRequest();
         // so we can keep track of how many of each item type we have in this inventory mapping
-        Object2IntOpenHashMap<HashedItem> itemCountMap = new Object2IntOpenHashMap<>();
+        Object2IntMap<HashedItem> itemCountMap = new Object2IntOpenHashMap<>();
 
         if (!InventoryUtils.assertItemHandler("TransitRequest", tile, side.getOpposite())) {
             return ret;

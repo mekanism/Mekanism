@@ -209,7 +209,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         if (cachedOverlays.containsKey(side)) {
             cachedOverlays.get(side).put(mode, model);
         } else {
-            Int2ObjectOpenHashMap<Model3D> map = new Int2ObjectOpenHashMap<>();
+            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
             map.put(mode, model);
             cachedOverlays.put(side, map);
         }
