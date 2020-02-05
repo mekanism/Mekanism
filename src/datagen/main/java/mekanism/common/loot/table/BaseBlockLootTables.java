@@ -1,6 +1,6 @@
 package mekanism.common.loot.table;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
@@ -35,7 +35,7 @@ import net.minecraftforge.items.IItemHandler;
 
 public abstract class BaseBlockLootTables extends BlockLootTables {
 
-    private Set<Block> knownBlocks = new HashSet<>();
+    private Set<Block> knownBlocks = new ObjectOpenHashSet<>();
 
     @Override
     protected abstract void addTables();

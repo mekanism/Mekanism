@@ -1,9 +1,9 @@
 package mekanism.common;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.ints.AbstractIntSet;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
-import java.util.Set;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class KeySync {
@@ -11,7 +11,7 @@ public class KeySync {
     public static int ASCEND = 0;
     public static int DESCEND = 1;
 
-    public Map<PlayerEntity, KeySet> keys = new HashMap<>();
+    public Map<PlayerEntity, KeySet> keys = new Object2ObjectOpenHashMap<>();
 
     public KeySet getPlayerKeys(PlayerEntity player) {
         return keys.get(player);
@@ -49,7 +49,7 @@ public class KeySync {
 
     public static class KeySet {
 
-        public Set<Integer> keysActive = new HashSet<>();
+        public AbstractIntSet keysActive = new IntOpenHashSet();
 
         public KeySet(int key) {
             keysActive.add(key);

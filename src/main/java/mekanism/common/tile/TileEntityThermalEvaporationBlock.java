@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import mekanism.api.Coord4D;
@@ -126,7 +126,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
 
         public TileEntityThermalEvaporationController found;
 
-        public Set<BlockPos> iterated = new HashSet<>();
+        public Set<BlockPos> iterated = new ObjectOpenHashSet<>();
 
         private Deque<BlockPos> checkQueue = new LinkedList<>();
 

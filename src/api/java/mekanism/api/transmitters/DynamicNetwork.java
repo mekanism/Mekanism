@@ -1,11 +1,11 @@
 package mekanism.api.transmitters;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -29,13 +29,13 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
      */
     private static final Direction[] DIRECTIONS = Direction.values();
 
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new HashSet<>();
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new HashSet<>();
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = new HashSet<>();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectOpenHashSet<>();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = new ObjectOpenHashSet<>();
 
-    protected Set<Coord4D> possibleAcceptors = new HashSet<>();
-    protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new HashMap<>();
-    protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new HashMap<>();
+    protected Set<Coord4D> possibleAcceptors = new ObjectOpenHashSet<>();
+    protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
+    protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
     protected Range4D packetRange = null;
     protected int capacity = 0;
     protected double doubleCapacity = 0;
@@ -44,7 +44,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected boolean firstUpdate = true;
     @Nullable
     protected World world = null;
-    private Set<DelayQueue> updateQueue = new LinkedHashSet<>();
+    private Set<DelayQueue> updateQueue = new ObjectLinkedOpenHashSet<>();
 
     public void addNewTransmitters(Collection<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> newTransmitters) {
         transmittersToAdd.addAll(newTransmitters);

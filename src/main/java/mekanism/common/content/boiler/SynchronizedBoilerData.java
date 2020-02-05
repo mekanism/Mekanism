@@ -1,8 +1,8 @@
 package mekanism.common.content.boiler;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import it.unimi.dsi.fastutil.objects.AbstractObject2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer {
 
-    public static Map<String, Boolean> clientHotMap = new HashMap<>();
+    public static AbstractObject2BooleanMap<String> clientHotMap = new Object2BooleanOpenHashMap<>();
 
     public static double CASING_INSULATION_COEFFICIENT = 1;
     public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
@@ -52,7 +52,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public Coord4D upperRenderLocation;
 
-    public Set<ValveData> valves = new HashSet<>();
+    public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
     /**
      * @return how much heat energy is needed to convert one unit of water into steam

@@ -1,6 +1,7 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import net.minecraft.util.math.RayTraceResult.Type;
 
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
-    private static Map<Direction, Int2ObjectOpenHashMap<Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+    private static Map<Direction, AbstractInt2ObjectMap<Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static TextureAtlasSprite gunpowderIcon;
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;

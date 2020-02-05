@@ -1,6 +1,6 @@
 package mekanism.common.frequency;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
@@ -23,7 +23,7 @@ public class Frequency {
 
     public boolean publicFreq;
 
-    public Set<Coord4D> activeCoords = new HashSet<>();
+    public Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
 
     public Frequency(String n, UUID uuid) {
         name = n;

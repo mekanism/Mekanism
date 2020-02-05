@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.IMultiblock;
@@ -66,7 +66,7 @@ public class TileEntityStructuralGlass extends TileEntity implements IStructural
 
         public IMultiblock<?> found;
 
-        public Set<Coord4D> iterated = new HashSet<>();
+        public Set<Coord4D> iterated = new ObjectOpenHashSet<>();
 
         public void loop(Coord4D pos) {
             if (iterated.size() > 2048 || found != null) {

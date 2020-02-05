@@ -1,6 +1,6 @@
 package mekanism.common.inventory.slot;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -261,7 +261,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
                     //If we have more than one tank in our item then handle calculating the different drains that will occur for filling our fluid handler
                     // We start by gathering all the fluids in the item that we are able to drain and are valid for the tank,
                     // combining same fluid types into a single fluid stack
-                    Map<FluidInfo, FluidStack> knownFluids = new HashMap<>();
+                    Map<FluidInfo, FluidStack> knownFluids = new Object2ObjectOpenHashMap<>();
                     for (int itemTank = 0; itemTank < itemTanks; itemTank++) {
                         FluidStack fluidInItem = itemFluidHandler.getFluidInTank(itemTank);
                         if (!fluidInItem.isEmpty()) {
@@ -316,7 +316,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
                 //Otherwise try handling draining out of all tanks
                 // We start by gathering all the fluids in the fluid handler that we are able to drain,
                 // combining same fluid types into a single fluid stack
-                Map<FluidInfo, FluidStack> knownFluids = new HashMap<>();
+                Map<FluidInfo, FluidStack> knownFluids = new Object2ObjectOpenHashMap<>();
                 for (int tank = 0; tank < tanks; tank++) {
                     FluidStack fluidInTank = fluidHandler.getFluidInTank(tank);
                     if (!fluidInTank.isEmpty()) {
@@ -474,7 +474,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
                     //If we have more than one tank in our item then handle calculating the different drains that will occur for filling our fluid handler
                     // We start by gathering all the fluids in the item that we are able to drain and are valid for the tank,
                     // combining same fluid types into a single fluid stack
-                    Map<FluidInfo, FluidStack> knownFluids = new HashMap<>();
+                    Map<FluidInfo, FluidStack> knownFluids = new Object2ObjectOpenHashMap<>();
                     for (int tank = 0; tank < tanks; tank++) {
                         FluidStack fluidInItem = itemFluidHandler.getFluidInTank(tank);
                         if (!fluidInItem.isEmpty()) {

@@ -1,16 +1,17 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -90,10 +91,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock,
       ITileFilterHolder<MinerFilter<?>> {
 
-    private static final int[] INV_SLOTS = IntStream.range(0, 28).toArray();
-
-    public Map<Chunk3D, BitSet> oresToMine = new HashMap<>();
-    public Map<Integer, MinerFilter<?>> replaceMap = new HashMap<>();
+    public Map<Chunk3D, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
+    public AbstractInt2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
@@ -166,7 +165,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     @Override
     public void onUpdate() {
         if (getActive()) {
-            for (PlayerEntity player : new HashSet<>(playersUsing)) {
+            for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
                 if (player.openContainer instanceof IEmptyContainer || player.openContainer instanceof FilterContainer) {
                     player.closeScreen();
                 }
@@ -959,7 +958,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new HashMap<>();
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("radius", "radius");
         remap.put("minY", "minY");
         remap.put("maxY", "maxY");

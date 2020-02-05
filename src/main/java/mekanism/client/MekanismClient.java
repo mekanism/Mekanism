@@ -1,6 +1,6 @@
 package mekanism.client;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.common.Mekanism;
@@ -14,8 +14,8 @@ import net.minecraft.client.settings.KeyBinding;
 //TODO: Figure out why this extends Mekanism, given it only adds static methods
 public class MekanismClient {
 
-    public static Map<UUID, SecurityData> clientSecurityMap = new HashMap<>();
-    public static Map<UUID, String> clientUUIDMap = new HashMap<>();
+    public static Map<UUID, SecurityData> clientSecurityMap = new Object2ObjectOpenHashMap<>();
+    public static Map<UUID, String> clientUUIDMap = new Object2ObjectOpenHashMap<>();
 
     public static long ticksPassed = 0;
 

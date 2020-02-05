@@ -1,6 +1,6 @@
 package mekanism.generators.common.tile.reactor;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.providers.IBlockProvider;
@@ -106,7 +106,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
 
         public TileEntityReactorController found;
 
-        public Set<Coord4D> iterated = new HashSet<>();
+        public Set<Coord4D> iterated = new ObjectOpenHashSet<>();
 
         public void loop(Coord4D pos) {
             if (iterated.size() > 512 || found != null) {

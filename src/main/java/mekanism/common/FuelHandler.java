@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
@@ -11,8 +11,8 @@ import net.minecraft.tags.Tag;
 public class FuelHandler {
 
     public static final FuelGas EMPTY_FUEL = new FuelGas(0, 0);
-    private static Map<Tag<Gas>, FuelGas> tagFuels = new HashMap<>();
-    private static Map<Gas, FuelGas> fuels = new HashMap<>();
+    private static Map<Tag<Gas>, FuelGas> tagFuels = new Object2ObjectOpenHashMap<>();
+    private static Map<Gas, FuelGas> fuels = new Object2ObjectOpenHashMap<>();
 
     public static void addGas(Tag<Gas> gasTag, int burnTicks, double energyPerMilliBucket) {
         tagFuels.put(gasTag, new FuelGas(burnTicks, energyPerMilliBucket));

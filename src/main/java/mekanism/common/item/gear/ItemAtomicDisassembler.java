@@ -1,9 +1,9 @@
 package mekanism.common.item.gear;
 
 import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -389,7 +389,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     public static class Finder {
 
-        public static Map<Block, List<Block>> ignoreBlocks = new HashMap<>();
+        public static Map<Block, List<Block>> ignoreBlocks = new Object2ObjectOpenHashMap<>();
 
         static {
             ignoreBlocks.put(Blocks.REDSTONE_ORE, Collections.singletonList(Blocks.REDSTONE_ORE));
@@ -399,7 +399,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         public final World world;
         public final ItemStack stack;
         public final Coord4D location;
-        public final Set<Coord4D> found = new HashSet<>();
+        public final Set<Coord4D> found = new ObjectOpenHashSet<>();
         private final RayTraceResult rayTraceResult;
         private final Block startBlock;
         private final boolean isWood;

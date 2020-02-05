@@ -1,7 +1,7 @@
 package mekanism.common.network;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -157,7 +157,7 @@ public class PacketTransmitterUpdate {
         PacketTransmitterUpdate packet = new PacketTransmitterUpdate(buf.readEnumValue(PacketType.class), Coord4D.read(buf));
         if (packet.packetType == PacketType.UPDATE) {
             packet.newNetwork = buf.readBoolean();
-            packet.transmitterCoords = new HashSet<>();
+            packet.transmitterCoords = new ObjectOpenHashSet<>();
             int numTransmitters = buf.readInt();
 
             for (int i = 0; i < numTransmitters; i++) {

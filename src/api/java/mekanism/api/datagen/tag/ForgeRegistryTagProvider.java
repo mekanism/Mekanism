@@ -2,11 +2,11 @@ package mekanism.api.datagen.tag;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -29,7 +29,7 @@ public abstract class ForgeRegistryTagProvider<TYPE extends IForgeRegistryEntry<
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     protected final DataGenerator gen;
-    private final Map<Tag<TYPE>, Tag.Builder<TYPE>> tagToBuilder = new LinkedHashMap<>();
+    private final Map<Tag<TYPE>, Tag.Builder<TYPE>> tagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
     private final IForgeRegistry<TYPE> registry;
     protected final String modid;
 

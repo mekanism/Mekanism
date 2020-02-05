@@ -1,8 +1,8 @@
 package mekanism.client.sound;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import it.unimi.dsi.fastutil.longs.AbstractLong2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
@@ -53,11 +53,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  */
 public class SoundHandler {
 
-    private static Set<UUID> jetpackSounds = new HashSet<>();
-    private static Set<UUID> gasmaskSounds = new HashSet<>();
-    private static Set<UUID> flamethrowerSounds = new HashSet<>();
+    private static Set<UUID> jetpackSounds = new ObjectOpenHashSet<>();
+    private static Set<UUID> gasmaskSounds = new ObjectOpenHashSet<>();
+    private static Set<UUID> flamethrowerSounds = new ObjectOpenHashSet<>();
 
-    private static Map<Long, ISound> soundMap = new HashMap<>();
+    private static AbstractLong2ObjectMap<ISound> soundMap = new Long2ObjectOpenHashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;
     private static SoundEngine soundEngine;
 

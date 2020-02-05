@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -72,7 +72,7 @@ public class ItemNetworkReader extends ItemEnergized {
                         player.sendMessage(MekanismLang.NETWORK_READER_ABOVE_AMBIENT.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transfer.getTemp()));
                         player.sendMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE, "[=======]"));
                     } else {
-                        Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new HashSet<>();
+                        Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new ObjectOpenHashSet<>();
                         for (Direction iterSide : EnumUtils.DIRECTIONS) {
                             Coord4D coord = tileCoord.offset(iterSide);
                             TileEntity tile = MekanismUtils.getTileEntity(world, coord.getPos());

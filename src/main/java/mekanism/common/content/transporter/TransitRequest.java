@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import it.unimi.dsi.fastutil.ints.AbstractInt2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -19,7 +20,7 @@ public class TransitRequest {
     /**
      * Complicated map- associates item types with both total available item count and slot IDs and available item amounts for each slot.
      */
-    private Map<HashedItem, Pair<Integer, Int2IntOpenHashMap>> itemMap = new Object2ObjectOpenHashMap<>();
+    private Map<HashedItem, Pair<Integer, AbstractInt2IntMap>> itemMap = new Object2ObjectOpenHashMap<>();
 
     public static TransitRequest getFromTransport(TransporterStack stack) {
         return getFromStack(stack.itemStack);
@@ -76,7 +77,7 @@ public class TransitRequest {
         return ret;
     }
 
-    public Map<HashedItem, Pair<Integer, Int2IntOpenHashMap>> getItemMap() {
+    public Map<HashedItem, Pair<Integer, AbstractInt2IntMap>> getItemMap() {
         return itemMap;
     }
 
@@ -87,13 +88,13 @@ public class TransitRequest {
     public void addItem(ItemStack stack, int slot) {
         HashedItem hashed = new HashedItem(stack);
         if (!itemMap.containsKey(hashed)) {
-            Int2IntOpenHashMap slotMap = new Int2IntOpenHashMap();
+            AbstractInt2IntMap slotMap = new Int2IntOpenHashMap();
             slotMap.put(slot, stack.getCount());
             itemMap.put(hashed, Pair.of(stack.getCount(), slotMap));
         } else {
-            Pair<Integer, Int2IntOpenHashMap> itemInfo = itemMap.get(hashed);
+            Pair<Integer, AbstractInt2IntMap> itemInfo = itemMap.get(hashed);
             int count = itemInfo.getLeft() + stack.getCount();
-            Int2IntOpenHashMap slotMap = itemInfo.getRight();
+            AbstractInt2IntMap slotMap = itemInfo.getRight();
             slotMap.put(slot, stack.getCount());
             itemMap.put(hashed, Pair.of(count, slotMap));
         }
@@ -118,13 +119,13 @@ public class TransitRequest {
         public static final TransitResponse EMPTY = new TransitResponse();
 
         /** slot ID to item count map - this details how many items we will be pulling from each slot */
-        private Int2IntOpenHashMap idMap = new Int2IntOpenHashMap();
+        private AbstractInt2IntMap idMap = new Int2IntOpenHashMap();
         private ItemStack toSend = ItemStack.EMPTY;
 
         private TransitResponse() {
         }
 
-        public TransitResponse(ItemStack i, Int2IntOpenHashMap slots) {
+        public TransitResponse(ItemStack i, AbstractInt2IntMap slots) {
             toSend = i;
 
             // generate our ID/ItemStack map based on the amount of items we're sending

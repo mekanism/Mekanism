@@ -1,6 +1,6 @@
 package mekanism.generators.common.content.turbine;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.Coord4D;
@@ -61,10 +61,10 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
         Coord4D complex = null;
 
-        Set<Coord4D> turbines = new HashSet<>();
-        Set<Coord4D> dispersers = new HashSet<>();
-        Set<Coord4D> coils = new HashSet<>();
-        Set<Coord4D> condensers = new HashSet<>();
+        Set<Coord4D> turbines = new ObjectOpenHashSet<>();
+        Set<Coord4D> dispersers = new ObjectOpenHashSet<>();
+        Set<Coord4D> coils = new ObjectOpenHashSet<>();
+        Set<Coord4D> condensers = new ObjectOpenHashSet<>();
 
         //Scan for complex
         for (Coord4D coord : innerNodes) {

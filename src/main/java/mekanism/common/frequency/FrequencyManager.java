@@ -1,8 +1,8 @@
 package mekanism.common.frequency;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -31,9 +31,9 @@ public class FrequencyManager {
 
     public static boolean loaded;
 
-    private static Set<FrequencyManager> managers = new HashSet<>();
+    private static Set<FrequencyManager> managers = new ObjectOpenHashSet<>();
 
-    private Set<Frequency> frequencies = new HashSet<>();
+    private Set<Frequency> frequencies = new ObjectOpenHashSet<>();
 
     //Note: This can be null on the client side
     @Nullable
@@ -218,7 +218,7 @@ public class FrequencyManager {
     }
 
     public Set<Frequency> readFrequencies(PacketBuffer dataStream) {
-        Set<Frequency> ret = new HashSet<>();
+        Set<Frequency> ret = new ObjectOpenHashSet<>();
         int size = dataStream.readInt();
         try {
             for (int i = 0; i < size; i++) {
@@ -266,7 +266,7 @@ public class FrequencyManager {
                     loadedOwner = UUID.fromString(nbtTags.getString("ownerUUID"));
                 }
                 ListNBT list = nbtTags.getList("freqList", NBT.TAG_COMPOUND);
-                loadedFrequencies = new HashSet<>();
+                loadedFrequencies = new ObjectOpenHashSet<>();
                 for (int i = 0; i < list.size(); i++) {
                     CompoundNBT compound = list.getCompound(i);
                     Constructor<?> c = Class.forName(frequencyClass).getConstructor(CompoundNBT.class);

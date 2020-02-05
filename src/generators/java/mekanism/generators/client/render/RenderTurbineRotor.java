@@ -33,7 +33,7 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
         float rotateSpeed = 0.0F;
 
         if (tile.getMultiblock() != null && SynchronizedTurbineData.clientRotationMap.containsKey(tile.getMultiblock())) {
-            rotateSpeed = SynchronizedTurbineData.clientRotationMap.get(tile.getMultiblock());
+            rotateSpeed = SynchronizedTurbineData.clientRotationMap.getFloat(tile.getMultiblock());
         }
 
         if (!Mekanism.proxy.isPaused()) {

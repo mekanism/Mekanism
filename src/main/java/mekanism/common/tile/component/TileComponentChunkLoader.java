@@ -1,7 +1,7 @@
 package mekanism.common.tile.component;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -38,7 +38,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
      */
     private T tile;
 
-    private Set<ChunkPos> chunkSet = new HashSet<>();
+    private Set<ChunkPos> chunkSet = new ObjectOpenHashSet<>();
 
     @Nullable
     private World prevWorld;

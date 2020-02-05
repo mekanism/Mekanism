@@ -1,7 +1,7 @@
 package mekanism.client.jei;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,7 +44,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     protected int yOffset;
     protected IDrawable fluidOverlayLarge;
     protected IDrawable fluidOverlaySmall;
-    protected Set<GuiTexturedElement> guiElements = new HashSet<>();
+    protected Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
     private IBaseProvider provider;
 
     private final IDrawable background;

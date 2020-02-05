@@ -2,11 +2,11 @@ package mekanism.common.tag;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -43,12 +43,12 @@ public abstract class BaseTagProvider implements IDataProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private final Map<Tag<Item>, Tag.Builder<Item>> itemTagToBuilder = new LinkedHashMap<>();
-    private final Map<Tag<Block>, Tag.Builder<Block>> blockTagToBuilder = new LinkedHashMap<>();
-    private final Map<Tag<EntityType<?>>, Tag.Builder<EntityType<?>>> entityTypeTagToBuilder = new LinkedHashMap<>();
-    private final Map<Tag<Fluid>, Tag.Builder<Fluid>> fluidTagToBuilder = new LinkedHashMap<>();
-    private final Map<Tag<Gas>, Tag.Builder<Gas>> gasTagToBuilder = new LinkedHashMap<>();
-    private final Map<Tag<InfuseType>, Tag.Builder<InfuseType>> infuseTypeTagToBuilder = new LinkedHashMap<>();
+    private final Map<Tag<Item>, Tag.Builder<Item>> itemTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<Tag<Block>, Tag.Builder<Block>> blockTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<Tag<EntityType<?>>, Tag.Builder<EntityType<?>>> entityTypeTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<Tag<Fluid>, Tag.Builder<Fluid>> fluidTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<Tag<Gas>, Tag.Builder<Gas>> gasTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<Tag<InfuseType>, Tag.Builder<InfuseType>> infuseTypeTagToBuilder = new Object2ObjectLinkedOpenHashMap<>();
     protected final DataGenerator gen;
     private final String modid;
 

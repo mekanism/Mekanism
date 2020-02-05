@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -85,7 +85,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     /**
      * The nodes that have full sources near them or in them
      */
-    private Set<BlockPos> recurringNodes = new HashSet<>();
+    private Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
 
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;

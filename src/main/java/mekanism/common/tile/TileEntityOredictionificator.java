@@ -1,9 +1,9 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,7 +47,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
 
-    public static final Map<String, List<String>> possibleFilters = new HashMap<>();
+    public static final Map<String, List<String>> possibleFilters = new Object2ObjectOpenHashMap<>();
 
     static {
         possibleFilters.put("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/"));
@@ -276,7 +276,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new HashMap<>();
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("filters", "filters");
         return remap;
     }

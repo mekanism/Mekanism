@@ -1,6 +1,6 @@
 package mekanism.generators.common;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -51,8 +51,8 @@ public class FusionReactor {
     public static double caseWaterConductivity = 0.3;
     public static double caseAirConductivity = 0.1;
     public TileEntityReactorController controller;
-    public Set<TileEntityReactorBlock> reactorBlocks = new HashSet<>();
-    public Set<IHeatTransfer> heatTransfers = new HashSet<>();
+    public Set<TileEntityReactorBlock> reactorBlocks = new ObjectOpenHashSet<>();
+    public Set<IHeatTransfer> heatTransfers = new ObjectOpenHashSet<>();
     //Current stores of temperature - internally uses ambient-relative kelvin units
     public double plasmaTemperature;
     public double caseTemperature;

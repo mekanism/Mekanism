@@ -1,6 +1,6 @@
 package mekanism.common.tile.prefab;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -325,7 +325,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new HashMap<>();
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("gasTank.stored", "gasStored");
         return remap;
     }

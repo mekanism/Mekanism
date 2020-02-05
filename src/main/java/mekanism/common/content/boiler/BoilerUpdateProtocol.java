@@ -1,6 +1,6 @@
 package mekanism.common.content.boiler;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.Coord4D;
@@ -47,8 +47,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         if (structure.volHeight < 3) {
             return false;
         }
-        Set<Coord4D> dispersers = new HashSet<>();
-        Set<Coord4D> elements = new HashSet<>();
+        Set<Coord4D> dispersers = new ObjectOpenHashSet<>();
+        Set<Coord4D> elements = new ObjectOpenHashSet<>();
         for (Coord4D coord : innerNodes) {
             TileEntity tile = MekanismUtils.getTileEntity(pointer.getWorld(), coord.getPos());
             if (tile instanceof TileEntityPressureDisperser) {

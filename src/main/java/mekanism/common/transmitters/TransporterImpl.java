@@ -1,5 +1,6 @@
 package mekanism.common.transmitters;
 
+import it.unimi.dsi.fastutil.ints.AbstractIntSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -99,7 +100,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 stack.progress = Math.min(100, stack.progress + getTileEntity().tier.getSpeed());
             }
         } else if (getTransmitterNetwork() != null) {
-            IntOpenHashSet deletes = new IntOpenHashSet();
+            AbstractIntSet deletes = new IntOpenHashSet();
             getTileEntity().pullItems();
             Coord4D coord = coord();
             //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we

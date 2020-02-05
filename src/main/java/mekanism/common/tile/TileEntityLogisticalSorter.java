@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
@@ -447,7 +447,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new HashMap<>();
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("color", "color");
         remap.put("autoEject", "autoEject");
         remap.put("roundRobin", "roundRobin");

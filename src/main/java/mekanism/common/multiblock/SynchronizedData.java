@@ -1,7 +1,7 @@
 package mekanism.common.multiblock;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -11,7 +11,7 @@ import mekanism.api.inventory.slot.IInventorySlot;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>> {
 
-    public Set<Coord4D> locations = new HashSet<>();
+    public Set<Coord4D> locations = new ObjectOpenHashSet<>();
 
     public int volLength;
 
@@ -35,7 +35,7 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> {
 
     public boolean destroyed;
 
-    public Set<Coord4D> internalLocations = new HashSet<>();
+    public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
 
     @Nonnull
     public List<IInventorySlot> getInventorySlots() {

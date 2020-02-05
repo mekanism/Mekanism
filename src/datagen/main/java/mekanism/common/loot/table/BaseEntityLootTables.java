@@ -1,6 +1,6 @@
 package mekanism.common.loot.table;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IEntityTypeProvider;
@@ -10,7 +10,7 @@ import net.minecraft.world.storage.loot.LootTable;
 
 public abstract class BaseEntityLootTables extends EntityLootTables {
 
-    private Set<EntityType<?>> knownEntityTypes = new HashSet<>();
+    private Set<EntityType<?>> knownEntityTypes = new ObjectOpenHashSet<>();
 
     @Override
     protected abstract void addTables();
