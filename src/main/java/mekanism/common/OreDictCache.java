@@ -1,8 +1,8 @@
 package mekanism.common;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,9 +20,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 //TODO: Rewrite this entire class to be more of a tag helper class than a caching class
 public final class OreDictCache {
 
-    public static Map<String, List<ItemStack>> blockTagStacks = new HashMap<>();
-    public static Map<String, List<ItemStack>> itemTagStacks = new HashMap<>();
-    public static Map<String, List<ItemStack>> modIDStacks = new HashMap<>();
+    public static Map<String, List<ItemStack>> blockTagStacks = new Object2ObjectOpenHashMap<>();
+    public static Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
+    public static Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();
 
     public static List<String> getOreDictName(ItemStack check) {
         //TODO: Switch to other methods

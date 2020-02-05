@@ -1,6 +1,6 @@
 package mekanism.api;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -65,7 +65,7 @@ public class Range4D {
     }
 
     public Set<Chunk3D> getIntersectingChunks() {
-        Set<Chunk3D> set = new HashSet<>();
+        Set<Chunk3D> set = new ObjectOpenHashSet<>();
         for (int chunkX = xMin >> 4; chunkX <= xMax - 1 >> 4; chunkX++) {
             for (int chunkZ = zMin >> 4; chunkZ <= zMax - 1 >> 4; chunkZ++) {
                 set.add(new Chunk3D(chunkX, chunkZ, dimension));
@@ -75,7 +75,7 @@ public class Range4D {
     }
 
     public Set<ChunkPos> getIntersectingChunkPositions() {
-        Set<ChunkPos> set = new HashSet<>();
+        Set<ChunkPos> set = new ObjectOpenHashSet<>();
         for (int chunkX = xMin >> 4; chunkX <= xMax - 1 >> 4; chunkX++) {
             for (int chunkZ = zMin >> 4; chunkZ <= zMax - 1 >> 4; chunkZ++) {
                 set.add(new ChunkPos(chunkX, chunkZ));

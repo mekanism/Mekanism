@@ -1,8 +1,8 @@
 package mekanism.common.multiblock;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -16,14 +16,14 @@ import net.minecraft.world.World;
 
 public class MultiblockManager<T extends SynchronizedData<T>> {
 
-    private static Set<MultiblockManager<?>> managers = new HashSet<>();
+    private static Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
 
     public String name;
 
     /**
      * A map containing references to all multiblock inventory caches.
      */
-    public Map<String, MultiblockCache<T>> inventories = new HashMap<>();
+    public Map<String, MultiblockCache<T>> inventories = new Object2ObjectOpenHashMap<>();
 
     public MultiblockManager(String s) {
         name = s;
@@ -85,7 +85,7 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
 
     public void tickSelf(World world) {
         ArrayList<String> idsToKill = new ArrayList<>();
-        Map<String, Set<Coord4D>> tilesToKill = new HashMap<>();
+        Map<String, Set<Coord4D>> tilesToKill = new Object2ObjectOpenHashMap<>();
         for (Entry<String, MultiblockCache<T>> entry : inventories.entrySet()) {
             String inventoryID = entry.getKey();
             for (Coord4D obj : entry.getValue().locations) {
@@ -94,7 +94,7 @@ public class MultiblockManager<T extends SynchronizedData<T>> {
                     if (!(tile instanceof TileEntityMultiblock) || ((TileEntityMultiblock<?>) tile).getManager() != this ||
                         (getStructureId(((TileEntityMultiblock<?>) tile)) != null && !Objects.equals(getStructureId(((TileEntityMultiblock<?>) tile)), inventoryID))) {
                         if (!tilesToKill.containsKey(inventoryID)) {
-                            tilesToKill.put(inventoryID, new HashSet<>());
+                            tilesToKill.put(inventoryID, new ObjectOpenHashSet<>());
                         }
                         tilesToKill.get(inventoryID).add(obj);
                     }

@@ -1,7 +1,7 @@
 package mekanism.common.util;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -127,7 +127,7 @@ public final class GasUtils {
 
         int curHandlers = target.getHandlers().size();
         if (curHandlers > 0) {
-            Set<GasHandlerTarget> targets = new HashSet<>();
+            Set<GasHandlerTarget> targets = new ObjectOpenHashSet<>();
             targets.add(target);
             return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), stack);
         }

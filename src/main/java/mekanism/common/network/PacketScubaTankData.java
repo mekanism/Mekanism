@@ -1,6 +1,6 @@
 package mekanism.common.network;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -95,7 +95,7 @@ public class PacketScubaTankData {
             packet.uuid = buf.readUniqueId();
             packet.value = buf.readBoolean();
         } else if (packet.packetType == ScubaTankPacket.FULL) {
-            packet.activeGasmasks = new HashSet<>();
+            packet.activeGasmasks = new ObjectOpenHashSet<>();
             int amount = buf.readInt();
             for (int i = 0; i < amount; i++) {
                 packet.activeGasmasks.add(buf.readUniqueId());

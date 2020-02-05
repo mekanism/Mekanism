@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -54,7 +54,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public FluidTank inputTank;
     public FluidTank outputTank;
 
-    public Set<Coord4D> tankParts = new HashSet<>();
+    public Set<Coord4D> tankParts = new ObjectOpenHashSet<>();
     public IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
     public boolean temperatureSet = false;

@@ -14,7 +14,7 @@ public class TileEntityRotationalComplex extends TileEntityInternalMultiblock {
     @Override
     public void setMultiblock(String id) {
         if (id == null && multiblockUUID != null) {
-            SynchronizedTurbineData.clientRotationMap.remove(multiblockUUID);
+            SynchronizedTurbineData.clientRotationMap.removeFloat(multiblockUUID);
         }
 
         super.setMultiblock(id);

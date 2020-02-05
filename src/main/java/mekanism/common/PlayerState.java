@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.client.sound.PlayerSound.SoundType;
@@ -15,9 +15,9 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 
 public class PlayerState {
 
-    private Set<UUID> activeJetpacks = new HashSet<>();
-    private Set<UUID> activeGasmasks = new HashSet<>();
-    private Set<UUID> activeFlamethrowers = new HashSet<>();
+    private Set<UUID> activeJetpacks = new ObjectOpenHashSet<>();
+    private Set<UUID> activeGasmasks = new ObjectOpenHashSet<>();
+    private Set<UUID> activeFlamethrowers = new ObjectOpenHashSet<>();
 
     private IWorld world;
 

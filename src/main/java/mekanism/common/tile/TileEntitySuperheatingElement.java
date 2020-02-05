@@ -24,7 +24,7 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     public void setMultiblock(String id) {
         boolean packet = false;
         if (id == null && multiblockUUID != null) {
-            SynchronizedBoilerData.clientHotMap.remove(multiblockUUID);
+            SynchronizedBoilerData.clientHotMap.removeBoolean(multiblockUUID);
             packet = true;
         } else if (id != null && multiblockUUID == null) {
             packet = true;
@@ -41,8 +41,8 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     public void onUpdate() {
         if (isRemote()) {
             boolean newHot = false;
-            if (multiblockUUID != null && SynchronizedBoilerData.clientHotMap.get(multiblockUUID) != null) {
-                newHot = SynchronizedBoilerData.clientHotMap.get(multiblockUUID);
+            if (multiblockUUID != null && SynchronizedBoilerData.clientHotMap.containsKey(multiblockUUID)) {
+                newHot = SynchronizedBoilerData.clientHotMap.getBoolean(multiblockUUID);
             }
             if (prevHot != newHot) {
                 MekanismUtils.updateBlock(getWorld(), getPos());

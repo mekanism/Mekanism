@@ -1,6 +1,6 @@
 package mekanism.generators.common.tile;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -295,7 +295,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new HashMap<>();
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("fuelTank", "fuelTank");
         return remap;
     }

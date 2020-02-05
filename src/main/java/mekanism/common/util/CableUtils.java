@@ -1,6 +1,6 @@
 package mekanism.common.util;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Optional;
 import java.util.Set;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -129,7 +129,7 @@ public final class CableUtils {
                 }
                 int curHandlers = target.getHandlers().size();
                 if (curHandlers > 0) {
-                    Set<EnergyAcceptorTarget> targets = new HashSet<>();
+                    Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
                     targets.add(target);
                     double sent = EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend);
                     if (emitter instanceof TileEntityInductionPort) {

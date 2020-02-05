@@ -1,8 +1,11 @@
 package mekanism.common.content.transporter;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import mekanism.common.content.transporter.Finder.FirstFinder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
@@ -17,7 +20,7 @@ public class TransitRequest {
     /**
      * Complicated map- associates item types with both total available item count and slot IDs and available item amounts for each slot.
      */
-    private Map<HashedItem, Pair<Integer, Map<Integer, Integer>>> itemMap = new HashMap<>();
+    private Map<HashedItem, Pair<Integer, Int2IntMap>> itemMap = new Object2ObjectOpenHashMap<>();
 
     public static TransitRequest getFromTransport(TransporterStack stack) {
         return getFromStack(stack.itemStack);
@@ -42,7 +45,7 @@ public class TransitRequest {
     public static TransitRequest buildInventoryMap(TileEntity tile, Direction side, int amount, Finder finder) {
         TransitRequest ret = new TransitRequest();
         // so we can keep track of how many of each item type we have in this inventory mapping
-        Map<HashedItem, Integer> itemCountMap = new HashMap<>();
+        Object2IntMap<HashedItem> itemCountMap = new Object2IntOpenHashMap<>();
 
         if (!InventoryUtils.assertItemHandler("TransitRequest", tile, side.getOpposite())) {
             return ret;
@@ -74,7 +77,7 @@ public class TransitRequest {
         return ret;
     }
 
-    public Map<HashedItem, Pair<Integer, Map<Integer, Integer>>> getItemMap() {
+    public Map<HashedItem, Pair<Integer, Int2IntMap>> getItemMap() {
         return itemMap;
     }
 
@@ -85,13 +88,13 @@ public class TransitRequest {
     public void addItem(ItemStack stack, int slot) {
         HashedItem hashed = new HashedItem(stack);
         if (!itemMap.containsKey(hashed)) {
-            Map<Integer, Integer> slotMap = new HashMap<>();
+            Int2IntMap slotMap = new Int2IntOpenHashMap();
             slotMap.put(slot, stack.getCount());
             itemMap.put(hashed, Pair.of(stack.getCount(), slotMap));
         } else {
-            Pair<Integer, Map<Integer, Integer>> itemInfo = itemMap.get(hashed);
+            Pair<Integer, Int2IntMap> itemInfo = itemMap.get(hashed);
             int count = itemInfo.getLeft() + stack.getCount();
-            Map<Integer, Integer> slotMap = itemInfo.getRight();
+            Int2IntMap slotMap = itemInfo.getRight();
             slotMap.put(slot, stack.getCount());
             itemMap.put(hashed, Pair.of(count, slotMap));
         }
@@ -116,20 +119,20 @@ public class TransitRequest {
         public static final TransitResponse EMPTY = new TransitResponse();
 
         /** slot ID to item count map - this details how many items we will be pulling from each slot */
-        private Map<Integer, Integer> idMap = new HashMap<>();
+        private Int2IntMap idMap = new Int2IntOpenHashMap();
         private ItemStack toSend = ItemStack.EMPTY;
 
         private TransitResponse() {
         }
 
-        public TransitResponse(ItemStack i, Map<Integer, Integer> slots) {
+        public TransitResponse(ItemStack i, Int2IntMap slots) {
             toSend = i;
 
             // generate our ID/ItemStack map based on the amount of items we're sending
             int amount = getSendingAmount();
-            for (Entry<Integer, Integer> entry : slots.entrySet()) {
-                int toUse = Math.min(amount, entry.getValue());
-                idMap.put(entry.getKey(), toUse);
+            for (Int2IntMap.Entry entry : slots.int2IntEntrySet()) {
+                int toUse = Math.min(amount, entry.getIntValue());
+                idMap.put(entry.getIntKey(), toUse);
                 amount -= toUse;
                 if (amount == 0) {
                     break;

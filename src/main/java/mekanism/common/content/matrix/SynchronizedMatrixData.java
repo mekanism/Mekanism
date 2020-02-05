@@ -1,7 +1,7 @@
 package mekanism.common.content.matrix;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -19,8 +19,8 @@ import net.minecraft.world.World;
 //TODO: Do something better for purposes of double precision such as BigInt
 public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixData> {
 
-    private Set<Coord4D> providers = new HashSet<>();
-    private Set<Coord4D> cells = new HashSet<>();
+    private Set<Coord4D> providers = new ObjectOpenHashSet<>();
+    private Set<Coord4D> cells = new ObjectOpenHashSet<>();
     private double queuedOutput;
     private double queuedInput;
     private double lastOutput;

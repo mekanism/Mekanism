@@ -1,7 +1,7 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -329,7 +329,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new HashMap<>();
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("fluidTank", "fluidTank");
         remap.put("leftTank.stored", "leftTank");
         remap.put("rightTank.stored", "rightTank");

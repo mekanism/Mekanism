@@ -1,6 +1,6 @@
 package mekanism.common.tags;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class ForgeRegistryTagCollection<T extends IForgeRegistryEntry<T>> extend
     }
 
     public void read(PacketBuffer buffer) {
-        Map<ResourceLocation, Tag<T>> tagMap = new HashMap<>();
+        Map<ResourceLocation, Tag<T>> tagMap = new Object2ObjectOpenHashMap<>();
         int tagCount = buffer.readVarInt();
         for (int i = 0; i < tagCount; ++i) {
             ResourceLocation resourceLocation = buffer.readResourceLocation();

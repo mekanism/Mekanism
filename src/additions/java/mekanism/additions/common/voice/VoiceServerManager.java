@@ -1,16 +1,16 @@
 package mekanism.additions.common.voice;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.HashSet;
 import java.util.Set;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.common.Mekanism;
 
 public class VoiceServerManager {
 
-    private Set<VoiceConnection> connections = new HashSet<>();
+    private Set<VoiceConnection> connections = new ObjectOpenHashSet<>();
     private ServerSocket serverSocket;
     private Thread listenThread;
     private boolean foundLocal = false;

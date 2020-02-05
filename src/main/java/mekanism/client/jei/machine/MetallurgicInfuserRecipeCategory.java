@@ -1,9 +1,9 @@
 package mekanism.client.jei.machine;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -62,7 +62,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         //TODO: See if this can be improved
         List<ItemStackToInfuseTypeRecipe> recipes = MekanismRecipeType.INFUSION_CONVERSION.getRecipes(world);
         List<ItemStack> infuseStacks = new ArrayList<>();
-        Set<InfuseType> checkedTypes = new HashSet<>();
+        Set<InfuseType> checkedTypes = new ObjectOpenHashSet<>();
         for (InfusionStack infusionStack : infuseObjects) {
             InfuseType type = infusionStack.getType();
             if (checkedTypes.add(type)) {

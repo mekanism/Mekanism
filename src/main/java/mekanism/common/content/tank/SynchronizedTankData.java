@@ -1,7 +1,7 @@
 package mekanism.common.content.tank;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -28,7 +28,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     public int prevFluidStage = 0;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
-    public Set<ValveData> valves = new HashSet<>();
+    public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
     @Nonnull
     private List<IInventorySlot> inventorySlots;

@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.text.EnumColor;
@@ -33,7 +33,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator, OredictionificatorContainer> {
 
-    private Map<OredictionificatorFilter, ItemStack> renderStacks = new HashMap<>();
+    private Map<OredictionificatorFilter, ItemStack> renderStacks = new Object2ObjectOpenHashMap<>();
     private boolean isDragging = false;
     private double dragOffset = 0;
     private double scroll;

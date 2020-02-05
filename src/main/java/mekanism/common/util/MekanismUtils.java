@@ -1,8 +1,9 @@
 package mekanism.common.util;
 
 import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -88,7 +89,7 @@ public final class MekanismUtils {
 
     public static final Direction[] SIDE_DIRS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
 
-    public static final Map<String, Class<?>> classesFound = new HashMap<>();
+    public static final Map<String, Class<?>> classesFound = new Object2ObjectOpenHashMap<>();
 
     private static final List<UUID> warnedFails = new ArrayList<>();
 
@@ -262,7 +263,7 @@ public final class MekanismUtils {
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos offset = pos.offset(side);
             //TODO: Why does it offset twice
-            if (world.isBlockLoaded(pos) && world.isBlockLoaded(pos.offset(side))) {
+            if (isBlockLoaded(world, pos) && isBlockLoaded(world, pos.offset(side))) {
                 BlockState blockState = world.getBlockState(offset);
                 boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
                 if (weakPower && isDirectlyGettingPowered(world, offset)) {
@@ -286,7 +287,7 @@ public final class MekanismUtils {
     public static boolean isDirectlyGettingPowered(World world, BlockPos pos) {
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos offset = pos.offset(side);
-            if (world.isBlockLoaded(offset)) {
+            if (isBlockLoaded(world, offset)) {
                 if (world.getRedstonePower(pos, side) > 0) {
                     return true;
                 }
@@ -315,11 +316,11 @@ public final class MekanismUtils {
         BlockState state = world.getBlockState(coordPos);
         for (Direction dir : EnumUtils.DIRECTIONS) {
             BlockPos offset = coordPos.offset(dir);
-            if (world.isBlockLoaded(offset)) {
+            if (isBlockLoaded(world, offset)) {
                 notifyNeighborofChange(world, offset, coordPos);
                 if (world.getBlockState(offset).isNormalCube(world, offset)) {
                     offset = offset.offset(dir);
-                    if (world.isBlockLoaded(offset)) {
+                    if (isBlockLoaded(world, offset)) {
                         Block block1 = world.getBlockState(offset).getBlock();
                         //TODO: Make sure this is passing the correct state
                         if (block1.getWeakChanges(state, world, offset)) {
@@ -884,14 +885,14 @@ public final class MekanismUtils {
      * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param world    - world
-     * @param chunkMap - cached chunk ma
+     * @param chunkMap - cached chunk map
      * @param coord    - coordinates
      *
      * @return tile entity if found, null if either not found or not loaded
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull Coord4D coord) {
+    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull Coord4D coord) {
         return getTileEntity(world, chunkMap, coord.getPos());
     }
 
@@ -900,14 +901,14 @@ public final class MekanismUtils {
      * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param world    - world
-     * @param chunkMap - cached chunk ma
+     * @param chunkMap - cached chunk map
      * @param pos      - position
      *
      * @return tile entity if found, null if either not found or not loaded
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull BlockPos pos) {
+    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
         if (world == null) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
             return null;

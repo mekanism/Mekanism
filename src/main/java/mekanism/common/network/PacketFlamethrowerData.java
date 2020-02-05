@@ -1,6 +1,6 @@
 package mekanism.common.network;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -95,7 +95,7 @@ public class PacketFlamethrowerData {
         } else if (packet.packetType == FlamethrowerPacket.MODE) {
             packet.currentHand = buf.readEnumValue(Hand.class);
         } else if (packet.packetType == FlamethrowerPacket.FULL) {
-            packet.activeFlamethrowers = new HashSet<>();
+            packet.activeFlamethrowers = new ObjectOpenHashSet<>();
             int amount = buf.readInt();
             for (int i = 0; i < amount; i++) {
                 packet.activeFlamethrowers.add(buf.readUniqueId());

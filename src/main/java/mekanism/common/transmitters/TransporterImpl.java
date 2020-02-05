@@ -1,12 +1,12 @@
 package mekanism.common.transmitters;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.function.IntConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -39,13 +39,13 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwork, Void> implements ILogisticalTransporter {
 
-    private Map<Integer, TransporterStack> transit = new HashMap<>();
+    private Int2ObjectOpenHashMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
 
     private int nextId = 0;
 
     private EnumColor color;
 
-    private Map<Integer, TransporterStack> needsSync = new HashMap<>();
+    private Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
 
     public TransporterImpl(TileEntityLogisticalTransporter multiPart) {
         super(multiPart);
@@ -65,8 +65,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 
     public void writeToPacket(TileNetworkList data) {
         data.add(transit.size());
-        for (Entry<Integer, TransporterStack> entry : transit.entrySet()) {
-            data.add(entry.getKey());
+        for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
+            data.add(entry.getIntKey());
             entry.getValue().write(this, data);
         }
     }
@@ -100,14 +100,14 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 stack.progress = Math.min(100, stack.progress + getTileEntity().tier.getSpeed());
             }
         } else if (getTransmitterNetwork() != null) {
-            Set<Integer> deletes = new HashSet<>();
+            IntSet deletes = new IntOpenHashSet();
             getTileEntity().pullItems();
             Coord4D coord = coord();
             //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
             // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
             // collection to occur actually causing the tick time to go up slightly.
-            for (Entry<Integer, TransporterStack> entry : transit.entrySet()) {
-                int stackId = entry.getKey();
+            for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
+                int stackId = entry.getIntKey();
                 TransporterStack stack = entry.getValue();
                 if (!stack.initiatedPath) {
                     if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, null)) {
@@ -183,7 +183,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             if (deletes.size() > 0 || needsSync.size() > 0) {
                 PacketTileEntity msg = new PacketTileEntity(coord, getTileEntity().makeBatchPacket(needsSync, deletes));
                 // Now remove any entries from transit that have been deleted
-                deletes.forEach(id -> transit.remove(id));
+                deletes.forEach((IntConsumer) (id -> transit.remove(id)));
 
                 // Clear the pending sync packets
                 needsSync.clear();

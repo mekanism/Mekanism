@@ -2,7 +2,7 @@ package mekanism.common.command;
 
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
@@ -23,7 +23,7 @@ import net.minecraft.world.GameRules;
 
 public class CommandMek {
 
-    private static Map<UUID, Stack<BlockPos>> tpStack = new HashMap<>();
+    private static Map<UUID, Stack<BlockPos>> tpStack = new Object2ObjectOpenHashMap<>();
 
     public static ArgumentBuilder<CommandSource, ?> register() {
         //TODO: Check permission levels for everything, also see if this is proper way to ensure only players use it and if so should all of the commands be like this

@@ -1,7 +1,6 @@
 package mekanism.common.content.transporter;
 
 import java.util.Set;
-import mekanism.common.util.ItemRegistryUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
@@ -101,7 +100,7 @@ public abstract class Finder {
             if (stack.isEmpty()) {
                 return false;
             }
-            String id = ItemRegistryUtils.getMod(stack);
+            String id = stack.getItem().getRegistryName().getNamespace();
             if (modID.equals(id) || modID.equals("*")) {
                 return true;
             } else if (modID.endsWith("*") && !modID.startsWith("*")) {

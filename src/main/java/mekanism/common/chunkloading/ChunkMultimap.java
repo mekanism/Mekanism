@@ -1,7 +1,7 @@
 package mekanism.common.chunkloading;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -23,7 +23,7 @@ public class ChunkMultimap extends Long2ObjectOpenHashMap<Set<BlockPos>> impleme
     }
 
     public boolean add(ChunkPos key, BlockPos value) {
-        return computeIfAbsent(key.asLong(), k -> new HashSet<>()).add(value);
+        return computeIfAbsent(key.asLong(), k -> new ObjectOpenHashSet<>()).add(value);
     }
 
     public void remove(ChunkPos key, BlockPos value) {
@@ -60,7 +60,7 @@ public class ChunkMultimap extends Long2ObjectOpenHashMap<Set<BlockPos>> impleme
             CompoundNBT entry = entryList.getCompound(i);
             long key = entry.getLong(KEY_KEY);
             ListNBT blockPosList = entry.getList(ENTRIES_KEY, NBT.TAG_COMPOUND);
-            Set<BlockPos> blockPosSet = new HashSet<>();
+            Set<BlockPos> blockPosSet = new ObjectOpenHashSet<>();
             this.put(key, blockPosSet);
             for (int j = 0; j < blockPosList.size(); j++) {
                 blockPosSet.add(NBTUtil.readBlockPos(blockPosList.getCompound(j)));

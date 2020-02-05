@@ -1,8 +1,8 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 
 public final class MinerVisualRenderer {
 
-    private static Map<MinerRenderData, List<Model3D>> cachedVisuals = new HashMap<>();
+    private static Map<MinerRenderData, List<Model3D>> cachedVisuals = new Object2ObjectOpenHashMap<>();
 
     public static void resetCachedVisuals() {
         cachedVisuals.clear();

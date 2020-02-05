@@ -1,11 +1,12 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -42,7 +43,7 @@ import net.minecraft.util.math.RayTraceResult.Type;
 
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
-    private static Map<Direction, Map<Integer, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
+    private static Map<Direction, Int2ObjectMap<Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
     private static TextureAtlasSprite gunpowderIcon;
     private static TextureAtlasSprite torchOffIcon;
     private static TextureAtlasSprite torchOnIcon;
@@ -117,7 +118,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
      */
     private Collection<TransporterStack> getReducedTransit(Collection<TransporterStack> inTransit) {
         Collection<TransporterStack> reducedTransit = new ArrayList<>();
-        Set<TransportInformation> information = new HashSet<>();
+        Set<TransportInformation> information = new ObjectOpenHashSet<>();
         for (TransporterStack stack : inTransit) {
             if (stack != null && !stack.itemStack.isEmpty() && information.add(new TransportInformation(stack))) {
                 //Ensure the stack is valid AND we did not already have information matching the stack
@@ -208,7 +209,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         if (cachedOverlays.containsKey(side)) {
             cachedOverlays.get(side).put(mode, model);
         } else {
-            Map<Integer, Model3D> map = new HashMap<>();
+            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
             map.put(mode, model);
             cachedOverlays.put(side, map);
         }

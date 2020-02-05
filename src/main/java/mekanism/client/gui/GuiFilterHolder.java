@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,8 +36,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected final int filterW = 96;
     protected final int filterH = 29;
 
-    protected Map<ITagFilter<?>, StackData> oreDictStacks = new HashMap<>();
-    protected Map<IModIDFilter<?>, StackData> modIDStacks = new HashMap<>();
+    protected Map<ITagFilter<?>, StackData> oreDictStacks = new Object2ObjectOpenHashMap<>();
+    protected Map<IModIDFilter<?>, StackData> modIDStacks = new Object2ObjectOpenHashMap<>();
     /**
      * True if the scrollbar is being dragged
      */
@@ -100,8 +100,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
             }
         }
 
-        Set<ITagFilter<?>> oreDictFilters = new HashSet<>();
-        Set<IModIDFilter<?>> modIDFilters = new HashSet<>();
+        Set<ITagFilter<?>> oreDictFilters = new ObjectOpenHashSet<>();
+        Set<IModIDFilter<?>> modIDFilters = new ObjectOpenHashSet<>();
 
         HashList<FILTER> filters = tile.getFilters();
 

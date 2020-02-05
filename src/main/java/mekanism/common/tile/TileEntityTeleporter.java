@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -45,7 +45,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
     public AxisAlignedBB teleportBounds = null;
 
-    public Set<UUID> didTeleport = new HashSet<>();
+    public Set<UUID> didTeleport = new ObjectOpenHashSet<>();
 
     public int teleDelay = 0;
 
@@ -237,7 +237,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         for (Entity e : world.getEntitiesWithinAABB(Entity.class, teleportBounds)) {
             list.add(e.getUniqueID());
         }
-        Set<UUID> teleportCopy = new HashSet<>(didTeleport);
+        Set<UUID> teleportCopy = new ObjectOpenHashSet<>(didTeleport);
         for (UUID id : teleportCopy) {
             if (!list.contains(id)) {
                 didTeleport.remove(id);

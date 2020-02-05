@@ -1,10 +1,10 @@
 package mekanism.common.transmitters.grid;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
@@ -125,10 +125,10 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     }
 
     private int tickEmit(@Nonnull GasStack stack) {
-        Set<GasHandlerTarget> availableAcceptors = new HashSet<>();
+        Set<GasHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
         Gas type = stack.getType();
-        Map<Long, IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
         for (Coord4D coord : possibleAcceptors) {
             EnumSet<Direction> sides = acceptorDirections.get(coord);
             if (sides == null || sides.isEmpty()) {

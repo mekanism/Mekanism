@@ -1,8 +1,8 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,8 +50,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
-    public Set<BlockPos> activeNodes = new LinkedHashSet<>();
-    public Set<BlockPos> usedNodes = new HashSet<>();
+    public Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
+    public Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
     public boolean finishedCalc;
     public FluidTank fluidTank;
     /**
@@ -142,7 +142,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             }
         }
 
-        Set<BlockPos> toRemove = new HashSet<>();
+        Set<BlockPos> toRemove = new ObjectOpenHashSet<>();
         for (BlockPos coordPos : activeNodes) {
             if (MekanismUtils.isBlockLoaded(world, coordPos)) {
                 FluidStack fluid = fluidTank.getFluid();

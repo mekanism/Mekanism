@@ -1,8 +1,8 @@
 package mekanism.client;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,8 +52,8 @@ public class ClientTickHandler {
 
     public static Minecraft minecraft = Minecraft.getInstance();
     public static Random rand = new Random();
-    public static Set<IClientTicker> tickingSet = new HashSet<>();
-    public static Map<PlayerEntity, TeleportData> portableTeleports = new HashMap<>();
+    public static Set<IClientTicker> tickingSet = new ObjectOpenHashSet<>();
+    public static Map<PlayerEntity, TeleportData> portableTeleports = new Object2ObjectOpenHashMap<>();
     public boolean initHoliday = false;
     public boolean shouldReset = false;
 

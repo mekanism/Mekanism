@@ -1,6 +1,7 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.EnumMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import net.minecraft.util.Direction;
 
 public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerator> {
 
-    private static final Map<Direction, Map<Integer, Model3D>> energyDisplays = new EnumMap<>(Direction.class);
+    private static final Map<Direction, Int2ObjectMap<Model3D>> energyDisplays = new EnumMap<>(Direction.class);
     private static final int stages = 40;
     private ModelBioGenerator model = new ModelBioGenerator();
 
@@ -95,7 +96,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
         if (energyDisplays.containsKey(side)) {
             energyDisplays.get(side).put(stage, model);
         } else {
-            Map<Integer, Model3D> map = new Int2ObjectOpenHashMap<>();
+            Int2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
             map.put(stage, model);
             energyDisplays.put(side, map);
         }

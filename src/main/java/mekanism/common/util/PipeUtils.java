@@ -1,7 +1,7 @@
 package mekanism.common.util;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
-import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.common.base.target.FluidHandlerTarget;
@@ -70,7 +70,7 @@ public final class PipeUtils {
 
         int curHandlers = target.getHandlers().size();
         if (curHandlers > 0) {
-            Set<FluidHandlerTarget> targets = new HashSet<>();
+            Set<FluidHandlerTarget> targets = new ObjectOpenHashSet<>();
             targets.add(target);
             return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), stack);
         }

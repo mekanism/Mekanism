@@ -1,8 +1,7 @@
 package mekanism.common.content.transporter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
@@ -29,7 +28,7 @@ public final class InvStack {
      * A map associating the slot IDs in consideration to the amount of items in those slots we care about. Note that the associated item counts may not be the full count
      * of items in the actual inventory slots.
      */
-    private Map<Integer, Integer> itemMap = new HashMap<>();
+    private Int2IntMap itemMap = new Int2IntOpenHashMap();
 
     /** The item type of this InvStack. Will be null until we have an insertion via appendStack. */
     private HashedItem itemType;
@@ -46,12 +45,12 @@ public final class InvStack {
         this(inv, stack, getMap(slotID, stack), facing);
     }
 
-    public InvStack(TileEntity inv, ItemStack stack, Map<Integer, Integer> idMap, Direction facing) {
+    public InvStack(TileEntity inv, ItemStack stack, Int2IntMap idMap, Direction facing) {
         tile = inv;
         side = facing;
         itemMap = idMap;
-        for (Entry<Integer, Integer> entry : idMap.entrySet()) {
-            appendStack(entry.getKey(), StackUtils.size(stack, entry.getValue()));
+        for (Int2IntMap.Entry entry : idMap.int2IntEntrySet()) {
+            appendStack(entry.getIntKey(), StackUtils.size(stack, entry.getIntValue()));
         }
     }
 
@@ -91,9 +90,9 @@ public final class InvStack {
             return;
         }
         IItemHandler handler = InventoryUtils.getItemHandler(tile, side);
-        for (Entry<Integer, Integer> entry : itemMap.entrySet()) {
-            int toUse = Math.min(amount, entry.getValue());
-            ItemStack ret = handler.extractItem(entry.getKey(), toUse, false);
+        for (Int2IntMap.Entry entry : itemMap.int2IntEntrySet()) {
+            int toUse = Math.min(amount, entry.getIntValue());
+            ItemStack ret = handler.extractItem(entry.getIntKey(), toUse, false);
             boolean stackable = InventoryUtils.areItemsStackable(itemType.getStack(), ret);
             if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
                 Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count") + " does not line up with InvStack's prediction.");
@@ -115,8 +114,8 @@ public final class InvStack {
         use(getStack().getCount());
     }
 
-    private static Map<Integer, Integer> getMap(int slotID, ItemStack stack) {
-        Map<Integer, Integer> map = new HashMap<>();
+    private static Int2IntMap getMap(int slotID, ItemStack stack) {
+        Int2IntMap map = new Int2IntOpenHashMap();
         map.put(slotID, stack.getCount());
         return map;
     }

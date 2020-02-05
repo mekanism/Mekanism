@@ -1,8 +1,8 @@
 package mekanism.api.transmitters;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
@@ -27,11 +27,11 @@ public class TransmitterNetworkRegistry {
     private static TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
     private static boolean loaderRegistered = false;
     private static Logger logger = LogManager.getLogger("MekanismTransmitters");
-    private Set<DynamicNetwork<?, ?, ?>> networks = new HashSet<>();
-    private Set<DynamicNetwork<?, ?, ?>> networksToChange = new HashSet<>();
-    private Set<IGridTransmitter<?, ?, ?>> invalidTransmitters = new HashSet<>();
-    private Map<Coord4D, IGridTransmitter<?, ?, ?>> orphanTransmitters = new HashMap<>();
-    private Map<Coord4D, IGridTransmitter<?, ?, ?>> newOrphanTransmitters = new HashMap<>();
+    private Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
+    private Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
+    private Set<IGridTransmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
+    private Map<Coord4D, IGridTransmitter<?, ?, ?>> orphanTransmitters = new Object2ObjectOpenHashMap<>();
+    private Map<Coord4D, IGridTransmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
 
     public static void initiate() {
         if (!loaderRegistered) {
@@ -111,14 +111,14 @@ public class TransmitterNetworkRegistry {
     }
 
     public void assignOrphans() {
-        orphanTransmitters = new HashMap<>(newOrphanTransmitters);
+        orphanTransmitters = new Object2ObjectOpenHashMap<>(newOrphanTransmitters);
         newOrphanTransmitters.clear();
 
         if (MekanismAPI.debug && !orphanTransmitters.isEmpty()) {
             logger.info("Dealing with " + orphanTransmitters.size() + " orphan Transmitters");
         }
 
-        for (IGridTransmitter<?, ?, ?> orphanTransmitter : new HashMap<>(orphanTransmitters).values()) {
+        for (IGridTransmitter<?, ?, ?> orphanTransmitter : new Object2ObjectOpenHashMap<>(orphanTransmitters).values()) {
             DynamicNetwork<?, ?, ?> network = getNetworkFromOrphan(orphanTransmitter);
             if (network != null) {
                 networksToChange.add(network);
@@ -194,10 +194,10 @@ public class TransmitterNetworkRegistry {
 
         public IGridTransmitter<A, N, BUFFER> startPoint;
 
-        public HashSet<Coord4D> iterated = new HashSet<>();
+        public Set<Coord4D> iterated = new ObjectOpenHashSet<>();
 
-        public HashSet<IGridTransmitter<A, N, BUFFER>> connectedTransmitters = new HashSet<>();
-        public HashSet<N> networksFound = new HashSet<>();
+        public Set<IGridTransmitter<A, N, BUFFER>> connectedTransmitters = new ObjectOpenHashSet<>();
+        public Set<N> networksFound = new ObjectOpenHashSet<>();
 
         private Deque<Coord4D> queue = new LinkedList<>();
 

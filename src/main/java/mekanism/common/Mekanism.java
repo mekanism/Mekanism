@@ -1,9 +1,9 @@
 package mekanism.common;
 
 import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -91,7 +91,7 @@ public class Mekanism {
     public static final String MOD_NAME = "Mekanism";
     public static final String LOG_TAG = '[' + MOD_NAME + ']';
     public static final PlayerState playerState = new PlayerState();
-    public static final Set<UUID> freeRunnerOn = new HashSet<>();
+    public static final Set<UUID> freeRunnerOn = new ObjectOpenHashSet<>();
     /**
      * Mekanism Packet Pipeline
      */
@@ -135,9 +135,9 @@ public class Mekanism {
      * FrequencyManagers for various networks
      */
     public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, Frequency.TELEPORTER);
-    public static Map<UUID, FrequencyManager> privateTeleporters = new HashMap<>();
+    public static Map<UUID, FrequencyManager> privateTeleporters = new Object2ObjectOpenHashMap<>();
     public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER);
-    public static Map<UUID, FrequencyManager> privateEntangloporters = new HashMap<>();
+    public static Map<UUID, FrequencyManager> privateEntangloporters = new Object2ObjectOpenHashMap<>();
     public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, SecurityFrequency.SECURITY);
     /**
      * Mekanism creative tab
@@ -160,7 +160,7 @@ public class Mekanism {
      */
     public static GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes()), Mekanism.LOG_TAG);
     public static KeySync keyMap = new KeySync();
-    public static Set<Coord4D> activeVibrators = new HashSet<>();
+    public static Set<Coord4D> activeVibrators = new ObjectOpenHashSet<>();
 
     private MekanismTagManager mekanismTagManager;
     private RecipeCacheManager recipeCacheManager;
