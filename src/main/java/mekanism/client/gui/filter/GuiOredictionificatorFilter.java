@@ -14,7 +14,6 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
-import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
@@ -135,12 +134,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
             displayTooltip(MekanismLang.TAG_COMPAT.translate(), xAxis, yAxis);
         } else if (xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35) {
             if (!renderStack.isEmpty()) {
-                String name = ItemRegistryUtils.getMod(renderStack);
-                if (name.equals("null")) {
-                    displayTooltip(renderStack.getDisplayName(), xAxis, yAxis);
-                } else {
-                    displayTooltip(TextComponentUtil.build(renderStack, MekanismLang.GENERIC_PARENTHESIS.translate(name)), xAxis, yAxis);
-                }
+                displayTooltip(TextComponentUtil.build(renderStack, MekanismLang.GENERIC_PARENTHESIS.translate(renderStack.getItem().getRegistryName().getNamespace())), xAxis, yAxis);
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

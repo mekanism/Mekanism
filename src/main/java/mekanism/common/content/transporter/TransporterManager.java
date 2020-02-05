@@ -1,8 +1,9 @@
 package mekanism.common.content.transporter;
 
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,14 +26,14 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class TransporterManager {
 
-    private static Map<Coord4D, Set<TransporterStack>> flowingStacks = new HashMap<>();
+    private static Map<Coord4D, Set<TransporterStack>> flowingStacks = new Object2ObjectOpenHashMap<>();
 
     public static void reset() {
         flowingStacks.clear();
     }
 
     public static void add(TransporterStack stack) {
-        flowingStacks.computeIfAbsent(stack.getDest(), k -> new HashSet<>()).add(stack);
+        flowingStacks.computeIfAbsent(stack.getDest(), k -> new ObjectOpenHashSet<>()).add(stack);
     }
 
     public static void remove(TransporterStack stack) {
@@ -174,7 +175,7 @@ public class TransporterManager {
         // Now for each of the items in the request, simulate the insert, using the state from all the in-flight
         // items to ensure we have an accurate model of what will happen in future. We try each stack in the
         // request; it might be possible to not send the first item, but the second could work, etc.
-        for (Entry<HashedItem, Pair<Integer, Map<Integer, Integer>>> requestEntry : request.getItemMap().entrySet()) {
+        for (Entry<HashedItem, Pair<Integer, Int2IntOpenHashMap>> requestEntry : request.getItemMap().entrySet()) {
             // Create a sending ItemStack with the hashed item type and total item count within the request
             ItemStack stack = requestEntry.getKey().getStack();
             int numToSend = requestEntry.getValue().getLeft();

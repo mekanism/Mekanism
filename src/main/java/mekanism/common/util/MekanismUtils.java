@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import com.mojang.authlib.GameProfile;
+import it.unimi.dsi.fastutil.longs.AbstractLong2ObjectMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -884,14 +885,14 @@ public final class MekanismUtils {
      * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param world    - world
-     * @param chunkMap - cached chunk ma
+     * @param chunkMap - cached chunk map
      * @param coord    - coordinates
      *
      * @return tile entity if found, null if either not found or not loaded
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull Coord4D coord) {
+    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull AbstractLong2ObjectMap<IChunk> chunkMap, @Nonnull Coord4D coord) {
         return getTileEntity(world, chunkMap, coord.getPos());
     }
 
@@ -900,14 +901,14 @@ public final class MekanismUtils {
      * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param world    - world
-     * @param chunkMap - cached chunk ma
+     * @param chunkMap - cached chunk map
      * @param pos      - position
      *
      * @return tile entity if found, null if either not found or not loaded
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Map<Long, IChunk> chunkMap, @Nonnull BlockPos pos) {
+    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull AbstractLong2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
         if (world == null) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
             return null;

@@ -1,6 +1,6 @@
 package mekanism.common.util;
 
-import java.util.Map;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import java.util.Map.Entry;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -36,7 +36,7 @@ public final class InventoryUtils {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).sendHome(request.getSingleStack());
         }
-        for (Entry<HashedItem, Pair<Integer, Map<Integer, Integer>>> requestEntry : request.getItemMap().entrySet()) {
+        for (Entry<HashedItem, Pair<Integer, Int2IntOpenHashMap>> requestEntry : request.getItemMap().entrySet()) {
             ItemStack origInsert = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
             ItemStack toInsert = origInsert.copy();
             if (!isItemHandler(tile, side.getOpposite())) {

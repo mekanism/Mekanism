@@ -2,7 +2,7 @@ package mekanism.tools.common.item;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
@@ -59,7 +59,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
     private final IntSupplier paxelMaxDurability;
 
     public ItemMekanismPaxel(BaseMekanismMaterial material) {
-        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, new HashSet<>(), getItemProperties(material.getPaxelHarvestLevel()));
+        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), getItemProperties(material.getPaxelHarvestLevel()));
         paxelDamage = material::getPaxelDamage;
         paxelAtkSpeed = material::getPaxelAtkSpeed;
         paxelEfficiency = material::getPaxelEfficiency;
@@ -68,7 +68,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
     }
 
     public ItemMekanismPaxel(ItemTier material) {
-        super(4, -2.4F, material, new HashSet<>(), getItemProperties(material.getHarvestLevel()));
+        super(4, -2.4F, material, Collections.emptySet(), getItemProperties(material.getHarvestLevel()));
         paxelDamage = () -> 4;
         paxelAtkSpeed = () -> -2.4F;
         paxelEfficiency = material::getEfficiency;
