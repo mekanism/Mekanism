@@ -1,8 +1,8 @@
 package mekanism.common.tile.transmitter;
 
+import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Collection;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -233,12 +233,12 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return data;
     }
 
-    public TileNetworkList makeBatchPacket(Map<Integer, TransporterStack> updates, Set<Integer> deletes) {
+    public TileNetworkList makeBatchPacket(AbstractInt2ObjectMap<TransporterStack> updates, Set<Integer> deletes) {
         TileNetworkList data = new TileNetworkList();
         data.add(BATCH_PACKET);
         data.add(updates.size());
-        for (Entry<Integer, TransporterStack> entry : updates.entrySet()) {
-            data.add(entry.getKey());
+        for (Int2ObjectMap.Entry<TransporterStack> entry : updates.int2ObjectEntrySet()) {
+            data.add(entry.getIntKey());
             entry.getValue().write(getTransmitter(), data);
         }
         data.add(deletes.size());

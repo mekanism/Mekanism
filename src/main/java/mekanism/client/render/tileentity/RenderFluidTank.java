@@ -1,8 +1,8 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderType;
@@ -21,8 +21,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
 
-    private static final FluidRenderMap<Map<Integer, Model3D>> cachedCenterFluids = new FluidRenderMap<>();
-    private static final FluidRenderMap<Map<Integer, Model3D>> cachedValveFluids = new FluidRenderMap<>();
+    private static final FluidRenderMap<AbstractInt2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
+    private static final FluidRenderMap<AbstractInt2ObjectMap<Model3D>> cachedValveFluids = new FluidRenderMap<>();
 
     private static int stages = 1400;
 
@@ -88,7 +88,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
         if (cachedValveFluids.containsKey(fluid)) {
             cachedValveFluids.get(fluid).put(stage, model);
         } else {
-            Map<Integer, Model3D> map = new Int2ObjectOpenHashMap<>();
+            AbstractInt2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
             map.put(stage, model);
             cachedValveFluids.put(fluid, map);
         }
@@ -114,7 +114,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
         if (cachedCenterFluids.containsKey(fluid)) {
             cachedCenterFluids.get(fluid).put(stage, model);
         } else {
-            Map<Integer, Model3D> map = new Int2ObjectOpenHashMap<>();
+            AbstractInt2ObjectMap<Model3D> map = new Int2ObjectOpenHashMap<>();
             map.put(stage, model);
             cachedCenterFluids.put(fluid, map);
         }

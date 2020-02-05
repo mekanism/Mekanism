@@ -1,5 +1,6 @@
 package mekanism.common.transmitters;
 
+import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap;
 import it.unimi.dsi.fastutil.ints.AbstractIntSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -45,7 +46,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
 
     private EnumColor color;
 
-    private Int2ObjectOpenHashMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
+    private AbstractInt2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
 
     public TransporterImpl(TileEntityLogisticalTransporter multiPart) {
         super(multiPart);
