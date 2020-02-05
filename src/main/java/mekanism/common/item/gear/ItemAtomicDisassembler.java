@@ -3,21 +3,12 @@ package mekanism.common.item.gear;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.common.MekanismLang;
-import mekanism.common.OreDictCache;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
@@ -35,29 +26,29 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.*;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.event.ForgeEventFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 //TODO: Use HoeItem#HOE_LOOKUP for figuring out what to do with different block types?
 // And ShovelItem#SHOVEL_LOOKUP for figuring out the grass -> grass path
@@ -144,18 +135,11 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 BlockState state = player.world.getBlockState(pos);
                 Block block = state.getBlock();
                 BlockRayTraceResult raytrace = doRayTrace(state, pos, player);
-                ItemStack stack = block.getPickBlock(state, raytrace, player.world, pos, player);
-                List<String> names = OreDictCache.getOreDictName(stack);
-                boolean isOre = false;
-                for (String s : names) {
-                    if (s.startsWith("ore") || s.equals("logWood")) {
-                        isOre = true;
-                        break;
-                    }
-                }
-                if (isOre || extended) {
+                ItemStack itemStackBlock = block.getPickBlock(state, raytrace, player.world, pos, player);
+                
+                if (matchTag(itemStackBlock, Tags.Items.ORES, ItemTags.LOGS) || extended) {
                     Coord4D orig = new Coord4D(pos, player.world);
-                    Set<Coord4D> found = new Finder(player, stack, orig, raytrace, extended ? MekanismConfig.general.disassemblerMiningRange.get() : -1).calc();
+                    Set<Coord4D> found = new Finder(player, itemStackBlock, orig, raytrace, extended ? MekanismConfig.general.disassemblerMiningRange.get() : -1).calc();
                     for (Coord4D coord : found) {
                         if (coord.equals(orig)) {
                             continue;
@@ -305,6 +289,20 @@ public class ItemAtomicDisassembler extends ItemEnergized {
     private int getDestroyEnergy(ItemStack itemStack, float hardness) {
         int destroyEnergy = MekanismConfig.general.disassemblerEnergyUsage.get() * getMode(itemStack).getEfficiency();
         return hardness == 0 ? destroyEnergy / 2 : destroyEnergy;
+    }
+
+    @SafeVarargs
+    private final boolean matchTag(ItemStack itemStack, Tag<Item>... tags) {
+        // Find collapse tags a list of paths.
+        List<String> tagPaths = Arrays.stream(tags)
+                .map(Tag::getId)
+                .map(ResourceLocation::getPath)
+                .collect(Collectors.toList());
+
+        // Get list of tags matching item collapsed to paths.
+        List<String> itemPaths = ItemTags.getCollection().getOwningTags(itemStack.getItem()).stream().map(ResourceLocation::getPath).collect(Collectors.toList());
+
+        return itemPaths.stream().anyMatch(tagPaths::contains);
     }
 
     public Mode getMode(ItemStack itemStack) {
