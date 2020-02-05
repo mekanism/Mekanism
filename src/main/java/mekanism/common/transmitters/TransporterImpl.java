@@ -180,7 +180,7 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
                 }
             }
 
-            if (deletes.size() > 0 || needsSync.size() > 0) {
+            if (!deletes.isEmpty() || !needsSync.isEmpty()) {
                 PacketTileEntity msg = new PacketTileEntity(coord, getTileEntity().makeBatchPacket(needsSync, deletes));
                 // Now remove any entries from transit that have been deleted
                 deletes.forEach((IntConsumer) (id -> transit.remove(id)));

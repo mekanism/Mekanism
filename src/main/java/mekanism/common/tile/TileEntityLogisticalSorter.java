@@ -135,10 +135,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
                 delayTicks = 10;
             }
-            if (playersUsing.size() > 0) {
-                for (PlayerEntity player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-                }
+            for (PlayerEntity player : playersUsing) {
+                Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
             }
         }
     }

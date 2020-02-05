@@ -64,7 +64,7 @@ public class ItemTierInstaller extends Item {
                 }
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                 if (tile instanceof IUpgradeableTile) {
-                    if (tile instanceof TileEntityMekanism && ((TileEntityMekanism) tile).playersUsing.size() > 0) {
+                    if (tile instanceof TileEntityMekanism && !((TileEntityMekanism) tile).playersUsing.isEmpty()) {
                         return ActionResultType.FAIL;
                     }
                     IUpgradeData upgradeData = ((IUpgradeableTile) tile).getUpgradeData();

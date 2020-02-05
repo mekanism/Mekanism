@@ -83,7 +83,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             prevStructure = clientHasStructure;
         }
 
-        if (playersUsing.size() > 0 && ((isRemote() && !clientHasStructure) || (!isRemote() && structure == null))) {
+        if (!playersUsing.isEmpty() && ((isRemote() && !clientHasStructure) || (!isRemote() && structure == null))) {
             for (PlayerEntity player : playersUsing) {
                 player.closeScreen();
             }

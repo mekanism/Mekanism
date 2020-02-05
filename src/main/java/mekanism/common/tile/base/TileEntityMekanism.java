@@ -430,7 +430,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
         onUpdate();
         if (!isRemote()) {
-            if (doAutoSync && playersUsing.size() > 0) {
+            if (doAutoSync && !playersUsing.isEmpty()) {
                 PacketTileEntity updateMessage = new PacketTileEntity(this);
                 for (PlayerEntity player : playersUsing) {
                     Mekanism.packetHandler.sendTo(updateMessage, (ServerPlayerEntity) player);

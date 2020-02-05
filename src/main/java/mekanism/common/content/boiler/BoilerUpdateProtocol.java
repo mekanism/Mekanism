@@ -84,7 +84,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
             return false;
         }
 
-        if (elements.size() > 0) {
+        if (!elements.isEmpty()) {
             structure.superheatingElements = new NodeCounter(new NodeChecker() {
                 @Override
                 public boolean isValid(Coord4D coord) {

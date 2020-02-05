@@ -236,9 +236,7 @@ public class PacketPortableTeleporter {
         }
 
         if (given != null) {
-            if (given.activeCoords.size() == 0) {
-                status = 3;
-            } else {
+            if (!given.activeCoords.isEmpty()) {
                 Coord4D coords = given.getClosestCoords(new Coord4D(player));
                 double energyNeeded = ItemPortableTeleporter.calculateEnergyCost(player, coords);
                 if (energyNeeded > item.getEnergy(stack)) {
@@ -246,7 +244,7 @@ public class PacketPortableTeleporter {
                 } else {
                     status = 1;
                 }
-            }
+            }//else status = 3 (already assigned to this value)
         }
         Mekanism.packetHandler.sendTo(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_RESPONSE, hand, given, status, publicFreqs, privateFreqs),
               (ServerPlayerEntity) player);

@@ -144,7 +144,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             if (MekanismUtils.canFunction(this) && status == 1 && teleDelay == 0) {
                 teleport();
             }
-            if (teleDelay == 0 && didTeleport.size() > 0) {
+            if (teleDelay == 0 && !didTeleport.isEmpty()) {
                 cleanTeleportCache();
             }
 

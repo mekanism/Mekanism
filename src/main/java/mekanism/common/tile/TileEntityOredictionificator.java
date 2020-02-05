@@ -77,10 +77,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            if (playersUsing.size() > 0) {
-                for (PlayerEntity player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-                }
+            for (PlayerEntity player : playersUsing) {
+                Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
             }
 
             didProcess = false;

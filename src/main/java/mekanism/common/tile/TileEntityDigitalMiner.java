@@ -285,10 +285,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 delayTicks--;
             }
 
-            if (playersUsing.size() > 0) {
-                for (PlayerEntity player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getSmallPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-                }
+            for (PlayerEntity player : playersUsing) {
+                Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getSmallPacket(new TileNetworkList())), (ServerPlayerEntity) player);
             }
             prevEnergy = getEnergy();
         }

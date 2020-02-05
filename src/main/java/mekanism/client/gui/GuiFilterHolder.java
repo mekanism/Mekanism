@@ -88,13 +88,13 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         } else {
             for (Entry<ITagFilter<?>, StackData> entry : oreDictStacks.entrySet()) {
                 StackData data = entry.getValue();
-                if (data.iterStacks != null && data.iterStacks.size() == 0) {
+                if (data.iterStacks != null && data.iterStacks.isEmpty()) {
                     data.renderStack = ItemStack.EMPTY;
                 }
             }
             for (Entry<IModIDFilter<?>, StackData> entry : modIDStacks.entrySet()) {
                 StackData data = entry.getValue();
-                if (data.iterStacks != null && data.iterStacks.size() == 0) {
+                if (data.iterStacks != null && data.iterStacks.isEmpty()) {
                     data.renderStack = ItemStack.EMPTY;
                 }
             }
@@ -238,7 +238,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     private void setNextRenderStack(StackData data) {
-        if (data.iterStacks != null && data.iterStacks.size() > 0) {
+        if (data.iterStacks != null && !data.iterStacks.isEmpty()) {
             if (data.stackIndex == -1 || data.stackIndex == data.iterStacks.size() - 1) {
                 data.stackIndex = 0;
             } else if (data.stackIndex < data.iterStacks.size() - 1) {

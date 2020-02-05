@@ -51,17 +51,17 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
     public void onUpdate() {
         prevLidAngle = lidAngle;
         float increment = 0.1F;
-        if ((playersUsing.size() > 0) && (lidAngle == 0.0F)) {
+        if (!playersUsing.isEmpty() && lidAngle == 0.0F) {
             world.playSound(null, getPos().getX() + 0.5F, getPos().getY() + 0.5D, getPos().getZ() + 0.5F,
                   SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, (world.rand.nextFloat() * 0.1F) + 0.9F);
         }
 
-        if ((playersUsing.size() == 0 && lidAngle > 0.0F) || (playersUsing.size() > 0 && lidAngle < 1.0F)) {
+        if ((playersUsing.isEmpty() && lidAngle > 0.0F) || (!playersUsing.isEmpty() && lidAngle < 1.0F)) {
             float angle = lidAngle;
-            if (playersUsing.size() > 0) {
-                lidAngle += increment;
-            } else {
+            if (playersUsing.isEmpty()) {
                 lidAngle -= increment;
+            } else {
+                lidAngle += increment;
             }
             if (lidAngle > 1.0F) {
                 lidAngle = 1.0F;

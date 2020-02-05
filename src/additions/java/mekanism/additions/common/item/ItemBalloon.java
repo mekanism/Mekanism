@@ -77,7 +77,7 @@ public class ItemBalloon extends Item {
             BlockPos pos = context.getPos();
             AxisAlignedBB bound = new AxisAlignedBB(pos, pos.add(1, 3, 1));
             List<EntityBalloon> balloonsNear = player.world.getEntitiesWithinAABB(EntityBalloon.class, bound);
-            if (balloonsNear.size() > 0) {
+            if (!balloonsNear.isEmpty()) {
                 return ActionResultType.FAIL;
             }
             World world = context.getWorld();
