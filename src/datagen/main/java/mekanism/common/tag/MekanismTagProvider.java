@@ -12,6 +12,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.Items;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
@@ -43,6 +44,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addFluids();
         addSlurryTags(MekanismGases.IRON_SLURRY, MekanismGases.GOLD_SLURRY, MekanismGases.OSMIUM_SLURRY, MekanismGases.COPPER_SLURRY, MekanismGases.TIN_SLURRY);
         addInfuseTags();
+        getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
     }
 
     private void addBoxBlacklist() {

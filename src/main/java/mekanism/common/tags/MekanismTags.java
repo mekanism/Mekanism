@@ -146,6 +146,7 @@ public class MekanismTags {
     public static class Blocks {
 
         public static final Tag<Block> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
+        public static final Tag<Block> ATOMIC_DISASSEMBLER_ORE = tag("atomic_disassembler_ore");
 
         public static final Tag<Block> CHESTS_ELECTRIC = forgeTag("chests/electric");
         public static final Tag<Block> CHESTS_PERSONAL = forgeTag("chests/personal");

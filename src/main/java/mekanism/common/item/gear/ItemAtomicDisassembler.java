@@ -1,26 +1,23 @@
 package mekanism.common.item.gear;
 
 import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.common.MekanismLang;
-import mekanism.common.OreDictCache;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -34,10 +31,12 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.stats.Stats;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
@@ -46,17 +45,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceContext.BlockMode;
-import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants.WorldEvents;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
 
 //TODO: Use HoeItem#HOE_LOOKUP for figuring out what to do with different block types?
@@ -122,64 +116,66 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         return true;
     }
 
-    private BlockRayTraceResult doRayTrace(BlockState state, BlockPos pos, PlayerEntity player) {
-        Vec3d positionEyes = player.getEyePosition(1.0F);
-        Vec3d playerLook = player.getLook(1.0F);
-        double blockReachDistance = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
-        Vec3d maxReach = positionEyes.add(playerLook.x * blockReachDistance, playerLook.y * blockReachDistance, playerLook.z * blockReachDistance);
-        //TODO: Fix this
-        BlockRayTraceResult res = player.world.rayTraceBlocks(new RayTraceContext(positionEyes, playerLook, BlockMode.COLLIDER, FluidMode.NONE, player));
-        //RayTraceResult res = state.collisionRayTrace(player.world, pos, playerLook, maxReach);
-        //TODO: Should the miss have a different vector
-        return res != null ? res : BlockRayTraceResult.createMiss(Vec3d.ZERO, Direction.UP, pos);
-    }
-
     @Override
     public boolean onBlockStartBreak(ItemStack itemStack, BlockPos pos, PlayerEntity player) {
-        super.onBlockStartBreak(itemStack, pos, player);
-        if (!player.world.isRemote && !player.isCreative()) {
+        World world = player.world;
+        if (!world.isRemote && !player.isCreative()) {
             Mode mode = getMode(itemStack);
             boolean extended = mode == Mode.EXTENDED_VEIN;
             if (extended || mode == Mode.VEIN) {
-                BlockState state = player.world.getBlockState(pos);
-                Block block = state.getBlock();
-                BlockRayTraceResult raytrace = doRayTrace(state, pos, player);
-                ItemStack stack = block.getPickBlock(state, raytrace, player.world, pos, player);
-                List<String> names = OreDictCache.getOreDictName(stack);
-                boolean isOre = false;
-                for (String s : names) {
-                    if (s.startsWith("ore") || s.equals("logWood")) {
-                        isOre = true;
-                        break;
-                    }
+                BlockState state = world.getBlockState(pos);
+                if (state.getBlock() instanceof BlockBounding) {
+                    //Even though we now handle breaking bounding blocks properly, don't allow vein mining
+                    // them as an added safety measure
+                    return super.onBlockStartBreak(itemStack, pos, player);
                 }
-                if (isOre || extended) {
-                    Coord4D orig = new Coord4D(pos, player.world);
-                    Set<Coord4D> found = new Finder(player, stack, orig, raytrace, extended ? MekanismConfig.general.disassemblerMiningRange.get() : -1).calc();
-                    for (Coord4D coord : found) {
-                        if (coord.equals(orig)) {
+                //If it is extended or should be treated as an ore
+                if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                    ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
+                    Set<BlockPos> found = new Finder(state, pos, world, extended ? MekanismConfig.general.disassemblerMiningRange.get() : -1).calc();
+                    for (BlockPos foundPos : found) {
+                        if (pos.equals(foundPos)) {
+                            //TODO: Make it so this just doesn't get added instead of specifically checking for it
                             continue;
                         }
-                        BlockPos coordPos = coord.getPos();
-                        BlockState coordState = player.world.getBlockState(coordPos);
-                        int destroyEnergy = getDestroyEnergy(itemStack, coordState.getBlockHardness(player.world, coordPos));
-                        if (getEnergy(itemStack) < destroyEnergy) {
+                        BlockState foundState = world.getBlockState(foundPos);
+                        int destroyEnergy = getDestroyEnergy(itemStack, foundState.getBlockHardness(world, foundPos));
+                        double energy = getEnergy(itemStack);
+                        if (energy < destroyEnergy) {
+                            //If we don't have energy to break the block continue
+                            //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
+                            // Given we validate the blocks are the same but their block states may be different thus making them have different
+                            // block hardness values in a modded context
                             continue;
                         }
-                        Block block2 = coordState.getBlock();
-                        //TODO: Should these be using coordState instead of state??
-                        block2.onBlockHarvested(player.world, coordPos, state, player);
-                        player.world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coordPos, Block.getStateId(state));
-                        player.world.removeBlock(coordPos, false);
-                        //TODO: Check this
-                        block2.onReplaced(state, player.world, coordPos, Blocks.AIR.getDefaultState(), false);
-                        Block.spawnDrops(state, player.world, coordPos, MekanismUtils.getTileEntity(player.world, coordPos));
-                        setEnergy(itemStack, getEnergy(itemStack) - destroyEnergy);
+                        int exp = ForgeHooks.onBlockBreakEvent(world, serverPlayerEntity.interactionManager.getGameType(), serverPlayerEntity, foundPos);
+                        if (exp == -1) {
+                            //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
+                            continue;
+                        }
+                        //Otherwise break the block
+                        Block block = foundState.getBlock();
+                        //Get the tile now so that we have it for when we try to harvest the block
+                        TileEntity tileEntity = MekanismUtils.getTileEntity(world, foundPos);
+                        //Remove the block
+                        boolean removed = foundState.removedByPlayer(world, foundPos, player, true, world.getFluidState(foundPos));
+                        if (removed) {
+                            block.onPlayerDestroy(world, foundPos, foundState);
+                            //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
+                            block.harvestBlock(world, player, foundPos, foundState, tileEntity, itemStack);
+                            player.addStat(Stats.ITEM_USED.get(this));
+                            if (exp > 0) {
+                                //If we have xp drop it
+                                block.dropXpOnBlockBreak(world, foundPos, exp);
+                            }
+                            //Use energy
+                            setEnergy(itemStack, energy - destroyEnergy);
+                        }
                     }
                 }
             }
         }
-        return false;
+        return super.onBlockStartBreak(itemStack, pos, player);
     }
 
     @Nonnull
@@ -389,71 +385,43 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     public static class Finder {
 
-        public static Map<Block, List<Block>> ignoreBlocks = new Object2ObjectOpenHashMap<>();
-
-        static {
-            ignoreBlocks.put(Blocks.REDSTONE_ORE, Collections.singletonList(Blocks.REDSTONE_ORE));
-        }
-
-        private final PlayerEntity player;
-        public final World world;
-        public final ItemStack stack;
-        public final Coord4D location;
-        public final Set<Coord4D> found = new ObjectOpenHashSet<>();
-        private final RayTraceResult rayTraceResult;
+        private final Set<BlockPos> found = new ObjectOpenHashSet<>();
+        private final BlockPos location;
         private final Block startBlock;
-        private final boolean isWood;
+        private final IWorld world;
         private final int maxRange;
         private final int maxCount;
 
-        public Finder(PlayerEntity p, ItemStack s, Coord4D loc, RayTraceResult traceResult, int range) {
-            player = p;
-            world = p.world;
-            stack = s;
+        public Finder(BlockState state, BlockPos loc, IWorld world, int range) {
+            this.world = world;
             location = loc;
-            startBlock = loc.getBlock(world);
-            rayTraceResult = traceResult;
-            isWood = stack.getItem().isIn(ItemTags.LOGS);
+            startBlock = state.getBlock();
             maxRange = range;
             maxCount = MekanismConfig.general.disassemblerMiningCount.get() - 1;
         }
 
-        public void loop(Coord4D pointer) {
-            if (found.contains(pointer) || found.size() > maxCount) {
+        public void loop(BlockPos pointer) {
+            if (found.size() > maxCount || found.contains(pointer)) {
                 return;
             }
             found.add(pointer);
             for (Direction side : EnumUtils.DIRECTIONS) {
-                Coord4D coord = pointer.offset(side);
-                if (maxRange > 0 && location.distanceTo(coord) > maxRange) {
-                    continue;
-                }
-                if (world.isBlockLoaded(coord.getPos())) {
-                    Block block = coord.getBlock(world);
-                    //TODO: Verify this works as a replacement for the below commented code
-                    if (block == startBlock) {
-                        loop(coord);
+                BlockPos pos = pointer.offset(side);
+                if (maxRange == -1 || Math.sqrt(location.distanceSq(pos)) <= maxRange) {
+                    if (world.isBlockLoaded(pos) && startBlock == world.getBlockState(pos).getBlock()) {
+                        //TODO: This here given we don't finish checking directions before adding the ones that
+                        // we want to loop is why https://github.com/mekanism/Mekanism/issues/5767 is a thing
+                        // as we are doing things recursively. Might be cleaner to just make this not use recursion
+                        // or do so to a lesser extent
+                        loop(pos);
                     }
-                    /*if (checkID(block)) {
-                        ItemStack blockStack = block.getPickBlock(coord.getBlockState(world), rayTraceResult, world, coord.getPos(), player);
-                        if (ItemHandlerHelper.canItemStacksStack(stack, blockStack) || (block == startBlock && isWood && coord.getBlockMeta(world) % 4 == stack.getDamage() % 4)) {
-                            loop(coord);
-                        }
-                    }*/
                 }
             }
         }
 
-        public Set<Coord4D> calc() {
+        public Set<BlockPos> calc() {
             loop(location);
             return found;
-        }
-
-        public boolean checkID(Block b) {
-            Block origBlock = location.getBlock(world);
-            //TODO: Is there a point in ignored at all anyways
-            List<Block> ignored = ignoreBlocks.get(origBlock);
-            return ignored == null ? b == origBlock : ignored.contains(b);
         }
     }
 

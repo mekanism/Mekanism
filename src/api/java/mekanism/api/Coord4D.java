@@ -1,6 +1,5 @@
 package mekanism.api;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -107,20 +106,6 @@ public class Coord4D {//TODO: Replace this with GlobalPos
     }
 
     /**
-     * Gets the Block value of the block representing this Coord4D.
-     *
-     * @param world - world this Coord4D is in
-     *
-     * @return the Block value of this Coord4D's block
-     */
-    public Block getBlock(IWorldReader world) {
-        if (!world.isBlockLoaded(getPos())) {
-            return null;
-        }
-        return world.getBlockState(getPos()).getBlock();
-    }
-
-    /**
      * Writes this Coord4D's data to an CompoundNBT.
      *
      * @param nbtTags - tag compound to write to
@@ -199,17 +184,6 @@ public class Coord4D {//TODO: Replace this with GlobalPos
     }
 
     /**
-     * Creates and returns a new Coord4D with values representing the difference between the defined Coord4D
-     *
-     * @param other - the Coord4D to subtract from this
-     *
-     * @return a Coord4D representing the distance between the defined Coord4D
-     */
-    public Coord4D difference(Coord4D other) {
-        return new Coord4D(x - other.x, y - other.y, z - other.z, dimension);
-    }
-
-    /**
      * A method used to find the Direction represented by the distance of the defined Coord4D. Most likely won't have many applicable uses.
      *
      * @param other - Coord4D to find the side difference of
@@ -217,7 +191,7 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      * @return Direction representing the side the defined relative Coord4D is on to this
      */
     public Direction sideDifference(Coord4D other) {
-        Coord4D diff = difference(other);
+        Coord4D diff = new Coord4D(x - other.x, y - other.y, z - other.z, dimension);;
         for (Direction side : DIRECTIONS) {
             if (side.getXOffset() == diff.x && side.getYOffset() == diff.y && side.getZOffset() == diff.z) {
                 return side;
