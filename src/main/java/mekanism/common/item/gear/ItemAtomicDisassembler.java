@@ -2,6 +2,7 @@ package mekanism.common.item.gear;
 
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +21,6 @@ import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -144,10 +144,9 @@ public class ItemAtomicDisassembler extends ItemEnergized {
                 //If it is extended or should be treated as an ore
                 if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
-                    Set<BlockPos> found = new Finder(state, pos, world, extended ? MekanismConfig.general.disassemblerMiningRange.get() : -1).calc();
+                    List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.general.disassemblerMiningRange.get() : -1);
                     for (BlockPos foundPos : found) {
                         if (pos.equals(foundPos)) {
-                            //TODO: Make it so this just doesn't get added instead of specifically checking for it
                             continue;
                         }
                         BlockState foundState = world.getBlockState(foundPos);
@@ -188,6 +187,33 @@ public class ItemAtomicDisassembler extends ItemEnergized {
             }
         }
         return super.onBlockStartBreak(itemStack, pos, player);
+    }
+
+    private static List<BlockPos> findPositions(BlockState state, BlockPos location, IWorld world, int maxRange) {
+        List<BlockPos> found = new ArrayList<>();
+        Set<BlockPos> checked = new ObjectOpenHashSet<>();
+        found.add(location);
+        Block startBlock = state.getBlock();
+        int maxCount = MekanismConfig.general.disassemblerMiningCount.get() - 1;
+        for (int i = 0; i < found.size(); i++) {
+            BlockPos blockPos = found.get(i);
+            checked.add(blockPos);
+            for (BlockPos pos : BlockPos.getAllInBoxMutable(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
+                //We can check contains as mutable
+                if (!checked.contains(pos)) {
+                    if (maxRange == -1 || Math.sqrt(location.distanceSq(pos)) <= maxRange) {
+                        if (world.isBlockLoaded(pos) && startBlock == world.getBlockState(pos).getBlock()) {
+                            //Make sure to add it as immutable
+                            found.add(pos.toImmutable());
+                            if (found.size() > maxCount) {
+                                return found;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return found;
     }
 
     @Nonnull
@@ -505,54 +531,5 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         public boolean isEnabled() {
             return checkEnabled.get();
         }
-    }
-
-    public static class Finder {
-
-        private final Set<BlockPos> found = new ObjectOpenHashSet<>();
-        private final BlockPos location;
-        private final Block startBlock;
-        private final IWorld world;
-        private final int maxRange;
-        private final int maxCount;
-
-        public Finder(BlockState state, BlockPos loc, IWorld world, int range) {
-            this.world = world;
-            location = loc;
-            startBlock = state.getBlock();
-            maxRange = range;
-            maxCount = MekanismConfig.general.disassemblerMiningCount.get() - 1;
-        }
-
-        public void loop(BlockPos pointer) {
-            if (found.size() > maxCount || found.contains(pointer)) {
-                return;
-            }
-            found.add(pointer);
-            for (Direction side : EnumUtils.DIRECTIONS) {
-                BlockPos pos = pointer.offset(side);
-                if (maxRange == -1 || Math.sqrt(location.distanceSq(pos)) <= maxRange) {
-                    if (world.isBlockLoaded(pos) && startBlock == world.getBlockState(pos).getBlock()) {
-                        //TODO: This here given we don't finish checking directions before adding the ones that
-                        // we want to loop is why https://github.com/mekanism/Mekanism/issues/5767 is a thing
-                        // as we are doing things recursively. Might be cleaner to just make this not use recursion
-                        // or do so to a lesser extent
-                        loop(pos);
-                    }
-                }
-            }
-        }
-
-        public Set<BlockPos> calc() {
-            loop(location);
-            return found;
-        }
-    }
-
-    @FunctionalInterface
-    interface ItemUseConsumer {
-
-        //Used to reference useHoe and useShovel via lambda references
-        ActionResultType use(ItemStack stack, PlayerEntity player, ItemUseContext context);
     }
 }
