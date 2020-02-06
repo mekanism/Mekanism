@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Chunk3D;
@@ -50,6 +51,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -1026,6 +1028,33 @@ public final class MekanismUtils {
             effect.removeAttributesModifiersFromEntity(entity, entity.getAttributes(), id.getAmplifier());
             effect.applyAttributesModifiersToEntity(entity, entity.getAttributes(), id.getAmplifier());
         }
+    }
+
+    /**
+     * Performs a set of actions, until we find a success or run out of actions.
+     *
+     * @implNote Only returns that we failed if all the tested actions failed.
+     */
+    @SafeVarargs
+    public static ActionResultType performActions(ActionResultType firstAction, Supplier<ActionResultType>... secondaryActions) {
+        if (firstAction == ActionResultType.SUCCESS) {
+            return ActionResultType.SUCCESS;
+        }
+        ActionResultType result = firstAction;
+        boolean hasFailed = result == ActionResultType.FAIL;
+        for (Supplier<ActionResultType> secondaryAction : secondaryActions) {
+            result = secondaryAction.get();
+            if (result == ActionResultType.SUCCESS) {
+                //If we were successful
+                return ActionResultType.SUCCESS;
+            }
+            hasFailed &= result == ActionResultType.FAIL;
+        }
+        if (hasFailed) {
+            //If at least one step failed, consider ourselves unsuccessful
+            return ActionResultType.FAIL;
+        }
+        return ActionResultType.PASS;
     }
 
     /**

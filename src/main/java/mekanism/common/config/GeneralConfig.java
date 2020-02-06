@@ -37,6 +37,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue ENERGY_PER_REDSTONE;
     public final CachedIntValue disassemblerEnergyUsage;
     public final CachedIntValue disassemblerEnergyUsageHoe;
+    public final CachedIntValue disassemblerEnergyUsageShovel;
+    public final CachedIntValue disassemblerEnergyUsageAxe;
     public final CachedIntValue disassemblerEnergyUsageWeapon;
     public final CachedIntValue disassemblerMiningRange;
     public final CachedIntValue disassemblerMiningCount;
@@ -128,6 +130,10 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("energyUsage", 10));
         disassemblerEnergyUsageHoe = CachedIntValue.wrap(this, builder.comment("Cost in Joules of using the Atomic Disassembler as a hoe.")
               .define("energyUsageHoe", 10));
+        disassemblerEnergyUsageShovel = CachedIntValue.wrap(this, builder.comment("Cost in Joules of using the Atomic Disassembler as a shovel for making paths.")
+              .define("energyUsageShovel", 10));
+        disassemblerEnergyUsageAxe = CachedIntValue.wrap(this, builder.comment("Cost in Joules of using the Atomic Disassembler as an axe for stripping logs.")
+              .define("energyUsageAxe", 10));
         disassemblerEnergyUsageWeapon = CachedIntValue.wrap(this, builder.comment("Cost in Joules of using the Atomic Disassembler as a weapon.")
               .define("energyUsageWeapon", 2_000));
         disassemblerMiningRange = CachedIntValue.wrap(this, builder.comment("The Range of the Atomic Disassembler Extended Vein Mining.")
