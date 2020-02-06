@@ -6,6 +6,7 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -21,6 +22,10 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
     public ReactorLogic logicType = ReactorLogic.DISABLED;
     public boolean activeCooled;
     public boolean prevOutputting;
+
+    public TileEntityReactorLogicAdapter() {
+        super(GeneratorsBlocks.REACTOR_LOGIC_ADAPTER);
+    }
 
     @Override
     public void onUpdate() {

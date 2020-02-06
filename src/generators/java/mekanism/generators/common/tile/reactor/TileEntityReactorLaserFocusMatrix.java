@@ -4,11 +4,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityReactorLaserFocusMatrix extends TileEntityReactorBlock implements ILaserReceptor {
+
+    public TileEntityReactorLaserFocusMatrix() {
+        super(GeneratorsBlocks.LASER_FOCUS_MATRIX);
+    }
 
     @Override
     public boolean isFrame() {
