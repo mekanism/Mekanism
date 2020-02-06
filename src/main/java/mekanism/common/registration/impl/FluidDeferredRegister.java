@@ -7,6 +7,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
@@ -17,6 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class FluidDeferredRegister {
 
+    private static final ResourceLocation OVERLAY = new ResourceLocation("minecraft", "block/water_overlay");
     private final String modid;
 
     private final DeferredRegister<Fluid> fluidRegister;
@@ -33,6 +35,8 @@ public class FluidDeferredRegister {
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> register(String name, FluidAttributes.Builder builder) {
         String flowingName = "flowing_" + name;
         String bucketName = name + "_bucket";
+        //For now all our fluids use the same "overlay" for being against glass as vanilla water.
+        builder.overlay(OVERLAY);
         //Create the registry object with dummy entries that we can use as part of the supplier but that works as use in suppliers
         FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRegistryObject = new FluidRegistryObject<>(modid, name);
         //Pass in suppliers that are wrapped instead of direct references to the registry objects, so that when we update the registry object to
