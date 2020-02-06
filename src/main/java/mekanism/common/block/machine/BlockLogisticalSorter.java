@@ -24,7 +24,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -66,7 +66,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, IHasGui<TileEntityLogisticalSorter>, ISupportsUpgrades, IStateFacing, IStateActive,
-      IBlockSound, IHasInventory, ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter>, ISupportsComparator, IHasSecurity, IStateWaterLogged, IHasDescription {
+      IBlockSound, IHasInventory, ISupportsRedstone, IHasTileEntity<TileEntityLogisticalSorter>, ISupportsComparator, IHasSecurity, IStateFluidLoggable, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 

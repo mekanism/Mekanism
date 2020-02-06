@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.util.MekanismUtils;
@@ -35,7 +35,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 //TODO: Extend MekanismBlock. Not done yet as checking is needed to ensure how drops happen still happens correctly and things in the super class don't mess this up
-public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock>, IStateWaterLogged {
+public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock>, IStateFluidLoggable {
 
     @Nullable
     private static BlockPos getMainBlockPos(IBlockReader world, BlockPos thisPos) {

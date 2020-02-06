@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceGateBlock;
@@ -15,14 +15,14 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 
-public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlock, IStateWaterLogged {
+public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlock, IStateFluidLoggable {
 
     private final EnumColor color;
 
     public BlockPlasticFenceGate(EnumColor color) {
         super(Properties.create(BlockPlastic.PLASTIC, color.getMapColor()).hardnessAndResistance(5F, 10F));
         this.color = color;
-        this.setDefaultState(getDefaultState().with(BlockStateHelper.WATERLOGGED, false));
+        this.setDefaultState(getDefaultState().with(BlockStateHelper.FLUID_LOGGED, false));
     }
 
     @Override

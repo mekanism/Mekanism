@@ -3,7 +3,7 @@ package mekanism.common.block.transmitter;
 import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.common.block.BlockMekanism;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
@@ -30,7 +30,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class BlockTransmitter extends BlockMekanism implements IStateWaterLogged {
+public abstract class BlockTransmitter extends BlockMekanism implements IStateFluidLoggable {
 
     protected BlockTransmitter() {
         super(Block.Properties.create(Material.PISTON).hardnessAndResistance(1F, 10F));

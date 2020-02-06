@@ -11,7 +11,7 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -46,7 +46,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class BlockSecurityDesk extends BlockMekanism implements IStateFacing, IHasGui<TileEntitySecurityDesk>, IHasInventory, IHasTileEntity<TileEntitySecurityDesk>,
-      IStateWaterLogged, IHasDescription {
+      IStateFluidLoggable, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

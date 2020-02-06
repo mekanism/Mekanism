@@ -28,7 +28,7 @@ import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.MetallurgicInfuserContainer;
@@ -69,7 +69,7 @@ import net.minecraft.world.World;
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockMetallurgicInfuser extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasModel, IHasGui<TileEntityMetallurgicInfuser>,
       IStateFacing, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityMetallurgicInfuser>, IBlockSound, ISupportsRedstone,
-      ISupportsComparator, IStateActive, IStateWaterLogged, IHasDescription, IUpgradeableBlock {
+      ISupportsComparator, IStateActive, IStateFluidLoggable, IHasDescription, IUpgradeableBlock {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

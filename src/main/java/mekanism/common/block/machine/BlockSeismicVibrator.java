@@ -17,7 +17,7 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.SeismicVibratorContainer;
@@ -53,7 +53,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockSeismicVibrator extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntitySeismicVibrator>, IStateFacing, IStateActive,
-      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySeismicVibrator>, IStateWaterLogged, IHasDescription {
+      IHasInventory, IHasSecurity, ISupportsRedstone, IHasTileEntity<TileEntitySeismicVibrator>, IStateFluidLoggable, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

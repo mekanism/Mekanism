@@ -12,7 +12,7 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -44,7 +44,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockWindGenerator extends BlockMekanism implements IHasGui<TileEntityWindGenerator>, IBlockElectric, IStateFacing, IHasInventory, IHasSecurity, IBlockSound,
-      IHasTileEntity<TileEntityWindGenerator>, IStateActive, IStateWaterLogged, IHasDescription {
+      IHasTileEntity<TileEntityWindGenerator>, IStateActive, IStateFluidLoggable, IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

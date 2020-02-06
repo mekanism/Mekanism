@@ -23,7 +23,7 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.ChemicalInfuserContainer;
@@ -61,7 +61,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockChemicalInfuser extends BlockMekanism implements IBlockElectric, IHasModel, IHasGui<TileEntityChemicalInfuser>, ISupportsUpgrades, IStateFacing,
-      IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalInfuser>, IBlockSound, ISupportsRedstone, ISupportsComparator, IStateWaterLogged,
+      IStateActive, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityChemicalInfuser>, IBlockSound, ISupportsRedstone, ISupportsComparator, IStateFluidLoggable,
       IHasDescription {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];

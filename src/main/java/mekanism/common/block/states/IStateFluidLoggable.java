@@ -2,7 +2,8 @@ package mekanism.common.block.states;
 
 import javax.annotation.Nonnull;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
+import net.minecraft.block.IBucketPickupHandler;
+import net.minecraft.block.ILiquidContainer;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
@@ -12,7 +13,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 
 //TODO: The below TODOs go off an assumption of there being some form of forge patch first to support position information for fluid states
-public interface IStateWaterLogged extends IWaterLoggable {
+public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContainer {
 
     default boolean isValidFluid(@Nonnull Fluid fluid) {
         //TODO: If we support a tile entity then return true, otherwise only allow water
@@ -30,7 +31,7 @@ public interface IStateWaterLogged extends IWaterLoggable {
 
     @Nonnull
     default IFluidState getFluid(@Nonnull BlockState state) {
-        if (state.get(BlockStateHelper.WATERLOGGED)) {
+        if (state.get(BlockStateHelper.FLUID_LOGGED)) {
             //TODO: Proxy this via the TileEntity if there is one, rather than using a hard coded getSupportedFluid
             Fluid fluid = getSupportedFluid();
             if (fluid instanceof FlowingFluid) {
@@ -42,7 +43,7 @@ public interface IStateWaterLogged extends IWaterLoggable {
     }
 
     default void updateFluids(@Nonnull BlockState state, @Nonnull IWorld world, @Nonnull BlockPos currentPos) {
-        if (state.get(BlockStateHelper.WATERLOGGED)) {
+        if (state.get(BlockStateHelper.FLUID_LOGGED)) {
             //TODO: Get proper fluid from the TileEntity
             Fluid fluid = getSupportedFluid();
             world.getPendingFluidTicks().scheduleTick(currentPos, fluid, fluid.getTickRate(world));
@@ -51,7 +52,7 @@ public interface IStateWaterLogged extends IWaterLoggable {
 
     @Override
     default boolean canContainFluid(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
-        return !state.get(BlockStateHelper.WATERLOGGED) && isValidFluid(fluid);
+        return !state.get(BlockStateHelper.FLUID_LOGGED) && isValidFluid(fluid);
     }
 
     /**
@@ -62,7 +63,7 @@ public interface IStateWaterLogged extends IWaterLoggable {
         Fluid fluid = fluidState.getFluid();
         if (canContainFluid(world, pos, state, fluid)) {
             if (!world.isRemote()) {
-                world.setBlockState(pos, state.with(BlockStateHelper.WATERLOGGED, true), 3);
+                world.setBlockState(pos, state.with(BlockStateHelper.FLUID_LOGGED, true), 3);
                 world.getPendingFluidTicks().scheduleTick(pos, fluid, fluid.getTickRate(world));
                 //TODO: Update the TileEntity if there is one with the proper fluid type
             }
@@ -74,8 +75,8 @@ public interface IStateWaterLogged extends IWaterLoggable {
     @Nonnull
     @Override
     default Fluid pickupFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
-        if (state.get(BlockStateHelper.WATERLOGGED)) {
-            world.setBlockState(pos, state.with(BlockStateHelper.WATERLOGGED, false), 3);
+        if (state.get(BlockStateHelper.FLUID_LOGGED)) {
+            world.setBlockState(pos, state.with(BlockStateHelper.FLUID_LOGGED, false), 3);
             //TODO: Get proper fluid from block
             return getSupportedFluid();
         }

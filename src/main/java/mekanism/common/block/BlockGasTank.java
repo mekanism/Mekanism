@@ -15,7 +15,7 @@ import mekanism.common.block.interfaces.ITieredBlock;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.GasTankContainer;
 import mekanism.common.registries.MekanismBlocks;
@@ -46,7 +46,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
 public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGasTank>, IStateFacing, ITieredBlock<GasTankTier>, IHasInventory, IHasSecurity,
-      ISupportsRedstone, IHasTileEntity<TileEntityGasTank>, ISupportsComparator, IStateWaterLogged, IHasDescription, IUpgradeableBlock {
+      ISupportsRedstone, IHasTileEntity<TileEntityGasTank>, ISupportsComparator, IStateFluidLoggable, IHasDescription, IUpgradeableBlock {
 
     private static final VoxelShape[] bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 

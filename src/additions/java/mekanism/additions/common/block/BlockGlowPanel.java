@@ -6,7 +6,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.block.Block;
@@ -21,7 +21,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockGlowPanel extends BlockMekanism implements IStateFacing, IColoredBlock, IStateWaterLogged {
+public class BlockGlowPanel extends BlockMekanism implements IStateFacing, IColoredBlock, IStateFluidLoggable {
 
     private static VoxelShape[] bounds = new VoxelShape[EnumUtils.DIRECTIONS.length];
 

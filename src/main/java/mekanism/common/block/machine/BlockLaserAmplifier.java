@@ -17,7 +17,7 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.LaserAmplifierContainer;
@@ -53,7 +53,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserAmplifier>, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
-      IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator, IStateWaterLogged, IHasDescription {
+      IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator, IStateFluidLoggable, IHasDescription {
 
     //TODO: Mess with both the model and this so that it is technically hollow?
     private static final VoxelShape bounds = VoxelShapeUtils.combine(

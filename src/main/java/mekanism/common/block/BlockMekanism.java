@@ -15,7 +15,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
@@ -130,8 +130,8 @@ public abstract class BlockMekanism extends Block {
     @Override
     @Deprecated
     public IFluidState getFluidState(BlockState state) {
-        if (state.getBlock() instanceof IStateWaterLogged) {
-            return ((IStateWaterLogged) state.getBlock()).getFluid(state);
+        if (state.getBlock() instanceof IStateFluidLoggable) {
+            return ((IStateFluidLoggable) state.getBlock()).getFluid(state);
         }
         return super.getFluidState(state);
     }
@@ -140,8 +140,8 @@ public abstract class BlockMekanism extends Block {
     @Override
     public BlockState updatePostPlacement(BlockState state, Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
           @Nonnull BlockPos facingPos) {
-        if (state.getBlock() instanceof IStateWaterLogged) {
-            ((IStateWaterLogged) state.getBlock()).updateFluids(state, world, currentPos);
+        if (state.getBlock() instanceof IStateFluidLoggable) {
+            ((IStateFluidLoggable) state.getBlock()).updateFluids(state, world, currentPos);
         }
         return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
     }

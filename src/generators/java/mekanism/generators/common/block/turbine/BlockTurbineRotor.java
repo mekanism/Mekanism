@@ -5,7 +5,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -30,7 +30,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
-public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<TileEntityTurbineRotor>, IStateWaterLogged, IHasDescription {
+public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<TileEntityTurbineRotor>, IStateFluidLoggable, IHasDescription {
 
     private static final VoxelShape bounds = makeCuboidShape(6, 0, 6, 10, 16, 10);
 

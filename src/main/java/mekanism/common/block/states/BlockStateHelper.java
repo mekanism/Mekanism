@@ -33,8 +33,8 @@ public class BlockStateHelper {
     public static final BooleanProperty activeProperty = BooleanProperty.create("active");
     //Cardboard Box storage
     public static final BooleanProperty storageProperty = BooleanProperty.create("storage");
-    //Water Logged: TODO should we add some generic fluid logging property? Evaluate once fluids are in forge again
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    //Fluid logged. TODO: We may eventually want to make this not be using the same exact property as WATERLOGGED but name it differently
+    public static final BooleanProperty FLUID_LOGGED = BlockStateProperties.WATERLOGGED;
 
     public static BlockState getDefaultState(@Nonnull BlockState state) {
         Block block = state.getBlock();
@@ -42,9 +42,9 @@ public class BlockStateHelper {
             //Default things to not being active
             state = state.with(activeProperty, false);
         }
-        if (block instanceof IStateWaterLogged) {
+        if (block instanceof IStateFluidLoggable) {
             //Default the blocks to not being waterlogged, they have code to force waterlogging to true if being placed in water
-            state = state.with(WATERLOGGED, false);
+            state = state.with(FLUID_LOGGED, false);
         }
         return state;
     }
@@ -60,8 +60,8 @@ public class BlockStateHelper {
         if (block instanceof IStateStorage) {
             properties.add(storageProperty);
         }
-        if (block instanceof IStateWaterLogged) {
-            properties.add(WATERLOGGED);
+        if (block instanceof IStateFluidLoggable) {
+            properties.add(FLUID_LOGGED);
         }
         if (!properties.isEmpty()) {
             builder.add(properties.toArray(new IProperty[0]));
@@ -112,9 +112,9 @@ public class BlockStateHelper {
             }
             state = blockFacing.setDirection(state, newDirection);
         }
-        if (block instanceof IStateWaterLogged) {
+        if (block instanceof IStateFluidLoggable) {
             IFluidState fluidState = world.getFluidState(pos);
-            state = state.with(WATERLOGGED, fluidState.getFluid() == Fluids.WATER);
+            state = state.with(FLUID_LOGGED, fluidState.getFluid() == Fluids.WATER);
         }
         //TODO: I don't know if there is a tile entity yet so this stuff may not really matter
         //TODO: Set the proper defaults for the below ones, maybe do it by setting property defaults of everything
@@ -177,8 +177,8 @@ public class BlockStateHelper {
         if (oldBlock instanceof IStateStorage && newBlock instanceof IStateStorage) {
             newState = newState.with(storageProperty, oldState.get(storageProperty));
         }
-        if (oldBlock instanceof IStateWaterLogged && newBlock instanceof IStateWaterLogged) {
-            newState = newState.with(WATERLOGGED, oldState.get(WATERLOGGED));
+        if (oldBlock instanceof IStateFluidLoggable && newBlock instanceof IStateFluidLoggable) {
+            newState = newState.with(FLUID_LOGGED, oldState.get(FLUID_LOGGED));
         }
         return newState;
     }

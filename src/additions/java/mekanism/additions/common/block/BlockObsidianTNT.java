@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateWaterLogged;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,7 +26,7 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
-public class BlockObsidianTNT extends TNTBlock implements IStateWaterLogged {
+public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
 
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
           makeCuboidShape(0, 0, 0, 16, 3, 16),//Wooden1
