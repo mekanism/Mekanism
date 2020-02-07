@@ -808,7 +808,7 @@
   "tooltip.mekanism.bucket_mode": "水桶模式: %s",
   "tooltip.mekanism.fire_mode": "火焰模式: %s",
   "tooltip.mekanism.flowing": "跟隨: %s",
-  "tooltip.mekanism.hold_for_description": "按住 %s 或 %s 查看描述.",
+  "tooltip.mekanism.hold_for_description": "按住 %s 和 %s 查看描述.",
   "tooltip.mekanism.hold_for_details": "按住 %s 查看詳情.",
   "tooltip.mekanism.invalid": "(無效)",
   "tooltip.mekanism.inventory": "物品欄: %s",
