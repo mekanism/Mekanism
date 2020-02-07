@@ -104,16 +104,14 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
 
     private List<RECIPE_TYPE> cachedRecipes = Collections.emptyList();
     private final ResourceLocation registryName;
-    private final String name;
 
     private MekanismRecipeType(String name) {
-        this.name = name;
         this.registryName = Mekanism.rl(name);
     }
 
     @Override
     public String toString() {
-        return name;
+        return registryName.toString();
     }
 
     @Nonnull
