@@ -31,7 +31,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -451,8 +450,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            TileUtils.readTankData(dataStream, inputTank);
-            TileUtils.readTankData(dataStream, outputTank);
+            inputTank.setFluid(dataStream.readFluidStack());
+            outputTank.setFluid(dataStream.readFluidStack());
 
             structured = dataStream.readBoolean();
             controllerConflict = dataStream.readBoolean();
@@ -484,8 +483,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        TileUtils.addTankData(data, inputTank);
-        TileUtils.addTankData(data, outputTank);
+        data.add(inputTank.getFluid());
+        data.add(outputTank.getFluid());
         data.add(structured);
         data.add(controllerConflict);
         data.add(getActiveSolars());

@@ -7,12 +7,12 @@ import java.util.function.Supplier;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasTank;
 import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.common.PacketHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
-import mekanism.common.util.TileUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -102,8 +102,8 @@ public class InventoryFrequency extends Frequency {
     public void write(TileNetworkList data) {
         super.write(data);
         data.add(storedEnergy);
-        TileUtils.addTankData(data, storedFluid);
-        TileUtils.addTankData(data, storedGas);
+        data.add(storedFluid.getFluid());
+        data.add(storedGas.getStack());
         data.add(temperature);
     }
 
@@ -113,8 +113,8 @@ public class InventoryFrequency extends Frequency {
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
         storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
         storedEnergy = dataStream.readDouble();
-        TileUtils.readTankData(dataStream, storedFluid);
-        TileUtils.readTankData(dataStream, storedGas);
+        storedFluid.setFluid(dataStream.readFluidStack());
+        storedGas.setStack(PacketHandler.readGasStack(dataStream));
         temperature = dataStream.readDouble();
     }
 }

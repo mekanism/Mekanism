@@ -31,7 +31,6 @@ import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -197,11 +196,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             valve = dataStream.readInt();
             editMode = dataStream.readEnumValue(ContainerEditMode.class);
             if (valve > 0) {
-                valveFluid = TileUtils.readFluidStack(dataStream);
+                valveFluid = dataStream.readFluidStack();
             } else {
                 valveFluid = FluidStack.EMPTY;
             }
-            TileUtils.readTankData(dataStream, fluidTank);
+            fluidTank.setFluid(dataStream.readFluidStack());
             //Set the client's light to update just in case the value changed
             //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
             updateClientLight = true;
@@ -245,9 +244,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         data.add(valve);
         data.add(editMode);
         if (valve > 0) {
-            TileUtils.addFluidStack(data, valveFluid);
+            data.add(valveFluid);
         }
-        TileUtils.addTankData(data, fluidTank);
+        data.add(fluidTank.getFluid());
         return data;
     }
 

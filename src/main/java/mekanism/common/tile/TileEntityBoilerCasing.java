@@ -18,7 +18,6 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -169,8 +168,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             data.add(structure.temperature);
             data.add(structure.lastMaxBoil);
 
-            TileUtils.addFluidStack(data, structure.waterStored);
-            TileUtils.addFluidStack(data, structure.steamStored);
+            data.add(structure.waterStored);
+            data.add(structure.steamStored);
 
             structure.upperRenderLocation.write(data);
 
@@ -240,8 +239,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.temperature = dataStream.readDouble();
                 structure.lastMaxBoil = dataStream.readInt();
 
-                structure.waterStored = TileUtils.readFluidStack(dataStream);
-                structure.steamStored = TileUtils.readFluidStack(dataStream);
+                structure.waterStored = dataStream.readFluidStack();
+                structure.steamStored = dataStream.readFluidStack();
 
                 structure.upperRenderLocation = Coord4D.read(dataStream);
 

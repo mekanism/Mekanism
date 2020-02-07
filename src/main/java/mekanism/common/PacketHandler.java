@@ -1,12 +1,15 @@
 package mekanism.common;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import mekanism.api.Range4D;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.gas.GasStack;
+import mekanism.api.infuse.InfusionStack;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketClearRecipeCache;
@@ -42,13 +45,13 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -103,6 +106,10 @@ public class PacketHandler {
                 output.writeInt(((Direction) data).ordinal());
             } else if (data instanceof ItemStack) {
                 output.writeItemStack((ItemStack) data);
+            } else if (data instanceof FluidStack) {
+                output.writeFluidStack((FluidStack) data);
+            } else if (data instanceof ChemicalStack) {
+                writeChemicalStack(output, (ChemicalStack<?>) data);
             } else if (data instanceof CompoundNBT) {
                 output.writeCompoundTag((CompoundNBT) data);
             } else if (data instanceof ResourceLocation) {
@@ -117,14 +124,30 @@ public class PacketHandler {
                 for (byte b : (byte[]) data) {
                     output.writeByte(b);
                 }
-            } else if (data instanceof ArrayList) {
-                encode(((ArrayList<?>) data).toArray(), output);
-            } else if (data instanceof NonNullList) {
-                encode(((NonNullList<?>) data).toArray(), output);
+            } else if (data instanceof List) {
+                encode(((List<?>) data).toArray(), output);
             } else {
                 throw new RuntimeException("Un-encodable data passed to encode(): " + data + ", full data: " + Arrays.toString(dataValues));
             }
         }
+    }
+
+    //TODO: Move some of this chemical stuff to a util thing in API
+    public static void writeChemicalStack(PacketBuffer buffer, ChemicalStack<?> stack) {
+        if (stack.isEmpty()) {
+            buffer.writeBoolean(false);
+        } else {
+            buffer.writeBoolean(true);
+            stack.writeToPacket(buffer);
+        }
+    }
+
+    public static GasStack readGasStack(PacketBuffer buffer) {
+        return buffer.readBoolean() ? GasStack.readFromPacket(buffer) : GasStack.EMPTY;
+    }
+
+    public static InfusionStack readInfusionStack(PacketBuffer buffer) {
+        return buffer.readBoolean() ? InfusionStack.readFromPacket(buffer) : InfusionStack.EMPTY;
     }
 
     public static String readString(PacketBuffer buffer) {

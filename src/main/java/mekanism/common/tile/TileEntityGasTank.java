@@ -21,6 +21,7 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
@@ -232,7 +233,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         }
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            TileUtils.readTankData(dataStream, gasTank);
+            gasTank.setStack(PacketHandler.readGasStack(dataStream));
             dumping = dataStream.readEnumValue(GasMode.class);
         }
     }
@@ -256,7 +257,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        TileUtils.addTankData(data, gasTank);
+        data.add(gasTank.getStack());
         data.add(dumping);
         return data;
     }

@@ -23,6 +23,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -160,9 +161,9 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         super.handlePacketData(dataStream);
         if (isRemote()) {
             clientEnergyUsed = dataStream.readDouble();
-            TileUtils.readTankData(dataStream, leftTank);
-            TileUtils.readTankData(dataStream, rightTank);
-            TileUtils.readTankData(dataStream, centerTank);
+            leftTank.setStack(PacketHandler.readGasStack(dataStream));
+            rightTank.setStack(PacketHandler.readGasStack(dataStream));
+            centerTank.setStack(PacketHandler.readGasStack(dataStream));
         }
     }
 
@@ -170,9 +171,9 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(clientEnergyUsed);
-        TileUtils.addTankData(data, leftTank);
-        TileUtils.addTankData(data, rightTank);
-        TileUtils.addTankData(data, centerTank);
+        data.add(leftTank.getStack());
+        data.add(rightTank.getStack());
+        data.add(centerTank.getStack());
         return data;
     }
 

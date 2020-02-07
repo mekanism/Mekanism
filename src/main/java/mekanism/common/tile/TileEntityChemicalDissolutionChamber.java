@@ -22,6 +22,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -148,16 +149,16 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            TileUtils.readTankData(dataStream, injectTank);
-            TileUtils.readTankData(dataStream, outputTank);
+            injectTank.setStack(PacketHandler.readGasStack(dataStream));
+            outputTank.setStack(PacketHandler.readGasStack(dataStream));
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        TileUtils.addTankData(data, injectTank);
-        TileUtils.addTankData(data, outputTank);
+        data.add(injectTank.getStack());
+        data.add(outputTank.getStack());
         return data;
     }
 

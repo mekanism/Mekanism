@@ -17,6 +17,7 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
+import mekanism.common.PacketHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -26,7 +27,6 @@ import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -184,7 +184,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         super.handlePacketData(dataStream);
 
         if (isRemote()) {
-            TileUtils.readTankData(dataStream, fuelTank);
+            fuelTank.setStack(PacketHandler.readGasStack(dataStream));
             generationRate = dataStream.readDouble();
             output = dataStream.readDouble();
             clientUsed = dataStream.readInt();
@@ -194,7 +194,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        TileUtils.addTankData(data, fuelTank);
+        data.add(fuelTank.getStack());
         data.add(generationRate);
         data.add(output);
         data.add(clientUsed);

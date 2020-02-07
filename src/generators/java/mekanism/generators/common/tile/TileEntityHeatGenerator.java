@@ -26,7 +26,6 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.common.util.TileUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.Blocks;
@@ -187,8 +186,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
             lastTransferLoss = dataStream.readDouble();
             lastEnvironmentLoss = dataStream.readDouble();
-
-            TileUtils.readTankData(dataStream, lavaTank);
+            lavaTank.setFluid(dataStream.readFluidStack());
         }
     }
 
@@ -198,7 +196,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         data.add(producingEnergy);
         data.add(lastTransferLoss);
         data.add(lastEnvironmentLoss);
-        TileUtils.addTankData(data, lavaTank);
+        data.add(lavaTank.getFluid());
         return data;
     }
 

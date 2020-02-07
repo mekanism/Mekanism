@@ -24,6 +24,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ITankManager;
@@ -182,16 +183,16 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            TileUtils.readTankData(dataStream, inputTank);
-            TileUtils.readTankData(dataStream, outputTank);
+            inputTank.setStack(PacketHandler.readGasStack(dataStream));
+            outputTank.setStack(PacketHandler.readGasStack(dataStream));
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        TileUtils.addTankData(data, inputTank);
-        TileUtils.addTankData(data, outputTank);
+        data.add(inputTank.getStack());
+        data.add(outputTank.getStack());
         return data;
     }
 

@@ -25,6 +25,7 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
@@ -49,7 +50,6 @@ import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -203,9 +203,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        TileUtils.addTankData(data, inputFluidTank);
-        TileUtils.addTankData(data, inputGasTank);
-        TileUtils.addTankData(data, outputGasTank);
+        data.add(inputFluidTank.getFluid());
+        data.add(inputGasTank.getStack());
+        data.add(outputGasTank.getStack());
         return data;
     }
 
@@ -213,9 +213,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            TileUtils.readTankData(dataStream, inputFluidTank);
-            TileUtils.readTankData(dataStream, inputGasTank);
-            TileUtils.readTankData(dataStream, outputGasTank);
+            inputFluidTank.setFluid(dataStream.readFluidStack());
+            inputGasTank.setStack(PacketHandler.readGasStack(dataStream));
+            outputGasTank.setStack(PacketHandler.readGasStack(dataStream));
         }
     }
 

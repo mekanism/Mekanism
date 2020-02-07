@@ -18,6 +18,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ProcessInfo;
@@ -46,7 +47,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StatUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -441,8 +441,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             for (int i = 0; i < tier.processes; i++) {
                 progress[i] = dataStream.readInt();
             }
-            TileUtils.readTankData(dataStream, infusionTank);
-            TileUtils.readTankData(dataStream, gasTank);
+            infusionTank.setStack(PacketHandler.readInfusionStack(dataStream));
+            gasTank.setStack(PacketHandler.readGasStack(dataStream));
             if (upgraded) {
                 markDirty();
                 MekanismUtils.updateBlock(getWorld(), getPos());
@@ -490,8 +490,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             progressToSync[i] = getProgress(i);
         }
         data.add(progressToSync);
-        TileUtils.addTankData(data, infusionTank);
-        TileUtils.addTankData(data, gasTank);
+        data.add(infusionTank.getStack());
+        data.add(gasTank.getStack());
         upgraded = false;
         return data;
     }

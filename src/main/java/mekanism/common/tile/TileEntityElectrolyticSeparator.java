@@ -23,6 +23,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
@@ -41,7 +42,6 @@ import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -227,9 +227,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         super.handlePacketData(dataStream);
 
         if (isRemote()) {
-            TileUtils.readTankData(dataStream, fluidTank);
-            TileUtils.readTankData(dataStream, leftTank);
-            TileUtils.readTankData(dataStream, rightTank);
+            fluidTank.setFluid(dataStream.readFluidStack());
+            leftTank.setStack(PacketHandler.readGasStack(dataStream));
+            rightTank.setStack(PacketHandler.readGasStack(dataStream));
             dumpLeft = dataStream.readEnumValue(GasMode.class);
             dumpRight = dataStream.readEnumValue(GasMode.class);
             clientEnergyUsed = dataStream.readDouble();
@@ -239,9 +239,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        TileUtils.addTankData(data, fluidTank);
-        TileUtils.addTankData(data, leftTank);
-        TileUtils.addTankData(data, rightTank);
+        data.add(fluidTank.getFluid());
+        data.add(leftTank.getStack());
+        data.add(rightTank.getStack());
         data.add(dumpLeft);
         data.add(dumpRight);
         data.add(clientEnergyUsed);

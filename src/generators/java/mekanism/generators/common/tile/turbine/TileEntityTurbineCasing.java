@@ -12,7 +12,6 @@ import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
@@ -146,7 +145,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             data.add(structure.clientFlow);
             data.add(structure.lastSteamInput);
             data.add(structure.dumpMode);
-            TileUtils.addFluidStack(data, structure.fluidStored);
+            data.add(structure.fluidStored);
             if (isRendering) {
                 structure.complex.write(data);
                 data.add(structure.clientRotation);
@@ -183,7 +182,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.lastSteamInput = dataStream.readInt();
                 structure.dumpMode = dataStream.readEnumValue(GasMode.class);
 
-                structure.fluidStored = TileUtils.readFluidStack(dataStream);
+                structure.fluidStored = dataStream.readFluidStack();
 
                 if (isRendering) {
                     structure.complex = Coord4D.read(dataStream);

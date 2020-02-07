@@ -24,6 +24,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
@@ -160,8 +161,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         if (isRemote()) {
             mode = dataStream.readBoolean();
             clientEnergyUsed = dataStream.readDouble();
-            TileUtils.readTankData(dataStream, fluidTank);
-            TileUtils.readTankData(dataStream, gasTank);
+            fluidTank.setFluid(dataStream.readFluidStack());
+            gasTank.setStack(PacketHandler.readGasStack(dataStream));
         }
     }
 
@@ -170,8 +171,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         super.getNetworkedData(data);
         data.add(mode);
         data.add(clientEnergyUsed);
-        TileUtils.addTankData(data, fluidTank);
-        TileUtils.addTankData(data, gasTank);
+        data.add(fluidTank.getFluid());
+        data.add(gasTank.getStack());
         return data;
     }
 

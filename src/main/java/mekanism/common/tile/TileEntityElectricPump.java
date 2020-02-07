@@ -34,7 +34,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
@@ -271,14 +270,14 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            TileUtils.readTankData(dataStream, fluidTank);
+            fluidTank.setFluid(dataStream.readFluidStack());
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        TileUtils.addTankData(data, fluidTank);
+        data.add(fluidTank.getFluid());
         return data;
     }
 

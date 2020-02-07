@@ -21,7 +21,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -147,7 +146,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (structure != null) {
             data.add(structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
             data.add(structure.editMode);
-            TileUtils.addFluidStack(data, structure.fluidStored);
+            data.add(structure.fluidStored);
 
             if (isRendering) {
                 Set<ValveData> toSend = new ObjectOpenHashSet<>();
@@ -174,7 +173,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             if (clientHasStructure) {
                 clientCapacity = dataStream.readInt();
                 structure.editMode = dataStream.readEnumValue(ContainerEditMode.class);
-                structure.fluidStored = TileUtils.readFluidStack(dataStream);
+                structure.fluidStored = dataStream.readFluidStack();
 
                 if (isRendering) {
                     int size = dataStream.readInt();

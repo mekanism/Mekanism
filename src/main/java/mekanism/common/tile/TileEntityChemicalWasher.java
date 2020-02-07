@@ -23,6 +23,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
+import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
@@ -172,9 +173,9 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
         super.handlePacketData(dataStream);
         if (isRemote()) {
             clientEnergyUsed = dataStream.readDouble();
-            TileUtils.readTankData(dataStream, fluidTank);
-            TileUtils.readTankData(dataStream, inputTank);
-            TileUtils.readTankData(dataStream, outputTank);
+            fluidTank.setFluid(dataStream.readFluidStack());
+            inputTank.setStack(PacketHandler.readGasStack(dataStream));
+            outputTank.setStack(PacketHandler.readGasStack(dataStream));
         }
     }
 
@@ -182,9 +183,9 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(clientEnergyUsed);
-        TileUtils.addTankData(data, fluidTank);
-        TileUtils.addTankData(data, inputTank);
-        TileUtils.addTankData(data, outputTank);
+        data.add(fluidTank.getFluid());
+        data.add(inputTank.getStack());
+        data.add(outputTank.getStack());
         return data;
     }
 

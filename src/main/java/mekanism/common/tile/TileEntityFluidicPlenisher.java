@@ -27,7 +27,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -185,7 +184,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         super.handlePacketData(dataStream);
         if (isRemote()) {
             finishedCalc = dataStream.readBoolean();
-            TileUtils.readTankData(dataStream, fluidTank);
+            fluidTank.setFluid(dataStream.readFluidStack());
         }
     }
 
@@ -193,7 +192,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(finishedCalc);
-        TileUtils.addTankData(data, fluidTank);
+        data.add(fluidTank.getFluid());
         return data;
     }
 

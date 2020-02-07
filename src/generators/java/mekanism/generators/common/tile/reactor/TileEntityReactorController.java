@@ -13,7 +13,6 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -221,8 +220,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             data.add(fuelTank.getStored());
             data.add(deuteriumTank.getStored());
             data.add(tritiumTank.getStored());
-            TileUtils.addTankData(data, waterTank);
-            TileUtils.addTankData(data, steamTank);
+            data.add(waterTank.getFluid());
+            data.add(steamTank.getFluid());
         }
         return data;
     }
@@ -262,8 +261,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 fuelTank.setStack(MekanismGases.FUSION_FUEL.getGasStack(dataStream.readInt()));
                 deuteriumTank.setStack(MekanismGases.DEUTERIUM.getGasStack(dataStream.readInt()));
                 tritiumTank.setStack(MekanismGases.TRITIUM.getGasStack(dataStream.readInt()));
-                TileUtils.readTankData(dataStream, waterTank);
-                TileUtils.readTankData(dataStream, steamTank);
+                waterTank.setFluid(dataStream.readFluidStack());
+                steamTank.setFluid(dataStream.readFluidStack());
             } else if (getReactor() != null && world != null) {
                 setReactor(null);
                 MekanismUtils.updateBlock(world, getPos());
