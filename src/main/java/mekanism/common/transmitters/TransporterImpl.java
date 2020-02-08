@@ -246,10 +246,8 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
             if (doEmit) {
                 int stackId = nextId++;
                 transit.put(stackId, stack);
-                Coord4D coord = coord();
                 TileEntityLogisticalTransporter tile = getTileEntity();
-                //TODO: Check
-                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(coord, tile.makeSyncPacket(stackId, stack)), tile.getWorld(), coord.getPos());
+                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(tile, tile.makeSyncPacket(stackId, stack)), tile);
                 MekanismUtils.saveChunk(tile);
             }
             return response;

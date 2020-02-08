@@ -55,6 +55,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -213,7 +214,6 @@ public class PacketHandler {
      * @param player  - the player to send it to
      */
     public <MSG> void sendTo(MSG message, ServerPlayerEntity player) {
-        //TODO: Check this
         netHandler.sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
     }
 
@@ -223,10 +223,7 @@ public class PacketHandler {
      * @param message - message to send
      */
     public <MSG> void sendToAll(MSG message) {
-        //TODO: Check this
-        for (ServerPlayerEntity player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
-            sendTo(message, player);
-        }
+        netHandler.send(PacketDistributor.ALL.noArg(), message);
     }
 
     /**
@@ -236,11 +233,7 @@ public class PacketHandler {
      * @param dimension - the dimension to target
      */
     public <MSG> void sendToDimension(MSG message, DimensionType dimension) {
-        //TODO: Check this
-        ServerWorld world = ServerLifecycleHooks.getCurrentServer().getWorld(dimension);
-        for (ServerPlayerEntity player : world.getPlayers()) {
-            sendTo(message, player);
-        }
+        netHandler.send(PacketDistributor.DIMENSION.with(() -> dimension), message);
     }
 
     /**
@@ -262,9 +255,12 @@ public class PacketHandler {
 
     public <MSG> void sendToAllTracking(MSG message, World world, BlockPos pos) {
         if (world instanceof ServerWorld) {
+            //If we have a ServerWorld just directly figure out the ChunkPos so as to not require looking up the chunk
+            // This provides a decent performance boost over using the packet distributor
             ((ServerWorld) world).getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
         } else {
-            //TODO: LOG ERROR
+            //Otherwise fallback to entities tracking the chunk if some mod did something odd and our world is not a ServerWorld
+            netHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos.getX() >> 4, pos.getZ() >> 4)), message);
         }
     }
 
