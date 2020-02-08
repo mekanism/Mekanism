@@ -4,8 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.common.entity.EntityRobit;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
@@ -129,6 +129,9 @@ public class ModelRobit extends EntityModel<EntityRobit> {
 
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        //TODO: Look into if we can do the rotation in the other method rather than just rotating this matrix
+        matrix.push();
+        matrix.rotate(Vector3f.YP.rotationDegrees(180));
         Body.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         Bottom.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         RightTrack.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
@@ -141,11 +144,11 @@ public class ModelRobit extends EntityModel<EntityRobit> {
         leftarm.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         righthand.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
         lefthand.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        backLight.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        eyeRight.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        eyeLeft.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        MekanismRenderer.disableGlow(glowInfo);
+        //Lights on the robit to render at full brightness
+        backLight.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+        eyeRight.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+        eyeLeft.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+        matrix.pop();
     }
 
     private void setRotation(ModelRenderer model, float x, float y, float z) {
