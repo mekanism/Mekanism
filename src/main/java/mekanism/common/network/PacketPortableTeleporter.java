@@ -134,8 +134,8 @@ public class PacketPortableTeleporter {
                                     player.closeScreen();
                                     //TODO: Check
                                     Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(new Coord4D(player)), world, coords.getPos());
+                                    TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                                     if (player instanceof ServerPlayerEntity) {
-                                        TileEntityTeleporter.teleportPlayerTo((ServerPlayerEntity) player, coords, teleporter);
                                         TileEntityTeleporter.alignPlayer((ServerPlayerEntity) player, coords);
                                     }
                                     world.playSound(player, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);

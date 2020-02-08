@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,6 +45,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -70,8 +72,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -302,12 +306,17 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public void goHome() {
         setFollowing(false);
-        if (world.getDimension().getType().equals(homeLocation.dimension)) {
-            setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
+        if (dimension != homeLocation.dimension) {
+            changeDimension(homeLocation.dimension, new ITeleporter() {
+                @Override
+                public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                    Entity repositionedEntity = repositionEntity.apply(false);
+                    repositionedEntity.setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
+                    return repositionedEntity;
+                }
+            });
         } else {
-            //TODO: Check if this is the correct way to change dimensions
-            changeDimension(homeLocation.dimension);
-            setLocationAndAngles(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5, rotationYaw, rotationPitch);
+            setPositionAndUpdate(homeLocation.x + 0.5, homeLocation.y + 0.3, homeLocation.z + 0.5);
         }
         setMotion(0, 0, 0);
     }

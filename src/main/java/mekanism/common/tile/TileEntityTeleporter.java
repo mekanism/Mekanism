@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
@@ -21,7 +22,6 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.network.PacketEntityMove;
 import mekanism.common.network.PacketPortalFX;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -38,6 +38,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler {
@@ -78,15 +80,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 153, 7));
         return builder.build();
-    }
-
-    public static void teleportPlayerTo(ServerPlayerEntity player, Coord4D coord, TileEntityTeleporter teleporter) {
-        if (player.dimension != coord.dimension) {
-            player.changeDimension(coord.dimension);
-        }
-        player.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
-        //TODO: I believe this is not needed
-        //player.world.updateEntityWithOptionalForce(player, true);
     }
 
     public static void alignPlayer(ServerPlayerEntity player, Coord4D coord) {
@@ -287,11 +280,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             if (teleporter != null) {
                 teleporter.didTeleport.add(entity.getUniqueID());
                 teleporter.teleDelay = 5;
+                teleportEntityTo(entity, closestCoords, teleporter);
                 if (entity instanceof ServerPlayerEntity) {
-                    teleportPlayerTo((ServerPlayerEntity) entity, closestCoords, teleporter);
                     alignPlayer((ServerPlayerEntity) entity, closestCoords);
-                } else {
-                    teleportEntityTo(entity, closestCoords, teleporter);
                 }
                 for (Coord4D coords : frequency.activeCoords) {
                     //TODO: Check
@@ -303,14 +294,17 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         }
     }
 
-    public void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
-        if (entity.world.getDimension().getType().equals(coord.dimension)) {
-            entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
-            //TODO: Check
-            Mekanism.packetHandler.sendToAllTracking(new PacketEntityMove(entity), world, entity.getPosition());
+    public static void teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
+        if (entity.dimension != coord.dimension) {
+            entity.changeDimension(coord.dimension, new ITeleporter() {
+                @Override
+                public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                    Entity repositionedEntity = repositionEntity.apply(false);
+                    repositionedEntity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
+                    return repositionedEntity;
+                }
+            });
         } else {
-            entity.changeDimension(coord.dimension);
-            //TODO: Verify
             entity.setPositionAndUpdate(coord.x + 0.5, coord.y + 1, coord.z + 0.5);
         }
     }
