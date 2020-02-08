@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
+import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,6 +47,10 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * Ticks the machine has spent processing so far
      */
     private int operatingTicks;
+    //TODO: Use this throughout mekanism
+    //Allows for cached recipe holders to have handling for when the operating ticks changed (this will be used for allowing the containers to sync the progress)
+    private IntConsumer operatingTicksChanged = ticks -> {
+    };
     //TODO: We need to sync the operating ticks back to the machines
     // Maybe we should also save/load cached recipes when a machine gets saved
     // If we add a setter for the operating ticks, then this should be relatively simple to have it copy from one machine to the upgrades
@@ -78,6 +83,11 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         return this;
     }
 
+    public CachedRecipe<RECIPE> setOperatingTicksChanged(IntConsumer operatingTicksChanged) {
+        this.operatingTicksChanged = operatingTicksChanged;
+        return this;
+    }
+
     public CachedRecipe<RECIPE> setOnFinish(Runnable onFinish) {
         this.onFinish = onFinish;
         return this;
@@ -103,6 +113,8 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
                 finishProcessing(operations);
                 onFinish.run();
             }
+            //TODO: Do we want to make it so if required ticks is 1, that this isn't fired as it will be ++ -> 1 then set to zero again
+            operatingTicksChanged.accept(operatingTicks);
         } else {
             //TODO: Check performance, previously this only would set it to inactive if the energy the machine had last tick is less than
             // the energy we have now. Due to the performance improvements that were made to handling the active states, I believe that

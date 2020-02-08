@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -21,17 +20,18 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.item.ItemConfigurator;
@@ -53,11 +53,8 @@ import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -68,6 +65,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -79,8 +77,7 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-//TODO: Galaticraft
-//@Interface(iface = "micdoodle8.mods.galacticraft.api.entity.IEntityBreathable", modid = MekanismHooks.GALACTICRAFT_MOD_ID)
+//TODO: When Galaticraft gets ported make it so the robit can "breath" without a mask
 public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, IStrictEnergyStorage, ICachedRecipeHolder<ItemStackToItemStackRecipe> {
 
     private static final DataParameter<Float> ELECTRICITY = EntityDataManager.createKey(EntityRobit.class, DataSerializers.FLOAT);
@@ -90,10 +87,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
     public double MAX_ELECTRICITY = 100_000;
     public Coord4D homeLocation;
-    public int furnaceBurnTime = 0;
-    public int currentItemBurnTime = 0;
-    public int furnaceCookTime = 0;
     public boolean texTick;
+    public final IntReferenceHolder containerProgress = IntReferenceHolder.single();
+    //TODO: Note the robit smelts at double normal speed, we may want to make this configurable/
+    //TODO: Allow for upgrades in the robit?
+    private final int ticksRequired = 100;
 
     private CachedRecipe<ItemStackToItemStackRecipe> cachedRecipe = null;
 
@@ -110,7 +108,6 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private final List<IInventorySlot> inventoryContainerSlots;
     private final EnergyInventorySlot energySlot;
     private final InputInventorySlot smeltingInputSlot;
-    private final FuelInventorySlot fuelSlot;
     private final OutputInventorySlot smeltingOutputSlot;
 
     public EntityRobit(EntityType<EntityRobit> type, World world) {
@@ -128,14 +125,13 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             }
         }
         inventorySlots.add(energySlot = EnergyInventorySlot.discharge(this, 153, 17));
-        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 56, 17));
-        //TODO: Figure this out, do we want it using the fuel or not?
-        inventorySlots.add(fuelSlot = FuelInventorySlot.forFuel(ForgeHooks::getBurnTime, this, 56, 53));
+        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 51, 35));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
+        // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes?
         inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(this, 116, 35));
 
         mainContainerSlots = Collections.singletonList(energySlot);
-        smeltingContainerSlots = Arrays.asList(smeltingInputSlot, fuelSlot, smeltingOutputSlot);
+        smeltingContainerSlots = Arrays.asList(smeltingInputSlot, smeltingOutputSlot);
 
         inputHandler = InputHelper.getInputHandler(smeltingInputSlot);
         outputHandler = OutputHelper.getOutputHandler(smeltingOutputSlot);
@@ -227,42 +223,10 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             }
 
             energySlot.discharge(this);
-            //TODO: Use cached recipe system
-            /*cachedRecipe = getUpdatedCache(0);
+            cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
-            }*/
-
-            //TODO: Remove starting here
-            if (furnaceBurnTime > 0) {
-                furnaceBurnTime--;
             }
-
-            if (furnaceBurnTime == 0 && canSmelt()) {
-                ItemStack fuel = fuelSlot.getStack();
-                currentItemBurnTime = furnaceBurnTime = ForgeHooks.getBurnTime(fuel);
-                if (furnaceBurnTime > 0) {
-                    if (!fuel.isEmpty()) {
-                        if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                            //TODO: Print error that something went wrong
-                        }
-                        if (fuelSlot.isEmpty()) {
-                            fuelSlot.setStack(fuel.getItem().getContainerItem(fuel));
-                        }
-                    }
-                }
-            }
-
-            if (furnaceBurnTime > 0 && canSmelt()) {
-                furnaceCookTime++;
-                if (furnaceCookTime == 200) {
-                    furnaceCookTime = 0;
-                    smeltItem();
-                }
-            } else {
-                furnaceCookTime = 0;
-            }
-            //TODO: End remove here
         }
     }
 
@@ -321,56 +285,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         setMotion(0, 0, 0);
     }
 
-    private boolean canSmelt() {
-        if (smeltingInputSlot.isEmpty()) {
-            return false;
-        }
-        //TODO: Should we make the robit go off of the energized smelter recipes instead?? It would allow for reducing a lot of this code
-        // as then it could do it all via the CachedRecipe system
-        // The decision is yes, so we need to kill a bunch of these methods and replace them with using the CachedRecipe stuff
-        ItemStack input = smeltingInputSlot.getStack();
-        Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(input), world);
-        if (!recipe.isPresent()) {
-            return false;
-        }
-        ItemStack result = recipe.get().getRecipeOutput();
-        if (result.isEmpty()) {
-            return false;
-        }
-        if (smeltingOutputSlot.isEmpty()) {
-            return true;
-        }
-        ItemStack currentOutput = smeltingOutputSlot.getStack();
-        if (!ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
-            return false;
-        }
-        return currentOutput.getCount() + result.getCount() <= smeltingOutputSlot.getLimit(currentOutput);
-    }
-
-    public void smeltItem() {
-        if (canSmelt()) {
-            ItemStack input = smeltingInputSlot.getStack();
-            Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipe(IRecipeType.SMELTING, new Inventory(input), world);
-            if (!recipe.isPresent()) {
-                return;
-            }
-            ItemStack result = recipe.get().getRecipeOutput();
-            ItemStack currentOutput = smeltingOutputSlot.getStack();
-            if (currentOutput.isEmpty()) {
-                smeltingOutputSlot.setStack(result.copy());
-            } else if (ItemHandlerHelper.canItemStacksStack(currentOutput, result)) {
-                if (smeltingOutputSlot.growStack(result.getCount(), Action.EXECUTE) != result.getCount()) {
-                    //TODO: Print error that something went wrong
-                }
-            }
-            //There shouldn't be any other case where the item doesn't stack but should we double check it anyways
-            if (smeltingInputSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                //TODO: Print error that something went wrong
-            }
-        }
-    }
-
-    public boolean isOnChargepad() {
+    private boolean isOnChargepad() {
         return MekanismUtils.getTileEntity(TileEntityChargepad.class, world, getPosition()) != null;
     }
 
@@ -391,7 +306,6 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, getEntityId()));
             return ActionResultType.SUCCESS;
         }
-
         return ActionResultType.PASS;
     }
 
@@ -402,10 +316,22 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         item.setEnergy(entityItem.getItem(), getEnergy());
         item.setInventory(((ISustainedInventory) this).getInventory(), entityItem.getItem());
         item.setName(entityItem.getItem(), getName().getFormattedText());
-
-        float k = 0.05F;
-        entityItem.setMotion(0, rand.nextGaussian() * k + 0.2F, 0);
+        entityItem.setMotion(0, rand.nextGaussian() * 0.05F + 0.2F, 0);
         world.addEntity(entityItem);
+    }
+
+    public double getScaledProgress() {
+        return (double) getOperatingTicks() / (double) ticksRequired;
+    }
+
+    public int getOperatingTicks() {
+        if (getEntityWorld().isRemote()) {
+            return containerProgress.get();
+        }
+        if (cachedRecipe == null) {
+            return 0;
+        }
+        return cachedRecipe.getOperatingTicks();
     }
 
     @Override
@@ -463,7 +389,6 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         if (amount <= 0) {
             return;
         }
-
         amount = applyArmorCalculations(damageSource, amount);
         amount = applyPotionDamageCalculations(damageSource, amount);
         float j = getHealth();
@@ -616,17 +541,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Nullable
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
-        //TODO: Use this
-        /*return new ItemStackToItemStackCachedRecipe(recipe, inputHandler, outputHandler)
-              .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
+        //TODO: Make a robit specific smelting energy usage config
+        return new ItemStackToItemStackCachedRecipe(recipe, inputHandler, outputHandler)
+              .setEnergyRequirements(MekanismConfig.usage.energizedSmelter::get, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::onContentsChanged);*/
-        return null;
+              .setOnFinish(this::onContentsChanged)
+              .setOperatingTicksChanged(containerProgress::set);
     }
-
-    //TODO: Galacticraft
-    /*@Override
-    public boolean canBreath() {
-        return true;
-    }*/
 }

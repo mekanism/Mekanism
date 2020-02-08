@@ -28,8 +28,9 @@ public class TileEntityChargepad extends TileEntityMekanism {
     public void onUpdate() {
         if (!isRemote()) {
             boolean active = false;
+            //Use 0.4 for y so as to catch entities that are partially standing on the back pane
             List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class,
-                  new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 0.2, pos.getZ() + 1));
+                  new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 0.4, pos.getZ() + 1));
 
             for (LivingEntity entity : entities) {
                 if (entity instanceof PlayerEntity || entity instanceof EntityRobit) {
