@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -31,11 +30,12 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        Predicate<@NonNull ItemStack> canExtract = item -> SecurityUtils.getSecurity(this, Dist.DEDICATED_SERVER) != SecurityMode.PUBLIC;
-        RelativeSide[] sides = new RelativeSide[]{RelativeSide.TOP, RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK};
+        Predicate<@NonNull ItemStack> isPublic = item -> SecurityUtils.getSecurity(this, Dist.DEDICATED_SERVER) == SecurityMode.PUBLIC;
         for (int slotY = 0; slotY < 6; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                builder.addSlot(BasicInventorySlot.at(canExtract, item -> true, this, 8 + slotX * 18, 26 + slotY * 18), sides);
+                //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face
+                // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
+                builder.addSlot(BasicInventorySlot.at(isPublic, isPublic, this, 8 + slotX * 18, 26 + slotY * 18));
             }
         }
         //TODO: Update this comment it is from isCapabilityDisabled. We reimplemented HOW it acted above but it maybe should be done somewhat differently
