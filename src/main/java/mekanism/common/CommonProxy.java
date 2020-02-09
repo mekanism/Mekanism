@@ -79,6 +79,7 @@ public class CommonProxy {
         return getDummyPlayer(world, pos.getX(), pos.getY(), pos.getZ());
     }
 
+    //TODO: Evaluate if there is even a reason to have this
     public PlayerEntity getPlayer(Supplier<Context> context) {
         return context.get().getSender();
     }

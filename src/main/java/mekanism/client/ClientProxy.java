@@ -19,7 +19,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 /**
@@ -103,8 +102,8 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public PlayerEntity getPlayer(Supplier<Context> context) {
-        if (context.get().getDirection() == NetworkDirection.PLAY_TO_SERVER || context.get().getDirection() == NetworkDirection.LOGIN_TO_SERVER) {
-            return context.get().getSender();
+        if (context.get().getDirection().getReceptionSide().isServer()) {
+            return super.getPlayer(context);
         }
         return Minecraft.getInstance().player;
     }

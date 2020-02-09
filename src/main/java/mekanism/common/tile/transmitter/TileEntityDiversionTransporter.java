@@ -64,8 +64,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data = super.getNetworkedData(data);
-        return addModes(data);
+        return addModes(super.getNetworkedData(data));
     }
 
     @Override

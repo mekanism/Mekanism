@@ -30,6 +30,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -65,7 +66,6 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -88,7 +88,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     public double MAX_ELECTRICITY = 100_000;
     public Coord4D homeLocation;
     public boolean texTick;
-    public final IntReferenceHolder containerProgress = IntReferenceHolder.single();
+    public final SyncableInt containerProgress = SyncableInt.single();
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable/
     //TODO: Allow for upgrades in the robit?
     private final int ticksRequired = 100;

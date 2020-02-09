@@ -102,8 +102,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     public boolean sorting;
 
-    public boolean upgraded;
-
     public double lastUsage;
 
     public TileComponentEjector ejectorComponent;
@@ -435,19 +433,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
         if (isRemote()) {
             recipeTicks = dataStream.readInt();
-            sorting = dataStream.readBoolean();
-            upgraded = dataStream.readBoolean();
             lastUsage = dataStream.readDouble();
-            for (int i = 0; i < tier.processes; i++) {
-                progress[i] = dataStream.readInt();
-            }
             infusionTank.setStack(PacketHandler.readInfusionStack(dataStream));
             gasTank.setStack(PacketHandler.readGasStack(dataStream));
-            if (upgraded) {
-                markDirty();
-                MekanismUtils.updateBlock(getWorld(), getPos());
-                upgraded = false;
-            }
         }
     }
 
@@ -480,19 +468,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         super.getNetworkedData(data);
 
         data.add(recipeTicks);
-        data.add(sorting);
-        data.add(upgraded);
         data.add(lastUsage);
-
-        //TODO: Do this better
-        int[] progressToSync = new int[progress.length];
-        for (int i = 0; i < progress.length; i++) {
-            progressToSync[i] = getProgress(i);
-        }
-        data.add(progressToSync);
         data.add(infusionTank.getStack());
         data.add(gasTank.getStack());
-        upgraded = false;
         return data;
     }
 

@@ -114,7 +114,8 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::markDirty);
+              .setOnFinish(this::markDirty)
+              .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
 
     @Override

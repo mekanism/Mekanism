@@ -5,15 +5,27 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.IInsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
+import mekanism.common.inventory.container.sync.ISyncableData;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableByte;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFloat;
+import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableShort;
+import mekanism.common.network.container.PacketUpdateContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -24,6 +36,7 @@ public abstract class MekanismContainer extends Container {
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
+    private final List<ISyncableData<?>> trackedData = new ArrayList<>();
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv) {
         super(type.getContainerType(), id);
@@ -182,4 +195,125 @@ public abstract class MekanismContainer extends Container {
         }
         return stack;
     }
+
+    //Start container sync management
+    //TODO: Maybe add some custom typed ones (such as maybe for fluids/gases) and or remove some of the ones we don't use
+    protected void track(ISyncableData<?> data) {
+        trackedData.add(data);
+    }
+
+    protected void trackArray(boolean[] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            track(SyncableBoolean.create(arrayIn, i));
+        }
+    }
+
+    protected void trackArray(byte[] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            track(SyncableByte.create(arrayIn, i));
+        }
+    }
+
+    protected void trackArray(double[] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            track(SyncableDouble.create(arrayIn, i));
+        }
+    }
+
+    protected void trackArray(float[] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            track(SyncableFloat.create(arrayIn, i));
+        }
+    }
+
+    protected void trackArray(int[] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            track(SyncableInt.create(arrayIn, i));
+        }
+    }
+
+    protected void trackArray(long[] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            track(SyncableLong.create(arrayIn, i));
+        }
+    }
+
+    protected void trackArray(short[] arrayIn) {
+        for (int i = 0; i < arrayIn.length; i++) {
+            track(SyncableShort.create(arrayIn, i));
+        }
+    }
+
+    public void handleWindowProperty(short property, boolean value) {
+        ISyncableData<?> data = trackedData.get(property);
+        if (data instanceof SyncableBoolean) {
+            ((SyncableBoolean) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, byte value) {
+        ISyncableData<?> data = trackedData.get(property);
+        if (data instanceof SyncableByte) {
+            ((SyncableByte) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, short value) {
+        ISyncableData<?> data = trackedData.get(property);
+        if (data instanceof SyncableShort) {
+            ((SyncableShort) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, int value) {
+        ISyncableData<?> data = trackedData.get(property);
+        if (data instanceof SyncableInt) {
+            ((SyncableInt) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, long value) {
+        ISyncableData<?> data = trackedData.get(property);
+        if (data instanceof SyncableLong) {
+            ((SyncableLong) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, float value) {
+        ISyncableData<?> data = trackedData.get(property);
+        if (data instanceof SyncableFloat) {
+            ((SyncableFloat) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, double value) {
+        ISyncableData<?> data = trackedData.get(property);
+        if (data instanceof SyncableDouble) {
+            ((SyncableDouble) data).set(value);
+        }
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+        if (!listeners.isEmpty()) {
+            for (short i = 0; i < trackedData.size(); i++) {
+                ISyncableData<?> data = trackedData.get(i);
+                if (data.isDirty()) {
+                    //TODO: Make a packet for batching the updates together
+                    PacketUpdateContainer<?> updatePacket = null;
+                    for (IContainerListener listener : listeners) {
+                        if (listener instanceof ServerPlayerEntity) {
+                            if (updatePacket == null) {
+                                //Lazy get the update packet to send
+                                updatePacket = data.getUpdatePacket((short) windowId, i);
+                            }
+                            Mekanism.packetHandler.sendTo(updatePacket, (ServerPlayerEntity) listener);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //End container sync management
 }
