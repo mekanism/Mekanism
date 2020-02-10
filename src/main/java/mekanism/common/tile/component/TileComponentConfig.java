@@ -78,9 +78,15 @@ public class TileComponentConfig implements ITileComponent {
             type = TransmissionType.ENERGY;
         }
         if (type != null) {
-            ISlotInfo slotInfo = getSlotInfo(type, side);
-            //Disable the capability if we have information about that slot and it is not enabled
-            return slotInfo != null && !slotInfo.isEnabled();
+            ConfigInfo info = getConfig(type);
+            if (info != null && side != null) {
+                //If we support this config type and we have a side so are not the read only "internal" check
+                ISlotInfo slotInfo = info.getSlotInfo(getSide(side));
+                //Return that it is disabled:
+                // If we don't know how to handle the data type that is on that side config (such as for NONE)
+                // or the slot is not enabled then return that it is disabled
+                return slotInfo == null || !slotInfo.isEnabled();
+            }
         }
         return false;
     }
