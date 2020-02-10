@@ -5,6 +5,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.gas.GasStack;
+import mekanism.api.infuse.InfusionStack;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.IInsertableSlot;
@@ -15,10 +17,14 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloat;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
+import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.SyncableShort;
-import mekanism.common.network.container.PacketUpdateContainer;
+import mekanism.common.network.container.PacketUpdateContainerBatch;
+import mekanism.common.network.container.property.PropertyData;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +34,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 public abstract class MekanismContainer extends Container {
 
@@ -36,7 +43,7 @@ public abstract class MekanismContainer extends Container {
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
-    private final List<ISyncableData<?>> trackedData = new ArrayList<>();
+    private final List<ISyncableData> trackedData = new ArrayList<>();
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv) {
         super(type.getContainerType(), id);
@@ -197,8 +204,7 @@ public abstract class MekanismContainer extends Container {
     }
 
     //Start container sync management
-    //TODO: Maybe add some custom typed ones (such as maybe for fluids/gases) and or remove some of the ones we don't use
-    protected void track(ISyncableData<?> data) {
+    protected void track(ISyncableData data) {
         trackedData.add(data);
     }
 
@@ -245,51 +251,72 @@ public abstract class MekanismContainer extends Container {
     }
 
     public void handleWindowProperty(short property, boolean value) {
-        ISyncableData<?> data = trackedData.get(property);
+        ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableBoolean) {
             ((SyncableBoolean) data).set(value);
         }
     }
 
     public void handleWindowProperty(short property, byte value) {
-        ISyncableData<?> data = trackedData.get(property);
+        ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableByte) {
             ((SyncableByte) data).set(value);
         }
     }
 
     public void handleWindowProperty(short property, short value) {
-        ISyncableData<?> data = trackedData.get(property);
+        ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableShort) {
             ((SyncableShort) data).set(value);
         }
     }
 
     public void handleWindowProperty(short property, int value) {
-        ISyncableData<?> data = trackedData.get(property);
+        ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableInt) {
             ((SyncableInt) data).set(value);
         }
     }
 
     public void handleWindowProperty(short property, long value) {
-        ISyncableData<?> data = trackedData.get(property);
+        ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableLong) {
             ((SyncableLong) data).set(value);
         }
     }
 
     public void handleWindowProperty(short property, float value) {
-        ISyncableData<?> data = trackedData.get(property);
+        ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableFloat) {
             ((SyncableFloat) data).set(value);
         }
     }
 
     public void handleWindowProperty(short property, double value) {
-        ISyncableData<?> data = trackedData.get(property);
+        ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableDouble) {
             ((SyncableDouble) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, @Nonnull FluidStack value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableFluidStack) {
+            ((SyncableFluidStack) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, @Nonnull GasStack value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableGasStack) {
+            ((SyncableGasStack) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, @Nonnull InfusionStack value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableInfusionStack) {
+            ((SyncableInfusionStack) data).set(value);
         }
     }
 
@@ -297,21 +324,31 @@ public abstract class MekanismContainer extends Container {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         if (!listeners.isEmpty()) {
+            //Only check tracked data for changes if we actually have any listeners
+            List<PropertyData> dirtyData = new ArrayList<>();
             for (short i = 0; i < trackedData.size(); i++) {
-                ISyncableData<?> data = trackedData.get(i);
+                ISyncableData data = trackedData.get(i);
                 if (data.isDirty()) {
-                    //TODO: Make a packet for batching the updates together
-                    PacketUpdateContainer<?> updatePacket = null;
-                    for (IContainerListener listener : listeners) {
-                        if (listener instanceof ServerPlayerEntity) {
-                            if (updatePacket == null) {
-                                //Lazy get the update packet to send
-                                updatePacket = data.getUpdatePacket((short) windowId, i);
-                            }
-                            Mekanism.packetHandler.sendTo(updatePacket, (ServerPlayerEntity) listener);
-                        }
-                    }
+                    dirtyData.add(data.getPropertyData(i));
                 }
+            }
+            int size = dirtyData.size();
+            //TODO: Maybe make a way to sync fluid stacks, gas stacks, infusion stacks when only the amount has changed and not the type
+            // rather than resyncing the entire stack
+            if (size == 1) {
+                //If we only have a single element send a type specific packet to reduce overhead of
+                // having to include type and count
+                sendChange(dirtyData.get(0).getSinglePacket((short) windowId));
+            } else if (size > 1) {
+                sendChange(new PacketUpdateContainerBatch((short) windowId, dirtyData));
+            }
+        }
+    }
+
+    private <MSG> void sendChange(MSG packet) {
+        for (IContainerListener listener : listeners) {
+            if (listener instanceof ServerPlayerEntity) {
+                Mekanism.packetHandler.sendTo(packet, (ServerPlayerEntity) listener);
             }
         }
     }

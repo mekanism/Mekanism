@@ -2,12 +2,12 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
-import mekanism.common.network.container.PacketUpdateContainerDouble;
+import mekanism.common.network.container.property.DoublePropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling doubles
  */
-public abstract class SyncableDouble implements ISyncableData<PacketUpdateContainerDouble> {
+public abstract class SyncableDouble implements ISyncableData {
 
     private double lastKnownValue;
 
@@ -24,8 +24,8 @@ public abstract class SyncableDouble implements ISyncableData<PacketUpdateContai
     }
 
     @Override
-    public PacketUpdateContainerDouble getUpdatePacket(short windowId, short property) {
-        return new PacketUpdateContainerDouble(windowId, property, get());
+    public DoublePropertyData getPropertyData(short property) {
+        return new DoublePropertyData(property, get());
     }
 
     public static SyncableDouble create(double[] doubleArray, int idx) {
@@ -53,22 +53,6 @@ public abstract class SyncableDouble implements ISyncableData<PacketUpdateContai
             @Override
             public void set(double value) {
                 setter.accept(value);
-            }
-        };
-    }
-
-    public static SyncableDouble single() {
-        return new SyncableDouble() {
-            private double value;
-
-            @Override
-            public double get() {
-                return this.value;
-            }
-
-            @Override
-            public void set(double value) {
-                this.value = value;
             }
         };
     }

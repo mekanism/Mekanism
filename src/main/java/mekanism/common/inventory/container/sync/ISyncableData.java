@@ -1,10 +1,10 @@
 package mekanism.common.inventory.container.sync;
 
-import mekanism.common.network.container.PacketUpdateContainer;
+import mekanism.common.network.container.property.PropertyData;
 
-public interface ISyncableData<PACKET extends PacketUpdateContainer<PACKET>> {
+public interface ISyncableData {
 
     boolean isDirty();
 
-    PacketUpdateContainer<PACKET> getUpdatePacket(short windowId, short property);
+    PropertyData getPropertyData(short property);
 }

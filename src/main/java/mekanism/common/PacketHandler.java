@@ -37,6 +37,7 @@ import mekanism.common.network.PacketSecurityUpdate;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.container.PacketUpdateContainer;
+import mekanism.common.network.container.PacketUpdateContainerBatch;
 import mekanism.common.network.container.PacketUpdateContainerBoolean;
 import mekanism.common.network.container.PacketUpdateContainerByte;
 import mekanism.common.network.container.PacketUpdateContainerDouble;
@@ -210,6 +211,8 @@ public class PacketHandler {
         registerMessage(PacketUpdateContainerInt.class, PacketUpdateContainer::encode, PacketUpdateContainerInt::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerLong.class, PacketUpdateContainer::encode, PacketUpdateContainerLong::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerShort.class, PacketUpdateContainer::encode, PacketUpdateContainerShort::decode, PacketUpdateContainer::handle);
+        //Container sync packet that batches multiple changes into one packet
+        registerMessage(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
     }
 
     private <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {

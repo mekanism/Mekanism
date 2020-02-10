@@ -2,12 +2,12 @@ package mekanism.common.inventory.container.sync;
 
 import it.unimi.dsi.fastutil.shorts.ShortConsumer;
 import mekanism.api.functions.ShortSupplier;
-import mekanism.common.network.container.PacketUpdateContainerShort;
+import mekanism.common.network.container.property.ShortPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling shorts
  */
-public abstract class SyncableShort implements ISyncableData<PacketUpdateContainerShort> {
+public abstract class SyncableShort implements ISyncableData {
 
     private short lastKnownValue;
 
@@ -24,8 +24,8 @@ public abstract class SyncableShort implements ISyncableData<PacketUpdateContain
     }
 
     @Override
-    public PacketUpdateContainerShort getUpdatePacket(short windowId, short property) {
-        return new PacketUpdateContainerShort(windowId, property, get());
+    public ShortPropertyData getPropertyData(short property) {
+        return new ShortPropertyData(property, get());
     }
 
     public static SyncableShort create(short[] shortArray, int idx) {
@@ -53,22 +53,6 @@ public abstract class SyncableShort implements ISyncableData<PacketUpdateContain
             @Override
             public void set(short value) {
                 setter.accept(value);
-            }
-        };
-    }
-
-    public static SyncableShort single() {
-        return new SyncableShort() {
-            private short value;
-
-            @Override
-            public short get() {
-                return this.value;
-            }
-
-            @Override
-            public void set(short value) {
-                this.value = value;
             }
         };
     }

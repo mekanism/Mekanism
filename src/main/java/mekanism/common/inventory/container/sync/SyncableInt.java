@@ -2,12 +2,12 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
-import mekanism.common.network.container.PacketUpdateContainerInt;
+import mekanism.common.network.container.property.IntPropertyData;
 
 /**
  * Slightly modified version of {@link net.minecraft.util.IntReferenceHolder}
  */
-public abstract class SyncableInt implements ISyncableData<PacketUpdateContainerInt> {
+public abstract class SyncableInt implements ISyncableData {
 
     private int lastKnownValue;
 
@@ -24,8 +24,8 @@ public abstract class SyncableInt implements ISyncableData<PacketUpdateContainer
     }
 
     @Override
-    public PacketUpdateContainerInt getUpdatePacket(short windowId, short property) {
-        return new PacketUpdateContainerInt(windowId, property, get());
+    public IntPropertyData getPropertyData(short property) {
+        return new IntPropertyData(property, get());
     }
 
     public static SyncableInt create(int[] intArray, int idx) {
@@ -53,22 +53,6 @@ public abstract class SyncableInt implements ISyncableData<PacketUpdateContainer
             @Override
             public void set(int value) {
                 setter.accept(value);
-            }
-        };
-    }
-
-    public static SyncableInt single() {
-        return new SyncableInt() {
-            private int value;
-
-            @Override
-            public int get() {
-                return this.value;
-            }
-
-            @Override
-            public void set(int value) {
-                this.value = value;
             }
         };
     }

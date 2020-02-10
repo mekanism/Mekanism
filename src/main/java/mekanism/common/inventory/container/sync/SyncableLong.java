@@ -2,12 +2,12 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
-import mekanism.common.network.container.PacketUpdateContainerLong;
+import mekanism.common.network.container.property.LongPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling longs
  */
-public abstract class SyncableLong implements ISyncableData<PacketUpdateContainerLong> {
+public abstract class SyncableLong implements ISyncableData {
 
     private long lastKnownValue;
 
@@ -24,8 +24,8 @@ public abstract class SyncableLong implements ISyncableData<PacketUpdateContaine
     }
 
     @Override
-    public PacketUpdateContainerLong getUpdatePacket(short windowId, short property) {
-        return new PacketUpdateContainerLong(windowId, property, get());
+    public LongPropertyData getPropertyData(short property) {
+        return new LongPropertyData(property, get());
     }
 
     public static SyncableLong create(long[] longArray, int idx) {
@@ -53,22 +53,6 @@ public abstract class SyncableLong implements ISyncableData<PacketUpdateContaine
             @Override
             public void set(long value) {
                 setter.accept(value);
-            }
-        };
-    }
-
-    public static SyncableLong single() {
-        return new SyncableLong() {
-            private long value;
-
-            @Override
-            public long get() {
-                return this.value;
-            }
-
-            @Override
-            public void set(long value) {
-                this.value = value;
             }
         };
     }

@@ -9,7 +9,7 @@ public class SmeltingRobitContainer extends RobitContainer {
 
     public SmeltingRobitContainer(int id, PlayerInventory inv, EntityRobit robit) {
         super(MekanismContainerTypes.SMELTING_ROBIT, id, inv, robit);
-        track(robit.containerProgress);
+        track(robit.getContainerProgress());
     }
 
     public SmeltingRobitContainer(int id, PlayerInventory inv, PacketBuffer buf) {

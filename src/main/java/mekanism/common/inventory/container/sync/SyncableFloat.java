@@ -2,12 +2,12 @@ package mekanism.common.inventory.container.sync;
 
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
 import mekanism.api.functions.FloatSupplier;
-import mekanism.common.network.container.PacketUpdateContainerFloat;
+import mekanism.common.network.container.property.FloatPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling floats
  */
-public abstract class SyncableFloat implements ISyncableData<PacketUpdateContainerFloat> {
+public abstract class SyncableFloat implements ISyncableData {
 
     private float lastKnownValue;
 
@@ -24,8 +24,8 @@ public abstract class SyncableFloat implements ISyncableData<PacketUpdateContain
     }
 
     @Override
-    public PacketUpdateContainerFloat getUpdatePacket(short windowId, short property) {
-        return new PacketUpdateContainerFloat(windowId, property, get());
+    public FloatPropertyData getPropertyData(short property) {
+        return new FloatPropertyData(property, get());
     }
 
     public static SyncableFloat create(float[] floatArray, int idx) {
@@ -53,22 +53,6 @@ public abstract class SyncableFloat implements ISyncableData<PacketUpdateContain
             @Override
             public void set(float value) {
                 setter.accept(value);
-            }
-        };
-    }
-
-    public static SyncableFloat single() {
-        return new SyncableFloat() {
-            private float value;
-
-            @Override
-            public float get() {
-                return this.value;
-            }
-
-            @Override
-            public void set(float value) {
-                this.value = value;
             }
         };
     }

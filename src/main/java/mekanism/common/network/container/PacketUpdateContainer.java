@@ -7,20 +7,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
-//TODO: Make a packet for batching the updates together
-// Structure of the packet would be:
-// windowId
-// length of things updating
-// property index
-// enum type updating
-// that type of object (the enum could contain how to write/read it to/from packet)
 public abstract class PacketUpdateContainer<PACKET extends PacketUpdateContainer<PACKET>> {
 
     //Note: windowId gets transferred over the network as an unsigned byte
     protected final short windowId;
-    //TODO: Do we want to convert property to also being an unsigned byte as I highly doubt we will have
-    // more than an unsigned bytes worth of one type of property
-    // This is because property really is an "index" for which tracker of a given type this is for
+    //TODO: Debate passing this over the network as an unsigned byte as this is value is bounded by
+    // our max number of properties in a single container which I don't think will ever be super high
     protected final short property;
 
     protected PacketUpdateContainer(short windowId, short property) {

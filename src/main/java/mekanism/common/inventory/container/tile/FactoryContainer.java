@@ -13,6 +13,7 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory<?>
     public FactoryContainer(int id, PlayerInventory inv, TileEntityFactory<?> tile) {
         super(MekanismContainerTypes.FACTORY, id, inv, tile);
         //TODO: Make it so that syncable data objects we return when on the server are only able to get the data and not set it
+        // Also move this various stuff to the tile itself
         trackArray(tile.progress);
         //data.add(recipeTicks);
         track(SyncableBoolean.create(() -> tile.sorting, value -> tile.sorting = value));

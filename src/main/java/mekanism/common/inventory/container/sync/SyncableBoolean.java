@@ -2,12 +2,12 @@ package mekanism.common.inventory.container.sync;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import java.util.function.BooleanSupplier;
-import mekanism.common.network.container.PacketUpdateContainerBoolean;
+import mekanism.common.network.container.property.BooleanPropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling booleans
  */
-public abstract class SyncableBoolean implements ISyncableData<PacketUpdateContainerBoolean> {
+public abstract class SyncableBoolean implements ISyncableData {
 
     private boolean lastKnownValue;
 
@@ -24,8 +24,8 @@ public abstract class SyncableBoolean implements ISyncableData<PacketUpdateConta
     }
 
     @Override
-    public PacketUpdateContainerBoolean getUpdatePacket(short windowId, short property) {
-        return new PacketUpdateContainerBoolean(windowId, property, get());
+    public BooleanPropertyData getPropertyData(short property) {
+        return new BooleanPropertyData(property, get());
     }
 
     public static SyncableBoolean create(boolean[] booleanArray, int idx) {
@@ -53,22 +53,6 @@ public abstract class SyncableBoolean implements ISyncableData<PacketUpdateConta
             @Override
             public void set(boolean value) {
                 setter.accept(value);
-            }
-        };
-    }
-
-    public static SyncableBoolean single() {
-        return new SyncableBoolean() {
-            private boolean value;
-
-            @Override
-            public boolean get() {
-                return this.value;
-            }
-
-            @Override
-            public void set(boolean value) {
-                this.value = value;
             }
         };
     }

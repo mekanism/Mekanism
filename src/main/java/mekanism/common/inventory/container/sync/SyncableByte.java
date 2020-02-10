@@ -2,12 +2,12 @@ package mekanism.common.inventory.container.sync;
 
 import it.unimi.dsi.fastutil.bytes.ByteConsumer;
 import mekanism.api.functions.ByteSupplier;
-import mekanism.common.network.container.PacketUpdateContainerByte;
+import mekanism.common.network.container.property.BytePropertyData;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling bytes
  */
-public abstract class SyncableByte implements ISyncableData<PacketUpdateContainerByte> {
+public abstract class SyncableByte implements ISyncableData {
 
     private byte lastKnownValue;
 
@@ -24,8 +24,8 @@ public abstract class SyncableByte implements ISyncableData<PacketUpdateContaine
     }
 
     @Override
-    public PacketUpdateContainerByte getUpdatePacket(short windowId, short property) {
-        return new PacketUpdateContainerByte(windowId, property, get());
+    public BytePropertyData getPropertyData(short property) {
+        return new BytePropertyData(property, get());
     }
 
     public static SyncableByte create(byte[] byteArray, int idx) {
@@ -53,22 +53,6 @@ public abstract class SyncableByte implements ISyncableData<PacketUpdateContaine
             @Override
             public void set(byte value) {
                 setter.accept(value);
-            }
-        };
-    }
-
-    public static SyncableByte single() {
-        return new SyncableByte() {
-            private byte value;
-
-            @Override
-            public byte get() {
-                return this.value;
-            }
-
-            @Override
-            public void set(byte value) {
-                this.value = value;
             }
         };
     }

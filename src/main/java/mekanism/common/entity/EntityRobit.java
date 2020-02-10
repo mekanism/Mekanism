@@ -88,7 +88,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     public double MAX_ELECTRICITY = 100_000;
     public Coord4D homeLocation;
     public boolean texTick;
-    public final SyncableInt containerProgress = SyncableInt.single();
+    private int progress;
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable/
     //TODO: Allow for upgrades in the robit?
     private final int ticksRequired = 100;
@@ -326,7 +326,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public int getOperatingTicks() {
         if (getEntityWorld().isRemote()) {
-            return containerProgress.get();
+            return progress;
         }
         if (cachedRecipe == null) {
             return 0;
@@ -546,6 +546,15 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
               .setEnergyRequirements(MekanismConfig.usage.energizedSmelter::get, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::onContentsChanged)
-              .setOperatingTicksChanged(containerProgress::set);
+              .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);
+    }
+
+    public SyncableInt getContainerProgress() {
+        if (getEntityWorld().isRemote()) {
+            return SyncableInt.create(() -> progress, value -> progress = value);
+        }
+        //NO-OP setting on server side
+        return SyncableInt.create(() -> progress, value -> {
+        });
     }
 }
