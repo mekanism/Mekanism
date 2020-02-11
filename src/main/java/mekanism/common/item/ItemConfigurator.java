@@ -78,8 +78,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
             Direction side = context.getFace();
             Hand hand = context.getHand();
             ItemStack stack = player.getHeldItem(hand);
-            BlockState state = world.getBlockState(pos);
-            Block block = state.getBlock();
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
 
             if (getState(stack).isConfigurating()) { //Configurate
@@ -154,15 +152,17 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                     }
                 }
             } else if (getState(stack) == ConfiguratorMode.ROTATE) { //Rotate
-                Direction[] rotations = block.getValidRotations(state, world, pos);
-                if (rotations != null && rotations.length > 0) {
-                    List<Direction> l = Arrays.asList(rotations);
-                    //TODO: Convert direction to Rotation
-                    /*if (!player.isShiftKeyDown() && l.contains(side)) {
-                        block.rotate(state, world, pos, side);
-                    } else if (player.isShiftKeyDown() && l.contains(side.getOpposite())) {
-                        block.rotate(state, world, pos, side.getOpposite());
-                    }*/
+                if (tile instanceof TileEntityMekanism) {
+                    if (SecurityUtils.canAccess(player, tile)) {
+                        TileEntityMekanism tileMekanism = (TileEntityMekanism) tile;
+                        if (!player.isShiftKeyDown()) {
+                            tileMekanism.setFacing(side);
+                        } else if (player.isShiftKeyDown()) {
+                            tileMekanism.setFacing(side.getOpposite());
+                        }
+                    } else {
+                        SecurityUtils.displayNoAccess(player);
+                    }
                 }
                 return ActionResultType.SUCCESS;
             } else if (getState(stack) == ConfiguratorMode.WRENCH) { //Wrench

@@ -48,6 +48,7 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.item.ItemConfigurator;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile;
@@ -393,7 +394,15 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 SecurityUtils.displayNoAccess(player);
                 return ActionResultType.FAIL;
             }
-            //TODO: Is this correct. Also check the other spots were NetworkHooks.openGui are
+            //Pass on this activation if the player is rotating with a configurator
+            ItemStack stack = player.getHeldItemMainhand();
+            if (isDirectional() && !stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
+                ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
+                if (configurator.getState(stack) == ItemConfigurator.ConfiguratorMode.ROTATE) {
+                    return ActionResultType.PASS;
+                }
+            }
+
             NetworkHooks.openGui((ServerPlayerEntity) player, ((IHasGui<TileEntityMekanism>) blockProvider.getBlock()).getProvider(this), pos);
             return ActionResultType.SUCCESS;
         }
