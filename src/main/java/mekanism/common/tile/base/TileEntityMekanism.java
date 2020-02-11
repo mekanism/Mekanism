@@ -49,7 +49,7 @@ import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.item.ItemConfigurator;
@@ -602,13 +602,13 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
-        //TODO: What data do you need to sync for the components
-        // For example upgrade data while we are currently viewing main tab of the machine
-        /*for (ITileComponent component : components) {
-            component.write(data);
-        }*/
+        //TODO: Allow components to define what things they need to sync for when viewing the main gui of a tile
+        // Currently we just manually do the security mode
+        if (hasSecurity()) {
+            container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, () -> getSecurity().getMode(), value -> getSecurity().setMode(value)));
+        }
         if (supportsRedstone()) {
-            container.track(SyncableInt.create(() -> controlType.ordinal(), value -> controlType = RedstoneControl.byIndexStatic(value)));
+            container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
         if (isElectric()) {
             container.track(SyncableDouble.create(this::getEnergy, this::setEnergy));
