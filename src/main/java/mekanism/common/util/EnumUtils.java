@@ -1,6 +1,7 @@
 package mekanism.common.util;
 
 import mekanism.api.RelativeSide;
+import mekanism.api.Upgrade;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.tier.BinTier;
@@ -123,4 +124,9 @@ public class EnumUtils {
      * Cached value of {@link ConfiguratorMode#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final ConfiguratorMode[] CONFIGURATOR_MODES = ConfiguratorMode.values();
+
+    /**
+     * Cached value of {@link Upgrade#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final Upgrade[] UPGRADES = Upgrade.values();
 }

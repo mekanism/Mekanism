@@ -206,7 +206,6 @@ public class PacketHandler {
         registerMessage(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
         registerMessage(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
 
-        //TODO: Test to make sure none of this crashes on the server
         //Register the different sync packets for containers
         registerMessage(PacketUpdateContainerBoolean.class, PacketUpdateContainer::encode, PacketUpdateContainerBoolean::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerByte.class, PacketUpdateContainer::encode, PacketUpdateContainerByte::decode, PacketUpdateContainer::handle);

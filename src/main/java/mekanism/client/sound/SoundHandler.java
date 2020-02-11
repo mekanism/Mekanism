@@ -205,10 +205,11 @@ public class SoundHandler {
             super(soundEvent, category);
             //Keep track of our original volume
             this.originalVolume = volume * MekanismConfig.client.baseSoundVolume.get();
-            this.volume = this.originalVolume * getMufflingFactor();
             this.x = pos.getX() + 0.5F;
             this.y = pos.getY() + 0.5F;
             this.z = pos.getZ() + 0.5F;
+            //Hold off on setting volume until after we set the position
+            this.volume = this.originalVolume * getMufflingFactor();
             this.repeat = true;
             this.repeatDelay = 0;
         }
@@ -216,7 +217,7 @@ public class SoundHandler {
         @Override
         public void tick() {
             // Every configured interval, see if we need to adjust muffling
-            if (Minecraft.getInstance().world.getDayTime() % checkInterval == 0) {
+            if (Minecraft.getInstance().world.getGameTime() % checkInterval == 0) {
                 // Run the event bus with the original sound. Note that we must making sure to set the GLOBAL/STATIC
                 // flag that ensures we don't wrap already muffled sounds. This is...NOT ideal and makes some
                 // significant (hopefully well-informed) assumptions about locking/ordering of all these calls.

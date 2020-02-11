@@ -3,7 +3,6 @@ package mekanism.common.tile.component;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
@@ -12,24 +11,28 @@ import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
+import mekanism.common.inventory.container.ITrackableContainer;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.EnumUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
-public class TileComponentUpgrade implements ITileComponent {
+public class TileComponentUpgrade implements ITileComponent, ITrackableContainer {
 
     /**
      * How long it takes this machine to install an upgrade.
      */
-    public static int UPGRADE_TICKS_REQUIRED = 40;
+    private static int UPGRADE_TICKS_REQUIRED = 40;
     /**
      * How many upgrade ticks have progressed.
      */
-    public int upgradeTicks;
+    private int upgradeTicks;
     /**
      * TileEntity implementing this component.
      */
@@ -64,7 +67,9 @@ public class TileComponentUpgrade implements ITileComponent {
                         if (upgradeSlot.shrinkStack(1, Action.EXECUTE) != 1) {
                             //TODO: Print warning about failing to shrink size of stack
                         }
-                        Mekanism.packetHandler.sendUpdatePacket(tile);
+                        if (type == Upgrade.MUFFLING) {
+                            Mekanism.packetHandler.sendUpdatePacket(tile);
+                        }
                         tile.markDirty();
                     }
                 } else {
@@ -85,10 +90,7 @@ public class TileComponentUpgrade implements ITileComponent {
     }
 
     public int getUpgrades(Upgrade upgrade) {
-        if (upgrades.get(upgrade) == null) {
-            return 0;
-        }
-        return upgrades.get(upgrade);
+        return upgrades.getOrDefault(upgrade, 0);
     }
 
     public void addUpgrade(Upgrade upgrade) {
@@ -132,28 +134,25 @@ public class TileComponentUpgrade implements ITileComponent {
         return supported;
     }
 
+    //TODO: Evaluate if there is a better way to do this, as the only type that the client actually cares about
+    // is the muffling level (and only really cares about it if it changes)
     @Override
     public void read(PacketBuffer dataStream) {
-        upgrades.clear();
-        int amount = dataStream.readInt();
-
-        for (int i = 0; i < amount; i++) {
-            upgrades.put(dataStream.readEnumValue(Upgrade.class), dataStream.readInt());
-        }
-        upgradeTicks = dataStream.readInt();
-        for (Upgrade upgrade : getSupportedTypes()) {
-            tile.recalculateUpgrades(upgrade);
+        if (supports(Upgrade.MUFFLING)) {
+            int amount = dataStream.readInt();
+            if (amount == 0) {
+                upgrades.remove(Upgrade.MUFFLING);
+            } else {
+                upgrades.put(Upgrade.MUFFLING, amount);
+            }
         }
     }
 
     @Override
     public void write(TileNetworkList data) {
-        data.add(upgrades.size());
-        for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-            data.add(entry.getKey());
-            data.add(entry.getValue());
+        if (supports(Upgrade.MUFFLING)) {
+            data.add(upgrades.getOrDefault(Upgrade.MUFFLING, 0));
         }
-        data.add(upgradeTicks);
     }
 
     @Override
@@ -185,5 +184,23 @@ public class TileComponentUpgrade implements ITileComponent {
 
     @Override
     public void invalidate() {
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        container.track(SyncableInt.create(() -> upgradeTicks, value -> upgradeTicks = value));
+        //We want to make sure the client and server have the upgrades in the same order
+        // so we just do it based on their ordinal
+        for (Upgrade upgrade : EnumUtils.UPGRADES) {
+            if (supports(upgrade)) {
+                container.track(SyncableInt.create(() -> upgrades.getOrDefault(upgrade, 0), value -> {
+                    if (value == 0) {
+                        upgrades.remove(upgrade);
+                    } else if (value > 0) {
+                        upgrades.put(upgrade, value);
+                    }
+                }));
+            }
+        }
     }
 }
