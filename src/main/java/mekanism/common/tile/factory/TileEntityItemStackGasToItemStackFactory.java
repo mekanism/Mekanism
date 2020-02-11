@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.block.FactoryType;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -158,11 +157,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     protected void handleSecondaryFuel() {
         extraSlot.fillTankOrConvert();
-        //TODO: Do this cleaner/query the blocks themselves
-        if (type == FactoryType.COMPRESSING) {
-            secondaryEnergyThisTick = (int) Math.ceil(secondaryEnergyPerTick);
-        } else {
+        if (getSupportedUpgrade().contains(Upgrade.GAS)) {
             secondaryEnergyThisTick = StatUtils.inversePoisson(secondaryEnergyPerTick);
+        } else {
+            secondaryEnergyThisTick = (int) Math.ceil(secondaryEnergyPerTick);
         }
     }
 
@@ -287,8 +285,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS)) {
-            //TODO: Move gas upgrade to only be in specific factories? At least for calculations?
+        if (upgrade == Upgrade.SPEED || upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS)) {
             secondaryEnergyPerTick = getSecondaryEnergyPerTick();
         }
     }
