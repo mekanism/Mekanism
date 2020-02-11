@@ -105,6 +105,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                                     if (config instanceof TileEntityMekanism) {
                                         Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
                                     }
+                                    tile.markDirty();
+                                    MekanismUtils.notifyNeighborOfChange(world, relativeSide.getDirection(config.getOrientation()), tile.getPos());
                                 } else {
                                     SecurityUtils.displayNoAccess(player);
                                 }
