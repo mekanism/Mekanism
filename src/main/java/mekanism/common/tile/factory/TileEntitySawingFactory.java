@@ -149,8 +149,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
             //TODO: Transfer recipe ticks?
             //TODO: Transfer operating ticks properly
             energySlot.setStack(data.energySlot.getStack());
-            typeInputSlot.setStack(data.typeInputStack);
-            typeOutputSlot.setStack(data.typeOutputStack);
             for (int i = 0; i < data.inputSlots.size(); i++) {
                 inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
             }
@@ -168,7 +166,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     @Nonnull
     @Override
     public SawmillUpgradeData getUpgradeData() {
-        return new SawmillUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, inputSlots, outputSlots, sorting, typeInputSlot.getStack(),
-              typeOutputSlot.getStack(), getComponents());
+        return new SawmillUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, inputSlots, outputSlots, sorting, getComponents());
     }
 }

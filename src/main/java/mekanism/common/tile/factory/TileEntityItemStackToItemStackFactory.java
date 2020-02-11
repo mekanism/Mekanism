@@ -109,8 +109,6 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
             //TODO: Transfer recipe ticks?
             //TODO: Transfer operating ticks properly
             energySlot.setStack(data.energySlot.getStack());
-            typeInputSlot.setStack(data.typeInputStack);
-            typeOutputSlot.setStack(data.typeOutputStack);
             for (int i = 0; i < data.inputSlots.size(); i++) {
                 inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
             }
@@ -128,7 +126,6 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     @Nonnull
     @Override
     public MachineUpgradeData getUpgradeData() {
-        return new MachineUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, inputSlots, outputSlots, sorting, typeInputSlot.getStack(),
-              typeOutputSlot.getStack(), getComponents());
+        return new MachineUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, inputSlots, outputSlots, sorting, getComponents());
     }
 }

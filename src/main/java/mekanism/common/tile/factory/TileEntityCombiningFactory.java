@@ -130,8 +130,6 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
             //TODO: Transfer operating ticks properly
             extraSlot.setStack(data.extraSlot.getStack());
             energySlot.setStack(data.energySlot.getStack());
-            typeInputSlot.setStack(data.typeInputStack);
-            typeOutputSlot.setStack(data.typeOutputStack);
             for (int i = 0; i < data.inputSlots.size(); i++) {
                 inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
             }
@@ -149,7 +147,6 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Nonnull
     @Override
     public CombinerUpgradeData getUpgradeData() {
-        return new CombinerUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, extraSlot, inputSlots, outputSlots, sorting, typeInputSlot.getStack(),
-              typeOutputSlot.getStack(), getComponents());
+        return new CombinerUpgradeData(redstone, getControlType(), getEnergy(), progress, energySlot, extraSlot, inputSlots, outputSlots, sorting, getComponents());
     }
 }

@@ -22,6 +22,7 @@ import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.ItemDataUtils;
@@ -35,10 +36,17 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
     private InfusionInventorySlot extraSlot;
+    private InfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider) {
         super(blockProvider);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
+    }
+
+    @Override
+    protected void presetVariables() {
+        super.presetVariables();
+        infusionTank = new InfusionTank(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes);
     }
 
     @Override
@@ -161,8 +169,6 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
             infusionTank.setStack(data.stored);
             extraSlot.setStack(data.infusionSlot.getStack());
             energySlot.setStack(data.energySlot.getStack());
-            typeInputSlot.setStack(data.typeInputStack);
-            typeOutputSlot.setStack(data.typeOutputStack);
             for (int i = 0; i < data.inputSlots.size(); i++) {
                 inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
             }
@@ -181,7 +187,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     public MetallurgicInfuserUpgradeData getUpgradeData() {
         return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergy(), progress, infusionTank.getStack(), extraSlot, energySlot,
-              inputSlots, outputSlots, sorting, typeInputSlot.getStack(), typeOutputSlot.getStack(), getComponents());
+              inputSlots, outputSlots, sorting, getComponents());
     }
 
     @Nonnull
@@ -215,6 +221,11 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("infuseStored.stored", "infusionStored");
         return remap;
+    }
+
+    @Override
+    protected void clearSecondaryTank() {
+        infusionTank.setEmpty();
     }
 
     @Override

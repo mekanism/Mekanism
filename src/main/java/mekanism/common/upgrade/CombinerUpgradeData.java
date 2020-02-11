@@ -22,9 +22,8 @@ public class CombinerUpgradeData extends MachineUpgradeData {
 
     //Combining Factory Constructor
     public CombinerUpgradeData(boolean redstone, RedstoneControl controlType, double electricityStored, int[] progress, EnergyInventorySlot energySlot,
-          InputInventorySlot extraSlot, List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting, ItemStack typeInputStack,
-          ItemStack typeOutputStack, List<ITileComponent> components) {
-        super(redstone, controlType, electricityStored, progress, energySlot, inputSlots, outputSlots, sorting, typeInputStack, typeOutputStack, components);
+          InputInventorySlot extraSlot, List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting, List<ITileComponent> components) {
+        super(redstone, controlType, electricityStored, progress, energySlot, inputSlots, outputSlots, sorting, components);
         this.extraSlot = extraSlot;
     }
 }

@@ -6,7 +6,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.element.GuiRecipeType;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotOverlay;
@@ -65,7 +64,6 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryCon
         addButton(new GuiRedstoneControl(this, tile, resource));
         addButton(new GuiSecurityTab<>(this, tile, resource));
         addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiRecipeType(this, tile, resource));
         addButton(new GuiSideConfigurationTab(this, tile, resource));
         addButton(new GuiTransporterConfigTab(this, tile, resource));
         addButton(new GuiSortingTab(this, tile, resource));

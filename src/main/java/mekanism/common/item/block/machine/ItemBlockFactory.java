@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.IFactory;
 import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
@@ -37,7 +36,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockFactory extends ItemBlockAdvancedTooltip<BlockFactory> implements IItemEnergized, IFactory, IItemSustainedInventory, ISecurityItem, ITieredItem<FactoryTier> {
+public class ItemBlockFactory extends ItemBlockAdvancedTooltip<BlockFactory> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<FactoryTier> {
 
     public ItemBlockFactory(BlockFactory block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
@@ -61,10 +60,7 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip<BlockFactory> imp
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
             tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         }
-        RecipeType recipeType = getRecipeTypeOrNull(stack);
-        if (recipeType != null) {
-            tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, recipeType));
-        }
+        tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getBlock().getFactoryType()));
         tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
         if (ItemDataUtils.hasData(stack, "upgrades")) {
@@ -76,37 +72,10 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip<BlockFactory> imp
     }
 
     @Override
-    public int getRecipeType(ItemStack itemStack) {
-        if (!itemStack.hasTag()) {
-            return 0;
-        }
-        return itemStack.getTag().getInt("recipeType");
-    }
-
-    @Nullable
-    @Override
-    public RecipeType getRecipeTypeOrNull(ItemStack itemStack) {
-        int recipeType = getRecipeType(itemStack);
-        if (recipeType < RecipeType.values().length) {
-            return RecipeType.values()[recipeType];
-        }
-        return null;
-    }
-
-    @Override
-    public void setRecipeType(int type, ItemStack itemStack) {
-        if (!itemStack.hasTag()) {
-            itemStack.setTag(new CompoundNBT());
-        }
-        itemStack.getTag().putInt("recipeType", type);
-    }
-
-    @Override
     public double getMaxEnergy(ItemStack itemStack) {
-        FactoryTier tier = getTier(itemStack);
-        if (tier != null) {
-            RecipeType recipeType = getRecipeTypeOrNull(itemStack);
-            return MekanismUtils.getMaxEnergy(itemStack, tier.processes * (recipeType == null ? 1 : Math.max(0.5D * recipeType.getEnergyStorage(), recipeType.getEnergyUsage())));
+        Item item = itemStack.getItem();
+        if (item instanceof ItemBlockFactory) {
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockFactory) item).getBlock().getStorage());
         }
         return 0;
     }

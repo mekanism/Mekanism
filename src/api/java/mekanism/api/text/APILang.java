@@ -47,7 +47,18 @@ public enum APILang implements IHasTranslationKey {
     COLOR_YELLOW("color", "yellow"),
     COLOR_WHITE("color", "white"),
     COLOR_BROWN("color", "brown"),
-    COLOR_BRIGHT_PINK("color", "bright_pink");
+    COLOR_BRIGHT_PINK("color", "bright_pink"),
+    //Factory Type
+    SMELTING("factory", "smelting"),
+    ENRICHING("factory", "enriching"),
+    CRUSHING("factory", "crushing"),
+    COMPRESSING("factory", "compressing"),
+    COMBINING("factory", "combining"),
+    PURIFYING("factory", "purifying"),
+    INJECTING("factory", "injecting"),
+    INFUSING("factory", "infusing"),
+    SAWING("factory", "sawing"),
+    ;
 
     private final String key;
 

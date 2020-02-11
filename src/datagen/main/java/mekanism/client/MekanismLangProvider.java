@@ -567,15 +567,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.AUTO_MODE, "Auto-Mode: %s");
         //Factory Type
         add(MekanismLang.FACTORY_TYPE, "Recipe type: %s");
-        add(MekanismLang.SMELTING, "Smelting");
-        add(MekanismLang.ENRICHING, "Enriching");
-        add(MekanismLang.CRUSHING, "Crushing");
-        add(MekanismLang.COMPRESSING, "Compressing");
-        add(MekanismLang.COMBINING, "Combining");
-        add(MekanismLang.PURIFYING, "Purifying");
-        add(MekanismLang.INJECTING, "Injecting");
-        add(MekanismLang.INFUSING, "Infusing");
-        add(MekanismLang.SAWING, "Sawing");
+        add(APILang.SMELTING, "Smelting");
+        add(APILang.ENRICHING, "Enriching");
+        add(APILang.CRUSHING, "Crushing");
+        add(APILang.COMPRESSING, "Compressing");
+        add(APILang.COMBINING, "Combining");
+        add(APILang.PURIFYING, "Purifying");
+        add(APILang.INJECTING, "Injecting");
+        add(APILang.INFUSING, "Infusing");
+        add(APILang.SAWING, "Sawing");
         //Transmitter Networks
         add(MekanismLang.NETWORK_DESCRIPTION, "[%s] %s transmitters, %s acceptors.");
         add(MekanismLang.INVENTORY_NETWORK, "InventoryNetwork");

@@ -8,7 +8,6 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 public class MachineUpgradeData implements IUpgradeData {
@@ -21,21 +20,18 @@ public class MachineUpgradeData implements IUpgradeData {
     public final EnergyInventorySlot energySlot;
     public final List<IInventorySlot> inputSlots;
     public final List<IInventorySlot> outputSlots;
-    public final ItemStack typeInputStack;
-    public final ItemStack typeOutputStack;
     public final CompoundNBT components;
 
     //Machine Constructor
     public MachineUpgradeData(boolean redstone, RedstoneControl controlType, double electricityStored, int operatingTicks, EnergyInventorySlot energySlot,
           InputInventorySlot inputSlot, OutputInventorySlot outputSlot, List<ITileComponent> components) {
         this(redstone, controlType, electricityStored, new int[]{operatingTicks}, energySlot, Collections.singletonList(inputSlot), Collections.singletonList(outputSlot),
-              false, ItemStack.EMPTY, ItemStack.EMPTY, components);
+              false, components);
     }
 
     //Machine Factory Constructor
     public MachineUpgradeData(boolean redstone, RedstoneControl controlType, double electricityStored, int[] progress, EnergyInventorySlot energySlot,
-          List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting, ItemStack typeInputStack, ItemStack typeOutputStack,
-          List<ITileComponent> components) {
+          List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting, List<ITileComponent> components) {
         this.redstone = redstone;
         this.controlType = controlType;
         this.electricityStored = electricityStored;
@@ -44,8 +40,6 @@ public class MachineUpgradeData implements IUpgradeData {
         this.inputSlots = inputSlots;
         this.outputSlots = outputSlots;
         this.sorting = sorting;
-        this.typeInputStack = typeInputStack;
-        this.typeOutputStack = typeOutputStack;
         this.components = new CompoundNBT();
         for (ITileComponent component : components) {
             component.write(this.components);

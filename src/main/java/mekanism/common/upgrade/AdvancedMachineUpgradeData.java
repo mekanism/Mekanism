@@ -9,7 +9,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import net.minecraft.item.ItemStack;
 
 public class AdvancedMachineUpgradeData extends MachineUpgradeData {
 
@@ -27,8 +26,8 @@ public class AdvancedMachineUpgradeData extends MachineUpgradeData {
     //Advanced Machine Factory Constructor
     public AdvancedMachineUpgradeData(boolean redstone, RedstoneControl controlType, double electricityStored, int[] progress, GasStack stored,
           GasInventorySlot gasSlot, EnergyInventorySlot energySlot, List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting,
-          ItemStack typeInputStack, ItemStack typeOutputStack, List<ITileComponent> components) {
-        super(redstone, controlType, electricityStored, progress, energySlot, inputSlots, outputSlots, sorting, typeInputStack, typeOutputStack, components);
+          List<ITileComponent> components) {
+        super(redstone, controlType, electricityStored, progress, energySlot, inputSlots, outputSlots, sorting, components);
         this.stored = stored;
         this.gasSlot = gasSlot;
     }

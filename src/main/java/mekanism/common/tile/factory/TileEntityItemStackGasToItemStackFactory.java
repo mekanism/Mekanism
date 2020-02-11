@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.block.FactoryType;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -32,11 +33,13 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -47,16 +50,18 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //Compressing, injecting, purifying
 public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IGasHandler, ISustainedData {
 
-    //TODO: Finish moving references to gasTank to this class
-    //public final GasTank gasTank;
-
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    /**
+     * How much secondary energy each operation consumes per tick
+     */
+    private double secondaryEnergyPerTick;
+    private int secondaryEnergyThisTick;
     private GasInventorySlot extraSlot;
+    private GasTank gasTank;
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
-        //gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
 
         gasInputHandler = InputHelper.getInputHandler(gasTank);
 
@@ -68,6 +73,13 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             gasConfig.fill(DataType.INPUT);
             gasConfig.setCanEject(false);
         }
+        secondaryEnergyPerTick = getSecondaryEnergyPerTick();
+    }
+
+    @Override
+    protected void presetVariables() {
+        super.presetVariables();
+        gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
     }
 
     @Override
@@ -146,6 +158,12 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     protected void handleSecondaryFuel() {
         extraSlot.fillTankOrConvert();
+        //TODO: Do this cleaner/query the blocks themselves
+        if (type == FactoryType.COMPRESSING) {
+            secondaryEnergyThisTick = (int) Math.ceil(secondaryEnergyPerTick);
+        } else {
+            secondaryEnergyThisTick = StatUtils.inversePoisson(secondaryEnergyPerTick);
+        }
     }
 
     @Nonnull
@@ -271,8 +289,12 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS)) {
             //TODO: Move gas upgrade to only be in specific factories? At least for calculations?
-            secondaryEnergyPerTick = getSecondaryEnergyPerTick(recipeType);
+            secondaryEnergyPerTick = getSecondaryEnergyPerTick();
         }
+    }
+
+    public double getSecondaryEnergyPerTick() {
+        return MekanismUtils.getSecondaryEnergyPerTickMean(this, TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK);
     }
 
     @Nonnull
@@ -300,8 +322,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             gasTank.setStack(data.stored);
             extraSlot.setStack(data.gasSlot.getStack());
             energySlot.setStack(data.energySlot.getStack());
-            typeInputSlot.setStack(data.typeInputStack);
-            typeOutputSlot.setStack(data.typeOutputStack);
             for (int i = 0; i < data.inputSlots.size(); i++) {
                 inputSlots.get(i).setStack(data.inputSlots.get(i).getStack());
             }
@@ -319,8 +339,13 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Nonnull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData() {
-        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergy(), progress, gasTank.getStack(), extraSlot, energySlot,
-              inputSlots, outputSlots, sorting, typeInputSlot.getStack(), typeOutputSlot.getStack(), getComponents());
+        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergy(), progress, gasTank.getStack(), extraSlot, energySlot, inputSlots, outputSlots,
+              sorting, getComponents());
+    }
+
+    @Override
+    protected void clearSecondaryTank() {
+        gasTank.setEmpty();
     }
 
     @Override

@@ -9,7 +9,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import net.minecraft.item.ItemStack;
 
 public class MetallurgicInfuserUpgradeData extends MachineUpgradeData {
 
@@ -27,8 +26,8 @@ public class MetallurgicInfuserUpgradeData extends MachineUpgradeData {
     //Infusing Factory Constructor
     public MetallurgicInfuserUpgradeData(boolean redstone, RedstoneControl controlType, double electricityStored, int[] progress, InfusionStack stored,
           InfusionInventorySlot infusionSlot, EnergyInventorySlot energySlot, List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting,
-          ItemStack typeInputStack, ItemStack typeOutputStack, List<ITileComponent> components) {
-        super(redstone, controlType, electricityStored, progress, energySlot, inputSlots, outputSlots, sorting, typeInputStack, typeOutputStack, components);
+          List<ITileComponent> components) {
+        super(redstone, controlType, electricityStored, progress, energySlot, inputSlots, outputSlots, sorting, components);
         this.stored = stored;
         this.infusionSlot = infusionSlot;
     }

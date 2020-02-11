@@ -269,15 +269,6 @@ public enum MekanismLang implements ILangEntry {
     AUTO_MODE("assemblicator", "auto_mode_toggle"),
     //Factory Type
     FACTORY_TYPE("factory", "type"),
-    SMELTING("factory", "smelting"),
-    ENRICHING("factory", "enriching"),
-    CRUSHING("factory", "crushing"),
-    COMPRESSING("factory", "compressing"),
-    COMBINING("factory", "combining"),
-    PURIFYING("factory", "purifying"),
-    INJECTING("factory", "injecting"),
-    INFUSING("factory", "infusing"),
-    SAWING("factory", "sawing"),
     //Transmitter Networks
     NETWORK_DESCRIPTION("network", "description"),
     INVENTORY_NETWORK("network", "inventory"),
