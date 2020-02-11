@@ -17,6 +17,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.ITileComponent;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -213,5 +215,11 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("infuseStored.stored", "infusionStored");
         return remap;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableInfusionStack.create(infusionTank));
     }
 }

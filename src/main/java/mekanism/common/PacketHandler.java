@@ -42,6 +42,9 @@ import mekanism.common.network.container.PacketUpdateContainerBoolean;
 import mekanism.common.network.container.PacketUpdateContainerByte;
 import mekanism.common.network.container.PacketUpdateContainerDouble;
 import mekanism.common.network.container.PacketUpdateContainerFloat;
+import mekanism.common.network.container.PacketUpdateContainerFluidStack;
+import mekanism.common.network.container.PacketUpdateContainerGasStack;
+import mekanism.common.network.container.PacketUpdateContainerInfusionStack;
 import mekanism.common.network.container.PacketUpdateContainerInt;
 import mekanism.common.network.container.PacketUpdateContainerLong;
 import mekanism.common.network.container.PacketUpdateContainerShort;
@@ -203,6 +206,7 @@ public class PacketHandler {
         registerMessage(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
         registerMessage(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
 
+        //TODO: Test to make sure none of this crashes on the server
         //Register the different sync packets for containers
         registerMessage(PacketUpdateContainerBoolean.class, PacketUpdateContainer::encode, PacketUpdateContainerBoolean::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerByte.class, PacketUpdateContainer::encode, PacketUpdateContainerByte::decode, PacketUpdateContainer::handle);
@@ -211,6 +215,9 @@ public class PacketHandler {
         registerMessage(PacketUpdateContainerInt.class, PacketUpdateContainer::encode, PacketUpdateContainerInt::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerLong.class, PacketUpdateContainer::encode, PacketUpdateContainerLong::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerShort.class, PacketUpdateContainer::encode, PacketUpdateContainerShort::decode, PacketUpdateContainer::handle);
+        registerMessage(PacketUpdateContainerFluidStack.class, PacketUpdateContainer::encode, PacketUpdateContainerFluidStack::decode, PacketUpdateContainer::handle);
+        registerMessage(PacketUpdateContainerGasStack.class, PacketUpdateContainer::encode, PacketUpdateContainerGasStack::decode, PacketUpdateContainer::handle);
+        registerMessage(PacketUpdateContainerInfusionStack.class, PacketUpdateContainer::encode, PacketUpdateContainerInfusionStack::decode, PacketUpdateContainer::handle);
         //Container sync packet that batches multiple changes into one packet
         registerMessage(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
     }

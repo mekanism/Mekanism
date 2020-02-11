@@ -30,6 +30,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
+import mekanism.common.inventory.container.ITrackableContainer;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -78,7 +80,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: When Galaticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, IStrictEnergyStorage, ICachedRecipeHolder<ItemStackToItemStackRecipe> {
+public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, IStrictEnergyStorage, ICachedRecipeHolder<ItemStackToItemStackRecipe>,
+      ITrackableContainer {
 
     private static final DataParameter<Float> ELECTRICITY = EntityDataManager.createKey(EntityRobit.class, DataSerializers.FLOAT);
     private static final DataParameter<String> OWNER_UUID = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
@@ -549,12 +552,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
               .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);
     }
 
-    public SyncableInt getContainerProgress() {
-        if (getEntityWorld().isRemote()) {
-            return SyncableInt.create(() -> progress, value -> progress = value);
-        }
-        //NO-OP setting on server side
-        return SyncableInt.create(() -> progress, value -> {
-        });
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        container.track(SyncableInt.create(() -> progress, value -> progress = value));
     }
 }

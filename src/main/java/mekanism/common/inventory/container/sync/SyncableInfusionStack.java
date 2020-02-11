@@ -24,8 +24,12 @@ public abstract class SyncableInfusionStack implements ISyncableData {
     @Override
     public boolean isDirty() {
         InfusionStack value = this.get();
-        boolean dirty = value.isStackIdentical(this.lastKnownValue);
-        this.lastKnownValue = value;
+        boolean dirty = !value.isStackIdentical(this.lastKnownValue);
+        if (dirty) {
+            //Make sure to copy it in case our infusion stack object is the same object so would be getting modified
+            // only do so though if it is dirty, as we don't need to spam object creation
+            this.lastKnownValue = value.copy();
+        }
         return dirty;
     }
 

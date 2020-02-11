@@ -204,47 +204,47 @@ public abstract class MekanismContainer extends Container {
     }
 
     //Start container sync management
-    protected void track(ISyncableData data) {
+    public void track(ISyncableData data) {
         trackedData.add(data);
     }
 
-    protected void trackArray(boolean[] arrayIn) {
+    public void trackArray(boolean[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
             track(SyncableBoolean.create(arrayIn, i));
         }
     }
 
-    protected void trackArray(byte[] arrayIn) {
+    public void trackArray(byte[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
             track(SyncableByte.create(arrayIn, i));
         }
     }
 
-    protected void trackArray(double[] arrayIn) {
+    public void trackArray(double[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
             track(SyncableDouble.create(arrayIn, i));
         }
     }
 
-    protected void trackArray(float[] arrayIn) {
+    public void trackArray(float[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
             track(SyncableFloat.create(arrayIn, i));
         }
     }
 
-    protected void trackArray(int[] arrayIn) {
+    public void trackArray(int[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
             track(SyncableInt.create(arrayIn, i));
         }
     }
 
-    protected void trackArray(long[] arrayIn) {
+    public void trackArray(long[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
             track(SyncableLong.create(arrayIn, i));
         }
     }
 
-    protected void trackArray(short[] arrayIn) {
+    public void trackArray(short[] arrayIn) {
         for (int i = 0; i < arrayIn.length; i++) {
             track(SyncableShort.create(arrayIn, i));
         }

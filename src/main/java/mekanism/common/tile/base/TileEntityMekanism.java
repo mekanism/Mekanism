@@ -46,6 +46,10 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.wrenches.Wrenches;
+import mekanism.common.inventory.container.ITrackableContainer;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.network.PacketDataRequest;
@@ -98,7 +102,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
       ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, IUpgradeableTile,
-      IComparatorSupport {
+      IComparatorSupport, ITrackableContainer {
     //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
@@ -114,6 +118,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //TODO: Evaluate this
     public int ticker;
 
+    //TODO: Remove the need for this boolean to exist
     public boolean doAutoSync = true;
 
     private List<ITileComponent> components = new ArrayList<>();
@@ -486,6 +491,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             component.write(data);
         }
         if (supportsRedstone()) {
+            //TODO: Evaluate - I don't believe we need to sync redstone at all, just the control type (and only that via the container)
             data.add(redstone);
             data.add(controlType);
         }
@@ -583,6 +589,25 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             nbtTags.putDouble("electricityStored", getEnergy());
         }
         return nbtTags;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        //TODO: What data do you need to sync for the components
+        // For example upgrade data while we are currently viewing main tab of the machine
+        /*for (ITileComponent component : components) {
+            component.write(data);
+        }*/
+        if (supportsRedstone()) {
+            container.track(SyncableInt.create(() -> controlType.ordinal(), value -> controlType = RedstoneControl.byIndexStatic(value)));
+        }
+        if (isElectric()) {
+            container.track(SyncableDouble.create(this::getEnergy, this::setEnergy));
+            if (supportsUpgrades()) {
+                container.track(SyncableDouble.create(this::getEnergyPerTick, this::setEnergyPerTick));
+                container.track(SyncableDouble.create(this::getMaxEnergy, this::setMaxEnergy));
+            }
+        }
     }
 
     @Nonnull

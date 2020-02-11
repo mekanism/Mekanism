@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
 import mekanism.api.block.IHasFactoryType;
@@ -18,13 +17,16 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.IFactory.RecipeType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -175,6 +177,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         cachedRecipes = new CachedRecipe[tier.processes];
         activeStates = new boolean[cachedRecipes.length];
         setRecipeType(recipeType);
+        doAutoSync = false;
     }
 
     @Override
@@ -428,15 +431,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
             return;
         }
-
         super.handlePacketData(dataStream);
-
-        if (isRemote()) {
-            recipeTicks = dataStream.readInt();
-            lastUsage = dataStream.readDouble();
-            infusionTank.setStack(PacketHandler.readInfusionStack(dataStream));
-            gasTank.setStack(PacketHandler.readGasStack(dataStream));
-        }
     }
 
     @Override
@@ -461,17 +456,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             nbtTags.putInt("progress" + i, getProgress(i));
         }
         return nbtTags;
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-
-        data.add(recipeTicks);
-        data.add(lastUsage);
-        data.add(infusionTank.getStack());
-        data.add(gasTank.getStack());
-        return data;
     }
 
     @Override
@@ -594,5 +578,14 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public boolean lightUpdate() {
         return true;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.trackArray(progress);
+        container.track(SyncableInt.create(() -> recipeTicks, value -> recipeTicks = value));
+        container.track(SyncableDouble.create(() -> lastUsage, value -> lastUsage = value));
+        container.track(SyncableBoolean.create(() -> sorting, value -> sorting = value));
     }
 }

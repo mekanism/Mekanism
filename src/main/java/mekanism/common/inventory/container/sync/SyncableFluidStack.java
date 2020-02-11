@@ -24,8 +24,12 @@ public abstract class SyncableFluidStack implements ISyncableData {
     @Override
     public boolean isDirty() {
         FluidStack value = this.get();
-        boolean dirty = value.isFluidStackIdentical(this.lastKnownValue);
-        this.lastKnownValue = value;
+        boolean dirty = !value.isFluidStackIdentical(this.lastKnownValue);
+        if (dirty) {
+            //Make sure to copy it in case our fluid stack object is the same object so would be getting modified
+            // only do so though if it is dirty, as we don't need to spam object creation
+            this.lastKnownValue = value.copy();
+        }
         return dirty;
     }
 
