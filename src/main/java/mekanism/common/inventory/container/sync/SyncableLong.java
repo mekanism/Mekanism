@@ -16,15 +16,15 @@ public abstract class SyncableLong implements ISyncableData {
     public abstract void set(long value);
 
     @Override
-    public boolean isDirty() {
+    public DirtyType isDirty() {
         long oldValue = this.get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
-        return dirty;
+        return DirtyType.get(dirty);
     }
 
     @Override
-    public LongPropertyData getPropertyData(short property) {
+    public LongPropertyData getPropertyData(short property, DirtyType dirtyType) {
         return new LongPropertyData(property, get());
     }
 

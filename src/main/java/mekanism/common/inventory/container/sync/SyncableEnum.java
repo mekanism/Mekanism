@@ -10,53 +10,49 @@ import mekanism.common.network.container.property.IntPropertyData;
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for making it easier to handle enums
  */
-public abstract class SyncableEnum<ENUM extends Enum<ENUM>> implements ISyncableData {
+public class SyncableEnum<ENUM extends Enum<ENUM>> implements ISyncableData {
+
+    public static <ENUM extends Enum<ENUM>> SyncableEnum<ENUM> create(Int2ObjectFunction<ENUM> decoder, @Nonnull ENUM defaultValue, Supplier<@NonNull ENUM> getter,
+          Consumer<@NonNull ENUM> setter) {
+        return new SyncableEnum<>(decoder, defaultValue, getter, setter);
+    }
 
     private final Int2ObjectFunction<ENUM> decoder;
+    private final Supplier<@NonNull ENUM> getter;
+    private final Consumer<@NonNull ENUM> setter;
     @Nonnull
     private ENUM lastKnownValue;
 
-    private SyncableEnum(Int2ObjectFunction<ENUM> decoder, @Nonnull ENUM defaultValue) {
+    private SyncableEnum(Int2ObjectFunction<ENUM> decoder, @Nonnull ENUM defaultValue, Supplier<@NonNull ENUM> getter, Consumer<@NonNull ENUM> setter) {
         this.decoder = decoder;
         this.lastKnownValue = defaultValue;
+        this.getter = getter;
+        this.setter = setter;
     }
 
     @Nonnull
-    public abstract ENUM get();
+    public ENUM get() {
+        return getter.get();
+    }
 
     public void set(int ordinal) {
         set(decoder.apply(ordinal));
     }
 
-    public abstract void set(@Nonnull ENUM value);
+    public void set(@Nonnull ENUM value) {
+        setter.accept(value);
+    }
 
     @Override
-    public boolean isDirty() {
+    public DirtyType isDirty() {
         ENUM oldValue = this.get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
-        return dirty;
+        return DirtyType.get(dirty);
     }
 
     @Override
-    public IntPropertyData getPropertyData(short property) {
+    public IntPropertyData getPropertyData(short property, DirtyType dirtyType) {
         return new IntPropertyData(property, get().ordinal());
-    }
-
-    public static <ENUM extends Enum<ENUM>> SyncableEnum<ENUM> create(Int2ObjectFunction<ENUM> decoder, @Nonnull ENUM defaultValue, Supplier<@NonNull ENUM> getter,
-          Consumer<@NonNull ENUM> setter) {
-        return new SyncableEnum<ENUM>(decoder, defaultValue) {
-
-            @Nonnull
-            @Override
-            public ENUM get() {
-                return getter.get();
-            }
-
-            @Override
-            public void set(@Nonnull ENUM value) {
-                setter.accept(value);
-            }
-        };
     }
 }

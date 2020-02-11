@@ -16,15 +16,15 @@ public abstract class SyncableInt implements ISyncableData {
     public abstract void set(int value);
 
     @Override
-    public boolean isDirty() {
+    public DirtyType isDirty() {
         int oldValue = this.get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
-        return dirty;
+        return DirtyType.get(dirty);
     }
 
     @Override
-    public IntPropertyData getPropertyData(short property) {
+    public IntPropertyData getPropertyData(short property, DirtyType dirtyType) {
         return new IntPropertyData(property, get());
     }
 

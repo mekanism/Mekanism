@@ -16,15 +16,15 @@ public abstract class SyncableDouble implements ISyncableData {
     public abstract void set(double value);
 
     @Override
-    public boolean isDirty() {
+    public DirtyType isDirty() {
         double oldValue = this.get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
-        return dirty;
+        return DirtyType.get(dirty);
     }
 
     @Override
-    public DoublePropertyData getPropertyData(short property) {
+    public DoublePropertyData getPropertyData(short property, DirtyType dirtyType) {
         return new DoublePropertyData(property, get());
     }
 

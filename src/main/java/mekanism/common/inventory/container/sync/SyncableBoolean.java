@@ -16,15 +16,15 @@ public abstract class SyncableBoolean implements ISyncableData {
     public abstract void set(boolean value);
 
     @Override
-    public boolean isDirty() {
+    public DirtyType isDirty() {
         boolean oldValue = this.get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
-        return dirty;
+        return DirtyType.get(dirty);
     }
 
     @Override
-    public BooleanPropertyData getPropertyData(short property) {
+    public BooleanPropertyData getPropertyData(short property, DirtyType dirtyType) {
         return new BooleanPropertyData(property, get());
     }
 

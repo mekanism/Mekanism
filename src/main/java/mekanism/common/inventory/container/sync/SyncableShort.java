@@ -16,15 +16,15 @@ public abstract class SyncableShort implements ISyncableData {
     public abstract void set(short value);
 
     @Override
-    public boolean isDirty() {
+    public DirtyType isDirty() {
         short oldValue = this.get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
-        return dirty;
+        return DirtyType.get(dirty);
     }
 
     @Override
-    public ShortPropertyData getPropertyData(short property) {
+    public ShortPropertyData getPropertyData(short property, DirtyType dirtyType) {
         return new ShortPropertyData(property, get());
     }
 

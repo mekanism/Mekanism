@@ -16,15 +16,15 @@ public abstract class SyncableFloat implements ISyncableData {
     public abstract void set(float value);
 
     @Override
-    public boolean isDirty() {
+    public DirtyType isDirty() {
         float oldValue = this.get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
-        return dirty;
+        return DirtyType.get(dirty);
     }
 
     @Override
-    public FloatPropertyData getPropertyData(short property) {
+    public FloatPropertyData getPropertyData(short property, DirtyType dirtyType) {
         return new FloatPropertyData(property, get());
     }
 

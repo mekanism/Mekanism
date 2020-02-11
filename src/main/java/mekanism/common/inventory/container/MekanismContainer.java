@@ -13,8 +13,10 @@ import mekanism.common.inventory.container.slot.IInsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.container.sync.ISyncableData;
+import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableByte;
+import mekanism.common.inventory.container.sync.SyncableChemicalStack;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloat;
@@ -278,6 +280,10 @@ public abstract class MekanismContainer extends Container {
             ((SyncableInt) data).set(value);
         } else if (data instanceof SyncableEnum) {
             ((SyncableEnum<?>) data).set(value);
+        } else if (data instanceof SyncableChemicalStack<?, ?>) {
+            ((SyncableChemicalStack<?, ?>) data).set(value);
+        } else if (data instanceof SyncableFluidStack) {
+            ((SyncableFluidStack) data).set(value);
         }
     }
 
@@ -331,13 +337,12 @@ public abstract class MekanismContainer extends Container {
             List<PropertyData> dirtyData = new ArrayList<>();
             for (short i = 0; i < trackedData.size(); i++) {
                 ISyncableData data = trackedData.get(i);
-                if (data.isDirty()) {
-                    dirtyData.add(data.getPropertyData(i));
+                DirtyType dirtyType = data.isDirty();
+                if (dirtyType != DirtyType.CLEAN) {
+                    dirtyData.add(data.getPropertyData(i, dirtyType));
                 }
             }
             int size = dirtyData.size();
-            //TODO: Maybe make a way to sync fluid stacks, gas stacks, infusion stacks when only the amount has changed and not the type
-            // rather than resyncing the entire stack
             if (size == 1) {
                 //If we only have a single element send a type specific packet to reduce overhead of
                 // having to include type and count

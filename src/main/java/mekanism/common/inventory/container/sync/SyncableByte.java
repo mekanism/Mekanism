@@ -16,15 +16,15 @@ public abstract class SyncableByte implements ISyncableData {
     public abstract void set(byte value);
 
     @Override
-    public boolean isDirty() {
+    public DirtyType isDirty() {
         byte oldValue = this.get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
-        return dirty;
+        return DirtyType.get(dirty);
     }
 
     @Override
-    public BytePropertyData getPropertyData(short property) {
+    public BytePropertyData getPropertyData(short property, DirtyType dirtyType) {
         return new BytePropertyData(property, get());
     }
 
