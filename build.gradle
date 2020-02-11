@@ -296,24 +296,65 @@ dependencies {
 
 def version_properties = ["version": mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version, "loader_version": loader_version]
 
-processResources {
+//TODO: Figure out if there is a way to just define one replaceResources task
+task replaceResources(type: Copy) {
     outputs.upToDateWhen { false }
-    filesMatching('META-INF/mods.toml') { expand version_properties }
+    from (sourceSets.main.resources) {
+        include "META-INF/mods.toml"
+        expand version_properties
+    }
+    into "$buildDir/resources/main/"
 }
 
-processToolsResources {
+task replaceResourcesAdditions(type: Copy) {
     outputs.upToDateWhen { false }
-    filesMatching('META-INF/mods.toml') { expand version_properties }
+    from (sourceSets.additions.resources) {
+        include "META-INF/mods.toml"
+        expand version_properties
+    }
+    into "$buildDir/resources/additions/"
+}
+
+task replaceResourcesGenerators(type: Copy) {
+    outputs.upToDateWhen { false }
+    from (sourceSets.generators.resources) {
+        include "META-INF/mods.toml"
+        expand version_properties
+    }
+    into "$buildDir/resources/generators/"
+}
+
+task replaceResourcesTools(type: Copy) {
+    outputs.upToDateWhen { false }
+    from (sourceSets.tools.resources) {
+        include "META-INF/mods.toml"
+        expand version_properties
+    }
+    into "$buildDir/resources/tools/"
+}
+
+processResources {
+    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
+    exclude 'META-INF/mods.toml'
+    finalizedBy(replaceResources)
 }
 
 processAdditionsResources {
-    outputs.upToDateWhen { false }
-    filesMatching('META-INF/mods.toml') { expand version_properties }
+    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
+    exclude 'META-INF/mods.toml'
+    finalizedBy(replaceResourcesAdditions)
 }
 
 processGeneratorsResources {
-    outputs.upToDateWhen { false }
-    filesMatching('META-INF/mods.toml') { expand version_properties }
+    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
+    exclude 'META-INF/mods.toml'
+    finalizedBy(replaceResourcesGenerators)
+}
+
+processToolsResources {
+    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
+    exclude 'META-INF/mods.toml'
+    finalizedBy(replaceResourcesTools)
 }
 
 jar {
