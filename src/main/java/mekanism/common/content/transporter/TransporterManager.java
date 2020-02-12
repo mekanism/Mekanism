@@ -46,9 +46,8 @@ public class TransporterManager {
      * @implNote Make sure to set stack size back to the originalCount when returning from this method
      */
     private static int simulateInsert(IItemHandler handler, InventoryInfo inventoryInfo, ItemStack stack, int count) {
-        //TODO: The changing size is because copying is semi expensive (or at least was in 1.12). Check if it is still expensive in 1.14
-        // Also IF we set the size of the stack to zero then does this get broken due to it updating to the empty stack, or does it get fixed when changing it back above
-        // a zero count
+        //Note: We change the size is because copying is semi expensive due to how capabilities are serialized
+        // and afterwards we make sure to change the stack size back
         int originalCount = stack.getCount();
         if (count != originalCount) {
             //If we have a different count than actual count, set the count to the proper amount (allows for slightly reduced copying stacks about)
@@ -81,14 +80,20 @@ public class TransporterManager {
             // If the destination isn't empty and not stackable, move along
             if (destCount > 0 && !InventoryUtils.areItemsStackable(inventoryInfo.inventory.get(i), stack)) {
                 continue;
-            }
-
-            // If the item stack is empty, we need to do a simulated insert since we can't tell if the stack
-            // in question would be allowed in this slot. Otherwise, we depend on areItemsStackable to keep us
-            // out of trouble
-            else if (destCount == 0 && ItemStack.areItemStacksEqual(handler.insertItem(i, stack, true), stack)) {
-                // Insert will fail; bail
-                continue;
+            } else if (destCount == 0) {
+                // If the item stack is empty, we need to do a simulated insert since we can't tell if the stack
+                // in question would be allowed in this slot. Otherwise, we depend on areItemsStackable to keep us
+                // out of trouble
+                if (ItemStack.areItemStacksEqual(handler.insertItem(i, stack, true), stack)) {
+                    // Insert will fail; bail
+                    continue;
+                } else {
+                    //Otherwise if we actually are going to insert it, because there are currently no items
+                    // in the destination, we set the item to the one we are sending so that we can compare
+                    // it with InventoryUtils.areItemsStackable. This makes it so that we do not send multiple
+                    // items of different types to the same slot just because they are not there yet
+                    inventoryInfo.inventory.set(i, StackUtils.size(stack, 1));
+                }
             }
 
             int mergedCount = count + destCount;
@@ -195,8 +200,8 @@ public class TransporterManager {
 
     private static class InventoryInfo {
 
-        public NonNullList<ItemStack> inventory;
-        public IntList stackSizes = new IntArrayList();
+        private NonNullList<ItemStack> inventory;
+        private IntList stackSizes = new IntArrayList();
 
         public InventoryInfo(IItemHandler handler) {
             inventory = NonNullList.withSize(handler.getSlots(), ItemStack.EMPTY);
