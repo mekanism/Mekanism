@@ -256,7 +256,9 @@ public class PacketPortableTeleporter {
         } else if (!Mekanism.privateTeleporters.containsKey(owner)) {
             FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, owner);
             Mekanism.privateTeleporters.put(owner, manager);
-            manager.createOrLoad(world);
+            if (!world.isRemote()) {
+                manager.createOrLoad();
+            }
         }
         return Mekanism.privateTeleporters.get(owner);
     }

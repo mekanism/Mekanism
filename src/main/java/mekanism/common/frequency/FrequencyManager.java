@@ -10,19 +10,17 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.AbstractChunkProvider;
-import net.minecraft.world.server.ServerChunkProvider;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.storage.DimensionSavedDataManager;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class FrequencyManager {
 
@@ -35,7 +33,7 @@ public class FrequencyManager {
 
     private Set<Frequency> frequencies = new ObjectOpenHashSet<>();
 
-    //Note: This can be null on the client side
+    //Note: This can and will be null on the client side
     @Nullable
     private FrequencyDataHandler dataHandler;
 
@@ -56,16 +54,19 @@ public class FrequencyManager {
         ownerUUID = uuid;
     }
 
-    public static void load(World world) {
+    /**
+     * Note: This should only be called from the server side
+     */
+    public static void load() {
         loaded = true;
         for (FrequencyManager manager : managers) {
-            manager.createOrLoad(world);
+            manager.createOrLoad();
         }
     }
 
     public static void tick(World world) {
-        if (!loaded) {
-            load(world);
+        if (!loaded && !world.isRemote()) {
+            load();
         }
         for (FrequencyManager manager : managers) {
             manager.tickSelf(world);
@@ -150,22 +151,17 @@ public class FrequencyManager {
         return null;
     }
 
-    public void createOrLoad(World world) {
-        String name = getName();
+    /**
+     * Note: This should only be called from the server side
+     */
+    public void createOrLoad() {
         if (dataHandler == null) {
-            AbstractChunkProvider chunkProvider = world.getChunkProvider();
-            if (chunkProvider instanceof ServerChunkProvider) {
-                DimensionSavedDataManager savedData = ((ServerChunkProvider) chunkProvider).getSavedData();
-                dataHandler = savedData.getOrCreate(() -> new FrequencyDataHandler(name), name);
-                //TODO: Do we have to save it if it didn't exist before, or does this automatically happen
-                /*if (dataHandler == null) {
-                    dataHandler = new FrequencyDataHandler(name);
-                    dataHandler.setManager(this);
-                    world.getPerWorldStorage().setData(name, dataHandler);
-                } else {*/
-                dataHandler.setManager(this);
-                dataHandler.syncManager();
-            }
+            String name = getName();
+            //Always associate the world with the over world as the frequencies are global
+            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD).getSavedData();
+            dataHandler = savedData.getOrCreate(() -> new FrequencyDataHandler(name), name);
+            dataHandler.setManager(this);
+            dataHandler.syncManager();
         }
     }
 
@@ -208,28 +204,6 @@ public class FrequencyManager {
                 }
             }
         }
-    }
-
-    public void writeFrequencies(TileNetworkList data) {
-        data.add(frequencies.size());
-        for (Frequency freq : frequencies) {
-            freq.write(data);
-        }
-    }
-
-    public Set<Frequency> readFrequencies(PacketBuffer dataStream) {
-        Set<Frequency> ret = new ObjectOpenHashSet<>();
-        int size = dataStream.readInt();
-        try {
-            for (int i = 0; i < size; i++) {
-                Frequency freq = frequencyClass.getConstructor(new Class[]{PacketBuffer.class}).newInstance(dataStream);
-                freq.read(dataStream);
-                ret.add(freq);
-            }
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
-        return ret;
     }
 
     public String getName() {

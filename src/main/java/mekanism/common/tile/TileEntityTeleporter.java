@@ -195,7 +195,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
         } else if (!Mekanism.privateTeleporters.containsKey(getSecurity().getOwnerUUID())) {
             FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, getSecurity().getOwnerUUID());
             Mekanism.privateTeleporters.put(getSecurity().getOwnerUUID(), manager);
-            manager.createOrLoad(getWorld());
+            if (!isRemote()) {
+                manager.createOrLoad();
+            }
         }
 
         return Mekanism.privateTeleporters.get(getSecurity().getOwnerUUID());

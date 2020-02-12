@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
+import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.multiblock.MultiblockManager;
@@ -16,6 +17,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonWorldTickHandler {
@@ -46,21 +48,21 @@ public class CommonWorldTickHandler {
     }
 
     @SubscribeEvent
-    public void onTick(WorldTickEvent event) {
-        if (event.side.isServer()) {
-            if (event.phase == Phase.START) {
-                tickStart(event.world);
-            } else if (event.phase == Phase.END) {
-                tickEnd(event.world);
+    public void worldLoadEvent(WorldEvent.Load event) {
+        if (!event.getWorld().isRemote()) {
+            if (!FrequencyManager.loaded) {
+                FrequencyManager.load();
+            }
+            if (event.getWorld() instanceof ServerWorld) {
+                ChunkManager.worldLoad((ServerWorld) event.getWorld());
             }
         }
     }
 
-    public void tickStart(World world) {
-        if (!world.isRemote) {
-            if (!FrequencyManager.loaded) {
-                FrequencyManager.load(world);
-            }
+    @SubscribeEvent
+    public void onTick(WorldTickEvent event) {
+        if (event.side.isServer() && event.phase == Phase.END) {
+            tickEnd(event.world);
         }
     }
 

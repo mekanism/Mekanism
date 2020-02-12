@@ -217,7 +217,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         } else if (!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwnerUUID())) {
             FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwnerUUID());
             Mekanism.privateEntangloporters.put(getSecurity().getOwnerUUID(), manager);
-            manager.createOrLoad(getWorld());
+            if (!isRemote()) {
+                manager.createOrLoad();
+            }
         }
         return Mekanism.privateEntangloporters.get(getSecurity().getOwnerUUID());
     }

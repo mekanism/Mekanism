@@ -78,12 +78,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-//TODO: Use data generators for things
 @Mod(Mekanism.MODID)
 public class Mekanism {
 
@@ -183,7 +182,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onWorldUnload);
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
-        MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
         modEventBus.addListener(this::onConfigReload);
         modEventBus.addListener(this::imcQueue);
         //TODO: Register other listeners and various stuff that is needed
@@ -273,8 +272,8 @@ public class Mekanism {
         //TODO: Do we care about the alternates of mtp, and mtpop
     }
 
-    private void serverStopping(FMLServerStoppingEvent event) {
-        //Clear all cache data
+    private void serverStopped(FMLServerStoppedEvent event) {
+        //Clear all cache data, wait until server stopper though so that we make sure saving can use any data it needs
         playerState.clear();
         activeVibrators.clear();
         worldTickHandler.resetRegenChunks();
@@ -329,10 +328,6 @@ public class Mekanism {
 
         //Initialization notification
         logger.info("Version " + versionNumber + " initializing...");
-
-        //TODO: Chunk Loading
-        //Register with ForgeChunkManager
-        //ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkManager());
 
         //Register to receive subscribed events
         MinecraftForge.EVENT_BUS.register(this);
