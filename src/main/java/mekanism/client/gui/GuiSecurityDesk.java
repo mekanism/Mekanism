@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton;
@@ -106,8 +107,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         if (tile.ownerUUID != null) {
             List<String> text = new ArrayList<>();
             if (tile.frequency != null) {
-                for (String s : tile.frequency.trusted) {
-                    text.add(s);
+                for (UUID uuid : tile.frequency.trusted) {
+                    text.add(MekanismUtils.getLastKnownUsername(uuid));
                 }
             }
             scrollList.setText(text);

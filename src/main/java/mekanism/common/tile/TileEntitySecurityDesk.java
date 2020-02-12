@@ -1,5 +1,6 @@
 package mekanism.common.tile;
 
+import com.mojang.authlib.GameProfile;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -28,6 +29,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
@@ -140,11 +142,14 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             int type = dataStream.readInt();
             if (type == 0) {
                 if (frequency != null) {
-                    frequency.trusted.add(PacketHandler.readString(dataStream));
+                    GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(dataStream.readString());
+                    if (profile != null) {
+                        frequency.trusted.add(profile.getId());
+                    }
                 }
             } else if (type == 1) {
                 if (frequency != null) {
-                    frequency.trusted.remove(PacketHandler.readString(dataStream));
+                    frequency.trusted.remove(dataStream.readUniqueId());
                 }
             } else if (type == 2) {
                 if (frequency != null) {

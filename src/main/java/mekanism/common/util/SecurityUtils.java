@@ -69,8 +69,7 @@ public final class SecurityUtils {
         if (mode == SecurityMode.PUBLIC) {
             return true;
         } else if (mode == SecurityMode.TRUSTED) {
-            //TODO: Fix trusted to make it be uuid internally
-            return false;//freq.trusted.contains(player.getUniqueID());
+            return freq.trusted.contains(player.getUniqueID());
         }
         return false;
     }

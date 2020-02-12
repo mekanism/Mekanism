@@ -3,24 +3,21 @@ package mekanism.common.security;
 import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
-import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
 
-//TODO: Figure out what the use of this is
 public class SecurityFrequency extends Frequency {
 
     public static final String SECURITY = "Security";
 
     public boolean override;
 
-    //TODO: Change trusted to using UUID's internally but continue having it display Strings
-    public HashList<String> trusted;
+    public HashList<UUID> trusted;
 
     public SecurityMode securityMode;
 
@@ -46,8 +43,8 @@ public class SecurityFrequency extends Frequency {
 
         if (!trusted.isEmpty()) {
             ListNBT trustedList = new ListNBT();
-            for (String s : trusted) {
-                trustedList.add(StringNBT.valueOf(s));
+            for (UUID uuid : trusted) {
+                trustedList.add(NBTUtil.writeUniqueId(uuid));
             }
             nbtTags.put("trusted", trustedList);
         }
@@ -63,10 +60,10 @@ public class SecurityFrequency extends Frequency {
         override = nbtTags.getBoolean("override");
         securityMode = SecurityMode.byIndexStatic(nbtTags.getInt("securityMode"));
 
-        if (nbtTags.contains("trusted")) {
-            ListNBT trustedList = nbtTags.getList("trusted", NBT.TAG_STRING);
+        if (nbtTags.contains("trusted", NBT.TAG_LIST)) {
+            ListNBT trustedList = nbtTags.getList("trusted", NBT.TAG_COMPOUND);
             for (int i = 0; i < trustedList.size(); i++) {
-                trusted.add(trustedList.getString(i));
+                trusted.add(NBTUtil.readUniqueId(trustedList.getCompound(i)));
             }
         }
     }
@@ -79,8 +76,8 @@ public class SecurityFrequency extends Frequency {
         data.add(securityMode);
 
         data.add(trusted.size());
-        for (String s : trusted) {
-            data.add(s);
+        for (UUID uuid : trusted) {
+            data.add(uuid);
         }
     }
 
@@ -95,9 +92,8 @@ public class SecurityFrequency extends Frequency {
         securityMode = dataStream.readEnumValue(SecurityMode.class);
 
         int size = dataStream.readInt();
-
         for (int i = 0; i < size; i++) {
-            trusted.add(PacketHandler.readString(dataStream));
+            trusted.add(dataStream.readUniqueId());
         }
     }
 }
