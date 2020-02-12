@@ -30,7 +30,6 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
         origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
-        updateStackList(filter.getModID());
     }
 
     @Override

@@ -30,7 +30,6 @@ public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogistical
         origFilter = container.getOrigFilter();
         filter = container.getFilter();
         isNew = container.isNew();
-        updateStackList(filter.getTagName());
     }
 
     @Override
