@@ -7,22 +7,22 @@ import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.client.gui.button.ReactorLogicButton;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.inventory.container.reactor.ReactorLogicAdapterContainer;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter, ReactorLogicAdapterContainer> {
+public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter, MekanismTileContainer<TileEntityReactorLogicAdapter>> {
 
-    public GuiReactorLogicAdapter(ReactorLogicAdapterContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiReactorLogicAdapter(MekanismTileContainer<TileEntityReactorLogicAdapter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

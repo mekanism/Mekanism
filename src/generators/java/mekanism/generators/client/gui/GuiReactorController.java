@@ -7,21 +7,21 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.inventory.container.reactor.ReactorControllerContainer;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiReactorController extends GuiMekanismTile<TileEntityReactorController, ReactorControllerContainer> {
+public class GuiReactorController extends GuiMekanismTile<TileEntityReactorController, MekanismTileContainer<TileEntityReactorController>> {
 
-    public GuiReactorController(ReactorControllerContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiReactorController(MekanismTileContainer<TileEntityReactorController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

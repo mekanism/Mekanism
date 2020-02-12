@@ -28,7 +28,9 @@ import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.filter.list.LogisticalSorterContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityLogisticalSorter;
@@ -275,8 +277,13 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
     }
 
     @Override
+    public ContainerTypeRegistryObject<EmptyTileContainer<TileEntityLogisticalSorter>> getContainerType() {
+        return MekanismContainerTypes.LOGISTICAL_SORTER;
+    }
+
+    @Override
     public INamedContainerProvider getProvider(TileEntityLogisticalSorter tile) {
-        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new LogisticalSorterContainer(i, inv, tile));
+        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new EmptyTileContainer<>(getContainerType(), i, inv, tile));
     }
 
     @Override

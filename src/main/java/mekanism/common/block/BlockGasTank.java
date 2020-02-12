@@ -16,9 +16,10 @@ import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.GasTankContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityGasTank;
@@ -28,12 +29,10 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -121,8 +120,8 @@ public class BlockGasTank extends BlockMekanism implements IHasGui<TileEntityGas
     }
 
     @Override
-    public INamedContainerProvider getProvider(TileEntityGasTank tile) {
-        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new GasTankContainer(i, inv, tile));
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityGasTank>> getContainerType() {
+        return MekanismContainerTypes.GAS_TANK;
     }
 
     @Override

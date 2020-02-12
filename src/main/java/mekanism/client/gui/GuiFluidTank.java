@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.FluidTankContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -15,9 +15,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, FluidTankContainer> {
+public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, MekanismTileContainer<TileEntityFluidTank>> {
 
-    public GuiFluidTank(FluidTankContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiFluidTank(MekanismTileContainer<TileEntityFluidTank> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

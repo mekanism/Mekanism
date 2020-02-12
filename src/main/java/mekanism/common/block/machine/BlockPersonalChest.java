@@ -19,7 +19,10 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -169,6 +172,11 @@ public class BlockPersonalChest extends BlockMekanism implements IBlockElectric,
     @Override
     public double getUsage() {
         return 30;
+    }
+
+    @Override
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPersonalChest>> getContainerType() {
+        return MekanismContainerTypes.PERSONAL_CHEST_BLOCK;
     }
 
     @Override

@@ -22,7 +22,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
-import mekanism.common.inventory.container.tile.TeleporterContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
@@ -35,7 +35,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
-public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, TeleporterContainer> {
+public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, MekanismTileContainer<TileEntityTeleporter>> {
 
     private MekanismButton publicButton;
     private MekanismButton privateButton;
@@ -49,7 +49,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Telepor
     private List<Frequency> clientPublicCache = new ArrayList<>();
     private List<Frequency> clientPrivateCache = new ArrayList<>();
 
-    public GuiTeleporter(TeleporterContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiTeleporter(MekanismTileContainer<TileEntityTeleporter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         if (tile.frequency != null) {
             privateMode = !tile.frequency.publicFreq;

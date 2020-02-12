@@ -23,6 +23,9 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -153,6 +156,11 @@ public class BlockFormulaicAssemblicator extends BlockMekanism implements IBlock
     @Override
     public double getConfigStorage() {
         return MekanismConfig.storage.formulaicAssemblicator.get();
+    }
+
+    @Override
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFormulaicAssemblicator>> getContainerType() {
+        return MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR;
     }
 
     @Override

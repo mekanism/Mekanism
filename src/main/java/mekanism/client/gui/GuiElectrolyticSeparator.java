@@ -19,7 +19,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.ElectrolyticSeparatorContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.util.MekanismUtils;
@@ -29,9 +29,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrolyticSeparator, ElectrolyticSeparatorContainer> {
+public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrolyticSeparator, MekanismTileContainer<TileEntityElectrolyticSeparator>> {
 
-    public GuiElectrolyticSeparator(ElectrolyticSeparatorContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiElectrolyticSeparator(MekanismTileContainer<TileEntityElectrolyticSeparator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

@@ -1,14 +1,14 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.common.inventory.container.tile.OsmiumCompressorContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiOsmiumCompressor extends GuiAdvancedElectricMachine<TileEntityOsmiumCompressor, OsmiumCompressorContainer> {
+public class GuiOsmiumCompressor extends GuiAdvancedElectricMachine<TileEntityOsmiumCompressor, MekanismTileContainer<TileEntityOsmiumCompressor>> {
 
-    public GuiOsmiumCompressor(OsmiumCompressorContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiOsmiumCompressor(MekanismTileContainer<TileEntityOsmiumCompressor> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

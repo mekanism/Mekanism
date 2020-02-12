@@ -11,7 +11,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.EnergyCubeContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -20,9 +20,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, EnergyCubeContainer> {
+public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, MekanismTileContainer<TileEntityEnergyCube>> {
 
-    public GuiEnergyCube(EnergyCubeContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiEnergyCube(MekanismTileContainer<TileEntityEnergyCube> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

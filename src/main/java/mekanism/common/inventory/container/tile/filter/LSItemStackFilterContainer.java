@@ -6,7 +6,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-//TODO: Should this be FilterEmptyContainer
 public class LSItemStackFilterContainer extends FilterContainer<TItemStackFilter, TileEntityLogisticalSorter> {
 
     public LSItemStackFilterContainer(int id, PlayerInventory inv, TileEntityLogisticalSorter tile, int index) {

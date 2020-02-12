@@ -1,35 +1,33 @@
 package mekanism.generators.common.registries;
 
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeDeferredRegister;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.inventory.container.BioGeneratorContainer;
-import mekanism.generators.common.inventory.container.GasBurningGeneratorContainer;
-import mekanism.generators.common.inventory.container.HeatGeneratorContainer;
-import mekanism.generators.common.inventory.container.SolarGeneratorContainer;
-import mekanism.generators.common.inventory.container.WindGeneratorContainer;
-import mekanism.generators.common.inventory.container.reactor.ReactorControllerContainer;
-import mekanism.generators.common.inventory.container.reactor.ReactorLogicAdapterContainer;
-import mekanism.generators.common.inventory.container.reactor.info.ReactorFuelContainer;
-import mekanism.generators.common.inventory.container.reactor.info.ReactorHeatContainer;
-import mekanism.generators.common.inventory.container.reactor.info.ReactorStatsContainer;
-import mekanism.generators.common.inventory.container.turbine.TurbineContainer;
-import mekanism.generators.common.inventory.container.turbine.TurbineStatsContainer;
+import mekanism.generators.common.tile.TileEntityBioGenerator;
+import mekanism.generators.common.tile.TileEntityGasGenerator;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import mekanism.generators.common.tile.TileEntitySolarGenerator;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
+import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 
 public class GeneratorsContainerTypes {
 
     public static final ContainerTypeDeferredRegister CONTAINER_TYPES = new ContainerTypeDeferredRegister(MekanismGenerators.MODID);
 
-    public static final ContainerTypeRegistryObject<BioGeneratorContainer> BIO_GENERATOR = CONTAINER_TYPES.register(GeneratorsBlocks.BIO_GENERATOR, BioGeneratorContainer::new);
-    public static final ContainerTypeRegistryObject<GasBurningGeneratorContainer> GAS_BURNING_GENERATOR = CONTAINER_TYPES.register(GeneratorsBlocks.GAS_BURNING_GENERATOR, GasBurningGeneratorContainer::new);
-    public static final ContainerTypeRegistryObject<HeatGeneratorContainer> HEAT_GENERATOR = CONTAINER_TYPES.register(GeneratorsBlocks.HEAT_GENERATOR, HeatGeneratorContainer::new);
-    public static final ContainerTypeRegistryObject<TurbineContainer> INDUSTRIAL_TURBINE = CONTAINER_TYPES.register("industrial_turbine", TurbineContainer::new);
-    public static final ContainerTypeRegistryObject<ReactorControllerContainer> REACTOR_CONTROLLER = CONTAINER_TYPES.register(GeneratorsBlocks.REACTOR_CONTROLLER, ReactorControllerContainer::new);
-    public static final ContainerTypeRegistryObject<ReactorFuelContainer> REACTOR_FUEL = CONTAINER_TYPES.register("reactor_fuel", ReactorFuelContainer::new);
-    public static final ContainerTypeRegistryObject<ReactorHeatContainer> REACTOR_HEAT = CONTAINER_TYPES.register("reactor_heat", ReactorHeatContainer::new);
-    public static final ContainerTypeRegistryObject<ReactorLogicAdapterContainer> REACTOR_LOGIC_ADAPTER = CONTAINER_TYPES.register(GeneratorsBlocks.REACTOR_LOGIC_ADAPTER, ReactorLogicAdapterContainer::new);
-    public static final ContainerTypeRegistryObject<ReactorStatsContainer> REACTOR_STATS = CONTAINER_TYPES.register("reactor_stats", ReactorStatsContainer::new);
-    public static final ContainerTypeRegistryObject<SolarGeneratorContainer> SOLAR_GENERATOR = CONTAINER_TYPES.register("solar_generator", SolarGeneratorContainer::new);
-    public static final ContainerTypeRegistryObject<TurbineStatsContainer> TURBINE_STATS = CONTAINER_TYPES.register("turbine_stats", TurbineStatsContainer::new);
-    public static final ContainerTypeRegistryObject<WindGeneratorContainer> WIND_GENERATOR = CONTAINER_TYPES.register(GeneratorsBlocks.WIND_GENERATOR, WindGeneratorContainer::new);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityBioGenerator>> BIO_GENERATOR = CONTAINER_TYPES.register(GeneratorsBlocks.BIO_GENERATOR, TileEntityBioGenerator.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityGasGenerator>> GAS_BURNING_GENERATOR = CONTAINER_TYPES.register(GeneratorsBlocks.GAS_BURNING_GENERATOR, TileEntityGasGenerator.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityHeatGenerator>> HEAT_GENERATOR = CONTAINER_TYPES.register(GeneratorsBlocks.HEAT_GENERATOR, TileEntityHeatGenerator.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityTurbineCasing>> INDUSTRIAL_TURBINE = CONTAINER_TYPES.register("industrial_turbine", TileEntityTurbineCasing.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityReactorController>> REACTOR_CONTROLLER = CONTAINER_TYPES.register(GeneratorsBlocks.REACTOR_CONTROLLER, TileEntityReactorController.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityReactorController>> REACTOR_FUEL = CONTAINER_TYPES.registerEmpty("reactor_fuel", TileEntityReactorController.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityReactorController>> REACTOR_HEAT = CONTAINER_TYPES.registerEmpty("reactor_heat", TileEntityReactorController.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityReactorLogicAdapter>> REACTOR_LOGIC_ADAPTER = CONTAINER_TYPES.register(GeneratorsBlocks.REACTOR_LOGIC_ADAPTER, TileEntityReactorLogicAdapter.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityReactorController>> REACTOR_STATS = CONTAINER_TYPES.registerEmpty("reactor_stats", TileEntityReactorController.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySolarGenerator>> SOLAR_GENERATOR = CONTAINER_TYPES.register("solar_generator", TileEntitySolarGenerator.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityTurbineCasing>> TURBINE_STATS = CONTAINER_TYPES.registerEmpty("turbine_stats", TileEntityTurbineCasing.class);
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityWindGenerator>> WIND_GENERATOR = CONTAINER_TYPES.register(GeneratorsBlocks.WIND_GENERATOR, TileEntityWindGenerator.class);
 }

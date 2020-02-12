@@ -31,7 +31,10 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.FactoryContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.FactoryTier;
@@ -198,6 +201,11 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
             default:
                 return MekanismSounds.ENERGIZED_SMELTER.getSoundEvent();
         }
+    }
+
+    @Override
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityFactory<?>>> getContainerType() {
+        return MekanismContainerTypes.FACTORY;
     }
 
     @Override

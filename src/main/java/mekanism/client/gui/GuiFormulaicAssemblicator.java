@@ -17,7 +17,7 @@ import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
@@ -31,7 +31,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator, FormulaicAssemblicatorContainer> {
+public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator, MekanismTileContainer<TileEntityFormulaicAssemblicator>> {
 
     private MekanismButton encodeFormulaButton;
     private MekanismButton stockControlButton;
@@ -40,7 +40,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     private MekanismButton craftAvailableButton;
     private MekanismButton autoModeButton;
 
-    public GuiFormulaicAssemblicator(FormulaicAssemblicatorContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiFormulaicAssemblicator(MekanismTileContainer<TileEntityFormulaicAssemblicator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize += 64;
     }

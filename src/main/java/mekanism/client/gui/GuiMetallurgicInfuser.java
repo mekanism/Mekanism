@@ -19,7 +19,7 @@ import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.MetallurgicInfuserContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.util.MekanismUtils;
@@ -29,9 +29,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgicInfuser, MetallurgicInfuserContainer> {
+public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgicInfuser, MekanismTileContainer<TileEntityMetallurgicInfuser>> {
 
-    public GuiMetallurgicInfuser(MetallurgicInfuserContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiMetallurgicInfuser(MekanismTileContainer<TileEntityMetallurgicInfuser> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

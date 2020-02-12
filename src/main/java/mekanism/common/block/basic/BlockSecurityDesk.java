@@ -13,7 +13,10 @@ import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -142,6 +145,11 @@ public class BlockSecurityDesk extends BlockMekanism implements IStateFacing, IH
             }
         }
         return ActionResultType.PASS;
+    }
+
+    @Override
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySecurityDesk>> getContainerType() {
+        return MekanismContainerTypes.SECURITY_DESK;
     }
 
     @Override

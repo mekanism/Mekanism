@@ -8,7 +8,7 @@ import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
-import mekanism.common.inventory.container.tile.BoilerStatsContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -19,12 +19,12 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, BoilerStatsContainer> {
+public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, MekanismTileContainer<TileEntityBoilerCasing>> {
 
     private GuiGraph boilGraph;
     private GuiGraph maxGraph;
 
-    public GuiBoilerStats(BoilerStatsContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiBoilerStats(MekanismTileContainer<TileEntityBoilerCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

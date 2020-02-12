@@ -23,8 +23,9 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.SolarNeutronActivatorContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntitySolarNeutronActivator;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -33,13 +34,11 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -241,8 +240,8 @@ public class BlockSolarNeutronActivator extends BlockMekanism implements IHasMod
     }
 
     @Override
-    public INamedContainerProvider getProvider(TileEntitySolarNeutronActivator tile) {
-        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new SolarNeutronActivatorContainer(i, inv, tile));
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySolarNeutronActivator>> getContainerType() {
+        return MekanismContainerTypes.SOLAR_NEUTRON_ACTIVATOR;
     }
 
     @Override

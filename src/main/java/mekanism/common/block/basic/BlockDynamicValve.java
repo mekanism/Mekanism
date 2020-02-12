@@ -10,8 +10,11 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.DynamicTankContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
@@ -20,8 +23,13 @@ public class BlockDynamicValve extends BlockBasicMultiblock implements IHasModel
       IHasGui<TileEntityDynamicValve>, IHasDescription {
 
     @Override
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityDynamicTank>> getContainerType() {
+        return MekanismContainerTypes.DYNAMIC_TANK;
+    }
+
+    @Override
     public INamedContainerProvider getProvider(TileEntityDynamicValve tile) {
-        return new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new DynamicTankContainer(i, inv, tile));
+        return new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile));
     }
 
     @Override

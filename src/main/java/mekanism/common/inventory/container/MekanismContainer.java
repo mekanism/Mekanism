@@ -41,6 +41,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public abstract class MekanismContainer extends Container {
 
+    public static int BASE_Y_OFFSET = 84;
+
     @Nullable
     protected final PlayerInventory inv;
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
@@ -98,7 +100,7 @@ public abstract class MekanismContainer extends Container {
     }
 
     protected int getInventoryYOffset() {
-        return 84;
+        return BASE_Y_OFFSET;
     }
 
     protected int getInventoryXOffset() {

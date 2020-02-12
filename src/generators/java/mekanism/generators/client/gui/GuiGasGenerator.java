@@ -12,19 +12,19 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.inventory.container.GasBurningGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityGasGenerator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, GasBurningGeneratorContainer> {
+public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, MekanismTileContainer<TileEntityGasGenerator>> {
 
-    public GuiGasGenerator(GasBurningGeneratorContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiGasGenerator(MekanismTileContainer<TileEntityGasGenerator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

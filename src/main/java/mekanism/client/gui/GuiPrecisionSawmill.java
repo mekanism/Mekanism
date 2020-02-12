@@ -15,16 +15,16 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.PrecisionSawmillContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityPrecisionSawmill;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiPrecisionSawmill extends GuiMekanismTile<TileEntityPrecisionSawmill, PrecisionSawmillContainer> {
+public class GuiPrecisionSawmill extends GuiMekanismTile<TileEntityPrecisionSawmill, MekanismTileContainer<TileEntityPrecisionSawmill>> {
 
-    public GuiPrecisionSawmill(PrecisionSawmillContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiPrecisionSawmill(MekanismTileContainer<TileEntityPrecisionSawmill> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

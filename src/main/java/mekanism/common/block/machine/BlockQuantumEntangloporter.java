@@ -23,7 +23,10 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -204,6 +207,11 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         return bounds;
+    }
+
+    @Override
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityQuantumEntangloporter>> getContainerType() {
+        return MekanismContainerTypes.QUANTUM_ENTANGLOPORTER;
     }
 
     @Override

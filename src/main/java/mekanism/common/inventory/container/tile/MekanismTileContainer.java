@@ -19,12 +19,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
-public abstract class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
+public class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
 
     //TODO: Annotate this
     protected final TILE tile;
 
-    protected MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
+    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
         super(type, id, inv);
         this.tile = tile;
         addSlotsAndOpen();

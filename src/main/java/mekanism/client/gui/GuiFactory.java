@@ -25,7 +25,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
-import mekanism.common.inventory.container.tile.FactoryContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.FactoryTier;
@@ -45,9 +45,9 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
-public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, FactoryContainer> {
+public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTileContainer<TileEntityFactory<?>>> {
 
-    public GuiFactory(FactoryContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         if (tile.hasSecondaryResourceBar()) {
             ySize += 11;

@@ -17,7 +17,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.OredictionificatorContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityOredictionificator;
@@ -31,14 +31,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator, OredictionificatorContainer> {
+public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator, MekanismTileContainer<TileEntityOredictionificator>> {
 
     private Map<OredictionificatorFilter, ItemStack> renderStacks = new Object2ObjectOpenHashMap<>();
     private boolean isDragging = false;
     private double dragOffset = 0;
     private double scroll;
 
-    public GuiOredictionificator(OredictionificatorContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize += 64;
     }

@@ -6,7 +6,6 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-//TODO: Should this be FilterEmptyContainer
 public class DMItemStackFilterContainer extends FilterContainer<MItemStackFilter, TileEntityDigitalMiner> {
 
     public DMItemStackFilterContainer(int id, PlayerInventory inv, TileEntityDigitalMiner tile, int index) {

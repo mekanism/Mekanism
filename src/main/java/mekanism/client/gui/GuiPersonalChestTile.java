@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -10,9 +10,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChest, PersonalChestTileContainer> {
+public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChest, MekanismTileContainer<TileEntityPersonalChest>> {
 
-    public GuiPersonalChestTile(PersonalChestTileContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiPersonalChestTile(MekanismTileContainer<TileEntityPersonalChest> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize += 64;
     }

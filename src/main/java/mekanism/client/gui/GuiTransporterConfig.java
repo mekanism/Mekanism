@@ -14,7 +14,7 @@ import mekanism.client.gui.button.SideDataButton;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.network.PacketGuiButtonPress;
@@ -30,11 +30,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
-public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, TransporterConfigurationContainer> {
+public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, EmptyTileContainer<TileEntityMekanism>> {
 
     private List<GuiPos> slotPosList = new ArrayList<>();
 
-    public GuiTransporterConfig(TransporterConfigurationContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiTransporterConfig(EmptyTileContainer<TileEntityMekanism> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize = 95;
         slotPosList.add(new GuiPos(RelativeSide.BOTTOM, 54, 64));
