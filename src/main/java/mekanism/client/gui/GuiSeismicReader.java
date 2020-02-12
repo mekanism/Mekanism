@@ -1,6 +1,8 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
@@ -26,7 +28,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     private Coord4D pos;
     private World worldObj;
     private List<BlockState> blockList = new ArrayList<>();
-    //private Rectangle tooltip;
+    private Rectangle tooltip;
     private MekanismButton upButton;
     private MekanismButton downButton;
 
@@ -34,7 +36,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     public GuiSeismicReader(SeismicReaderContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        //TODO: Is setting this like this correct
         xSize = 137;
         ySize = 182;
         PlayerEntity player = inv.player;
@@ -54,7 +55,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
               () -> currentLayer++));
         addButton(downButton = new SeismicReaderButton(this, getGuiLeft() + 70, getGuiTop() + 92, 13, 13, 150, 0, getGuiLocation(),
               () -> currentLayer--));
-        //tooltip = new Rectangle(getGuiLeft() + 30, getGuiTop() + 82, 16, 16);
+        tooltip = new Rectangle(getGuiLeft() + 30, getGuiTop() + 82, 16, 16);
         updateEnabledButtons();
     }
 
@@ -65,17 +66,15 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     private void updateEnabledButtons() {
-        upButton.active = currentLayer + 1 <= blockList.size() - 1;
+        upButton.active = currentLayer + 1 <= blockList.size();
         downButton.active = currentLayer - 1 >= 1;
     }
 
-    //TODO: Rewrite this to properly use foreground and background, as well as, not have so many GL calls
     @Override
     public void render(int mouseX, int mouseY, float partialTick) {
+        super.render(mouseX, mouseY, partialTick);
         int guiLeft = (width - getXSize()) / 2;
         int guiTop = (height - getYSize()) / 2;
-        minecraft.textureManager.bindTexture(getGuiLocation());
-        blit(guiLeft, guiTop, 0, 0, getXSize(), getYSize());
 
         // Fix the overlapping if > 100
         RenderSystem.pushMatrix();
@@ -125,9 +124,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             drawString(displayName, 0, 0, 0x919191);
             RenderSystem.popMatrix();
 
-            //TODO
-            /*if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
-                minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "GuiTooltips.png"));
+            if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
+                minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "guitooltips.png"));
                 int fontLengthX = lengthX + 5;
                 int renderX = mouseX + 10, renderY = mouseY - 5;
                 RenderSystem.pushMatrix();
@@ -135,7 +133,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 blit(renderX + fontLengthX, renderY, 0, 16, 2, 16);
                 drawString(displayName, renderX + 4, renderY + 4, 0x919191);
                 RenderSystem.popMatrix();
-            }*/
+            }
 
             frequency = (int) blockList.stream().filter(blockState -> state.getBlock() == blockState.getBlock()).count();
         }
@@ -146,7 +144,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         drawString(MekanismLang.ABUNDANCY.translate(frequency), 0, 0, 0x919191);
         RenderSystem.popMatrix();
         MekanismRenderer.resetColor();
-        super.render(mouseX, mouseY, partialTick);
     }
 
     @Override

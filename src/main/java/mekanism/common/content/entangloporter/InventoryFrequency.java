@@ -37,13 +37,14 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory 
     public double temperature;
     public IInventorySlot storedItem;
 
-    public List<IInventorySlot> inventorySlots = Collections.singletonList(storedItem);
+    public List<IInventorySlot> inventorySlots;
 
     public InventoryFrequency(String n, UUID uuid) {
         super(n, uuid);
         storedFluid = FLUID_TANK_SUPPLIER.get();
         storedGas = GAS_TANK_SUPPLIER.get();
         storedItem = BasicInventorySlot.at(this, 0, 0);
+        inventorySlots = Collections.singletonList(storedItem);
     }
 
     public InventoryFrequency(CompoundNBT nbtTags) {
@@ -75,6 +76,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory 
         storedGas = GAS_TANK_SUPPLIER.get();
         storedEnergy = nbtTags.getDouble("storedEnergy");
         storedItem = BasicInventorySlot.at(this, 0, 0);
+        inventorySlots = Collections.singletonList(storedItem);
 
         if (nbtTags.contains("storedFluid")) {
             storedFluid.readFromNBT(nbtTags.getCompound("storedFluid"));
@@ -102,6 +104,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory 
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         storedItem = BasicInventorySlot.at(this, 0, 0);
+        inventorySlots = Collections.singletonList(storedItem);
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
         storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
         storedEnergy = dataStream.readDouble();
