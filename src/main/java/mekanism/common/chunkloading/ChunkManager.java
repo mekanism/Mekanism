@@ -3,7 +3,6 @@ package mekanism.common.chunkloading;
 import java.util.function.LongConsumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.common.Mekanism;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -12,9 +11,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +23,6 @@ import org.apache.logging.log4j.Logger;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-@EventBusSubscriber(modid = Mekanism.MODID)
 public class ChunkManager extends WorldSavedData {
 
     private static final String CHUNK_LIST_KEY = "chunks";
@@ -64,29 +59,25 @@ public class ChunkManager extends WorldSavedData {
         markDirty();
     }
 
-    @SubscribeEvent
-    public static void worldLoadEvent(WorldEvent.Load event) {
-        if (event.getWorld() instanceof ServerWorld) {
-            ServerWorld world = (ServerWorld) event.getWorld();
-            ChunkManager savedData = getInstance(world);
-            LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.dimension.getType().getRegistryName());
-            savedData.chunks.keySet().forEach((LongConsumer) key -> {
-                //option 1 - for each position, find TE and get it to refresh chunks
-                Chunk chunk = world.getChunk((int) key, (int) (key >> 32));
-                for (BlockPos blockPos : savedData.chunks.get(key)) {
-                    TileEntity tileEntity = chunk.getTileEntity(blockPos);
-                    if (tileEntity instanceof IChunkLoader) {
-                        ((IChunkLoader) tileEntity).getChunkLoader().refreshChunkTickets();
-                    } else {
-                        LOGGER.warn("Tile at {} was either null or not an IChunkLoader?! Tile: {}", blockPos, tileEntity);
-                    }
+    public static void worldLoad(ServerWorld world) {
+        ChunkManager savedData = getInstance(world);
+        LOGGER.info("Loading {} chunks for dimension {}", savedData.chunks.size(), world.dimension.getType().getRegistryName());
+        savedData.chunks.keySet().forEach((LongConsumer) key -> {
+            //option 1 - for each position, find TE and get it to refresh chunks
+            Chunk chunk = world.getChunk((int) key, (int) (key >> 32));
+            for (BlockPos blockPos : savedData.chunks.get(key)) {
+                TileEntity tileEntity = chunk.getTileEntity(blockPos);
+                if (tileEntity instanceof IChunkLoader) {
+                    ((IChunkLoader) tileEntity).getChunkLoader().refreshChunkTickets();
+                } else {
+                    LOGGER.warn("Tile at {} was either null or not an IChunkLoader?! Tile: {}", blockPos, tileEntity);
                 }
+            }
 
-                //option 2 - add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
-                /*ChunkPos pos = new ChunkPos(key);
-                world.getChunkProvider().registerTicket(INITIAL_LOAD_TICKET_TYPE, pos, TileComponentChunkLoader.TICKET_DISTANCE, pos);*/
-            });
-        }
+            //option 2 - add a separate ticket (which has a timout) to let the chunk tick for a short while (chunkloader will refresh if it's able)
+            /*ChunkPos pos = new ChunkPos(key);
+            world.getChunkProvider().registerTicket(INITIAL_LOAD_TICKET_TYPE, pos, TileComponentChunkLoader.TICKET_DISTANCE, pos);*/
+        });
     }
 
     public static ChunkManager getInstance(ServerWorld world) {
