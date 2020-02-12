@@ -20,9 +20,7 @@ public class RenderSecurityDeskItem extends MekanismItemStackRenderer {
           TransformType transformType) {
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         if (transformType == TransformType.THIRD_PERSON_LEFT_HAND) {
-            matrix.rotate(Vector3f.YP.rotationDegrees(90));
-        } else {
-            matrix.rotate(Vector3f.YP.rotationDegrees(-90));
+            matrix.rotate(Vector3f.YP.rotationDegrees(180));
         }
         matrix.scale(0.8F, 0.8F, 0.8F);
         matrix.translate(0, -0.8, 0);
