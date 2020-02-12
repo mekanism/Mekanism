@@ -19,7 +19,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.RotaryCondensentratorContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.MekanismUtils;
@@ -29,9 +29,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator, RotaryCondensentratorContainer> {
+public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCondensentrator, MekanismTileContainer<TileEntityRotaryCondensentrator>> {
 
-    public GuiRotaryCondensentrator(RotaryCondensentratorContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiRotaryCondensentrator(MekanismTileContainer<TileEntityRotaryCondensentrator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

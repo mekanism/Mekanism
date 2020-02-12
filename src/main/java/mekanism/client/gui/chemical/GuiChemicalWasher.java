@@ -19,7 +19,7 @@ import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.ChemicalWasherContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -28,9 +28,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher, ChemicalWasherContainer> {
+public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher, MekanismTileContainer<TileEntityChemicalWasher>> {
 
-    public GuiChemicalWasher(ChemicalWasherContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiChemicalWasher(MekanismTileContainer<TileEntityChemicalWasher> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

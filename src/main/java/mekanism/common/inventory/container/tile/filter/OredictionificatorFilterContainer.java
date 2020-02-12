@@ -6,7 +6,6 @@ import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilte
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-//TODO: Should this be FilterEmptyContainer
 public class OredictionificatorFilterContainer extends FilterContainer<OredictionificatorFilter, TileEntityOredictionificator> {
 
     public OredictionificatorFilterContainer(int id, PlayerInventory inv, TileEntityOredictionificator tile, int index) {

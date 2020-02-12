@@ -14,22 +14,23 @@ import mekanism.client.gui.element.gauge.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.inventory.container.reactor.info.ReactorHeatContainer;
+import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiReactorHeat extends GuiReactorInfo<ReactorHeatContainer> {
+public class GuiReactorHeat extends GuiReactorInfo {
 
-    public GuiReactorHeat(ReactorHeatContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiReactorHeat(EmptyTileContainer<TileEntityReactorController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

@@ -25,6 +25,9 @@ import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -247,6 +250,11 @@ public class BlockDigitalMiner extends BlockMekanism implements IBlockElectric, 
     @Override
     public double getConfigStorage() {
         return MekanismConfig.storage.digitalMiner.get();
+    }
+
+    @Override
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityDigitalMiner>> getContainerType() {
+        return MekanismContainerTypes.DIGITAL_MINER;
     }
 
     @Override

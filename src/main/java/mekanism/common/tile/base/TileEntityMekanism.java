@@ -120,6 +120,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public int ticker;
 
     //TODO: Remove the need for this boolean to exist
+    @Deprecated
     public boolean doAutoSync = true;
 
     private List<ITileComponent> components = new ArrayList<>();
@@ -154,7 +155,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     //Variables for handling ITileUpgradable
     //TODO: Convert this to being private
-    public TileComponentUpgrade upgradeComponent;
+    protected TileComponentUpgrade upgradeComponent;
     //End variables ITileUpgradable
 
     //Variables for handling ITileContainer
@@ -480,7 +481,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 component.read(dataStream);
             }
             if (supportsRedstone()) {
-                redstone = dataStream.readBoolean();
                 controlType = dataStream.readEnumValue(RedstoneControl.class);
             }
             if (isElectric()) {
@@ -500,8 +500,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             component.write(data);
         }
         if (supportsRedstone()) {
-            //TODO: Evaluate - I don't believe we need to sync redstone at all, just the control type (and only that via the container)
-            data.add(redstone);
+            //TODO: Evaluate - I don't believe we need to sync redstone at all, just the control type
             data.add(controlType);
         }
         if (isElectric()) {

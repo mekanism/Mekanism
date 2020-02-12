@@ -11,23 +11,24 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.inventory.container.reactor.info.ReactorFuelContainer;
+import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
-public class GuiReactorFuel extends GuiReactorInfo<ReactorFuelContainer> {
+public class GuiReactorFuel extends GuiReactorInfo {
 
     private TextFieldWidget injectionRateField;
 
-    public GuiReactorFuel(ReactorFuelContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiReactorFuel(EmptyTileContainer<TileEntityReactorController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

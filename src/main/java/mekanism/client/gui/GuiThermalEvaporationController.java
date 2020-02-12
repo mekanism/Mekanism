@@ -7,7 +7,7 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.tile.ThermalEvaporationControllerContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -18,9 +18,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityThermalEvaporationController, ThermalEvaporationControllerContainer> {
+public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityThermalEvaporationController, MekanismTileContainer<TileEntityThermalEvaporationController>> {
 
-    public GuiThermalEvaporationController(ThermalEvaporationControllerContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiThermalEvaporationController(MekanismTileContainer<TileEntityThermalEvaporationController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

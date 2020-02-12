@@ -10,7 +10,7 @@ import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketRemoveUpgrade;
@@ -23,7 +23,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, UpgradeManagementContainer> {
+public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, MekanismTileContainer<TileEntityMekanism>> {
 
     private MekanismButton removeButton;
     @Nullable
@@ -34,7 +34,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Up
     private int delay;
     private double scroll;
 
-    public GuiUpgradeManagement(UpgradeManagementContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiUpgradeManagement(MekanismTileContainer<TileEntityMekanism> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

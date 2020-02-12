@@ -10,8 +10,11 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.InductionMatrixContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.tile.TileEntityInductionPort;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
@@ -20,8 +23,13 @@ public class BlockInductionPort extends BlockBasicMultiblock implements IStateAc
       IHasGui<TileEntityInductionPort>, IHasDescription {
 
     @Override
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityInductionCasing>> getContainerType() {
+        return MekanismContainerTypes.INDUCTION_MATRIX;
+    }
+
+    @Override
     public INamedContainerProvider getProvider(TileEntityInductionPort tile) {
-        return new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new InductionMatrixContainer(i, inv, tile));
+        return new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile));
     }
 
     @Override

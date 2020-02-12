@@ -19,8 +19,9 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.LaserAmplifierContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityLaserAmplifier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -28,13 +29,11 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.VoxelShapeUtils;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
@@ -187,8 +186,8 @@ public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHa
     }
 
     @Override
-    public INamedContainerProvider getProvider(TileEntityLaserAmplifier tile) {
-        return new ContainerProvider(TextComponentUtil.translate(getTranslationKey()), (i, inv, player) -> new LaserAmplifierContainer(i, inv, tile));
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityLaserAmplifier>> getContainerType() {
+        return MekanismContainerTypes.LASER_AMPLIFIER;
     }
 
     @Override

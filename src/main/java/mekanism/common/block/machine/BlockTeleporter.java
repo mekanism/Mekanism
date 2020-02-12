@@ -21,7 +21,10 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -140,6 +143,11 @@ public class BlockTeleporter extends BlockMekanism implements IBlockElectric, IH
     @Override
     public double getConfigStorage() {
         return MekanismConfig.storage.teleporter.get();
+    }
+
+    @Override
+    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityTeleporter>> getContainerType() {
+        return MekanismContainerTypes.TELEPORTER;
     }
 
     @Override

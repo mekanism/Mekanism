@@ -13,12 +13,8 @@ import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
-import mekanism.common.inventory.container.tile.BoilerStatsContainer;
-import mekanism.common.inventory.container.tile.InductionMatrixContainer;
-import mekanism.common.inventory.container.tile.MatrixStatsContainer;
-import mekanism.common.inventory.container.tile.SideConfigurationContainer;
-import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
-import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
@@ -28,9 +24,7 @@ import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContaine
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
-import mekanism.common.inventory.container.tile.filter.list.DigitalMinerConfigContainer;
-import mekanism.common.inventory.container.tile.filter.select.DMFilterSelectContainer;
-import mekanism.common.inventory.container.tile.filter.select.LSFilterSelectContainer;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.tile.TileEntityInductionCasing;
@@ -140,8 +134,8 @@ public class PacketGuiButtonPress {
             }
             return null;
         }),
-        SIDE_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.SIDE_CONFIG, (i, inv, player) -> new SideConfigurationContainer(i, inv, tile))),
-        TRANSPORTER_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.TRANSPORTER_CONFIG, (i, inv, player) -> new TransporterConfigurationContainer(i, inv, tile))),
+        SIDE_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.SIDE_CONFIG, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.SIDE_CONFIGURATION, i, inv, tile))),
+        TRANSPORTER_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.TRANSPORTER_CONFIG, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.TRANSPORTER_CONFIGURATION, i, inv, tile))),
         UPGRADE_MANAGEMENT((tile, extra) -> new ContainerProvider(MekanismLang.UPGRADES, (i, inv, player) -> new UpgradeManagementContainer(i, inv, tile))),
         OREDICTIONIFICATOR_FILTER((tile, extra) -> {
             if (tile instanceof TileEntityOredictionificator) {
@@ -152,13 +146,13 @@ public class PacketGuiButtonPress {
         }),
         DIGITAL_MINER_CONFIG((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.MINER_CONFIG, (i, inv, player) -> new DigitalMinerConfigContainer(i, inv, (TileEntityDigitalMiner) tile));
+                return new ContainerProvider(MekanismLang.MINER_CONFIG, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.DIGITAL_MINER_CONFIG, i, inv, (TileEntityDigitalMiner) tile));
             }
             return null;
         }),
         DM_SELECT_FILTER_TYPE((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new DMFilterSelectContainer(i, inv, (TileEntityDigitalMiner) tile));
+                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.DM_FILTER_SELECT, i, inv, (TileEntityDigitalMiner) tile));
             }
             return null;
         }),
@@ -188,7 +182,7 @@ public class PacketGuiButtonPress {
         }),
         LS_SELECT_FILTER_TYPE((tile, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new LSFilterSelectContainer(i, inv, (TileEntityLogisticalSorter) tile));
+                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.LS_FILTER_SELECT, i, inv, (TileEntityLogisticalSorter) tile));
             }
             return null;
         }),
@@ -219,17 +213,17 @@ public class PacketGuiButtonPress {
 
         TAB_MAIN((tile, extra) -> {
             if (tile instanceof TileEntityInductionCasing) {
-                return new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new InductionMatrixContainer(i, inv, (TileEntityInductionCasing) tile));
+                return new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, (TileEntityInductionCasing) tile));
             } else if (tile instanceof TileEntityBoilerCasing) {
-                return new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile));
+                return new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, (TileEntityBoilerCasing) tile));
             }
             return null;
         }),
         TAB_STATS((tile, extra) -> {
             if (tile instanceof TileEntityInductionCasing) {
-                return new ContainerProvider(MekanismLang.MATRIX_STATS, (i, inv, player) -> new MatrixStatsContainer(i, inv, (TileEntityInductionCasing) tile));
+                return new ContainerProvider(MekanismLang.MATRIX_STATS, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.MATRIX_STATS, i, inv, (TileEntityInductionCasing) tile));
             } else if (tile instanceof TileEntityBoilerCasing) {
-                return new ContainerProvider(MekanismLang.BOILER_STATS, (i, inv, player) -> new BoilerStatsContainer(i, inv, (TileEntityBoilerCasing) tile));
+                return new ContainerProvider(MekanismLang.BOILER_STATS, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.BOILER_STATS, i, inv, (TileEntityBoilerCasing) tile));
             }
             return null;
         });

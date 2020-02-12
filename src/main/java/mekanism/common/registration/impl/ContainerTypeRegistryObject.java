@@ -16,4 +16,10 @@ public class ContainerTypeRegistryObject<CONTAINER extends Container> extends Wr
     public ContainerType<CONTAINER> getContainerType() {
         return get();
     }
+
+    //Internal use only overwrite the registry object
+    ContainerTypeRegistryObject<CONTAINER> setRegistryObject(RegistryObject<ContainerType<CONTAINER>> registryObject) {
+        this.registryObject = registryObject;
+        return this;
+    }
 }

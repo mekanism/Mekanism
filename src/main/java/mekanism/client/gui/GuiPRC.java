@@ -20,7 +20,7 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.PressurizedReactionChamberContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityPressurizedReactionChamber;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -29,9 +29,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber, PressurizedReactionChamberContainer> {
+public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber, MekanismTileContainer<TileEntityPressurizedReactionChamber>> {
 
-    public GuiPRC(PressurizedReactionChamberContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiPRC(MekanismTileContainer<TileEntityPressurizedReactionChamber> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

@@ -12,7 +12,7 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.FluidicPlenisherContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -23,9 +23,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 
-public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenisher, FluidicPlenisherContainer> {
+public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenisher, MekanismTileContainer<TileEntityFluidicPlenisher>> {
 
-    public GuiFluidicPlenisher(FluidicPlenisherContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiFluidicPlenisher(MekanismTileContainer<TileEntityFluidicPlenisher> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

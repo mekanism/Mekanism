@@ -1,6 +1,6 @@
 package mekanism.client.gui.filter;
 
-import mekanism.common.inventory.container.tile.filter.select.LSFilterSelectContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.MekanismUtils;
@@ -9,9 +9,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiTFilterSelect extends GuiFilterSelect<TileEntityLogisticalSorter, LSFilterSelectContainer> {
+public class GuiTFilterSelect extends GuiFilterSelect<TileEntityLogisticalSorter, EmptyTileContainer<TileEntityLogisticalSorter>> {
 
-    public GuiTFilterSelect(LSFilterSelectContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiTFilterSelect(EmptyTileContainer<TileEntityLogisticalSorter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

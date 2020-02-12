@@ -27,7 +27,7 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.ChemicalCrystallizerContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityChemicalCrystallizer;
 import mekanism.common.util.MekanismUtils;
@@ -41,7 +41,7 @@ import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalCrystallizer, ChemicalCrystallizerContainer> {
+public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalCrystallizer, MekanismTileContainer<TileEntityChemicalCrystallizer>> {
 
     private List<ItemStack> iterStacks = new ArrayList<>();
     private ItemStack renderStack = ItemStack.EMPTY;
@@ -50,7 +50,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     @Nonnull
     private Gas prevGas = MekanismAPI.EMPTY_GAS;
 
-    public GuiChemicalCrystallizer(ChemicalCrystallizerContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiChemicalCrystallizer(MekanismTileContainer<TileEntityChemicalCrystallizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

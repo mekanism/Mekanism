@@ -16,7 +16,7 @@ import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.ChemicalOxidizerContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityChemicalOxidizer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -25,9 +25,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiChemicalOxidizer extends GuiMekanismTile<TileEntityChemicalOxidizer, ChemicalOxidizerContainer> {
+public class GuiChemicalOxidizer extends GuiMekanismTile<TileEntityChemicalOxidizer, MekanismTileContainer<TileEntityChemicalOxidizer>> {
 
-    public GuiChemicalOxidizer(ChemicalOxidizerContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiChemicalOxidizer(MekanismTileContainer<TileEntityChemicalOxidizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

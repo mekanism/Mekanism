@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.tank.TankUpdateProtocol;
-import mekanism.common.inventory.container.tile.DynamicTankContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -12,9 +12,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 
-public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, DynamicTankContainer> {
+public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, MekanismTileContainer<TileEntityDynamicTank>> {
 
-    public GuiDynamicTank(DynamicTankContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiDynamicTank(MekanismTileContainer<TileEntityDynamicTank> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

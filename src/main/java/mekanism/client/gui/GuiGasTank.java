@@ -13,7 +13,7 @@ import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.GasTankContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityGasTank;
 import mekanism.common.util.MekanismUtils;
@@ -24,9 +24,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, GasTankContainer> {
+public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileContainer<TileEntityGasTank>> {
 
-    public GuiGasTank(GasTankContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiGasTank(MekanismTileContainer<TileEntityGasTank> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

@@ -4,12 +4,12 @@ import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.filter.FilterEmptyContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER extends FilterEmptyContainer<TILE>> extends GuiFilter<TILE, CONTAINER> {
+public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER extends EmptyTileContainer<TILE>> extends GuiFilter<TILE, CONTAINER> {
 
     protected MekanismButton itemStackButton;
     protected MekanismButton oredictButton;

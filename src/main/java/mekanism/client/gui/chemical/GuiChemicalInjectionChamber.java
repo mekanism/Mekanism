@@ -2,14 +2,14 @@ package mekanism.client.gui.chemical;
 
 import mekanism.client.gui.GuiAdvancedElectricMachine;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
-import mekanism.common.inventory.container.tile.ChemicalInjectionChamberContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityChemicalInjectionChamber;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine<TileEntityChemicalInjectionChamber, ChemicalInjectionChamberContainer> {
+public class GuiChemicalInjectionChamber extends GuiAdvancedElectricMachine<TileEntityChemicalInjectionChamber, MekanismTileContainer<TileEntityChemicalInjectionChamber>> {
 
-    public GuiChemicalInjectionChamber(ChemicalInjectionChamberContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiChemicalInjectionChamber(MekanismTileContainer<TileEntityChemicalInjectionChamber> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

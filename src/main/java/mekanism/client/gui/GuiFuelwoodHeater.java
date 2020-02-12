@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.tile.FuelwoodHeaterContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -18,9 +18,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater, FuelwoodHeaterContainer> {
+public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater, MekanismTileContainer<TileEntityFuelwoodHeater>> {
 
-    public GuiFuelwoodHeater(FuelwoodHeaterContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiFuelwoodHeater(MekanismTileContainer<TileEntityFuelwoodHeater> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

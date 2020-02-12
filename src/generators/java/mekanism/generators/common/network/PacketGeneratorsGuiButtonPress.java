@@ -4,14 +4,12 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.ContainerProvider;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.inventory.container.reactor.info.ReactorFuelContainer;
-import mekanism.generators.common.inventory.container.reactor.info.ReactorHeatContainer;
-import mekanism.generators.common.inventory.container.reactor.info.ReactorStatsContainer;
-import mekanism.generators.common.inventory.container.turbine.TurbineContainer;
-import mekanism.generators.common.inventory.container.turbine.TurbineStatsContainer;
+import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerEntity;
@@ -78,27 +76,27 @@ public class PacketGeneratorsGuiButtonPress {
     public enum ClickedGeneratorsTileButton {
         TAB_MAIN((tile, extra) -> {
             if (tile instanceof TileEntityTurbineCasing) {
-                return new ContainerProvider(GeneratorsLang.TURBINE, (i, inv, player) -> new TurbineContainer(i, inv, (TileEntityTurbineCasing) tile));
+                return new ContainerProvider(GeneratorsLang.TURBINE, (i, inv, player) -> new MekanismTileContainer<>(GeneratorsContainerTypes.INDUSTRIAL_TURBINE, i, inv, (TileEntityTurbineCasing) tile));
             }
             return null;
         }),
         TAB_HEAT((tile, extra) -> {
             if (tile instanceof TileEntityReactorController) {
-                return new ContainerProvider(GeneratorsLang.HEAT_TAB, (i, inv, player) -> new ReactorHeatContainer(i, inv, (TileEntityReactorController) tile));
+                return new ContainerProvider(GeneratorsLang.HEAT_TAB, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.REACTOR_HEAT, i, inv, (TileEntityReactorController) tile));
             }
             return null;
         }),
         TAB_FUEL((tile, extra) -> {
             if (tile instanceof TileEntityReactorController) {
-                return new ContainerProvider(GeneratorsLang.FUEL_TAB, (i, inv, player) -> new ReactorFuelContainer(i, inv, (TileEntityReactorController) tile));
+                return new ContainerProvider(GeneratorsLang.FUEL_TAB, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.REACTOR_FUEL, i, inv, (TileEntityReactorController) tile));
             }
             return null;
         }),
         TAB_STATS((tile, extra) -> {
             if (tile instanceof TileEntityTurbineCasing) {
-                return new ContainerProvider(GeneratorsLang.TURBINE_STATS, (i, inv, player) -> new TurbineStatsContainer(i, inv, (TileEntityTurbineCasing) tile));
+                return new ContainerProvider(GeneratorsLang.TURBINE_STATS, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.TURBINE_STATS, i, inv, (TileEntityTurbineCasing) tile));
             } else if (tile instanceof TileEntityReactorController) {
-                return new ContainerProvider(GeneratorsLang.STATS_TAB, (i, inv, player) -> new ReactorStatsContainer(i, inv, (TileEntityReactorController) tile));
+                return new ContainerProvider(GeneratorsLang.STATS_TAB, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.REACTOR_STATS, i, inv, (TileEntityReactorController) tile));
             }
             return null;
         });

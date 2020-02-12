@@ -11,7 +11,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 @ParametersAreNonnullByDefault
 public class WrappedRegistryObject<T extends IForgeRegistryEntry<? super T>> implements Supplier<T>, INamedEntry {
 
-    private final RegistryObject<T> registryObject;
+    protected RegistryObject<T> registryObject;
 
     public WrappedRegistryObject(RegistryObject<T> registryObject) {
         this.registryObject = registryObject;

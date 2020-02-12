@@ -13,22 +13,22 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import mekanism.generators.common.inventory.container.WindGeneratorContainer;
 import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, WindGeneratorContainer> {
+public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, MekanismTileContainer<TileEntityWindGenerator>> {
 
     private final DecimalFormat powerFormat = new DecimalFormat("0.##");
 
-    public GuiWindGenerator(WindGeneratorContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiWindGenerator(MekanismTileContainer<TileEntityWindGenerator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

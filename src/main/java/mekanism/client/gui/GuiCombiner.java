@@ -15,16 +15,16 @@ import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.CombinerContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiCombiner extends GuiMekanismTile<TileEntityCombiner, CombinerContainer> {
+public class GuiCombiner extends GuiMekanismTile<TileEntityCombiner, MekanismTileContainer<TileEntityCombiner>> {
 
-    public GuiCombiner(CombinerContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiCombiner(MekanismTileContainer<TileEntityCombiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 
