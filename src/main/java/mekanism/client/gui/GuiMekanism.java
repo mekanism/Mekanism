@@ -126,6 +126,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             }
         }
     }
+    
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        return this.getFocused() != null && this.isDragging() && button == 0 ? this.getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld) : false;
+    }
 
     protected boolean isMouseOverSlot(Slot slot, double mouseX, double mouseY) {
         return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);

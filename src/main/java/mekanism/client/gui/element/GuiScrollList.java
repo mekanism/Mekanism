@@ -127,12 +127,13 @@ public class GuiScrollList extends GuiTexturedElement {
             }
         }
     }
-
+    
     @Override
-    protected void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         if (canScroll()) {
             scroll = Math.min(Math.max((mouseY - (y + 1) - dragOffset) / (float) (getMaxScroll() - 4), 0), 1);
         }
+        return true;
     }
 
     @Override
