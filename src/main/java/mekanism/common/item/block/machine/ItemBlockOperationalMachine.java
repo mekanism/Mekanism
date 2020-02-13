@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockCombiner;
+import mekanism.common.block.prefab.BlockOperationalMachine;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -15,6 +15,7 @@ import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
+import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -33,9 +34,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockCombiner extends ItemBlockAdvancedTooltip<BlockCombiner> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockOperationalMachine<TILE extends TileEntityOperationalMachine<?>> extends ItemBlockAdvancedTooltip<BlockOperationalMachine<TILE>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockCombiner(BlockCombiner block) {
+    public ItemBlockOperationalMachine(BlockOperationalMachine<TILE> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
 
@@ -60,8 +61,8 @@ public class ItemBlockCombiner extends ItemBlockAdvancedTooltip<BlockCombiner> i
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
-        if (item instanceof ItemBlockCombiner) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockCombiner) item).getBlock().getStorage());
+        if (item instanceof ItemBlockOperationalMachine<?>) {
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockOperationalMachine<?>) item).getBlock().getStorage());
         }
         return 0;
     }

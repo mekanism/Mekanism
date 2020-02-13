@@ -83,10 +83,10 @@
       }
     ]
   },
-  "tile.machine.compressor": {
+  "tile.machine.osmium_compressor": {
     "sounds": [
       {
-        "name": "mekanism:tile/compressor"
+        "name": "mekanism:tile/osmium_compressor"
       }
     ]
   },

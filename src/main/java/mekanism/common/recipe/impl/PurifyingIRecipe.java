@@ -6,6 +6,7 @@ import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismMachines;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -33,12 +34,12 @@ public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlocks.PURIFICATION_CHAMBER.getName();
+        return MekanismMachines.PURIFICATION_CHAMBER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlocks.PURIFICATION_CHAMBER.getItemStack();
+        return MekanismMachines.PURIFICATION_CHAMBER.getBlockType().getItemStack();
     }
 }

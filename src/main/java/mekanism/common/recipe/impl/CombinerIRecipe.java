@@ -5,6 +5,7 @@ import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismMachines;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -32,12 +33,12 @@ public class CombinerIRecipe extends CombinerRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlocks.COMBINER.getName();
+        return MekanismMachines.COMBINER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlocks.COMBINER.getItemStack();
+        return MekanismMachines.COMBINER.getBlockType().getItemStack();
     }
 }

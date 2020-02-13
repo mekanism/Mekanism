@@ -5,6 +5,7 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismMachines;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -32,12 +33,12 @@ public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlocks.ENERGIZED_SMELTER.getName();
+        return MekanismMachines.ENERGIZED_SMELTER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlocks.ENERGIZED_SMELTER.getItemStack();
+        return MekanismMachines.ENERGIZED_SMELTER.getBlockType().getItemStack();
     }
 }

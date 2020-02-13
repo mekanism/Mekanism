@@ -4,12 +4,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismMachines;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 
 public class TileEntityEnrichmentChamber extends TileEntityElectricMachine {
 
     public TileEntityEnrichmentChamber() {
-        super(MekanismBlocks.ENRICHMENT_CHAMBER, 200);
+        super(MekanismMachines.ENRICHMENT_CHAMBER.getBlockType(), 200);
     }
 
     @Nonnull

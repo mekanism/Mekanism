@@ -19,6 +19,7 @@ import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismMachines;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -49,7 +50,7 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
      * (4). The machine will not run if it does not have enough electricity.
      */
     public TileEntityCombiner() {
-        super(MekanismBlocks.COMBINER, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
+        super(MekanismMachines.COMBINER.getBlockType(), 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

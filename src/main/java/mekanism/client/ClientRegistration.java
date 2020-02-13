@@ -122,12 +122,7 @@ import mekanism.client.render.transmitter.RenderPressurizedTube;
 import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
-import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismEntityTypes;
-import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.registries.*;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -205,10 +200,10 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(RenderThermodynamicConductor::new, MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR,
               MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
         //TERs that are just the configurable machine renderer
-        ClientRegistrationUtil.bindTileEntityRenderer(RenderConfigurableMachine::new, MekanismTileEntityTypes.CHEMICAL_INJECTION_CHAMBER, MekanismTileEntityTypes.COMBINER,
-              MekanismTileEntityTypes.CRUSHER, MekanismTileEntityTypes.ENERGIZED_SMELTER, MekanismTileEntityTypes.ENRICHMENT_CHAMBER,
-              MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, MekanismTileEntityTypes.METALLURGIC_INFUSER, MekanismTileEntityTypes.OSMIUM_COMPRESSOR,
-              MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismTileEntityTypes.PURIFICATION_CHAMBER,
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderConfigurableMachine::new, MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getTileType(), MekanismMachines.COMBINER.getTileType(),
+              MekanismMachines.CRUSHER.getTileType(), MekanismMachines.ENERGIZED_SMELTER.getTileType(), MekanismMachines.ENRICHMENT_CHAMBER.getTileType(),
+              MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, MekanismTileEntityTypes.METALLURGIC_INFUSER, MekanismMachines.OSMIUM_COMPRESSOR.getTileType(),
+              MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismMachines.PURIFICATION_CHAMBER.getTileType(),
               //Gas tanks
               MekanismTileEntityTypes.BASIC_GAS_TANK, MekanismTileEntityTypes.ADVANCED_GAS_TANK, MekanismTileEntityTypes.ELITE_GAS_TANK,
               MekanismTileEntityTypes.ULTIMATE_GAS_TANK, MekanismTileEntityTypes.CREATIVE_GAS_TANK,
@@ -289,17 +284,17 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CHEMICAL_CRYSTALLIZER, GuiChemicalCrystallizer::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CHEMICAL_DISSOLUTION_CHAMBER, GuiChemicalDissolutionChamber::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CHEMICAL_INFUSER, GuiChemicalInfuser::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CHEMICAL_INJECTION_CHAMBER, GuiChemicalInjectionChamber::new);
+        ClientRegistrationUtil.registerScreen(MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getContainerType(), GuiChemicalInjectionChamber::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CHEMICAL_OXIDIZER, GuiChemicalOxidizer::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CHEMICAL_WASHER, GuiChemicalWasher::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.COMBINER, GuiCombiner::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.CRUSHER, GuiCrusher::new);
+        ClientRegistrationUtil.registerScreen(MekanismMachines.COMBINER.getContainerType(), GuiCombiner::new);
+        ClientRegistrationUtil.registerScreen(MekanismMachines.CRUSHER.getContainerType(), GuiCrusher::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DIGITAL_MINER, GuiDigitalMiner::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.DYNAMIC_TANK, GuiDynamicTank::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.ELECTRIC_PUMP, GuiElectricPump::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.ELECTROLYTIC_SEPARATOR, GuiElectrolyticSeparator::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.ENERGIZED_SMELTER, GuiEnergizedSmelter::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.ENRICHMENT_CHAMBER, GuiEnrichmentChamber::new);
+        ClientRegistrationUtil.registerScreen(MekanismMachines.ENERGIZED_SMELTER.getContainerType(), GuiEnergizedSmelter::new);
+        ClientRegistrationUtil.registerScreen(MekanismMachines.ENRICHMENT_CHAMBER.getContainerType(), GuiEnrichmentChamber::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FLUIDIC_PLENISHER, GuiFluidicPlenisher::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR, GuiFormulaicAssemblicator::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.FUELWOOD_HEATER, GuiFuelwoodHeater::new);
@@ -307,10 +302,10 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.LASER_TRACTOR_BEAM, GuiLaserTractorBeam::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.METALLURGIC_INFUSER, GuiMetallurgicInfuser::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.OREDICTIONIFICATOR, GuiOredictionificator::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.OSMIUM_COMPRESSOR, GuiOsmiumCompressor::new);
+        ClientRegistrationUtil.registerScreen(MekanismMachines.OSMIUM_COMPRESSOR.getContainerType(), GuiOsmiumCompressor::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PRECISION_SAWMILL, GuiPrecisionSawmill::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PRESSURIZED_REACTION_CHAMBER, GuiPRC::new);
-        ClientRegistrationUtil.registerScreen(MekanismContainerTypes.PURIFICATION_CHAMBER, GuiPurificationChamber::new);
+        ClientRegistrationUtil.registerScreen(MekanismMachines.PURIFICATION_CHAMBER.getContainerType(), GuiPurificationChamber::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.QUANTUM_ENTANGLOPORTER, GuiQuantumEntangloporter::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.RESISTIVE_HEATER, GuiResistiveHeater::new);
         ClientRegistrationUtil.registerScreen(MekanismContainerTypes.ROTARY_CONDENSENTRATOR, GuiRotaryCondensentrator::new);

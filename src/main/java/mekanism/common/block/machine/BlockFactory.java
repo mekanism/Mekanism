@@ -33,10 +33,7 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.FactoryContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismSounds;
-import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.registries.*;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
@@ -182,24 +179,24 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
     public SoundEvent getSoundEvent() {
         switch (type) {
             case ENRICHING:
-                return MekanismSounds.ENRICHMENT_CHAMBER.getSoundEvent();
+                return MekanismMachines.ENRICHMENT_CHAMBER.getSound();
             case CRUSHING:
-                return MekanismSounds.CRUSHER.getSoundEvent();
+                return MekanismMachines.CRUSHER.getSound();
             case COMPRESSING:
-                return MekanismSounds.COMPRESSOR.getSoundEvent();
+                return MekanismMachines.OSMIUM_COMPRESSOR.getSound();
             case COMBINING:
-                return MekanismSounds.COMBINER.getSoundEvent();
+                return MekanismMachines.COMBINER.getSound();
             case PURIFYING:
-                return MekanismSounds.PURIFICATION_CHAMBER.getSoundEvent();
+                return MekanismMachines.PURIFICATION_CHAMBER.getSound();
             case INJECTING:
-                return MekanismSounds.CHEMICAL_INJECTION_CHAMBER.getSoundEvent();
+                return MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getSound();
             case INFUSING:
                 return MekanismSounds.METALLURGIC_INFUSER.getSoundEvent();
             case SAWING:
                 return MekanismSounds.PRECISION_SAWMILL.getSoundEvent();
             case SMELTING:
             default:
-                return MekanismSounds.ENERGIZED_SMELTER.getSoundEvent();
+                return MekanismMachines.ENERGIZED_SMELTER.getSound();
         }
     }
 
@@ -218,22 +215,22 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
         double baseStorage = 0;
         switch (type) {
             case ENRICHING:
-                baseStorage = MekanismBlocks.ENRICHMENT_CHAMBER.getBlock().getStorage();
+                baseStorage = MekanismMachines.ENRICHMENT_CHAMBER.getStorage();
                 break;
             case CRUSHING:
-                baseStorage = MekanismBlocks.CRUSHER.getBlock().getStorage();
+                baseStorage = MekanismMachines.CRUSHER.getStorage();
                 break;
             case COMPRESSING:
-                baseStorage = MekanismBlocks.OSMIUM_COMPRESSOR.getBlock().getStorage();
+                baseStorage = MekanismMachines.OSMIUM_COMPRESSOR.getStorage();
                 break;
             case COMBINING:
-                baseStorage = MekanismBlocks.COMBINER.getBlock().getStorage();
+                baseStorage = MekanismMachines.COMBINER.getStorage();
                 break;
             case PURIFYING:
-                baseStorage = MekanismBlocks.PURIFICATION_CHAMBER.getBlock().getStorage();
+                baseStorage = MekanismMachines.PURIFICATION_CHAMBER.getStorage();
                 break;
             case INJECTING:
-                baseStorage = MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getBlock().getStorage();
+                baseStorage = MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getStorage();
                 break;
             case INFUSING:
                 baseStorage = MekanismBlocks.METALLURGIC_INFUSER.getBlock().getStorage();
@@ -242,7 +239,7 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
                 baseStorage = MekanismBlocks.PRECISION_SAWMILL.getBlock().getStorage();
                 break;
             case SMELTING:
-                baseStorage = MekanismBlocks.ENERGIZED_SMELTER.getBlock().getStorage();
+                baseStorage = MekanismMachines.ENERGIZED_SMELTER.getStorage();
                 break;
         }
         return tier.processes * Math.max(0.5D * baseStorage, getUsage());
@@ -252,24 +249,24 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
     public double getUsage() {
         switch (type) {
             case ENRICHING:
-                return MekanismBlocks.ENRICHMENT_CHAMBER.getBlock().getUsage();
+                return MekanismMachines.ENRICHMENT_CHAMBER.getUsage();
             case CRUSHING:
-                return MekanismBlocks.CRUSHER.getBlock().getUsage();
+                return MekanismMachines.CRUSHER.getUsage();
             case COMPRESSING:
-                return MekanismBlocks.OSMIUM_COMPRESSOR.getBlock().getUsage();
+                return MekanismMachines.OSMIUM_COMPRESSOR.getUsage();
             case COMBINING:
-                return MekanismBlocks.COMBINER.getBlock().getUsage();
+                return MekanismMachines.COMBINER.getUsage();
             case PURIFYING:
-                return MekanismBlocks.PURIFICATION_CHAMBER.getBlock().getUsage();
+                return MekanismMachines.PURIFICATION_CHAMBER.getUsage();
             case INJECTING:
-                return MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getBlock().getUsage();
+                return MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getUsage();
             case INFUSING:
                 return MekanismBlocks.METALLURGIC_INFUSER.getBlock().getUsage();
             case SAWING:
                 return MekanismBlocks.PRECISION_SAWMILL.getBlock().getUsage();
             default:
             case SMELTING:
-                return MekanismBlocks.ENERGIZED_SMELTER.getBlock().getUsage();
+                return MekanismMachines.ENERGIZED_SMELTER.getUsage();
         }
     }
 

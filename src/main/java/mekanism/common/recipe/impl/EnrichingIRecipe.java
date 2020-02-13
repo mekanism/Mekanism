@@ -5,6 +5,7 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismMachines;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -32,12 +33,12 @@ public class EnrichingIRecipe extends ItemStackToItemStackRecipe {
     @Nonnull
     @Override
     public String getGroup() {
-        return MekanismBlocks.ENRICHMENT_CHAMBER.getName();
+        return MekanismMachines.ENRICHMENT_CHAMBER.getName();
     }
 
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismBlocks.ENRICHMENT_CHAMBER.getItemStack();
+        return MekanismMachines.ENRICHMENT_CHAMBER.getBlockType().getItemStack();
     }
 }

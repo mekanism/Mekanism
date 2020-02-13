@@ -1,4 +1,4 @@
-package mekanism.common.block.machine;
+package mekanism.common.block.prefab;
 
 import java.util.EnumSet;
 import java.util.Random;
@@ -17,7 +17,6 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockMekanism;
@@ -28,15 +27,12 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.MachineType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismSounds;
-import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
+import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
@@ -59,18 +55,19 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockPurificationChamber extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TileEntityPurificationChamber>, IStateFacing,
-      IStateActive, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TileEntityPurificationChamber>, IBlockSound, ISupportsRedstone, ISupportsComparator,
-      IHasDescription, IUpgradeableBlock {
+public class BlockOperationalMachine<TILE extends TileEntityOperationalMachine<?>> extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TILE>, IStateFacing, IStateActive, IHasFactoryType,
+        IHasInventory, IHasSecurity, IHasTileEntity<TILE>, IBlockSound, ISupportsRedstone, ISupportsComparator, IHasDescription, IUpgradeableBlock {
+    private MachineType<TILE> machineType;
 
-    public BlockPurificationChamber() {
+    public BlockOperationalMachine(MachineType<TILE> machineType) {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
+        this.machineType = machineType;
     }
 
     @Nonnull
     @Override
     public FactoryType getFactoryType() {
-        return FactoryType.PURIFYING;
+        return machineType.getFactoryType();
     }
 
     /**
@@ -163,55 +160,45 @@ public class BlockPurificationChamber extends BlockMekanism implements IBlockEle
 
     @Override
     public double getUsage() {
-        return MekanismConfig.usage.purificationChamber.get();
+        return machineType.getUsage();
     }
 
     @Override
     public double getConfigStorage() {
-        return MekanismConfig.storage.purificationChamber.get();
+        return machineType.getStorage();
     }
 
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return MekanismSounds.PURIFICATION_CHAMBER.getSoundEvent();
+        return machineType.getSound();
     }
 
     @Override
-    public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPurificationChamber>> getContainerType() {
-        return MekanismContainerTypes.PURIFICATION_CHAMBER;
+    public ContainerTypeRegistryObject<MekanismTileContainer<TILE>> getContainerType() {
+        return machineType.getContainerType();
     }
 
     @Override
-    public TileEntityType<TileEntityPurificationChamber> getTileType() {
-        return MekanismTileEntityTypes.PURIFICATION_CHAMBER.getTileEntityType();
+    public TileEntityType<TILE> getTileType() {
+        return machineType.getTileType().getTileEntityType();
     }
 
     @Nonnull
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
-        return EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS);
+        return machineType.getSupportedUpgrade();
     }
 
     @Nonnull
     @Override
     public ILangEntry getDescription() {
-        return MekanismLang.DESCRIPTION_PURIFICATION_CHAMBER;
+        return machineType.getDescription();
     }
 
     @Nonnull
     @Override
     public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-        switch (tier) {
-            case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_PURIFYING_FACTORY.getBlock().getDefaultState());
-            case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_PURIFYING_FACTORY.getBlock().getDefaultState());
-            case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_PURIFYING_FACTORY.getBlock().getDefaultState());
-            case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_PURIFYING_FACTORY.getBlock().getDefaultState());
-        }
-        return current;
+        return BlockStateHelper.copyStateData(current, machineType.getFactory(tier).getBlock().getDefaultState());
     }
 }

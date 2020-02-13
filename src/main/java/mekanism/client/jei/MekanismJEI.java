@@ -43,6 +43,7 @@ import mekanism.common.item.IItemEnergized;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismMachines;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -145,29 +146,29 @@ public class MekanismJEI implements IModPlugin {
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper));
 
-        registry.addRecipeCategories(new CombinerRecipeCategory(guiHelper, MekanismBlocks.COMBINER, ProgressBar.STONE));
+        registry.addRecipeCategories(new CombinerRecipeCategory(guiHelper, MekanismMachines.COMBINER.getBlockType(), ProgressBar.STONE));
 
-        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.PURIFICATION_CHAMBER, ProgressBar.RED));
-        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.OSMIUM_COMPRESSOR, ProgressBar.RED));
-        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, ProgressBar.YELLOW));
+        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismMachines.PURIFICATION_CHAMBER.getBlockType(), ProgressBar.RED));
+        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismMachines.OSMIUM_COMPRESSOR.getBlockType(), ProgressBar.RED));
+        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getBlockType(), ProgressBar.YELLOW));
 
         registry.addRecipeCategories(new SawmillRecipeCategory(guiHelper, MekanismBlocks.PRECISION_SAWMILL, ProgressBar.PURPLE));
 
-        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.ENRICHMENT_CHAMBER, ProgressBar.BLUE));
-        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.CRUSHER, ProgressBar.CRUSH));
-        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.ENERGIZED_SMELTER, ProgressBar.BLUE));
+        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismMachines.ENRICHMENT_CHAMBER.getBlockType(), ProgressBar.BLUE));
+        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismMachines.CRUSHER.getBlockType(), ProgressBar.CRUSH));
+        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismMachines.ENERGIZED_SMELTER.getBlockType(), ProgressBar.BLUE));
 
         registry.addRecipeCategories(new FluidToFluidRecipeCategory(guiHelper));
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER, GuiEnrichmentChamber.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CRUSHER, GuiEnrichmentChamber.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.COMBINER, GuiEnrichmentChamber.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PURIFICATION_CHAMBER, GuiEnrichmentChamber.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.OSMIUM_COMPRESSOR, GuiEnrichmentChamber.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, GuiEnrichmentChamber.class, 79, 40, 24, 7);
+        GuiHandlerRegistryHelper.register(registry, MekanismMachines.ENRICHMENT_CHAMBER.getBlockType(), GuiEnrichmentChamber.class, 79, 40, 24, 7);
+        GuiHandlerRegistryHelper.register(registry, MekanismMachines.CRUSHER.getBlockType(), GuiEnrichmentChamber.class, 79, 40, 24, 7);
+        GuiHandlerRegistryHelper.register(registry, MekanismMachines.COMBINER.getBlockType(), GuiEnrichmentChamber.class, 79, 40, 24, 7);
+        GuiHandlerRegistryHelper.register(registry, MekanismMachines.PURIFICATION_CHAMBER.getBlockType(), GuiEnrichmentChamber.class, 79, 40, 24, 7);
+        GuiHandlerRegistryHelper.register(registry, MekanismMachines.OSMIUM_COMPRESSOR.getBlockType(), GuiEnrichmentChamber.class, 79, 40, 24, 7);
+        GuiHandlerRegistryHelper.register(registry, MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getBlockType(), GuiEnrichmentChamber.class, 79, 40, 24, 7);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRECISION_SAWMILL, GuiEnrichmentChamber.class, 79, 40, 24, 7);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.METALLURGIC_INFUSER, GuiMetallurgicInfuser.class, 72, 47, 32, 8);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER, GuiChemicalCrystallizer.class, 53, 62, 48, 8);
@@ -189,12 +190,12 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
         //Register the recipes and their catalysts if enabled
-        RecipeRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER, MekanismRecipeType.ENRICHING);
-        RecipeRegistryHelper.register(registry, MekanismBlocks.CRUSHER, MekanismRecipeType.CRUSHING);
-        RecipeRegistryHelper.register(registry, MekanismBlocks.COMBINER, MekanismRecipeType.COMBINING);
-        RecipeRegistryHelper.register(registry, MekanismBlocks.PURIFICATION_CHAMBER, MekanismRecipeType.PURIFYING);
-        RecipeRegistryHelper.register(registry, MekanismBlocks.OSMIUM_COMPRESSOR, MekanismRecipeType.COMPRESSING);
-        RecipeRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, MekanismRecipeType.INJECTING);
+        RecipeRegistryHelper.register(registry, MekanismMachines.ENRICHMENT_CHAMBER.getBlockType(), MekanismRecipeType.ENRICHING);
+        RecipeRegistryHelper.register(registry, MekanismMachines.CRUSHER.getBlockType(), MekanismRecipeType.CRUSHING);
+        RecipeRegistryHelper.register(registry, MekanismMachines.COMBINER.getBlockType(), MekanismRecipeType.COMBINING);
+        RecipeRegistryHelper.register(registry, MekanismMachines.PURIFICATION_CHAMBER.getBlockType(), MekanismRecipeType.PURIFYING);
+        RecipeRegistryHelper.register(registry, MekanismMachines.OSMIUM_COMPRESSOR.getBlockType(), MekanismRecipeType.COMPRESSING);
+        RecipeRegistryHelper.register(registry, MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getBlockType(), MekanismRecipeType.INJECTING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.PRECISION_SAWMILL, MekanismRecipeType.SAWING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.METALLURGIC_INFUSER, MekanismRecipeType.METALLURGIC_INFUSING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER, MekanismRecipeType.CRYSTALLIZING);
@@ -212,12 +213,12 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-        CatalystRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.CRUSHER);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.COMBINER);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.PURIFICATION_CHAMBER);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.OSMIUM_COMPRESSOR);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER);
+        CatalystRegistryHelper.register(registry, MekanismMachines.ENRICHMENT_CHAMBER.getBlockType());
+        CatalystRegistryHelper.register(registry, MekanismMachines.CRUSHER.getBlockType());
+        CatalystRegistryHelper.register(registry, MekanismMachines.COMBINER.getBlockType());
+        CatalystRegistryHelper.register(registry, MekanismMachines.PURIFICATION_CHAMBER.getBlockType());
+        CatalystRegistryHelper.register(registry, MekanismMachines.OSMIUM_COMPRESSOR.getBlockType());
+        CatalystRegistryHelper.register(registry, MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getBlockType());
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRECISION_SAWMILL);
         CatalystRegistryHelper.register(registry, MekanismBlocks.METALLURGIC_INFUSER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER);

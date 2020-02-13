@@ -5,6 +5,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismMachines;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -24,10 +25,10 @@ public class CatalystRegistryHelper {
     }
 
     public static void registerSmelter(IRecipeCatalystRegistration registry) {
-        register(registry, MekanismBlocks.ENERGIZED_SMELTER);
+        register(registry, MekanismMachines.ENERGIZED_SMELTER.getBlockType());
         if (!Mekanism.hooks.CraftTweakerLoaded || !EnergizedSmelter.hasRemovedRecipe()) {
             //Vanilla catalyst
-            registerRecipeItem(registry, MekanismBlocks.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
+            registerRecipeItem(registry, MekanismMachines.ENERGIZED_SMELTER.getBlockType(), VanillaRecipeCategoryUid.FURNACE);
         }
     }
 
