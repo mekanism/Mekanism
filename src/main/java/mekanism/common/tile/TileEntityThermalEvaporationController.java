@@ -22,6 +22,10 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableFloat;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -58,14 +62,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public boolean temperatureSet = false;
 
-    public double partialInput = 0;
-    public double partialOutput = 0;
-
     public float biomeTemp = 0;
     //TODO: 1.14 potentially convert temperature to a double given we are using a DoubleSupplier anyways
     // Will make it so we don't have cast issues from the configs. Doing so in 1.12 may be slightly annoying
     // due to the fact the variables are stored in NBT as floats. Even though it should be able to load the float as a double
-    public float temperature = 0;
+    private float temperature = 0;
     public double heatToAbsorb = 0;
 
     public float lastGain = 0;
@@ -79,7 +80,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public boolean updatedThisTick = false;
 
-    public int clientSolarAmount;
     public boolean clientStructured;
 
     public float prevScale;
@@ -99,6 +99,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public TileEntityThermalEvaporationController() {
         super(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
+        doAutoSync = true;
         inputHandler = InputHelper.getInputHandler(inputTank, 0);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
@@ -167,24 +168,22 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     protected void refresh() {
-        if (!isRemote()) {
-            if (!updatedThisTick) {
+        if (!isRemote() && !updatedThisTick) {
+            clearStructure();
+            structured = buildStructure();
+            if (structured != clientStructured) {
+                Mekanism.packetHandler.sendUpdatePacket(this);
+                clientStructured = structured;
+            }
+
+            if (structured) {
+                inputTank.setCapacity(getMaxFluid());
+
+                if (!inputTank.isEmpty()) {
+                    inputTank.getFluid().setAmount(Math.min(inputTank.getFluidAmount(), getMaxFluid()));
+                }
+            } else {
                 clearStructure();
-                structured = buildStructure();
-                if (structured != clientStructured) {
-                    Mekanism.packetHandler.sendUpdatePacket(this);
-                    clientStructured = structured;
-                }
-
-                if (structured) {
-                    inputTank.setCapacity(getMaxFluid());
-
-                    if (!inputTank.isEmpty()) {
-                        inputTank.getFluid().setAmount(Math.min(inputTank.getFluidAmount(), getMaxFluid()));
-                    }
-                } else {
-                    clearStructure();
-                }
             }
         }
     }
@@ -270,10 +269,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return temperature;
     }
 
-    public int getActiveSolars() {
-        if (isRemote()) {
-            return clientSolarAmount;
-        }
+    private int getActiveSolars() {
         int ret = 0;
         for (IEvaporationSolar solar : solars) {
             if (solar != null && solar.canSeeSun()) {
@@ -283,7 +279,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return ret;
     }
 
-    public boolean buildStructure() {
+    private boolean buildStructure() {
         Direction right = getRightSide();
         Direction left = getLeftSide();
         height = 0;
@@ -451,17 +447,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super.handlePacketData(dataStream);
         if (isRemote()) {
             inputTank.setFluid(dataStream.readFluidStack());
-            outputTank.setFluid(dataStream.readFluidStack());
 
             structured = dataStream.readBoolean();
-            controllerConflict = dataStream.readBoolean();
-            clientSolarAmount = dataStream.readInt();
             height = dataStream.readInt();
-            temperature = dataStream.readFloat();
-            biomeTemp = dataStream.readFloat();
             isLeftOnFace = dataStream.readBoolean();
-            lastGain = dataStream.readFloat();
-            totalLoss = dataStream.readFloat();
             renderY = dataStream.readInt();
 
             if (structured != clientStructured) {
@@ -484,16 +473,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(inputTank.getFluid());
-        data.add(outputTank.getFluid());
         data.add(structured);
-        data.add(controllerConflict);
-        data.add(getActiveSolars());
         data.add(height);
-        data.add(temperature);
-        data.add(biomeTemp);
         data.add(isLeftOnFace);
-        data.add(lastGain);
-        data.add(totalLoss);
         data.add(renderY);
         return data;
     }
@@ -523,7 +505,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return structured ? this : null;
     }
 
-    public void clearStructure() {
+    private void clearStructure() {
         for (Coord4D tankPart : tankParts) {
             TileEntityThermalEvaporationBlock tile = MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, tankPart.getPos());
             if (tile != null) {
@@ -547,6 +529,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Override
     public void setActive(boolean active) {
+        //TODO: FIXME, this handling of set active is why the texture doesn't change
     }
 
     @Override
@@ -566,5 +549,16 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableFluidStack.create(inputTank));
+        container.track(SyncableFluidStack.create(outputTank));
+        container.track(SyncableBoolean.create(() -> controllerConflict, value -> controllerConflict = value));
+        container.track(SyncableFloat.create(this::getTemperature, value -> temperature = value));
+        container.track(SyncableFloat.create(() -> lastGain, value -> lastGain = value));
+        container.track(SyncableFloat.create(() -> totalLoss, value -> totalLoss = value));
     }
 }

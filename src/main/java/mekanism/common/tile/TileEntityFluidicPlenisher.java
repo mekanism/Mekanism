@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
@@ -18,6 +17,9 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -31,7 +33,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -49,8 +50,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
-    public Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
-    public Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
+    private Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
+    private Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
     public boolean finishedCalc;
     public FluidTank fluidTank;
     /**
@@ -177,23 +178,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             return isPathfinding;
         }
         return MekanismUtils.isValidReplaceableBlock(world, pos);
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            finishedCalc = dataStream.readBoolean();
-            fluidTank.setFluid(dataStream.readFluidStack());
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(finishedCalc);
-        data.add(fluidTank.getFluid());
-        return data;
     }
 
     @Nonnull
@@ -348,5 +332,12 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableBoolean.create(() -> finishedCalc, value -> finishedCalc = value));
+        container.track(SyncableFluidStack.create(fluidTank));
     }
 }

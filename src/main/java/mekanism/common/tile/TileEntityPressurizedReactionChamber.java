@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
@@ -25,11 +24,13 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -52,7 +53,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -197,26 +197,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
               .setEnergyRequirements(() -> MekanismUtils.getEnergyPerTick(this, getBaseUsage() + recipe.getEnergyRequired()), this::getEnergy,
                     energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::markDirty);
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(inputFluidTank.getFluid());
-        data.add(inputGasTank.getStack());
-        data.add(outputGasTank.getStack());
-        return data;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            inputFluidTank.setFluid(dataStream.readFluidStack());
-            inputGasTank.setStack(PacketHandler.readGasStack(dataStream));
-            outputGasTank.setStack(PacketHandler.readGasStack(dataStream));
-        }
+              .setOnFinish(this::markDirty)
+              .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
     @Override
@@ -393,5 +375,13 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Override
     public Object[] getTanks() {
         return new Object[]{inputFluidTank, inputGasTank, outputGasTank};
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableFluidStack.create(inputFluidTank));
+        container.track(SyncableGasStack.create(inputGasTank));
+        container.track(SyncableGasStack.create(outputGasTank));
     }
 }

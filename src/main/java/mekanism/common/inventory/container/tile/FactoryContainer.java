@@ -20,17 +20,18 @@ public class FactoryContainer extends MekanismTileContainer<TileEntityFactory<?>
 
     @Override
     protected int getInventoryYOffset() {
-        if (tile.hasSecondaryResourceBar()) {
-            return 95;
-        }
-        if (tile instanceof TileEntitySawingFactory) {
-            return 105;
+        if (tile != null) {
+            if (tile.hasSecondaryResourceBar()) {
+                return 95;
+            } else if (tile instanceof TileEntitySawingFactory) {
+                return 105;
+            }
         }
         return 85;
     }
 
     @Override
     protected int getInventoryXOffset() {
-        return tile.tier == FactoryTier.ULTIMATE ? 26 : 8;
+        return tile != null && tile.tier == FactoryTier.ULTIMATE ? 26 : 8;
     }
 }

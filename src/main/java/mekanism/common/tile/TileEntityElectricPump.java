@@ -9,7 +9,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
@@ -21,6 +20,8 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -43,7 +44,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -70,8 +70,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
      * The type of fluid this pump is pumping
      */
     @Nonnull
-    public FluidStack activeType = FluidStack.EMPTY;
-    public boolean suckedLastOperation;
+    private FluidStack activeType = FluidStack.EMPTY;
+    private boolean suckedLastOperation;
     /**
      * How many ticks it takes to run an operation.
      */
@@ -266,21 +266,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         return fluid == Fluids.WATER || fluid == MekanismFluids.HEAVY_WATER.getStillFluid() ? MekanismConfig.general.pumpWaterSources.get() : Boolean.valueOf(true);
     }
 
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            fluidTank.setFluid(dataStream.readFluidStack());
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(fluidTank.getFluid());
-        return data;
-    }
-
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
@@ -431,5 +416,11 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableFluidStack.create(fluidTank));
     }
 }

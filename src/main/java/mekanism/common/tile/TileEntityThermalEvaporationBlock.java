@@ -108,11 +108,11 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
         }
         switch (method) {
             case 0:
-                return new Object[]{controller.temperature};
+                return new Object[]{controller.getTemperature()};
             case 1:
                 return new Object[]{controller.height};
             case 2:
-                return new Object[]{controller.structured};
+                return new Object[]{controller.getActive()};
             case 3:
                 return new Object[]{controller.inputTank.getFluidAmount()};
             case 4:

@@ -58,6 +58,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     public TileEntityReactorController() {
         super(GeneratorsBlocks.REACTOR_CONTROLLER);
+        doAutoSync = true;
     }
 
     @Nonnull

@@ -125,7 +125,8 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::markDirty);
+              .setOnFinish(this::markDirty)
+              .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
     @Override

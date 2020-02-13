@@ -1,16 +1,16 @@
 package mekanism.common.tile.prefab;
 
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 
 public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ITileCachedRecipeHolder<RECIPE> {
 
@@ -31,7 +31,13 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
         return (double) getOperatingTicks() / (double) ticksRequired;
     }
 
+    protected void setOperatingTicks(int ticks) {
+        this.operatingTicks = ticks;
+    }
+
     public int getOperatingTicks() {
+        //TODO: Can this just be return operatingTicks;
+        // Most likely yes as we have the cached recipe update our operating ticks value
         if (isRemote()) {
             return operatingTicks;
         }
@@ -39,23 +45,6 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
             return 0;
         }
         return cachedRecipe.getOperatingTicks();
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            operatingTicks = dataStream.readInt();
-            ticksRequired = dataStream.readInt();
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(getOperatingTicks());
-        data.add(ticksRequired);
-        return data;
     }
 
     @Override
@@ -90,5 +79,12 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     @Override
     public boolean lightUpdate() {
         return true;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableInt.create(() -> operatingTicks, this::setOperatingTicks));
+        container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
     }
 }

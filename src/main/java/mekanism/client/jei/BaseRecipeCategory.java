@@ -27,6 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -93,6 +94,11 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     public void draw(RECIPE recipe, double mouseX, double mouseY) {
         MekanismRenderer.bindTexture(guiLocation);
         guiElements.forEach(e -> e.render((int) mouseX, (int) mouseY, 0));
+    }
+
+    @Override
+    public void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
+        //NO-OP at least for now
     }
 
     @Override

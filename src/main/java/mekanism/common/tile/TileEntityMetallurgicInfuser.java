@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.infuse.InfusionTank;
@@ -19,10 +18,11 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -161,7 +161,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
               .setActive(this::setActive)
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setRequiredTicks(() -> ticksRequired)
-              .setOnFinish(this::markDirty);
+              .setOnFinish(this::markDirty)
+              .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
     @Override
@@ -190,18 +191,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             }
             return;
         }
-
         super.handlePacketData(dataStream);
-        if (isRemote()) {
-            infusionTank.setStack(PacketHandler.readInfusionStack(dataStream));
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(infusionTank.getStack());
-        return data;
     }
 
     @Override
@@ -290,5 +280,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     public MetallurgicInfuserUpgradeData getUpgradeData() {
         return new MetallurgicInfuserUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), infusionTank.getStack(), infusionSlot, energySlot,
               inputSlot, outputSlot, getComponents());
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableInfusionStack.create(infusionTank));
     }
 }

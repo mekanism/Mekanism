@@ -140,6 +140,8 @@ public class ThreadMinerSearch extends Thread {
         PAUSED(MekanismLang.MINER_PAUSED),
         FINISHED(MekanismLang.MINER_READY);
 
+        private static final State[] MODES = values();
+
         private final ILangEntry langEntry;
 
         State(ILangEntry langEntry) {
@@ -149,6 +151,11 @@ public class ThreadMinerSearch extends Thread {
         @Override
         public ITextComponent getTextComponent() {
             return langEntry.translate();
+        }
+
+        public static State byIndexStatic(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 }

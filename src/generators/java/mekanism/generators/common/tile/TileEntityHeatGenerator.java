@@ -9,11 +9,13 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -28,11 +30,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -53,14 +53,14 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     /**
      * The FluidTank for this generator.
      */
-    public FluidTank lavaTank = new FluidTank(24000);
-    public double temperature = 0;
-    public double thermalEfficiency = 0.5D;
-    public double invHeatCapacity = 1;
-    public double heatToAbsorb = 0;
-    public double producingEnergy;
-    public double lastTransferLoss;
-    public double lastEnvironmentLoss;
+    public FluidTank lavaTank = new FluidTank(24_000);
+    private double temperature = 0;
+    private double thermalEfficiency = 0.5D;
+    private double invHeatCapacity = 1;
+    private double heatToAbsorb = 0;
+    private double producingEnergy;
+    private double lastTransferLoss;
+    private double lastEnvironmentLoss;
 
     private FuelInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
@@ -83,7 +83,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!isRemote()) {
             energySlot.charge(this);
             ItemStack fuelStack = fuelSlot.getStack();
@@ -151,7 +150,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         return nbtTags;
     }
 
-    public double getBoost() {
+    private double getBoost() {
         int lavaBoost = 0;
         double netherBoost = 0D;
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -169,35 +168,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     private boolean isLava(BlockPos pos) {
         World world = getWorld();
-        //TODO: FluidTags.LAVA?
-        return world != null && world.getBlockState(pos).getBlock() == Blocks.LAVA;
+        return world != null && world.getFluidState(pos).isTagged(FluidTags.LAVA);
     }
 
-    public int getFuel(ItemStack stack) {
+    private int getFuel(ItemStack stack) {
         return ForgeHooks.getBurnTime(stack) / 2;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-
-        if (isRemote()) {
-            producingEnergy = dataStream.readDouble();
-
-            lastTransferLoss = dataStream.readDouble();
-            lastEnvironmentLoss = dataStream.readDouble();
-            lavaTank.setFluid(dataStream.readFluidStack());
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(producingEnergy);
-        data.add(lastTransferLoss);
-        data.add(lastEnvironmentLoss);
-        data.add(lavaTank.getFluid());
-        return data;
     }
 
     @Override
@@ -332,8 +307,29 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         return super.getCapability(capability, side);
     }
 
+    public double getProducingEnergy() {
+        return producingEnergy;
+    }
+
+    public double getLastTransferLoss() {
+        return lastTransferLoss;
+    }
+
+    public double getLastEnvironmentLoss() {
+        return lastEnvironmentLoss;
+    }
+
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(lavaTank.getFluidAmount(), lavaTank.getCapacity());
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(this::getProducingEnergy, value -> producingEnergy = value));
+        container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
+        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableFluidStack.create(lavaTank));
     }
 }

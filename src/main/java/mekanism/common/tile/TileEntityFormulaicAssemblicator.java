@@ -17,6 +17,9 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.assemblicator.RecipeFormula;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FormulaInventorySlot;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
@@ -25,6 +28,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.item.ItemCraftingFormula;
+import mekanism.common.network.PacketTileEntity;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -77,7 +81,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     public TileComponentConfig configComponent;
 
     public ItemStack lastFormulaStack = ItemStack.EMPTY;
-    public boolean needsFormulaUpdate = false;
     public ItemStack lastOutputStack = ItemStack.EMPTY;
 
     private List<IInventorySlot> craftingGridSlots;
@@ -238,7 +241,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             formula = null;
         }
         if (prev != formula) {
-            needsFormulaUpdate = true;
+            //TODO: Make the container handle updating this when needed
+            sendToAllUsing(() -> new PacketTileEntity(this));
         }
 
         lastFormulaStack = formulaStack;
@@ -560,22 +564,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         super.handlePacketData(dataStream);
 
         if (isRemote()) {
-            autoMode = dataStream.readBoolean();
-            operatingTicks = dataStream.readInt();
-            isRecipe = dataStream.readBoolean();
-            stockControl = dataStream.readBoolean();
             if (dataStream.readBoolean()) {
-                if (dataStream.readBoolean()) {
-                    NonNullList<ItemStack> inv = NonNullList.withSize(9, ItemStack.EMPTY);
-                    for (int i = 0; i < 9; i++) {
-                        if (dataStream.readBoolean()) {
-                            inv.set(i, dataStream.readItemStack());
-                        }
-                    }
-                    formula = new RecipeFormula(getWorld(), inv);
-                } else {
-                    formula = null;
+                NonNullList<ItemStack> inv = NonNullList.withSize(9, ItemStack.EMPTY);
+                for (int i = 0; i < 9; i++) {
+                    inv.set(i, dataStream.readItemStack());
                 }
+                formula = new RecipeFormula(getWorld(), inv);
+            } else {
+                formula = null;
             }
         }
     }
@@ -583,29 +579,16 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(autoMode);
-        data.add(operatingTicks);
-        data.add(isRecipe);
-        data.add(stockControl);
-        if (needsFormulaUpdate) {
-            data.add(true);
-            if (formula != null) {
-                data.add(true);
-                for (int i = 0; i < 9; i++) {
-                    if (!formula.input.get(i).isEmpty()) {
-                        data.add(true);
-                        data.add(formula.input.get(i));
-                    } else {
-                        data.add(false);
-                    }
-                }
-            } else {
-                data.add(false);
-            }
-        } else {
+        //TODO: Make it so that the formula can be synced via the container sync system
+        // The easiest way to do this would be to make it so that the "formula" is mutable and never null
+        if (formula == null) {
             data.add(false);
+        } else {
+            data.add(true);
+            for (int i = 0; i < 9; i++) {
+                data.add(formula.input.get(i));
+            }
         }
-        needsFormulaUpdate = false;
         return data;
     }
 
@@ -652,5 +635,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableBoolean.create(() -> autoMode, value -> autoMode = value));
+        container.track(SyncableInt.create(() -> operatingTicks, value -> operatingTicks = value));
+        container.track(SyncableBoolean.create(() -> isRecipe, value -> isRecipe = value));
+        container.track(SyncableBoolean.create(() -> stockControl, value -> stockControl = value));
     }
 }

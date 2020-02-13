@@ -36,12 +36,12 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityLaserTractorBeam extends TileEntityMekanism implements ILaserReceptor {
 
-    public static final double MAX_ENERGY = 5E9;
-    public double collectedEnergy = 0;
-    public double lastFired = 0;
-    public boolean on = false;
-    public Coord4D digging;
-    public double diggingProgress;
+    private static final double MAX_ENERGY = 5E9;
+    private double collectedEnergy;
+    private double lastFired;
+    public boolean on;
+    private Coord4D digging;
+    private double diggingProgress;
 
     public TileEntityLaserTractorBeam() {
         super(MekanismBlocks.LASER_TRACTOR_BEAM);

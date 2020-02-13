@@ -19,6 +19,8 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
@@ -71,6 +73,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
 
     public TileEntityTeleporter() {
         super(MekanismBlocks.TELEPORTER);
+        doAutoSync = true;
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     }
 
@@ -402,7 +405,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
                 frequency = null;
             }
 
-            status = dataStream.readByte();
             shouldRender = dataStream.readBoolean();
 
             publicCache.clear();
@@ -422,29 +424,27 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
-        if (frequency != null) {
+        if (frequency == null) {
+            data.add(false);
+        } else {
             data.add(true);
             frequency.write(data);
-        } else {
-            data.add(false);
         }
-
-        data.add(status);
         data.add(shouldRender);
+        //TODO: Sync list of frequencies via a syncable list
         data.add(Mekanism.publicTeleporters.getFrequencies().size());
         for (Frequency freq : Mekanism.publicTeleporters.getFrequencies()) {
             freq.write(data);
         }
 
         FrequencyManager manager = getManager(new Frequency(null, null).setPublic(false));
-        if (manager != null) {
+        if (manager == null) {
+            data.add(0);
+        } else {
             data.add(manager.getFrequencies().size());
             for (Frequency freq : manager.getFrequencies()) {
                 freq.write(data);
             }
-        } else {
-            data.add(0);
         }
         return data;
     }
@@ -505,5 +505,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
     public int getCurrentRedstoneLevel() {
         //We don't cache the redstone level for the teleporter
         return getRedstoneLevel();
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableByte.create(() -> status, value -> status = value));
     }
 }

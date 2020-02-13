@@ -4,10 +4,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.TileNetworkList;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
@@ -18,7 +20,6 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.ForgeHooks;
@@ -27,7 +28,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHeatTransfer, IActiveState {
 
-    public double temperature;
+    private double temperature;
     public double heatToAbsorb = 0;
 
     public int burnTime;
@@ -99,27 +100,6 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            temperature = dataStream.readDouble();
-            burnTime = dataStream.readInt();
-            maxBurnTime = dataStream.readInt();
-            lastEnvironmentLoss = dataStream.readDouble();
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(temperature);
-        data.add(burnTime);
-        data.add(maxBurnTime);
-        data.add(lastEnvironmentLoss);
-        return data;
-    }
-
-    @Override
     public boolean lightUpdate() {
         return true;
     }
@@ -170,5 +150,14 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
             return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(this::getTemp, value -> temperature = value));
+        container.track(SyncableInt.create(() -> burnTime, value -> burnTime = value));
+        container.track(SyncableInt.create(() -> maxBurnTime, value -> maxBurnTime = value));
+        container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 }

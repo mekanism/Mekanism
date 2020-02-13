@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
@@ -23,9 +22,11 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -39,7 +40,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -154,27 +154,6 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            clientEnergyUsed = dataStream.readDouble();
-            leftTank.setStack(PacketHandler.readGasStack(dataStream));
-            rightTank.setStack(PacketHandler.readGasStack(dataStream));
-            centerTank.setStack(PacketHandler.readGasStack(dataStream));
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(clientEnergyUsed);
-        data.add(leftTank.getStack());
-        data.add(rightTank.getStack());
-        data.add(centerTank.getStack());
-        return data;
     }
 
     @Override
@@ -301,5 +280,14 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     @Override
     public boolean lightUpdate() {
         return true;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableGasStack.create(leftTank));
+        container.track(SyncableGasStack.create(rightTank));
+        container.track(SyncableGasStack.create(centerTank));
     }
 }

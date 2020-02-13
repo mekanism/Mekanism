@@ -64,7 +64,6 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         }
     }
 
-
     public boolean addBlade() {
         // If the the rotor beneath has less than two blades, add to it
         TileEntityTurbineRotor next = nextRotor(getPos().down());

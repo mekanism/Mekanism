@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanismgenerators:block/turbine_vent"
+      "model": "mekanismgenerators:block/turbine/vent"
     }
   }
 }

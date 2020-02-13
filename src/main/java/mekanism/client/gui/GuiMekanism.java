@@ -205,11 +205,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
     }
 
-    protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {
-        renderItem(stack, xAxis, yAxis, 1);
-    }
-
-    protected void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
+    @Override
+    public void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
         if (!stack.isEmpty()) {
             try {
                 RenderSystem.pushMatrix();
@@ -219,6 +216,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                     RenderSystem.scalef(scale, scale, scale);
                 }
                 //TODO: renderItemAndEffectIntoGUI has some form of GL leak. Fix it
+                // We should check if this is even still valid, as rendering changed in 1.15 a fair bit
                 itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
                 RenderSystem.disableDepthTest();

@@ -23,7 +23,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -71,10 +70,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
      * How many ticks it takes, with upgrades, to run an operation
      */
     public int ticksRequired = 200;
-    /**
-     * How many recipe ticks have progressed.
-     */
-    private int recipeTicks;
     public boolean sorting;
     public double lastUsage;
 
@@ -137,7 +132,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         //TODO: Theoretically this should work as it initializes them all as null, but is there a better/proper way to do this
         cachedRecipes = new CachedRecipe[tier.processes];
         activeStates = new boolean[cachedRecipes.length];
-        doAutoSync = false;
     }
 
     @Override
@@ -325,7 +319,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        recipeTicks = nbtTags.getInt("recipeTicks");
         sorting = nbtTags.getBoolean("sorting");
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
@@ -337,7 +330,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("recipeTicks", recipeTicks);
         nbtTags.putBoolean("sorting", sorting);
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
@@ -471,7 +463,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.trackArray(progress);
-        container.track(SyncableInt.create(() -> recipeTicks, value -> recipeTicks = value));
         container.track(SyncableDouble.create(() -> lastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(() -> sorting, value -> sorting = value));
     }

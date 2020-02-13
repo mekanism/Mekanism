@@ -1,15 +1,16 @@
 package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -24,6 +25,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     private boolean needsRainCheck = true;
     private double peakOutput;
     private boolean settingsChecked;
+    private double lastProductionAmount;
 
     private EnergyInventorySlot energySlot;
 
@@ -74,10 +76,10 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!settingsChecked) {
-            recheckSettings();
-        }
         if (!isRemote()) {
+            if (!settingsChecked) {
+                recheckSettings();
+            }
             energySlot.charge(this);
             // Sort out if the generator can see the sun; we no longer check if it's raining here,
             // since under the new rules, we can still generate power when it's raining, albeit at a
@@ -89,9 +91,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
 
             if (canOperate()) {
                 setActive(true);
-                setEnergy(getEnergy() + getProduction());
+                lastProductionAmount = getProduction();
+                setEnergy(getEnergy() + lastProductionAmount);
             } else {
                 setActive(false);
+                lastProductionAmount = 0;
             }
         }
     }
@@ -165,21 +169,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            seesSun = dataStream.readBoolean();
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(seesSun);
-        return data;
-    }
-
-    @Override
     public boolean canOutputEnergy(Direction side) {
         return side == Direction.DOWN;
     }
@@ -191,5 +180,17 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     @Override
     public double getMaxOutput() {
         return peakOutput;
+    }
+
+    public double getLastProductionAmount() {
+        return lastProductionAmount;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableBoolean.create(this::canSeeSun, value -> seesSun = value));
+        container.track(SyncableDouble.create(this::getMaxOutput, value -> peakOutput = value));
+        container.track(SyncableDouble.create(this::getLastProductionAmount, value -> lastProductionAmount = value));
     }
 }

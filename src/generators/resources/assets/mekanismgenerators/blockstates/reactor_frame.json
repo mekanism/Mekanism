@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanismgenerators:block/reactor_frame"
+      "model": "mekanismgenerators:block/reactor/frame"
     }
   }
 }

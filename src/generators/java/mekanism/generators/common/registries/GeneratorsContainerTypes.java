@@ -25,7 +25,7 @@ public class GeneratorsContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityReactorController>> REACTOR_CONTROLLER = CONTAINER_TYPES.register(GeneratorsBlocks.REACTOR_CONTROLLER, TileEntityReactorController.class);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityReactorController>> REACTOR_FUEL = CONTAINER_TYPES.registerEmpty("reactor_fuel", TileEntityReactorController.class);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityReactorController>> REACTOR_HEAT = CONTAINER_TYPES.registerEmpty("reactor_heat", TileEntityReactorController.class);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityReactorLogicAdapter>> REACTOR_LOGIC_ADAPTER = CONTAINER_TYPES.register(GeneratorsBlocks.REACTOR_LOGIC_ADAPTER, TileEntityReactorLogicAdapter.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityReactorLogicAdapter>> REACTOR_LOGIC_ADAPTER = CONTAINER_TYPES.registerEmpty(GeneratorsBlocks.REACTOR_LOGIC_ADAPTER, TileEntityReactorLogicAdapter.class);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityReactorController>> REACTOR_STATS = CONTAINER_TYPES.registerEmpty("reactor_stats", TileEntityReactorController.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntitySolarGenerator>> SOLAR_GENERATOR = CONTAINER_TYPES.register("solar_generator", TileEntitySolarGenerator.class);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityTurbineCasing>> TURBINE_STATS = CONTAINER_TYPES.registerEmpty("turbine_stats", TileEntityTurbineCasing.class);

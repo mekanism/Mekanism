@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanismgenerators:block/reactor_logic_adapter"
+      "model": "mekanismgenerators:block/reactor/logic_adapter"
     }
   }
 }

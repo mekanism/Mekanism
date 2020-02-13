@@ -8,6 +8,7 @@ public enum PropertyType {
     INT,
     LONG,
     SHORT,
+    ITEM_STACK,
     FLUID_STACK,
     GAS_STACK,
     INFUSION_STACK;

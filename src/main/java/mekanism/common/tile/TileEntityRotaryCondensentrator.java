@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
@@ -23,18 +22,21 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -126,10 +128,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                 fluidInputSlot.drainTank(fluidOutputSlot);
                 //TODO: Auto eject fluid?
             }
+            double prev = getEnergy();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
+            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
+            clientEnergyUsed = prev - getEnergy();
         }
     }
 
@@ -148,27 +153,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             if (type == 0) {
                 mode = !mode;
             }
-            sendToAllUsing(() -> new PacketTileEntity(this));
             return;
         }
-
         super.handlePacketData(dataStream);
-        if (isRemote()) {
-            mode = dataStream.readBoolean();
-            clientEnergyUsed = dataStream.readDouble();
-            fluidTank.setFluid(dataStream.readFluidStack());
-            gasTank.setStack(PacketHandler.readGasStack(dataStream));
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(mode);
-        data.add(clientEnergyUsed);
-        data.add(fluidTank.getFluid());
-        data.add(gasTank.getStack());
-        return data;
     }
 
     @Override
@@ -389,5 +376,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                   //Gas to fluid
                   return Math.min(Math.min(gasTank.getStored(), fluidTank.getSpace()), possibleProcess);
               });
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableBoolean.create(() -> mode, value -> mode = value));
+        container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFluidStack.create(fluidTank));
+        container.track(SyncableGasStack.create(gasTank));
     }
 }

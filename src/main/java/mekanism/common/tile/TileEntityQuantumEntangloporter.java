@@ -76,8 +76,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     private static final String[] methods = new String[]{"setFrequency"};
     public InventoryFrequency frequency;
     public double heatToAbsorb = 0;
-    public double lastTransferLoss;
-    public double lastEnvironmentLoss;
+    //TODO: These seem to be used, do we want to have some sort of stats thing for the quantum entangloporter
+    private double lastTransferLoss;
+    private double lastEnvironmentLoss;
     public List<Frequency> publicCache = new ArrayList<>();
     public List<Frequency> privateCache = new ArrayList<>();
     public TileComponentEjector ejectorComponent;
@@ -86,6 +87,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     public TileEntityQuantumEntangloporter() {
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
+        doAutoSync = true;
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ENERGY, TransmissionType.HEAT);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -289,8 +291,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         super.handlePacketData(dataStream);
 
         if (isRemote()) {
-            lastTransferLoss = dataStream.readDouble();
-            lastEnvironmentLoss = dataStream.readDouble();
             if (dataStream.readBoolean()) {
                 frequency = new InventoryFrequency(dataStream);
             } else {
@@ -314,29 +314,26 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(lastTransferLoss);
-        data.add(lastEnvironmentLoss);
-
         if (frequency != null) {
             data.add(true);
             frequency.write(data);
         } else {
             data.add(false);
         }
-
+        //TODO: We may want to eventually make a syncable list type thing for containers
         data.add(Mekanism.publicEntangloporters.getFrequencies().size());
         for (Frequency freq : Mekanism.publicEntangloporters.getFrequencies()) {
             freq.write(data);
         }
 
         FrequencyManager manager = getManager(new InventoryFrequency(null, null).setPublic(false));
-        if (manager != null) {
+        if (manager == null) {
+            data.add(0);
+        } else {
             data.add(manager.getFrequencies().size());
             for (Frequency freq : manager.getFrequencies()) {
                 freq.write(data);
             }
-        } else {
-            data.add(0);
         }
         return data;
     }

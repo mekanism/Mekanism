@@ -120,9 +120,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //TODO: Evaluate this
     public int ticker;
 
-    //TODO: Remove the need for this boolean to exist
-    @Deprecated
-    public boolean doAutoSync = true;
+    //TODO: Remove the need for this boolean to exist. It currently is used for some things that
+    // would have a hard time using the new container sync system such as multiblocks where the client doesn't
+    // have a place to store the values after transferring
+    protected boolean doAutoSync;
 
     private List<ITileComponent> components = new ArrayList<>();
 
@@ -353,14 +354,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             //TODO: Do we even really need to be updating the cachedBlockState?
             cachedBlockState = world.getBlockState(pos);
             world.markChunkDirty(pos, this);
-            if (supportsComparator()) {
-                if (!cachedBlockState.isAir(world, pos)) {
-                    //TODO: Do we only want to/need to do this on the server?
-                    int newRedstoneLevel = getRedstoneLevel();
-                    if (newRedstoneLevel != currentRedstoneLevel) {
-                        world.updateComparatorOutputLevel(pos, getBlockType());
-                        currentRedstoneLevel = newRedstoneLevel;
-                    }
+            //Only update the comparator state if we are on the server and support comparators
+            if (!isRemote() && supportsComparator() && !cachedBlockState.isAir(world, pos)) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    world.updateComparatorOutputLevel(pos, getBlockType());
+                    currentRedstoneLevel = newRedstoneLevel;
                 }
             }
         }
@@ -445,12 +444,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
 
         onUpdate();
-        if (!isRemote()) {
-            //TODO: Ideally we are working on removing the need for this by shifting data to the container itself
-            // so that it only needs to send update packets when things are changing
-            if (doAutoSync) {
-                sendToAllUsing(() -> new PacketTileEntity(this));
-            }
+        if (!isRemote() && doAutoSync) {
+            sendToAllUsing(() -> new PacketTileEntity(this));
         }
         ticker++;
         if (supportsRedstone()) {
@@ -459,6 +454,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     public <MSG> void sendToAllUsing(Supplier<MSG> packetSupplier) {
+        //TODO: Can we get the container sync system to handle all use cases of this
         if (!playersUsing.isEmpty()) {
             MSG packet = packetSupplier.get();
             for (PlayerEntity player : playersUsing) {
@@ -487,9 +483,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             for (ITileComponent component : components) {
                 component.read(dataStream);
             }
-            if (supportsRedstone()) {
-                controlType = dataStream.readEnumValue(RedstoneControl.class);
-            }
             if (isElectric()) {
                 setEnergy(dataStream.readDouble());
                 if (supportsUpgrades()) {
@@ -506,10 +499,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         for (ITileComponent component : components) {
             component.write(data);
         }
-        if (supportsRedstone()) {
-            //TODO: Evaluate - I don't believe we need to sync redstone at all, just the control type
-            data.add(controlType);
-        }
+        //TODO: Move this into classes of things that need energy info for rendering, and let the rest be handled by the container sync
         if (isElectric()) {
             data.add(getEnergy());
             if (supportsUpgrades()) {
@@ -609,7 +599,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         //TODO: Allow components to define what things they need to sync for when viewing the main gui of a tile
-        // Currently we just manually do the security mode
+        // Currently we just manually do the security mode, though if security override changes then I am not sure we are catching it
+        // maybe make a method addMainContainerTrackers or something for the ITileComponents so they can add data they care about
         if (hasSecurity()) {
             container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, () -> getSecurity().getMode(), value -> getSecurity().setMode(value)));
         }

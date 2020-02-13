@@ -7,7 +7,7 @@ import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextComponentUtil;
@@ -20,9 +20,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter, MekanismTileContainer<TileEntityReactorLogicAdapter>> {
+public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter, EmptyTileContainer<TileEntityReactorLogicAdapter>> {
 
-    public GuiReactorLogicAdapter(MekanismTileContainer<TileEntityReactorLogicAdapter> container, PlayerInventory inv, ITextComponent title) {
+    public GuiReactorLogicAdapter(EmptyTileContainer<TileEntityReactorLogicAdapter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

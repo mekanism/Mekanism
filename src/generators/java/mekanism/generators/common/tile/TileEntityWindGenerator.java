@@ -1,15 +1,16 @@
 package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableFloat;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -18,11 +19,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     public static final float SPEED = 32F;
     public static final float SPEED_SCALED = 256F / SPEED;
-    static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
+    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
 
     private double angle;
     private float currentMultiplier;
-    private boolean isBlacklistDimension = false;
+    private boolean isBlacklistDimension;
 
     private EnergyInventorySlot energySlot;
 
@@ -78,33 +79,16 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         }
     }
 
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            currentMultiplier = dataStream.readFloat();
-            isBlacklistDimension = dataStream.readBoolean();
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(currentMultiplier);
-        data.add(isBlacklistDimension);
-        return data;
-    }
-
     /**
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
-    public float getMultiplier() {
+    private float getMultiplier() {
         World world = getWorld();
         if (world != null && world.canBlockSeeSky(getPos().up(4))) {
             final float minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
             final float maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
-            final float minG = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMin.get();
-            final float maxG = (float) (double) MekanismGeneratorsConfig.generators.windGenerationMax.get();
+            final float minG = (float) MekanismGeneratorsConfig.generators.windGenerationMin.get();
+            final float maxG = (float) MekanismGeneratorsConfig.generators.windGenerationMax.get();
             final float slope = (maxG - minG) / (maxY - minY);
             final float intercept = minG - slope * minY;
             final float clampedY = Math.min(maxY, Math.max(minY, (float) (getPos().getY() + 4)));
@@ -185,5 +169,12 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public SoundCategory getSoundCategory() {
         return SoundCategory.WEATHER;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableFloat.create(this::getCurrentMultiplier, value -> currentMultiplier = value));
+        container.track(SyncableBoolean.create(this::isBlacklistDimension, value -> isBlacklistDimension = value));
     }
 }

@@ -36,7 +36,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
 
     @Override
     public void render(@Nonnull TileEntityBioGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        if (tile.bioFuelSlot.fluidStored > 0) {
+        if (tile.getBioFuelStored() > 0) {
             matrix.push();
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
             //TODO: FIXME, you can see through the back. Might have to make the main "model" into json and then just render the fluid as a TER

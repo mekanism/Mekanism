@@ -21,13 +21,22 @@ import net.minecraftforge.fml.DistExecutor;
 
 public class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
 
-    //TODO: Annotate this
+    //Note: We don't want our tile to be null but it technically can be if something went wrong
+    // retrieving it, so we mark it as nullable to not instantly hard crash
+    @Nullable
     protected final TILE tile;
 
-    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, TILE tile) {
+    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv, @Nullable TILE tile) {
         super(type, id, inv);
         this.tile = tile;
+        addContainerTrackers();
         addSlotsAndOpen();
+    }
+
+    protected void addContainerTrackers() {
+        if (tile != null) {
+            tile.addContainerTrackers(this);
+        }
     }
 
     public TILE getTileEntity() {
@@ -38,10 +47,6 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     protected void openInventory(@Nonnull PlayerInventory inv) {
         if (tile != null) {
             tile.open(inv.player);
-            //TODO: Some tiles had their update packet get sent (at the very least to the player opening it)
-            /*if (!tile.isRemote()) {
-                Mekanism.packetHandler.sendUpdatePacket(tile);
-            }*/
         }
     }
 
@@ -49,8 +54,6 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     protected void closeInventory(PlayerEntity player) {
         if (tile != null) {
             tile.close(player);
-            //TODO: Do we need any specific closing code?
-            //tile.closeInventory(player);
         }
     }
 
@@ -78,9 +81,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
             //Don't include the inventory slots
             return;
         }
-        //TODO: Overwrite transferStackInSlot with the logic in the IInventorySlots??
-        // NOTE: When implementing the generic transferStackInSlot stuff, we *should* probably ALWAYS allow manual extraction
-        if (tile.hasInventory()) {
+        if (tile != null && tile.hasInventory()) {
             //Get all the inventory slots the tile has
             List<IInventorySlot> inventorySlots = tile.getInventorySlots(null);
             for (IInventorySlot inventorySlot : inventorySlots) {

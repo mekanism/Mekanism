@@ -55,7 +55,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     }
 
     private ILangEntry getStruct() {
-        if (tile.structured) {
+        if (tile.getActive()) {
             return MekanismLang.MULTIBLOCK_FORMED;
         } else if (tile.controllerConflict) {
             return MekanismLang.MULTIBLOCK_CONFLICT;

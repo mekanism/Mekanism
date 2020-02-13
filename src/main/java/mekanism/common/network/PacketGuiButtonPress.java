@@ -13,13 +13,17 @@ import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.container.tile.SideConfigurationContainer;
+import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
+import mekanism.common.inventory.container.tile.filter.DMFilterSelectContainer;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSFilterSelectContainer;
 import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
@@ -134,8 +138,8 @@ public class PacketGuiButtonPress {
             }
             return null;
         }),
-        SIDE_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.SIDE_CONFIG, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.SIDE_CONFIGURATION, i, inv, tile))),
-        TRANSPORTER_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.TRANSPORTER_CONFIG, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.TRANSPORTER_CONFIGURATION, i, inv, tile))),
+        SIDE_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.SIDE_CONFIG, (i, inv, player) -> new SideConfigurationContainer(i, inv, tile))),
+        TRANSPORTER_CONFIGURATION((tile, extra) -> new ContainerProvider(MekanismLang.TRANSPORTER_CONFIG, (i, inv, player) -> new TransporterConfigurationContainer(i, inv, tile))),
         UPGRADE_MANAGEMENT((tile, extra) -> new ContainerProvider(MekanismLang.UPGRADES, (i, inv, player) -> new UpgradeManagementContainer(i, inv, tile))),
         OREDICTIONIFICATOR_FILTER((tile, extra) -> {
             if (tile instanceof TileEntityOredictionificator) {
@@ -146,13 +150,13 @@ public class PacketGuiButtonPress {
         }),
         DIGITAL_MINER_CONFIG((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.MINER_CONFIG, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.DIGITAL_MINER_CONFIG, i, inv, (TileEntityDigitalMiner) tile));
+                return new ContainerProvider(MekanismLang.MINER_CONFIG, (i, inv, player) -> new DigitalMinerConfigContainer(i, inv, (TileEntityDigitalMiner) tile));
             }
             return null;
         }),
         DM_SELECT_FILTER_TYPE((tile, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.DM_FILTER_SELECT, i, inv, (TileEntityDigitalMiner) tile));
+                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new DMFilterSelectContainer(i, inv, (TileEntityDigitalMiner) tile));
             }
             return null;
         }),
@@ -182,7 +186,7 @@ public class PacketGuiButtonPress {
         }),
         LS_SELECT_FILTER_TYPE((tile, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.LS_FILTER_SELECT, i, inv, (TileEntityLogisticalSorter) tile));
+                return new ContainerProvider(MekanismLang.CREATE_FILTER_TITLE, (i, inv, player) -> new LSFilterSelectContainer(i, inv, (TileEntityLogisticalSorter) tile));
             }
             return null;
         }),

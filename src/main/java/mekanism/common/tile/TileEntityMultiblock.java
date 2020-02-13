@@ -68,6 +68,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
+        doAutoSync = true;
     }
 
     @Override

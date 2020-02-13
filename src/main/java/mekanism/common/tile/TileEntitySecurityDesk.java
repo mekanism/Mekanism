@@ -44,6 +44,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public TileEntitySecurityDesk() {
         super(MekanismBlocks.SECURITY_DESK);
+        doAutoSync = true;
     }
 
     @Nonnull
@@ -214,18 +215,19 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        if (ownerUUID != null) {
+        if (ownerUUID == null) {
+            data.add(false);
+        } else {
             data.add(true);
             data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
             data.add(ownerUUID);
-        } else {
-            data.add(false);
         }
-        if (frequency != null) {
+        //TODO: Make it so we can sync the frequency via the container sync stuff
+        if (frequency == null) {
+            data.add(false);
+        } else {
             data.add(true);
             frequency.write(data);
-        } else {
-            data.add(false);
         }
         return data;
     }

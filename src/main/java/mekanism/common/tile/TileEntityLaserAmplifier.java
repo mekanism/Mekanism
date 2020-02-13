@@ -19,6 +19,10 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
@@ -39,14 +43,14 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     public static final double MAX_ENERGY = 5E9;
     private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy"};
     public double collectedEnergy = 0;
-    public double lastFired = 0;
+    private double lastFired = 0;
     public double minThreshold = 0;
     public double maxThreshold = 5E9;
     public int ticks = 0;
     public int time = 0;
     public boolean on = false;
-    public Coord4D digging;
-    public double diggingProgress;
+    private Coord4D digging;
+    private double diggingProgress;
     public boolean emittingRedstone;
     public RedstoneOutput outputMode = RedstoneOutput.OFF;
 
@@ -169,11 +173,11 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
         collectedEnergy = Math.max(0, Math.min(energy, MAX_ENERGY));
     }
 
-    public boolean shouldFire() {
+    private boolean shouldFire() {
         return collectedEnergy >= minThreshold && ticks >= time && MekanismUtils.canFunction(this);
     }
 
-    public double toFire() {
+    private double toFire() {
         return shouldFire() ? Math.min(collectedEnergy, maxThreshold) : 0;
     }
 
@@ -190,13 +194,9 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(on);
-        data.add(minThreshold);
-        data.add(maxThreshold);
-        data.add(time);
         data.add(collectedEnergy);
         data.add(lastFired);
         data.add(emittingRedstone);
-        data.add(outputMode);
         return data;
     }
 
@@ -224,13 +224,9 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
         if (isRemote()) {
             on = dataStream.readBoolean();
-            minThreshold = dataStream.readDouble();
-            maxThreshold = dataStream.readDouble();
-            time = dataStream.readInt();
             collectedEnergy = dataStream.readDouble();
             lastFired = dataStream.readDouble();
             emittingRedstone = dataStream.readBoolean();
-            outputMode = dataStream.readEnumValue(RedstoneOutput.class);
         }
     }
 
@@ -313,6 +309,15 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(() -> minThreshold, value -> minThreshold = value));
+        container.track(SyncableDouble.create(() -> maxThreshold, value -> maxThreshold = value));
+        container.track(SyncableInt.create(() -> time, value -> time = value));
+        container.track(SyncableEnum.create(RedstoneOutput::byIndexStatic, RedstoneOutput.OFF, () -> outputMode, value -> outputMode = value));
     }
 
     public enum RedstoneOutput implements IIncrementalEnum<RedstoneOutput>, IHasTranslationKey {

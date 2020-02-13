@@ -10,6 +10,7 @@ import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
+import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.FactoryContainer;
@@ -19,12 +20,16 @@ import mekanism.common.inventory.container.tile.OredictionificatorContainer;
 import mekanism.common.inventory.container.tile.PersonalChestTileContainer;
 import mekanism.common.inventory.container.tile.QuantumEntangloporterContainer;
 import mekanism.common.inventory.container.tile.SecurityDeskContainer;
+import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.inventory.container.tile.TeleporterContainer;
+import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
 import mekanism.common.inventory.container.tile.UpgradeManagementContainer;
+import mekanism.common.inventory.container.tile.filter.DMFilterSelectContainer;
 import mekanism.common.inventory.container.tile.filter.DMItemStackFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSFilterSelectContainer;
 import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
@@ -142,13 +147,13 @@ public class MekanismContainerTypes {
 
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityBoilerCasing>> BOILER_STATS = CONTAINER_TYPES.register("boiler_stats", TileEntityBoilerCasing.class);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityInductionCasing>> MATRIX_STATS = CONTAINER_TYPES.register("matrix_stats", TileEntityInductionCasing.class);
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityMekanism>> SIDE_CONFIGURATION = CONTAINER_TYPES.registerEmpty("side_configuration", TileEntityMekanism.class);
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityMekanism>> TRANSPORTER_CONFIGURATION = CONTAINER_TYPES.registerEmpty("transporter_configuration", TileEntityMekanism.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityMekanism>> SIDE_CONFIGURATION = CONTAINER_TYPES.register("side_configuration", SideConfigurationContainer::new);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityMekanism>> TRANSPORTER_CONFIGURATION = CONTAINER_TYPES.register("transporter_configuration", TransporterConfigurationContainer::new);
 
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityDigitalMiner>> DIGITAL_MINER_CONFIG = CONTAINER_TYPES.registerEmpty("digital_miner_config", TileEntityDigitalMiner.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityDigitalMiner>> DIGITAL_MINER_CONFIG = CONTAINER_TYPES.register("digital_miner_config", DigitalMinerConfigContainer::new);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityLogisticalSorter>> LOGISTICAL_SORTER = CONTAINER_TYPES.registerEmpty(MekanismBlocks.LOGISTICAL_SORTER, TileEntityLogisticalSorter.class);
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityDigitalMiner>> DM_FILTER_SELECT = CONTAINER_TYPES.registerEmpty("digital_miner_filter_select", TileEntityDigitalMiner.class);
-    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityLogisticalSorter>> LS_FILTER_SELECT = CONTAINER_TYPES.registerEmpty("logistical_sorter_filter_select", TileEntityLogisticalSorter.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityDigitalMiner>> DM_FILTER_SELECT = CONTAINER_TYPES.register("digital_miner_filter_select", DMFilterSelectContainer::new);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityLogisticalSorter>> LS_FILTER_SELECT = CONTAINER_TYPES.register("logistical_sorter_filter_select", LSFilterSelectContainer::new);
 
     public static final ContainerTypeRegistryObject<DMTagFilterContainer> DM_TAG_FILTER = CONTAINER_TYPES.register("digital_miner_tag_filter", DMTagFilterContainer::new);
     public static final ContainerTypeRegistryObject<LSTagFilterContainer> LS_TAG_FILTER = CONTAINER_TYPES.register("logistical_sorter_tag_filter", LSTagFilterContainer::new);

@@ -29,6 +29,11 @@ public abstract class FilterContainer<FILTER extends IFilter<FILTER>, TILE exten
     }
 
     @Override
+    protected void addContainerTrackers() {
+        //NO-OP for now, eventually have this maybe add stuff to sync
+    }
+
+    @Override
     public void addSlots() {
         //TODO: Check if any filters actually have us wanting to add the slots
         //NO-OP

@@ -46,6 +46,7 @@ import mekanism.common.network.container.PacketUpdateContainerFluidStack;
 import mekanism.common.network.container.PacketUpdateContainerGasStack;
 import mekanism.common.network.container.PacketUpdateContainerInfusionStack;
 import mekanism.common.network.container.PacketUpdateContainerInt;
+import mekanism.common.network.container.PacketUpdateContainerItemStack;
 import mekanism.common.network.container.PacketUpdateContainerLong;
 import mekanism.common.network.container.PacketUpdateContainerShort;
 import net.minecraft.entity.player.PlayerEntity;
@@ -214,6 +215,7 @@ public class PacketHandler {
         registerMessage(PacketUpdateContainerInt.class, PacketUpdateContainer::encode, PacketUpdateContainerInt::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerLong.class, PacketUpdateContainer::encode, PacketUpdateContainerLong::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerShort.class, PacketUpdateContainer::encode, PacketUpdateContainerShort::decode, PacketUpdateContainer::handle);
+        registerMessage(PacketUpdateContainerItemStack.class, PacketUpdateContainer::encode, PacketUpdateContainerItemStack::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerFluidStack.class, PacketUpdateContainer::encode, PacketUpdateContainerFluidStack::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerGasStack.class, PacketUpdateContainer::encode, PacketUpdateContainerGasStack::decode, PacketUpdateContainer::handle);
         registerMessage(PacketUpdateContainerInfusionStack.class, PacketUpdateContainer::encode, PacketUpdateContainerInfusionStack::decode, PacketUpdateContainer::handle);

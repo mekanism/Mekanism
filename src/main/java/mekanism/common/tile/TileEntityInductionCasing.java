@@ -68,10 +68,8 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
-        if (isRemote()) {
-            if (clientHasStructure) {
-                structure.readStructureData(dataStream);
-            }
+        if (isRemote() && clientHasStructure) {
+            structure.readStructureData(dataStream);
         }
     }
 

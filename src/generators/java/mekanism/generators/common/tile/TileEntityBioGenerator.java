@@ -8,9 +8,10 @@ import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.FluidSlot;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -38,10 +39,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
     private static IFluidTank[] ALL_TANKS = new IFluidTank[0];
-    /**
-     * The FluidSlot biofuel instance for this generator.
-     */
-    public FluidSlot bioFuelSlot = new FluidSlot(24000, -1);
+    private static final int MAX_FLUID = 24_000;
+
+    //TODO: At some point we probably want to cleanup the implementation for how we keep track of how much bio fuel is stored
+    private int bioFuelStored;
 
     private FuelInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
@@ -71,24 +72,22 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             if (fluidStack.isEmpty()) {
                 int fuel = getFuel(fuelStack);
                 if (fuel > 0) {
-                    int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
+                    int fuelNeeded = MAX_FLUID - bioFuelStored;
                     if (fuel <= fuelNeeded) {
-                        bioFuelSlot.fluidStored += fuel;
+                        bioFuelStored += fuel;
                         ItemStack containerItem = fuelStack.getItem().getContainerItem(fuelStack);
                         if (!containerItem.isEmpty()) {
                             fuelSlot.setStack(containerItem);
-                        } else {
-                            if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                                //TODO: Print error that something went wrong
-                            }
+                        } else if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
+                            //TODO: Print error that something went wrong
                         }
                     }
                 }
             } else if (fluidStack.getFluid().isIn(GeneratorTags.BIO_ETHANOL)) {
                 FluidUtil.getFluidHandler(fuelStack).ifPresent(handler -> {
-                    FluidStack drained = handler.drain(bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored, FluidAction.EXECUTE);
+                    FluidStack drained = handler.drain(MAX_FLUID - bioFuelStored, FluidAction.EXECUTE);
                     if (!drained.isEmpty()) {
-                        bioFuelSlot.fluidStored += drained.getAmount();
+                        setBioFuelStored(bioFuelStored + drained.getAmount());
                     }
                 });
             }
@@ -97,7 +96,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             if (!isRemote()) {
                 setActive(true);
             }
-            bioFuelSlot.setFluid(bioFuelSlot.fluidStored - 1);
+            setBioFuelStored(bioFuelStored - 1);
             setEnergy(getEnergy() + MekanismGeneratorsConfig.generators.bioGeneration.get());
         } else if (!isRemote()) {
             setActive(false);
@@ -106,20 +105,20 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public boolean canOperate() {
-        return getEnergy() < getBaseStorage() && bioFuelSlot.fluidStored > 0 && MekanismUtils.canFunction(this);
+        return getEnergy() < getBaseStorage() && bioFuelStored > 0 && MekanismUtils.canFunction(this);
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        bioFuelSlot.fluidStored = nbtTags.getInt("bioFuelStored");
+        setBioFuelStored(nbtTags.getInt("bioFuelStored"));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("bioFuelStored", bioFuelSlot.fluidStored);
+        nbtTags.putInt("bioFuelStored", bioFuelStored);
         return nbtTags;
     }
 
@@ -135,21 +134,22 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
      * @return Scaled fuel level
      */
     public int getScaledFuelLevel(int i) {
-        return bioFuelSlot.fluidStored * i / bioFuelSlot.MAX_FLUID;
+        return bioFuelStored * i / MAX_FLUID;
     }
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            bioFuelSlot.fluidStored = dataStream.readInt();
+            setBioFuelStored(dataStream.readInt());
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(bioFuelSlot.fluidStored);
+        //Note: We still have to sync bio fuel stored as it is used in rendering the tile
+        data.add(bioFuelStored);
         return data;
     }
 
@@ -170,9 +170,9 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
             case 3:
                 return new Object[]{getBaseStorage() - getEnergy()};
             case 4:
-                return new Object[]{bioFuelSlot.fluidStored};
+                return new Object[]{bioFuelStored};
             case 5:
-                return new Object[]{bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored};
+                return new Object[]{MAX_FLUID - bioFuelStored};
             default:
                 throw new NoSuchMethodException();
         }
@@ -180,10 +180,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        int fuelNeeded = bioFuelSlot.MAX_FLUID - bioFuelSlot.fluidStored;
+        int fuelNeeded = MAX_FLUID - bioFuelStored;
         int fuelTransfer = Math.min(resource.getAmount(), fuelNeeded);
         if (fluidAction.execute()) {
-            bioFuelSlot.setFluid(bioFuelSlot.fluidStored + fuelTransfer);
+            setBioFuelStored(bioFuelStored + fuelTransfer);
         }
         return fuelTransfer;
     }
@@ -200,12 +200,12 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, "fluidStored", bioFuelSlot.fluidStored);
+        ItemDataUtils.setInt(itemStack, "fluidStored", bioFuelStored);
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        bioFuelSlot.setFluid(ItemDataUtils.getInt(itemStack, "fluidStored"));
+        setBioFuelStored(ItemDataUtils.getInt(itemStack, "fluidStored"));
     }
 
     @Override
@@ -227,5 +227,19 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
     @Override
     public IFluidTank[] getAllTanks() {
         return ALL_TANKS;
+    }
+
+    public int getBioFuelStored() {
+        return bioFuelStored;
+    }
+
+    private void setBioFuelStored(int amount) {
+        bioFuelStored = Math.max(Math.min(amount, MAX_FLUID), 0);
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableInt.create(this::getBioFuelStored, this::setBioFuelStored));
     }
 }

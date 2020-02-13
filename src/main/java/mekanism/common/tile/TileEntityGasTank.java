@@ -9,7 +9,6 @@ import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -20,17 +19,18 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismLang;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -223,14 +223,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
             if (type == 0) {
                 dumping = dumping.getNext();
             }
-            sendToAllUsing(() -> new PacketTileEntity(this));
             return;
         }
         super.handlePacketData(dataStream);
-        if (isRemote()) {
-            gasTank.setStack(PacketHandler.readGasStack(dataStream));
-            dumping = dataStream.readEnumValue(GasMode.class);
-        }
     }
 
     @Override
@@ -247,14 +242,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
         nbtTags.putInt("dumping", dumping.ordinal());
         return nbtTags;
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(gasTank.getStack());
-        data.add(dumping);
-        return data;
     }
 
     @Override
@@ -340,6 +327,13 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         remap.put("gasTank.stored", "stored");
         remap.put("dumping", "dumping");
         return remap;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableGasStack.create(gasTank));
+        container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumping, value -> dumping = value));
     }
 
     public enum GasMode implements IIncrementalEnum<GasMode>, IHasTextComponent {

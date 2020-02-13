@@ -24,6 +24,7 @@ import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.SyncableShort;
 import mekanism.common.network.container.PacketUpdateContainerBatch;
@@ -286,6 +287,8 @@ public abstract class MekanismContainer extends Container {
             ((SyncableChemicalStack<?, ?>) data).set(value);
         } else if (data instanceof SyncableFluidStack) {
             ((SyncableFluidStack) data).set(value);
+        } else if (data instanceof SyncableItemStack) {
+            ((SyncableItemStack) data).set(value);
         }
     }
 
@@ -307,6 +310,13 @@ public abstract class MekanismContainer extends Container {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableDouble) {
             ((SyncableDouble) data).set(value);
+        }
+    }
+
+    public void handleWindowProperty(short property, @Nonnull ItemStack value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableItemStack) {
+            ((SyncableItemStack) data).set(value);
         }
     }
 

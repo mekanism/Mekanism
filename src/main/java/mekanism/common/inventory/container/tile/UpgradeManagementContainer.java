@@ -9,10 +9,6 @@ public class UpgradeManagementContainer extends MekanismTileContainer<TileEntity
 
     public UpgradeManagementContainer(int id, PlayerInventory inv, TileEntityMekanism tile) {
         super(MekanismContainerTypes.UPGRADE_MANAGEMENT, id, inv, tile);
-        //Make sure just in case that it really does support upgrades
-        if (tile.supportsUpgrades()) {
-            tile.getComponent().addContainerTrackers(this);
-        }
     }
 
     public UpgradeManagementContainer(int id, PlayerInventory inv, PacketBuffer buf) {
@@ -20,9 +16,17 @@ public class UpgradeManagementContainer extends MekanismTileContainer<TileEntity
     }
 
     @Override
+    protected void addContainerTrackers() {
+        if (tile != null && tile.supportsUpgrades()) {
+            //Make sure just in case that it really does support upgrades
+            tile.getComponent().addContainerTrackers(this);
+        }
+    }
+
+    @Override
     protected void addSlots() {
         //Add the upgrade slot
-        if (tile.supportsUpgrades()) {
+        if (tile != null && tile.supportsUpgrades()) {
             addSlot(tile.getComponent().getUpgradeSlot().createContainerSlot());
         }
     }

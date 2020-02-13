@@ -1,10 +1,12 @@
 package mekanism.generators.common.tile.reactor;
 
 import javax.annotation.Nonnull;
-import mekanism.api.TileNetworkList;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
@@ -21,7 +23,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
                                                          "getMaxEnergy", "getWater", "getSteam", "getFuel", "getDeuterium", "getTritium"};
     public ReactorLogic logicType = ReactorLogic.DISABLED;
     public boolean activeCooled;
-    public boolean prevOutputting;
+    private boolean prevOutputting;
 
     public TileEntityReactorLogicAdapter() {
         super(GeneratorsBlocks.REACTOR_LOGIC_ADAPTER);
@@ -96,23 +98,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
             }
             return;
         }
-
         super.handlePacketData(dataStream);
-
-        if (isRemote()) {
-            logicType = dataStream.readEnumValue(ReactorLogic.class);
-            activeCooled = dataStream.readBoolean();
-            prevOutputting = dataStream.readBoolean();
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(logicType);
-        data.add(activeCooled);
-        data.add(prevOutputting);
-        return data;
     }
 
     @Override
@@ -172,11 +158,21 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
         }
     }
 
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableEnum.create(ReactorLogic::byIndexStatic, ReactorLogic.DISABLED, () -> logicType, value -> logicType = value));
+        container.track(SyncableBoolean.create(() -> activeCooled, value -> activeCooled = value));
+        container.track(SyncableBoolean.create(() -> prevOutputting, value -> prevOutputting = value));
+    }
+
     public enum ReactorLogic implements IHasTranslationKey {
         DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER)),
         READY(GeneratorsLang.REACTOR_LOGIC_READY, GeneratorsLang.DESCRIPTION_REACTOR_READY, new ItemStack(Items.REDSTONE)),
         CAPACITY(GeneratorsLang.REACTOR_LOGIC_CAPACITY, GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, new ItemStack(Items.REDSTONE)),
         DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, new ItemStack(Items.REDSTONE));
+
+        private static final ReactorLogic[] MODES = values();
 
         private final ILangEntry name;
         private final ILangEntry description;
@@ -199,6 +195,11 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implem
 
         public ITextComponent getDescription() {
             return description.translate();
+        }
+
+        public static ReactorLogic byIndexStatic(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MODES[Math.floorMod(index, MODES.length)];
         }
     }
 }

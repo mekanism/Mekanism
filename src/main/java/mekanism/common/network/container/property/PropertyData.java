@@ -53,6 +53,8 @@ public abstract class PropertyData {
                 return new LongPropertyData(property, buffer.readVarLong());
             case SHORT:
                 return new ShortPropertyData(property, buffer.readShort());
+            case ITEM_STACK:
+                return new ItemStackPropertyData(property, buffer.readItemStack());
             case FLUID_STACK:
                 return new FluidStackPropertyData(property, buffer.readFluidStack());
             case GAS_STACK:

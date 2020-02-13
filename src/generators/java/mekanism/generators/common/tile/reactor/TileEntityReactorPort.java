@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTankInfo;
@@ -30,8 +29,6 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -46,24 +43,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 //TODO: Allow reactor controller inventory slot to be interacted with via the port again
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IFluidHandlerWrapper, IGasHandler, IHeatTransfer, IConfigurable {
 
-    public boolean fluidEject;
-
     public TileEntityReactorPort() {
         super(GeneratorsBlocks.REACTOR_PORT);
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        fluidEject = nbtTags.getBoolean("fluidEject");
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putBoolean("fluidEject", fluidEject);
-        return nbtTags;
     }
 
     @Override
@@ -83,7 +64,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         super.onUpdate();
         if (!isRemote()) {
             CableUtils.emit(this);
-            if (fluidEject && getReactor() != null && !getReactor().getSteamTank().isEmpty()) {
+            if (getActive() && getReactor() != null && !getReactor().getSteamTank().isEmpty()) {
                 IFluidTank tank = getReactor().getSteamTank();
                 EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
                     if (!(tile instanceof TileEntityReactorPort)) {
@@ -111,7 +92,8 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return getReactor() != null && !fluidEject && fluid.getFluid() == Fluids.WATER;
+        //TODO: Should this be switched to FluidTags.WATER
+        return getReactor() != null && !getActive() && fluid.getFluid() == Fluids.WATER;
     }
 
     @Override
@@ -289,33 +271,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            boolean prevEject = fluidEject;
-            fluidEject = dataStream.readBoolean();
-            if (prevEject != fluidEject) {
-                World world = getWorld();
-                if (world != null) {
-                    MekanismUtils.updateBlock(world, getPos());
-                }
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(fluidEject);
-        return data;
-    }
-
-    @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
-            fluidEject = !fluidEject;
+            boolean oldMode = getActive();
+            setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(!fluidEject, true))));
+                  GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(!oldMode, true))));
             Mekanism.packetHandler.sendUpdatePacket(this);
             markDirty();
         }

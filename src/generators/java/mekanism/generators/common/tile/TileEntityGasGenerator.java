@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.GasTank;
@@ -17,9 +16,12 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
-import mekanism.common.PacketHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -30,7 +32,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -46,10 +47,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
      * The tank this block is storing fuel in.
      */
     public GasTank fuelTank;
-    public int burnTicks = 0;
-    public int maxBurnTicks;
-    public double generationRate = 0;
-    public int clientUsed;
+    private int burnTicks = 0;
+    private int maxBurnTicks;
+    private double generationRate = 0;
+    private int used;
 
     private GasInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
@@ -76,7 +77,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!isRemote()) {
             energySlot.charge(this);
             ItemStack stack = fuelSlot.getStack();
@@ -111,7 +111,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                 }
 
                 int toUse = getToUse();
-                output = Math.max(MekanismConfig.general.FROM_H2.get() * 2, generationRate * getToUse() * 2);
+                output = Math.max(MekanismConfig.general.FROM_H2.get() * 2, generationRate * toUse * 2);
 
                 int total = burnTicks + fuelTank.getStored() * maxBurnTicks;
                 total -= toUse;
@@ -121,25 +121,25 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                     fuelTank.setStack(new GasStack(fuelTank.getStack(), total / maxBurnTicks));
                 }
                 burnTicks = total % maxBurnTicks;
-                clientUsed = toUse;
+                used = toUse;
             } else {
                 if (!operate) {
                     reset();
                 }
-                clientUsed = 0;
+                used = 0;
                 setActive(false);
             }
         }
     }
 
-    public void reset() {
+    private void reset() {
         burnTicks = 0;
         maxBurnTicks = 0;
         generationRate = 0;
         output = MekanismConfig.general.FROM_H2.get() * 2;
     }
 
-    public int getToUse() {
+    private int getToUse() {
         if (generationRate == 0 || fuelTank.isEmpty()) {
             return 0;
         }
@@ -177,28 +177,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
             default:
                 throw new NoSuchMethodException();
         }
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-
-        if (isRemote()) {
-            fuelTank.setStack(PacketHandler.readGasStack(dataStream));
-            generationRate = dataStream.readDouble();
-            output = dataStream.readDouble();
-            clientUsed = dataStream.readInt();
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(fuelTank.getStack());
-        data.add(generationRate);
-        data.add(output);
-        data.add(clientUsed);
-        return data;
     }
 
     @Override
@@ -293,6 +271,14 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         }
     }
 
+    public double getGenerationRate() {
+        return generationRate;
+    }
+
+    public int getUsed() {
+        return used;
+    }
+
     @Override
     public Map<String, String> getTileDataRemap() {
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
@@ -303,5 +289,14 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableGasStack.create(fuelTank));
+        container.track(SyncableDouble.create(this::getGenerationRate, value -> generationRate = value));
+        container.track(SyncableDouble.create(() -> output, value -> output = value));
+        container.track(SyncableInt.create(this::getUsed, value -> used = value));
     }
 }

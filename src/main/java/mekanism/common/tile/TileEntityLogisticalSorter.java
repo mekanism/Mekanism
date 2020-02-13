@@ -23,6 +23,8 @@ import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
@@ -62,7 +64,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TileEntityLogisticalSorter() {
         super(MekanismBlocks.LOGISTICAL_SORTER);
         rapidChangeThreshold = 3;
-        doAutoSync = false;
     }
 
     @Nonnull
@@ -217,18 +218,12 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 // Move filter up
                 int filterIndex = dataStream.readInt();
                 filters.swap(filterIndex, filterIndex - 1);
-                /*for (PlayerEntity player : playersUsing) {
-                    //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
-                    //openInventory(player);
-                }*/
+                sendToAllUsing(() -> new PacketTileEntity(this, getFilterPacket()));
             } else if (type == 4) {
                 // Move filter down
                 int filterIndex = dataStream.readInt();
                 filters.swap(filterIndex, filterIndex + 1);
-                /*for (PlayerEntity player : playersUsing) {
-                    //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
-                    //openInventory(player);
-                }*/
+                sendToAllUsing(() -> new PacketTileEntity(this, getFilterPacket()));
             } else if (type == 5) {
                 singleItem = !singleItem;
             }
@@ -240,7 +235,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
         if (isRemote()) {
             int type = dataStream.readInt();
-
             if (type == 0) {
                 readState(dataStream);
                 readFilters(dataStream);
@@ -264,14 +258,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     private void readState(PacketBuffer dataStream) {
         int c = dataStream.readInt();
-        if (c != -1) {
-            color = TransporterUtils.colors.get(c);
-        } else {
-            color = null;
-        }
-        autoEject = dataStream.readBoolean();
-        roundRobin = dataStream.readBoolean();
-        singleItem = dataStream.readBoolean();
+        color = c == -1 ? null : TransporterUtils.colors.get(c);
     }
 
     private void readFilters(PacketBuffer dataStream) {
@@ -286,16 +273,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(0);
-        if (color != null) {
-            data.add(TransporterUtils.colors.indexOf(color));
-        } else {
-            data.add(-1);
-        }
-
-        data.add(autoEject);
-        data.add(roundRobin);
-        data.add(singleItem);
-
+        data.add(color == null ? -1 : TransporterUtils.colors.indexOf(color));
         data.add(filters.size());
         for (TransporterFilter<?> filter : filters) {
             filter.write(data);
@@ -306,15 +284,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TileNetworkList getGenericPacket(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(1);
-        if (color != null) {
-            data.add(TransporterUtils.colors.indexOf(color));
-        } else {
-            data.add(-1);
-        }
-
-        data.add(autoEject);
-        data.add(roundRobin);
-        data.add(singleItem);
+        data.add(color == null ? -1 : TransporterUtils.colors.indexOf(color));
         return data;
     }
 
@@ -573,6 +543,14 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public HashList<TransporterFilter<?>> getFilters() {
         return filters;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableBoolean.create(() -> autoEject, value -> autoEject = value));
+        container.track(SyncableBoolean.create(() -> roundRobin, value -> roundRobin = value));
+        container.track(SyncableBoolean.create(() -> singleItem, value -> singleItem = value));
     }
 
     private class StrictFilterFinder extends Finder {

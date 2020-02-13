@@ -17,11 +17,12 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -58,7 +59,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     public TileEntityOredictionificator() {
         super(MekanismBlocks.OREDICTIONIFICATOR);
-        doAutoSync = false;
+        doAutoSync = true;
     }
 
     @Nonnull
@@ -74,7 +75,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
             didProcess = false;
             if (MekanismUtils.canFunction(this) && !inputSlot.isEmpty()) {
                 ItemStack inputStack = inputSlot.getStack();
@@ -163,23 +163,10 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                didProcess = dataStream.readBoolean();
-                filters.clear();
-
-                int amount = dataStream.readInt();
-                for (int i = 0; i < amount; i++) {
-                    filters.add(OredictionificatorFilter.readFromPacket(dataStream));
-                }
-            } else if (type == 1) {
-                didProcess = dataStream.readBoolean();
-            } else if (type == 2) {
-                filters.clear();
-                int amount = dataStream.readInt();
-                for (int i = 0; i < amount; i++) {
-                    filters.add(OredictionificatorFilter.readFromPacket(dataStream));
-                }
+            filters.clear();
+            int amount = dataStream.readInt();
+            for (int i = 0; i < amount; i++) {
+                filters.add(OredictionificatorFilter.readFromPacket(dataStream));
             }
         }
     }
@@ -187,31 +174,16 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(0);
-        data.add(didProcess);
         data.add(filters.size());
         for (OredictionificatorFilter filter : filters) {
             filter.write(data);
         }
-        return data;
-    }
-
-    public TileNetworkList getGenericPacket(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(1);
-        data.add(didProcess);
         return data;
     }
 
     @Override
     public TileNetworkList getFilterPacket(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(2);
-        data.add(filters.size());
-        for (OredictionificatorFilter filter : filters) {
-            filter.write(data);
-        }
-        return data;
+        return getNetworkedData(data);
     }
 
     @Override
@@ -304,6 +276,12 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public HashList<OredictionificatorFilter> getFilters() {
         return filters;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableBoolean.create(() -> didProcess, value -> didProcess = value));
     }
 
     public static class OredictionificatorFilter implements IFilter<OredictionificatorFilter> {

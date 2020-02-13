@@ -41,6 +41,11 @@ import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.inventory.container.IEmptyContainer;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -283,8 +288,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             } else if (delayTicks > 0) {
                 delayTicks--;
             }
-
-            sendToAllUsing(() -> new PacketTileEntity(this, getSmallPacket(new TileNetworkList())));
             prevEnergy = getEnergy();
         }
     }
@@ -534,21 +537,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return getConfigurationData(nbtTags);
     }
 
-    private void readBasicData(PacketBuffer dataStream) {
-        setRadius(dataStream.readInt());//client allowed to use whatever server sends
-        minY = dataStream.readInt();
-        maxY = dataStream.readInt();
-        doEject = dataStream.readBoolean();
-        doPull = dataStream.readBoolean();
-        running = dataStream.readBoolean();
-        silkTouch = dataStream.readBoolean();
-        numPowering = dataStream.readInt();
-        searcher.state = dataStream.readEnumValue(State.class);
-        clientToMine = dataStream.readInt();
-        inverse = dataStream.readBoolean();
-        missingStack = dataStream.readItemStack();
-    }
-
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
@@ -588,87 +576,44 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                     // Move filter up
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex - 1);
-                    //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
-                    /*for (PlayerEntity player : playersUsing) {
-                        openInventory(player);
-                    }*/
+                    sendToAllUsing(() -> new PacketTileEntity(this, getFilterPacket()));
                     break;
                 }
                 case 12: {
                     // Move filter down
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex + 1);
-                    //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
-                    /*for (PlayerEntity player : playersUsing) {
-                        openInventory(player);
-                    }*/
+                    sendToAllUsing(() -> new PacketTileEntity(this, getFilterPacket()));
                     break;
                 }
             }
 
             MekanismUtils.saveChunk(this);
-            sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
             return;
         }
-
-        boolean wasActive = getActive();
         super.handlePacketData(dataStream);
-
         if (isRemote()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                readBasicData(dataStream);
-                filters.clear();
-                int amount = dataStream.readInt();
-                for (int i = 0; i < amount; i++) {
-                    filters.add(MinerFilter.readFromPacket(dataStream));
-                }
-            } else if (type == 1) {
-                readBasicData(dataStream);
-            } else if (type == 2) {
-                filters.clear();
-                int amount = dataStream.readInt();
-                for (int i = 0; i < amount; i++) {
-                    filters.add(MinerFilter.readFromPacket(dataStream));
-                }
-            } else if (type == 3) {
-                running = dataStream.readBoolean();
-                clientToMine = dataStream.readInt();
-                missingStack = dataStream.readItemStack();
+            if (dataStream.readBoolean()) {
+                setRadius(dataStream.readInt());//client allowed to use whatever server sends
+                minY = dataStream.readInt();
+                maxY = dataStream.readInt();
             }
-            //TODO: Does this get handled by TileEntityMekanism
-            if (wasActive != getActive()) {
-                MekanismUtils.updateBlock(getWorld(), getPos());
+            filters.clear();
+            int amount = dataStream.readInt();
+            for (int i = 0; i < amount; i++) {
+                filters.add(MinerFilter.readFromPacket(dataStream));
             }
         }
-    }
-
-    private void addBasicData(TileNetworkList data) {
-        data.add(radius);
-        data.add(minY);
-        data.add(maxY);
-        data.add(doEject);
-        data.add(doPull);
-        data.add(running);
-        data.add(silkTouch);
-        data.add(numPowering);
-        data.add(searcher.state);
-
-        if (searcher.state == State.SEARCHING) {
-            data.add(searcher.found);
-        } else {
-            data.add(getSize());
-        }
-
-        data.add(inverse);
-        data.add(missingStack);
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(0);
-        addBasicData(data);
+        data.add(true);
+        //These three are used for the miner renderer
+        data.add(radius);
+        data.add(minY);
+        data.add(maxY);
         data.add(filters.size());
         for (MinerFilter<?> filter : filters) {
             filter.write(data);
@@ -676,33 +621,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return data;
     }
 
-    public TileNetworkList getSmallPacket(TileNetworkList data) {
-        super.getNetworkedData(data);
-
-        data.add(3);
-
-        data.add(running);
-
-        if (searcher.state == State.SEARCHING) {
-            data.add(searcher.found);
-        } else {
-            data.add(getSize());
-        }
-        data.add(missingStack);
-        return data;
-    }
-
-    public TileNetworkList getGenericPacket(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(1);
-        addBasicData(data);
-        return data;
-    }
-
     @Override
     public TileNetworkList getFilterPacket(TileNetworkList data) {
         super.getNetworkedData(data);
-        data.add(2);
+        data.add(false);
         data.add(filters.size());
         for (MinerFilter<?> filter : filters) {
             filter.write(data);
@@ -867,7 +789,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         } else if (method == 10) {
             return new Object[]{searcher != null ? searcher.found : 0};
         }
-        sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
         return null;
     }
 
@@ -932,13 +853,27 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"), MekanismConfig.general.digitalMinerMaxRadius.get()));
-        minY = ItemDataUtils.getInt(itemStack, "minY");
-        maxY = ItemDataUtils.getInt(itemStack, "maxY");
-        doEject = ItemDataUtils.getBoolean(itemStack, "doEject");
-        doPull = ItemDataUtils.getBoolean(itemStack, "doPull");
-        silkTouch = ItemDataUtils.getBoolean(itemStack, "silkTouch");
-        inverse = ItemDataUtils.getBoolean(itemStack, "inverse");
+        if (ItemDataUtils.hasData(itemStack, "radius")) {
+            setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"), MekanismConfig.general.digitalMinerMaxRadius.get()));
+        }
+        if (ItemDataUtils.hasData(itemStack, "minY")) {
+            minY = ItemDataUtils.getInt(itemStack, "minY");
+        }
+        if (ItemDataUtils.hasData(itemStack, "maxY")) {
+            maxY = ItemDataUtils.getInt(itemStack, "maxY");
+        }
+        if (ItemDataUtils.hasData(itemStack, "doEject")) {
+            doEject = ItemDataUtils.getBoolean(itemStack, "doEject");
+        }
+        if (ItemDataUtils.hasData(itemStack, "doPull")) {
+            doPull = ItemDataUtils.getBoolean(itemStack, "doPull");
+        }
+        if (ItemDataUtils.hasData(itemStack, "silkTouch")) {
+            silkTouch = ItemDataUtils.getBoolean(itemStack, "silkTouch");
+        }
+        if (ItemDataUtils.hasData(itemStack, "inverse")) {
+            inverse = ItemDataUtils.getBoolean(itemStack, "inverse");
+        }
         if (ItemDataUtils.hasData(itemStack, "filters")) {
             ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
             for (int i = 0; i < tagList.size(); i++) {
@@ -1081,5 +1016,34 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     @Override
     public HashList<MinerFilter<?>> getFilters() {
         return filters;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        addConfigContainerTrackers(container);
+        container.track(SyncableBoolean.create(() -> doEject, value -> doEject = value));
+        container.track(SyncableBoolean.create(() -> doPull, value -> doPull = value));
+        container.track(SyncableBoolean.create(() -> running, value -> running = value));
+        container.track(SyncableBoolean.create(() -> silkTouch, value -> silkTouch = value));
+        container.track(SyncableEnum.create(State::byIndexStatic, State.IDLE, () -> searcher.state, value -> searcher.state = value));
+        container.track(SyncableInt.create(() -> {
+            if (isRemote()) {
+                return clientToMine;
+            }
+            if (searcher.state == State.SEARCHING) {
+                return searcher.found;
+            } else {
+                return getSize();
+            }
+        }, value -> clientToMine = value));
+        container.track(SyncableItemStack.create(() -> missingStack, value -> missingStack = value));
+    }
+
+    public void addConfigContainerTrackers(MekanismContainer container) {
+        container.track(SyncableInt.create(() -> radius, value -> radius = value));
+        container.track(SyncableInt.create(() -> minY, value -> minY = value));
+        container.track(SyncableInt.create(() -> maxY, value -> maxY = value));
+        container.track(SyncableBoolean.create(() -> inverse, value -> inverse = value));
     }
 }

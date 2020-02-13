@@ -1,10 +1,12 @@
 package mekanism.client.gui;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public interface IGuiWrapper {
@@ -53,4 +55,10 @@ public interface IGuiWrapper {
 
     @Nullable
     FontRenderer getFont();
+
+    default void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis) {
+        renderItem(stack, xAxis, yAxis, 1);
+    }
+
+    void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale);
 }

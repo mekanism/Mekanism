@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanismgenerators:block/turbine_valve"
+      "model": "mekanismgenerators:block/turbine/valve"
     }
   }
 }

@@ -18,6 +18,9 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -194,7 +197,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         super.handlePacketData(dataStream);
         if (isRemote()) {
             valve = dataStream.readInt();
-            editMode = dataStream.readEnumValue(ContainerEditMode.class);
             if (valve > 0) {
                 valveFluid = dataStream.readFluidStack();
             } else {
@@ -242,7 +244,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(valve);
-        data.add(editMode);
         if (valve > 0) {
             data.add(valveFluid);
         }
@@ -407,6 +408,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public FluidTankUpgradeData getUpgradeData() {
         return new FluidTankUpgradeData(redstone, inputSlot, outputSlot, editMode, fluidTank.getFluid(), getComponents());
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableEnum.create(ContainerEditMode::byIndexStatic, ContainerEditMode.BOTH, () -> editMode, value -> editMode = value));
+        container.track(SyncableFluidStack.create(fluidTank));
     }
 
     private class StackedFluidHandler implements IFluidHandler {

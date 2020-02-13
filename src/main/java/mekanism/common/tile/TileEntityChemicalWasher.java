@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
@@ -23,11 +22,14 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -44,7 +46,6 @@ import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -166,27 +167,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
 
     public boolean isValidGas(@Nonnull Gas gas) {
         return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            clientEnergyUsed = dataStream.readDouble();
-            fluidTank.setFluid(dataStream.readFluidStack());
-            inputTank.setStack(PacketHandler.readGasStack(dataStream));
-            outputTank.setStack(PacketHandler.readGasStack(dataStream));
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(clientEnergyUsed);
-        data.add(fluidTank.getFluid());
-        data.add(inputTank.getStack());
-        data.add(outputTank.getStack());
-        return data;
     }
 
     @Override
@@ -357,5 +337,14 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     @Override
     public boolean lightUpdate() {
         return true;
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFluidStack.create(fluidTank));
+        container.track(SyncableGasStack.create(inputTank));
+        container.track(SyncableGasStack.create(outputTank));
     }
 }

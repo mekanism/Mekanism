@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "mekanismgenerators:block/reactor_glass"
+      "model": "mekanismgenerators:block/reactor/glass"
     }
   }
 }

@@ -8,6 +8,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
@@ -107,24 +109,16 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            energyUsage = dataStream.readDouble();
             temperature = dataStream.readDouble();
-            setMaxEnergy(dataStream.readDouble());
             soundScale = dataStream.readFloat();
-            lastEnvironmentLoss = dataStream.readDouble();
         }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
-
-        data.add(energyUsage);
         data.add(temperature);
-        data.add(getMaxEnergy());
         data.add(soundScale);
-
-        data.add(lastEnvironmentLoss);
         return data;
     }
 
@@ -206,5 +200,13 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
             default:
                 throw new NoSuchMethodException();
         }
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(() -> energyUsage, value -> energyUsage = value));
+        container.track(SyncableDouble.create(this::getTemp, value -> temperature = value));
+        container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 }
