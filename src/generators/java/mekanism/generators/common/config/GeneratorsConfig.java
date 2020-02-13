@@ -54,7 +54,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         heatGeneration = CachedDoubleValue.wrap(this, builder.comment("Amount of energy in Joules the Heat Generator produces per tick. (heatGenerationLava * heatGenerationLava) + heatGenerationNether")
               .defineInRange("heatGeneration", 150, 0, Double.MAX_VALUE));
         heatGenerationLava = CachedDoubleValue.wrap(this, builder.comment("Multiplier of effectiveness of Lava in the Heat Generator.")
-              .defineInRange("heatGenerationLava", 5, 0, Double.MAX_VALUE));
+              .defineInRange("heatGenerationLava", 15, 0, Double.MAX_VALUE));
         heatGenerationNether = CachedDoubleValue.wrap(this, builder.comment("Add this amount of Joules to the energy produced by a heat generator if it is in the Nether.")
               .defineInRange("heatGenerationNether", 100, 0, Double.MAX_VALUE));
         builder.pop();
