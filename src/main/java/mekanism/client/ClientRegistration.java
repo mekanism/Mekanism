@@ -122,7 +122,13 @@ import mekanism.client.render.transmitter.RenderPressurizedTube;
 import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.common.Mekanism;
-import mekanism.common.registries.*;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismEntityTypes;
+import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismMachines;
+import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -200,10 +206,10 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(RenderThermodynamicConductor::new, MekanismTileEntityTypes.BASIC_THERMODYNAMIC_CONDUCTOR,
               MekanismTileEntityTypes.ADVANCED_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ELITE_THERMODYNAMIC_CONDUCTOR, MekanismTileEntityTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
         //TERs that are just the configurable machine renderer
-        ClientRegistrationUtil.bindTileEntityRenderer(RenderConfigurableMachine::new, MekanismMachines.CHEMICAL_INJECTION_CHAMBER.getTileType(), MekanismMachines.COMBINER.getTileType(),
-              MekanismMachines.CRUSHER.getTileType(), MekanismMachines.ENERGIZED_SMELTER.getTileType(), MekanismMachines.ENRICHMENT_CHAMBER.getTileType(),
-              MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR, MekanismTileEntityTypes.METALLURGIC_INFUSER, MekanismMachines.OSMIUM_COMPRESSOR.getTileType(),
-              MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER, MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismMachines.PURIFICATION_CHAMBER.getTileType(),
+        ClientRegistrationUtil.bindTileEntityRenderer(RenderConfigurableMachine::new, MekanismMachines.CHEMICAL_INJECTION_CHAMBER, MekanismMachines.COMBINER,
+              MekanismMachines.CRUSHER, MekanismMachines.ENERGIZED_SMELTER, MekanismMachines.ENRICHMENT_CHAMBER, MekanismTileEntityTypes.FORMULAIC_ASSEMBLICATOR,
+              MekanismTileEntityTypes.METALLURGIC_INFUSER, MekanismMachines.OSMIUM_COMPRESSOR, MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER,
+              MekanismTileEntityTypes.PRECISION_SAWMILL, MekanismMachines.PURIFICATION_CHAMBER,
               //Gas tanks
               MekanismTileEntityTypes.BASIC_GAS_TANK, MekanismTileEntityTypes.ADVANCED_GAS_TANK, MekanismTileEntityTypes.ELITE_GAS_TANK,
               MekanismTileEntityTypes.ULTIMATE_GAS_TANK, MekanismTileEntityTypes.CREATIVE_GAS_TANK,

@@ -1,6 +1,5 @@
 package mekanism.common.block.prefab;
 
-import java.util.EnumSet;
 import java.util.Random;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -30,6 +29,8 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.MachineType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
@@ -55,19 +56,23 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockOperationalMachine<TILE extends TileEntityOperationalMachine<?>> extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TILE>, IStateFacing, IStateActive, IHasFactoryType,
-        IHasInventory, IHasSecurity, IHasTileEntity<TILE>, IBlockSound, ISupportsRedstone, ISupportsComparator, IHasDescription, IUpgradeableBlock {
-    private MachineType<TILE> machineType;
+public class BlockOperationalMachine<TILE extends TileEntityOperationalMachine<?>> extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TILE>,
+      IStateFacing, IStateActive, IHasFactoryType, IHasInventory, IHasSecurity, IHasTileEntity<TILE>, IBlockSound, ISupportsRedstone, ISupportsComparator, IHasDescription,
+      IUpgradeableBlock {
 
-    public BlockOperationalMachine(MachineType<TILE> machineType) {
+    private MachineType<TILE> machineType;
+    private FactoryType factoryType;
+
+    public BlockOperationalMachine(MachineType<TILE> machineType, FactoryType factoryType) {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         this.machineType = machineType;
+        this.factoryType = factoryType;
     }
 
     @Nonnull
     @Override
     public FactoryType getFactoryType() {
-        return machineType.getFactoryType();
+        return factoryType;
     }
 
     /**
@@ -181,7 +186,7 @@ public class BlockOperationalMachine<TILE extends TileEntityOperationalMachine<?
 
     @Override
     public TileEntityType<TILE> getTileType() {
-        return machineType.getTileType().getTileEntityType();
+        return machineType.getTileEntityType();
     }
 
     @Nonnull
@@ -199,6 +204,16 @@ public class BlockOperationalMachine<TILE extends TileEntityOperationalMachine<?
     @Nonnull
     @Override
     public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-        return BlockStateHelper.copyStateData(current, machineType.getFactory(tier).getBlock().getDefaultState());
+        switch (tier) {
+            case BASIC:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.getFactory(FactoryTier.BASIC, getFactoryType()).getBlock().getDefaultState());
+            case ADVANCED:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.getFactory(FactoryTier.ADVANCED, getFactoryType()).getBlock().getDefaultState());
+            case ELITE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.getFactory(FactoryTier.ELITE, getFactoryType()).getBlock().getDefaultState());
+            case ULTIMATE:
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.getFactory(FactoryTier.ULTIMATE, getFactoryType()).getBlock().getDefaultState());
+        }
+        return current;
     }
 }

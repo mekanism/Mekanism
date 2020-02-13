@@ -5,7 +5,6 @@ import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismMachines;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
@@ -40,6 +39,6 @@ public class CompressingIRecipe extends ItemStackGasToItemStackRecipe {
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismMachines.OSMIUM_COMPRESSOR.getBlockType().getItemStack();
+        return MekanismMachines.OSMIUM_COMPRESSOR.getItemStack();
     }
 }

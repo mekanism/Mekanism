@@ -4,10 +4,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.container.PacketUpdateContainerFluidStack;
 import mekanism.common.network.container.PacketUpdateContainerGasStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fluids.FluidStack;
 
 public class GasStackPropertyData extends PropertyData {
 

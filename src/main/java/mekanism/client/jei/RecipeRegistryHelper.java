@@ -8,7 +8,6 @@ import mekanism.api.recipes.RotaryRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.handlers.EnergizedSmelter;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismMachines;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
@@ -36,7 +35,7 @@ public class RecipeRegistryHelper {
     }
 
     public static void registerSmelter(IRecipeRegistration registry) {
-        IBlockProvider mekanismBlock = MekanismMachines.ENERGIZED_SMELTER.getBlockType();
+        IBlockProvider mekanismBlock = MekanismMachines.ENERGIZED_SMELTER;
         //TODO: Add all smelting recipes
         //registry.addRecipes(Collections.singleton(SmeltingRecipe.class), mekanismBlock.getJEICategory());
         if (Mekanism.hooks.CraftTweakerLoaded && EnergizedSmelter.hasRemovedRecipe()) {// Removed / Removed + Added

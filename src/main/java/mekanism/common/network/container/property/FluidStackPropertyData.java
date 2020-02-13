@@ -3,7 +3,6 @@ package mekanism.common.network.container.property;
 import javax.annotation.Nonnull;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.container.PacketUpdateContainerFluidStack;
-import mekanism.common.network.container.PacketUpdateContainerShort;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 

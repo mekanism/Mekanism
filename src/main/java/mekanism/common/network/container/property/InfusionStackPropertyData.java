@@ -1,11 +1,9 @@
 package mekanism.common.network.container.property;
 
 import javax.annotation.Nonnull;
-import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.container.PacketUpdateContainerGasStack;
 import mekanism.common.network.container.PacketUpdateContainerInfusionStack;
 import net.minecraft.network.PacketBuffer;
 

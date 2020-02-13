@@ -4,6 +4,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.providers.ITileEntityTypeProvider;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
@@ -46,10 +47,10 @@ public class ClientRegistrationUtil {
 
     @SafeVarargs
     public static synchronized <T extends TileEntity> void bindTileEntityRenderer(Function<TileEntityRendererDispatcher, TileEntityRenderer<T>> rendererFactory,
-          TileEntityTypeRegistryObject<? extends T>... tileEntityTypeROs) {
+          ITileEntityTypeProvider<? extends T>... tileEntityTypeProviders) {
         TileEntityRenderer<T> renderer = rendererFactory.apply(TileEntityRendererDispatcher.instance);
-        for (TileEntityTypeRegistryObject<? extends T> tileTypeRO : tileEntityTypeROs) {
-            ClientRegistry.bindTileEntityRenderer(tileTypeRO.getTileEntityType(), constant -> renderer);
+        for (ITileEntityTypeProvider<? extends T> tileEntityTypeProvider : tileEntityTypeProviders) {
+            ClientRegistry.bindTileEntityRenderer(tileEntityTypeProvider.getTileEntityType(), constant -> renderer);
         }
     }
 

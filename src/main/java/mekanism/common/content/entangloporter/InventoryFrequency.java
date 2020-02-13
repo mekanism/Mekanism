@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasTank;
 import mekanism.api.inventory.IMekanismInventory;
@@ -12,18 +14,12 @@ import mekanism.common.PacketHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class InventoryFrequency extends Frequency implements IMekanismInventory {
 

@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismMachines;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.item.ItemStack;
@@ -39,6 +38,6 @@ public class CombinerIRecipe extends CombinerRecipe {
     @Nonnull
     @Override
     public ItemStack getIcon() {
-        return MekanismMachines.COMBINER.getBlockType().getItemStack();
+        return MekanismMachines.COMBINER.getItemStack();
     }
 }

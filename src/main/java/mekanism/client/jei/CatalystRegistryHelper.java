@@ -25,10 +25,10 @@ public class CatalystRegistryHelper {
     }
 
     public static void registerSmelter(IRecipeCatalystRegistration registry) {
-        register(registry, MekanismMachines.ENERGIZED_SMELTER.getBlockType());
+        register(registry, MekanismMachines.ENERGIZED_SMELTER);
         if (!Mekanism.hooks.CraftTweakerLoaded || !EnergizedSmelter.hasRemovedRecipe()) {
             //Vanilla catalyst
-            registerRecipeItem(registry, MekanismMachines.ENERGIZED_SMELTER.getBlockType(), VanillaRecipeCategoryUid.FURNACE);
+            registerRecipeItem(registry, MekanismMachines.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);
         }
     }
 

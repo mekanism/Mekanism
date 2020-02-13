@@ -1,14 +1,18 @@
 package mekanism.common.content;
 
+import java.util.EnumSet;
+import java.util.Set;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
-import mekanism.api.tier.BaseTier;
+import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.ITileEntityTypeProvider;
 import mekanism.common.base.ILangEntry;
-import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.block.prefab.BlockOperationalMachine;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.block.machine.ItemBlockOperationalMachine;
-import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
@@ -18,23 +22,17 @@ import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundEvent;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Supplier;
+public class MachineType<TILE extends TileEntityOperationalMachine<?>> implements IBlockProvider, ITileEntityTypeProvider<TILE> {
 
-public class MachineType<TILE extends TileEntityOperationalMachine<?>> {
-    private String name;
-    private Class<TILE> tileClass;
-    private Supplier<Double> usageSupplier;
-    private Supplier<Double> storageSupplier;
-    private FactoryType factoryType;
+    private DoubleSupplier usageSupplier;
+    private DoubleSupplier storageSupplier;
     private ILangEntry description;
 
-    private Map<BaseTier, BlockRegistryObject<BlockFactory, ItemBlockFactory>> factoryTiers = new HashMap<>();
     private Set<Upgrade> supportedUpgrades = EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING);
 
     private BlockRegistryObject<BlockOperationalMachine<TILE>, ItemBlockOperationalMachine<TILE>> blockRegistry;
@@ -42,56 +40,30 @@ public class MachineType<TILE extends TileEntityOperationalMachine<?>> {
     private TileEntityTypeRegistryObject<TILE> tileRegistry;
     private SoundEventRegistryObject<SoundEvent> soundRegistry;
 
-    public MachineType(String name, Class<TILE> tileClass, ILangEntry description, Supplier<Double> usageSupplier, Supplier<Double> storageSupplier, FactoryType factoryType) {
-        this.name = name;
-        this.tileClass = tileClass;
+    public MachineType(String name, Class<TILE> tileClass, ILangEntry description, DoubleSupplier usageSupplier, DoubleSupplier storageSupplier,
+          Supplier<? extends TILE> tileFactory, FactoryType factoryType) {
         this.description = description;
         this.usageSupplier = usageSupplier;
         this.storageSupplier = storageSupplier;
-        this.factoryType = factoryType;
-    }
-
-    //TODO: populate factory map
-    public void addFactory(BaseTier tier, BlockRegistryObject<BlockFactory, ItemBlockFactory> factory) {
-        factoryTiers.put(tier, factory);
+        this.blockRegistry = MekanismBlocks.BLOCKS.register(name, () -> new BlockOperationalMachine<>(this, factoryType), ItemBlockOperationalMachine::new);
+        this.containerRegistry = MekanismContainerTypes.CONTAINER_TYPES.register(this.blockRegistry, tileClass);
+        this.tileRegistry = MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(this.blockRegistry, tileFactory);
+        this.soundRegistry = MekanismSounds.SOUND_EVENTS.register("tile.machine." + name);
     }
 
     public MachineType<TILE> supportsGas() {
-        supportedUpgrades = EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING, Upgrade.GAS);
+        supportedUpgrades.add(Upgrade.GAS);
         return this;
     }
 
-    public BlockRegistryObject<BlockFactory, ItemBlockFactory> getFactory(BaseTier tier) {
-        return factoryTiers.get(tier);
-    }
-
-    public void register() {
-        Supplier<BlockOperationalMachine<TILE>> blockSupplier = () -> new BlockOperationalMachine<TILE>(this);
-        blockRegistry = MekanismBlocks.BLOCKS.register(name, blockSupplier, ItemBlockOperationalMachine::new);
-        containerRegistry = MekanismContainerTypes.CONTAINER_TYPES.register(blockRegistry, tileClass);
-        tileRegistry = MekanismTileEntityTypes.TILE_ENTITY_TYPES.register(blockRegistry, this::getTileEntity);
-        soundRegistry = MekanismSounds.SOUND_EVENTS.register("tile.machine." + name);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public FactoryType getFactoryType() {
-        return factoryType;
+    @Nonnull
+    @Override
+    public Block getBlock() {
+        return blockRegistry.getBlock();
     }
 
     public SoundEvent getSound() {
         return soundRegistry.getSoundEvent();
-    }
-
-    public TILE getTileEntity() {
-        try {
-            return tileClass.newInstance();
-        } catch(Exception e) {
-            System.err.println("Could not instantiate TileEntity of type " + name + ". Make sure a no-arg construct exists.");
-            return null;
-        }
     }
 
     public ILangEntry getDescription() {
@@ -99,26 +71,30 @@ public class MachineType<TILE extends TileEntityOperationalMachine<?>> {
     }
 
     public double getUsage() {
-        return usageSupplier.get();
+        return usageSupplier.getAsDouble();
     }
 
     public double getStorage() {
-        return storageSupplier.get();
-    }
-
-    public BlockRegistryObject<BlockOperationalMachine<TILE>, ItemBlockOperationalMachine<TILE>> getBlockType() {
-        return blockRegistry;
+        return storageSupplier.getAsDouble();
     }
 
     public ContainerTypeRegistryObject<MekanismTileContainer<TILE>> getContainerType() {
         return containerRegistry;
     }
 
-    public TileEntityTypeRegistryObject<TILE> getTileType() {
-        return tileRegistry;
+    @Nonnull
+    @Override
+    public TileEntityType<TILE> getTileEntityType() {
+        return tileRegistry.getTileEntityType();
     }
 
     public Set<Upgrade> getSupportedUpgrade() {
         return supportedUpgrades;
+    }
+
+    @Nonnull
+    @Override
+    public Item getItem() {
+        return blockRegistry.getItem();
     }
 }
