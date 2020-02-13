@@ -3,8 +3,7 @@ package mekanism.api.functions;
 import java.util.function.Supplier;
 
 /**
- * Represents a supplier of {@code short}-valued results.  This is the
- * {@code short}-producing primitive specialization of {@link Supplier}.
+ * Represents a supplier of {@code short}-valued results.  This is the {@code short}-producing primitive specialization of {@link Supplier}.
  *
  * <p>There is no requirement that a new or distinct result be returned each
  * time the supplier is invoked.

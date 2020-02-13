@@ -312,7 +312,6 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public abstract BUFFER getBuffer();
 
     /**
-     *
      * @return True if the buffer with fallback is null (or empty)
      */
     public boolean noBufferOrFallback() {

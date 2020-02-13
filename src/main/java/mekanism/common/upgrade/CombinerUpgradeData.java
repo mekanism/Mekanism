@@ -7,7 +7,6 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import net.minecraft.item.ItemStack;
 
 public class CombinerUpgradeData extends MachineUpgradeData {
 

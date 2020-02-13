@@ -1,8 +1,7 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import java.awt.*;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;

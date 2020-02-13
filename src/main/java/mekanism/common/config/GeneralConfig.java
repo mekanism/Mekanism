@@ -230,7 +230,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         laserEnergyNeededPerHardness = CachedIntValue.wrap(this, builder.comment("Energy needed to destroy or attract blocks with a Laser (per block hardness level).")
               .define("laserEnergyNeededPerHardness", 100_000));
         digitalMinerMaxRadius = CachedIntValue.wrap(this, builder.comment("Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability "
-                                                + "and/or performance. We strongly recommend you leave it at the default value.)")
+                                                                          + "and/or performance. We strongly recommend you leave it at the default value.)")
               .defineInRange("digitalMinerMaxRadius", 32, 1, Integer.MAX_VALUE));
         energyUnit = CachedEnumValue.wrap(this, builder.comment("Displayed energy type in Mekanism GUIs.")
               .defineEnum("energyType", EnergyType.FE));

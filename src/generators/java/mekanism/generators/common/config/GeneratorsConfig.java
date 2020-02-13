@@ -81,7 +81,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         //TODO: Test this, maybe make default supplier be 255 OR 1 higher than minY
         windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
               .define("windGenerationMaxY", 255,
-              value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
+                    value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
         windGenerationDimBlacklist = CachedConfigValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
               .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> {
                   if (o instanceof String) {

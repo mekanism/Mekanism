@@ -191,7 +191,7 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      * @return Direction representing the side the defined relative Coord4D is on to this
      */
     public Direction sideDifference(Coord4D other) {
-        Coord4D diff = new Coord4D(x - other.x, y - other.y, z - other.z, dimension);;
+        Coord4D diff = new Coord4D(x - other.x, y - other.y, z - other.z, dimension);
         for (Direction side : DIRECTIONS) {
             if (side.getXOffset() == diff.x && side.getYOffset() == diff.y && side.getZOffset() == diff.z) {
                 return side;

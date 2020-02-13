@@ -5,7 +5,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Version of {@link net.minecraft.network.play.server.SWindowPropertyPacket} for gas stacks

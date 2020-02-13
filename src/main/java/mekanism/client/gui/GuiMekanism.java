@@ -126,7 +126,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             }
         }
     }
-    
+
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);

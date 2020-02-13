@@ -127,7 +127,7 @@ public class GuiScrollList extends GuiTexturedElement {
             }
         }
     }
-    
+
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         if (canScroll()) {
