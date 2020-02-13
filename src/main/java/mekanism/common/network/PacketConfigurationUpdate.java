@@ -18,7 +18,6 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.LazyOptional;
@@ -113,11 +112,7 @@ public class PacketConfigurationUpdate {
                 } else if (message.packetType == ConfigurationPacket.STRICT_INPUT) {
                     config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
                 }
-                capability.ifPresent(network -> {
-                    for (PlayerEntity p : ((TileEntityMekanism) config).playersUsing) {
-                        Mekanism.packetHandler.sendTo(new PacketTileEntity(message.coord4D, network.getNetworkedData()), (ServerPlayerEntity) p);
-                    }
-                });
+                capability.ifPresent(network -> ((TileEntityMekanism) config).sendToAllUsing(() -> new PacketTileEntity(message.coord4D, network.getNetworkedData())));
             }
         });
         context.get().setPacketHandled(true);

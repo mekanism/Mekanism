@@ -15,7 +15,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -29,8 +28,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -77,10 +74,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-            }
-
+            sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
             didProcess = false;
             if (MekanismUtils.canFunction(this) && !inputSlot.isEmpty()) {
                 ItemStack inputStack = inputSlot.getStack();

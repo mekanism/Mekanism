@@ -62,7 +62,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BushBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -285,9 +284,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 delayTicks--;
             }
 
-            for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getSmallPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-            }
+            sendToAllUsing(() -> new PacketTileEntity(this, getSmallPacket(new TileNetworkList())));
             prevEnergy = getEnergy();
         }
     }
@@ -610,9 +607,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             }
 
             MekanismUtils.saveChunk(this);
-            for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-            }
+            sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
             return;
         }
 
@@ -872,9 +867,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         } else if (method == 10) {
             return new Object[]{searcher != null ? searcher.found : 0};
         }
-        for (PlayerEntity player : playersUsing) {
-            Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-        }
+        sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
         return null;
     }
 

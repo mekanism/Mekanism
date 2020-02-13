@@ -12,7 +12,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.common.HashList;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.Finder;
@@ -38,8 +37,6 @@ import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -135,9 +132,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
                 delayTicks = 10;
             }
-            for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-            }
+            sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
         }
     }
 
@@ -222,18 +217,18 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 // Move filter up
                 int filterIndex = dataStream.readInt();
                 filters.swap(filterIndex, filterIndex - 1);
-                for (PlayerEntity player : playersUsing) {
+                /*for (PlayerEntity player : playersUsing) {
                     //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
                     //openInventory(player);
-                }
+                }*/
             } else if (type == 4) {
                 // Move filter down
                 int filterIndex = dataStream.readInt();
                 filters.swap(filterIndex, filterIndex + 1);
-                for (PlayerEntity player : playersUsing) {
+                /*for (PlayerEntity player : playersUsing) {
                     //TODO: I believe this is meant to sync the changes to all the players currently using the inventory
                     //openInventory(player);
-                }
+                }*/
             } else if (type == 5) {
                 singleItem = !singleItem;
             }
@@ -545,10 +540,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 return new Object[]{"Single-item mode set to " + singleItem};
             }
         }
-
-        for (PlayerEntity player : playersUsing) {
-            Mekanism.packetHandler.sendTo(new PacketTileEntity(this, getGenericPacket(new TileNetworkList())), (ServerPlayerEntity) player);
-        }
+        sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
         return null;
     }
 

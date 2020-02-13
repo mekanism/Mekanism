@@ -19,7 +19,6 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ILangEntry;
@@ -47,8 +46,6 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -226,9 +223,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
             if (type == 0) {
                 dumping = dumping.getNext();
             }
-            for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
-            }
+            sendToAllUsing(() -> new PacketTileEntity(this));
             return;
         }
         super.handlePacketData(dataStream);

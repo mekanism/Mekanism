@@ -23,7 +23,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
@@ -45,8 +44,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TileUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -151,9 +148,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             if (type == 0) {
                 mode = !mode;
             }
-            for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(new PacketTileEntity(this), (ServerPlayerEntity) player);
-            }
+            sendToAllUsing(() -> new PacketTileEntity(this));
             return;
         }
 

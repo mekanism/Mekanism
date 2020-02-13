@@ -3,7 +3,6 @@ package mekanism.common.network;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -16,7 +15,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -60,9 +58,7 @@ public class PacketNewFilter {
 
     private static <FILTER extends IFilter, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>> void handleFilter(TILE tile, PacketNewFilter message) {
         tile.getFilters().add((FILTER) message.filter);
-        for (PlayerEntity iterPlayer : tile.playersUsing) {
-            Mekanism.packetHandler.sendTo(new PacketTileEntity(tile, tile.getFilterPacket()), (ServerPlayerEntity) iterPlayer);
-        }
+        tile.sendToAllUsing(() -> new PacketTileEntity(tile, tile.getFilterPacket()));
     }
 
     public static void encode(PacketNewFilter pkt, PacketBuffer buf) {

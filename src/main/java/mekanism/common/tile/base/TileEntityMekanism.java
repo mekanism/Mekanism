@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
@@ -447,16 +448,22 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (!isRemote()) {
             //TODO: Ideally we are working on removing the need for this by shifting data to the container itself
             // so that it only needs to send update packets when things are changing
-            if (doAutoSync && !playersUsing.isEmpty()) {
-                PacketTileEntity updateMessage = new PacketTileEntity(this);
-                for (PlayerEntity player : playersUsing) {
-                    Mekanism.packetHandler.sendTo(updateMessage, (ServerPlayerEntity) player);
-                }
+            if (doAutoSync) {
+                sendToAllUsing(() -> new PacketTileEntity(this));
             }
         }
         ticker++;
         if (supportsRedstone()) {
             redstoneLastTick = redstone;
+        }
+    }
+
+    public <MSG> void sendToAllUsing(Supplier<MSG> packetSupplier) {
+        if (!playersUsing.isEmpty()) {
+            MSG packet = packetSupplier.get();
+            for (PlayerEntity player : playersUsing) {
+                Mekanism.packetHandler.sendTo(packet, (ServerPlayerEntity) player);
+            }
         }
     }
 
