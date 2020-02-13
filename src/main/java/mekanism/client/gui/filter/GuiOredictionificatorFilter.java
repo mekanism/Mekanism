@@ -35,6 +35,11 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     }
 
     @Override
+    protected boolean wasTextboxKey(char c, int i) {
+        return super.wasTextboxKey(c, i) || c == '_' || c == ':' || c == '/';
+    }
+
+    @Override
     protected void addButtons() {
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 31, getGuiTop() + 62, 54, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {

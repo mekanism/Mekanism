@@ -26,6 +26,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloat;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -99,7 +100,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public TileEntityThermalEvaporationController() {
         super(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
-        doAutoSync = true;
         inputHandler = InputHelper.getInputHandler(inputTank, 0);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
@@ -556,6 +556,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super.addContainerTrackers(container);
         container.track(SyncableFluidStack.create(inputTank));
         container.track(SyncableFluidStack.create(outputTank));
+        container.track(SyncableBoolean.create(() -> structured, value -> structured = value));
+        container.track(SyncableInt.create(() -> height, value -> height = value));
         container.track(SyncableBoolean.create(() -> controllerConflict, value -> controllerConflict = value));
         container.track(SyncableFloat.create(this::getTemperature, value -> temperature = value));
         container.track(SyncableFloat.create(() -> lastGain, value -> lastGain = value));

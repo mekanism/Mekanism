@@ -59,7 +59,6 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     public TileEntityOredictionificator() {
         super(MekanismBlocks.OREDICTIONIFICATOR);
-        doAutoSync = true;
     }
 
     @Nonnull

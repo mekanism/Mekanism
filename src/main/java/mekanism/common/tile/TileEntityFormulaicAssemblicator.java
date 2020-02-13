@@ -244,28 +244,32 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             //TODO: Make the container handle updating this when needed
             sendToAllUsing(() -> new PacketTileEntity(this));
         }
-
         lastFormulaStack = formulaStack;
     }
 
     public void loadFormula() {
         ItemStack formulaStack = formulaSlot.getStack();
         ItemCraftingFormula formulaItem = (ItemCraftingFormula) formulaStack.getItem();
-        if (formulaItem.getInventory(formulaStack) != null && !formulaItem.isInvalid(formulaStack)) {
-            RecipeFormula recipe = new RecipeFormula(world, formulaItem.getInventory(formulaStack));
+        if (formulaItem.isInvalid(formulaStack)) {
+            formula = null;
+            return;
+        }
+        NonNullList<ItemStack> formulaInventory = formulaItem.getInventory(formulaStack);
+        if (formulaInventory == null) {
+            formula = null;
+        } else {
+            RecipeFormula recipe = new RecipeFormula(world, formulaInventory);
             if (recipe.isValidFormula(world)) {
-                if (formula != null && !formula.isFormulaEqual(world, recipe)) {
+                if (formula == null) {
+                    formula = recipe;
+                } else if (!formula.isFormulaEqual(world, recipe)) {
                     formula = recipe;
                     operatingTicks = 0;
-                } else if (formula == null) {
-                    formula = recipe;
                 }
             } else {
                 formula = null;
                 formulaItem.setInvalid(formulaStack, true);
             }
-        } else {
-            formula = null;
         }
     }
 
