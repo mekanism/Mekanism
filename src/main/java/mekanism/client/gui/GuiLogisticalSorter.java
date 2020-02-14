@@ -152,7 +152,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         drawString(OnOff.of(tile.singleItem).getTextComponent(), 27, 60, 0x00CD00);
         drawString(MekanismLang.SORTER_ROUND_ROBIN.translate(), 12, 74, 0x00CD00);
         drawString(OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, 0x00CD00);
-        drawString(MekanismLang.SORTER_ROUND_ROBIN.translate(), 12, 100, 0x00CD00);
+        drawString(MekanismLang.SORTER_AUTO_EJECT.translate(), 12, 100, 0x00CD00);
         drawString(OnOff.of(tile.autoEject).getTextComponent(), 27, 112, 0x00CD00);
         drawString(MekanismLang.SORTER_DEFAULT.translate(), 12, 126, 0x00CD00);
 
