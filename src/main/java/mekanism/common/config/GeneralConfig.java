@@ -193,7 +193,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         evaporationSolarMultiplier = CachedDoubleValue.wrap(this, builder.comment("Heat to absorb per Solar Panel array of Thermal Evaporation Tower.")
               .define("solarMultiplier", 0.2D));
         evaporationMaxTemp = CachedDoubleValue.wrap(this, builder.comment("Max Temperature of the Thermal Evaporation Tower.")
-              .define("maxTemp", 3_000D));
+              .defineInRange("maxTemp", 3_000D, 1, Double.MAX_VALUE));
         builder.pop();
 
         energyPerHeat = CachedDoubleValue.wrap(this, builder.comment("Joules required by the Resistive Heater to produce one unit of heat. Also affects Thermoelectric Boiler's Water->Steam rate.")

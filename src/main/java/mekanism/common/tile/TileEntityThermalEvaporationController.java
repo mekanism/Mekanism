@@ -63,11 +63,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     private boolean temperatureSet;
 
     private float biomeTemp;
-    //TODO: 1.14 potentially convert temperature to a double given we are using a DoubleSupplier anyways
-    // Will make it so we don't have cast issues from the configs. Doing so in 1.12 may be slightly annoying
-    // due to the fact the variables are stored in NBT as floats. Even though it should be able to load the float as a double
     private float temperature;
     public double heatToAbsorb;
+    private double tempMultiplier;
 
     public float lastGain;
 
@@ -89,7 +87,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     private final IOutputHandler<@NonNull FluidStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
-    //TODO: Better names?
     private FluidInventorySlot inputInputSlot;
     private OutputInventorySlot outputInputSlot;
     private FluidInventorySlot inputOutputSlot;
@@ -127,7 +124,16 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             if (ticker == 5) {
                 refresh();
             }
-            if (getActive()) {
+            boolean active = getActive();
+            if (active && height == 0) {
+                //If we are active but we can't possibly be valid and our data will get corrupted
+                // due to not actually having a valid height, then force a refresh
+                //TODO: Find a better way to do this, maybe once the evap tower has multiblock data
+                // in general, if that is how we end up rewriting the
+                refresh();
+                active = getActive();
+            }
+            if (active) {
                 updateTemperature();
                 inputOutputSlot.drainTank(outputOutputSlot);
                 inputInputSlot.fillTank(outputInputSlot);
@@ -139,11 +145,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
-            if (getActive()) {
-                if (Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
-                    Mekanism.packetHandler.sendUpdatePacket(this);
-                    prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
-                }
+            if (active && Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
+                Mekanism.packetHandler.sendUpdatePacket(this);
+                prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
             }
         }
     }
@@ -205,23 +209,30 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Nullable
     @Override
     public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
-        //TODO: Have lastGain be set properly, and our setActive -> false set lastGain to zero
-        //TODO: HANDLE ALL THIS STUFF, A good chunk of it can probably go in the getOutputHandler (or in a custom one we pass from here)
-        // But none of it should remain outside of what gets passed in one way or another to the cached recipe
         return new FluidToFluidCachedRecipe(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> getActive() && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
               .setOnFinish(this::markDirty)
+              .setActive(active -> {
+                  //TODO: Make the numbers for lastGain be based on how much the recipe provides as an output rather than "assuming" it is 1 mB
+                  // Also fix that the numbers don't quite accurately reflect the values as we modify number of operations, and not have a fractional
+                  // amount
+                  if (active) {
+                      if (tempMultiplier > 0 && tempMultiplier < 1) {
+                          lastGain = 1F / (int) Math.ceil(1 / tempMultiplier);
+                      } else {
+                          lastGain = (float) tempMultiplier;
+                      }
+                  } else {
+                      lastGain = 0;
+                  }
+              })
+              .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ? (int) Math.ceil(1 / tempMultiplier) : 1)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax == 0) {
                       //Short circuit that if we already can't perform any outputs, just return
                       return 0;
                   }
-
-                  double tempMult = Math.max(0, getTemperature()) * MekanismConfig.general.evaporationTempMultiplier.get();
-                  double multiplier = tempMult * height / (float) MAX_HEIGHT;
-                  //TODO: See how close all these checks are to properly calculating usage
-                  //Also set values like lastGain
-                  return Math.min(MekanismUtils.clampToInt(currentMax * multiplier), currentMax);
+                  return Math.min(currentMax, tempMultiplier > 0 && tempMultiplier < 1 ? 1 : (int) tempMultiplier);
               });
     }
 
@@ -246,7 +257,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         }
 
         float prev = temperature;
-        temperature = (float) Math.min(MekanismConfig.general.evaporationMaxTemp.get(), temperature + incr / (float) height);
+        temperature = (float) Math.min(MekanismConfig.general.evaporationMaxTemp.get(), temperature + incr / height);
 
         if (incr < 0) {
             totalLoss = prev - temperature;
@@ -254,6 +265,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             totalLoss = 0;
         }
         heatToAbsorb = 0;
+        tempMultiplier =  Math.max(0, temperature) * MekanismConfig.general.evaporationTempMultiplier.get() * height / MAX_HEIGHT;
         MekanismUtils.saveChunk(this);
     }
 
@@ -305,7 +317,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return true;
     }
 
-    public boolean scanTopLayer(BlockPos currentPos) {
+    private boolean scanTopLayer(BlockPos currentPos) {
         Direction right = getRightSide();
         Direction back = getOppositeDirection();
         for (int x = 0; x < 4; x++) {
@@ -335,7 +347,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return height * 4 * TankUpdateProtocol.FLUID_PER_TANK;
     }
 
-    public int getCorner(int x, int z) {
+    private int getCorner(int x, int z) {
         if (x == 0 && z == 0) {
             return 0;
         } else if (x == 0 && z == 3) {
@@ -348,7 +360,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return -1;
     }
 
-    public boolean scanLowerLayer(BlockPos currentPos) {
+    private boolean scanLowerLayer(BlockPos currentPos) {
         Direction right = getRightSide();
         Direction back = getOppositeDirection();
         boolean foundCenter = false;
@@ -376,13 +388,11 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                 }
             }
         }
-
         height++;
-
         return !foundCenter;
     }
 
-    public boolean addTankPart(TileEntity tile) {
+    private boolean addTankPart(TileEntity tile) {
         if (tile instanceof TileEntityThermalEvaporationBlock && (tile == this || !(tile instanceof TileEntityThermalEvaporationController))) {
             if (tile != this) {
                 ((TileEntityThermalEvaporationBlock) tile).addToStructure(Coord4D.get(this));
@@ -395,7 +405,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return false;
     }
 
-    public boolean addSolarPanel(TileEntity tile, int i) {
+    private boolean addSolarPanel(TileEntity tile, int i) {
         if (tile != null && !tile.isRemoved()) {
             Optional<IEvaporationSolar> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN));
             if (capability.isPresent()) {
@@ -481,7 +491,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super.write(nbtTags);
         nbtTags.put("waterTank", inputTank.writeToNBT(new CompoundNBT()));
         nbtTags.put("brineTank", outputTank.writeToNBT(new CompoundNBT()));
-
         nbtTags.putFloat("temperature", temperature);
         return nbtTags;
     }
