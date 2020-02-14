@@ -21,10 +21,10 @@ public final class PipeUtils {
     public static final IFluidTank[] EMPTY = new IFluidTank[]{};
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
-        if (tile == null || CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
+        if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
             return false;
         }
-        return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).filter(fluidHandler -> fluidHandler.getTanks() > 0).isPresent();
+        return CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).isPresent();
     }
 
     /**
