@@ -29,9 +29,9 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
      */
     private static final Direction[] DIRECTIONS = Direction.values();
 
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectOpenHashSet<>();
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectOpenHashSet<>();
-    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = new ObjectOpenHashSet<>();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmitters = new ObjectLinkedOpenHashSet<>();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersToAdd = new ObjectLinkedOpenHashSet<>();
+    protected Set<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>> transmittersAdded = new ObjectLinkedOpenHashSet<>();
 
     protected Set<Coord4D> possibleAcceptors = new ObjectOpenHashSet<>();
     protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
