@@ -106,12 +106,16 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         int operations = canHolderFunction() ? postProcessOperations.applyAsInt(getOperationsThisTick(Integer.MAX_VALUE)) : 0;
         if (operations > 0) {
             setActive.accept(true);
-            useResources(operations);
+            //Always use energy, as that is a constant thing we can check
+            useEnergy(operations);
             operatingTicks++;
             if (operatingTicks >= getTicksRequired()) {
                 operatingTicks = 0;
                 finishProcessing(operations);
                 onFinish.run();
+            } else {
+                //If we still have ticks left required to operate, use the contents
+                useResources(operations);
             }
             //TODO: Do we want to make it so if required ticks is 1, that this isn't fired as it will be ++ -> 1 then set to zero again
             operatingTicksChanged.accept(operatingTicks);
@@ -143,8 +147,10 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         return requiredTicks.getAsInt();
     }
 
-    //TODO: JavaDoc to mention that super should be called to ensure that the per tick energy is used
     protected void useResources(int operations) {
+    }
+
+    protected void useEnergy(int operations) {
         useEnergy.accept(operations * getEnergyPerTick());
     }
 

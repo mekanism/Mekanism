@@ -108,8 +108,7 @@ public class ItemStackGasToItemStackCachedRecipe extends CachedRecipe<ItemStackG
             return;
         }
         itemInputHandler.use(recipeItem, operations);
-        //Note: We already extracted our gas so don't need to do so again here
-        //gasInputHandler.use(recipeGas, operations);
+        gasInputHandler.use(recipeGas, operations);
         outputHandler.handleOutput(recipe.getOutput(recipeItem, recipeGas), operations);
     }
 }
