@@ -1,6 +1,5 @@
 package mekanism.client;
 
-import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismSounds;
@@ -35,20 +34,14 @@ public class SparkleAnimation {
         if (MekanismConfig.general.dynamicTankEasterEgg.get()) {
             tile.getWorld().playSound(null, tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), MekanismSounds.CJ_EASTER_EGG.getSoundEvent(), SoundCategory.BLOCKS, 1F, 1F);
         }
-
-        // Using the provided radius, get an iterable over all the positions within the radius
-        Iterator<BlockPos> itr = BlockPos.getAllInBoxMutable(corner1, corner2).iterator();
-
         World world = tile.getWorld();
         ThreadLocalRandom random = ThreadLocalRandom.current();
-
-        while (itr.hasNext()) {
-            BlockPos pos = itr.next();
+        // Using the provided radius, iterate over all the positions within the radius
+        for (BlockPos pos : BlockPos.getAllInBoxMutable(corner1, corner2)) {
             TileEntity t = MekanismUtils.getTileEntity(world, pos);
             if (t == null || !nodeChecker.isNode(t)) {
                 continue;
             }
-
             for (int i = 0; i < 2; i++) {
                 world.addParticle(RedstoneParticleData.REDSTONE_DUST, pos.getX() + random.nextDouble(), pos.getY() + random.nextDouble(),
                       pos.getZ() + -.01, 0, 0, 0);

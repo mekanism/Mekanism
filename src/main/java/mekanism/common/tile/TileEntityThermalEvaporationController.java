@@ -51,41 +51,38 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager,
       ITileCachedRecipeHolder<FluidToFluidRecipe> {
 
-    public static final int MAX_OUTPUT = 10_000;
-    public static final int MAX_SOLARS = 4;
-    public static final int MAX_HEIGHT = 18;
+    private static final int MAX_OUTPUT = 10_000;
+    private static final int MAX_HEIGHT = 18;
 
     public FluidTank inputTank;
     public FluidTank outputTank;
 
-    public Set<Coord4D> tankParts = new ObjectOpenHashSet<>();
-    public IEvaporationSolar[] solars = new IEvaporationSolar[4];
+    private Set<Coord4D> tankParts = new ObjectOpenHashSet<>();
+    private IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
-    public boolean temperatureSet = false;
+    private boolean temperatureSet;
 
-    public float biomeTemp = 0;
+    private float biomeTemp;
     //TODO: 1.14 potentially convert temperature to a double given we are using a DoubleSupplier anyways
     // Will make it so we don't have cast issues from the configs. Doing so in 1.12 may be slightly annoying
     // due to the fact the variables are stored in NBT as floats. Even though it should be able to load the float as a double
-    private float temperature = 0;
-    public double heatToAbsorb = 0;
+    private float temperature;
+    public double heatToAbsorb;
 
-    public float lastGain = 0;
+    public float lastGain;
 
-    public int height = 0;
+    public int height;
 
-    public boolean structured = false;
-    public boolean controllerConflict = false;
-    public boolean isLeftOnFace;
-    public int renderY;
+    private boolean clientStructured;
+    public boolean controllerConflict;
+    private boolean isLeftOnFace;
+    private int renderY;
 
-    public boolean updatedThisTick = false;
+    private boolean updatedThisTick;
 
-    public boolean clientStructured;
+    private float prevScale;
 
-    public float prevScale;
-
-    public float totalLoss = 0;
+    public float totalLoss;
 
     private CachedRecipe<FluidToFluidRecipe> cachedRecipe;
 
@@ -130,7 +127,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             if (ticker == 5) {
                 refresh();
             }
-            if (structured) {
+            if (getActive()) {
                 updateTemperature();
                 inputOutputSlot.drainTank(outputOutputSlot);
                 inputInputSlot.fillTank(outputInputSlot);
@@ -142,7 +139,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
-            if (structured) {
+            if (getActive()) {
                 if (Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
                     Mekanism.packetHandler.sendUpdatePacket(this);
                     prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
@@ -170,15 +167,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     protected void refresh() {
         if (!isRemote() && !updatedThisTick) {
             clearStructure();
-            structured = buildStructure();
-            if (structured != clientStructured) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
-                clientStructured = structured;
-            }
-
-            if (structured) {
+            boolean active = buildStructure();
+            setActive(active);
+            if (active) {
                 inputTank.setCapacity(getMaxFluid());
-
                 if (!inputTank.isEmpty()) {
                     inputTank.getFluid().setAmount(Math.min(inputTank.getFluidAmount(), getMaxFluid()));
                 }
@@ -217,7 +209,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         //TODO: HANDLE ALL THIS STUFF, A good chunk of it can probably go in the getOutputHandler (or in a custom one we pass from here)
         // But none of it should remain outside of what gets passed in one way or another to the cached recipe
         return new FluidToFluidCachedRecipe(recipe, inputHandler, outputHandler)
-              .setCanHolderFunction(() -> structured && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
+              .setCanHolderFunction(() -> getActive() && height > 2 && height <= MAX_HEIGHT && MekanismUtils.canFunction(this))
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
                   if (currentMax == 0) {
@@ -309,7 +301,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             height = 0;
             return false;
         }
-        structured = true;
         markDirty();
         return true;
     }
@@ -420,9 +411,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     public Coord4D getRenderLocation() {
-        if (!structured) {
-            return null;
-        }
         Direction right = getRightSide();
         Coord4D renderLocation = Coord4D.get(this).offset(right);
         renderLocation = isLeftOnFace ? renderLocation.offset(right) : renderLocation;
@@ -446,17 +434,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
+            inputTank.setCapacity(getMaxFluid());
             inputTank.setFluid(dataStream.readFluidStack());
-
-            structured = dataStream.readBoolean();
             height = dataStream.readInt();
             isLeftOnFace = dataStream.readBoolean();
             renderY = dataStream.readInt();
-
-            if (structured != clientStructured) {
-                inputTank.setCapacity(getMaxFluid());
-                MekanismUtils.updateBlock(getWorld(), getPos());
-                if (structured) {
+            //Note: we send the active state over the network as when we are force syncing it we may not have the accurate block state
+            // on the client yet
+            boolean active = dataStream.readBoolean();
+            if (clientStructured != active) {
+                clientStructured = active;
+                if (active) {
                     // Calculate the two corners of the evap tower using the render location as basis (which is the
                     // lowest rightmost corner inside the tower, relative to the controller).
                     BlockPos corner1 = getRenderLocation().getPos().west().north().down();
@@ -464,7 +452,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
                     // Use the corners to spin up the sparkle
                     Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2, tile -> tile instanceof TileEntityThermalEvaporationBlock);
                 }
-                clientStructured = structured;
             }
         }
     }
@@ -473,10 +460,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(inputTank.getFluid());
-        data.add(structured);
         data.add(height);
         data.add(isLeftOnFace);
         data.add(renderY);
+        data.add(getActive());
         return data;
     }
 
@@ -485,7 +472,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super.read(nbtTags);
         inputTank.readFromNBT(nbtTags.getCompound("waterTank"));
         outputTank.readFromNBT(nbtTags.getCompound("brineTank"));
-
         temperature = nbtTags.getFloat("temperature");
     }
 
@@ -502,7 +488,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     @Override
     public TileEntityThermalEvaporationController getController() {
-        return structured ? this : null;
+        return getActive() ? this : null;
     }
 
     private void clearStructure() {
@@ -523,13 +509,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public boolean getActive() {
-        return structured;
-    }
-
-    @Override
     public void setActive(boolean active) {
-        //TODO: FIXME, this handling of set active is why the texture doesn't change
+        super.setActive(active);
+        if (active != clientStructured) {
+            clientStructured = active;
+            Mekanism.packetHandler.sendUpdatePacket(this);
+        }
     }
 
     @Override
@@ -545,7 +530,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         //TODO: Should this be disabled via the inventory slots instead. (Then we can't access the items when opening the controller)
-        if (!structured && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!getActive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
@@ -556,7 +541,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super.addContainerTrackers(container);
         container.track(SyncableFluidStack.create(inputTank));
         container.track(SyncableFluidStack.create(outputTank));
-        container.track(SyncableBoolean.create(() -> structured, value -> structured = value));
         container.track(SyncableInt.create(() -> height, value -> height = value));
         container.track(SyncableBoolean.create(() -> controllerConflict, value -> controllerConflict = value));
         container.track(SyncableFloat.create(this::getTemperature, value -> temperature = value));
