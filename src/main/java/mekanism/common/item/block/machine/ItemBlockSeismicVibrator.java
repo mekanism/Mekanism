@@ -1,10 +1,9 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.item.block.RenderSeismicVibratorItem;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.machine.BlockSeismicVibrator;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -21,7 +20,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -36,13 +34,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockSeismicVibrator extends ItemBlockAdvancedTooltip<BlockSeismicVibrator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSeismicVibrator(BlockSeismicVibrator block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderSeismicVibratorItem::new;
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::seismicVibrator));
     }
 
     @Override

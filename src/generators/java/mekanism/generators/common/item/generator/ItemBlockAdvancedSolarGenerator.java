@@ -1,7 +1,6 @@
 package mekanism.generators.common.item.generator;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -17,11 +16,10 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
-import mekanism.generators.client.render.item.RenderAdvancedSolarGeneratorItem;
+import mekanism.generators.client.render.item.GeneratorsISTERProvider;
 import mekanism.generators.common.block.BlockAdvancedSolarGenerator;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
@@ -37,13 +35,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockAdvancedSolarGenerator extends ItemBlockAdvancedTooltip<BlockAdvancedSolarGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockAdvancedSolarGenerator(BlockAdvancedSolarGenerator block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderAdvancedSolarGeneratorItem::new;
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(GeneratorsISTERProvider::advancedSolar));
     }
 
     @Override

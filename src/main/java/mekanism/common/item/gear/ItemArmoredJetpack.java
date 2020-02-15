@@ -1,14 +1,12 @@
 package mekanism.common.item.gear;
 
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.JetpackArmor;
-import mekanism.client.render.item.gear.RenderArmoredJetpack;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,13 +16,7 @@ public class ItemArmoredJetpack extends ItemJetpack {
     public static final ArmoredJetpackMaterial ARMORED_JETPACK_MATERIAL = new ArmoredJetpackMaterial();
 
     public ItemArmoredJetpack(Properties properties) {
-        super(ARMORED_JETPACK_MATERIAL, properties.setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderArmoredJetpack::new;
+        super(ARMORED_JETPACK_MATERIAL, properties.setISTER(ISTERProvider::armoredJetpack));
     }
 
     @Nonnull

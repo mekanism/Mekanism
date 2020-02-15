@@ -1,12 +1,11 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
-import mekanism.client.render.item.block.RenderFluidTankItem;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.FluidItemWrapper;
@@ -30,7 +29,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowingFluid;
@@ -70,13 +68,7 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
       IItemNetwork, ITieredItem<FluidTankTier> {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderFluidTankItem::new;
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::fluidTank));
     }
 
     @Nullable

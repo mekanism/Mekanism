@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,13 +14,12 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.JetpackArmor;
-import mekanism.client.render.item.gear.RenderJetpack;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -48,13 +46,7 @@ public class ItemJetpack extends ArmorItem implements IGasItem, ISpecialGear {
     public final int TRANSFER_RATE = 16;
 
     public ItemJetpack(Properties properties) {
-        this(JETPACK_MATERIAL, properties.setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderJetpack::new;
+        this(JETPACK_MATERIAL, properties.setISTER(ISTERProvider::jetpack));
     }
 
     public ItemJetpack(IArmorMaterial material, Properties properties) {

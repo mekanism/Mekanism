@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IIncrementalEnum;
@@ -10,13 +9,12 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.client.render.item.gear.RenderFlameThrower;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -34,13 +32,7 @@ public class ItemFlamethrower extends Item implements IGasItem {
     public int TRANSFER_RATE = 16;
 
     public ItemFlamethrower(Properties properties) {
-        super(properties.maxStackSize(1).setNoRepair().setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderFlameThrower::new;
+        super(properties.maxStackSize(1).setNoRepair().setISTER(ISTERProvider::flamethrower));
     }
 
     @Override

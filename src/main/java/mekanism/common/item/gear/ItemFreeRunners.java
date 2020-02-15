@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -12,7 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.FreeRunnerArmor;
-import mekanism.client.render.item.gear.RenderFreeRunners;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -20,7 +19,6 @@ import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -50,13 +48,7 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpeci
     public double MAX_ELECTRICITY = 64_000;
 
     public ItemFreeRunners(Properties properties) {
-        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.setISTER(() -> getISTER()).setNoRepair());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderFreeRunners::new;
+        super(FREE_RUNNER_MATERIAL, EquipmentSlotType.FEET, properties.setNoRepair().setISTER(ISTERProvider::freeRunners));
     }
 
     @Override

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
@@ -14,7 +13,7 @@ import javax.annotation.Nullable;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
-import mekanism.client.render.item.gear.RenderAtomicDisassembler;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockBounding;
@@ -28,7 +27,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RotatedPillarBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -71,13 +69,7 @@ public class ItemAtomicDisassembler extends ItemEnergized {
 
     public ItemAtomicDisassembler(Properties properties) {
         //TODO: Set some tool types?
-        super(MekanismConfig.general.disassemblerBatteryCapacity.get(), properties.setNoRepair().setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderAtomicDisassembler::new;
+        super(MekanismConfig.general.disassemblerBatteryCapacity.get(), properties.setNoRepair().setISTER(ISTERProvider::disassembler));
     }
 
     @Override

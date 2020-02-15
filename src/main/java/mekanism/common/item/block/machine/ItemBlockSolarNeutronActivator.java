@@ -3,11 +3,10 @@ package mekanism.common.item.block.machine;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.item.block.RenderSolarNeutronActivatorItem;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.machine.BlockSolarNeutronActivator;
 import mekanism.common.item.IItemSustainedInventory;
@@ -22,7 +21,6 @@ import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
@@ -34,13 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemBlockSolarNeutronActivator extends ItemBlockAdvancedTooltip<BlockSolarNeutronActivator> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockSolarNeutronActivator(BlockSolarNeutronActivator block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderSolarNeutronActivatorItem::new;
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::activator));
     }
 
     @Override

@@ -1,7 +1,6 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -12,13 +11,12 @@ import mekanism.api.gas.IGasItem;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
-import mekanism.client.render.item.gear.RenderScubaTank;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -44,13 +42,7 @@ public class ItemScubaTank extends ArmorItem implements IGasItem, ISpecialGear {
     public int TRANSFER_RATE = 16;
 
     public ItemScubaTank(Properties properties) {
-        super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, properties.setISTER(() -> getISTER()).setNoRepair());
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderScubaTank::new;
+        super(SCUBA_TANK_MATERIAL, EquipmentSlotType.CHEST, properties.setNoRepair().setISTER(ISTERProvider::scubaTank));
     }
 
     @Override

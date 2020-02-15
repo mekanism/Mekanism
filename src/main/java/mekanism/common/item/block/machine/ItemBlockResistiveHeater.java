@@ -1,10 +1,9 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.item.block.RenderResistiveHeaterItem;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.machine.BlockResistiveHeater;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -20,7 +19,6 @@ import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,13 +32,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockResistiveHeater extends ItemBlockAdvancedTooltip<BlockResistiveHeater> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockResistiveHeater(BlockResistiveHeater block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderResistiveHeaterItem::new;
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::resistiveHeater));
     }
 
     @Override

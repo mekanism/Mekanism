@@ -1,11 +1,10 @@
 package mekanism.common.item.block;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.item.block.RenderEnergyCubeItem;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -22,7 +21,6 @@ import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,13 +35,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCube> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<EnergyCubeTier> {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setNoRepair().setISTER(() -> getISTER()));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    private static Callable<ItemStackTileEntityRenderer> getISTER() {
-        //NOTE: This extra method is needed to avoid classloading issues on servers
-        return RenderEnergyCubeItem::new;
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setNoRepair().setISTER(ISTERProvider::energyCube));
     }
 
     @Nullable
