@@ -1,5 +1,6 @@
 package mekanism.common.integration;
 
+import mekanism.common.integration.projecte.NSSHelper;
 import mekanism.common.integration.wrenches.Wrenches;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModList;
@@ -25,6 +26,7 @@ public final class MekanismHooks {
     public static final String CYCLIC_MOD_ID = "cyclicmagic";
     public static final String MYSTICALAGRICULTURE_MOD_ID = "mysticalagriculture";
     public static final String CRAFTTWEAKER_MOD_ID = "crafttweaker";
+    public static final String PROJECTE_MOD_ID = "projecte";
 
     public boolean AE2Loaded = false;
     public boolean CCLoaded = false;
@@ -35,6 +37,7 @@ public final class MekanismHooks {
     public boolean MCMPLoaded = false;
     public boolean MetallurgyLoaded = false;
     public boolean OCLoaded = false;
+    public boolean ProjectELoaded = false;
     public boolean TOPLoaded = false;
 
     public void hookPreInit() {
@@ -48,12 +51,16 @@ public final class MekanismHooks {
         MetallurgyLoaded = modList.isLoaded(METALLURGY_MOD_ID);
         MALoaded = modList.isLoaded(MYSTICALAGRICULTURE_MOD_ID);
         OCLoaded = modList.isLoaded(OPENCOMPUTERS_MOD_ID);
+        ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
     }
 
     public void sendIMCMessages(InterModEnqueueEvent event) {
         if (TOPLoaded) {
             InterModComms.sendTo(TOP_MOD_ID, "getTheOneProbe", TOPProvider::new);
+        }
+        if (ProjectELoaded) {
+            NSSHelper.init();
         }
     }
 

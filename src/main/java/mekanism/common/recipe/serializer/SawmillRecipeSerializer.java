@@ -43,8 +43,8 @@ public class SawmillRecipeSerializer<T extends SawmillRecipe> extends ForgeRegis
                 throw new JsonSyntaxException("Expected secondaryChance to be a number greater than zero.");
             }
             secondaryChance = chance.getAsJsonPrimitive().getAsDouble();
-            if (secondaryChance <= 0) {
-                throw new JsonSyntaxException("Expected secondaryChance to be greater than zero.");
+            if (secondaryChance <= 0 || secondaryChance > 1) {
+                throw new JsonSyntaxException("Expected secondaryChance to be greater than zero, and less than or equal to one.");
             }
             secondaryOutput = SerializerHelper.getItemStack(json, "secondaryOutput");
         } else {

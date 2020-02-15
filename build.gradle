@@ -14,6 +14,7 @@ buildscript {
 plugins {
     id 'org.ajoberstar.grgit' version '4.0.0'
     id "com.matthewprenger.cursegradle" version '1.4.0'
+    id "com.wynprice.cursemaven" version "2.1.1"
     id 'java'
     id 'idea'
     id 'maven'
@@ -278,6 +279,11 @@ dependencies {
 
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}:api")
     runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.15:${top_version}")
+
+    //TODO: Ideally switch this to using compileOnly, currently doesn't work properly after a clean for compileOnly https://github.com/Wyn-Price/CurseMaven/issues/7
+    compile fg.deobf("curse.maven:projecte:${projecte_api_id}")
+    //compileOnly fg.deobf("curse.maven:projecte:${projecte_api_id}")
+    //runtimeOnly fg.deobf("curse.maven:projecte:${projecte_id}")
 
     //compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
