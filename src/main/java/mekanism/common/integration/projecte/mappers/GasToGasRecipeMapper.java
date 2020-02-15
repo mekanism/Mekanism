@@ -16,34 +16,34 @@ import net.minecraft.item.crafting.IRecipeType;
 @RecipeTypeMapper
 public class GasToGasRecipeMapper implements IRecipeTypeMapper {
 
-	@Override
-	public String getName() {
-		return "MekGasToGas";
-	}
+    @Override
+    public String getName() {
+        return "MekGasToGas";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Maps Mekanism activating recipes.";
-	}
+    @Override
+    public String getDescription() {
+        return "Maps Mekanism activating recipes.";
+    }
 
-	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == MekanismRecipeType.ACTIVATING;
-	}
+    @Override
+    public boolean canHandle(IRecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.ACTIVATING;
+    }
 
-	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-		if (!(iRecipe instanceof GasToGasRecipe)) {
-			//Double check that we have a type of recipe we know how to handle
-			return false;
-		}
-		GasToGasRecipe recipe = (GasToGasRecipe) iRecipe;
-		for (GasStack representation : recipe.getInput().getRepresentations()) {
-			Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-			ingredientMap.put(NSSGas.createGas(representation), representation.getAmount());
-			GasStack recipeOutput = recipe.getOutput(representation);
-			mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
-		}
-		return true;
-	}
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+        if (!(iRecipe instanceof GasToGasRecipe)) {
+            //Double check that we have a type of recipe we know how to handle
+            return false;
+        }
+        GasToGasRecipe recipe = (GasToGasRecipe) iRecipe;
+        for (GasStack representation : recipe.getInput().getRepresentations()) {
+            Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+            ingredientMap.put(NSSGas.createGas(representation), representation.getAmount());
+            GasStack recipeOutput = recipe.getOutput(representation);
+            mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
+        }
+        return true;
+    }
 }

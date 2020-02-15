@@ -18,34 +18,34 @@ import net.minecraft.item.crafting.IRecipeType;
 @RecipeTypeMapper
 public class ItemStackToGasRecipeMapper implements IRecipeTypeMapper {
 
-	@Override
-	public String getName() {
-		return "MekItemStackToGas";
-	}
+    @Override
+    public String getName() {
+        return "MekItemStackToGas";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Maps Mekanism item stack to gas recipes. (Gas conversion, Oxidizing)";
-	}
+    @Override
+    public String getDescription() {
+        return "Maps Mekanism item stack to gas recipes. (Gas conversion, Oxidizing)";
+    }
 
-	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == MekanismRecipeType.GAS_CONVERSION || recipeType == MekanismRecipeType.OXIDIZING;
-	}
+    @Override
+    public boolean canHandle(IRecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.GAS_CONVERSION || recipeType == MekanismRecipeType.OXIDIZING;
+    }
 
-	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-		if (!(iRecipe instanceof ItemStackToGasRecipe)) {
-			//Double check that we have a type of recipe we know how to handle
-			return false;
-		}
-		ItemStackToGasRecipe recipe = (ItemStackToGasRecipe) iRecipe;
-		for (ItemStack representation : recipe.getInput().getRepresentations()) {
-			Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-			ingredientMap.put(NSSItem.createItem(representation), representation.getCount());
-			GasStack recipeOutput = recipe.getOutput(representation);
-			mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
-		}
-		return true;
-	}
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+        if (!(iRecipe instanceof ItemStackToGasRecipe)) {
+            //Double check that we have a type of recipe we know how to handle
+            return false;
+        }
+        ItemStackToGasRecipe recipe = (ItemStackToGasRecipe) iRecipe;
+        for (ItemStack representation : recipe.getInput().getRepresentations()) {
+            Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+            ingredientMap.put(NSSItem.createItem(representation), representation.getCount());
+            GasStack recipeOutput = recipe.getOutput(representation);
+            mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
+        }
+        return true;
+    }
 }

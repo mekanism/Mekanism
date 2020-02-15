@@ -16,34 +16,34 @@ import net.minecraftforge.fluids.FluidStack;
 @RecipeTypeMapper
 public class FluidToFluidRecipeMapper implements IRecipeTypeMapper {
 
-	@Override
-	public String getName() {
-		return "MekFluidToFluid";
-	}
+    @Override
+    public String getName() {
+        return "MekFluidToFluid";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Maps Mekanism evaporating recipes.";
-	}
+    @Override
+    public String getDescription() {
+        return "Maps Mekanism evaporating recipes.";
+    }
 
-	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == MekanismRecipeType.EVAPORATING;
-	}
+    @Override
+    public boolean canHandle(IRecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.EVAPORATING;
+    }
 
-	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-		if (!(iRecipe instanceof FluidToFluidRecipe)) {
-			//Double check that we have a type of recipe we know how to handle
-			return false;
-		}
-		FluidToFluidRecipe recipe = (FluidToFluidRecipe) iRecipe;
-		for (FluidStack representation : recipe.getInput().getRepresentations()) {
-			Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-			ingredientMap.put(NSSFluid.createFluid(representation), representation.getAmount());
-			FluidStack recipeOutput = recipe.getOutput(representation);
-			mapper.addConversion(recipeOutput.getAmount(), NSSFluid.createFluid(recipeOutput), ingredientMap);
-		}
-		return true;
-	}
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+        if (!(iRecipe instanceof FluidToFluidRecipe)) {
+            //Double check that we have a type of recipe we know how to handle
+            return false;
+        }
+        FluidToFluidRecipe recipe = (FluidToFluidRecipe) iRecipe;
+        for (FluidStack representation : recipe.getInput().getRepresentations()) {
+            Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+            ingredientMap.put(NSSFluid.createFluid(representation), representation.getAmount());
+            FluidStack recipeOutput = recipe.getOutput(representation);
+            mapper.addConversion(recipeOutput.getAmount(), NSSFluid.createFluid(recipeOutput), ingredientMap);
+        }
+        return true;
+    }
 }

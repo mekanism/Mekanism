@@ -20,40 +20,40 @@ import net.minecraftforge.fluids.FluidStack;
 @RecipeTypeMapper
 public class FluidGasToGasRecipeMapper implements IRecipeTypeMapper {
 
-	@Override
-	public String getName() {
-		return "MekFluidGasToGas";
-	}
+    @Override
+    public String getName() {
+        return "MekFluidGasToGas";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Maps Mekanism washing recipes.";
-	}
+    @Override
+    public String getDescription() {
+        return "Maps Mekanism washing recipes.";
+    }
 
-	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == MekanismRecipeType.WASHING;
-	}
+    @Override
+    public boolean canHandle(IRecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.WASHING;
+    }
 
-	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-		if (!(iRecipe instanceof FluidGasToGasRecipe)) {
-			//Double check that we have a type of recipe we know how to handle
-			return false;
-		}
-		FluidGasToGasRecipe recipe = (FluidGasToGasRecipe) iRecipe;
-		List<@NonNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
-		List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
-		for (FluidStack fluidRepresentation : fluidRepresentations) {
-			NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
-			for (GasStack gasRepresentation : gasRepresentations) {
-				Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-				ingredientMap.put(nssFluid, fluidRepresentation.getAmount());
-				ingredientMap.put(NSSGas.createGas(gasRepresentation), gasRepresentation.getAmount());
-				GasStack output = recipe.getOutput(fluidRepresentation, gasRepresentation);
-				mapper.addConversion(output.getAmount(), NSSGas.createGas(output), ingredientMap);
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+        if (!(iRecipe instanceof FluidGasToGasRecipe)) {
+            //Double check that we have a type of recipe we know how to handle
+            return false;
+        }
+        FluidGasToGasRecipe recipe = (FluidGasToGasRecipe) iRecipe;
+        List<@NonNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
+        List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
+        for (FluidStack fluidRepresentation : fluidRepresentations) {
+            NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
+            for (GasStack gasRepresentation : gasRepresentations) {
+                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+                ingredientMap.put(nssFluid, fluidRepresentation.getAmount());
+                ingredientMap.put(NSSGas.createGas(gasRepresentation), gasRepresentation.getAmount());
+                GasStack output = recipe.getOutput(fluidRepresentation, gasRepresentation);
+                mapper.addConversion(output.getAmount(), NSSGas.createGas(output), ingredientMap);
+            }
+        }
+        return true;
+    }
 }

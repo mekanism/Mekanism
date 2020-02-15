@@ -18,34 +18,34 @@ import net.minecraft.item.crafting.IRecipeType;
 @RecipeTypeMapper
 public class ItemStackToInfuseTypeRecipeMapper implements IRecipeTypeMapper {
 
-	@Override
-	public String getName() {
-		return "MekItemStackToInfuseType";
-	}
+    @Override
+    public String getName() {
+        return "MekItemStackToInfuseType";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Maps Mekanism item stack to infuse type conversion recipes.";
-	}
+    @Override
+    public String getDescription() {
+        return "Maps Mekanism item stack to infuse type conversion recipes.";
+    }
 
-	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == MekanismRecipeType.INFUSION_CONVERSION;
-	}
+    @Override
+    public boolean canHandle(IRecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.INFUSION_CONVERSION;
+    }
 
-	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-		if (!(iRecipe instanceof ItemStackToInfuseTypeRecipe)) {
-			//Double check that we have a type of recipe we know how to handle
-			return false;
-		}
-		ItemStackToInfuseTypeRecipe recipe = (ItemStackToInfuseTypeRecipe) iRecipe;
-		for (ItemStack representation : recipe.getInput().getRepresentations()) {
-			Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-			ingredientMap.put(NSSItem.createItem(representation), representation.getCount());
-			InfusionStack recipeOutput = recipe.getOutput(representation);
-			mapper.addConversion(recipeOutput.getAmount(), NSSInfuseType.createInfuseType(recipeOutput), ingredientMap);
-		}
-		return true;
-	}
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+        if (!(iRecipe instanceof ItemStackToInfuseTypeRecipe)) {
+            //Double check that we have a type of recipe we know how to handle
+            return false;
+        }
+        ItemStackToInfuseTypeRecipe recipe = (ItemStackToInfuseTypeRecipe) iRecipe;
+        for (ItemStack representation : recipe.getInput().getRepresentations()) {
+            Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+            ingredientMap.put(NSSItem.createItem(representation), representation.getCount());
+            InfusionStack recipeOutput = recipe.getOutput(representation);
+            mapper.addConversion(recipeOutput.getAmount(), NSSInfuseType.createInfuseType(recipeOutput), ingredientMap);
+        }
+        return true;
+    }
 }

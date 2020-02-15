@@ -18,34 +18,34 @@ import net.minecraft.item.crafting.IRecipeType;
 @RecipeTypeMapper
 public class GasToItemStackRecipeMapper implements IRecipeTypeMapper {
 
-	@Override
-	public String getName() {
-		return "MekGasToItemStack";
-	}
+    @Override
+    public String getName() {
+        return "MekGasToItemStack";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Maps Mekanism crystallizing recipes.";
-	}
+    @Override
+    public String getDescription() {
+        return "Maps Mekanism crystallizing recipes.";
+    }
 
-	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == MekanismRecipeType.CRYSTALLIZING;
-	}
+    @Override
+    public boolean canHandle(IRecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.CRYSTALLIZING;
+    }
 
-	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-		if (!(iRecipe instanceof GasToItemStackRecipe)) {
-			//Double check that we have a type of recipe we know how to handle
-			return false;
-		}
-		GasToItemStackRecipe recipe = (GasToItemStackRecipe) iRecipe;
-		for (GasStack representation : recipe.getInput().getRepresentations()) {
-			Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-			ingredientMap.put(NSSGas.createGas(representation), representation.getAmount());
-			ItemStack recipeOutput = recipe.getOutput(representation);
-			mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap);
-		}
-		return true;
-	}
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+        if (!(iRecipe instanceof GasToItemStackRecipe)) {
+            //Double check that we have a type of recipe we know how to handle
+            return false;
+        }
+        GasToItemStackRecipe recipe = (GasToItemStackRecipe) iRecipe;
+        for (GasStack representation : recipe.getInput().getRepresentations()) {
+            Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+            ingredientMap.put(NSSGas.createGas(representation), representation.getAmount());
+            ItemStack recipeOutput = recipe.getOutput(representation);
+            mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap);
+        }
+        return true;
+    }
 }

@@ -18,40 +18,40 @@ import net.minecraft.item.crafting.IRecipeType;
 @RecipeTypeMapper
 public class ChemicalInfuserRecipeMapper implements IRecipeTypeMapper {
 
-	@Override
-	public String getName() {
-		return "MekChemicalInfuser";
-	}
+    @Override
+    public String getName() {
+        return "MekChemicalInfuser";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Maps Mekanism chemical infuser recipes.";
-	}
+    @Override
+    public String getDescription() {
+        return "Maps Mekanism chemical infuser recipes.";
+    }
 
-	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == MekanismRecipeType.CHEMICAL_INFUSING;
-	}
+    @Override
+    public boolean canHandle(IRecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.CHEMICAL_INFUSING;
+    }
 
-	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-		if (!(iRecipe instanceof ChemicalInfuserRecipe)) {
-			//Double check that we have a type of recipe we know how to handle
-			return false;
-		}
-		ChemicalInfuserRecipe recipe = (ChemicalInfuserRecipe) iRecipe;
-		List<@NonNull GasStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
-		List<@NonNull GasStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
-		for (GasStack leftRepresentation : leftInputRepresentations) {
-			NormalizedSimpleStack nssLeft = NSSGas.createGas(leftRepresentation);
-			for (GasStack rightRepresentation : rightInputRepresentations) {
-				Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-				ingredientMap.put(nssLeft, leftRepresentation.getAmount());
-				ingredientMap.put(NSSGas.createGas(rightRepresentation), rightRepresentation.getAmount());
-				GasStack output = recipe.getOutput(leftRepresentation, rightRepresentation);
-				mapper.addConversion(output.getAmount(), NSSGas.createGas(output), ingredientMap);
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+        if (!(iRecipe instanceof ChemicalInfuserRecipe)) {
+            //Double check that we have a type of recipe we know how to handle
+            return false;
+        }
+        ChemicalInfuserRecipe recipe = (ChemicalInfuserRecipe) iRecipe;
+        List<@NonNull GasStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
+        List<@NonNull GasStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
+        for (GasStack leftRepresentation : leftInputRepresentations) {
+            NormalizedSimpleStack nssLeft = NSSGas.createGas(leftRepresentation);
+            for (GasStack rightRepresentation : rightInputRepresentations) {
+                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+                ingredientMap.put(nssLeft, leftRepresentation.getAmount());
+                ingredientMap.put(NSSGas.createGas(rightRepresentation), rightRepresentation.getAmount());
+                GasStack output = recipe.getOutput(leftRepresentation, rightRepresentation);
+                mapper.addConversion(output.getAmount(), NSSGas.createGas(output), ingredientMap);
+            }
+        }
+        return true;
+    }
 }

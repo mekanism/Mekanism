@@ -20,40 +20,40 @@ import net.minecraft.item.crafting.IRecipeType;
 @RecipeTypeMapper
 public class MetallurgicInfuserRecipeMapper implements IRecipeTypeMapper {
 
-	@Override
-	public String getName() {
-		return "MekMetallurgicInfuser";
-	}
+    @Override
+    public String getName() {
+        return "MekMetallurgicInfuser";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Maps Mekanism metallurgic infuser recipes.";
-	}
+    @Override
+    public String getDescription() {
+        return "Maps Mekanism metallurgic infuser recipes.";
+    }
 
-	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == MekanismRecipeType.METALLURGIC_INFUSING;
-	}
+    @Override
+    public boolean canHandle(IRecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.METALLURGIC_INFUSING;
+    }
 
-	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-		if (!(iRecipe instanceof MetallurgicInfuserRecipe)) {
-			//Double check that we have a type of recipe we know how to handle
-			return false;
-		}
-		MetallurgicInfuserRecipe recipe = (MetallurgicInfuserRecipe) iRecipe;
-		List<@NonNull InfusionStack> infuseTypeRepresentations = recipe.getInfusionInput().getRepresentations();
-		List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
-		for (InfusionStack infuseTypeRepresentation : infuseTypeRepresentations) {
-			NormalizedSimpleStack nssInfuseType = NSSInfuseType.createInfuseType(infuseTypeRepresentation);
-			for (ItemStack itemRepresentation : itemRepresentations) {
-				Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-				ingredientMap.put(nssInfuseType, infuseTypeRepresentation.getAmount());
-				ingredientMap.put(NSSItem.createItem(itemRepresentation), itemRepresentation.getCount());
-				ItemStack output = recipe.getOutput(infuseTypeRepresentation, itemRepresentation);
-				mapper.addConversion(output.getCount(), NSSItem.createItem(output), ingredientMap);
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+        if (!(iRecipe instanceof MetallurgicInfuserRecipe)) {
+            //Double check that we have a type of recipe we know how to handle
+            return false;
+        }
+        MetallurgicInfuserRecipe recipe = (MetallurgicInfuserRecipe) iRecipe;
+        List<@NonNull InfusionStack> infuseTypeRepresentations = recipe.getInfusionInput().getRepresentations();
+        List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
+        for (InfusionStack infuseTypeRepresentation : infuseTypeRepresentations) {
+            NormalizedSimpleStack nssInfuseType = NSSInfuseType.createInfuseType(infuseTypeRepresentation);
+            for (ItemStack itemRepresentation : itemRepresentations) {
+                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+                ingredientMap.put(nssInfuseType, infuseTypeRepresentation.getAmount());
+                ingredientMap.put(NSSItem.createItem(itemRepresentation), itemRepresentation.getCount());
+                ItemStack output = recipe.getOutput(infuseTypeRepresentation, itemRepresentation);
+                mapper.addConversion(output.getCount(), NSSItem.createItem(output), ingredientMap);
+            }
+        }
+        return true;
+    }
 }

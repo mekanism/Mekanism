@@ -18,47 +18,47 @@ import net.minecraftforge.fluids.FluidStack;
 @RecipeTypeMapper
 public class RotaryRecipeMapper implements IRecipeTypeMapper {
 
-	@Override
-	public String getName() {
-		return "MekRotary";
-	}
+    @Override
+    public String getName() {
+        return "MekRotary";
+    }
 
-	@Override
-	public String getDescription() {
-		return "Maps Mekanism rotary condensentrator recipes.";
-	}
+    @Override
+    public String getDescription() {
+        return "Maps Mekanism rotary condensentrator recipes.";
+    }
 
-	@Override
-	public boolean canHandle(IRecipeType<?> recipeType) {
-		return recipeType == MekanismRecipeType.ROTARY;
-	}
+    @Override
+    public boolean canHandle(IRecipeType<?> recipeType) {
+        return recipeType == MekanismRecipeType.ROTARY;
+    }
 
-	@Override
-	public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
-		if (!(iRecipe instanceof RotaryRecipe)) {
-			//Double check that we have a type of recipe we know how to handle
-			return false;
-		}
-		RotaryRecipe recipe = (RotaryRecipe) iRecipe;
-		boolean handled = false;
-		if (recipe.hasFluidToGas()) {
-			handled = true;
-			for (FluidStack representation : recipe.getFluidInput().getRepresentations()) {
-				Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-				ingredientMap.put(NSSFluid.createFluid(representation), representation.getAmount());
-				GasStack recipeOutput = recipe.getGasOutput(representation);
-				mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
-			}
-		}
-		if (recipe.hasGasToFluid()) {
-			handled = true;
-			for (GasStack representation : recipe.getGasInput().getRepresentations()) {
-				Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-				ingredientMap.put(NSSGas.createGas(representation), representation.getAmount());
-				FluidStack recipeOutput = recipe.getFluidOutput(representation);
-				mapper.addConversion(recipeOutput.getAmount(), NSSFluid.createFluid(recipeOutput), ingredientMap);
-			}
-		}
-		return handled;
-	}
+    @Override
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe) {
+        if (!(iRecipe instanceof RotaryRecipe)) {
+            //Double check that we have a type of recipe we know how to handle
+            return false;
+        }
+        RotaryRecipe recipe = (RotaryRecipe) iRecipe;
+        boolean handled = false;
+        if (recipe.hasFluidToGas()) {
+            handled = true;
+            for (FluidStack representation : recipe.getFluidInput().getRepresentations()) {
+                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+                ingredientMap.put(NSSFluid.createFluid(representation), representation.getAmount());
+                GasStack recipeOutput = recipe.getGasOutput(representation);
+                mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
+            }
+        }
+        if (recipe.hasGasToFluid()) {
+            handled = true;
+            for (GasStack representation : recipe.getGasInput().getRepresentations()) {
+                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+                ingredientMap.put(NSSGas.createGas(representation), representation.getAmount());
+                FluidStack recipeOutput = recipe.getFluidOutput(representation);
+                mapper.addConversion(recipeOutput.getAmount(), NSSFluid.createFluid(recipeOutput), ingredientMap);
+            }
+        }
+        return handled;
+    }
 }
