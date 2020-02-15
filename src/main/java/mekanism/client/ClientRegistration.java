@@ -243,7 +243,7 @@ public class ClientRegistration {
 
         //Block render layers
         //Cutout
-        ClientRegistrationUtil.setRenderLayer(RenderType.cutout(), MekanismBlocks.STRUCTURAL_GLASS, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
+        ClientRegistrationUtil.setRenderLayer(RenderType.getCutout(), MekanismBlocks.STRUCTURAL_GLASS, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
               MekanismBlocks.CHARGEPAD, MekanismBlocks.ELECTROLYTIC_SEPARATOR,
               //Fluid Tanks
               MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
@@ -264,11 +264,11 @@ public class ClientRegistration {
         //TODO: Does the diversion transporter actually need to be in multiple render types
         // Also can we move the overlay from the TER to being part of the baked model
         //Logistical Transporter
-        ClientRegistrationUtil.setRenderLayer(renderType -> renderType.equals(RenderType.cutout()) || renderType.equals(RenderType.translucent()),
+        ClientRegistrationUtil.setRenderLayer(renderType -> renderType.equals(RenderType.getCutout()) || renderType.equals(RenderType.getTranslucent()),
               MekanismBlocks.DIVERSION_TRANSPORTER, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
         //Fluids (translucent)
-        ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), MekanismFluids.HYDROGEN, MekanismFluids.OXYGEN, MekanismFluids.CHLORINE,
+        ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), MekanismFluids.HYDROGEN, MekanismFluids.OXYGEN, MekanismFluids.CHLORINE,
               MekanismFluids.SULFUR_DIOXIDE, MekanismFluids.SULFUR_TRIOXIDE, MekanismFluids.SULFURIC_ACID, MekanismFluids.HYDROGEN_CHLORIDE, MekanismFluids.ETHENE,
               MekanismFluids.SODIUM, MekanismFluids.BRINE, MekanismFluids.DEUTERIUM, MekanismFluids.TRITIUM, MekanismFluids.FUSION_FUEL, MekanismFluids.LITHIUM,
               MekanismFluids.STEAM, MekanismFluids.HEAVY_WATER);

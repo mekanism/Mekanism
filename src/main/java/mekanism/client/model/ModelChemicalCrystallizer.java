@@ -37,7 +37,7 @@ public class ModelChemicalCrystallizer extends Model {
     private final ModelRenderer glass;
 
     public ModelChemicalCrystallizer() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

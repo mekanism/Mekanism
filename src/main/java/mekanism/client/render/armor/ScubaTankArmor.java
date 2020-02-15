@@ -34,7 +34,7 @@ public class ScubaTankArmor extends CustomArmor {
 
     private void renderTank(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
         matrix.push();
-        bipedBody.setAnglesAndRotation(matrix);
+        bipedBody.translateRotate(matrix);
         matrix.translate(0, 0, 0.06);
         model.render(matrix, renderer, light, overlayLight, hasEffect);
         matrix.pop();

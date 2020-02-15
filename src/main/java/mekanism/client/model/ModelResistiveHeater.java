@@ -45,7 +45,7 @@ public class ModelResistiveHeater extends Model {
     private final ModelRenderer portLeft;
 
     public ModelResistiveHeater() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

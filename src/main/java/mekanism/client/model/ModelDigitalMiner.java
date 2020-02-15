@@ -82,7 +82,7 @@ public class ModelDigitalMiner extends Model {
     private final ModelRenderer monitor3;
 
     public ModelDigitalMiner() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 256;
         textureHeight = 128;
 

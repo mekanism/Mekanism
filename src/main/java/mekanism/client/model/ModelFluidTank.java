@@ -33,7 +33,7 @@ public class ModelFluidTank extends Model {
     private final ModelRenderer LeftGlass;
 
     public ModelFluidTank() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 128;
 

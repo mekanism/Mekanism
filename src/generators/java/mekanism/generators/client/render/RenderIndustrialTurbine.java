@@ -44,7 +44,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
                 }
                 matrix.push();
                 matrix.translate(complexPos.getX() - pos.getX(), complexPos.getY() - pos.getY(), complexPos.getZ() - pos.getZ());
-                renderDispatcher.renderNullable(rotor, matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight);
+                renderDispatcher.renderItem(rotor, matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight);
                 matrix.pop();
             }
 

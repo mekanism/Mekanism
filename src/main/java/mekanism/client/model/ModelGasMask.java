@@ -50,7 +50,7 @@ public class ModelGasMask extends Model {
     private final ModelRenderer lightR;
 
     public ModelGasMask() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

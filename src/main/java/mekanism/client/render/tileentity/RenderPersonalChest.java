@@ -47,7 +47,7 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
         float lidAngle = tile.prevLidAngle + (tile.lidAngle - tile.prevLidAngle) * partialTick;
         lidAngle = 1.0F - lidAngle;
         lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
-        IVertexBuilder builder = renderer.getBuffer(RenderType.entityCutout(texture));
+        IVertexBuilder builder = renderer.getBuffer(RenderType.getEntityCutout(texture));
         lid.rotateAngleX = -(lidAngle * ((float) Math.PI / 2F));
         latch.rotateAngleX = lid.rotateAngleX;
         lid.render(matrix, builder, light, overlayLight);

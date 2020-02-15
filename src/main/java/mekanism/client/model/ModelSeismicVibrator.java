@@ -63,7 +63,7 @@ public class ModelSeismicVibrator extends Model {
     private final ModelRenderer rivet9;
 
     public ModelSeismicVibrator() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

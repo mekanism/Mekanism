@@ -38,7 +38,7 @@ public class ModelWindGenerator extends Model {
     private final ModelRenderer post1d;
 
     public ModelWindGenerator() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 128;
 

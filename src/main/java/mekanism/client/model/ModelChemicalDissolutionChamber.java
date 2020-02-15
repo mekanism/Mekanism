@@ -50,7 +50,7 @@ public class ModelChemicalDissolutionChamber extends Model {
     private final ModelRenderer portToggle2;
 
     public ModelChemicalDissolutionChamber() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

@@ -25,7 +25,7 @@ public class ModelFreeRunners extends Model {
     private final ModelRenderer SupportR;
 
     public ModelFreeRunners() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 64;
         textureHeight = 32;
 

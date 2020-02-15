@@ -37,9 +37,9 @@ public class FreeRunnerArmor extends CustomArmor {
         }
         matrix.push();
         if (left) {
-            bipedLeftLeg.setAnglesAndRotation(matrix);
+            bipedLeftLeg.translateRotate(matrix);
         } else {
-            bipedRightLeg.setAnglesAndRotation(matrix);
+            bipedRightLeg.translateRotate(matrix);
         }
         matrix.translate(0, 0, 0.06);
         matrix.scale(1.02F, 1.02F, 1.02F);

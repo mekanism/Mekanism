@@ -41,7 +41,7 @@ public class ModelFlamethrower extends Model {
     private final ModelRenderer Hydrogen;
 
     public ModelFlamethrower() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 64;
         textureHeight = 64;
 

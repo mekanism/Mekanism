@@ -21,7 +21,7 @@ public class ModelTransporterBox extends Model {
     private final ModelRenderer box;
 
     public ModelTransporterBox() {
-        super(RenderType::entityCutoutNoCull);
+        super(RenderType::getEntityCutoutNoCull);
         textureWidth = 64;
         textureHeight = 64;
 

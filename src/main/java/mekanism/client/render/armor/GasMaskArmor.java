@@ -36,7 +36,7 @@ public class GasMaskArmor extends CustomArmor {
 
     private void renderMask(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
         matrix.push();
-        bipedHead.setAnglesAndRotation(matrix);
+        bipedHead.translateRotate(matrix);
         matrix.translate(0, 0, 0.01);
         model.render(matrix, renderer, light, overlayLight, hasEffect);
         matrix.pop();

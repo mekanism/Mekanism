@@ -40,7 +40,7 @@ public class JetpackArmor extends CustomArmor {
 
     private void renderJetpack(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
         matrix.push();
-        bipedBody.setAnglesAndRotation(matrix);
+        bipedBody.translateRotate(matrix);
         matrix.translate(0, 0, 0.06);
         if (armored) {
             armoredModel.render(matrix, renderer, light, overlayLight, hasEffect);

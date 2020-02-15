@@ -28,7 +28,7 @@ public class ModelScubaTank extends Model {
     private final ModelRenderer tankbackbrace;
 
     public ModelScubaTank() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

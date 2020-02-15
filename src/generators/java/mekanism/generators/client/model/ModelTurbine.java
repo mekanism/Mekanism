@@ -29,7 +29,7 @@ public class ModelTurbine extends Model {
     private final ModelRenderer blade_west;
 
     public ModelTurbine() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 64;
         textureHeight = 64;
         extension_south = new ModelRenderer(this, 0, 0);

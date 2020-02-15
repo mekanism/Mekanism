@@ -36,7 +36,7 @@ public class ModelGasGenerator extends Model {
     private final ModelRenderer connector1;
 
     public ModelGasGenerator() {
-        super(RenderType::entityCutout);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

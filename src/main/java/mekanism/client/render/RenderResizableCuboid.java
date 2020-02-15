@@ -188,7 +188,7 @@ public class RenderResizableCuboid {
         float blue = MekanismRenderer.getBlue(argb);
         float alpha = MekanismRenderer.getAlpha(argb);
         Direction opposite = face.getOpposite();
-        Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
+        Matrix4f matrix4f = matrix.getLast().getMatrix();
         for (RenderInfo ri : renderInfoList) {
             renderPoint(matrix4f, builder, face, u, v, other, ri, true, false, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);
             renderPoint(matrix4f, builder, face, u, v, other, ri, true, true, locationFormula, faceFormula, access, shadeTypes, red, green, blue, alpha);

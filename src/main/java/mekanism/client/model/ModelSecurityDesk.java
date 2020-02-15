@@ -32,7 +32,7 @@ public class ModelSecurityDesk extends Model {
     private final ModelRenderer monitorScreen;
 
     public ModelSecurityDesk() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

@@ -114,7 +114,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
         int offsetY = (realHeight - requiredHeight) / 2;
         //font.drawString("\u00a7f" + text, offsetX - (realWidth / 2), 1 + offsetY - (realHeight / 2), 1);
         font.renderString("\u00a7f" + text, offsetX - realWidth / 2, 1 + offsetY - realHeight / 2, overlayLight,
-              false, matrix.getLast().getPositionMatrix(), renderer, false, 0, MekanismRenderer.FULL_LIGHT);
+              false, matrix.getLast().getMatrix(), renderer, false, 0, MekanismRenderer.FULL_LIGHT);
         matrix.pop();
     }
 }

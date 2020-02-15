@@ -25,7 +25,7 @@ public class ModelBalloon extends Model {
     private final ModelRenderer String;
 
     public ModelBalloon() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 64;
         textureHeight = 32;
 
@@ -66,7 +66,7 @@ public class ModelBalloon extends Model {
         //Flip the balloon so it is facing up instead of down
         matrix.rotate(Vector3f.XP.rotationDegrees(180));
         IVertexBuilder vertexBuilder = renderer.getBuffer(RENDER_TYPE);
-        render(matrix, vertexBuilder, light, OverlayTexture.DEFAULT_LIGHT, color.getColor(0), color.getColor(1), color.getColor(2), 1);
+        render(matrix, vertexBuilder, light, OverlayTexture.NO_OVERLAY, color.getColor(0), color.getColor(1), color.getColor(2), 1);
         matrix.pop();
     }
 

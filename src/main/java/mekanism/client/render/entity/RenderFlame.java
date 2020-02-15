@@ -46,8 +46,8 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         float actualAlpha = 1 - alpha;
         for (int j = 0; j < 4; j++) {
             matrix.rotate(Vector3f.XP.rotationDegrees(90));
-            builder.normal(matrix.getLast().getNormalMatrix(), 0, 0, scale);
-            Matrix4f matrix4f = matrix.getLast().getPositionMatrix();
+            builder.normal(matrix.getLast().getNormal(), 0, 0, scale);
+            Matrix4f matrix4f = matrix.getLast().getMatrix();
             builder.pos(matrix4f, -8, -2, 0).tex(f2, f4).color(1, 1, 1, actualAlpha).endVertex();
             builder.pos(matrix4f, 8, -2, 0).tex(f3, f4).color(1, 1, 1, actualAlpha).endVertex();
             builder.pos(matrix4f, 8, 2, 0).tex(f3, f5).color(1, 1, 1, actualAlpha).endVertex();

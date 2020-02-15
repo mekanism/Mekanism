@@ -51,7 +51,7 @@ public class ModelArmoredJetpack extends Model {
     private final ModelRenderer Leftlight;
 
     public ModelArmoredJetpack() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

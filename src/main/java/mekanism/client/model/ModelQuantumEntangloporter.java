@@ -61,7 +61,7 @@ public class ModelQuantumEntangloporter extends Model {
     private final ModelRenderer corner8;
 
     public ModelQuantumEntangloporter() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

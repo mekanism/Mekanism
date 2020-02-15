@@ -43,7 +43,7 @@ public class ModelJetpack extends Model {
     private final ModelRenderer light3;
 
     public ModelJetpack() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

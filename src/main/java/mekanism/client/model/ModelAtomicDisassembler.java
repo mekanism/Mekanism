@@ -35,7 +35,7 @@ public class ModelAtomicDisassembler extends Model {
     private final ModelRenderer Shape8;
 
     public ModelAtomicDisassembler() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 64;
         textureHeight = 32;
 

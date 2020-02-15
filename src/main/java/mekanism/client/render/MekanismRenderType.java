@@ -15,32 +15,32 @@ public class MekanismRenderType extends RenderType {
     }
 
     public static RenderType mekStandard(ResourceLocation resourceLocation) {
-        RenderType.State state = RenderType.State.builder()
+        RenderType.State state = RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .shadeModel(SHADE_ENABLED)//shadeModel(GL11.GL_SMOOTH)
               .alpha(ZERO_ALPHA)//disableAlphaTest
               .transparency(TRANSLUCENT_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
               .build(true);
-        return get("mek_standard", DefaultVertexFormats.ITEM, GL11.GL_QUADS, 256, true, false, state);
+        return makeType("mek_standard", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, false, state);
     }
 
     public static RenderType renderFlame(ResourceLocation resourceLocation) {
-        RenderType.State state = RenderType.State.builder()
+        RenderType.State state = RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .shadeModel(SHADE_ENABLED)//shadeModel(GL11.GL_SMOOTH)
               .alpha(ZERO_ALPHA)//disableAlphaTest
               .transparency(TRANSLUCENT_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
               .build(true);
-        return get("mek_flame", DefaultVertexFormats.POSITION_TEX_COLOR, GL11.GL_QUADS, 256, true, false, state);
+        return makeType("mek_flame", DefaultVertexFormats.POSITION_TEX_COLOR, GL11.GL_QUADS, 256, true, false, state);
     }
 
     public static RenderType transmitterContents(ResourceLocation resourceLocation) {
-        return get("transmitter_contents", DefaultVertexFormats.ITEM, GL11.GL_QUADS, 256, true, false,
+        return makeType("transmitter_contents", DefaultVertexFormats.ENTITY, GL11.GL_QUADS, 256, true, false,
               renderFluidState(resourceLocation).build(true));
     }
 
     public static RenderType.State.Builder renderFluidState(ResourceLocation resourceLocation) {
-        return RenderType.State.builder()
+        return RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .cull(CULL_ENABLED)//enableCull
               .transparency(TRANSLUCENT_TRANSPARENCY)//enableBlend/blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA)
@@ -54,14 +54,14 @@ public class MekanismRenderType extends RenderType {
     }
 
     public static RenderType.State.Builder renderMechanicalPipeState(ResourceLocation resourceLocation) {
-        return RenderType.State.builder()
+        return RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .cull(CULL_ENABLED)//enableCull
               .lightmap(LIGHTMAP_DISABLED);//disableLighting
     }
 
     public static RenderType.State.Builder configurableMachineState(ResourceLocation resourceLocation) {
-        return RenderType.State.builder()
+        return RenderType.State.getBuilder()
               .texture(new RenderState.TextureState(resourceLocation, false, false))//Texture state
               .cull(CULL_ENABLED)//enableCull
               .lightmap(LIGHTMAP_DISABLED)//disableLighting
@@ -73,6 +73,6 @@ public class MekanismRenderType extends RenderType {
     public static RenderType resizableCuboid(RenderType.State.Builder stateBuilder, VertexFormat format) {
         stateBuilder.alpha(new RenderState.AlphaState(0.1F))//enableAlphaTest/alphaFunc(GL11.GL_GREATER, 0.1F)
               .lightmap(LIGHTMAP_DISABLED);//disableLighting
-        return get("resizable_cuboid", format, GL11.GL_QUADS, 256, true, false, stateBuilder.build(true));
+        return makeType("resizable_cuboid", format, GL11.GL_QUADS, 256, true, false, stateBuilder.build(true));
     }
 }

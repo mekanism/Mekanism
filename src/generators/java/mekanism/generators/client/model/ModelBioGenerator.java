@@ -25,7 +25,7 @@ public class ModelBioGenerator extends Model {
     private final ModelRenderer sideLeft;
 
     public ModelBioGenerator() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 64;
         textureHeight = 64;
 

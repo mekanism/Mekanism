@@ -35,7 +35,7 @@ public class ModelAdvancedSolarGenerator extends Model {
     //TODO: Do we want to implement what I think was an original idea based on the rotates comments
     // where the panels rotate to face towards the sun?
     public ModelAdvancedSolarGenerator() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 256;
         textureHeight = 256;
 

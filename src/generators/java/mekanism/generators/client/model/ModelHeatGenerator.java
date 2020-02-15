@@ -41,7 +41,7 @@ public class ModelHeatGenerator extends Model {
     private final ModelRenderer base;
 
     public ModelHeatGenerator() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 128;
         textureHeight = 64;
 

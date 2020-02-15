@@ -78,7 +78,7 @@ public class ModelEnergyCube extends Model {
     private final ModelRenderer ledLeft2;
 
     public ModelEnergyCube() {
-        super(RenderType::entitySolid);
+        super(RenderType::getEntitySolid);
         textureWidth = 64;
         textureHeight = 64;
 
