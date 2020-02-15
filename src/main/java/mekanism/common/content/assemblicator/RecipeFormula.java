@@ -48,8 +48,7 @@ public class RecipeFormula {
     public boolean matches(World world, List<IInventorySlot> craftingGridSlots) {
         //Should always be 9 for the size
         for (int i = 0; i < craftingGridSlots.size(); i++) {
-            //TODO: Do we really need to be copying it here
-            dummy.setInventorySlotContents(i, craftingGridSlots.get(i).getStack().copy());
+            dummy.setInventorySlotContents(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
         }
         return recipe.matches(dummy, world);
     }

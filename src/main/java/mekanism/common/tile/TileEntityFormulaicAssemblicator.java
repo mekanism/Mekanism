@@ -51,7 +51,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-//TODO: 1.14, Fix dupe bug that probably has to do with container/how it "fake fills" (attempt to drag single item after placing it in center slot)
 public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
@@ -73,6 +72,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     public int pulseOperations;
 
+    //TODO: Make sure we are clearing the recipe when `/reload` is ran if it no longer exists
     public RecipeFormula formula;
     private Optional<ICraftingRecipe> cachedRecipe = Optional.empty();
     private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
@@ -247,7 +247,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         lastFormulaStack = formulaStack;
     }
 
-    public void loadFormula() {
+    private void loadFormula() {
         ItemStack formulaStack = formulaSlot.getStack();
         ItemCraftingFormula formulaItem = (ItemCraftingFormula) formulaStack.getItem();
         if (formulaItem.isInvalid(formulaStack)) {
@@ -352,15 +352,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private boolean craftSingle() {
-        if (formula != null) {
-            boolean canOperate = true;
-            if (!formula.matches(getWorld(), craftingGridSlots)) {
-                canOperate = moveItemsToGrid();
-            }
-            if (canOperate) {
-                return doSingleCraft();
-            }
-        } else {
+        if (formula == null) {
+            return doSingleCraft();
+        }
+        boolean canOperate = true;
+        if (!formula.matches(getWorld(), craftingGridSlots)) {
+            canOperate = moveItemsToGrid();
+        }
+        if (canOperate) {
             return doSingleCraft();
         }
         return false;
@@ -374,14 +373,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             if (formula.isIngredientInPos(world, recipeStack, i)) {
                 continue;
             }
-            if (!recipeStack.isEmpty()) {
-                //Update recipeStack as well so we can check if it is empty without having to get it again
-                recipeSlot.setStack(recipeStack = tryMoveToInput(recipeStack));
-                markDirty();
-                if (!recipeStack.isEmpty()) {
-                    ret = false;
-                }
-            } else {
+            if (recipeStack.isEmpty()) {
                 boolean found = false;
                 for (int j = inputSlots.size() - 1; j >= 0; j--) {
                     //The stack stored in the stock inventory
@@ -400,6 +392,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                     }
                 }
                 if (!found) {
+                    ret = false;
+                }
+            } else {
+                //Update recipeStack as well so we can check if it is empty without having to get it again
+                recipeSlot.setStack(recipeStack = tryMoveToInput(recipeStack));
+                markDirty();
+                if (!recipeStack.isEmpty()) {
                     ret = false;
                 }
             }
@@ -564,9 +563,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             }
             return;
         }
-
         super.handlePacketData(dataStream);
-
         if (isRemote()) {
             if (dataStream.readBoolean()) {
                 NonNullList<ItemStack> inv = NonNullList.withSize(9, ItemStack.EMPTY);
