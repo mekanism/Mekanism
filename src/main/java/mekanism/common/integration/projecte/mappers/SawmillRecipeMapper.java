@@ -48,6 +48,7 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
         SawmillRecipe recipe = (SawmillRecipe) iRecipe;
         ItemStackIngredient input = recipe.getInput();
         int primaryMultiplier = 1;
+        int secondaryMultiplier = 1;
         if (recipe.getSecondaryChance() > 0 && recipe.getSecondaryChance() < 1) {
             Fraction multiplier;
             try {
@@ -57,6 +58,7 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
                 return false;
             }
             primaryMultiplier = multiplier.getNumerator();
+            secondaryMultiplier = multiplier.getDenominator();
         }
         for (ItemStack representation : input.getRepresentations()) {
             ChanceOutput output = recipe.getOutput(representation);
@@ -71,20 +73,20 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
             } else if (mainOutput.isEmpty()) {
                 //We only have a secondary output
                 ingredientMap.put(nssInput, representation.getCount() * primaryMultiplier);
-                mapper.addConversion(secondaryOutput.getCount(), NSSItem.createItem(secondaryOutput), ingredientMap);
+                mapper.addConversion(secondaryOutput.getCount() * secondaryMultiplier, NSSItem.createItem(secondaryOutput), ingredientMap);
             } else {
                 NormalizedSimpleStack nssMainOutput = NSSItem.createItem(mainOutput);
                 NormalizedSimpleStack nssSecondaryOutput = NSSItem.createItem(secondaryOutput);
                 //We have both so do our best guess by trying to subtract them from each other
                 //Add trying to calculate the main output (using it as if we needed negative of secondary output)
                 ingredientMap.put(nssInput, representation.getCount() * primaryMultiplier);
-                ingredientMap.put(nssSecondaryOutput, -secondaryOutput.getCount());
+                ingredientMap.put(nssSecondaryOutput, -secondaryOutput.getCount() * secondaryMultiplier);
                 mapper.addConversion(mainOutput.getCount() * primaryMultiplier, nssMainOutput, ingredientMap);
                 //Add trying to calculate secondary output (using it as if we needed negative of main output)
                 ingredientMap = new HashMap<>();
                 ingredientMap.put(nssInput, representation.getCount() * primaryMultiplier);
                 ingredientMap.put(nssMainOutput, -mainOutput.getCount() * primaryMultiplier);
-                mapper.addConversion(secondaryOutput.getCount(), nssSecondaryOutput, ingredientMap);
+                mapper.addConversion(secondaryOutput.getCount() * secondaryMultiplier, nssSecondaryOutput, ingredientMap);
             }
         }
         return true;
