@@ -38,20 +38,19 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 4, 24).with(SlotOverlay.PLUS));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 4, 55).with(SlotOverlay.MINUS));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 24));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 55));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 4).with(SlotOverlay.POWER));
-        addButton(new GuiHorizontalPowerBar(this, tile, resource, 115, 75));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 4, 24).with(SlotOverlay.PLUS));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 4, 55).with(SlotOverlay.MINUS));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 154, 24));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 154, 55));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 154, 4).with(SlotOverlay.POWER));
+        addButton(new GuiHorizontalPowerBar(this, tile, 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, resource, 133, 13));
-        addButton(new GuiGasGauge(() -> tile.gasTank, GuiGauge.Type.STANDARD, this, resource, 25, 13));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, 133, 13));
+        addButton(new GuiGasGauge(() -> tile.gasTank, GuiGauge.Type.STANDARD, this, 25, 13));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
@@ -62,7 +61,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             public boolean isActive() {
                 return !tile.mode;
             }
-        }, ProgressBar.LARGE_RIGHT, this, resource, 62, 38));
+        }, ProgressBar.LARGE_RIGHT, this, 62, 38));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
@@ -73,7 +72,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             public boolean isActive() {
                 return tile.mode;
             }
-        }, ProgressBar.LARGE_LEFT, this, resource, 62, 38));
+        }, ProgressBar.LARGE_LEFT, this, 62, 38));
         addButton(new MekanismImageButton(this, getGuiLeft() + 4, getGuiTop() + 4, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }

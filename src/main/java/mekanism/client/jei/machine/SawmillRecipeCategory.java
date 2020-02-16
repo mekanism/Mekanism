@@ -26,16 +26,16 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 55, 16));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 55, 52).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, guiLocation, 111, 30));
-        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, guiLocation, 164, 15));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 55, 16));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 55, 52).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
+        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return (double) timer.getValue() / 20F;
             }
-        }, progressBar, this, guiLocation, 77, 37));
+        }, progressBar, this, 77, 37));
     }
 
     @Override

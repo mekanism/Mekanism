@@ -19,7 +19,7 @@ public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorB
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSecurityTab<>(this, tile, getGuiLocation()));
+        addButton(new GuiSecurityTab<>(this, tile));
     }
 
     @Override

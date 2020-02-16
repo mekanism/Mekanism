@@ -41,18 +41,17 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
-        addButton(new GuiSlot(SlotType.POWER, this, resource, 14, 34).with(SlotOverlay.POWER));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiRedstoneControl(this, tile, resource));
+        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiSlot(SlotType.POWER, this, 14, 34).with(SlotOverlay.POWER));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.energyUsage)),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.lastEnvironmentLoss * unit.intervalSize, unit, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
-        }, this, resource));
+        }, this));
 
         String prevEnergyUsage = energyUsageField != null ? energyUsageField.getText() : "";
         addButton(energyUsageField = new TextFieldWidget(font, getGuiLeft() + 49, getGuiTop() + 52, 66, 11, prevEnergyUsage));

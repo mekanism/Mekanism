@@ -32,17 +32,16 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 27, 19));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 27, 50));
-        addButton(new GuiSlot(SlotType.POWER, this, resource, 142, 34).with(SlotOverlay.POWER));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 27, 19));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 27, 50));
+        addButton(new GuiSlot(SlotType.POWER, this, 142, 34).with(SlotOverlay.POWER));
+        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, 6, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
     }
 
     @Override

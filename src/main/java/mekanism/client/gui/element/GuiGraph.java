@@ -9,7 +9,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.opengl.GL11;
 
@@ -22,8 +21,8 @@ public class GuiGraph extends GuiTexturedElement {
     private boolean fixedScale = false;
 
     //TODO: Convert
-    public GuiGraph(IGuiWrapper gui, ResourceLocation def, int x, int y, int xSize, int ySize, GraphDataHandler handler) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "graph.png"), gui, def, x, y, xSize, ySize);
+    public GuiGraph(IGuiWrapper gui, int x, int y, int xSize, int ySize, GraphDataHandler handler) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "graph.png"), gui, x, y, xSize, ySize);
         dataHandler = handler;
     }
 
@@ -52,7 +51,6 @@ public class GuiGraph extends GuiTexturedElement {
         minecraft.textureManager.bindTexture(getResource());
         drawBlack();
         drawGraph();
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

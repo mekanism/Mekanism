@@ -35,14 +35,13 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier() : 0)),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this, resource));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
+        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
     }
 
     @Override

@@ -157,6 +157,7 @@ public abstract class GuiElement extends Widget {
         blit(x + halfWidthLeft, y + halfHeightTop, 200 - halfWidthRight, position + 20 - halfHeightBottom, halfWidthRight, halfHeightBottom);
 
         //TODO: Add support for buttons that are larger than 200x20 in either direction (most likely would be in the height direction
+        // Can use a lot of the same logic as GuiMekanism does for its background
 
         this.renderBg(minecraft, mouseX, mouseY);
 

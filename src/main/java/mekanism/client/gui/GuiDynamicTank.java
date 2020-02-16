@@ -21,7 +21,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiContainerEditMode(this, tile, getGuiLocation()));
+        addButton(new GuiContainerEditMode(this, tile));
     }
 
     @Override

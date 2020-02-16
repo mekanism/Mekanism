@@ -24,12 +24,11 @@ public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, MekanismT
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiContainerEditMode(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiFluidGauge.Type.WIDE, this, resource, 48, 18));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 145, 18).with(SlotOverlay.INPUT));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 145, 50).with(SlotOverlay.OUTPUT));
+        addButton(new GuiContainerEditMode(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiFluidGauge.Type.WIDE, this, 48, 18));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 145, 18).with(SlotOverlay.INPUT));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 145, 50).with(SlotOverlay.OUTPUT));
     }
 
     @Override

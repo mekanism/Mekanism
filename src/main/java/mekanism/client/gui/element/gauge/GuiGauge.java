@@ -19,7 +19,6 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiGauge<T> extends GuiTexturedElement {
@@ -32,8 +31,8 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
 
     protected T dummyType;
 
-    public GuiGauge(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, type.textureLocation), gui, def, x, y, type.width, type.height);
+    public GuiGauge(Type type, IGuiWrapper gui, int x, int y) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, type.textureLocation), gui, x, y, type.width, type.height);
         texX = type.texX;
         texY = type.texY;
         color = type.color;
@@ -56,7 +55,6 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         if (!dummy) {
             renderScale();
         }
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     public void renderScale() {

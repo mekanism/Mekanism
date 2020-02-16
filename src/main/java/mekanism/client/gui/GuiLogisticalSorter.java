@@ -43,10 +43,9 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
 
         addButton(new TranslationButton(this, getGuiLeft() + filterX, getGuiTop() + 136, filterW, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tile.getPos()))));

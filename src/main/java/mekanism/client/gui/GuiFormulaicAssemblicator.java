@@ -48,16 +48,15 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiSideConfigurationTab(this, tile, resource));
-        addButton(new GuiTransporterConfigTab(this, tile, resource));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 159, 15));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiSideConfigurationTab(this, tile));
+        addButton(new GuiTransporterConfigTab(this, tile));
+        addButton(new GuiVerticalPowerBar(this, tile, 159, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
-        addButton(new GuiSlot(SlotType.POWER, this, resource, 151, 75).with(SlotOverlay.POWER));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiSlot(SlotType.POWER, this, 151, 75).with(SlotOverlay.POWER));
 
         addButton(encodeFormulaButton = new MekanismImageButton(this, getGuiLeft() + 7, getGuiTop() + 45, 14, getButtonLocation("encode_formula"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),

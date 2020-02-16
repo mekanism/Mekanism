@@ -31,24 +31,23 @@ public class GuiPrecisionSawmill extends GuiMekanismTile<TileEntityPrecisionSawm
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiSideConfigurationTab(this, tile, resource));
-        addButton(new GuiTransporterConfigTab(this, tile, resource));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSideConfigurationTab(this, tile));
+        addButton(new GuiTransporterConfigTab(this, tile));
+        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
-        addButton(new GuiSlot(SlotType.INPUT, this, resource, 55, 16));
-        addButton(new GuiSlot(SlotType.POWER, this, resource, 55, 52).with(SlotOverlay.POWER));
-        addButton(new GuiSlot(SlotType.OUTPUT_WIDE, this, resource, 111, 30));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiSlot(SlotType.INPUT, this, 55, 16));
+        addButton(new GuiSlot(SlotType.POWER, this, 55, 52).with(SlotOverlay.POWER));
+        addButton(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.getScaledProgress();
             }
-        }, getProgressType(), this, resource, 77, 37));
+        }, getProgressType(), this, 77, 37));
     }
 
     public ProgressBar getProgressType() {

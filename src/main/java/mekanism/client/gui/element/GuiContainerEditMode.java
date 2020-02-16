@@ -20,8 +20,8 @@ public class GuiContainerEditMode extends GuiInsetElement<TileEntityMekanism> {
     private static final ResourceLocation FILL = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "container_edit_mode_fill.png");
     private static final ResourceLocation EMPTY = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "container_edit_mode_empty.png");
 
-    public GuiContainerEditMode(IGuiWrapper gui, TileEntityMekanism tile, ResourceLocation def) {
-        super(BOTH, gui, def, tile, gui.getWidth(), 138, 26, 18);
+    public GuiContainerEditMode(IGuiWrapper gui, TileEntityMekanism tile) {
+        super(BOTH, gui, tile, gui.getWidth(), 138, 26, 18);
     }
 
     @Override

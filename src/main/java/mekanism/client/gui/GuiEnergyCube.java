@@ -29,16 +29,15 @@ public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, Mekanis
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiSideConfigurationTab(this, tile, resource));
-        addButton(new GuiTransporterConfigTab(this, tile, resource));
-        addButton(new GuiEnergyGauge(() -> tile, GuiEnergyGauge.Type.WIDE, this, resource, 55, 18));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSideConfigurationTab(this, tile));
+        addButton(new GuiTransporterConfigTab(this, tile));
+        addButton(new GuiEnergyGauge(() -> tile, GuiEnergyGauge.Type.WIDE, this, 55, 18));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this, resource));
-        addButton(new GuiSlot(SlotType.INPUT, this, resource, 16, 34).with(SlotOverlay.MINUS));
-        addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 142, 34).with(SlotOverlay.PLUS));
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
+        addButton(new GuiSlot(SlotType.INPUT, this, 16, 34).with(SlotOverlay.MINUS));
+        addButton(new GuiSlot(SlotType.OUTPUT, this, 142, 34).with(SlotOverlay.PLUS));
     }
 
     @Override

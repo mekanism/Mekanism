@@ -73,7 +73,6 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
         addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -84,8 +83,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             public double getLevel() {
                 return getEnergy() / getMaxEnergy();
             }
-        }, resource, 158, 26));
-        addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 40));
+        }, 158, 26));
+        addButton(scrollList = new GuiScrollList(this, 28, 37, 120, 40));
 
         addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;

@@ -30,10 +30,14 @@ import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
 
+    private static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
+    protected boolean useDynamicBackground;
+
     protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 
+    //TODO: Remove this? We don't currently use this anymore
     public static boolean isTextboxKey(char c, int keyCode) {
         return keyCode == GLFW.GLFW_KEY_BACKSPACE || keyCode == GLFW.GLFW_KEY_DELETE || keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_END ||
                keyCode == GLFW.GLFW_KEY_HOME || Screen.isSelectAll(keyCode) || Screen.isCopy(keyCode) || Screen.isPaste(keyCode) || Screen.isCut(keyCode);
@@ -140,13 +144,71 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
     }
 
+    //TODO: Inline into drawGuiContainerBackgroundLayer
+    private void drawBackground() {
+        int width = getWidth();
+        int height = getHeight();
+        if (width < 8 || height < 8) {
+            Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
+            return;
+        }
+        int top = getGuiTop();
+        int left = getGuiLeft();
+        int textureDimensions = 9;
+        int cornerDimensions = 4;
+        int centerWidth = width - 2 * cornerDimensions;
+        int centerHeight = height - 2 * cornerDimensions;
+        int leftEdgeEnd = left + cornerDimensions;
+        int rightEdgeStart = leftEdgeEnd + centerWidth;
+        int topEdgeEnd = top + cornerDimensions;
+        int bottomEdgeStart = topEdgeEnd + centerHeight;
+        minecraft.textureManager.bindTexture(BASE_BACKGROUND);
+        //TODO: Handle the edge case of if our gui is less than 8x8 in size? Mainly probably just want to print an error and not do anything
+        //Left Side
+        //Top Left Corner (4x4)
+        drawModalRectWithCustomSizedTexture(left, top, 0, 0, cornerDimensions, cornerDimensions, textureDimensions, textureDimensions);
+        //Left Middle (4x1)
+        if (centerHeight > 0) {
+            drawModalRectWithCustomSizedTexture(left, topEdgeEnd, 4, centerHeight, 0, 4, 4, 1, textureDimensions, textureDimensions);
+        }
+        //Bottom Left Corner (4x4)
+        drawModalRectWithCustomSizedTexture(left, bottomEdgeStart, 0, 5, cornerDimensions, cornerDimensions, textureDimensions, textureDimensions);
+
+        //Middle
+        if (centerWidth > 0) {
+            //Top Middle (1x4)
+            drawModalRectWithCustomSizedTexture(leftEdgeEnd, top, centerWidth, 4, 4, 0, 1, 4, textureDimensions, textureDimensions);
+            if (centerHeight > 0) {
+                //Center
+                drawModalRectWithCustomSizedTexture(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, 4, 4, 1, 1, textureDimensions, textureDimensions);
+            }
+            //Bottom Middle (1x4)
+            drawModalRectWithCustomSizedTexture(leftEdgeEnd, bottomEdgeStart, centerWidth, 4, 4, 5, 1, 4, textureDimensions, textureDimensions);
+        }
+
+        //Right side
+        //Top Right Corner (4x4)
+        drawModalRectWithCustomSizedTexture(rightEdgeStart, top, 5, 0, cornerDimensions, cornerDimensions, textureDimensions, textureDimensions);
+        //Right Middle (4x1)
+        if (centerHeight > 0) {
+            drawModalRectWithCustomSizedTexture(rightEdgeStart, topEdgeEnd, 4, centerHeight, 5, 4, 4, 1, textureDimensions, textureDimensions);
+        }
+        //Bottom Right Corner (4x4)
+        drawModalRectWithCustomSizedTexture(rightEdgeStart, bottomEdgeStart, 5, 5, cornerDimensions, cornerDimensions, textureDimensions, textureDimensions);
+    }
+
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
-        minecraft.textureManager.bindTexture(getGuiLocation());
-        drawTexturedRect(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
+        //TODO: Draw our base texture for the gui
+        if (useDynamicBackground) {
+            drawBackground();
+        } else {
+            minecraft.textureManager.bindTexture(getGuiLocation());
+            drawTexturedRect(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
+        }
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         drawGuiContainerBackgroundLayer(xAxis, yAxis);

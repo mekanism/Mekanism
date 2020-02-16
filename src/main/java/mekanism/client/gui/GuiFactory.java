@@ -51,26 +51,28 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
         super(container, inv, title);
         if (tile.hasSecondaryResourceBar()) {
             ySize += 11;
+        } else if (tile instanceof TileEntitySawingFactory) {
+            ySize += 21;
         }
         if (tile.tier == FactoryTier.ULTIMATE) {
             xSize += 34;
         }
+        useDynamicBackground = true;
     }
 
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiSideConfigurationTab(this, tile, resource));
-        addButton(new GuiTransporterConfigTab(this, tile, resource));
-        addButton(new GuiSortingTab(this, tile, resource));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, getXSize() - 12, 16));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiSideConfigurationTab(this, tile));
+        addButton(new GuiTransporterConfigTab(this, tile));
+        addButton(new GuiSortingTab(this, tile));
+        //TODO: Make the power bar taller for the sawing factories
+        addButton(new GuiVerticalPowerBar(this, tile, getXSize() - 12, 16));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.lastUsage)),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
-
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
         if (tile.hasSecondaryResourceBar()) {
             ChemicalInfoProvider<? extends Chemical<?>> provider = null;
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {
@@ -80,9 +82,9 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
             }
             if (provider != null) {
                 int barX = tile.tier == FactoryTier.ULTIMATE ? 25 : 7;
-                addButton(new GuiHorizontalChemicalBar<>(this, provider, resource, barX, 76, 140));
+                addButton(new GuiHorizontalChemicalBar<>(this, provider, barX, 76, 140));
                 //TODO: Move left and make wider for ultimate factory??
-                addButton(new GuiDumpButton<>(this, tile, resource, barX + 141, 76,
+                addButton(new GuiDumpButton<>(this, tile, barX + 141, 76,
                       () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1)))));
             }
         }
@@ -96,33 +98,27 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
                 public double getProgress() {
                     return tile.getScaledProgress(1, cacheIndex);
                 }
-            }, resource, 4 + baseX + (i * baseXMult), 33));
+            }, 4 + baseX + (i * baseXMult), 33));
         }
-
+        //TODO: Move this into the main GuiMekanism putting it behind a check of useDynamicBackground
         for (Slot slot : container.inventorySlots) {
-            GuiSlot slotElement;
             if (slot instanceof InventoryContainerSlot) {
-                InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
-                ContainerSlotType slotType = containerSlot.getSlotType();
-                if (slotType == ContainerSlotType.IGNORED) {
-                    continue;
-                }
+                ContainerSlotType slotType = ((InventoryContainerSlot) slot).getSlotType();
                 //Shift the slots by one as the elements include the border of the slot
                 if (slotType == ContainerSlotType.INPUT) {
-                    slotElement = new GuiSlot(SlotType.INPUT, this, resource, slot.xPos - 1, slot.yPos - 1);
+                    addButton( new GuiSlot(SlotType.INPUT, this, slot.xPos - 1, slot.yPos - 1));
                 } else if (slotType == ContainerSlotType.OUTPUT) {
-                    slotElement = new GuiSlot(SlotType.OUTPUT, this, resource, slot.xPos - 1, slot.yPos - 1);
+                    addButton(new GuiSlot(SlotType.OUTPUT, this, slot.xPos - 1, slot.yPos - 1));
                 } else if (slotType == ContainerSlotType.POWER) {
-                    slotElement = new GuiSlot(SlotType.POWER, this, resource, slot.xPos - 1, slot.yPos - 1).with(SlotOverlay.POWER);
+                    addButton(new GuiSlot(SlotType.POWER, this, slot.xPos - 1, slot.yPos - 1).with(SlotOverlay.POWER));
                 } else if (slotType == ContainerSlotType.EXTRA) {
-                    slotElement = new GuiSlot(SlotType.EXTRA, this, resource, slot.xPos - 1, slot.yPos - 1);
-                } else {//slotType == ContainerSlotType.NORMAL
-                    slotElement = new GuiSlot(SlotType.NORMAL, this, resource, slot.xPos - 1, slot.yPos - 1);
-                }
+                    addButton(new GuiSlot(SlotType.EXTRA, this, slot.xPos - 1, slot.yPos - 1));
+                } else if (slotType == ContainerSlotType.NORMAL) {
+                    addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
+                } //else slotType == ContainerSlotType.IGNORED: don't do anything
             } else {
-                slotElement = new GuiSlot(SlotType.NORMAL, this, resource, slot.xPos - 1, slot.yPos - 1);
+                addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
             }
-            addButton(slotElement);
         }
     }
 
@@ -156,21 +152,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        //TODO: Make this instead generate background dynamically from the empty texture instead of having four blank textures
-        if (tile.hasSecondaryResourceBar()) {
-            if (tile.tier == FactoryTier.ULTIMATE) {
-                return MekanismUtils.getResource(ResourceType.GUI, "wide_empty_tall.png");
-            }
-            return MekanismUtils.getResource(ResourceType.GUI, "empty_tall.png");
-        }
-        if (tile.tier == FactoryTier.ULTIMATE) {
-            return MekanismUtils.getResource(ResourceType.GUI, "wide_empty.png");
-        }
+        //TODO: Remove this now that it is done dynamically?
         return MekanismUtils.getResource(ResourceType.GUI, "null.png");
-    }
-
-    @Override
-    public int getWidth() {
-        return getXSize();
     }
 }

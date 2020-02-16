@@ -4,7 +4,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
 
 //TODO: Should this extend MekanismImageButton
 public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTileEntityElement<TILE> {
@@ -12,8 +11,8 @@ public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTileEntit
     private final Runnable onPress;
 
     //TODO: Make it some tile that implements a dumping interface
-    public GuiDumpButton(IGuiWrapper gui, TILE tile, ResourceLocation def, int x, int y, Runnable onPress) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "dump.png"), gui, def, tile, x, y, 21, 10);
+    public GuiDumpButton(IGuiWrapper gui, TILE tile, int x, int y, Runnable onPress) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "dump.png"), gui, tile, x, y, 21, 10);
         this.onPress = onPress;
     }
 
@@ -21,7 +20,6 @@ public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTileEntit
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

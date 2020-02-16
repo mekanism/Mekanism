@@ -9,13 +9,12 @@ import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
-    public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "visuals.png"), gui, def, tile, -26, 6, 26, 18);
+    public GuiVisualsTab(IGuiWrapper gui, TileEntityDigitalMiner tile) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "visuals.png"), gui, tile, -26, 6, 26, 18);
     }
 
     @Override

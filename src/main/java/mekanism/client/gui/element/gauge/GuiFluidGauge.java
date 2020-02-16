@@ -7,21 +7,20 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
 
-    public GuiFluidGauge(IFluidInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(type, gui, def, x, y, handler);
+    public GuiFluidGauge(IFluidInfoHandler handler, Type type, IGuiWrapper gui, int x, int y) {
+        super(type, gui, x, y, handler);
         //Ensure it isn't null
         setDummyType(FluidStack.EMPTY);
     }
 
-    public static GuiFluidGauge getDummy(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        GuiFluidGauge gauge = new GuiFluidGauge(null, type, gui, def, x, y);
+    public static GuiFluidGauge getDummy(Type type, IGuiWrapper gui, int x, int y) {
+        GuiFluidGauge gauge = new GuiFluidGauge(null, type, gui, x, y);
         gauge.dummy = true;
         return gauge;
     }

@@ -36,13 +36,13 @@ public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends Gui
     private final Hand currentHand;
     private boolean isItem;
 
-    public GuiSecurityTab(IGuiWrapper gui, TILE tile, ResourceLocation def) {
-        super(PUBLIC, gui, def, tile, gui.getWidth(), 32, 26, 18);
+    public GuiSecurityTab(IGuiWrapper gui, TILE tile) {
+        super(PUBLIC, gui, tile, gui.getWidth(), 32, 26, 18);
         this.currentHand = Hand.MAIN_HAND;
     }
 
-    public GuiSecurityTab(IGuiWrapper gui, ResourceLocation def, Hand hand) {
-        super(PUBLIC, gui, def, null, gui.getWidth(), 32, 26, 18);
+    public GuiSecurityTab(IGuiWrapper gui, Hand hand) {
+        super(PUBLIC, gui, null, gui.getWidth(), 32, 26, 18);
         isItem = true;
         currentHand = hand;
     }

@@ -38,29 +38,28 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, resource, 5, 10));
-        addButton(new GuiGasGauge(() -> tile.leftTank, GuiGauge.Type.SMALL, this, resource, 58, 18));
-        addButton(new GuiGasGauge(() -> tile.rightTank, GuiGauge.Type.SMALL, this, resource, 100, 18));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 34));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 58, 51));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 100, 51));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, 5, 10));
+        addButton(new GuiGasGauge(() -> tile.leftTank, GuiGauge.Type.SMALL, this, 58, 18));
+        addButton(new GuiGasGauge(() -> tile.rightTank, GuiGauge.Type.SMALL, this, 100, 18));
+        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 25, 34));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 58, 51));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 100, 51));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.getActive() ? 1 : 0;
             }
-        }, ProgressBar.BI, this, resource, 78, 29));
-        addButton(new GuiGasMode(this, resource, 7, 72, false, () -> tile.dumpLeft,
+        }, ProgressBar.BI, this, 78, 29));
+        addButton(new GuiGasMode(this, 7, 72, false, () -> tile.dumpLeft,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents((byte) 0)))));
-        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tile.dumpRight,
+        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.dumpRight,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents((byte) 1)))));
     }
 

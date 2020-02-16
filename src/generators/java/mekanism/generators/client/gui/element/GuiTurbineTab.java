@@ -18,8 +18,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, TurbineTab> {
 
-    public GuiTurbineTab(IGuiWrapper gui, TileEntityTurbineCasing tile, TurbineTab type, ResourceLocation def) {
-        super(gui, tile, type, def);
+    public GuiTurbineTab(IGuiWrapper gui, TileEntityTurbineCasing tile, TurbineTab type) {
+        super(gui, tile, type);
     }
 
     public enum TurbineTab implements TabType<TileEntityTurbineCasing> {

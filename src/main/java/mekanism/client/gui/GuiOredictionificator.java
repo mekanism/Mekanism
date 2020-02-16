@@ -46,17 +46,16 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.didProcess ? 1 : 0;
             }
-        }, ProgressBar.LARGE_RIGHT, this, resource, 62, 118));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 114));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 133, 114));
+        }, ProgressBar.LARGE_RIGHT, this, 62, 118));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 25, 114));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 133, 114));
         addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile.getPos(), 0))));
     }

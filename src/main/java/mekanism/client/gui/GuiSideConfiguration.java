@@ -53,12 +53,11 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Em
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
         List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
             TransmissionType type = transmissions.get(i);
             //TODO: Figure out if there is a simpler way to do y
-            GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, resource, (i < 3 ? -26 : 176), 2 + ((i % 3) * (26 + 2)));
+            GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, (i < 3 ? -26 : 176), 2 + ((i % 3) * (26 + 2)));
             addButton(tab);
             configTabs.add(tab);
         }

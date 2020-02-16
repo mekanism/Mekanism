@@ -3,29 +3,27 @@ package mekanism.client.gui.element;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiProgress extends GuiTexturedElement {
 
     private final IProgressInfoHandler handler;
     private final ProgressBar type;
 
-    public GuiProgress(IProgressInfoHandler handler, ProgressBar type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "progress.png"), gui, def, x, y, type.width, type.height);
+    public GuiProgress(IProgressInfoHandler handler, ProgressBar type, IGuiWrapper gui, int x, int y) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "progress.png"), gui, x, y, type.width, type.height);
         this.type = type;
         this.handler = handler;
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(getResource());
         if (handler.isActive()) {
+            minecraft.textureManager.bindTexture(getResource());
             guiObj.drawTexturedRect(x, y, type.textureX, type.textureY, width, height);
             int innerOffsetX = 2;
             int displayInt = (int) (handler.getProgress() * (width - 2 * innerOffsetX));
             guiObj.drawTexturedRect(x + innerOffsetX, y, type.textureX + width + innerOffsetX, type.textureY, displayInt, height);
         }
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     public enum ProgressBar {

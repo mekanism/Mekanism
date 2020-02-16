@@ -46,12 +46,11 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 163, 23));
-        addButton(new GuiVisualsTab(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiVerticalPowerBar(this, tile, 163, 23));
+        addButton(new GuiVisualsTab(this, tile));
         addButton(new GuiEnergyInfo(() -> {
             double perTick = tile.getEnergyPerTick();
             ArrayList<ITextComponent> ret = new ArrayList<>(4);
@@ -62,9 +61,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             }
             ret.add(MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(tile.getNeededEnergy())));
             return ret;
-        }, this, resource));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 151, 5).with(SlotOverlay.POWER));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 143, 26));
+        }, this));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 151, 5).with(SlotOverlay.POWER));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 143, 26));
 
         addButton(startButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 17, 60, 20, MekanismLang.BUTTON_START,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3)))));

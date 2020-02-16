@@ -60,10 +60,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -74,9 +73,9 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             public double getLevel() {
                 return getEnergy() / getMaxEnergy();
             }
-        }, resource, 158, 26));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 152, 6).with(SlotOverlay.POWER));
-        addButton(scrollList = new GuiScrollList(this, resource, 28, 37, 120, 40));
+        }, 158, 26));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 152, 6).with(SlotOverlay.POWER));
+        addButton(scrollList = new GuiScrollList(this, 28, 37, 120, 40));
 
         addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;

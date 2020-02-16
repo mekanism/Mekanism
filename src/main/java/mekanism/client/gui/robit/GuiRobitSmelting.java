@@ -22,7 +22,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
             public double getProgress() {
                 return robit.getScaledProgress();
             }
-        }, ProgressBar.GREEN, this, getGuiLocation(), 77, 37));
+        }, ProgressBar.GREEN, this, 77, 37));
     }
 
     @Override

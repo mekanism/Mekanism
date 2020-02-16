@@ -15,8 +15,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, BoilerTab> {
 
-    public GuiBoilerTab(IGuiWrapper gui, TileEntityBoilerCasing tile, BoilerTab type, ResourceLocation def) {
-        super(gui, tile, type, def);
+    public GuiBoilerTab(IGuiWrapper gui, TileEntityBoilerCasing tile, BoilerTab type) {
+        super(gui, tile, type);
     }
 
     public enum BoilerTab implements TabType<TileEntityBoilerCasing> {

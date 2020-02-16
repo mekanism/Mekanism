@@ -36,22 +36,21 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, M
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProducingEnergy())),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this, resource));
-        addButton(new GuiFluidGauge(() -> tile.lavaTank, Type.WIDE, this, resource, 55, 18));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 16, 34));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
+        addButton(new GuiFluidGauge(() -> tile.lavaTank, Type.WIDE, this, 55, 18));
+        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 16, 34));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent transfer = UnitDisplayUtils.getDisplayShort(tile.getLastTransferLoss(), unit, false);
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.getLastEnvironmentLoss(), unit, false);
             return Arrays.asList(GeneratorsLang.TRANSFERRED_RATE.translate(transfer), MekanismLang.DISSIPATED_RATE.translate(environment));
-        }, this, resource));
+        }, this));
     }
 
     @Override

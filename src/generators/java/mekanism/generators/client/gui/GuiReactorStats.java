@@ -15,7 +15,6 @@ import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiReactorStats extends GuiReactorInfo {
@@ -29,12 +28,11 @@ public class GuiReactorStats extends GuiReactorInfo {
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
         addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
-              this, resource));
-        addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT, resource));
-        addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL, resource));
+              this));
+        addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT));
+        addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL));
     }
 
     @Override

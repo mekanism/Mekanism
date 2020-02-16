@@ -48,7 +48,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     @Override
     public void init() {
         super.init();
-        addButton(scrollList = new GuiScrollList(this, getGuiLocation(), 14, 14, 120, 40));
+        addButton(scrollList = new GuiScrollList(this, 14, 14, 120, 40));
 
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();

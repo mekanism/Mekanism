@@ -17,8 +17,8 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
 
     private static final ResourceLocation HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "extended_holder_left.png");
 
-    public GuiSortingTab(IGuiWrapper gui, TileEntityFactory<?> tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "sorting.png"), gui, def, tile, -26, 62, 26, 35, 18);
+    public GuiSortingTab(IGuiWrapper gui, TileEntityFactory<?> tile) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "sorting.png"), gui, tile, -26, 62, 26, 35, 18);
     }
 
     @Override

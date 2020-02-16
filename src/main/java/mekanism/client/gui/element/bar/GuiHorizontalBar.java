@@ -12,9 +12,9 @@ public abstract class GuiHorizontalBar<INFO extends IBarInfoHandler> extends Gui
     private static final int TEX_WIDTH = 54;
     private static final int TEX_HEIGHT = 6;
 
-    public GuiHorizontalBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, ResourceLocation def, int x, int y, int width, int height) {
+    public GuiHorizontalBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, int x, int y, int width, int height) {
         //TODO: Bump the width by 2? for the border of the bar image? Or maybe remove border
-        super(resource, gui, handler, def, x, y, width, height);
+        super(resource, gui, handler, x, y, width, height);
     }
 
     @Override

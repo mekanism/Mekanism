@@ -19,8 +19,8 @@ public class GuiGasMode extends GuiTexturedElement {
     private final Supplier<GasMode> gasModeSupplier;
     private final Runnable onPress;
 
-    public GuiGasMode(IGuiWrapper gui, ResourceLocation def, int x, int y, boolean left, Supplier<GasMode> gasModeSupplier, Runnable onPress) {
-        super(IDLE, gui, def, x, y, 10, 10);
+    public GuiGasMode(IGuiWrapper gui, int x, int y, boolean left, Supplier<GasMode> gasModeSupplier, Runnable onPress) {
+        super(IDLE, gui, x, y, 10, 10);
         this.left = left;
         this.gasModeSupplier = gasModeSupplier;
         this.onPress = onPress;
@@ -50,7 +50,6 @@ public class GuiGasMode extends GuiTexturedElement {
         //Draw overlay
         minecraft.textureManager.bindTexture(getResource());
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, 10, 10);
-        minecraft.textureManager.bindTexture(defaultLocation);
         //Draw the text next to the button
         ITextComponent component = gasModeSupplier.get().getTextComponent();
         if (left) {

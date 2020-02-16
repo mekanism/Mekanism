@@ -8,16 +8,8 @@ public abstract class GuiTileEntityElement<TILE extends TileEntity> extends GuiT
 
     protected final TILE tile;
 
-    public GuiTileEntityElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, TILE tile) {
-        this(resource, gui, def, tile, 0, 0);
-    }
-
-    public GuiTileEntityElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, TILE tile, int x, int y) {
-        this(resource, gui, def, tile, x, y, 0, 0);
-    }
-
-    public GuiTileEntityElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, TILE tile, int x, int y, int width, int height) {
-        super(resource, gui, def, x, y, width, height);
+    public GuiTileEntityElement(ResourceLocation resource, IGuiWrapper gui, TILE tile, int x, int y, int width, int height) {
+        super(resource, gui, x, y, width, height);
         this.tile = tile;
     }
 }

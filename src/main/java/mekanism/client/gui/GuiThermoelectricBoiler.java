@@ -30,8 +30,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiBoilerTab(this, tile, BoilerTab.STAT, resource));
+        addButton(new GuiBoilerTab(this, tile, BoilerTab.STAT));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -42,7 +41,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
             public double getLevel() {
                 return tile.structure == null ? 0 : (double) tile.getLastBoilRate() / (double) tile.structure.lastMaxBoil;
             }
-        }, resource, 24, 13));
+        }, 24, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -54,12 +53,12 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
                 return tile.structure == null ? 0 : tile.getLastMaxBoil() * SynchronizedBoilerData.getHeatEnthalpy() /
                                                     (tile.structure.superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get());
             }
-        }, resource, 144, 13));
+        }, 144, 13));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.getLastEnvironmentLoss() * unit.intervalSize, unit, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
-        }, this, resource));
+        }, this));
     }
 
     @Override

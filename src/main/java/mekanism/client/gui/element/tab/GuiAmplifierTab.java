@@ -17,8 +17,8 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     private static final ResourceLocation ENTITY = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier_entity.png");
     private static final ResourceLocation CONTENTS = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier_contents.png");
 
-    public GuiAmplifierTab(IGuiWrapper gui, TileEntityLaserAmplifier tile, ResourceLocation def) {
-        super(OFF, gui, def, tile, -26, 138, 26, 18);
+    public GuiAmplifierTab(IGuiWrapper gui, TileEntityLaserAmplifier tile) {
+        super(OFF, gui, tile, -26, 138, 26, 18);
     }
 
     @Override

@@ -34,9 +34,8 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiTurbineTab(this, tile, TurbineTab.STAT, resource));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 16));
+        addButton(new GuiTurbineTab(this, tile, TurbineTab.STAT));
+        addButton(new GuiVerticalPowerBar(this, tile, 164, 16));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -55,14 +54,14 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
                 }
                 return (double) tile.structure.lastSteamInput / rate;
             }
-        }, resource, 40, 13));
+        }, 40, 13));
         addButton(new GuiEnergyInfo(() -> {
             double producing = tile.structure == null ? 0 : tile.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                                             Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(producing)));
-        }, this, resource));
-        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tile.structure == null ? GasMode.IDLE : tile.structure.dumpMode,
+        }, this));
+        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.structure == null ? GasMode.IDLE : tile.structure.dumpMode,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
     }
 

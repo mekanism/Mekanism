@@ -20,8 +20,8 @@ public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
     private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "redstone_control_low.png");
     private static final ResourceLocation PULSE = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "redstone_control_pulse.png");
 
-    public GuiRedstoneControl(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
-        super(DISABLED, gui, def, tile, gui.getWidth(), 138, 26, 18);
+    public GuiRedstoneControl(IGuiWrapper gui, TileEntity tile) {
+        super(DISABLED, gui, tile, gui.getWidth(), 138, 26, 18);
     }
 
     @Override

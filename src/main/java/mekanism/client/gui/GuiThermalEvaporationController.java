@@ -27,14 +27,13 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiFluidGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, resource, 6, 13));
-        addButton(new GuiFluidGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, resource, 152, 13));
+        addButton(new GuiFluidGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, 6, 13));
+        addButton(new GuiFluidGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.totalLoss * unit.intervalSize, unit, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
-        }, this, resource));
+        }, this));
     }
 
     @Override

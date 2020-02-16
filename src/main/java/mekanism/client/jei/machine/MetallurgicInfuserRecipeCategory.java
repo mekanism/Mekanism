@@ -79,18 +79,18 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, guiLocation, 16, 34));
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 50, 42));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 142, 34).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, guiLocation, 108, 42));
-        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, guiLocation, 164, 15));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 16, 34));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 50, 42));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 142, 34).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 108, 42));
+        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return (double) timer.getValue() / 20F;
             }
-        }, ProgressBar.MEDIUM, this, guiLocation, 70, 46));
-        guiElements.add(infuseBar = new GuiVerticalChemicalBar<>(this, infoProvider = new RecipeInfuseInfoProvider(), guiLocation, 7, 15));
+        }, ProgressBar.MEDIUM, this, 70, 46));
+        guiElements.add(infuseBar = new GuiVerticalChemicalBar<>(this, infoProvider = new RecipeInfuseInfoProvider(), 7, 15));
     }
 
     @Override

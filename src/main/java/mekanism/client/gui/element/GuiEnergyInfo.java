@@ -7,15 +7,14 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiEnergyInfo extends GuiTexturedElement {
 
     private final IInfoHandler infoHandler;
 
-    public GuiEnergyInfo(IInfoHandler handler, IGuiWrapper gui, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "energy_info.png"), gui, def, -26, 138, 26, 26);
+    public GuiEnergyInfo(IInfoHandler handler, IGuiWrapper gui) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "energy_info.png"), gui, -26, 138, 26, 26);
         infoHandler = handler;
     }
 
@@ -23,7 +22,6 @@ public class GuiEnergyInfo extends GuiTexturedElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

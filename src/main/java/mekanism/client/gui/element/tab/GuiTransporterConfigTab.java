@@ -9,12 +9,11 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiTransporterConfigTab extends GuiInsetElement<TileEntity> {
 
-    public GuiTransporterConfigTab(IGuiWrapper gui, TileEntity tile, ResourceLocation def) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "transporter_config.png"), gui, def, tile, -26, 34, 26, 18);
+    public GuiTransporterConfigTab(IGuiWrapper gui, TileEntity tile) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "transporter_config.png"), gui, tile, -26, 34, 26, 18);
     }
 
     @Override

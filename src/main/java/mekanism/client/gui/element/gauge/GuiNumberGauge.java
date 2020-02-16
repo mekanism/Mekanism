@@ -5,15 +5,14 @@ import static java.lang.Math.min;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiNumberGauge extends GuiGauge {
 
     private final INumberInfoHandler infoHandler;
 
-    public GuiNumberGauge(INumberInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(type, gui, def, x, y);
+    public GuiNumberGauge(INumberInfoHandler handler, Type type, IGuiWrapper gui, int x, int y) {
+        super(type, gui, x, y);
         infoHandler = handler;
     }
 

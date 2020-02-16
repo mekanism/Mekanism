@@ -17,12 +17,12 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiTileEn
     protected final boolean left;
 
     //TODO: Improve the overlays by having some spots have alpha for transparency rather than only keeping the "key" parts. Do the same for the MekanismImageButtons
-    public GuiInsetElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, TILE tile, int x, int y, int size, int innerSize) {
-        this(resource, gui, def, tile, x, y, size, size, innerSize);
+    public GuiInsetElement(ResourceLocation resource, IGuiWrapper gui, TILE tile, int x, int y, int size, int innerSize) {
+        this(resource, gui, tile, x, y, size, size, innerSize);
     }
 
-    public GuiInsetElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, TILE tile, int x, int y, int width, int height, int innerSize) {
-        super(resource, gui, def, tile, x, y, width, height);
+    public GuiInsetElement(ResourceLocation resource, IGuiWrapper gui, TILE tile, int x, int y, int width, int height, int innerSize) {
+        super(resource, gui, tile, x, y, width, height);
         this.innerWidth = innerSize;
         this.innerHeight = innerSize;
         //TODO: decide what to do if this doesn't divide nicely
@@ -76,6 +76,5 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiTileEn
 
         minecraft.textureManager.bindTexture(getResource());
         guiObj.drawModalRectWithCustomSizedTexture(getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 }

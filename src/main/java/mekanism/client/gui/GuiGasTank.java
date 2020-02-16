@@ -33,14 +33,13 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiSideConfigurationTab(this, tile, resource));
-        addButton(new GuiTransporterConfigTab(this, tile, resource));
-        addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 7, 7).with(SlotOverlay.PLUS));
-        addButton(new GuiSlot(SlotType.INPUT, this, resource, 7, 39).with(SlotOverlay.MINUS));
-        addButton(new GuiGasMode(this, resource, 159, 72, true, () -> tile.dumping,
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiSideConfigurationTab(this, tile));
+        addButton(new GuiTransporterConfigTab(this, tile));
+        addButton(new GuiSlot(SlotType.OUTPUT, this, 7, 7).with(SlotOverlay.PLUS));
+        addButton(new GuiSlot(SlotType.INPUT, this, 7, 39).with(SlotOverlay.MINUS));
+        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.dumping,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
     }
 
@@ -95,8 +94,6 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
                 start += 16;
             }
             MekanismRenderer.resetColor();
-            //Reset the texture location, even though it technically isn't needed
-            minecraft.textureManager.bindTexture(getGuiLocation());
         }
     }
 

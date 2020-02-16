@@ -31,15 +31,14 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Meka
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiBoilerTab(this, tile, BoilerTab.MAIN, resource));
+        addButton(new GuiBoilerTab(this, tile, BoilerTab.MAIN));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.getLastEnvironmentLoss() * unit.intervalSize, unit, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
-        }, this, resource));
-        addButton(boilGraph = new GuiGraph(this, resource, 8, 83, 160, 36, MekanismLang.BOIL_RATE::translate));
-        addButton(maxGraph = new GuiGraph(this, resource, 8, 122, 160, 36, MekanismLang.MAX_BOIL_RATE::translate));
+        }, this));
+        addButton(boilGraph = new GuiGraph(this, 8, 83, 160, 36, MekanismLang.BOIL_RATE::translate));
+        addButton(maxGraph = new GuiGraph(this, 8, 122, 160, 36, MekanismLang.MAX_BOIL_RATE::translate));
         maxGraph.enableFixedScale((int) ((tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get()) / SynchronizedBoilerData.getHeatEnthalpy()));
     }
 

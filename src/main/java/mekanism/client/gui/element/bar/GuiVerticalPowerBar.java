@@ -16,7 +16,7 @@ public class GuiVerticalPowerBar extends GuiVerticalBar<IBarInfoHandler> {
     private static final int texHeight = 52;
 
     //TODO: For this and elements like it we should not allow clicking them even if the on click does nothing (we don't want a click sound to be made)
-    public GuiVerticalPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, ResourceLocation def, int x, int y) {
+    public GuiVerticalPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, int x, int y) {
         super(ENERGY_BAR, gui, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -27,11 +27,11 @@ public class GuiVerticalPowerBar extends GuiVerticalBar<IBarInfoHandler> {
             public double getLevel() {
                 return tile.getEnergy() / tile.getMaxEnergy();
             }
-        }, def, x, y, texWidth + 2, texHeight + 2);
+        }, x, y, texWidth + 2, texHeight + 2);
     }
 
-    public GuiVerticalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, ResourceLocation def, int x, int y) {
-        super(ENERGY_BAR, gui, handler, def, x, y, texWidth + 2, texHeight + 2);
+    public GuiVerticalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
+        super(ENERGY_BAR, gui, handler, x, y, texWidth + 2, texHeight + 2);
     }
 
     @Override

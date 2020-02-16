@@ -29,14 +29,13 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiTurbineTab(this, tile, TurbineTab.MAIN, resource));
+        addButton(new GuiTurbineTab(this, tile, TurbineTab.MAIN));
         addButton(new GuiEnergyInfo(() -> {
             double producing = tile.structure == null ? 0 : tile.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                                             Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
             return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(producing)));
-        }, this, resource));
+        }, this));
     }
 
     @Override

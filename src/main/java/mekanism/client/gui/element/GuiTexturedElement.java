@@ -9,12 +9,10 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiTexturedElement extends GuiElement {
 
     protected final ResourceLocation resource;
-    protected final ResourceLocation defaultLocation;
 
-    public GuiTexturedElement(ResourceLocation resource, IGuiWrapper gui, ResourceLocation def, int x, int y, int width, int height) {
+    public GuiTexturedElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height) {
         super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, "");
         this.resource = resource;
-        defaultLocation = def;
     }
 
     protected ResourceLocation getResource() {

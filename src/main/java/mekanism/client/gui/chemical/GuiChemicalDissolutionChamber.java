@@ -34,25 +34,24 @@ public class GuiChemicalDissolutionChamber extends GuiMekanismTile<TileEntityChe
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiHorizontalPowerBar(this, tile, resource, 115, 75));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiHorizontalPowerBar(this, tile, 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
-        addButton(new GuiGasGauge(() -> tile.injectTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
-        addButton(new GuiGasGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, resource, 133, 13));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 4).with(SlotOverlay.POWER));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 25, 35));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 154, 24).with(SlotOverlay.PLUS));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 5, 64).with(SlotOverlay.MINUS));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiGasGauge(() -> tile.injectTank, GuiGauge.Type.STANDARD, this, 5, 4));
+        addButton(new GuiGasGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, 133, 13));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 154, 4).with(SlotOverlay.POWER));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 25, 35));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 154, 24).with(SlotOverlay.PLUS));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 5, 64).with(SlotOverlay.MINUS));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.getScaledProgress();
             }
-        }, ProgressBar.LARGE_RIGHT, this, resource, 62, 39));
+        }, ProgressBar.LARGE_RIGHT, this, 62, 39));
     }
 
     @Override

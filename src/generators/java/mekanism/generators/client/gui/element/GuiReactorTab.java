@@ -18,8 +18,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController, ReactorTab> {
 
-    public GuiReactorTab(IGuiWrapper gui, TileEntityReactorController tile, ReactorTab type, ResourceLocation def) {
-        super(gui, tile, type, def);
+    public GuiReactorTab(IGuiWrapper gui, TileEntityReactorController tile, ReactorTab type) {
+        super(gui, tile, type);
     }
 
     public enum ReactorTab implements TabType<TileEntityReactorController> {

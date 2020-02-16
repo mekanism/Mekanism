@@ -11,9 +11,9 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
 
     private final INFO handler;
 
-    public GuiBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, ResourceLocation def, int x, int y, int width, int height) {
+    public GuiBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, int x, int y, int width, int height) {
         //TODO: Bump the width by 2? for the border of the bar image? Or maybe remove border
-        super(resource, gui, def, x, y, width, height);
+        super(resource, gui, x, y, width, height);
         this.handler = handler;
     }
 
@@ -32,7 +32,6 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
             minecraft.textureManager.bindTexture(getResource());
             renderBarOverlay(mouseX, mouseY, partialTicks);
         }
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     @Override

@@ -3,7 +3,6 @@ package mekanism.client.gui.element;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiSlot extends GuiTexturedElement {
 
@@ -12,8 +11,8 @@ public class GuiSlot extends GuiTexturedElement {
 
     private SlotOverlay overlay = null;
 
-    public GuiSlot(SlotType type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"), gui, def, x, y, type.width, type.height);
+    public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"), gui, x, y, type.width, type.height);
         textureX = type.textureX;
         textureY = type.textureY;
         //TODO: Mark any other ones as inactive that shouldn't allow clicking
@@ -33,7 +32,6 @@ public class GuiSlot extends GuiTexturedElement {
         if (overlay != null) {
             guiObj.drawTexturedRect(x + (width - overlay.width) / 2, y + (height - overlay.height) / 2, overlay.textureX, overlay.textureY, overlay.width, overlay.height);
         }
-        minecraft.textureManager.bindTexture(defaultLocation);
     }
 
     public enum SlotType {

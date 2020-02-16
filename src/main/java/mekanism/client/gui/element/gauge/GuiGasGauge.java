@@ -8,17 +8,16 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
 
-    public GuiGasGauge(IGasInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(type, gui, def, x, y, handler);
+    public GuiGasGauge(IGasInfoHandler handler, Type type, IGuiWrapper gui, int x, int y) {
+        super(type, gui, x, y, handler);
     }
 
-    public static GuiGasGauge getDummy(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        GuiGasGauge gauge = new GuiGasGauge(null, type, gui, def, x, y);
+    public static GuiGasGauge getDummy(Type type, IGuiWrapper gui, int x, int y) {
+        GuiGasGauge gauge = new GuiGasGauge(null, type, gui, x, y);
         gauge.dummy = true;
         return gauge;
     }

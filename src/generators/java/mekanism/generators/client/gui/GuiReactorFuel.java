@@ -20,7 +20,6 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -35,27 +34,26 @@ public class GuiReactorFuel extends GuiReactorInfo {
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
         addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
-              this, resource));
-        addButton(new GuiGasGauge(() -> tile.deuteriumTank, Type.SMALL, this, resource, 25, 64));
-        addButton(new GuiGasGauge(() -> tile.fuelTank, Type.STANDARD, this, resource, 79, 50));
-        addButton(new GuiGasGauge(() -> tile.tritiumTank, Type.SMALL, this, resource, 133, 64));
+              this));
+        addButton(new GuiGasGauge(() -> tile.deuteriumTank, Type.SMALL, this, 25, 64));
+        addButton(new GuiGasGauge(() -> tile.fuelTank, Type.STANDARD, this, 79, 50));
+        addButton(new GuiGasGauge(() -> tile.tritiumTank, Type.SMALL, this, 133, 64));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.getActive() ? 1 : 0;
             }
-        }, ProgressBar.SMALL_RIGHT, this, resource, 45, 75));
+        }, ProgressBar.SMALL_RIGHT, this, 45, 75));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.getActive() ? 1 : 0;
             }
-        }, ProgressBar.SMALL_LEFT, this, resource, 99, 75));
-        addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT, resource));
-        addButton(new GuiReactorTab(this, tile, ReactorTab.STAT, resource));
+        }, ProgressBar.SMALL_LEFT, this, 99, 75));
+        addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT));
+        addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));
 
         String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
         addButton(injectionRateField = new TextFieldWidget(font, getGuiLeft() + 98, getGuiTop() + 115, 26, 11, ""));

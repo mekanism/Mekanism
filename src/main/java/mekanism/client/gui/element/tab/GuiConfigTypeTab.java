@@ -16,8 +16,8 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
 
     private final TransmissionType transmission;
 
-    public GuiConfigTypeTab(IGuiWrapper gui, TransmissionType type, ResourceLocation def, int x, int y) {
-        super(getResource(type), gui, def, null, x, y, 26, 18);
+    public GuiConfigTypeTab(IGuiWrapper gui, TransmissionType type, int x, int y) {
+        super(getResource(type), gui, null, x, y, 26, 18);
         transmission = type;
     }
 

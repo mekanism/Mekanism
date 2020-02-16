@@ -38,19 +38,19 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, guiLocation, 53, 34));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, guiLocation, 140, 18).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, guiLocation, 115, 34));
-        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD_YELLOW, this, guiLocation, 5, 10));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, guiLocation, 28, 10));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, guiLocation, 140, 40));
-        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, guiLocation, 164, 15));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 53, 34));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 140, 18).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 115, 34));
+        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD_YELLOW, this, 5, 10));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, 28, 10));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, 140, 40));
+        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return (float) timer.getValue() / 20F;
             }
-        }, progressBar, this, guiLocation, 75, 37));
+        }, progressBar, this, 75, 37));
     }
 
     @Override

@@ -15,8 +15,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, MatrixTab> {
 
-    public GuiMatrixTab(IGuiWrapper gui, TileEntityInductionCasing tile, MatrixTab type, ResourceLocation def) {
-        super(gui, tile, type, def);
+    public GuiMatrixTab(IGuiWrapper gui, TileEntityInductionCasing tile, MatrixTab type) {
+        super(gui, tile, type);
     }
 
     public enum MatrixTab implements TabType<TileEntityInductionCasing> {

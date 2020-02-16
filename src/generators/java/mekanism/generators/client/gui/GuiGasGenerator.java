@@ -31,16 +31,15 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getGenerationRate() * tile.getUsed())),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this, resource));
-        addButton(new GuiGasGauge(() -> tile.fuelTank, Type.WIDE, this, resource, 55, 18));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 164, 15));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 16, 34).with(SlotOverlay.MINUS));
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 142, 34).with(SlotOverlay.POWER));
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
+        addButton(new GuiGasGauge(() -> tile.fuelTank, Type.WIDE, this, 55, 18));
+        addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 16, 34).with(SlotOverlay.MINUS));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
     }
 
     @Override

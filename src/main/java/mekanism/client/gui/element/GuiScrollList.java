@@ -5,7 +5,6 @@ import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiScrollList extends GuiTexturedElement {
 
@@ -15,8 +14,8 @@ public class GuiScrollList extends GuiTexturedElement {
     private int selected = -1;
     private double scroll;
 
-    public GuiScrollList(IGuiWrapper gui, ResourceLocation def, int x, int y, int width, int height) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "scroll_list.png"), gui, def, x, y, width, height);
+    public GuiScrollList(IGuiWrapper gui, int x, int y, int width, int height) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "scroll_list.png"), gui, x, y, width, height);
     }
 
     public boolean hasSelection() {
@@ -66,7 +65,6 @@ public class GuiScrollList extends GuiTexturedElement {
         }
         //Draw Scroll
         drawScroll();
-        minecraft.textureManager.bindTexture(defaultLocation);
         //Render the text into the entries
         if (!textEntries.isEmpty()) {
             for (int i = 0; i < getElementCount(); i++) {

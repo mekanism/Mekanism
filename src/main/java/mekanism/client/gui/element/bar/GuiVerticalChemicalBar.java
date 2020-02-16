@@ -9,7 +9,6 @@ import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvid
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiVerticalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiVerticalBar<ChemicalInfoProvider<CHEMICAL>> {
@@ -17,8 +16,8 @@ public class GuiVerticalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends
     private static final int texWidth = 4;
     private static final int texHeight = 52;
 
-    public GuiVerticalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, ResourceLocation def, int x, int y) {
-        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, def, x, y, texWidth + 2, texHeight + 2);
+    public GuiVerticalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, int x, int y) {
+        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, texWidth + 2, texHeight + 2);
     }
 
     @Override

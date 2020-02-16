@@ -35,20 +35,20 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, guiLocation, 5, 10));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, guiLocation, 58, 18));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, guiLocation, 100, 18));
-        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, guiLocation, 164, 15));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 25, 34));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 58, 51));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 100, 51));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this, guiLocation, 142, 34).with(SlotOverlay.POWER));
+        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 5, 10));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, 58, 18));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, 100, 18));
+        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
+        guiElements.add(new GuiSlot(SlotType.NORMAL, this, 25, 34));
+        guiElements.add(new GuiSlot(SlotType.NORMAL, this, 58, 51));
+        guiElements.add(new GuiSlot(SlotType.NORMAL, this, 100, 51));
+        guiElements.add(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return 1;
             }
-        }, progressBar, this, guiLocation, 78, 29));
+        }, progressBar, this, 78, 29));
     }
 
     @Override

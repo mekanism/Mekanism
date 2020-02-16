@@ -7,15 +7,14 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiEnergyGauge extends GuiGauge {
 
     private final IEnergyInfoHandler infoHandler;
 
-    public GuiEnergyGauge(IEnergyInfoHandler handler, Type type, IGuiWrapper gui, ResourceLocation def, int x, int y) {
-        super(type, gui, def, x, y);
+    public GuiEnergyGauge(IEnergyInfoHandler handler, Type type, IGuiWrapper gui, int x, int y) {
+        super(type, gui, x, y);
         infoHandler = handler;
     }
 

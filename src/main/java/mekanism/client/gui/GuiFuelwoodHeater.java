@@ -27,14 +27,13 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSlot(SlotType.NORMAL, this, resource, 14, 28));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 14, 28));
+        addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.lastEnvironmentLoss * unit.intervalSize, unit, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
-        }, this, resource));
+        }, this));
     }
 
     @Override

@@ -26,9 +26,8 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiMatrixTab(this, tile, MatrixTab.MAIN, resource));
-        addButton(new GuiEnergyGauge(() -> tile, GuiEnergyGauge.Type.STANDARD, this, resource, 6, 13));
+        addButton(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
+        addButton(new GuiEnergyGauge(() -> tile, GuiEnergyGauge.Type.STANDARD, this, 6, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -39,7 +38,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
             public double getLevel() {
                 return tile.structure == null ? 0 : tile.getLastInput() / tile.structure.getTransferCap();
             }
-        }, resource, 30, 13));
+        }, 30, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -50,11 +49,11 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, M
             public double getLevel() {
                 return tile.structure == null ? 0 : tile.getLastOutput() / tile.structure.getTransferCap();
             }
-        }, resource, 38, 13));
+        }, 38, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
               MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
               MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))),
-              this, resource));
+              this));
     }
 
     @Override

@@ -10,9 +10,9 @@ public abstract class GuiVerticalBar<INFO extends IBarInfoHandler> extends GuiBa
 
     private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "vertical_bar.png");
 
-    public GuiVerticalBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, ResourceLocation def, int x, int y, int width, int height) {
+    public GuiVerticalBar(ResourceLocation resource, IGuiWrapper gui, INFO handler, int x, int y, int width, int height) {
         //TODO: Bump the width by 2? for the border of the bar image? Or maybe remove border
-        super(resource, gui, handler, def, x, y, width, height);
+        super(resource, gui, handler, x, y, width, height);
     }
 
     @Override

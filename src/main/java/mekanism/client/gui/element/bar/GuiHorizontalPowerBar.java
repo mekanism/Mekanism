@@ -15,7 +15,7 @@ public class GuiHorizontalPowerBar extends GuiHorizontalBar<IBarInfoHandler> {
     private static final int texWidth = 52;
     private static final int texHeight = 4;
 
-    public GuiHorizontalPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, ResourceLocation def, int x, int y) {
+    public GuiHorizontalPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, int x, int y) {
         super(ENERGY_BAR, gui, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -26,11 +26,11 @@ public class GuiHorizontalPowerBar extends GuiHorizontalBar<IBarInfoHandler> {
             public double getLevel() {
                 return tile.getEnergy() / tile.getMaxEnergy();
             }
-        }, def, x, y, texWidth + 2, texHeight + 2);
+        }, x, y, texWidth + 2, texHeight + 2);
     }
 
-    public GuiHorizontalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, ResourceLocation def, int x, int y) {
-        super(ENERGY_BAR, gui, handler, def, x, y, texWidth + 2, texHeight + 2);
+    public GuiHorizontalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
+        super(ENERGY_BAR, gui, handler, x, y, texWidth + 2, texHeight + 2);
     }
 
     @Override

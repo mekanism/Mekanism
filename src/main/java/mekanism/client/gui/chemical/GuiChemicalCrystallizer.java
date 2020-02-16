@@ -57,25 +57,24 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiUpgradeTab(this, tile, resource));
-        addButton(new GuiVerticalPowerBar(this, tile, resource, 160, 23));
-        addButton(new GuiSideConfigurationTab(this, tile, resource));
-        addButton(new GuiTransporterConfigTab(this, tile, resource));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiUpgradeTab(this, tile));
+        addButton(new GuiVerticalPowerBar(this, tile, 160, 23));
+        addButton(new GuiSideConfigurationTab(this, tile));
+        addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
-              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this, resource));
-        addButton(new GuiGasGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, resource, 5, 4));
-        addButton(new GuiSlot(SlotType.EXTRA, this, resource, 5, 64).with(SlotOverlay.PLUS));
-        addButton(new GuiSlot(SlotType.POWER, this, resource, 154, 4).with(SlotOverlay.POWER));
-        addButton(new GuiSlot(SlotType.OUTPUT, this, resource, 130, 56));
+              MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
+        addButton(new GuiGasGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, 5, 4));
+        addButton(new GuiSlot(SlotType.EXTRA, this, 5, 64).with(SlotOverlay.PLUS));
+        addButton(new GuiSlot(SlotType.POWER, this, 154, 4).with(SlotOverlay.POWER));
+        addButton(new GuiSlot(SlotType.OUTPUT, this, 130, 56));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return tile.getScaledProgress();
             }
-        }, ProgressBar.LARGE_RIGHT, this, resource, 51, 60));
+        }, ProgressBar.LARGE_RIGHT, this, 51, 60));
     }
 
     @Override

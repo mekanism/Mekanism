@@ -15,12 +15,12 @@ public class GuiHorizontalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> exten
     private static final int texWidth = 160;
     private static final int texHeight = 5;
 
-    public GuiHorizontalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, ResourceLocation def, int x, int y) {
-        this(gui, infoProvider, def, x, y, texWidth + 2);
+    public GuiHorizontalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, int x, int y) {
+        this(gui, infoProvider, x, y, texWidth + 2);
     }
 
-    public GuiHorizontalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, ResourceLocation def, int x, int y, int width) {
-        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, def, x, y, width, texHeight + 2);
+    public GuiHorizontalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, int x, int y, int width) {
+        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, width, texHeight + 2);
     }
 
     @Override

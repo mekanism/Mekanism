@@ -25,12 +25,11 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
-        addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT, resource));
+        addButton(new GuiMatrixTab(this, tile, MatrixTab.STAT));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
               MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getLastInput())),
               MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(tile.getLastOutput()))
-        ), this, resource));
+        ), this));
     }
 
     @Override
@@ -64,7 +63,7 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         return MekanismUtils.getResource(ResourceType.GUI, "induction_matrix.png");
     }
 
-    public void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/) {
+    private void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/) {
         minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         int start = 0;
         int x = getGuiLeft() + xPos;

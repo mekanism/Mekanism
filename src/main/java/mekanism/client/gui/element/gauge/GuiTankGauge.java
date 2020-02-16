@@ -12,15 +12,14 @@ import mekanism.common.network.PacketDropperUse;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
 
     protected final ITankInfoHandler<TANK> infoHandler;
 
-    public GuiTankGauge(Type type, IGuiWrapper gui, ResourceLocation def, int x, int y, ITankInfoHandler<TANK> infoHandler) {
-        super(type, gui, def, x, y);
+    public GuiTankGauge(Type type, IGuiWrapper gui, int x, int y, ITankInfoHandler<TANK> infoHandler) {
+        super(type, gui, x, y);
         this.infoHandler = infoHandler;
     }
 

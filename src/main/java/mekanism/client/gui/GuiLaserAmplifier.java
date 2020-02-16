@@ -37,7 +37,6 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = getGuiLocation();
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
@@ -58,10 +57,10 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
             public ITextComponent getText(double level) {
                 return MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()));
             }
-        }, Type.STANDARD, this, resource, 6, 10));
-        addButton(new GuiSecurityTab<>(this, tile, resource));
-        addButton(new GuiRedstoneControl(this, tile, resource));
-        addButton(new GuiAmplifierTab(this, tile, resource));
+        }, Type.STANDARD, this, 6, 10));
+        addButton(new GuiSecurityTab<>(this, tile));
+        addButton(new GuiRedstoneControl(this, tile));
+        addButton(new GuiAmplifierTab(this, tile));
 
         String prevTime = timerField != null ? timerField.getText() : "";
         addButton(timerField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 28, 36, 11, prevTime));
