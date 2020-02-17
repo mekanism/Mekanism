@@ -513,6 +513,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 relations {
                     optionalDependency "jei"
                     optionalDependency "biomes-o-plenty"
+                    optionalDependency "projecte"
                     optionalDependency "the-one-probe"
                 }
             }
