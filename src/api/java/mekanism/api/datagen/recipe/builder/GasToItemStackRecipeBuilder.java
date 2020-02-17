@@ -1,6 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
+import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -14,6 +15,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -38,7 +40,7 @@ public class GasToItemStackRecipeBuilder extends MekanismRecipeBuilder<GasToItem
 
     @Override
     protected GasToItemStackRecipeResult getResult(ResourceLocation id) {
-        return new GasToItemStackRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new GasToItemStackRecipeResult(id, input, output, conditions, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
     public void build(Consumer<IFinishedRecipe> consumer) {
@@ -50,9 +52,9 @@ public class GasToItemStackRecipeBuilder extends MekanismRecipeBuilder<GasToItem
         private final GasStackIngredient input;
         private final ItemStack output;
 
-        public GasToItemStackRecipeResult(ResourceLocation id, GasStackIngredient input, ItemStack output, Advancement.Builder advancementBuilder,
-              ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, advancementBuilder, advancementId, serializerName);
+        public GasToItemStackRecipeResult(ResourceLocation id, GasStackIngredient input, ItemStack output, List<ICondition> conditions,
+              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, conditions, advancementBuilder, advancementId, serializerName);
             this.input = input;
             this.output = output;
         }

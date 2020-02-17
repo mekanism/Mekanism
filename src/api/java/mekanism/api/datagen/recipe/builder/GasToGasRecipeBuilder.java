@@ -1,6 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -12,6 +13,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -36,7 +38,7 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
 
     @Override
     protected GasToGasRecipeResult getResult(ResourceLocation id) {
-        return new GasToGasRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new GasToGasRecipeResult(id, input, output, conditions, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
     public static class GasToGasRecipeResult extends RecipeResult {
@@ -44,9 +46,9 @@ public class GasToGasRecipeBuilder extends MekanismRecipeBuilder<GasToGasRecipeB
         private final GasStackIngredient input;
         private final GasStack output;
 
-        public GasToGasRecipeResult(ResourceLocation id, GasStackIngredient input, GasStack output, Advancement.Builder advancementBuilder,
+        public GasToGasRecipeResult(ResourceLocation id, GasStackIngredient input, GasStack output, List<ICondition> conditions, Advancement.Builder advancementBuilder,
               ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, advancementBuilder, advancementId, serializerName);
+            super(id, conditions, advancementBuilder, advancementId, serializerName);
             this.input = input;
             this.output = output;
         }

@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "ilikewood",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:spruce_lectern"
+    }
+  },
+  "mainOutput": {
+    "item": "minecraft:spruce_planks",
+    "count": 8
+  },
+  "secondaryOutput": {
+    "item": "minecraft:book",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

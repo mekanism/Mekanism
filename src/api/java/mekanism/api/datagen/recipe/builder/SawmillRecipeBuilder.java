@@ -1,6 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -12,6 +13,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -62,7 +64,7 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
 
     @Override
     protected SawmillRecipeResult getResult(ResourceLocation id) {
-        return new SawmillRecipeResult(id, input, mainOutput, secondaryOutput, secondaryChance, outputType, advancementBuilder,
+        return new SawmillRecipeResult(id, input, mainOutput, secondaryOutput, secondaryChance, outputType, conditions, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
@@ -75,8 +77,8 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         private final double secondaryChance;
 
         public SawmillRecipeResult(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance,
-              OutputType outputType, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, advancementBuilder, advancementId, serializerName);
+              OutputType outputType, List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, conditions, advancementBuilder, advancementId, serializerName);
             this.outputType = outputType;
             this.input = input;
             this.mainOutput = mainOutput;

@@ -1,6 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
+import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -15,6 +16,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -55,8 +57,8 @@ public class ItemStackGasToItemStackRecipeBuilder extends MekanismRecipeBuilder<
 
     @Override
     protected ItemStackGasToItemStackRecipeResult getResult(ResourceLocation id) {
-        return new ItemStackGasToItemStackRecipeResult(id, itemInput, gasInput, output, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + output.getItem().getGroup().getPath() + "/" + id.getPath()), serializerName);
+        return new ItemStackGasToItemStackRecipeResult(id, itemInput, gasInput, output, conditions, advancementBuilder,
+              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
     public void build(Consumer<IFinishedRecipe> consumer) {
@@ -70,8 +72,8 @@ public class ItemStackGasToItemStackRecipeBuilder extends MekanismRecipeBuilder<
         private final ItemStack output;
 
         public ItemStackGasToItemStackRecipeResult(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output,
-              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, advancementBuilder, advancementId, serializerName);
+              List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, conditions, advancementBuilder, advancementId, serializerName);
             this.itemInput = itemInput;
             this.gasInput = gasInput;
             this.output = output;

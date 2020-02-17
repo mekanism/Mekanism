@@ -1,6 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -12,6 +13,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -43,7 +45,7 @@ public class ItemStackToGasRecipeBuilder extends MekanismRecipeBuilder<ItemStack
 
     @Override
     protected ItemStackToGasRecipeResult getResult(ResourceLocation id) {
-        return new ItemStackToGasRecipeResult(id, input, output, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new ItemStackToGasRecipeResult(id, input, output, conditions, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
     public static class ItemStackToGasRecipeResult extends RecipeResult {
@@ -51,9 +53,9 @@ public class ItemStackToGasRecipeBuilder extends MekanismRecipeBuilder<ItemStack
         private final ItemStackIngredient input;
         private final GasStack output;
 
-        public ItemStackToGasRecipeResult(ResourceLocation id, ItemStackIngredient input, GasStack output, Advancement.Builder advancementBuilder,
-              ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, advancementBuilder, advancementId, serializerName);
+        public ItemStackToGasRecipeResult(ResourceLocation id, ItemStackIngredient input, GasStack output, List<ICondition> conditions,
+              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, conditions, advancementBuilder, advancementId, serializerName);
             this.input = input;
             this.output = output;
         }

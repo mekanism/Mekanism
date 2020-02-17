@@ -287,6 +287,14 @@ dependencies {
 
     //compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
 
+    //Dependencies for data generators for mod compat reference
+    //TODO: Switch to the compile and runtime variants for compiling the data gen vs running the data gen
+    // See above comment for why we cannot do this yet
+    datagenmainCompile fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
+    //datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_api_id}")
+    //datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
+    datagenmainCompile fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
+
     // Not updated yet
     /*deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
     compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
@@ -513,6 +521,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 relations {
                     optionalDependency "jei"
                     optionalDependency "biomes-o-plenty"
+                    optionalDependency "i-like-wood"
                     optionalDependency "projecte"
                     optionalDependency "the-one-probe"
                 }

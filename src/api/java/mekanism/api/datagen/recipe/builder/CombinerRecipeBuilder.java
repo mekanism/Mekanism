@@ -1,6 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
+import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -14,6 +15,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -40,8 +42,8 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
 
     @Override
     protected CombinerRecipeResult getResult(ResourceLocation id) {
-        return new CombinerRecipeResult(id, mainInput, extraInput, output, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + output.getItem().getGroup().getPath() + "/" + id.getPath()), serializerName);
+        return new CombinerRecipeResult(id, mainInput, extraInput, output, conditions, advancementBuilder,
+              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
     public void build(Consumer<IFinishedRecipe> consumer) {
@@ -55,8 +57,8 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
         private final ItemStack output;
 
         public CombinerRecipeResult(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output,
-              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, advancementBuilder, advancementId, serializerName);
+              List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, conditions, advancementBuilder, advancementId, serializerName);
             this.mainInput = mainInput;
             this.extraInput = extraInput;
             this.output = output;

@@ -1,6 +1,7 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -13,6 +14,7 @@ import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -39,7 +41,7 @@ public class FluidGasToGasRecipeBuilder extends MekanismRecipeBuilder<FluidGasTo
 
     @Override
     protected FluidGasToGasRecipeResult getResult(ResourceLocation id) {
-        return new FluidGasToGasRecipeResult(id, fluidInput, gasInput, output, advancementBuilder,
+        return new FluidGasToGasRecipeResult(id, fluidInput, gasInput, output, conditions, advancementBuilder,
               new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
     }
 
@@ -50,8 +52,8 @@ public class FluidGasToGasRecipeBuilder extends MekanismRecipeBuilder<FluidGasTo
         private final GasStack output;
 
         public FluidGasToGasRecipeResult(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack output,
-              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, advancementBuilder, advancementId, serializerName);
+              List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+            super(id, conditions, advancementBuilder, advancementId, serializerName);
             this.fluidInput = fluidInput;
             this.gasInput = gasInput;
             this.output = output;

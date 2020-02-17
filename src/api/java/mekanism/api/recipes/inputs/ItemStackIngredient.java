@@ -11,20 +11,17 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.providers.IItemProvider;
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.Tag;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.NBTIngredient;
 
 //TODO: Allow for empty item stacks?
 public abstract class ItemStackIngredient implements InputIngredient<@NonNull ItemStack> {
-
-    //TODO: Make ones that take a list of blocks/items
 
     public static ItemStackIngredient from(@NonNull ItemStack stack) {
         return from(stack, stack.getCount());
@@ -39,38 +36,18 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         return from(ingredient, amount);
     }
 
-    public static ItemStackIngredient from(@NonNull Block block) {
-        return from(block, 1);
-    }
-
-    public static ItemStackIngredient from(@NonNull Block block, int amount) {
-        return from(new ItemStack(block), amount);
-    }
-
-    public static ItemStackIngredient from(@NonNull Item item) {
+    public static ItemStackIngredient from(@NonNull IItemProvider item) {
         return from(item, 1);
     }
 
-    public static ItemStackIngredient from(@NonNull Item item, int amount) {
-        //By default don't do any wildcard stuff.
-        //TODO: Check if anything that is calling this should actually wants the wild card
+    public static ItemStackIngredient from(@NonNull IItemProvider item, int amount) {
         return from(new ItemStack(item), amount);
     }
 
-    public static ItemStackIngredient from(@NonNull IItemProvider itemProvider) {
-        return from(itemProvider, 1);
-    }
-
-    public static ItemStackIngredient from(@NonNull IItemProvider itemProvider, int amount) {
-        return from(itemProvider.getItemStack(amount));
-    }
-
-    //TODO: Should we instead have it accept a Tag<Item> instead of a resource location
     public static ItemStackIngredient from(@NonNull Tag<Item> itemTag) {
         return from(itemTag, 1);
     }
 
-    //TODO: Should we instead have it accept a Tag<Item> instead of a resource location
     public static ItemStackIngredient from(@NonNull Tag<Item> itemTag, int amount) {
         return from(Ingredient.fromTag(itemTag), amount);
     }

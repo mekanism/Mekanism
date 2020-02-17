@@ -1,6 +1,9 @@
 package mekanism.api.datagen.recipe;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +18,8 @@ import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.ForgeRegistries;
 
 //TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
@@ -23,6 +28,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 @MethodsReturnNonnullByDefault
 public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilder<BUILDER>> {
 
+    protected final List<ICondition> conditions = new ArrayList<>();
     protected final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
     protected final ResourceLocation serializerName;
 
@@ -39,6 +45,11 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         return (BUILDER) this;
     }
 
+    public BUILDER addCondition(ICondition condition) {
+        conditions.add(condition);
+        return (BUILDER) this;
+    }
+
     protected abstract RecipeResult getResult(ResourceLocation id);
 
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
@@ -46,6 +57,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         // but all the builders make sure to validate this, and then the recipes will show up as unlocked so
         // might as well, even if currently we do not support the recipe book for our custom recipes
         if (advancementBuilder.getCriteria().isEmpty()) {
+            //TODO: If there is a need/want we could technically make it so that we don't force having any criteria
             throw new IllegalStateException("No way of obtaining recipe " + id);
         }
         advancementBuilder.withParentId(new ResourceLocation("recipes/root")).withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(id))
@@ -59,9 +71,12 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         private final Advancement.Builder advancementBuilder;
         private final ResourceLocation advancementId;
         private final ResourceLocation serializerName;
+        private final List<ICondition> conditions;
 
-        public RecipeResult(ResourceLocation id, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
+        public RecipeResult(ResourceLocation id, List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId,
+              ResourceLocation serializerName) {
             this.id = id;
+            this.conditions = conditions;
             this.advancementBuilder = advancementBuilder;
             this.advancementId = advancementId;
             this.serializerName = serializerName;
@@ -71,6 +86,15 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         public JsonObject getRecipeJson() {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("type", serializerName.toString());
+            if (!conditions.isEmpty()) {
+                //TODO: Make sure the advancement builder properly also obeys the conditions
+                // and does not error due to advancements for non loaded recipes??
+                JsonArray conditionsArray = new JsonArray();
+                for (ICondition condition : conditions) {
+                    conditionsArray.add(CraftingHelper.serialize(condition));
+                }
+                jsonObject.add("conditions", conditionsArray);
+            }
             this.serialize(jsonObject);
             return jsonObject;
         }
@@ -78,8 +102,10 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         @Nonnull
         @Override
         public IRecipeSerializer<?> getSerializer() {
-            //TODO: Do we want ot improve how this is done
+            //TODO: Do we want to improve how this is done
             //Note: This may be null if something is screwed up but this method isn't actually used so it shouldn't matter
+            // and in fact it will probably be null if only the API is included. But again, as we manually just use
+            // the serializer's name this should not effect us
             return ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName);
         }
 

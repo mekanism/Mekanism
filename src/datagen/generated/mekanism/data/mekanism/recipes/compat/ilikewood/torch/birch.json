@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "ilikewood",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "amount": 4,
+    "ingredient": {
+      "item": "ilikewood:birch_torch"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:birch_stick"
+  },
+  "secondaryOutput": {
+    "item": "minecraft:coal"
+  },
+  "secondaryChance": 1.0
+}
