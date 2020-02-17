@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
@@ -27,7 +26,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     private Coord4D pos;
     private World worldObj;
     private List<BlockState> blockList = new ArrayList<>();
-    private Rectangle tooltip;
     private MekanismButton upButton;
     private MekanismButton downButton;
 
@@ -54,7 +52,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> currentLayer++));
         addButton(downButton = new MekanismImageButton(this, getGuiLeft() + 70, getGuiTop() + 92, 13,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> currentLayer--));
-        tooltip = new Rectangle(getGuiLeft() + 30, getGuiTop() + 82, 16, 16);
         updateEnabledButtons();
     }
 
@@ -123,7 +120,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             drawString(displayName, 0, 0, 0x919191);
             RenderSystem.popMatrix();
 
-            if (tooltip.intersects(new Rectangle(mouseX, mouseY, 1, 1))) {
+            //TODO: Convert to GuiElement
+            if (mouseX >= getGuiLeft() + 30 && mouseX < getGuiLeft() + 46 && mouseY >= getGuiTop() + 82 && mouseY < getGuiTop() + 98) {
                 minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "guitooltips.png"));
                 int fontLengthX = lengthX + 5;
                 int renderX = mouseX + 10, renderY = mouseY - 5;

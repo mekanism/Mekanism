@@ -39,7 +39,7 @@ public class GuiInductionMatrix extends GuiEmbeddedGaugeTile<TileEntityInduction
         drawString(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastInput())), 53, 35, 0x00CD00);
         drawString(MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(), 53, 44, 0x00CD00);
         drawString(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastOutput())), 53, 53, 0x00CD00);
-        //TODO: 1.14 Convert to GuiElement
+        //TODO: Convert to GuiElement
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {

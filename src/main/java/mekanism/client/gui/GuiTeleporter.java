@@ -237,7 +237,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
         renderScaledText(MekanismLang.SET.translate(), 27, 104, 0x404040, 20);
-        //TODO: 1.14 Convert to GuiElement
+        //TODO: Convert to GuiElement
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         if (xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24) {

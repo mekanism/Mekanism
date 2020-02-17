@@ -46,7 +46,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
-        //TODO: 1.14 Convert to GuiElement
+        //TODO: Convert to GuiElement
         ITextComponent component;
         if (tile.gasTank.getStored() == Integer.MAX_VALUE) {
             component = MekanismLang.INFINITE.translate();
@@ -55,7 +55,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
                   tile.tier.getStorage() == Integer.MAX_VALUE ? MekanismLang.INFINITE : tile.tier.getStorage());
         }
         drawString(component, 45, 40, 0x404040);
-        //TODO: 1.14 Convert to GuiElement
+        //TODO: Convert to GuiElement
         GasStack gasStack = tile.gasTank.getStack();
         if (!gasStack.isEmpty()) {
             renderScaledText(MekanismLang.GAS.translate(gasStack), 45, 49, 0x404040, 112);
@@ -71,7 +71,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (!tile.gasTank.isEmpty()) {
-            //TODO: 1.14 Convert to GuiElement, and make it draw the gas texture instead of the bar (will make it easier at a glance to see what is going on)
+            //TODO: Convert to GuiElement, and make it draw the gas texture instead of the bar (will make it easier at a glance to see what is going on)
             // If we make GuiBar be able to stretch then we can use that as the bar background and do something similar to the InfuseBar
             // The other option which may make more sense is to make it be a GuiGauge
             int scale = (int) (((double) tile.gasTank.getStored() / tile.tier.getStorage()) * 72);

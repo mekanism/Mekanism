@@ -29,7 +29,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
         drawString(MekanismLang.VOLUME.translate(tile.clientCapacity / TankUpdateProtocol.FLUID_PER_TANK), 53, 26, 0x00CD00);
-        //TODO: 1.14 Convert to GuiElement
+        //TODO: Convert to GuiElement
         FluidStack fluidStored = tile.structure != null ? tile.structure.fluidStored : FluidStack.EMPTY;
         if (fluidStored.isEmpty()) {
             renderScaledText(MekanismLang.NO_FLUID.translate(), 53, 44, 0x00CD00, 74);

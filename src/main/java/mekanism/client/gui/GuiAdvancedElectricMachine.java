@@ -64,7 +64,7 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
-        //TODO: 1.14 Convert to GuiElement
+        //TODO: Convert to GuiElement
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         if (xAxis >= 61 && xAxis <= 67 && yAxis >= 37 && yAxis <= 49) {

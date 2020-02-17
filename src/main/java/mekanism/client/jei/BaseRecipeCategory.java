@@ -150,7 +150,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     public List<ITextComponent> getTooltipComponents(RECIPE recipe, double mouseX, double mouseY) {
-        //TODO: Query the gui elements, except they will ave to return a list instead of rendering it
+        //TODO: Query the gui elements, except they will have to return a list instead of rendering it
         return Collections.emptyList();
     }
 

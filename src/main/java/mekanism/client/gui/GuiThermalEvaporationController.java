@@ -44,7 +44,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         drawString(MekanismLang.HEIGHT.translate(tile.height), 50, 30, 0x00CD00);
         drawString(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
         renderScaledText(MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.lastGain * 100D) / 100D), 50, 48, 0x00CD00, 76);
-        //TODO: 1.14 Convert to GuiElement
+        //TODO: Convert to GuiElement
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {

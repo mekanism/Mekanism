@@ -128,7 +128,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
             renderScaledText(filter.getFilterText(), 32, 38, 0x404040, 111);
         }
         renderItem(renderStack, 45, 19);
-        //TODO: 1.14 Convert to GuiElement
+        //TODO: Convert to GuiElement
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {

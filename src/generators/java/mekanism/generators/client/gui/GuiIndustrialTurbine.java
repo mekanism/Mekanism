@@ -81,7 +81,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             renderScaledText(GeneratorsLang.TURBINE_MAX_FLOW.translate(rate), 53, 53, 0x00CD00, 106);
             int xAxis = mouseX - getGuiLeft();
             int yAxis = mouseY - getGuiTop();
-            //TODO: 1.14 Convert to GuiElement
+            //TODO: Convert to GuiElement
             if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
                 if (tile.structure.fluidStored.isEmpty()) {
                     displayTooltip(MekanismLang.EMPTY.translate(), xAxis, yAxis);

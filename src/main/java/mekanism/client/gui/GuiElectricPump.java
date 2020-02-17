@@ -49,7 +49,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
         drawString(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
-        //TODO: 1.14 Convert to GuiElement
+        //TODO: Convert to GuiElement
         FluidStack fluidStack = tile.fluidTank.getFluid();
         if (fluidStack.isEmpty()) {
             renderScaledText(MekanismLang.NO_FLUID.translate(), 51, 35, 0x00CD00, 74);
