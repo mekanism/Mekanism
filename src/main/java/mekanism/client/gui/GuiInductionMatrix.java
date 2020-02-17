@@ -11,12 +11,11 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasing, MekanismTileContainer<TileEntityInductionCasing>> {
+public class GuiInductionMatrix extends GuiEmbeddedGaugeTile<TileEntityInductionCasing, MekanismTileContainer<TileEntityInductionCasing>> {
 
     public GuiInductionMatrix(MekanismTileContainer<TileEntityInductionCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -53,8 +52,8 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tile.getScaledEnergyLevel(58) > 0) {
-            displayGauge(7, 14, tile.getScaledEnergyLevel(58), 0);
-            displayGauge(23, 14, tile.getScaledEnergyLevel(58), 1);
+            displayGauge(7, 14, tile.getScaledEnergyLevel(58), 0, MekanismRenderer.energyIcon);
+            displayGauge(23, 14, tile.getScaledEnergyLevel(58), 1, MekanismRenderer.energyIcon);
         }
     }
 
@@ -63,24 +62,8 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         return MekanismUtils.getResource(ResourceType.GUI, "induction_matrix.png");
     }
 
-    private void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/) {
-        minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        int start = 0;
-        int x = getGuiLeft() + xPos;
-        int y = getGuiTop() + yPos;
-        while (scale > 0) {
-            int renderRemaining;
-            if (scale > 16) {
-                renderRemaining = 16;
-                scale -= 16;
-            } else {
-                renderRemaining = scale;
-                scale = 0;
-            }
-            drawTexturedRectFromIcon(x, y + 58 - renderRemaining - start, MekanismRenderer.energyIcon, 16, renderRemaining);
-            start += 16;
-        }
-        minecraft.textureManager.bindTexture(getGuiLocation());
-        drawTexturedRect(x, y, 176, side == 0 ? 0 : 54, 16, 54);
+    @Override
+    protected ResourceLocation getGaugeResource() {
+        return MekanismUtils.getResource(ResourceType.GUI, "induction_matrix.png");
     }
 }

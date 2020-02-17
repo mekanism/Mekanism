@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.Upgrade;
@@ -73,6 +74,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        //TODO: Move the selection drawing to a gui element?
         minecraft.textureManager.bindTexture(getGuiLocation());
         drawTexturedRect(84, 8 + getScroll(), 202, 0, 4, 4);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
@@ -195,6 +197,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
         return true;
     }
 
+    @Nonnull
     @Override
     protected ResourceLocation getGuiLocation() {
         return MekanismUtils.getResource(ResourceType.GUI, "upgrade_management.png");

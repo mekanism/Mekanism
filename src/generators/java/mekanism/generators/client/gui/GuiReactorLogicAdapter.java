@@ -3,7 +3,6 @@ package mekanism.generators.client.gui;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -33,21 +32,9 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));
         for (ReactorLogic type : ReactorLogic.values()) {
             int typeShift = 22 * type.ordinal();
-            addButton(new ReactorLogicButton(this, getGuiLeft() + 24, getGuiTop() + 32 + typeShift, type, tile, getGuiLocation(),
-                  () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, type))), getOnHover()));
+            addButton(new ReactorLogicButton(this, getGuiLeft() + 24, getGuiTop() + 32 + typeShift, type, tile,
+                  () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1, type)))));
         }
-    }
-
-    private IHoverable getOnHover() {
-        return (onHover, xAxis, yAxis) -> {
-            if (onHover instanceof ReactorLogicButton) {
-                ReactorLogic type = ((ReactorLogicButton) onHover).getType();
-                int typeOffset = 22 * type.ordinal();
-                renderItem(type.getRenderStack(), 27, 35 + typeOffset);
-                drawString(TextComponentUtil.build(EnumColor.WHITE, type), 46, 34 + typeOffset, 0x404040);
-                displayTooltip(type.getDescription(), xAxis, yAxis);
-            }
-        };
     }
 
     @Override
@@ -57,6 +44,12 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         renderScaledText(GeneratorsLang.REACTOR_LOGIC_REDSTONE_OUTPUT_MODE.translate(EnumColor.RED, tile.logicType), 23, 123, 0x404040, 130);
         drawCenteredText(MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
               0, getXSize(), 136, 0x404040);
+        //TODO: Move this to the ReactorLogicButton telling it to render in our proper layer, used to be in onHover for it but we want it to always display
+        for (ReactorLogic type : ReactorLogic.values()) {
+            int typeOffset = 22 * type.ordinal();
+            renderItem(type.getRenderStack(), 27, 35 + typeOffset);
+            drawString(TextComponentUtil.build(EnumColor.WHITE, type), 46, 34 + typeOffset, 0x404040);
+        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

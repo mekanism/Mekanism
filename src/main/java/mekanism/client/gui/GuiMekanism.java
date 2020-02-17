@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.render.MekanismRenderer;
@@ -134,7 +135,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        return this.getFocused() != null && this.isDragging() && button == 0 ? this.getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld) : false;
+        return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }
 
     protected boolean isMouseOverSlot(Slot slot, double mouseX, double mouseY) {
@@ -146,8 +147,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     //TODO: Inline into drawGuiContainerBackgroundLayer
     private void drawBackground() {
-        int width = getWidth();
-        int height = getHeight();
+        int width = getXSize();
+        int height = getYSize();
         if (width < 8 || height < 8) {
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
@@ -202,11 +203,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
-        //TODO: Draw our base texture for the gui
-        if (useDynamicBackground) {
+        ResourceLocation guiLocation = getGuiLocation();
+        if (guiLocation == null) {
             drawBackground();
         } else {
-            minecraft.textureManager.bindTexture(getGuiLocation());
+            minecraft.textureManager.bindTexture(guiLocation);
             drawTexturedRect(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
         }
         int xAxis = mouseX - getGuiLeft();
@@ -277,8 +278,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 if (scale != 1) {
                     RenderSystem.scalef(scale, scale, scale);
                 }
-                //TODO: renderItemAndEffectIntoGUI has some form of GL leak. Fix it
-                // We should check if this is even still valid, as rendering changed in 1.15 a fair bit
                 itemRenderer.renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
                 RenderHelper.disableStandardItemLighting();
                 RenderSystem.disableDepthTest();
@@ -289,5 +288,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
     }
 
-    protected abstract ResourceLocation getGuiLocation();
+    @Nullable
+    protected ResourceLocation getGuiLocation() {
+        //TODO: eventually remove this, for now we are just defaulting to null,
+        // which means to fallback and use the dynamic background
+        return null;
+    }
 }

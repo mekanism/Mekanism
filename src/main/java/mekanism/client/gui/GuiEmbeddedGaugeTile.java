@@ -20,16 +20,14 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
 
     protected abstract ResourceLocation getGaugeResource();
 
-    protected void displayGauge(int xPos, int yPos, int scale, @Nonnull FluidStack fluid) {
-        displayGauge(xPos, yPos, scale, fluid, 0);
+    protected void displayGauge(int xPos, int yPos, int scale, @Nonnull FluidStack fluid, int side /*0-left, 1-right*/) {
+        if (!fluid.isEmpty()) {
+            MekanismRenderer.color(fluid);
+            displayGauge(xPos, yPos, scale, side, MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
+        }
     }
 
-    protected void displayGauge(int xPos, int yPos, int scale, @Nonnull FluidStack fluid, int side /*0-left, 1-right*/) {
-        if (fluid.isEmpty()) {
-            return;
-        }
-        MekanismRenderer.color(fluid);
-        TextureAtlasSprite fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidType.STILL);
+    protected void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/, TextureAtlasSprite sprite) {
         minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         int start = 0;
         int x = getGuiLeft() + xPos;
@@ -43,10 +41,9 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
                 renderRemaining = scale;
                 scale = 0;
             }
-            drawTexturedRectFromIcon(x, y + 58 - renderRemaining - start, fluidTexture, 16, renderRemaining);
+            drawTexturedRectFromIcon(x, y + 58 - renderRemaining - start, sprite, 16, renderRemaining);
             start += 16;
         }
-        MekanismRenderer.resetColor();
         minecraft.textureManager.bindTexture(getGaugeResource());
         drawTexturedRect(x, y, 176, side == 0 ? 0 : 54, 16, 54);
     }

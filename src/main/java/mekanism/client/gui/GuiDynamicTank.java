@@ -66,6 +66,6 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
 
     @Override
     protected ResourceLocation getGaugeResource() {
-        return getGuiLocation();
+        return MekanismUtils.getResource(ResourceType.GUI, "dynamic_tank.png");
     }
 }

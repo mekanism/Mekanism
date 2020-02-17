@@ -33,14 +33,11 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
@@ -57,7 +54,6 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
         if (tile.tier == FactoryTier.ULTIMATE) {
             xSize += 34;
         }
-        useDynamicBackground = true;
     }
 
     @Override
@@ -148,11 +144,5 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        //TODO: Remove this now that it is done dynamically?
-        return MekanismUtils.getResource(ResourceType.GUI, "null.png");
     }
 }

@@ -94,10 +94,10 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tile.structure != null) {
             if (tile.getScaledWaterLevel(58) > 0) {
-                displayGauge(7, 14, tile.getScaledWaterLevel(58), tile.structure.waterStored);
+                displayGauge(7, 14, tile.getScaledWaterLevel(58), tile.structure.waterStored, 0);
             }
             if (tile.getScaledSteamLevel(58) > 0) {
-                displayGauge(153, 14, tile.getScaledSteamLevel(58), tile.structure.steamStored);
+                displayGauge(153, 14, tile.getScaledSteamLevel(58), tile.structure.steamStored, 0);
             }
         }
     }

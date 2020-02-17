@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.MekanismButton;
-import mekanism.client.gui.button.SeismicReaderButton;
+import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
@@ -50,10 +50,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(upButton = new SeismicReaderButton(this, getGuiLeft() + 70, getGuiTop() + 75, 13, 13, 137, 0, getGuiLocation(),
-              () -> currentLayer++));
-        addButton(downButton = new SeismicReaderButton(this, getGuiLeft() + 70, getGuiTop() + 92, 13, 13, 150, 0, getGuiLocation(),
-              () -> currentLayer--));
+        addButton(upButton = new MekanismImageButton(this, getGuiLeft() + 70, getGuiTop() + 75, 13,
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> currentLayer++));
+        addButton(downButton = new MekanismImageButton(this, getGuiLeft() + 70, getGuiTop() + 92, 13,
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> currentLayer--));
         tooltip = new Rectangle(getGuiLeft() + 30, getGuiTop() + 82, 16, 16);
         updateEnabledButtons();
     }
