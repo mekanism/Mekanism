@@ -164,7 +164,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int topEdgeEnd = top + cornerDimensions;
         int bottomEdgeStart = topEdgeEnd + centerHeight;
         minecraft.textureManager.bindTexture(BASE_BACKGROUND);
-        //TODO: Handle the edge case of if our gui is less than 8x8 in size? Mainly probably just want to print an error and not do anything
         //Left Side
         //Top Left Corner (4x4)
         drawModalRectWithCustomSizedTexture(left, top, 0, 0, cornerDimensions, cornerDimensions, textureDimensions, textureDimensions);
