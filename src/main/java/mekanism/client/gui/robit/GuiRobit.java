@@ -2,16 +2,14 @@ package mekanism.client.gui.robit;
 
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.MekanismImageButton;
+import mekanism.client.gui.element.tab.GuiRobitTab;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.IEntityContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedEntityButton;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<EntityRobit>> extends GuiMekanism<CONTAINER> {
@@ -21,12 +19,12 @@ public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<En
     protected GuiRobit(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         robit = container.getEntity();
-        xSize += 25;
     }
 
     @Override
     public void init() {
         super.init();
+        addButton(new GuiRobitTab(this));
         addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 10, 18, getButtonLocation("main"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, robit.getEntityId()))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 30, 18, getButtonLocation("crafting"), () -> {
@@ -50,13 +48,6 @@ public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<En
             }
         }));
     }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, getBackgroundImage());
-    }
-
-    protected abstract String getBackgroundImage();
 
     protected abstract boolean shouldOpenGui(RobitGuiType guiType);
 

@@ -9,6 +9,7 @@ public class GuiRobitInventory extends GuiRobit<InventoryRobitContainer> {
 
     public GuiRobitInventory(InventoryRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
@@ -16,11 +17,6 @@ public class GuiRobitInventory extends GuiRobit<InventoryRobitContainer> {
         drawString(MekanismLang.ROBIT_INVENTORY.translate(), 8, 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected String getBackgroundImage() {
-        return "robit_inventory.png";
     }
 
     @Override

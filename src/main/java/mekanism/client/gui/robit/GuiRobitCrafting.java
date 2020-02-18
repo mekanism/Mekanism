@@ -2,13 +2,17 @@ package mekanism.client.gui.robit;
 
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
 
     public GuiRobitCrafting(CraftingRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
@@ -19,8 +23,8 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
     }
 
     @Override
-    protected String getBackgroundImage() {
-        return "robit_crafting.png";
+    protected ResourceLocation getGuiLocation() {
+        return MekanismUtils.getResource(ResourceType.GUI, "robit_crafting.png");
     }
 
     @Override

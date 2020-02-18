@@ -1,8 +1,7 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.button;
 
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

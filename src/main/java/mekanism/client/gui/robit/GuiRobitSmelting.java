@@ -12,6 +12,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
 
     public GuiRobitSmelting(SmeltingRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
@@ -30,11 +31,6 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
         drawString(MekanismLang.ROBIT_SMELTING.translate(), 8, 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 93, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected String getBackgroundImage() {
-        return "robit_smelting.png";
     }
 
     @Override

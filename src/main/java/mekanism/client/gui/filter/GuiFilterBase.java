@@ -38,6 +38,7 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
 
     protected GuiFilterBase(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
         //TODO: Set filter stuff here
     }
 

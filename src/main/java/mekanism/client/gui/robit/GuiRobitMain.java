@@ -4,6 +4,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.tab.GuiRobitTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -32,8 +33,8 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     public GuiRobitMain(MainRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        xSize += 25;
         robit = container.getEntity();
+        dynamicSlots = true;
     }
 
     private void toggleNameChange() {
@@ -53,6 +54,8 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void init() {
         super.init();
+        //TODO: Move the power bar to being defined via this
+        addButton(new GuiRobitTab(this));
         addButton(confirmName = new TranslationButton(this, getGuiLeft() + 58, getGuiTop() + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
         confirmName.visible = false;
 

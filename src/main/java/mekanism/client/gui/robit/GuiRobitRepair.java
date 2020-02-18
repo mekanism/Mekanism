@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -11,6 +13,7 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CRenameItemPacket;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IContainerListener {
@@ -87,9 +90,10 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    protected String getBackgroundImage() {
-        return "robit_repair.png";
+    protected ResourceLocation getGuiLocation() {
+        return MekanismUtils.getResource(ResourceType.GUI, "robit_repair.png");
     }
+
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
