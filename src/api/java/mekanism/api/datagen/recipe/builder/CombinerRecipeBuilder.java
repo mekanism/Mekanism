@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -11,11 +10,9 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -42,26 +39,17 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
 
     @Override
     protected CombinerRecipeResult getResult(ResourceLocation id) {
-        return new CombinerRecipeResult(id, mainInput, extraInput, output, conditions, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new CombinerRecipeResult(id);
     }
 
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
 
-    public static class CombinerRecipeResult extends RecipeResult {
+    public class CombinerRecipeResult extends RecipeResult {
 
-        private final ItemStackIngredient mainInput;
-        private final ItemStackIngredient extraInput;
-        private final ItemStack output;
-
-        public CombinerRecipeResult(ResourceLocation id, ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output,
-              List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.mainInput = mainInput;
-            this.extraInput = extraInput;
-            this.output = output;
+        protected CombinerRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

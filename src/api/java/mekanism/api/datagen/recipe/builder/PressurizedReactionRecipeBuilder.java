@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -13,10 +12,8 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -76,31 +73,13 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
     @Override
     protected PressurizedReactionRecipeResult getResult(ResourceLocation id) {
-        return new PressurizedReactionRecipeResult(id, inputSolid, inputFluid, inputGas, energyRequired, duration, outputItem, outputGas, conditions, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new PressurizedReactionRecipeResult(id);
     }
 
-    public static class PressurizedReactionRecipeResult extends RecipeResult {
+    public class PressurizedReactionRecipeResult extends RecipeResult {
 
-        private final ItemStackIngredient inputSolid;
-        private final FluidStackIngredient inputFluid;
-        private final GasStackIngredient inputGas;
-        private final double energyRequired;
-        private final int duration;
-        private final ItemStack outputItem;
-        private final GasStack outputGas;
-
-        public PressurizedReactionRecipeResult(ResourceLocation id, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas,
-              double energyRequired, int duration, ItemStack outputItem, GasStack outputGas, List<ICondition> conditions, Advancement.Builder advancementBuilder,
-              ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.inputSolid = inputSolid;
-            this.inputFluid = inputFluid;
-            this.inputGas = inputGas;
-            this.energyRequired = energyRequired;
-            this.duration = duration;
-            this.outputItem = outputItem;
-            this.outputGas = outputGas;
+        protected PressurizedReactionRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

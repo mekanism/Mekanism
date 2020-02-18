@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -12,11 +11,9 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -43,26 +40,17 @@ public class MetallurgicInfuserRecipeBuilder extends MekanismRecipeBuilder<Metal
 
     @Override
     protected MetallurgicInfuserRecipeResult getResult(ResourceLocation id) {
-        return new MetallurgicInfuserRecipeResult(id, itemInput, infusionInput, output, conditions, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new MetallurgicInfuserRecipeResult(id);
     }
 
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
 
-    public static class MetallurgicInfuserRecipeResult extends RecipeResult {
+    public class MetallurgicInfuserRecipeResult extends RecipeResult {
 
-        private final ItemStackIngredient itemInput;
-        private final InfusionIngredient infusionInput;
-        private final ItemStack output;
-
-        public MetallurgicInfuserRecipeResult(ResourceLocation id, ItemStackIngredient itemInput, InfusionIngredient infusionInput, ItemStack output,
-              List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.itemInput = itemInput;
-            this.infusionInput = infusionInput;
-            this.output = output;
+        protected MetallurgicInfuserRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

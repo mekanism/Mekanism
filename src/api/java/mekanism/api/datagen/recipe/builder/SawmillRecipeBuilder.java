@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -10,10 +9,8 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -64,26 +61,13 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
 
     @Override
     protected SawmillRecipeResult getResult(ResourceLocation id) {
-        return new SawmillRecipeResult(id, input, mainOutput, secondaryOutput, secondaryChance, outputType, conditions, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new SawmillRecipeResult(id);
     }
 
-    public static class SawmillRecipeResult extends RecipeResult {
+    public class SawmillRecipeResult extends RecipeResult {
 
-        private final OutputType outputType;
-        private final ItemStackIngredient input;
-        private final ItemStack mainOutput;
-        private final ItemStack secondaryOutput;
-        private final double secondaryChance;
-
-        public SawmillRecipeResult(ResourceLocation id, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance,
-              OutputType outputType, List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.outputType = outputType;
-            this.input = input;
-            this.mainOutput = mainOutput;
-            this.secondaryOutput = secondaryOutput;
-            this.secondaryChance = secondaryChance;
+        protected SawmillRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

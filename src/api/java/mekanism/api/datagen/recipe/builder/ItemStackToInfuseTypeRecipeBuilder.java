@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -11,9 +10,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -38,19 +35,13 @@ public class ItemStackToInfuseTypeRecipeBuilder extends MekanismRecipeBuilder<It
 
     @Override
     protected ItemStackToInfuseTypeRecipeResult getResult(ResourceLocation id) {
-        return new ItemStackToInfuseTypeRecipeResult(id, input, output, conditions, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new ItemStackToInfuseTypeRecipeResult(id);
     }
 
-    public static class ItemStackToInfuseTypeRecipeResult extends RecipeResult {
+    public class ItemStackToInfuseTypeRecipeResult extends RecipeResult {
 
-        private final ItemStackIngredient input;
-        private final InfusionStack output;
-
-        public ItemStackToInfuseTypeRecipeResult(ResourceLocation id, ItemStackIngredient input, InfusionStack output, List<ICondition> conditions,
-              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.input = input;
-            this.output = output;
+        protected ItemStackToInfuseTypeRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

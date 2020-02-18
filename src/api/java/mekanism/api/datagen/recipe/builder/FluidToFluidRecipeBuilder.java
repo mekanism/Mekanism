@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -10,9 +9,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fluids.FluidStack;
 
 @FieldsAreNonnullByDefault
@@ -38,19 +35,13 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
 
     @Override
     protected FluidToFluidRecipeResult getResult(ResourceLocation id) {
-        return new FluidToFluidRecipeResult(id, input, output, conditions, advancementBuilder, new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new FluidToFluidRecipeResult(id);
     }
 
-    public static class FluidToFluidRecipeResult extends RecipeResult {
+    public class FluidToFluidRecipeResult extends RecipeResult {
 
-        private final FluidStackIngredient input;
-        private final FluidStack output;
-
-        public FluidToFluidRecipeResult(ResourceLocation id, FluidStackIngredient input, FluidStack output, List<ICondition> conditions,
-              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.input = input;
-            this.output = output;
+        protected FluidToFluidRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

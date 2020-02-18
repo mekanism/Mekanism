@@ -65,21 +65,14 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         consumer.accept(getResult(id));
     }
 
-    protected static abstract class RecipeResult implements IFinishedRecipe {
+    protected abstract class RecipeResult implements IFinishedRecipe {
 
         private final ResourceLocation id;
-        private final Advancement.Builder advancementBuilder;
         private final ResourceLocation advancementId;
-        private final ResourceLocation serializerName;
-        private final List<ICondition> conditions;
 
-        public RecipeResult(ResourceLocation id, List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId,
-              ResourceLocation serializerName) {
+        public RecipeResult(ResourceLocation id) {
             this.id = id;
-            this.conditions = conditions;
-            this.advancementBuilder = advancementBuilder;
-            this.advancementId = advancementId;
-            this.serializerName = serializerName;
+            this.advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath());
         }
 
         @Override
@@ -87,8 +80,6 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("type", serializerName.toString());
             if (!conditions.isEmpty()) {
-                //TODO: Make sure the advancement builder properly also obeys the conditions
-                // and does not error due to advancements for non loaded recipes??
                 JsonArray conditionsArray = new JsonArray();
                 for (ICondition condition : conditions) {
                     conditionsArray.add(CraftingHelper.serialize(condition));
@@ -118,7 +109,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         @Nullable
         @Override
         public JsonObject getAdvancementJson() {
-            return this.advancementBuilder.serialize();
+            return advancementBuilder.serialize();
         }
 
         @Nullable

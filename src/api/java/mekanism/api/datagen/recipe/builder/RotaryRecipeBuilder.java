@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -12,9 +11,7 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fluids.FluidStack;
 
 @FieldsAreNonnullByDefault
@@ -62,26 +59,13 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
 
     @Override
     protected RotaryRecipeResult getResult(ResourceLocation id) {
-        return new RotaryRecipeResult(id, fluidInput, gasInput, gasOutput, fluidOutput, direction, conditions, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new RotaryRecipeResult(id);
     }
 
-    public static class RotaryRecipeResult extends RecipeResult {
+    public class RotaryRecipeResult extends RecipeResult {
 
-        private final RecipeDirection direction;
-        private final GasStackIngredient gasInput;
-        private final FluidStackIngredient fluidInput;
-        private final FluidStack fluidOutput;
-        private final GasStack gasOutput;
-
-        public RotaryRecipeResult(ResourceLocation id, FluidStackIngredient fluidInput, GasStackIngredient gasInput, GasStack gasOutput, FluidStack fluidOutput,
-              RecipeDirection direction, List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.direction = direction;
-            this.gasInput = gasInput;
-            this.fluidInput = fluidInput;
-            this.gasOutput = gasOutput;
-            this.fluidOutput = fluidOutput;
+        protected RotaryRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -12,11 +11,9 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -57,26 +54,17 @@ public class ItemStackGasToItemStackRecipeBuilder extends MekanismRecipeBuilder<
 
     @Override
     protected ItemStackGasToItemStackRecipeResult getResult(ResourceLocation id) {
-        return new ItemStackGasToItemStackRecipeResult(id, itemInput, gasInput, output, conditions, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new ItemStackGasToItemStackRecipeResult(id);
     }
 
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
 
-    public static class ItemStackGasToItemStackRecipeResult extends RecipeResult {
+    public class ItemStackGasToItemStackRecipeResult extends RecipeResult {
 
-        private final ItemStackIngredient itemInput;
-        private final GasStackIngredient gasInput;
-        private final ItemStack output;
-
-        public ItemStackGasToItemStackRecipeResult(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output,
-              List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.itemInput = itemInput;
-            this.gasInput = gasInput;
-            this.output = output;
+        protected ItemStackGasToItemStackRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -11,9 +10,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -40,22 +37,13 @@ public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<Chemical
 
     @Override
     protected ChemicalInfuserRecipeResult getResult(ResourceLocation id) {
-        return new ChemicalInfuserRecipeResult(id, leftInput, rightInput, output, conditions, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new ChemicalInfuserRecipeResult(id);
     }
 
-    public static class ChemicalInfuserRecipeResult extends RecipeResult {
+    public class ChemicalInfuserRecipeResult extends RecipeResult {
 
-        private final GasStackIngredient leftInput;
-        private final GasStackIngredient rightInput;
-        private final GasStack output;
-
-        public ChemicalInfuserRecipeResult(ResourceLocation id, GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output,
-              List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.leftInput = leftInput;
-            this.rightInput = rightInput;
-            this.output = output;
+        protected ChemicalInfuserRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

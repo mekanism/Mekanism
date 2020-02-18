@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -11,9 +10,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -49,24 +46,13 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
 
     @Override
     protected ElectrolysisRecipeResult getResult(ResourceLocation id) {
-        return new ElectrolysisRecipeResult(id, input, energyMultiplier, leftGasOutput, rightGasOutput, conditions, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new ElectrolysisRecipeResult(id);
     }
 
-    public static class ElectrolysisRecipeResult extends RecipeResult {
+    public class ElectrolysisRecipeResult extends RecipeResult {
 
-        private final FluidStackIngredient input;
-        private final GasStack leftGasOutput;
-        private final GasStack rightGasOutput;
-        private final double energyMultiplier;
-
-        public ElectrolysisRecipeResult(ResourceLocation id, FluidStackIngredient input, double energyMultiplier, GasStack leftGasOutput, GasStack rightGasOutput,
-              List<ICondition> conditions, Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.input = input;
-            this.energyMultiplier = energyMultiplier;
-            this.leftGasOutput = leftGasOutput;
-            this.rightGasOutput = rightGasOutput;
+        protected ElectrolysisRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override

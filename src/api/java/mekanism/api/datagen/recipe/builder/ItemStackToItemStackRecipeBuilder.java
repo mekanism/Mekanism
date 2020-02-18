@@ -1,7 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
 import com.google.gson.JsonObject;
-import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -11,11 +10,9 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -54,24 +51,17 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
 
     @Override
     protected ItemStackToItemStackRecipeResult getResult(ResourceLocation id) {
-        return new ItemStackToItemStackRecipeResult(id, input, output, conditions, advancementBuilder,
-              new ResourceLocation(id.getNamespace(), "recipes/" + id.getPath()), serializerName);
+        return new ItemStackToItemStackRecipeResult(id);
     }
 
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }
 
-    public static class ItemStackToItemStackRecipeResult extends RecipeResult {
+    public class ItemStackToItemStackRecipeResult extends RecipeResult {
 
-        private final ItemStackIngredient input;
-        private final ItemStack output;
-
-        public ItemStackToItemStackRecipeResult(ResourceLocation id, ItemStackIngredient input, ItemStack output, List<ICondition> conditions,
-              Advancement.Builder advancementBuilder, ResourceLocation advancementId, ResourceLocation serializerName) {
-            super(id, conditions, advancementBuilder, advancementId, serializerName);
-            this.input = input;
-            this.output = output;
+        protected ItemStackToItemStackRecipeResult(ResourceLocation id) {
+            super(id);
         }
 
         @Override
