@@ -65,7 +65,7 @@ public class ModelSolarNeutronActivator extends Model {
     private final ModelRenderer laserBeamToggle;
 
     public ModelSolarNeutronActivator() {
-        super(RenderType::getEntitySolid);
+        super(RenderType::getEntityCutout);
         textureWidth = 128;
         textureHeight = 64;
 

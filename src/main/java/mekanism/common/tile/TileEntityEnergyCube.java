@@ -12,6 +12,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
@@ -88,8 +89,12 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        //TODO: When we are breaking inventories, we may want to switch the order of these so that discharge is defined first
+        // as it is on the left
         builder.addSlot(chargeSlot = EnergyInventorySlot.charge(this, 143, 35));
         builder.addSlot(dischargeSlot = EnergyInventorySlot.discharge(this, 17, 35));
+        dischargeSlot.setSlotOverlay(SlotOverlay.MINUS);
+        chargeSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
 

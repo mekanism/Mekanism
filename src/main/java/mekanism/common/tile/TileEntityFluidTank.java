@@ -19,6 +19,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.FluidInventorySlot;
@@ -93,6 +94,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(inputSlot = FluidInventorySlot.input(new StackedFluidHandler(), fluid -> true, this, 146, 19), RelativeSide.TOP);
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 146, 51), RelativeSide.BOTTOM);
+        inputSlot.setSlotOverlay(SlotOverlay.INPUT);
+        outputSlot.setSlotOverlay(SlotOverlay.OUTPUT);
         return builder.build();
     }
 

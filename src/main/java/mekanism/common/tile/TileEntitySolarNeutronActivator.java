@@ -28,6 +28,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -90,6 +91,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this::isValidGas, this, 5, 56),
               RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.RIGHT, RelativeSide.LEFT, RelativeSide.BACK);
         builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.FRONT);
+        inputSlot.setSlotOverlay(SlotOverlay.MINUS);
+        outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
 

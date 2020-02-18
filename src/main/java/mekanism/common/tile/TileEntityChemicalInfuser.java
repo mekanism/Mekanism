@@ -25,6 +25,7 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -88,6 +89,9 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this::isValidGas, this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65), RelativeSide.FRONT);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
+        leftInputSlot.setSlotOverlay(SlotOverlay.MINUS);
+        rightInputSlot.setSlotOverlay(SlotOverlay.MINUS);
+        outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
 
