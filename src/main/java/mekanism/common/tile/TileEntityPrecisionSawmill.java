@@ -29,7 +29,6 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRecipe> {
@@ -45,7 +44,7 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
     private EnergyInventorySlot energySlot;
 
     public TileEntityPrecisionSawmill() {
-        super(MekanismBlocks.PRECISION_SAWMILL, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
+        super(MekanismBlocks.PRECISION_SAWMILL, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

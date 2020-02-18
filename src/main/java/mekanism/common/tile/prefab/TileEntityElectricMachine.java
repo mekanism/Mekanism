@@ -26,7 +26,6 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 
 public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<ItemStackToItemStackRecipe> {
@@ -47,7 +46,7 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<I
      * @param ticksRequired - ticks required to operate -- or smelt an item.
      */
     public TileEntityElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
-        super(blockProvider, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
+        super(blockProvider, ticksRequired);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

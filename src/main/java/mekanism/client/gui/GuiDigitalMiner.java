@@ -8,9 +8,6 @@ import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
@@ -19,6 +16,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
@@ -41,6 +39,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     public GuiDigitalMiner(MekanismTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize += 64;
+        dynamicSlots = true;
     }
 
     @Override
@@ -62,9 +61,6 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             ret.add(MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(tile.getNeededEnergy())));
             return ret;
         }, this));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 151, 5).with(SlotOverlay.POWER));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 143, 26));
-
         addButton(startButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 17, 60, 20, MekanismLang.BUTTON_START,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3)))));
         addButton(stopButton = new TranslationButton(this, getGuiLeft() + 69, getGuiTop() + 37, 60, 20, MekanismLang.BUTTON_STOP,

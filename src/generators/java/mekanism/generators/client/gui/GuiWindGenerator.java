@@ -6,9 +6,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
@@ -31,6 +28,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
 
     public GuiWindGenerator(MekanismTileContainer<TileEntityWindGenerator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
@@ -43,7 +41,6 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl("gui/elements/wind_on.png"), MekanismGenerators.rl("gui/elements/wind_off.png")));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
     }
 
     @Override

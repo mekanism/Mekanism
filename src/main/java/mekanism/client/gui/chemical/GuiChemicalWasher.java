@@ -8,9 +8,6 @@ import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -32,6 +29,7 @@ public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher,
 
     public GuiChemicalWasher(MekanismTileContainer<TileEntityChemicalWasher> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
@@ -47,8 +45,6 @@ public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher,
         addButton(new GuiFluidGauge(() -> tile.fluidTank, Type.STANDARD, this, 5, 4));
         addButton(new GuiGasGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, 26, 13));
         addButton(new GuiGasGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, 133, 13));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 154, 4).with(SlotOverlay.POWER));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 154, 55).with(SlotOverlay.MINUS));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {

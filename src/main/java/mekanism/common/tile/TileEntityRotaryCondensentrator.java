@@ -27,6 +27,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
@@ -111,6 +112,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, this::isValidFluid, () -> mode, this, 155, 25), RelativeSide.RIGHT);
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
+        gasInputSlot.setSlotOverlay(SlotOverlay.PLUS);
+        gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         return builder.build();
     }
 

@@ -28,7 +28,6 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
@@ -49,7 +48,7 @@ public class TileEntityCombiner extends TileEntityBasicMachine<CombinerRecipe> {
      * (4). The machine will not run if it does not have enough electricity.
      */
     public TileEntityCombiner() {
-        super(MekanismBlocks.COMBINER, 200, MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png"));
+        super(MekanismBlocks.COMBINER, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

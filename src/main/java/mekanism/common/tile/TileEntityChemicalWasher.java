@@ -27,6 +27,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
@@ -102,6 +103,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
         builder.addSlot(OutputInventorySlot.at(this, 180, 102), RelativeSide.TOP);
         builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
+        gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         return builder.build();
     }
 

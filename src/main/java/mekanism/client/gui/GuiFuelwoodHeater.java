@@ -2,8 +2,6 @@ package mekanism.client.gui;
 
 import java.util.Collections;
 import mekanism.client.gui.element.GuiHeatInfo;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -22,12 +20,12 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
 
     public GuiFuelwoodHeater(MekanismTileContainer<TileEntityFuelwoodHeater> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSlot(SlotType.NORMAL, this, 14, 28));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];

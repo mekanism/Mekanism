@@ -23,7 +23,6 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
@@ -82,7 +81,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     private EnergyInventorySlot energySlot;
 
     public TileEntityPressurizedReactionChamber() {
-        super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 100, Mekanism.rl("gui/gui_pressurized_reaction_chamber.png"));
+        super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 100);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

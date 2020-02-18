@@ -22,6 +22,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     public GuiThermalEvaporationController(MekanismTileContainer<TileEntityThermalEvaporationController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override

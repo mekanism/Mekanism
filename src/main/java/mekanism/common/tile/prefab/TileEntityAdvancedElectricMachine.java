@@ -42,7 +42,6 @@ import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -85,7 +84,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
      * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
      */
     public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, int ticksRequired, int secondaryPerTick) {
-        super(blockProvider, ticksRequired, MekanismUtils.getResource(ResourceType.GUI, "advanced_machine.png"));
+        super(blockProvider, ticksRequired);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

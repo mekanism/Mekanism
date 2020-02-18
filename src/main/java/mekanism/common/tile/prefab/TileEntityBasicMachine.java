@@ -14,14 +14,11 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> extends TileEntityOperationalMachine<RECIPE> implements IComputerIntegration,
       ISideConfiguration, IConfigCardAccess {
-
-    public ResourceLocation guiLocation;
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -31,9 +28,8 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
      *
      * @param baseTicksRequired - how many ticks it takes to run a cycle
      */
-    public TileEntityBasicMachine(IBlockProvider blockProvider, int baseTicksRequired, ResourceLocation location) {
+    public TileEntityBasicMachine(IBlockProvider blockProvider, int baseTicksRequired) {
         super(blockProvider, baseTicksRequired);
-        guiLocation = location;
     }
 
     @Override

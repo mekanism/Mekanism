@@ -4,9 +4,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiGasMode;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
@@ -28,6 +25,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
 
     public GuiGasTank(MekanismTileContainer<TileEntityGasTank> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
@@ -37,8 +35,6 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
-        addButton(new GuiSlot(SlotType.OUTPUT, this, 7, 7).with(SlotOverlay.PLUS));
-        addButton(new GuiSlot(SlotType.INPUT, this, 7, 39).with(SlotOverlay.MINUS));
         addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumping,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
     }

@@ -4,9 +4,6 @@ import java.util.Collections;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -24,6 +21,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator,
 
     public GuiSolarGenerator(MekanismTileContainer<TileEntitySolarGenerator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
@@ -33,7 +31,6 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator,
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(Collections::emptyList, this));
         addButton(new GuiStateTexture(this, 18, 35, tile::canSeeSun, MekanismGenerators.rl("gui/elements/sees_sun.png"), MekanismGenerators.rl("gui/elements/no_sun.png")));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
     }
 
     @Override

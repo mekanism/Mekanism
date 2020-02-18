@@ -26,6 +26,7 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -107,6 +108,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this, 6, 65));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 131, 57));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
+        inputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
 
