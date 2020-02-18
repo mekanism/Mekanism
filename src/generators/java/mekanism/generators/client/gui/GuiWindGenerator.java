@@ -16,6 +16,7 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.generators.client.gui.element.GuiStateTexture;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -41,6 +42,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier() : 0)),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl("gui/elements/wind_on.png"), MekanismGenerators.rl("gui/elements/wind_off.png")));
         addButton(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
     }
 
@@ -63,12 +65,6 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
             drawString(reason.translateColored(EnumColor.DARK_RED), 51, size, 0x00CD00);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(getGuiLeft() + 20, getGuiTop() + 37, 176, tile.getActive() ? 52 : 64, 12, 12);
     }
 
     @Override

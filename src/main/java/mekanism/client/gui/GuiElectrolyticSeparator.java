@@ -57,9 +57,9 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
                 return tile.getActive() ? 1 : 0;
             }
         }, ProgressBar.BI, this, 78, 29));
-        addButton(new GuiGasMode(this, 7, 72, false, () -> tile.dumpLeft,
+        addButton(new GuiGasMode(this, getGuiLeft() + 7, getGuiTop() + 72, false, () -> tile.dumpLeft,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents((byte) 0)))));
-        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.dumpRight,
+        addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumpRight,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents((byte) 1)))));
     }
 

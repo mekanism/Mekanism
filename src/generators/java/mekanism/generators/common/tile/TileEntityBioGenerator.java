@@ -39,7 +39,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
     private static IFluidTank[] ALL_TANKS = new IFluidTank[0];
-    private static final int MAX_FLUID = 24_000;
+    public static final int MAX_FLUID = 24_000;
 
     //TODO: At some point we probably want to cleanup the implementation for how we keep track of how much bio fuel is stored
     private int bioFuelStored;

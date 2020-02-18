@@ -39,7 +39,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiSlot(SlotType.OUTPUT, this, 7, 7).with(SlotOverlay.PLUS));
         addButton(new GuiSlot(SlotType.INPUT, this, 7, 39).with(SlotOverlay.MINUS));
-        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.dumping,
+        addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumping,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
     }
 

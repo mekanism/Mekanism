@@ -23,6 +23,7 @@ public class MekanismButton extends GuiElement {
         this.onHover = onHover;
         this.onLeftClick = onLeftClick;
         this.onRightClick = onRightClick;
+        playClickSound = true;
     }
 
     private void onLeftClick() {

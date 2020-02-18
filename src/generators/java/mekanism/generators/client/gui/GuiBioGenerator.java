@@ -35,6 +35,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : 0)),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
+        addButton(new GuiVerticalPowerBar(this, () -> tile.getBioFuelStored() / (double) TileEntityBioGenerator.MAX_FLUID, 7, 15));
         addButton(new GuiSlot(SlotType.NORMAL, this, 16, 34));
         addButton(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
     }
@@ -50,14 +51,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int displayInt = tile.getScaledFuelLevel(52);
-        drawTexturedRect(getGuiLeft() + 7, getGuiTop() + 17 + 52 - displayInt, 176, 52 + 52 - displayInt, 4, displayInt);
-    }
-
-    @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismGenerators.rl("gui/bio_generator.png");
+        return MekanismGenerators.rl("gui/solar_generator.png");
     }
 }

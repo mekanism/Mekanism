@@ -8,6 +8,8 @@ public class GuiBucketIO extends GuiTexturedElement {
 
     public GuiBucketIO(IGuiWrapper gui) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "bucket.png"), gui, gui.getWidth(), 66, 26, 57);
+        //Mark the slot as inactive as we really just want to be drawing it and not intercepting the mouse clicks
+        active = false;
     }
 
     @Override

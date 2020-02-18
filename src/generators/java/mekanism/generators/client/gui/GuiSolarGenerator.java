@@ -11,6 +11,7 @@ import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.generators.client.gui.element.GuiStateTexture;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
@@ -31,6 +32,7 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator,
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(Collections::emptyList, this));
+        addButton(new GuiStateTexture(this, 18, 35, tile::canSeeSun, MekanismGenerators.rl("gui/elements/sees_sun.png"), MekanismGenerators.rl("gui/elements/no_sun.png")));
         addButton(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
     }
 
@@ -41,12 +43,6 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator,
         //TODO: Make this look better, it previously was split on two lines, but now the lang string includes the stuff for per tick
         drawCenteredText(GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getLastProductionAmount())), 48, 80, 28, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(getGuiLeft() + 20, getGuiTop() + 37, 176, tile.canSeeSun() ? 52 : 64, 12, 12);
     }
 
     @Override

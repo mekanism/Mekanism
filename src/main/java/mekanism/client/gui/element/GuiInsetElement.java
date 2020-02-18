@@ -28,6 +28,7 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiTileEn
         //TODO: decide what to do if this doesn't divide nicely
         this.border = (width - innerWidth) / 2;
         this.left = x < 0;
+        playClickSound = true;
     }
 
     protected ResourceLocation getHolderTexture() {

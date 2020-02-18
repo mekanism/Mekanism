@@ -40,7 +40,11 @@ public class MekanismImageButton extends MekanismButton {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         super.renderButton(mouseX, mouseY, partialTicks);
-        MekanismRenderer.bindTexture(this.resourceLocation);
+        MekanismRenderer.bindTexture(getResource());
         blit(x, y, width, height, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
+    }
+
+    protected ResourceLocation getResource() {
+        return resourceLocation;
     }
 }

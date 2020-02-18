@@ -9,7 +9,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 public class GuiScrollList extends GuiTexturedElement {
 
     private List<String> textEntries = new ArrayList<>();
-    //TODO: Fix dragging
     private double dragOffset = 0;
     private int selected = -1;
     private double scroll;

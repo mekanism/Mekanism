@@ -7,6 +7,7 @@ import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.math.MathHelper;
@@ -17,6 +18,8 @@ public abstract class GuiElement extends Widget {
     public static final Minecraft minecraft = Minecraft.getInstance();
 
     protected final IGuiWrapper guiObj;
+
+    protected boolean playClickSound;
 
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, String text) {
         super(x, y, width, height, text);
@@ -176,5 +179,12 @@ public abstract class GuiElement extends Widget {
                   getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
         }
         RenderSystem.disableBlend();
+    }
+
+    @Override
+    public void playDownSound(SoundHandler soundHandler) {
+        if (playClickSound) {
+            super.playDownSound(soundHandler);
+        }
     }
 }

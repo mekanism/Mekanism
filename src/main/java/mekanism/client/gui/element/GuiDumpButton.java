@@ -14,6 +14,7 @@ public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTileEntit
     public GuiDumpButton(IGuiWrapper gui, TILE tile, int x, int y, Runnable onPress) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "dump.png"), gui, tile, x, y, 21, 10);
         this.onPress = onPress;
+        playClickSound = true;
     }
 
     @Override

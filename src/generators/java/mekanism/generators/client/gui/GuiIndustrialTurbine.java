@@ -61,7 +61,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(producing)));
         }, this));
-        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.structure == null ? GasMode.IDLE : tile.structure.dumpMode,
+        addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.structure == null ? GasMode.IDLE : tile.structure.dumpMode,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));
     }
 
