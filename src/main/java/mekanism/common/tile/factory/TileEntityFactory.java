@@ -23,6 +23,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
@@ -465,6 +466,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         container.trackArray(progress);
         container.track(SyncableDouble.create(() -> lastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(() -> sorting, value -> sorting = value));
+        container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
     }
 
     //TODO: Remove this
