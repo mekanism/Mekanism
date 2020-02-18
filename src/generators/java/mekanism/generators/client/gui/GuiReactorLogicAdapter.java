@@ -9,7 +9,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.client.gui.button.ReactorLogicButton;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
@@ -44,12 +43,6 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         renderScaledText(GeneratorsLang.REACTOR_LOGIC_REDSTONE_OUTPUT_MODE.translate(EnumColor.RED, tile.logicType), 23, 123, 0x404040, 130);
         drawCenteredText(MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
               0, getXSize(), 136, 0x404040);
-        //TODO: Move this to the ReactorLogicButton telling it to render in our proper layer, used to be in onHover for it but we want it to always display
-        for (ReactorLogic type : ReactorLogic.values()) {
-            int typeOffset = 22 * type.ordinal();
-            renderItem(type.getRenderStack(), 27, 35 + typeOffset);
-            drawString(TextComponentUtil.build(EnumColor.WHITE, type), 46, 34 + typeOffset, 0x404040);
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

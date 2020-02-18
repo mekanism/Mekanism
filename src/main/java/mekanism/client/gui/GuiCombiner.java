@@ -31,7 +31,6 @@ public class GuiCombiner extends GuiMekanismTile<TileEntityCombiner, MekanismTil
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = tile.guiLocation;
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));

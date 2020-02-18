@@ -31,7 +31,6 @@ public abstract class GuiElectricMachine<TILE extends TileEntityElectricMachine,
     @Override
     public void init() {
         super.init();
-        ResourceLocation resource = tile.guiLocation;
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));

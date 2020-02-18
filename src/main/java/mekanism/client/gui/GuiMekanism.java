@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILangEntry;
@@ -124,10 +125,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int yAxis = mouseY - getGuiTop();
         //TODO: Does color need to be reset before this
         for (Widget widget : this.buttons) {
-            if (widget.isMouseOver(mouseX, mouseY)) {//.isHovered()) {
-                //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
-                widget.renderToolTip(xAxis, yAxis);
-                break;
+            if (widget instanceof GuiElement) {
+                //We let our gui element handle drawing any tooltip it may have when it is drawing the foreground
+                ((GuiElement) widget).renderForeground(mouseX, mouseY, xAxis, yAxis);
             }
         }
     }

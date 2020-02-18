@@ -23,6 +23,13 @@ public abstract class GuiElement extends Widget {
         guiObj = gui;
     }
 
+    public void renderForeground(int mouseX, int mouseY, int xAxis, int yAxis) {
+        if (isMouseOver(mouseX, mouseY)) {//.isHovered()) {
+            //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
+            renderToolTip(xAxis, yAxis);
+        }
+    }
+
     public void displayTooltip(ITextComponent component, int xAxis, int yAxis) {
         guiObj.displayTooltip(component, xAxis, yAxis);
     }
