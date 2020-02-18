@@ -37,6 +37,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     };
 
     private IGuiHelper guiHelper;
+    @Nullable
     protected ResourceLocation guiLocation;
     @Nullable
     protected ProgressBar progressBar;
@@ -51,8 +52,16 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     private final IDrawable background;
 
     protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, IBaseProvider provider, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
+        this(helper, new ResourceLocation(guiTexture), provider, progress, xOffset, yOffset, width, height);
+    }
+
+    protected BaseRecipeCategory(IGuiHelper helper, IBaseProvider provider, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
+        this(helper, (ResourceLocation) null, provider, progress, xOffset, yOffset, width, height);
+    }
+
+    protected BaseRecipeCategory(IGuiHelper helper, @Nullable ResourceLocation guiLocation, IBaseProvider provider, @Nullable ProgressBar progress, int xOffset, int yOffset, int width, int height) {
         guiHelper = helper;
-        guiLocation = new ResourceLocation(guiTexture);
+        this.guiLocation = guiLocation;
 
         progressBar = progress;
         this.provider = provider;
@@ -65,8 +74,11 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
         this.xOffset = xOffset;
         this.yOffset = yOffset;
-        background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, width, height);
-
+        if (guiLocation == null) {
+            background = new NOOPDrawable(width, height);
+        } else {
+            background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, width, height);
+        }
         addGuiElements();
     }
 
@@ -92,7 +104,9 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public void draw(RECIPE recipe, double mouseX, double mouseY) {
-        MekanismRenderer.bindTexture(guiLocation);
+        if (guiLocation != null) {
+            MekanismRenderer.bindTexture(guiLocation);
+        }
         guiElements.forEach(e -> e.render((int) mouseX, (int) mouseY, 0));
     }
 

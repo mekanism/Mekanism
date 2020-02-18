@@ -10,7 +10,6 @@ import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
-import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -18,6 +17,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -30,7 +30,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisRecipe> {
 
     public ElectrolysisRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/blank.png", MekanismBlocks.ELECTROLYTIC_SEPARATOR, ProgressBar.BI, 4, 9, 167, 62);
+        super(helper, MekanismBlocks.ELECTROLYTIC_SEPARATOR, ProgressBar.BI, 4, 9, 167, 62);
     }
 
     @Override
