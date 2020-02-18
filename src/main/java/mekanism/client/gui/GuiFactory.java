@@ -7,9 +7,6 @@ import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiSlot.SlotOverlay;
-import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiVerticalProgress;
 import mekanism.client.gui.element.bar.GuiHorizontalChemicalBar;
 import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
@@ -23,8 +20,6 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.slot.ContainerSlotType;
-import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketTileEntity;
@@ -36,7 +31,6 @@ import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
@@ -54,6 +48,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
         if (tile.tier == FactoryTier.ULTIMATE) {
             xSize += 34;
         }
+        dynamicSlots = true;
     }
 
     @Override
@@ -95,26 +90,6 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
                     return tile.getScaledProgress(1, cacheIndex);
                 }
             }, 4 + baseX + (i * baseXMult), 33));
-        }
-        //TODO: Move this into the main GuiMekanism putting it behind a check of useDynamicBackground
-        for (Slot slot : container.inventorySlots) {
-            if (slot instanceof InventoryContainerSlot) {
-                ContainerSlotType slotType = ((InventoryContainerSlot) slot).getSlotType();
-                //Shift the slots by one as the elements include the border of the slot
-                if (slotType == ContainerSlotType.INPUT) {
-                    addButton( new GuiSlot(SlotType.INPUT, this, slot.xPos - 1, slot.yPos - 1));
-                } else if (slotType == ContainerSlotType.OUTPUT) {
-                    addButton(new GuiSlot(SlotType.OUTPUT, this, slot.xPos - 1, slot.yPos - 1));
-                } else if (slotType == ContainerSlotType.POWER) {
-                    addButton(new GuiSlot(SlotType.POWER, this, slot.xPos - 1, slot.yPos - 1).with(SlotOverlay.POWER));
-                } else if (slotType == ContainerSlotType.EXTRA) {
-                    addButton(new GuiSlot(SlotType.EXTRA, this, slot.xPos - 1, slot.yPos - 1));
-                } else if (slotType == ContainerSlotType.NORMAL) {
-                    addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
-                } //else slotType == ContainerSlotType.IGNORED: don't do anything
-            } else {
-                addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
-            }
         }
     }
 

@@ -15,6 +15,7 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -62,6 +63,8 @@ public class BasicInventorySlot implements IInventorySlot {
     private final int x;
     private final int y;
     protected boolean obeyStackLimit = true;
+    @Nullable
+    protected SlotOverlay slotOverlay;
 
     protected BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
           @Nullable IMekanismInventory inventory, int x, int y) {
@@ -209,12 +212,17 @@ public class BasicInventorySlot implements IInventorySlot {
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot() {
-        return new InventoryContainerSlot(this, x, y, getSlotType());
+        return new InventoryContainerSlot(this, x, y, getSlotType(), slotOverlay);
     }
 
     //TODO: Implement this properly in the different subclasses/slot types
     protected ContainerSlotType getSlotType() {
         return ContainerSlotType.NORMAL;
+    }
+
+    //Allow overwriting the overlay
+    public void setSlotOverlay(@Nullable SlotOverlay slotOverlay) {
+        this.slotOverlay = slotOverlay;
     }
 
     /**

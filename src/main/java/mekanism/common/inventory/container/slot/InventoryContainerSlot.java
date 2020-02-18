@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container.slot;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.slot.IInventorySlot;
@@ -17,11 +18,14 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     private static IInventory emptyInventory = new Inventory(0);
     private final ContainerSlotType slotType;
     private final IInventorySlot slot;
+    @Nullable
+    private final SlotOverlay slotOverlay;
 
-    public InventoryContainerSlot(IInventorySlot slot, int x, int y, ContainerSlotType slotType) {
+    public InventoryContainerSlot(IInventorySlot slot, int x, int y, ContainerSlotType slotType, @Nullable SlotOverlay slotOverlay) {
         super(emptyInventory, 0, x, y);
         this.slot = slot;
         this.slotType = slotType;
+        this.slotOverlay = slotOverlay;
     }
 
     public IInventorySlot getInventorySlot() {
@@ -92,5 +96,10 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     public ContainerSlotType getSlotType() {
         return slotType;
+    }
+
+    @Nullable
+    public SlotOverlay getSlotOverlay() {
+        return slotOverlay;
     }
 }

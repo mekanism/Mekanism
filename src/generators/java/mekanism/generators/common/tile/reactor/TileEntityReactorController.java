@@ -65,7 +65,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        //TODO: FIXME
+        //TODO: FIXME, make the slot only "exist" or at least be accessible when the reactor is formed
         builder.addSlot(reactorSlot = BasicInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
         return builder.build();
     }

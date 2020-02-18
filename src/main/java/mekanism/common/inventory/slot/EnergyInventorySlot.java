@@ -15,6 +15,7 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -131,6 +132,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     private EnergyInventorySlot(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
           @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validPredicate, inventory, x, y);
+        slotOverlay = SlotOverlay.POWER;
     }
 
     @Override

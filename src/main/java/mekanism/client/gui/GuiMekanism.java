@@ -10,13 +10,17 @@ import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.RenderHelper;
@@ -28,26 +32,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
 
     private static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
-    protected boolean useDynamicBackground;
+    //TODO: Either remove the need for this or at the very least default it to true
+    protected boolean dynamicSlots;
 
     protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 
-    //TODO: Remove this? We don't currently use this anymore
-    public static boolean isTextboxKey(char c, int keyCode) {
-        return keyCode == GLFW.GLFW_KEY_BACKSPACE || keyCode == GLFW.GLFW_KEY_DELETE || keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT || keyCode == GLFW.GLFW_KEY_END ||
-               keyCode == GLFW.GLFW_KEY_HOME || Screen.isSelectAll(keyCode) || Screen.isCopy(keyCode) || Screen.isPaste(keyCode) || Screen.isCut(keyCode);
-    }
-
-    protected float getNeededScale(ITextComponent text, int maxX) {
-        int length = getStringWidth(text);
-        return length <= maxX ? 1 : (float) maxX / length;
+    @Override
+    public void init() {
+        super.init();
+        if (dynamicSlots) {
+            addSlots();
+        }
     }
 
     protected IHoverable getOnHover(ILangEntry translationHelper) {
@@ -143,6 +144,38 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
+    }
+
+    private void addSlots() {
+        for (Slot slot : container.inventorySlots) {
+            if (slot instanceof InventoryContainerSlot) {
+                InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
+                ContainerSlotType slotType = containerSlot.getSlotType();
+                //Shift the slots by one as the elements include the border of the slot
+                SlotType type;
+                if (slotType == ContainerSlotType.INPUT) {
+                    type = SlotType.INPUT;
+                } else if (slotType == ContainerSlotType.OUTPUT) {
+                    type = SlotType.OUTPUT;
+                } else if (slotType == ContainerSlotType.POWER) {
+                    type = SlotType.POWER;
+                } else if (slotType == ContainerSlotType.EXTRA) {
+                    type = SlotType.EXTRA;
+                } else if (slotType == ContainerSlotType.NORMAL) {
+                    type = SlotType.NORMAL;
+                } else {//slotType == ContainerSlotType.IGNORED: don't do anything
+                    continue;
+                }
+                GuiSlot guiSlot = new GuiSlot(type, this, slot.xPos - 1, slot.yPos - 1);
+                SlotOverlay slotOverlay = containerSlot.getSlotOverlay();
+                if (slotOverlay != null) {
+                    guiSlot.with(slotOverlay);
+                }
+                addButton(guiSlot);
+            } else {
+                addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
+            }
+        }
     }
 
     //TODO: Inline into drawGuiContainerBackgroundLayer
