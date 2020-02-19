@@ -314,6 +314,7 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(() -> collectedEnergy, value -> collectedEnergy = value));
         container.track(SyncableDouble.create(() -> minThreshold, value -> minThreshold = value));
         container.track(SyncableDouble.create(() -> maxThreshold, value -> maxThreshold = value));
         container.track(SyncableInt.create(() -> time, value -> time = value));
