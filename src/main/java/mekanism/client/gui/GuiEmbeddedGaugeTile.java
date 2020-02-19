@@ -32,6 +32,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
         int start = 0;
         int x = getGuiLeft() + xPos;
         int y = getGuiTop() + yPos;
+        int shiftedY = y + 58;
         while (scale > 0) {
             int renderRemaining;
             if (scale > 16) {
@@ -41,7 +42,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
                 renderRemaining = scale;
                 scale = 0;
             }
-            drawTexturedRectFromIcon(x, y + 58 - renderRemaining - start, sprite, 16, renderRemaining);
+            drawTexturedRectFromIcon(x, shiftedY - renderRemaining - start, sprite, 16, renderRemaining);
             start += 16;
         }
         //Reset the color so that it does not leak into drawing our gauge or other gui elements

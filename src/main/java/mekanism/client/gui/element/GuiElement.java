@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 
@@ -139,7 +140,7 @@ public abstract class GuiElement extends Widget {
             MekanismRenderer.resetColor();
         }
         //TODO: Convert this to being two different 16x48 images, one for with border and one for buttons without a black border?
-        // And then make it so that they can stretch out to be any size
+        // And then make it so that they can stretch out to be any size (make this make use of the renderExtendedTexture method
         MekanismRenderer.bindTexture(WIDGETS_LOCATION);
         //TODO: This can use isHovered() once we fix the isHovered logic
         int i = getYImage(isMouseOver(mouseX, mouseY));
@@ -179,6 +180,54 @@ public abstract class GuiElement extends Widget {
                   getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
         }
         RenderSystem.disableBlend();
+    }
+
+    //TODO: Better name?
+    protected void renderExtendedTexture(ResourceLocation resource, int sideWidth, int sideHeight) {
+        //TODO: Can some of this code that also exists in GuiMekanism be moved to some util class or something
+        //TODO: Do we want to add in some validation here about dimensions
+        int left = getButtonX();
+        int top = getButtonY();
+        int textureWidth = 2 * sideWidth + 1;
+        int textureHeight = 2 * sideHeight + 1;
+        int centerWidth = getButtonWidth() - 2 * sideWidth;
+        int centerHeight = getButtonHeight() - 2 * sideHeight;
+        int leftEdgeEnd = left + sideHeight;
+        int rightEdgeStart = leftEdgeEnd + centerWidth;
+        int topEdgeEnd = top + sideWidth;
+        int bottomEdgeStart = topEdgeEnd + centerHeight;
+        minecraft.textureManager.bindTexture(resource);
+        //Left Side
+        //Top Left Corner
+        blit(left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        //Left Middle
+        if (centerHeight > 0) {
+            blit(left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+        }
+        //Bottom Left Corner
+        blit(left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+
+        //Middle
+        if (centerWidth > 0) {
+            //Top Middle
+            blit(leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
+            if (centerHeight > 0) {
+                //Center
+                blit(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
+            }
+            //Bottom Middle
+            blit(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
+        }
+
+        //Right side
+        //Top Right Corner
+        blit(rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        //Right Middle
+        if (centerHeight > 0) {
+            blit(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+        }
+        //Bottom Right Corner
+        blit(rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
     @Override

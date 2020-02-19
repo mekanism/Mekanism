@@ -9,30 +9,45 @@ import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvid
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiVerticalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiVerticalBar<ChemicalInfoProvider<CHEMICAL>> {
-
-    private static final int texWidth = 4;
-    private static final int texHeight = 52;
+public class GuiVerticalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<ChemicalInfoProvider<CHEMICAL>> {
 
     public GuiVerticalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, int x, int y) {
-        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, texWidth + 2, texHeight + 2);
+        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, 4, 52);
     }
 
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
         CHEMICAL type = getHandler().getType();
         if (!type.isEmptyType()) {
-            int displayInt = (int) (getHandler().getLevel() * texHeight);
+            //TODO: Unify this code some, as there is a lot of code we have for drawing "tiled" but it is duplicated all over the place
+            int scale = (int) (getHandler().getLevel() * (height - 2));
             MekanismRenderer.color(type);
-            guiObj.drawTexturedRectFromIcon(x + 1, y + 1 + (texHeight - displayInt), MekanismRenderer.getChemicalTexture(type), texWidth, displayInt);
+            TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(type);
+            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            int start = 0;
+            int x = this.x + 1;
+            int y = this.y + height - 1;
+            while (scale > 0) {
+                int renderRemaining;
+                if (scale > 16) {
+                    renderRemaining = 16;
+                    scale -= 16;
+                } else {
+                    renderRemaining = scale;
+                    scale = 0;
+                }
+                guiObj.drawTexturedRectFromIcon(x, y - renderRemaining - start, icon, width - 2, renderRemaining);
+                start += 16;
+            }
             MekanismRenderer.resetColor();
         }
     }
 
     //Note the GuiBar.IBarInfoHandler is needed, as it cannot compile and resolve just IBarInfoHandler
-    public interface ChemicalInfoProvider<CHEMICAL extends Chemical<CHEMICAL>> extends GuiVerticalBar.IBarInfoHandler {
+    public interface ChemicalInfoProvider<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar.IBarInfoHandler {
 
         @Nonnull
         CHEMICAL getType();

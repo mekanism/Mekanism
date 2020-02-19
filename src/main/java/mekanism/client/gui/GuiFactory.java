@@ -73,7 +73,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
             }
             if (provider != null) {
                 int barX = tile.tier == FactoryTier.ULTIMATE ? 25 : 7;
-                addButton(new GuiHorizontalChemicalBar<>(this, provider, barX, 76, 140));
+                addButton(new GuiHorizontalChemicalBar<>(this, provider, barX, 76, 138, 4));
                 //TODO: Move left and make wider for ultimate factory??
                 addButton(new GuiDumpButton<>(this, tile, barX + 141, 76,
                       () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1)))));

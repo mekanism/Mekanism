@@ -191,9 +191,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
         int top = getGuiTop();
         int left = getGuiLeft();
-        int textureDimensions = 9;
         int sideWidth = 4;
         int sideHeight = 4;
+        int textureWidth = 2 * sideWidth + 1;
+        int textureHeight = 2 * sideHeight + 1;
         int centerWidth = width - 2 * sideWidth;
         int centerHeight = height - 2 * sideHeight;
         int leftEdgeEnd = left + sideHeight;
@@ -202,36 +203,36 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int bottomEdgeStart = topEdgeEnd + centerHeight;
         minecraft.textureManager.bindTexture(BASE_BACKGROUND);
         //Left Side
-        //Top Left Corner (4x4)
-        drawModalRectWithCustomSizedTexture(left, top, 0, 0, sideWidth, sideHeight, textureDimensions, textureDimensions);
-        //Left Middle (4x1)
+        //Top Left Corner
+        drawModalRectWithCustomSizedTexture(left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        //Left Middle
         if (centerHeight > 0) {
-            drawModalRectWithCustomSizedTexture(left, topEdgeEnd, sideWidth, centerHeight, 0, 4, sideWidth, 1, textureDimensions, textureDimensions);
+            drawModalRectWithCustomSizedTexture(left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
-        //Bottom Left Corner (4x4)
-        drawModalRectWithCustomSizedTexture(left, bottomEdgeStart, 0, 5, sideWidth, sideHeight, textureDimensions, textureDimensions);
+        //Bottom Left Corner
+        drawModalRectWithCustomSizedTexture(left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
 
         //Middle
         if (centerWidth > 0) {
-            //Top Middle (1x4)
-            drawModalRectWithCustomSizedTexture(leftEdgeEnd, top, centerWidth, sideHeight, 4, 0, 1, sideHeight, textureDimensions, textureDimensions);
+            //Top Middle
+            drawModalRectWithCustomSizedTexture(leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
             if (centerHeight > 0) {
                 //Center
-                drawModalRectWithCustomSizedTexture(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, 4, 4, 1, 1, textureDimensions, textureDimensions);
+                drawModalRectWithCustomSizedTexture(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
             }
-            //Bottom Middle (1x4)
-            drawModalRectWithCustomSizedTexture(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, 4, 5, 1, sideHeight, textureDimensions, textureDimensions);
+            //Bottom Middle
+            drawModalRectWithCustomSizedTexture(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
         }
 
         //Right side
-        //Top Right Corner (4x4)
-        drawModalRectWithCustomSizedTexture(rightEdgeStart, top, 5, 0, sideWidth, sideHeight, textureDimensions, textureDimensions);
-        //Right Middle (4x1)
+        //Top Right Corner
+        drawModalRectWithCustomSizedTexture(rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        //Right Middle
         if (centerHeight > 0) {
-            drawModalRectWithCustomSizedTexture(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, 5, 4, sideWidth, 1, textureDimensions, textureDimensions);
+            drawModalRectWithCustomSizedTexture(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
-        //Bottom Right Corner (4x4)
-        drawModalRectWithCustomSizedTexture(rightEdgeStart, bottomEdgeStart, 5, 5, sideWidth, sideHeight, textureDimensions, textureDimensions);
+        //Bottom Right Corner
+        drawModalRectWithCustomSizedTexture(rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
     @Override

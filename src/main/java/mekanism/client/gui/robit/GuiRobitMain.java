@@ -4,6 +4,9 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.tab.GuiRobitTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -14,13 +17,10 @@ import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedEntityButton;
 import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -54,8 +54,19 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void init() {
         super.init();
-        //TODO: Move the power bar to being defined via this
         addButton(new GuiRobitTab(this));
+        addButton(new GuiInnerScreen(this, 27, 16, 122, 56));
+        addButton(new GuiHorizontalPowerBar(this, new IBarInfoHandler() {
+            @Override
+            public ITextComponent getTooltip() {
+                return EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY).getTextComponent();
+            }
+
+            @Override
+            public double getLevel() {
+                return robit.getEnergy() / robit.MAX_ELECTRICITY;
+            }
+        }, 27, 74, 120));
         addButton(confirmName = new TranslationButton(this, getGuiLeft() + 58, getGuiTop() + 47, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
         confirmName.visible = false;
 
@@ -108,7 +119,6 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(MekanismLang.ROBIT.translate(), 76, 6, 0x404040);
-
         if (!nameChangeField.visible) {
             CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();
             drawString(MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, 0x00CD00);
@@ -117,27 +127,16 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
             drawString(MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, 0x00CD00);
             drawString(MekanismLang.ROBIT_OWNER.translate(owner), 29, 63 - 4, 0x00CD00);
         }
-        //TODO: Convert to GuiElement
-        int xAxis = mouseX - getGuiLeft();
-        int yAxis = mouseY - getGuiTop();
-        if (xAxis >= 28 && xAxis <= 148 && yAxis >= 75 && yAxis <= 79) {
-            displayTooltip(EnergyDisplay.of(robit.getEnergy(), robit.MAX_ELECTRICITY).getTextComponent(), xAxis, yAxis);
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(getGuiLeft() + 28, getGuiTop() + 75, 0, 166, getScaledEnergyLevel(120), 4);
         if (nameChangeField.visible) {
             drawTexturedRect(getGuiLeft() + 28, getGuiTop() + 17, 0, 166 + 4, 120, 54);
             MekanismRenderer.resetColor();
         }
-    }
-
-    private int getScaledEnergyLevel(int i) {
-        return (int) (robit.getEnergy() * i / robit.MAX_ELECTRICITY);
     }
 
     @Override
@@ -146,8 +145,8 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         nameChangeField.tick();
     }
 
-    @Override
+    /*@Override
     protected ResourceLocation getGuiLocation() {
         return MekanismUtils.getResource(ResourceType.GUI, "robit_main.png");
-    }
+    }*/
 }

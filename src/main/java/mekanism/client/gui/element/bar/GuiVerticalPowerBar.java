@@ -9,7 +9,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiVerticalPowerBar extends GuiVerticalBar<IBarInfoHandler> {
+public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
 
     private static final ResourceLocation ENERGY_BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "vertical_power_bar.png");
     private static final int texWidth = 4;
@@ -17,7 +17,7 @@ public class GuiVerticalPowerBar extends GuiVerticalBar<IBarInfoHandler> {
 
     //TODO: For this and elements like it we should not allow clicking them even if the on click does nothing (we don't want a click sound to be made)
     public GuiVerticalPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, int x, int y) {
-        super(ENERGY_BAR, gui, new IBarInfoHandler() {
+        this(gui, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
                 return EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent();
@@ -27,11 +27,11 @@ public class GuiVerticalPowerBar extends GuiVerticalBar<IBarInfoHandler> {
             public double getLevel() {
                 return tile.getEnergy() / tile.getMaxEnergy();
             }
-        }, x, y, texWidth + 2, texHeight + 2);
+        }, x, y);
     }
 
     public GuiVerticalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
-        super(ENERGY_BAR, gui, handler, x, y, texWidth + 2, texHeight + 2);
+        super(ENERGY_BAR, gui, handler, x, y, texWidth, texHeight);
     }
 
     @Override
