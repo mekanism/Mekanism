@@ -65,7 +65,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
         }
         int amount = infoHandler.getTank().getFluidAmount();
         if (amount == Integer.MAX_VALUE) {
-            return MekanismLang.INFINITE.translate();
+            return MekanismLang.GENERIC_STORED.translate(fluidStack, MekanismLang.INFINITE);
         }
         return MekanismLang.GENERIC_STORED_MB.translate(fluidStack, amount);
     }

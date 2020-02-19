@@ -15,8 +15,13 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
     private static final int texWidth = 4;
     private static final int texHeight = 52;
 
-    //TODO: For this and elements like it we should not allow clicking them even if the on click does nothing (we don't want a click sound to be made)
+    private final double heightScale;
+
     public GuiVerticalPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, int x, int y) {
+        this(gui, tile, x, y, texHeight);
+    }
+
+    public GuiVerticalPowerBar(IGuiWrapper gui, IStrictEnergyStorage tile, int x, int y, int desiredHeight) {
         this(gui, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -27,17 +32,22 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
             public double getLevel() {
                 return tile.getEnergy() / tile.getMaxEnergy();
             }
-        }, x, y);
+        }, x, y, desiredHeight);
     }
 
     public GuiVerticalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
-        super(ENERGY_BAR, gui, handler, x, y, texWidth, texHeight);
+        this(gui, handler, x, y, texHeight);
+    }
+
+    public GuiVerticalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int desiredHeight) {
+        super(ENERGY_BAR, gui, handler, x, y, texWidth, desiredHeight);
+        heightScale = desiredHeight / (double) texHeight;
     }
 
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
         int displayInt = (int) (getHandler().getLevel() * texHeight);
-        //TODO: Fix this, broke it while trying to make reading the numbers cleaner
-        guiObj.drawModalRectWithCustomSizedTexture(x + 1, y + 1 + (texHeight - displayInt), 0, 0, texWidth, displayInt, texWidth, texHeight);
+        int scaled = calculateScaled(heightScale, displayInt);
+        guiObj.drawModalRectWithCustomSizedTexture(x + 1, y + height - 1 - scaled, texWidth, scaled, 0, 0, texWidth, displayInt, texWidth, texHeight);
     }
 }

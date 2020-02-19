@@ -116,8 +116,8 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(drainSlot = GasInventorySlot.drain(gasTank, this, 8, 8));
-        builder.addSlot(fillSlot = GasInventorySlot.fill(gasTank, gas -> true, this, 8, 40));
+        builder.addSlot(drainSlot = GasInventorySlot.drain(gasTank, this, 16, 16));
+        builder.addSlot(fillSlot = GasInventorySlot.fill(gasTank, gas -> true, this, 16, 48));
         //TODO: Make the drain/fill slots be output/input colored?
         drainSlot.setSlotOverlay(SlotOverlay.PLUS);
         fillSlot.setSlotOverlay(SlotOverlay.MINUS);

@@ -60,8 +60,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiSortingTab(this, tile));
-        //TODO: Make the power bar taller for the sawing factories
-        addButton(new GuiVerticalPowerBar(this, tile, getXSize() - 12, 16));
+        addButton(new GuiVerticalPowerBar(this, tile, getXSize() - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.lastUsage)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
         if (tile.hasSecondaryResourceBar()) {
@@ -72,10 +71,8 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
                 provider = GuiVerticalChemicalBar.getProvider(((TileEntityItemStackGasToItemStackFactory) tile).getGasTank());
             }
             if (provider != null) {
-                int barX = tile.tier == FactoryTier.ULTIMATE ? 25 : 7;
-                addButton(new GuiHorizontalChemicalBar<>(this, provider, barX, 76, 138, 4));
-                //TODO: Move left and make wider for ultimate factory??
-                addButton(new GuiDumpButton<>(this, tile, barX + 141, 76,
+                addButton(new GuiHorizontalChemicalBar<>(this, provider, 7, 76, tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4));
+                addButton(new GuiDumpButton<>(this, tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76,
                       () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1)))));
             }
         }

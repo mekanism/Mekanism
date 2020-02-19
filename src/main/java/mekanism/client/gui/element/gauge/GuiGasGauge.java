@@ -55,7 +55,11 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (infoHandler.getTank().isEmpty()) {
             return MekanismLang.EMPTY.translate();
         }
-        return MekanismLang.GENERIC_STORED_MB.translate(infoHandler.getTank().getStack(), infoHandler.getTank().getStored());
+        int amount = infoHandler.getTank().getStored();
+        if (amount == Integer.MAX_VALUE) {
+            return MekanismLang.GENERIC_STORED.translate(infoHandler.getTank().getType(), MekanismLang.INFINITE);
+        }
+        return MekanismLang.GENERIC_STORED_MB.translate(infoHandler.getTank().getType(), amount);
     }
 
     @Override
