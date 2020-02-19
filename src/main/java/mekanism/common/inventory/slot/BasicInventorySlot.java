@@ -63,8 +63,9 @@ public class BasicInventorySlot implements IInventorySlot {
     private final int x;
     private final int y;
     protected boolean obeyStackLimit = true;
+    private ContainerSlotType slotType = ContainerSlotType.NORMAL;
     @Nullable
-    protected SlotOverlay slotOverlay;
+    private SlotOverlay slotOverlay;
 
     protected BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
           @Nullable IMekanismInventory inventory, int x, int y) {
@@ -212,15 +213,13 @@ public class BasicInventorySlot implements IInventorySlot {
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot() {
-        return new InventoryContainerSlot(this, x, y, getSlotType(), slotOverlay);
+        return new InventoryContainerSlot(this, x, y, slotType, slotOverlay);
     }
 
-    //TODO: Implement this properly in the different subclasses/slot types
-    protected ContainerSlotType getSlotType() {
-        return ContainerSlotType.NORMAL;
+    public void setSlotType(ContainerSlotType slotType) {
+        this.slotType = slotType;
     }
 
-    //Allow overwriting the overlay
     public void setSlotOverlay(@Nullable SlotOverlay slotOverlay) {
         this.slotOverlay = slotOverlay;
     }

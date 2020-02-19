@@ -61,13 +61,9 @@ public class InfusionInventorySlot extends BasicInventorySlot {
     private InfusionInventorySlot(InfusionTank infusionTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
+        setSlotType(ContainerSlotType.EXTRA);
         this.infusionTank = infusionTank;
         this.worldSupplier = worldSupplier;
-    }
-
-    @Override
-    protected ContainerSlotType getSlotType() {
-        return ContainerSlotType.EXTRA;
     }
 
     public void fillTank() {

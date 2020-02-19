@@ -26,6 +26,7 @@ import mekanism.common.block.BlockGasTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
@@ -118,8 +119,9 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(drainSlot = GasInventorySlot.drain(gasTank, this, 16, 16));
         builder.addSlot(fillSlot = GasInventorySlot.fill(gasTank, gas -> true, this, 16, 48));
-        //TODO: Make the drain/fill slots be output/input colored?
+        drainSlot.setSlotType(ContainerSlotType.OUTPUT);
         drainSlot.setSlotOverlay(SlotOverlay.PLUS);
+        fillSlot.setSlotType(ContainerSlotType.INPUT);
         fillSlot.setSlotOverlay(SlotOverlay.MINUS);
         return builder.build();
     }

@@ -197,13 +197,9 @@ public class FluidInventorySlot extends BasicInventorySlot {
     private FluidInventorySlot(IFluidHandler fluidHandler, Predicate<@NonNull FluidStack> isValidFluid, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
+        setSlotType(ContainerSlotType.EXTRA);
         this.fluidHandler = fluidHandler;
         this.isValidFluid = isValidFluid;
-    }
-
-    @Override
-    protected ContainerSlotType getSlotType() {
-        return ContainerSlotType.EXTRA;
     }
 
     public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode) {

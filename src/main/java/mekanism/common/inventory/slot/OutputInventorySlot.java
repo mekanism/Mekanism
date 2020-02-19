@@ -16,10 +16,6 @@ public class OutputInventorySlot extends BasicInventorySlot {
 
     private OutputInventorySlot(@Nullable IMekanismInventory inventory, int x, int y) {
         super(alwaysTrueBi, internalOnly, alwaysTrue, inventory, x, y);
-    }
-
-    @Override
-    protected ContainerSlotType getSlotType() {
-        return ContainerSlotType.OUTPUT;
+        setSlotType(ContainerSlotType.OUTPUT);
     }
 }

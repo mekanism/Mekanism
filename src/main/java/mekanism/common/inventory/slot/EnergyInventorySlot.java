@@ -132,12 +132,8 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     private EnergyInventorySlot(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
           @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validPredicate, inventory, x, y);
-        slotOverlay = SlotOverlay.POWER;
-    }
-
-    @Override
-    protected ContainerSlotType getSlotType() {
-        return ContainerSlotType.POWER;
+        setSlotType(ContainerSlotType.POWER);
+        setSlotOverlay(SlotOverlay.POWER);
     }
 
     //TODO: Should we make this slot keep track of an IStrictEnergyStorage AND also then make some sort of "ITickableSlot" or something that lets us tick a bunch

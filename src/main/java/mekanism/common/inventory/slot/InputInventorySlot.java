@@ -34,10 +34,6 @@ public class InputInventorySlot extends BasicInventorySlot {
         //TODO: Instead of always being false, should we make it be isItemValid.negate(), just to allow for extracting if something went wrong
         //TODO: Re-evaluate the insertion predicate
         super(manualOnly, (stack, automationType) -> insertPredicate.test(stack), isItemValid, inventory, x, y);
-    }
-
-    @Override
-    protected ContainerSlotType getSlotType() {
-        return ContainerSlotType.INPUT;
+        setSlotType(ContainerSlotType.INPUT);
     }
 }

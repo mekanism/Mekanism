@@ -215,14 +215,10 @@ public class GasInventorySlot extends BasicInventorySlot {
     private GasInventorySlot(GasTank gasTank, Predicate<@NonNull Gas> isValidGas, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
+        setSlotType(ContainerSlotType.EXTRA);
         this.gasTank = gasTank;
         this.isValidGas = isValidGas;
         this.worldSupplier = worldSupplier;
-    }
-
-    @Override
-    protected ContainerSlotType getSlotType() {
-        return ContainerSlotType.EXTRA;
     }
 
     /**
