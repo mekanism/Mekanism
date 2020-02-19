@@ -5,6 +5,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.gui.GuiEmbeddedGaugeTile;
 import mekanism.client.gui.button.GuiGasMode;
 import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
@@ -18,6 +19,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
@@ -29,11 +31,13 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
 
     public GuiIndustrialTurbine(MekanismTileContainer<TileEntityTurbineCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 50, 23, 112, 41));
         addButton(new GuiTurbineTab(this, tile, TurbineTab.STAT));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 16));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
@@ -107,13 +111,11 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
 
     @Override
     protected ResourceLocation getGaugeResource() {
-        return Mekanism.rl("gui/industrial_turbine.png");
+        return MekanismGenerators.rl("gui/industrial_turbine.png");
     }
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        //Note: This texture is also used for the boiler, for the gauge
-        // TODO: Look at the texture at some point maybe we can split it up
-        return Mekanism.rl("gui/industrial_turbine.png");
+        return MekanismGenerators.rl("gui/industrial_turbine.png");
     }
 }

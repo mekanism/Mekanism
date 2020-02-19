@@ -33,6 +33,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
+//TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
 
     private static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
@@ -191,45 +192,46 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int top = getGuiTop();
         int left = getGuiLeft();
         int textureDimensions = 9;
-        int cornerDimensions = 4;
-        int centerWidth = width - 2 * cornerDimensions;
-        int centerHeight = height - 2 * cornerDimensions;
-        int leftEdgeEnd = left + cornerDimensions;
+        int sideWidth = 4;
+        int sideHeight = 4;
+        int centerWidth = width - 2 * sideWidth;
+        int centerHeight = height - 2 * sideHeight;
+        int leftEdgeEnd = left + sideHeight;
         int rightEdgeStart = leftEdgeEnd + centerWidth;
-        int topEdgeEnd = top + cornerDimensions;
+        int topEdgeEnd = top + sideWidth;
         int bottomEdgeStart = topEdgeEnd + centerHeight;
         minecraft.textureManager.bindTexture(BASE_BACKGROUND);
         //Left Side
         //Top Left Corner (4x4)
-        drawModalRectWithCustomSizedTexture(left, top, 0, 0, cornerDimensions, cornerDimensions, textureDimensions, textureDimensions);
+        drawModalRectWithCustomSizedTexture(left, top, 0, 0, sideWidth, sideHeight, textureDimensions, textureDimensions);
         //Left Middle (4x1)
         if (centerHeight > 0) {
-            drawModalRectWithCustomSizedTexture(left, topEdgeEnd, 4, centerHeight, 0, 4, 4, 1, textureDimensions, textureDimensions);
+            drawModalRectWithCustomSizedTexture(left, topEdgeEnd, sideWidth, centerHeight, 0, 4, sideWidth, 1, textureDimensions, textureDimensions);
         }
         //Bottom Left Corner (4x4)
-        drawModalRectWithCustomSizedTexture(left, bottomEdgeStart, 0, 5, cornerDimensions, cornerDimensions, textureDimensions, textureDimensions);
+        drawModalRectWithCustomSizedTexture(left, bottomEdgeStart, 0, 5, sideWidth, sideHeight, textureDimensions, textureDimensions);
 
         //Middle
         if (centerWidth > 0) {
             //Top Middle (1x4)
-            drawModalRectWithCustomSizedTexture(leftEdgeEnd, top, centerWidth, 4, 4, 0, 1, 4, textureDimensions, textureDimensions);
+            drawModalRectWithCustomSizedTexture(leftEdgeEnd, top, centerWidth, sideHeight, 4, 0, 1, sideHeight, textureDimensions, textureDimensions);
             if (centerHeight > 0) {
                 //Center
                 drawModalRectWithCustomSizedTexture(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, 4, 4, 1, 1, textureDimensions, textureDimensions);
             }
             //Bottom Middle (1x4)
-            drawModalRectWithCustomSizedTexture(leftEdgeEnd, bottomEdgeStart, centerWidth, 4, 4, 5, 1, 4, textureDimensions, textureDimensions);
+            drawModalRectWithCustomSizedTexture(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, 4, 5, 1, sideHeight, textureDimensions, textureDimensions);
         }
 
         //Right side
         //Top Right Corner (4x4)
-        drawModalRectWithCustomSizedTexture(rightEdgeStart, top, 5, 0, cornerDimensions, cornerDimensions, textureDimensions, textureDimensions);
+        drawModalRectWithCustomSizedTexture(rightEdgeStart, top, 5, 0, sideWidth, sideHeight, textureDimensions, textureDimensions);
         //Right Middle (4x1)
         if (centerHeight > 0) {
-            drawModalRectWithCustomSizedTexture(rightEdgeStart, topEdgeEnd, 4, centerHeight, 5, 4, 4, 1, textureDimensions, textureDimensions);
+            drawModalRectWithCustomSizedTexture(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, 5, 4, sideWidth, 1, textureDimensions, textureDimensions);
         }
         //Bottom Right Corner (4x4)
-        drawModalRectWithCustomSizedTexture(rightEdgeStart, bottomEdgeStart, 5, 5, cornerDimensions, cornerDimensions, textureDimensions, textureDimensions);
+        drawModalRectWithCustomSizedTexture(rightEdgeStart, bottomEdgeStart, 5, 5, sideWidth, sideHeight, textureDimensions, textureDimensions);
     }
 
     @Override

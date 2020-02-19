@@ -9,6 +9,7 @@ import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.SideDataButton;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.tab.GuiConfigTypeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -22,10 +23,8 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, EmptyTileContainer<TileEntityMekanism>> {
@@ -53,11 +52,24 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Em
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 51, 15, 74, 12));
+        //Add the borders to the actual buttons
+        //Note: We don't bother adding a border for the center one as it is covered by the side ones
+        //Top
+        addButton(new GuiInnerScreen(this, 80, 33, 16, 16));
+        //Left
+        addButton(new GuiInnerScreen(this, 65, 48, 16, 16));
+        //Right
+        addButton(new GuiInnerScreen(this, 95, 48, 16, 16));
+        //Bottom
+        addButton(new GuiInnerScreen(this, 80, 63, 16, 16));
+        //Bottom left
+        addButton(new GuiInnerScreen(this, 65, 63, 16, 16));
         List<TransmissionType> transmissions = getTile().getConfig().getTransmissions();
         for (int i = 0; i < transmissions.size(); i++) {
             TransmissionType type = transmissions.get(i);
             //TODO: Figure out if there is a simpler way to do y
-            GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, (i < 3 ? -26 : 176), 2 + ((i % 3) * (26 + 2)));
+            GuiConfigTypeTab tab = new GuiConfigTypeTab(this, type, i < 3 ? -26 : 176, 2 + 28 * (i % 3));
             addButton(tab);
             configTabs.add(tab);
         }
@@ -123,11 +135,6 @@ public class GuiSideConfiguration extends GuiMekanismTile<TileEntityMekanism, Em
         if (tile == null || MekanismUtils.getTileEntity(minecraft.world, tile.getPos()) == null) {
             minecraft.displayGuiScreen(null);
         }
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "configuration.png");
     }
 
     public static class GuiPos {

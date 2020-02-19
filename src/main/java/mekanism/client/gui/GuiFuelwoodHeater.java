@@ -1,7 +1,10 @@
 package mekanism.client.gui;
 
 import java.util.Collections;
+import mekanism.client.gui.element.GuiFlame;
 import mekanism.client.gui.element.GuiHeatInfo;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -9,11 +12,9 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityFuelwoodHeater;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater, MekanismTileContainer<TileEntityFuelwoodHeater>> {
@@ -26,6 +27,18 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 28));
+        addButton(new GuiFlame(new IProgressInfoHandler() {
+            @Override
+            public double getProgress() {
+                return tile.burnTime / (double) tile.maxBurnTime;
+            }
+
+            @Override
+            public boolean isActive() {
+                return tile.burnTime > 0;
+            }
+        }, this, 144, 31));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
@@ -41,19 +54,5 @@ public class GuiFuelwoodHeater extends GuiMekanismTile<TileEntityFuelwoodHeater,
         renderScaledText(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemp(), TemperatureUnit.AMBIENT)), 50, 25, 0x00CD00, 76);
         renderScaledText(MekanismLang.FUEL.translate(tile.burnTime), 50, 41, 0x00CD00, 76);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tile.burnTime > 0) {
-            int displayInt = tile.burnTime * 13 / tile.maxBurnTime;
-            drawTexturedRect(getGuiLeft() + 143, getGuiTop() + 30 + 12 - displayInt, 176, 12 - displayInt, 14, displayInt + 1);
-        }
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "fuelwood_heater.png");
     }
 }

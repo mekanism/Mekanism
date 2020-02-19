@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Collections;
 import mekanism.client.gui.element.GuiHeatInfo;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
@@ -31,6 +32,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 40, 27, 96, 32));
         addButton(new GuiBoilerTab(this, tile, BoilerTab.STAT));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
@@ -110,7 +112,6 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
 
     @Override
     protected ResourceLocation getGaugeResource() {
-        //TODO: couldn't find it at a glance
-        return MekanismUtils.getResource(ResourceType.GUI, "industrial_turbine.png");
+        return MekanismUtils.getResource(ResourceType.GUI, "thermoelectric_boiler.png");
     }
 }

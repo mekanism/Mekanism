@@ -11,6 +11,9 @@ import mekanism.client.gui.button.ColorButton;
 import mekanism.client.gui.button.MekanismButton.IHoverable;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.SideDataButton;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ISideConfiguration;
@@ -21,12 +24,9 @@ import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -48,6 +48,20 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Em
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 51, 15, 74, 12));
+        //Add the borders to the actual buttons
+        //Note: We don't bother adding a border for the center one as it is covered by the side ones
+        //Top
+        addButton(new GuiInnerScreen(this, 53, 33, 16, 16));
+        //Left
+        addButton(new GuiInnerScreen(this, 38, 48, 16, 16));
+        //Right
+        addButton(new GuiInnerScreen(this, 68, 48, 16, 16));
+        //Bottom
+        addButton(new GuiInnerScreen(this, 53, 63, 16, 16));
+        //Bottom left
+        addButton(new GuiInnerScreen(this, 38, 63, 16, 16));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 121, 48));
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 156, getGuiTop() + 6, 14, getButtonLocation("strict_input"),
@@ -92,10 +106,5 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Em
         drawString(MekanismLang.INPUT.translate(), 48, 81, 0x787878);
         drawString(MekanismLang.OUTPUT.translate(), 114, 68, 0x787878);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "transporter_config.png");
     }
 }

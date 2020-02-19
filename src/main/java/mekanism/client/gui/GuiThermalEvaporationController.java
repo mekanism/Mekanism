@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Collections;
 import mekanism.client.gui.element.GuiHeatInfo;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.common.MekanismLang;
@@ -28,6 +29,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 48, 19, 80, 40));
         addButton(new GuiFluidGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, 6, 13));
         addButton(new GuiFluidGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {

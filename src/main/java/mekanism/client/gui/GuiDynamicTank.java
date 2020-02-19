@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -21,6 +22,7 @@ public class GuiDynamicTank extends GuiEmbeddedGaugeTile<TileEntityDynamicTank, 
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 50, 23, 80, 42));
         addButton(new GuiContainerEditMode(this, tile));
     }
 

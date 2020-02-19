@@ -44,6 +44,8 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
             drawTexturedRectFromIcon(x, y + 58 - renderRemaining - start, sprite, 16, renderRemaining);
             start += 16;
         }
+        //Reset the color so that it does not leak into drawing our gauge or other gui elements
+        MekanismRenderer.resetColor();
         minecraft.textureManager.bindTexture(getGaugeResource());
         drawTexturedRect(x, y, 176, side == 0 ? 0 : 54, 16, 54);
     }
