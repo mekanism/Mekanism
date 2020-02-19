@@ -7,9 +7,6 @@ import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.Mekanism;
@@ -36,13 +33,13 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     public GuiResistiveHeater(MekanismTileContainer<TileEntityResistiveHeater> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
-        addButton(new GuiSlot(SlotType.POWER, this, 14, 34).with(SlotOverlay.POWER));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.energyUsage)),

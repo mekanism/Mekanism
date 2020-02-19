@@ -10,9 +10,9 @@ import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiScrollList;
+import mekanism.client.gui.element.GuiTeleporterStatus;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.frequency.Frequency;
@@ -73,6 +73,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     @Override
     public void init() {
         super.init();
+        addButton(new GuiTeleporterStatus(this, () -> clientFreq != null, () -> clientStatus));
         addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
@@ -259,39 +260,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, 0x797979);
         }
         renderScaledText(MekanismLang.SET.translate(), 27, 104, 0x404040, 20);
-        //TODO: Convert to GuiElement
-        int xAxis = mouseX - getGuiLeft();
-        int yAxis = mouseY - getGuiTop();
-        if (xAxis >= 6 && xAxis <= 24 && yAxis >= 6 && yAxis <= 24) {
-            if (clientFreq == null) {
-                displayTooltip(MekanismLang.NO_FREQUENCY.translateColored(EnumColor.DARK_RED), xAxis, yAxis);
-            } else {
-                displayTooltip(getStatusDisplay(), xAxis, yAxis);
-            }
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int y = clientFreq == null ? 94 : clientStatus == 2 ? 22 : clientStatus == 3 ? 40 : clientStatus == 4 ? 58 : 76;
-        drawTexturedRect(getGuiLeft() + 6, getGuiTop() + 6, 176, y, 18, 18);
-        MekanismRenderer.resetColor();
-    }
-
-    public ITextComponent getStatusDisplay() {
-        switch (clientStatus) {
-            case 1:
-                return MekanismLang.TELEPORTER_READY.translateColored(EnumColor.DARK_GREEN);
-            case 2:
-                return MekanismLang.TELEPORTER_NO_FRAME.translateColored(EnumColor.DARK_RED);
-            case 4:
-                return MekanismLang.TELEPORTER_NEEDS_ENERGY.translateColored(EnumColor.DARK_RED);
-            case 3:
-            default:
-                return MekanismLang.TELEPORTER_NO_LINK.translateColored(EnumColor.DARK_RED);
-        }
     }
 
     private UUID getOwner() {
@@ -320,9 +289,5 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     private double getMaxEnergy() {
         return ((ItemPortableTeleporter) itemStack.getItem()).getMaxEnergy(itemStack);
-    }
-
-    public boolean isStackEmpty() {
-        return itemStack.isEmpty();
     }
 }

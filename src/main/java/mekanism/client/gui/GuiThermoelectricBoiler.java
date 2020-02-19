@@ -25,6 +25,7 @@ public class GuiThermoelectricBoiler extends GuiEmbeddedGaugeTile<TileEntityBoil
 
     public GuiThermoelectricBoiler(MekanismTileContainer<TileEntityBoilerCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
