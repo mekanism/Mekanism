@@ -4,12 +4,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CRenameItemPacket;
 import net.minecraft.util.NonNullList;
@@ -18,6 +17,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IContainerListener {
 
+    //Use the vanilla anvil's gui texture
+    private static final ResourceLocation ANVIL_RESOURCE = new ResourceLocation("textures/gui/container/anvil.png");
     private TextFieldWidget itemNameField;
 
     public GuiRobitRepair(RepairRobitContainer container, PlayerInventory inv, ITextComponent title) {
@@ -46,22 +47,23 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        RenderSystem.disableLighting();
+        RenderSystem.disableBlend();
         drawString(MekanismLang.REPAIR.translate(), 60, 6, 0x404040);
-
         int maximumCost = container.getMaximumCost();
         if (maximumCost > 0) {
-            //TODO: Verify this works as intended
             int k = 0x80FF20;
             boolean flag = true;
             ITextComponent component = MekanismLang.REPAIR_COST.translate(maximumCost);
             if (maximumCost >= 40 && !minecraft.player.isCreative()) {
                 component = MekanismLang.REPAIR_EXPENSIVE.translate();
                 k = 0xFF6060;
-            } else if (!container.getSlot(2).getHasStack()) {
-                flag = false;
-            } else if (!container.getSlot(2).canTakeStack(playerInventory.player)) {
-                k = 0xFF6060;
+            } else {
+                Slot slot = container.getSlot(2);
+                if (!slot.getHasStack()) {
+                    flag = false;
+                } else if (!slot.canTakeStack(playerInventory.player)) {
+                    k = 0xFF6060;
+                }
             }
 
             if (flag) {
@@ -70,7 +72,6 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
                 font.drawStringWithShadow(component.getFormattedText(), (float) width, 69.0F, k);
             }
         }
-        RenderSystem.enableLighting();
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -91,16 +92,15 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
     @Override
     protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "robit_repair.png");
+        return ANVIL_RESOURCE;
     }
-
 
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         drawTexturedRect(getGuiLeft() + 59, getGuiTop() + 20, 0, getYSize() + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
         if ((container.getSlot(0).getHasStack() || container.getSlot(1).getHasStack()) && !container.getSlot(2).getHasStack()) {
-            drawTexturedRect(getGuiLeft() + 99, getGuiTop() + 45, getXSize() + 18, 36, 28, 21);
+            drawTexturedRect(getGuiLeft() + 99, getGuiTop() + 45, getXSize(), 0, 28, 21);
         }
     }
 
