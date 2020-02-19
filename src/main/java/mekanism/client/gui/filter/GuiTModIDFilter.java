@@ -5,6 +5,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.ColorButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.OreDictCache;
@@ -14,12 +16,9 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -33,11 +32,6 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
     }
 
     @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "sorter_text_filter.png");
-    }
-
-    @Override
     protected void updateStackList(String modName) {
         iterStacks = OreDictCache.getModIDStacks(modName, false);
         stackSwitch = 0;
@@ -46,6 +40,8 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
 
     @Override
     protected void addButtons() {
+        addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 11, 43));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 47, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
                 setText();

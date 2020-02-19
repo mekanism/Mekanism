@@ -4,6 +4,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -15,7 +17,6 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.InputMappings;
@@ -38,6 +39,8 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
+        addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 148, 18));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!filter.getItemStack().isEmpty()) {
                 if (isNew) {
@@ -59,8 +62,9 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
               () -> sendPacketToServer(isNew ? ClickedTileButton.DM_SELECT_FILTER_TYPE : ClickedTileButton.DIGITAL_MINER_CONFIG)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 148, getGuiTop() + 45, 14, 16, getButtonLocation("exclamation"),
               () -> filter.requireStack = !filter.requireStack, getOnHoverReplace(filter)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 15, getGuiTop() + 45, 14, getButtonLocation("fuzzy"),
-              () -> filter.fuzzy = !filter.fuzzy, getOnHover(() -> MekanismLang.MINER_FUZZY_MODE.translate(YesNo.of(filter.fuzzy)))));
+        //TODO: Move fuzzy mode to the logistical sorter
+        /*addButton(new MekanismImageButton(this, getGuiLeft() + 15, getGuiTop() + 45, 14, getButtonLocation("fuzzy"),
+              () -> filter.fuzzy = !filter.fuzzy, getOnHover(() -> MekanismLang.MINER_FUZZY_MODE.translate(YesNo.of(filter.fuzzy)))));*/
     }
 
     @Override

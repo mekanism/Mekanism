@@ -4,6 +4,8 @@ import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.miner.MMaterialFilter;
@@ -29,6 +31,8 @@ public class GuiMMaterialFilter extends GuiMaterialFilter<MMaterialFilter, TileE
 
     @Override
     protected void addButtons() {
+        addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 148, 18));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!filter.getMaterialItem().isEmpty()) {
                 if (isNew) {

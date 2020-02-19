@@ -6,6 +6,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.ColorButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -42,6 +44,8 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Override
     protected void addButtons() {
+        addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 11, 43));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 47, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!filter.getItemStack().isEmpty() && !minField.getText().isEmpty() && !maxField.getText().isEmpty()) {
                 int min = Integer.parseInt(minField.getText());
