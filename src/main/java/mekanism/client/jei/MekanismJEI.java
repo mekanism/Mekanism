@@ -8,24 +8,18 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiCombiner;
-import mekanism.client.gui.GuiCrusher;
 import mekanism.client.gui.GuiElectrolyticSeparator;
-import mekanism.client.gui.GuiEnrichmentChamber;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiMetallurgicInfuser;
-import mekanism.client.gui.GuiOsmiumCompressor;
 import mekanism.client.gui.GuiPRC;
 import mekanism.client.gui.GuiPrecisionSawmill;
-import mekanism.client.gui.GuiPurificationChamber;
 import mekanism.client.gui.GuiSolarNeutronActivator;
 import mekanism.client.gui.GuiThermalEvaporationController;
 import mekanism.client.gui.chemical.GuiChemicalCrystallizer;
 import mekanism.client.gui.chemical.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.chemical.GuiChemicalInfuser;
-import mekanism.client.gui.chemical.GuiChemicalInjectionChamber;
 import mekanism.client.gui.chemical.GuiChemicalOxidizer;
 import mekanism.client.gui.chemical.GuiChemicalWasher;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.jei.gas.GasStackRenderer;
 import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
@@ -151,29 +145,26 @@ public class MekanismJEI implements IModPlugin {
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper));
 
-        registry.addRecipeCategories(new CombinerRecipeCategory(guiHelper, MekanismBlocks.COMBINER, ProgressBar.STONE));
+        registry.addRecipeCategories(new CombinerRecipeCategory(guiHelper, MekanismBlocks.COMBINER));
 
-        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.PURIFICATION_CHAMBER, ProgressBar.RED));
-        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.OSMIUM_COMPRESSOR, ProgressBar.RED));
-        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, ProgressBar.YELLOW));
+        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.PURIFICATION_CHAMBER));
+        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.OSMIUM_COMPRESSOR));
+        registry.addRecipeCategories(new ItemStackGasToItemStackRecipeCategory(guiHelper, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER));
 
-        registry.addRecipeCategories(new SawmillRecipeCategory(guiHelper, MekanismBlocks.PRECISION_SAWMILL, ProgressBar.PURPLE));
+        registry.addRecipeCategories(new SawmillRecipeCategory(guiHelper, MekanismBlocks.PRECISION_SAWMILL));
 
-        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.ENRICHMENT_CHAMBER, ProgressBar.BLUE));
-        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.CRUSHER, ProgressBar.CRUSH));
-        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.ENERGIZED_SMELTER, ProgressBar.BLUE));
+        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.ENRICHMENT_CHAMBER));
+        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.CRUSHER));
+        registry.addRecipeCategories(new ItemStackToItemStackRecipeCategory(guiHelper, MekanismBlocks.ENERGIZED_SMELTER));
 
         registry.addRecipeCategories(new FluidToFluidRecipeCategory(guiHelper));
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registry) {
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER, GuiEnrichmentChamber.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CRUSHER, GuiCrusher.class, 79, 40, 24, 7);
+        GuiHandlerRegistryHelper.registerElectricMachines(registry);
+        GuiHandlerRegistryHelper.registerAdvancedElectricMachines(registry);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.COMBINER, GuiCombiner.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PURIFICATION_CHAMBER, GuiPurificationChamber.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.OSMIUM_COMPRESSOR, GuiOsmiumCompressor.class, 79, 40, 24, 7);
-        GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, GuiChemicalInjectionChamber.class, 79, 40, 24, 7);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRECISION_SAWMILL, GuiPrecisionSawmill.class, 79, 40, 24, 7);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.METALLURGIC_INFUSER, GuiMetallurgicInfuser.class, 72, 47, 32, 8);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_CRYSTALLIZER, GuiChemicalCrystallizer.class, 53, 62, 48, 8);
@@ -187,7 +178,6 @@ public class MekanismJEI implements IModPlugin {
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, GuiThermalEvaporationController.class, 49, 20, 78, 38);
         GuiHandlerRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, GuiPRC.class, 75, 37, 36, 10);
         GuiHandlerRegistryHelper.registerCondensentrator(registry);
-        GuiHandlerRegistryHelper.registerSmelter(registry);
 
         registry.addGuiContainerHandler(GuiMekanism.class, new GuiElementHandler());
     }

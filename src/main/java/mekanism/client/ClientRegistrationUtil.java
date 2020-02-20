@@ -2,12 +2,18 @@ package mekanism.client;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
+import mekanism.client.gui.GuiAdvancedElectricMachine;
+import mekanism.client.gui.GuiElectricMachine;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
+import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.ScreenManager;
@@ -23,10 +29,12 @@ import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.BucketItem;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -55,6 +63,28 @@ public class ClientRegistrationUtil {
 
     public static <C extends Container, U extends Screen & IHasContainer<C>> void registerScreen(ContainerTypeRegistryObject<C> type, IScreenFactory<C, U> factory) {
         ScreenManager.registerFactory(type.getContainerType(), factory);
+    }
+
+    //Helper method to register GuiElectricMachine due to generics not being able to be resolved through registerScreen
+    public static <TILE extends TileEntityElectricMachine, C extends MekanismTileContainer<TILE>> void registerElectricScreen(ContainerTypeRegistryObject<C> type) {
+        registerScreen(type, new IScreenFactory<C, GuiElectricMachine<TILE, C>>() {
+            @Nonnull
+            @Override
+            public GuiElectricMachine<TILE, C> create(@Nonnull C container, @Nonnull PlayerInventory inv, @Nonnull ITextComponent title) {
+                return new GuiElectricMachine<>(container, inv, title);
+            }
+        });
+    }
+
+    //Helper method to register GuiAdvancedElectricMachine due to generics not being able to be resolved through registerScreen
+    public static <TILE extends TileEntityAdvancedElectricMachine, C extends MekanismTileContainer<TILE>> void registerAdvancedElectricScreen(ContainerTypeRegistryObject<C> type) {
+        registerScreen(type, new IScreenFactory<C, GuiAdvancedElectricMachine<TILE, C>>() {
+            @Nonnull
+            @Override
+            public GuiAdvancedElectricMachine<TILE, C> create(@Nonnull C container, @Nonnull PlayerInventory inv, @Nonnull ITextComponent title) {
+                return new GuiAdvancedElectricMachine<>(container, inv, title);
+            }
+        });
     }
 
     public static ModelResourceLocation getInventoryMRL(Function<String, ResourceLocation> rlCreator, String type) {

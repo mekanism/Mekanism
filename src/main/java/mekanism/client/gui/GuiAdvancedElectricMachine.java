@@ -28,10 +28,10 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvancedElectricMachine, CONTAINER extends MekanismTileContainer<TILE>> extends
+public class GuiAdvancedElectricMachine<TILE extends TileEntityAdvancedElectricMachine, CONTAINER extends MekanismTileContainer<TILE>> extends
       GuiMekanismTile<TILE, CONTAINER> {
 
-    protected GuiAdvancedElectricMachine(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+    public GuiAdvancedElectricMachine(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 
@@ -55,11 +55,7 @@ public abstract class GuiAdvancedElectricMachine<TILE extends TileEntityAdvanced
             public double getProgress() {
                 return tile.getScaledProgress();
             }
-        }, getProgressType(), this, 77, 37));
-    }
-
-    public ProgressBar getProgressType() {
-        return ProgressBar.BLUE;
+        }, ProgressBar.BAR, this, 77, 37));
     }
 
     @Override

@@ -19,8 +19,8 @@ import mezz.jei.api.ingredients.IIngredients;
 
 public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackToItemStackRecipe> {
 
-    public ItemStackToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock, ProgressBar progress) {
-        super(helper, "mekanism:gui/basic_machine.png", mekanismBlock, progress, 28, 16, 144, 54);
+    public ItemStackToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
+        super(helper, "mekanism:gui/basic_machine.png", mekanismBlock, ProgressBar.BAR, 28, 16, 144, 54);
     }
 
     @Override

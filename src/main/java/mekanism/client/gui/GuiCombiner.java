@@ -50,11 +50,7 @@ public class GuiCombiner extends GuiMekanismTile<TileEntityCombiner, MekanismTil
             public double getProgress() {
                 return tile.getScaledProgress();
             }
-        }, getProgressType(), this, 77, 37));
-    }
-
-    public ProgressBar getProgressType() {
-        return ProgressBar.STONE;
+        }, ProgressBar.BAR, this, 77, 37));
     }
 
     @Override

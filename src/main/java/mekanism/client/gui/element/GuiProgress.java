@@ -27,13 +27,7 @@ public class GuiProgress extends GuiTexturedElement {
     }
 
     public enum ProgressBar {
-        BLUE(28, 11, 0, 0),
-        YELLOW(28, 11, 0, 11),
-        RED(28, 11, 0, 22),
-        GREEN(28, 11, 0, 33),
-        PURPLE(28, 11, 0, 44),
-        STONE(28, 11, 0, 55),
-        CRUSH(28, 11, 0, 66),
+        BAR(28, 11, 0, 0),
 
         LARGE_RIGHT(52, 10, 128, 0),
         LARGE_LEFT(52, 10, 128, 10),

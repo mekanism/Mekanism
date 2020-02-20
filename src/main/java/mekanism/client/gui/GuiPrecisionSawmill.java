@@ -49,11 +49,7 @@ public class GuiPrecisionSawmill extends GuiMekanismTile<TileEntityPrecisionSawm
             public double getProgress() {
                 return tile.getScaledProgress();
             }
-        }, getProgressType(), this, 77, 37));
-    }
-
-    public ProgressBar getProgressType() {
-        return ProgressBar.PURPLE;
+        }, ProgressBar.BAR, this, 77, 37));
     }
 
     @Override
