@@ -4,8 +4,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -15,14 +23,30 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory<ChemicalInfuserRecipe> {
 
     public ChemicalInfuserRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/chemical_infuser.png", MekanismBlocks.CHEMICAL_INFUSER, null, 3, 3, 170, 80);
+        super(helper, MekanismBlocks.CHEMICAL_INFUSER, 3, 3, 170, 80);
     }
 
     @Override
-    public void draw(ChemicalInfuserRecipe recipe, double mouseX, double mouseY) {
-        super.draw(recipe, mouseX, mouseY);
-        drawTexturedRect(47 - xOffset, 39 - yOffset, 176, 71, 28, 8);
-        drawTexturedRect(101 - xOffset, 39 - yOffset, 176, 63, 28, 8);
+    protected void addGuiElements() {
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 25, 13));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 79, 4));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 133, 13));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 154, 4).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 154, 55).with(SlotOverlay.MINUS));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 4, 55).with(SlotOverlay.MINUS));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 79, 64).with(SlotOverlay.PLUS));
+        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+            @Override
+            public double getProgress() {
+                return 1;
+            }
+        }, ProgressBar.SMALL_RIGHT, this, 45, 38));
+        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+            @Override
+            public double getProgress() {
+                return 1;
+            }
+        }, ProgressBar.SMALL_LEFT, this, 99, 38));
     }
 
     @Override

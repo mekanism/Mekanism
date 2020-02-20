@@ -20,7 +20,7 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackToItemStackRecipe> {
 
     public ItemStackToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, "mekanism:gui/basic_machine.png", mekanismBlock, ProgressBar.BAR, 28, 16, 144, 54);
+        super(helper, "mekanism:gui/basic_machine.png", mekanismBlock, 28, 16, 144, 54);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemS
             public double getProgress() {
                 return (double) timer.getValue() / 20F;
             }
-        }, progressBar, this, 77, 37));
+        }, ProgressBar.BAR, this, 77, 37));
     }
 
     @Override

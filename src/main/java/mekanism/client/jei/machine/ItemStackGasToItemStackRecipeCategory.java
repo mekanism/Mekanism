@@ -38,7 +38,7 @@ import net.minecraft.world.World;
 public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackGasToItemStackRecipe> {
 
     public ItemStackGasToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, "mekanism:gui/advanced_machine.png", mekanismBlock, ProgressBar.BAR, 28, 16, 144, 54);
+        super(helper, "mekanism:gui/advanced_machine.png", mekanismBlock, 28, 16, 144, 54);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
             public double getProgress() {
                 return (double) timer.getValue() / 20F;
             }
-        }, progressBar, this, 77, 37));
+        }, ProgressBar.BAR, this, 77, 37));
     }
 
     @Override

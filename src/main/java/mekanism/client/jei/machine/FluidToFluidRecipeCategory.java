@@ -4,6 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.FluidToFluidRecipe;
+import mekanism.client.gui.element.GuiDownArrow;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiHorizontalRateBar;
+import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
@@ -16,13 +23,21 @@ import net.minecraftforge.fluids.FluidStack;
 public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidRecipe> {
 
     public FluidToFluidRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/thermal_evaporation_controller.png", MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, null, 3, 12, 170, 62);
+        super(helper, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, 3, 12, 170, 62);
     }
 
     @Override
-    public void draw(FluidToFluidRecipe recipe, double mouseX, double mouseY) {
-        super.draw(recipe, mouseX, mouseY);
-        drawTexturedRect(49 - xOffset, 64 - yOffset, 176, 59, 78, 8);
+    protected void addGuiElements() {
+        guiElements.add(new GuiInnerScreen(this, 48, 19, 80, 40));
+        guiElements.add(new GuiDownArrow(this, 32, 39));
+        guiElements.add(new GuiDownArrow(this, 136, 39));
+        guiElements.add(new GuiHorizontalRateBar(this, () -> 1, 48, 63));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 28, 20));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 28, 51));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 132, 20));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 132, 51));
+        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 6, 13));
+        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 152, 13));
     }
 
     @Override

@@ -23,19 +23,19 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ItemStackToGasRecipeCategory extends BaseRecipeCategory<ItemStackToGasRecipe> {
 
     public ItemStackToGasRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.CHEMICAL_OXIDIZER, ProgressBar.LARGE_RIGHT, 20, 12, 132, 62);
+        super(helper, MekanismBlocks.CHEMICAL_OXIDIZER, 20, 12, 132, 62);
     }
 
     @Override
     protected void addGuiElements() {
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 133, 13));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this, 25, 35));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 25, 35));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return (double) timer.getValue() / 20F;
             }
-        }, progressBar, this, 62, 39));
+        }, ProgressBar.LARGE_RIGHT, this, 62, 39));
     }
 
     @Override

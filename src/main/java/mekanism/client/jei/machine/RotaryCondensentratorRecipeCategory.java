@@ -5,10 +5,20 @@ import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
+import mekanism.client.gui.element.GuiDownArrow;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -27,10 +37,25 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         //We override the things that reference the provider
-        super(helper, "mekanism:gui/nei/rotary_condensentrator.png", MekanismBlocks.ROTARY_CONDENSENTRATOR, null, 3, 12, 170, 71);
+        super(helper, MekanismBlocks.ROTARY_CONDENSENTRATOR, 3, 12, 170, 71);
         this.condensentrating = condensentrating;
         uid = new ResourceLocation(Mekanism.MODID, condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating");
         this.title = (condensentrating ? MekanismLang.CONDENSENTRATING : MekanismLang.DECONDENSENTRATING).translate().getFormattedText();
+        if (condensentrating) {
+            guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+                @Override
+                public double getProgress() {
+                    return 1;
+                }
+            }, ProgressBar.LARGE_RIGHT, this, 62, 38));
+        } else {
+            guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+                @Override
+                public double getProgress() {
+                    return 1;
+                }
+            }, ProgressBar.LARGE_LEFT, this, 62, 38));
+        }
     }
 
     @Override
@@ -44,9 +69,14 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
     }
 
     @Override
-    public void draw(RotaryRecipe recipe, double mouseX, double mouseY) {
-        super.draw(recipe, mouseX, mouseY);
-        drawTexturedRect(64 - xOffset, 39 - yOffset, 176, condensentrating ? 123 : 115, 48, 8);
+    protected void addGuiElements() {
+        guiElements.add(new GuiDownArrow(this, 159, 44));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 25, 13));
+        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 133, 13));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 4, 24).with(SlotOverlay.PLUS));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 4, 55).with(SlotOverlay.MINUS));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 154, 24));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 154, 55));
     }
 
     @Override

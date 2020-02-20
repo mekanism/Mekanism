@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.MekanismImageButton;
+import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
@@ -33,6 +34,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     @Override
     public void init() {
         super.init();
+        addButton(new GuiDownArrow(this, 159, 44));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));

@@ -28,6 +28,7 @@ import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
@@ -127,6 +128,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, this, 101, 52), RelativeSide.RIGHT);
         //TODO: Make accessible for automation
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35));
+        fluidSlot.setSlotType(ContainerSlotType.INPUT);
+        leftOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
+        rightOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
         return builder.build();
     }
 

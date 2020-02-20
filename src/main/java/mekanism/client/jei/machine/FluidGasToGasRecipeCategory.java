@@ -5,8 +5,17 @@ import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.FluidGasToGasRecipe;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
@@ -19,13 +28,22 @@ import net.minecraftforge.fluids.FluidStack;
 public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGasRecipe> {
 
     public FluidGasToGasRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/chemical_washer.png", MekanismBlocks.CHEMICAL_WASHER, null, 3, 3, 170, 70);
+        super(helper, MekanismBlocks.CHEMICAL_WASHER, 3, 3, 170, 70);
     }
 
     @Override
-    public void draw(FluidGasToGasRecipe recipe, double mouseX, double mouseY) {
-        super.draw(recipe, mouseX, mouseY);
-        drawTexturedRect(61 - xOffset, 39 - yOffset, 176, 63, 55, 8);
+    protected void addGuiElements() {
+        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 5, 4));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 26, 13));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 133, 13));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 154, 4).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 154, 55).with(SlotOverlay.MINUS));
+        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+            @Override
+            public double getProgress() {
+                return 1;
+            }
+        }, ProgressBar.LARGE_RIGHT, this, 62, 38));
     }
 
     @Override

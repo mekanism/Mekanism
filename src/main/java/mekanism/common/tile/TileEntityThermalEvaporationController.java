@@ -23,6 +23,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloat;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
@@ -113,6 +114,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         builder.addSlot(outputInputSlot = OutputInventorySlot.at(this, 28, 51));
         builder.addSlot(inputOutputSlot = FluidInventorySlot.drain(outputTank, this, 132, 20));
         builder.addSlot(outputOutputSlot = OutputInventorySlot.at(this, 132, 51));
+        inputInputSlot.setSlotType(ContainerSlotType.INPUT);
+        inputOutputSlot.setSlotType(ContainerSlotType.INPUT);
         return builder.build();
     }
 

@@ -3,8 +3,16 @@ package mekanism.client.jei.machine;
 import java.util.Collections;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -14,13 +22,21 @@ import mezz.jei.api.ingredients.IIngredients;
 public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
 
     public GasToGasRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/nei/solar_neutron_activator.png", MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, null, 3, 12, 170, 70);
+        super(helper, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, 3, 12, 170, 70);
     }
 
     @Override
-    public void draw(GasToGasRecipe recipe, double mouseX, double mouseY) {
-        super.draw(recipe, mouseX, mouseY);
-        drawTexturedRect(64 - xOffset, 39 - yOffset, 176, 58, 55, 8);
+    protected void addGuiElements() {
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 4, 55).with(SlotOverlay.MINUS));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 154, 55).with(SlotOverlay.PLUS));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 25, 13));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 133, 13));
+        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+            @Override
+            public double getProgress() {
+                return 1;
+            }
+        }, ProgressBar.LARGE_RIGHT, this, 62, 38));
     }
 
     @Override

@@ -30,7 +30,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisRecipe> {
 
     public ElectrolysisRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.ELECTROLYTIC_SEPARATOR, ProgressBar.BI, 4, 9, 167, 62);
+        super(helper, MekanismBlocks.ELECTROLYTIC_SEPARATOR, 4, 9, 167, 62);
     }
 
     @Override
@@ -39,16 +39,16 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, 58, 18));
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, 100, 18));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this, 25, 34));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this, 58, 51));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this, 100, 51));
-        guiElements.add(new GuiSlot(SlotType.NORMAL, this, 142, 34).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 25, 34));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 58, 51));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 100, 51));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 142, 34).with(SlotOverlay.POWER));
         guiElements.add(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
                 return 1;
             }
-        }, progressBar, this, 78, 29));
+        }, ProgressBar.BI, this, 78, 29));
     }
 
     @Override

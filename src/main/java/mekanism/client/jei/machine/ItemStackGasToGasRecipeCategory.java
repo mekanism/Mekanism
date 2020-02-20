@@ -6,8 +6,16 @@ import java.util.stream.Collectors;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
+import mekanism.client.gui.element.GuiProgress;
+import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
+import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityChemicalDissolutionChamber;
 import mezz.jei.api.constants.VanillaTypes;
@@ -21,13 +29,23 @@ public class ItemStackGasToGasRecipeCategory extends BaseRecipeCategory<ItemStac
 
     public ItemStackGasToGasRecipeCategory(IGuiHelper helper) {
         //TODO: previously had a lang entry for a shorter path
-        super(helper, "mekanism:gui/nei/chemical_dissolution_chamber.png", MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, null, 3, 3, 170, 79);
+        super(helper, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, 3, 3, 170, 79);
     }
 
     @Override
-    public void draw(ItemStackGasToGasRecipe recipe, double mouseX, double mouseY) {
-        super.draw(recipe, mouseX, mouseY);
-        drawTexturedRect(64 - xOffset, 40 - yOffset, 176, 63, (int) (48 * ((float) timer.getValue() / 20F)), 8);
+    protected void addGuiElements() {
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 5, 4));
+        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 133, 13));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 154, 4).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 25, 35));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 154, 24).with(SlotOverlay.PLUS));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 5, 64).with(SlotOverlay.MINUS));
+        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
+            @Override
+            public double getProgress() {
+                return (double) timer.getValue() / 20F;
+            }
+        }, ProgressBar.LARGE_RIGHT, this, 77, 37));
     }
 
     @Override

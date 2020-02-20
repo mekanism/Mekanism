@@ -53,35 +53,31 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         minecraft.textureManager.bindTexture(getResource());
         guiObj.drawTexturedRect(x, y, texX, texY, width, height);
         if (!dummy) {
-            renderScale();
-        }
-    }
-
-    public void renderScale() {
-        int scale = getScaledLevel();
-        TextureAtlasSprite icon = getIcon();
-        if (scale > 0 && icon != null) {
-            int start = 0;
-            applyRenderColor();
-            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            while (scale > 0) {
-                int renderRemaining;
-                if (scale > 16) {
-                    renderRemaining = 16;
-                    scale -= 16;
-                } else {
-                    renderRemaining = scale;
-                    scale = 0;
+            int scale = getScaledLevel();
+            TextureAtlasSprite icon = getIcon();
+            if (scale > 0 && icon != null) {
+                int start = 0;
+                applyRenderColor();
+                minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                while (scale > 0) {
+                    int renderRemaining;
+                    if (scale > 16) {
+                        renderRemaining = 16;
+                        scale -= 16;
+                    } else {
+                        renderRemaining = scale;
+                        scale = 0;
+                    }
+                    for (int i = 0; i < number; i++) {
+                        guiObj.drawTexturedRectFromIcon(x + 16 * i + 1, y + height - renderRemaining - start - 1, icon, 16, renderRemaining);
+                    }
+                    start += 16;
                 }
-                for (int i = 0; i < number; i++) {
-                    guiObj.drawTexturedRectFromIcon(x + 16 * i + 1, y + height - renderRemaining - start - 1, icon, 16, renderRemaining);
-                }
-                start += 16;
+                MekanismRenderer.resetColor();
+                minecraft.textureManager.bindTexture(getResource());
             }
-            MekanismRenderer.resetColor();
-            minecraft.textureManager.bindTexture(getResource());
+            guiObj.drawTexturedRect(x, y, width, 0, width, height);
         }
-        guiObj.drawTexturedRect(x, y, width, 0, width, height);
     }
 
     @Override

@@ -33,7 +33,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
 
     public PressurizedReactionRecipeCategory(IGuiHelper helper) {
         //TODO: Had a lang key for shorter name
-        super(helper, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, ProgressBar.MEDIUM, 3, 11, 170, 68);
+        super(helper, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 3, 11, 170, 68);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
             public double getProgress() {
                 return (float) timer.getValue() / 20F;
             }
-        }, progressBar, this, 75, 37));
+        }, ProgressBar.MEDIUM, this, 75, 37));
     }
 
     @Override

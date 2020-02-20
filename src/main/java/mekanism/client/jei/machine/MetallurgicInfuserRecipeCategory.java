@@ -44,7 +44,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     private GuiVerticalChemicalBar<InfuseType> infuseBar;
 
     public MetallurgicInfuserRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.METALLURGIC_INFUSER, ProgressBar.MEDIUM, 5, 16, 166, 54);
+        super(helper, MekanismBlocks.METALLURGIC_INFUSER, 5, 16, 166, 54);
     }
 
     /**
