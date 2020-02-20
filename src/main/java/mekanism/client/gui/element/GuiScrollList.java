@@ -13,8 +13,8 @@ public class GuiScrollList extends GuiTexturedElement {
     private static int textureWidth = 6;
     private static int textureHeight = 6;
 
-    private List<String> textEntries = new ArrayList<>();
     private final GuiInnerScreen innerScreen;
+    private List<String> textEntries = new ArrayList<>();
     private double dragOffset = 0;
     private int selected = -1;
     private double scroll;

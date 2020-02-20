@@ -5,6 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.ColorButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.Mekanism;
@@ -16,12 +17,9 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -36,6 +34,8 @@ public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogistical
 
     @Override
     protected void addButtons() {
+        addButton(new GuiInnerScreen(this, 33, 18, 111, 43));
+        addButton(new GuiInnerScreen(this, 130, 46, 14, 14));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 43));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 47, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
@@ -67,11 +67,6 @@ public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogistical
         addButton(new ColorButton(this, getGuiLeft() + 12, getGuiTop() + 44, 16, 16, () -> filter.color,
               () -> filter.color = InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
               () -> filter.color = TransporterUtils.decrement(filter.color)));
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "sorter_text_filter.png");
     }
 
     @Override

@@ -6,6 +6,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
@@ -17,13 +18,11 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityResistiveHeater;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -39,6 +38,9 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 48, 23, 80, 28));
+        addButton(new GuiInnerScreen(this, 48, 50, 68, 13));
+        addButton(new GuiInnerScreen(this, 115, 50, 13, 13));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
@@ -78,11 +80,6 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     public void tick() {
         super.tick();
         energyUsageField.tick();
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "resistive_heater.png");
     }
 
     @Override

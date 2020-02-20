@@ -8,15 +8,15 @@ import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.tile.TileEntityInductionCasing;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, MekanismTileContainer<TileEntityInductionCasing>> {
+public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, EmptyTileContainer<TileEntityInductionCasing>> {
 
-    public GuiMatrixStats(MekanismTileContainer<TileEntityInductionCasing> container, PlayerInventory inv, ITextComponent title) {
+    public GuiMatrixStats(EmptyTileContainer<TileEntityInductionCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
 

@@ -5,6 +5,9 @@ import java.util.List;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -14,8 +17,6 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
@@ -41,6 +42,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
 
     @Override
     protected void addButtons() {
+        addButton(new GuiInnerScreen(this, 129, 47, 14, 14));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 44, 18));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 31, getGuiTop() + 62, 54, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
                 setText();
@@ -158,11 +161,6 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         super.mouseClicked(mouseX, mouseY, button);
         text.mouseClicked(mouseX, mouseY, button);
         return true;
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "oredictionificator_filter.png");
     }
 
     private void updateRenderStack() {

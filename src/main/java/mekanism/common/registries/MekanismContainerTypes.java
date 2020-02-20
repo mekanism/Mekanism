@@ -145,8 +145,8 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<PersonalChestItemContainer> PERSONAL_CHEST_ITEM = CONTAINER_TYPES.register("personal_chest_item", PersonalChestItemContainer::new);
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPersonalChest>> PERSONAL_CHEST_BLOCK = CONTAINER_TYPES.register("personal_chest_block", PersonalChestTileContainer::new);
 
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityBoilerCasing>> BOILER_STATS = CONTAINER_TYPES.register("boiler_stats", TileEntityBoilerCasing.class);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityInductionCasing>> MATRIX_STATS = CONTAINER_TYPES.register("matrix_stats", TileEntityInductionCasing.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityBoilerCasing>> BOILER_STATS = CONTAINER_TYPES.registerEmpty("boiler_stats", TileEntityBoilerCasing.class);
+    public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityInductionCasing>> MATRIX_STATS = CONTAINER_TYPES.registerEmpty("matrix_stats", TileEntityInductionCasing.class);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityMekanism>> SIDE_CONFIGURATION = CONTAINER_TYPES.register("side_configuration", SideConfigurationContainer::new);
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityMekanism>> TRANSPORTER_CONFIGURATION = CONTAINER_TYPES.register("transporter_configuration", TransporterConfigurationContainer::new);
 

@@ -4,6 +4,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.Mekanism;
@@ -15,10 +16,7 @@ import mekanism.common.network.PacketEditFilter;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigitalMiner, DMModIDFilterContainer> {
@@ -31,11 +29,6 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
     }
 
     @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "miner_text_filter.png");
-    }
-
-    @Override
     protected void updateStackList(String modName) {
         iterStacks = OreDictCache.getModIDStacks(modName, true);
         stackSwitch = 0;
@@ -44,6 +37,8 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
 
     @Override
     protected void addButtons() {
+        addButton(new GuiInnerScreen(this, 33, 18, 111, 43));
+        addButton(new GuiInnerScreen(this, 130, 46, 14, 14));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
         addButton(new GuiSlot(SlotType.NORMAL, this, 148, 18));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {

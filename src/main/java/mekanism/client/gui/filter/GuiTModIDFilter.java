@@ -5,6 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.ColorButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.Mekanism;
@@ -40,6 +41,8 @@ public class GuiTModIDFilter extends GuiModIDFilter<TModIDFilter, TileEntityLogi
 
     @Override
     protected void addButtons() {
+        addButton(new GuiInnerScreen(this, 33, 18, 111, 43));
+        addButton(new GuiInnerScreen(this, 130, 46, 14, 14));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 43));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 47, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {

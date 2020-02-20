@@ -14,15 +14,19 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiGraph extends GuiTexturedElement {
 
+    private static int textureWidth = 2;
+    private static int textureHeight = 10;
+
+    private final GuiInnerScreen innerScreen;
     private final IntList graphData = new IntArrayList();
     private final GraphDataHandler dataHandler;
 
     private int currentScale = 10;
     private boolean fixedScale = false;
 
-    //TODO: Convert
-    public GuiGraph(IGuiWrapper gui, int x, int y, int xSize, int ySize, GraphDataHandler handler) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "graph.png"), gui, x, y, xSize, ySize);
+    public GuiGraph(IGuiWrapper gui, int x, int y, int width, int height, GraphDataHandler handler) {
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "graph.png"), gui, x, y, width, height);
+        innerScreen = new GuiInnerScreen(gui, x - 1, y - 1, width + 2, height + 2);
         dataHandler = handler;
     }
 
@@ -48,54 +52,40 @@ public class GuiGraph extends GuiTexturedElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        //Draw Black and border
+        innerScreen.renderButton(mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        drawBlack();
-        drawGraph();
+        //Draw the graph
+        int size = graphData.size();
+        for (int i = 0; i < size; i++) {
+            int data = Math.min(currentScale, graphData.getInt(i));
+            int relativeHeight = (int) (data * height / (double) currentScale);
+            guiObj.drawModalRectWithCustomSizedTexture(x + i, y + height - relativeHeight, 0, 0, 1, 1, textureWidth, textureHeight);
+
+            int relativeModulo = (relativeHeight - 1) % 10;
+            int displays = (relativeHeight - 1) / 10 + (relativeModulo > 0 ? 1 : 0);
+
+            RenderSystem.shadeModel(GL11.GL_SMOOTH);
+            RenderSystem.disableAlphaTest();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderSystem.color4f(1, 1, 1, 0.2F + 0.8F * i / size);
+            for (int iter = 0; iter < displays; iter++) {
+                int heightComponent = relativeModulo > 0 && iter == displays - 1 ? relativeModulo : 10;
+                guiObj.drawModalRectWithCustomSizedTexture(x + i, y + height - heightComponent - 10 * iter, 11, 0, 1, heightComponent, textureWidth, textureHeight);
+            }
+            MekanismRenderer.resetColor();
+            RenderSystem.disableBlend();
+            RenderSystem.enableAlphaTest();
+        }
     }
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
         //TODO: Check
         int heightCalculated = height - (mouseY - guiObj.getTop() - y);
-        int scaled = (int) (((double) heightCalculated / (double) height) * currentScale);
+        int scaled = (int) (heightCalculated * currentScale / (double) height);
         displayTooltip(dataHandler.getDataDisplay(scaled), mouseX, mouseY);
-    }
-
-    public void drawBlack() {
-        int xDisplays = width / 10 + (width % 10 > 0 ? 1 : 0);
-        int yDisplays = height / 10 + (height % 10 > 0 ? 1 : 0);
-
-        for (int yIter = 0; yIter < yDisplays; yIter++) {
-            for (int xIter = 0; xIter < xDisplays; xIter++) {
-                int widthCalculated = width % 10 > 0 && xIter == xDisplays - 1 ? width % 10 : 10;
-                int heightCalculated = height % 10 > 0 && yIter == yDisplays - 1 ? height % 10 : 10;
-                guiObj.drawModalRectWithCustomSizedTexture(x + (xIter * 10), y + (yIter * 10), 0, 0, widthCalculated, heightCalculated, 12, 10);
-            }
-        }
-    }
-
-    public void drawGraph() {
-        int size = graphData.size();
-        for (int i = 0; i < size; i++) {
-            int data = Math.min(currentScale, graphData.getInt(i));
-            int relativeHeight = (int) (((double) data / (double) currentScale) * height);
-            guiObj.drawModalRectWithCustomSizedTexture(x + i, y + (height - relativeHeight), 10, 0, 1, 1, 12, 10);
-
-            int displays = (relativeHeight - 1) / 10 + ((relativeHeight - 1) % 10 > 0 ? 1 : 0);
-
-            RenderSystem.shadeModel(GL11.GL_SMOOTH);
-            RenderSystem.disableAlphaTest();
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
-            for (int iter = 0; iter < displays; iter++) {
-                RenderSystem.color4f(1, 1, 1, 0.2F + (0.8F * ((float) i / (float) size)));
-                int height = (relativeHeight - 1) % 10 > 0 && iter == displays - 1 ? (relativeHeight - 1) % 10 : 10;
-                guiObj.drawModalRectWithCustomSizedTexture(x + i, y + (height - (iter * 10)) - 10 + (10 - height), 11, 0, 1, height, 12, 10);
-            }
-            MekanismRenderer.resetColor();
-            RenderSystem.disableBlend();
-            RenderSystem.enableAlphaTest();
-        }
     }
 
     public interface GraphDataHandler {

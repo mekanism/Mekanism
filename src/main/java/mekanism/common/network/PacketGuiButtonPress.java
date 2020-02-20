@@ -14,6 +14,7 @@ import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
 import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.container.tile.SideConfigurationContainer;
 import mekanism.common.inventory.container.tile.TransporterConfigurationContainer;
@@ -225,9 +226,9 @@ public class PacketGuiButtonPress {
         }),
         TAB_STATS((tile, extra) -> {
             if (tile instanceof TileEntityInductionCasing) {
-                return new ContainerProvider(MekanismLang.MATRIX_STATS, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.MATRIX_STATS, i, inv, (TileEntityInductionCasing) tile));
+                return new ContainerProvider(MekanismLang.MATRIX_STATS, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.MATRIX_STATS, i, inv, (TileEntityInductionCasing) tile));
             } else if (tile instanceof TileEntityBoilerCasing) {
-                return new ContainerProvider(MekanismLang.BOILER_STATS, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.BOILER_STATS, i, inv, (TileEntityBoilerCasing) tile));
+                return new ContainerProvider(MekanismLang.BOILER_STATS, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.BOILER_STATS, i, inv, (TileEntityBoilerCasing) tile));
             }
             return null;
         });
