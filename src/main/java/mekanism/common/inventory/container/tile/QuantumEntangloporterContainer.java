@@ -1,12 +1,11 @@
 package mekanism.common.inventory.container.tile;
 
-import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.network.PacketBuffer;
 
-public class QuantumEntangloporterContainer extends MekanismTileContainer<TileEntityQuantumEntangloporter> implements IEmptyContainer {
+public class QuantumEntangloporterContainer extends MekanismTileContainer<TileEntityQuantumEntangloporter> {
 
     public QuantumEntangloporterContainer(int id, PlayerInventory inv, TileEntityQuantumEntangloporter tile) {
         super(MekanismContainerTypes.QUANTUM_ENTANGLOPORTER, id, inv, tile);

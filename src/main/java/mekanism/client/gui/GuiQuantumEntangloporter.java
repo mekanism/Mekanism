@@ -7,6 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
@@ -19,12 +20,9 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -44,11 +42,14 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
             privateMode = !tile.frequency.publicFreq;
         }
         ySize += 64;
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
+        addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
         addButton(scrollList = new GuiScrollList(this, 28, 37, 120, 40));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
@@ -150,11 +151,6 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         updateButtons();
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "teleporter.png");
     }
 
     @Override

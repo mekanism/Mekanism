@@ -9,6 +9,7 @@ import mekanism.client.MekanismClient;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiTeleporterStatus;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -22,8 +23,6 @@ import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.security.IOwnerItem;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -31,7 +30,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -73,6 +71,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
+        addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
         addButton(new GuiTeleporterStatus(this, () -> clientFreq != null, () -> clientStatus));
         addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
@@ -206,11 +206,6 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         updateButtons();
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "portable_teleporter.png");
     }
 
     @Override

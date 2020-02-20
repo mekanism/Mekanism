@@ -38,6 +38,7 @@ public class OwnerDisplay implements IHasTextComponent {
 
     @Override
     public ITextComponent getTextComponent() {
+        //TODO: Because this is colored, it makes it somewhat hard to read in GUIs
         if (ownerUUID == null) {
             return MekanismLang.NO_OWNER.translateColored(EnumColor.RED);
         }

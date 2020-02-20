@@ -1,36 +1,38 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiScrollList;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.OreDictCache;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.StackUtils;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
-    public ItemStack itemType = ItemStack.EMPTY;
+    private ItemStack itemType = ItemStack.EMPTY;
 
     private GuiScrollList scrollList;
 
     public GuiDictionary(DictionaryContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
+        addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5));
         addButton(scrollList = new GuiScrollList(this, 8, 30, 160, 40));
     }
 
@@ -76,8 +78,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
                 if (hovering != null) {
                     ItemStack stack = hovering.getStack();
                     if (!stack.isEmpty()) {
-                        itemType = stack.copy();
-                        itemType.setCount(1);
+                        itemType = StackUtils.size(stack, 1);
                         scrollList.setText(OreDictCache.getOreDictName(itemType));
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         return true;
@@ -88,8 +89,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
             if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
                 ItemStack stack = minecraft.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                    itemType = stack.copy();
-                    itemType.setCount(1);
+                    itemType = StackUtils.size(stack, 1);
                     scrollList.setText(OreDictCache.getOreDictName(itemType));
                 } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                     itemType = ItemStack.EMPTY;
@@ -99,10 +99,5 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "dictionary.png");
     }
 }

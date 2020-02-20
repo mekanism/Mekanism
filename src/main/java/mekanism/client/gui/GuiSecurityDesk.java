@@ -9,6 +9,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -48,6 +49,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 34, 67, 89, 13));
+        addButton(new GuiInnerScreen(this, 122, 67, 13, 13));
         addButton(scrollList = new GuiScrollList(this, 14, 14, 120, 40));
 
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {

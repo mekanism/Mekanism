@@ -36,11 +36,11 @@ public class GuiProgress extends GuiTexturedElement {
         SMALL_LEFT(32, 10, 128, 40),
         BI(20, 8, 128, 50);
 
-        public final int width;
-        public final int height;
+        private final int width;
+        private final int height;
 
-        public final int textureX;
-        public final int textureY;
+        private final int textureX;
+        private final int textureY;
 
         ProgressBar(int width, int height, int textureX, int textureY) {
             this.width = width;

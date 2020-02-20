@@ -13,7 +13,7 @@ import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.PacketHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
-import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.inventory.slot.EntangloporterInventorySlot;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tier.GasTankTier;
 import net.minecraft.nbt.CompoundNBT;
@@ -39,7 +39,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory 
         super(n, uuid);
         storedFluid = FLUID_TANK_SUPPLIER.get();
         storedGas = GAS_TANK_SUPPLIER.get();
-        storedItem = BasicInventorySlot.at(this, 0, 0);
+        storedItem = EntangloporterInventorySlot.create(this);
         inventorySlots = Collections.singletonList(storedItem);
     }
 
@@ -71,7 +71,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory 
         storedFluid = FLUID_TANK_SUPPLIER.get();
         storedGas = GAS_TANK_SUPPLIER.get();
         storedEnergy = nbtTags.getDouble("storedEnergy");
-        storedItem = BasicInventorySlot.at(this, 0, 0);
+        storedItem = EntangloporterInventorySlot.create(this);
         inventorySlots = Collections.singletonList(storedItem);
 
         if (nbtTags.contains("storedFluid")) {
@@ -99,7 +99,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory 
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        storedItem = BasicInventorySlot.at(this, 0, 0);
+        storedItem = EntangloporterInventorySlot.create(this);
         inventorySlots = Collections.singletonList(storedItem);
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
         storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());

@@ -8,6 +8,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSlot;
@@ -25,13 +26,10 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -57,6 +55,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     @Override
     public void init() {
         super.init();
+        addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
+        addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
         addButton(new GuiTeleporterStatus(this, () -> tile.frequency != null, () -> tile.status));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
@@ -164,11 +164,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         //TODO: Move this upwards to GuiMekanism and if nothing happened from the click don't bother even calling updateButtons
         updateButtons();
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "teleporter.png");
     }
 
     @Override
