@@ -50,11 +50,11 @@ public class GuiProgress extends GuiTexturedElement {
         }
     }
 
-    public static abstract class IProgressInfoHandler {
+    public interface IProgressInfoHandler {
 
-        public abstract double getProgress();
+        double getProgress();
 
-        public boolean isActive() {
+        default boolean isActive() {
             return true;
         }
     }

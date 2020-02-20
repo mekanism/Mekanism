@@ -5,7 +5,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
@@ -41,12 +40,7 @@ public class GuiMetallurgicInfuser extends GuiMekanismTile<TileEntityMetallurgic
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return tile.getScaledProgress();
-            }
-        }, ProgressBar.MEDIUM, this, 70, 46));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressBar.MEDIUM, this, 70, 46));
         addButton(new GuiVerticalChemicalBar<>(this, GuiVerticalChemicalBar.getProvider(tile.infusionTank), 7, 15));
         addButton(new GuiDumpButton<>(this, tile, 140, 65,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0)))));

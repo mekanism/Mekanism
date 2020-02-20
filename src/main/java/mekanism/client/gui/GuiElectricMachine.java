@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
@@ -44,12 +43,7 @@ public class GuiElectricMachine<TILE extends TileEntityElectricMachine, CONTAINE
         addButton(new GuiSlot(SlotType.INPUT, this, 55, 16));
         addButton(new GuiSlot(SlotType.POWER, this, 55, 52).with(SlotOverlay.POWER));
         addButton(new GuiSlot(SlotType.OUTPUT_LARGE, this, 111, 30));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return tile.getScaledProgress();
-            }
-        }, ProgressBar.BAR, this, 77, 37));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressBar.BAR, this, 77, 37));
     }
 
     @Override

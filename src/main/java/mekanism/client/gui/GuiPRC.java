@@ -5,7 +5,6 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -51,12 +50,7 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber
         addButton(new GuiGasGauge(() -> tile.inputGasTank, GuiGauge.Type.STANDARD_RED, this, 28, 10));
         addButton(new GuiGasGauge(() -> tile.outputGasTank, GuiGauge.Type.SMALL_BLUE, this, 140, 40));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return tile.getScaledProgress();
-            }
-        }, getProgressType(), this, 75, 37));
+        addButton(new GuiProgress(tile::getScaledProgress, getProgressType(), this, 75, 37));
     }
 
     @Override

@@ -4,7 +4,6 @@ import java.util.Collections;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -29,12 +28,7 @@ public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemS
         guiElements.add(new GuiSlot(SlotType.POWER, this, 55, 52).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, 111, 30));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return (double) timer.getValue() / 20F;
-            }
-        }, ProgressBar.BAR, this, 77, 37));
+        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.BAR, this, 77, 37));
     }
 
     @Override

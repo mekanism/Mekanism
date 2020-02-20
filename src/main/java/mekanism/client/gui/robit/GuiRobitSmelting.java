@@ -1,7 +1,6 @@
 package mekanism.client.gui.robit;
 
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
@@ -18,12 +17,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return robit.getScaledProgress();
-            }
-        }, ProgressBar.BAR, this, 77, 37));
+        addButton(new GuiProgress(robit::getScaledProgress, ProgressBar.BAR, this, 77, 37));
     }
 
     @Override

@@ -5,7 +5,6 @@ import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiBucketIO;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -46,12 +45,7 @@ public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher,
         addButton(new GuiFluidGauge(() -> tile.fluidTank, Type.STANDARD, this, 5, 4));
         addButton(new GuiGasGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, 26, 13));
         addButton(new GuiGasGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, 133, 13));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return tile.getActive() ? 1 : 0;
-            }
-        }, ProgressBar.LARGE_RIGHT, this, 62, 38));
+        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.LARGE_RIGHT, this, 62, 38));
     }
 
     @Override

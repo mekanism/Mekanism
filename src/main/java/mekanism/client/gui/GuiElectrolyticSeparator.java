@@ -5,7 +5,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.gui.button.GuiGasMode;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -42,12 +41,7 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         addButton(new GuiGasGauge(() -> tile.rightTank, GuiGauge.Type.SMALL, this, 100, 18));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return tile.getActive() ? 1 : 0;
-            }
-        }, ProgressBar.BI, this, 78, 29));
+        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.BI, this, 78, 29));
         addButton(new GuiGasMode(this, getGuiLeft() + 7, getGuiTop() + 72, false, () -> tile.dumpLeft,
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents((byte) 0)))));
         addButton(new GuiGasMode(this, getGuiLeft() + 159, getGuiTop() + 72, true, () -> tile.dumpRight,

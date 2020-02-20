@@ -6,7 +6,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -38,12 +37,7 @@ public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGa
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 133, 13));
         guiElements.add(new GuiSlot(SlotType.POWER, this, 154, 4).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, 154, 55).with(SlotOverlay.MINUS));
-        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return 1;
-            }
-        }, ProgressBar.LARGE_RIGHT, this, 62, 38));
+        guiElements.add(new GuiProgress(() -> 1, ProgressBar.LARGE_RIGHT, this, 62, 38));
     }
 
     @Override

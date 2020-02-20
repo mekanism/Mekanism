@@ -6,7 +6,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -45,12 +44,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, 28, 10));
         guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, 140, 40));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return (float) timer.getValue() / 20F;
-            }
-        }, ProgressBar.MEDIUM, this, 75, 37));
+        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.MEDIUM, this, 75, 37));
     }
 
     @Override

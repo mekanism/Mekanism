@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.gas.GasStack;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
@@ -50,12 +49,7 @@ public class GuiAdvancedElectricMachine<TILE extends TileEntityAdvancedElectricM
         addButton(new GuiSlot(SlotType.POWER, this, 30, 34).with(SlotOverlay.POWER));
         addButton(new GuiSlot(SlotType.EXTRA, this, 55, 52));
         addButton(new GuiSlot(SlotType.OUTPUT_LARGE, this, 111, 30));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return tile.getScaledProgress();
-            }
-        }, ProgressBar.BAR, this, 77, 37));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressBar.BAR, this, 77, 37));
     }
 
     @Override

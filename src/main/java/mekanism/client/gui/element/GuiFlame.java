@@ -5,6 +5,8 @@ import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
+//TODO: Once we make the progress things its own sub type of gui element instead of being mashed together how it is now
+// in a singular texture, make GuiFlame extend it
 public class GuiFlame extends GuiTexturedElement {
 
     private final IProgressInfoHandler handler;

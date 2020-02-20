@@ -13,7 +13,6 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -64,12 +63,7 @@ public class GuiChemicalCrystallizer extends GuiMekanismTile<TileEntityChemicalC
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
         addButton(new GuiGasGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, 5, 4));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return tile.getScaledProgress();
-            }
-        }, ProgressBar.LARGE_RIGHT, this, 51, 60));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressBar.LARGE_RIGHT, this, 51, 60));
     }
 
     @Override

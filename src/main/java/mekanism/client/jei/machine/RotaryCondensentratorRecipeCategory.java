@@ -7,7 +7,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -41,21 +40,8 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
         this.condensentrating = condensentrating;
         uid = new ResourceLocation(Mekanism.MODID, condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating");
         this.title = (condensentrating ? MekanismLang.CONDENSENTRATING : MekanismLang.DECONDENSENTRATING).translate().getFormattedText();
-        if (condensentrating) {
-            guiElements.add(new GuiProgress(new IProgressInfoHandler() {
-                @Override
-                public double getProgress() {
-                    return 1;
-                }
-            }, ProgressBar.LARGE_RIGHT, this, 62, 38));
-        } else {
-            guiElements.add(new GuiProgress(new IProgressInfoHandler() {
-                @Override
-                public double getProgress() {
-                    return 1;
-                }
-            }, ProgressBar.LARGE_LEFT, this, 62, 38));
-        }
+        //Add the progress bar. addGuiElements gets called before condensentrating is set
+        guiElements.add(new GuiProgress(() -> 1, condensentrating ? ProgressBar.LARGE_RIGHT : ProgressBar.LARGE_LEFT, this, 62, 38));
     }
 
     @Override

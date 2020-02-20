@@ -5,7 +5,6 @@ import java.util.Collections;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -35,18 +34,8 @@ public class ChemicalInfuserRecipeCategory extends BaseRecipeCategory<ChemicalIn
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 154, 55).with(SlotOverlay.MINUS));
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 4, 55).with(SlotOverlay.MINUS));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 79, 64).with(SlotOverlay.PLUS));
-        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return 1;
-            }
-        }, ProgressBar.SMALL_RIGHT, this, 45, 38));
-        guiElements.add(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return 1;
-            }
-        }, ProgressBar.SMALL_LEFT, this, 99, 38));
+        guiElements.add(new GuiProgress(() -> 1, ProgressBar.SMALL_RIGHT, this, 45, 38));
+        guiElements.add(new GuiProgress(() -> 1, ProgressBar.SMALL_LEFT, this, 99, 38));
     }
 
     @Override

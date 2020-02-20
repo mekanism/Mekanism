@@ -6,7 +6,6 @@ import java.util.Map;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
@@ -48,12 +47,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         super.init();
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiProgress(new IProgressInfoHandler() {
-            @Override
-            public double getProgress() {
-                return tile.didProcess ? 1 : 0;
-            }
-        }, ProgressBar.LARGE_RIGHT, this, 62, 118));
+        addButton(new GuiProgress(() -> tile.didProcess ? 1 : 0, ProgressBar.LARGE_RIGHT, this, 62, 118));
         addButton(new GuiSlot(SlotType.NORMAL, this, 25, 114));
         addButton(new GuiSlot(SlotType.NORMAL, this, 133, 114));
         addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
