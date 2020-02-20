@@ -1,8 +1,11 @@
 package mekanism.client.gui;
 
 import java.util.Collections;
+import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.client.gui.element.bar.GuiHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.common.MekanismLang;
@@ -30,6 +33,19 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 48, 19, 80, 40));
+        addButton(new GuiDownArrow(this, 32, 39));
+        addButton(new GuiDownArrow(this, 136, 39));
+        addButton(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
+            @Override
+            public ITextComponent getTooltip() {
+                return MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT);
+            }
+
+            @Override
+            public double getLevel() {
+                return Math.min(1, tile.getTemperature() / MekanismConfig.general.evaporationMaxTemp.get());
+            }
+        }, 48, 63));
         addButton(new GuiFluidGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, 6, 13));
         addButton(new GuiFluidGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {
@@ -47,12 +63,6 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         drawString(MekanismLang.HEIGHT.translate(tile.height), 50, 30, 0x00CD00);
         drawString(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT)), 50, 39, 0x00CD00);
         renderScaledText(MekanismLang.FLUID_PRODUCTION.translate(Math.round(tile.lastGain * 100D) / 100D), 50, 48, 0x00CD00, 76);
-        //TODO: Convert to GuiElement
-        int xAxis = mouseX - getGuiLeft();
-        int yAxis = mouseY - getGuiTop();
-        if (xAxis >= 49 && xAxis <= 127 && yAxis >= 64 && yAxis <= 72) {
-            displayTooltip(MekanismUtils.getTemperatureDisplay(tile.getTemperature(), TemperatureUnit.AMBIENT), xAxis, yAxis);
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
@@ -63,12 +73,6 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
             return MekanismLang.MULTIBLOCK_CONFLICT;
         }
         return MekanismLang.MULTIBLOCK_INCOMPLETE;
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(getGuiLeft() + 49, getGuiTop() + 64, 176, 59, tile.getScaledTempLevel(78), 8);
     }
 
     @Override

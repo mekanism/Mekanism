@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
+import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -12,11 +13,8 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityElectricPump;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -32,6 +30,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 48, 23, 80, 41));
+        addButton(new GuiDownArrow(this, 32, 39));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, 6, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
@@ -54,10 +53,5 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
             renderScaledText(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, fluidStack.getAmount()), 51, 35, 0x00CD00, 74);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "electric_pump.png");
     }
 }

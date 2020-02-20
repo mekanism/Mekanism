@@ -11,6 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public interface IGuiWrapper {
 
+    //TODO: Replace some of these with direct blit calls?
     void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height);
 
     void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height);
