@@ -8,7 +8,7 @@ import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
@@ -34,9 +34,9 @@ public class GuiChemicalInfuser extends GuiMekanismTile<TileEntityChemicalInfuse
         addButton(new GuiHorizontalPowerBar(this, tile, 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
-        addButton(new GuiGasGauge(() -> tile.leftTank, GuiGauge.Type.STANDARD, this, 25, 13));
-        addButton(new GuiGasGauge(() -> tile.centerTank, GuiGauge.Type.STANDARD, this, 79, 4));
-        addButton(new GuiGasGauge(() -> tile.rightTank, GuiGauge.Type.STANDARD, this, 133, 13));
+        addButton(new GuiGasGauge(() -> tile.leftTank, GaugeType.STANDARD, this, 25, 13));
+        addButton(new GuiGasGauge(() -> tile.centerTank, GaugeType.STANDARD, this, 79, 4));
+        addButton(new GuiGasGauge(() -> tile.rightTank, GaugeType.STANDARD, this, 133, 13));
         addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.SMALL_RIGHT, this, 45, 38));
         addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.SMALL_LEFT, this, 99, 38));
     }

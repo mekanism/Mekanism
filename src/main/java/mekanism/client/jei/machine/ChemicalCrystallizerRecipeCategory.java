@@ -7,12 +7,14 @@ import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -23,12 +25,12 @@ import mezz.jei.api.ingredients.IIngredients;
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasToItemStackRecipe> {
 
     public ChemicalCrystallizerRecipeCategory(IGuiHelper helper) {
-        super(helper, "mekanism:gui/chemical_crystallizer.png", MekanismBlocks.CHEMICAL_CRYSTALLIZER, 5, 3, 147, 79);
+        super(helper, MekanismUtils.getResource(ResourceType.GUI, "chemical_crystallizer.png"), MekanismBlocks.CHEMICAL_CRYSTALLIZER, 5, 3, 147, 79);
     }
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 5, 4));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 5, 4));
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, 5, 64).with(SlotOverlay.PLUS));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 130, 56));
         guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.LARGE_RIGHT, this, 51, 60));

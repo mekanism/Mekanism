@@ -13,7 +13,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -34,9 +34,9 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 5, 10));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, 58, 18));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL, this, 100, 18));
+        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 5, 10));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.SMALL, this, 58, 18));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.SMALL, this, 100, 18));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 25, 34));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 58, 51));

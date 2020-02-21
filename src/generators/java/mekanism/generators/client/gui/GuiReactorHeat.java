@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGauge.Type;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiNumberGauge;
 import mekanism.client.gui.element.gauge.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.render.MekanismRenderer;
@@ -58,7 +58,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
             public ITextComponent getText(double level) {
                 return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
-        }, Type.STANDARD, this, 7, 50));
+        }, GaugeType.STANDARD, this, 7, 50));
         addButton(new GuiProgress(() -> tile.getPlasmaTemp() > tile.getCaseTemp() ? 1 : 0, ProgressBar.SMALL_RIGHT, this, 27, 75));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
@@ -80,13 +80,13 @@ public class GuiReactorHeat extends GuiReactorInfo {
             public ITextComponent getText(double level) {
                 return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
-        }, Type.STANDARD, this, 61, 50));
+        }, GaugeType.STANDARD, this, 61, 50));
         addButton(new GuiProgress(() -> tile.getCaseTemp() > 0 ? 1 : 0, ProgressBar.SMALL_RIGHT, this, 81, 60));
         addButton(new GuiProgress(() -> (tile.getCaseTemp() > 0 && !tile.waterTank.isEmpty() && tile.steamTank.getFluidAmount() < tile.steamTank.getCapacity()) ? 1 : 0,
               ProgressBar.SMALL_RIGHT, this, 81, 90));
-        addButton(new GuiFluidGauge(() -> tile.waterTank, Type.SMALL, this, 115, 84));
-        addButton(new GuiFluidGauge(() -> tile.steamTank, Type.SMALL, this, 151, 84));
-        addButton(new GuiEnergyGauge(() -> tile, Type.SMALL, this, 115, 46));
+        addButton(new GuiFluidGauge(() -> tile.waterTank, GaugeType.SMALL, this, 115, 84));
+        addButton(new GuiFluidGauge(() -> tile.steamTank, GaugeType.SMALL, this, 151, 84));
+        addButton(new GuiEnergyGauge(() -> tile, GaugeType.SMALL, this, 115, 46));
         addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL));
         addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));
     }

@@ -12,11 +12,11 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
 
-    public GuiGasGauge(IGasInfoHandler handler, Type type, IGuiWrapper gui, int x, int y) {
+    public GuiGasGauge(IGasInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y, handler);
     }
 
-    public static GuiGasGauge getDummy(Type type, IGuiWrapper gui, int x, int y) {
+    public static GuiGasGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
         GuiGasGauge gauge = new GuiGasGauge(null, type, gui, x, y);
         gauge.dummy = true;
         return gauge;

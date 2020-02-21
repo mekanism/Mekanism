@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
@@ -32,7 +32,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
         addButton(new GuiInnerScreen(this, 48, 23, 80, 41));
         addButton(new GuiDownArrow(this, 32, 39));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, 6, 13));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
         addButton(new GuiSecurityTab<>(this, tile));

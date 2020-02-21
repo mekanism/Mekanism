@@ -10,7 +10,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
@@ -36,9 +36,9 @@ public class GuiElectrolyticSeparator extends GuiMekanismTile<TileEntityElectrol
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, 5, 10));
-        addButton(new GuiGasGauge(() -> tile.leftTank, GuiGauge.Type.SMALL, this, 58, 18));
-        addButton(new GuiGasGauge(() -> tile.rightTank, GuiGauge.Type.SMALL, this, 100, 18));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.STANDARD, this, 5, 10));
+        addButton(new GuiGasGauge(() -> tile.leftTank, GaugeType.SMALL, this, 58, 18));
+        addButton(new GuiGasGauge(() -> tile.rightTank, GaugeType.SMALL, this, 100, 18));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.BI, this, 78, 29));

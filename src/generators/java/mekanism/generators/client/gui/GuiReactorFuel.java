@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge.Type;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
@@ -36,9 +36,9 @@ public class GuiReactorFuel extends GuiReactorInfo {
         addButton(new GuiEnergyInfo(() -> tile.isFormed() ? Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getReactor().getPassiveGeneration(false, true)))) : Collections.emptyList(),
               this));
-        addButton(new GuiGasGauge(() -> tile.deuteriumTank, Type.SMALL, this, 25, 64));
-        addButton(new GuiGasGauge(() -> tile.fuelTank, Type.STANDARD, this, 79, 50));
-        addButton(new GuiGasGauge(() -> tile.tritiumTank, Type.SMALL, this, 133, 64));
+        addButton(new GuiGasGauge(() -> tile.deuteriumTank, GaugeType.SMALL, this, 25, 64));
+        addButton(new GuiGasGauge(() -> tile.fuelTank, GaugeType.STANDARD, this, 79, 50));
+        addButton(new GuiGasGauge(() -> tile.tritiumTank, GaugeType.SMALL, this, 133, 64));
         addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.SMALL_RIGHT, this, 45, 75));
         addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.SMALL_LEFT, this, 99, 75));
         addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT));

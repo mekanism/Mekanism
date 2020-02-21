@@ -4,7 +4,7 @@ import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
@@ -26,8 +26,8 @@ public class GuiSolarNeutronActivator extends GuiMekanismTile<TileEntitySolarNeu
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiGasGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, 25, 13));
-        addButton(new GuiGasGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, 133, 13));
+        addButton(new GuiGasGauge(() -> tile.inputTank, GaugeType.STANDARD, this, 25, 13));
+        addButton(new GuiGasGauge(() -> tile.outputTank, GaugeType.STANDARD, this, 133, 13));
         addButton(new GuiProgress(tile::getProgress, ProgressBar.LARGE_RIGHT, this, 62, 38));
     }
 

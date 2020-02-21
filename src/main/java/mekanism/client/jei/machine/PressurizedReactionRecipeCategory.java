@@ -12,7 +12,7 @@ import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -40,9 +40,9 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 53, 34));
         guiElements.add(new GuiSlot(SlotType.POWER, this, 140, 18).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 115, 34));
-        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD_YELLOW, this, 5, 10));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD_RED, this, 28, 10));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.SMALL_BLUE, this, 140, 40));
+        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD_YELLOW, this, 5, 10));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD_RED, this, 28, 10));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.SMALL_BLUE, this, 140, 40));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
         guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.MEDIUM, this, 75, 37));
     }

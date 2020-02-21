@@ -12,7 +12,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.Mekanism;
@@ -57,8 +57,8 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
     @Override
     protected void addGuiElements() {
         guiElements.add(new GuiDownArrow(this, 159, 44));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 25, 13));
-        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 133, 13));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 25, 13));
+        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 4, 24).with(SlotOverlay.PLUS));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 4, 55).with(SlotOverlay.MINUS));
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 154, 24));

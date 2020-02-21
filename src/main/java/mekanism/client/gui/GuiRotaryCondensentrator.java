@@ -12,7 +12,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
@@ -41,8 +41,8 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         addButton(new GuiHorizontalPowerBar(this, tile, 115, 75));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, 133, 13));
-        addButton(new GuiGasGauge(() -> tile.gasTank, GuiGauge.Type.STANDARD, this, 25, 13));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.STANDARD, this, 133, 13));
+        addButton(new GuiGasGauge(() -> tile.gasTank, GaugeType.STANDARD, this, 25, 13));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {

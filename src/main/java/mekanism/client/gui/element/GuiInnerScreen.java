@@ -16,6 +16,6 @@ public class GuiInnerScreen extends GuiTexturedElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        renderExtendedTexture(SCREEN, 2, 2);
+        renderExtendedTexture(getResource(), 2, 2);
     }
 }

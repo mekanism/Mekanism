@@ -59,7 +59,7 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         if (overlay != null) {
             RenderSystem.pushMatrix();
             RenderSystem.translatef(0, 0, 200);
-            overlay.draw(xPosition, yPosition);
+            overlay.draw(xPosition + 1, yPosition + 1);
             RenderSystem.popMatrix();
         }
         RenderSystem.disableAlphaTest();

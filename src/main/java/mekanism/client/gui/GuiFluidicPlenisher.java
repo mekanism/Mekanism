@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
@@ -36,7 +36,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
         addButton(new GuiSlot(SlotType.NORMAL, this, 27, 50));
         addButton(new GuiSlot(SlotType.POWER, this, 142, 34).with(SlotOverlay.POWER));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiGauge.Type.STANDARD, this, 6, 13));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
         addButton(new GuiSecurityTab<>(this, tile));

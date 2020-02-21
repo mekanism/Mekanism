@@ -13,30 +13,19 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiGauge<T> extends GuiTexturedElement {
 
-    protected EnumColor color;
-    protected final int texX;
-    protected final int texY;
-    protected final int number;
+    private final GaugeType gaugeType;
     protected boolean dummy;
-
     protected T dummyType;
 
-    public GuiGauge(Type type, IGuiWrapper gui, int x, int y) {
-        super(type.getLocation(), gui, x, y, type.width, type.height);
-        texX = type.texX;
-        texY = type.texY;
-        color = type.color;
-        number = type.number;
+    public GuiGauge(GaugeType gaugeType, IGuiWrapper gui, int x, int y) {
+        super(gaugeType.getGaugeOverlay().getBarOverlay(), gui, x, y, gaugeType.getGaugeOverlay().getWidth() + 2, gaugeType.getGaugeOverlay().getHeight() + 2);
+        this.gaugeType = gaugeType;
     }
 
     public abstract int getScaledLevel();
@@ -50,8 +39,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(getResource());
-        guiObj.drawTexturedRect(x, y, texX, texY, width, height);
+        renderExtendedTexture(gaugeType.getGaugeInfo().getResourceLocation(), gaugeType.getGaugeInfo().getSideWidth(), gaugeType.getGaugeInfo().getSideHeight());
         if (!dummy) {
             int scale = getScaledLevel();
             TextureAtlasSprite icon = getIcon();
@@ -59,16 +47,18 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                 applyRenderColor();
                 drawTiledSprite(x + 1, y + 1, height - 2, width - 2, scale, icon);
                 MekanismRenderer.resetColor();
-                //Reset the texture back to the gauge so that we can draw the bars as an overlay to it
-                minecraft.textureManager.bindTexture(getResource());
             }
-            guiObj.drawTexturedRect(x, y, width, 0, width, height);
+            //Draw the bar overlay
+            minecraft.textureManager.bindTexture(getResource());
+            GaugeOverlay gaugeOverlay = gaugeType.getGaugeOverlay();
+            guiObj.drawModalRectWithCustomSizedTexture(x + 1, y + 1, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
         }
     }
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {
         ItemStack stack = minecraft.player.inventory.getItemStack();
+        EnumColor color = gaugeType.getGaugeInfo().getColor();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
             if (guiObj instanceof GuiMekanismTile) {
                 TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) guiObj).getTileEntity();
@@ -87,7 +77,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                     if (dataType == null) {
                         guiObj.displayTooltip(MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()), mouseX, mouseY);
                     } else {
-                        guiObj.displayTooltip(TextComponentUtil.build(color, dataType, MekanismLang.GENERIC_PARENTHESIS.translate(color.getName())), mouseX, mouseY);
+                        guiObj.displayTooltip(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()), mouseX, mouseY);
                     }
                 }
             }
@@ -100,45 +90,5 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
 
     public void setDummyType(T type) {
         dummyType = type;
-    }
-
-    public enum Type {
-        STANDARD(null, 18, 60, 0, 0, 1, "standard.png"),
-        STANDARD_YELLOW(EnumColor.YELLOW, 18, 60, 0, 60, 1, "standard.png"),
-        STANDARD_RED(EnumColor.DARK_RED, 18, 60, 0, 120, 1, "standard.png"),
-        STANDARD_ORANGE(EnumColor.ORANGE, 18, 60, 0, 180, 1, "standard.png"),//Unused
-        STANDARD_BLUE(EnumColor.DARK_BLUE, 18, 60, 0, 240, 1, "standard.png"),//Unused
-        WIDE(null, 66, 50, 0, 0, 4, "wide.png"),
-        WIDE_YELLOW(EnumColor.YELLOW, 66, 50, 0, 50, 4, "wide.png"),//Unused
-        WIDE_RED(EnumColor.DARK_RED, 66, 50, 0, 100, 4, "wide.png"),//Unused
-        WIDE_ORANGE(EnumColor.ORANGE, 66, 50, 0, 150, 4, "wide.png"),//Unused
-        WIDE_BLUE(EnumColor.DARK_BLUE, 66, 50, 0, 200, 4, "wide.png"),//Unused
-        SMALL(null, 18, 30, 0, 0, 1, "small.png"),
-        SMALL_YELLOW(EnumColor.YELLOW, 18, 30, 0, 30, 1, "small.png"),//Unused
-        SMALL_RED(EnumColor.DARK_RED, 18, 30, 0, 60, 1, "small.png"),//Unused
-        SMALL_ORANGE(EnumColor.ORANGE, 18, 30, 0, 90, 1, "small.png"),//Unused
-        SMALL_BLUE(EnumColor.DARK_BLUE, 18, 30, 0, 120, 1, "small.png");
-
-        public final EnumColor color;
-        public final int width;
-        public final int height;
-        public final int texX;
-        public final int texY;
-        public final int number;
-        public final String textureLocation;
-
-        Type(EnumColor c, int w, int h, int tx, int ty, int n, String t) {
-            color = c;
-            width = w;
-            height = h;
-            texX = tx;
-            texY = ty;
-            number = n;
-            textureLocation = t;
-        }
-
-        public ResourceLocation getLocation() {
-            return MekanismUtils.getResource(ResourceType.GUI_GAUGE, textureLocation);
-        }
     }
 }

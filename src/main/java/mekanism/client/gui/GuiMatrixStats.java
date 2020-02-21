@@ -5,6 +5,7 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiMatrixTab;
 import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.common.MekanismLang;
@@ -24,7 +25,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     public void init() {
         super.init();
         addButton(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
-        addButton(new GuiEnergyGauge(() -> tile, GuiEnergyGauge.Type.STANDARD, this, 6, 13));
+        addButton(new GuiEnergyGauge(() -> tile, GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {

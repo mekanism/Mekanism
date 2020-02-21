@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGauge.Type;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -36,7 +36,7 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, M
         addButton(new GuiEnergyInfo(() -> Arrays.asList(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProducingEnergy())),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
-        addButton(new GuiFluidGauge(() -> tile.lavaTank, Type.WIDE, this, 55, 18));
+        addButton(new GuiFluidGauge(() -> tile.lavaTank, GaugeType.WIDE, this, 55, 18));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];

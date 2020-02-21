@@ -10,7 +10,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
@@ -46,9 +46,9 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber
             return Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(energyPerTick)),
                   MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy())));
         }, this));
-        addButton(new GuiFluidGauge(() -> tile.inputFluidTank, GuiGauge.Type.STANDARD_YELLOW, this, 5, 10));
-        addButton(new GuiGasGauge(() -> tile.inputGasTank, GuiGauge.Type.STANDARD_RED, this, 28, 10));
-        addButton(new GuiGasGauge(() -> tile.outputGasTank, GuiGauge.Type.SMALL_BLUE, this, 140, 40));
+        addButton(new GuiFluidGauge(() -> tile.inputFluidTank, GaugeType.STANDARD_YELLOW, this, 5, 10));
+        addButton(new GuiGasGauge(() -> tile.inputGasTank, GaugeType.STANDARD_RED, this, 28, 10));
+        addButton(new GuiGasGauge(() -> tile.outputGasTank, GaugeType.SMALL_BLUE, this, 140, 40));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiProgress(tile::getScaledProgress, getProgressType(), this, 75, 37));
     }

@@ -7,7 +7,7 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.config.MekanismConfig;
@@ -44,8 +44,8 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
                 return Math.min(1, tile.getTemperature() / MekanismConfig.general.evaporationMaxTemp.get());
             }
         }, 48, 63));
-        addButton(new GuiFluidGauge(() -> tile.inputTank, GuiGauge.Type.STANDARD, this, 6, 13));
-        addButton(new GuiFluidGauge(() -> tile.outputTank, GuiGauge.Type.STANDARD, this, 152, 13));
+        addButton(new GuiFluidGauge(() -> tile.inputTank, GaugeType.STANDARD, this, 6, 13));
+        addButton(new GuiFluidGauge(() -> tile.outputTank, GaugeType.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.totalLoss * unit.intervalSize, unit, false);

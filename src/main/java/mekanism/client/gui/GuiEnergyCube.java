@@ -4,6 +4,7 @@ import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
@@ -28,7 +29,7 @@ public class GuiEnergyCube extends GuiMekanismTile<TileEntityEnergyCube, Mekanis
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
-        addButton(new GuiEnergyGauge(() -> tile, GuiEnergyGauge.Type.WIDE, this, 55, 18));
+        addButton(new GuiEnergyGauge(() -> tile, GaugeType.WIDE, this, 55, 18));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy())),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
     }

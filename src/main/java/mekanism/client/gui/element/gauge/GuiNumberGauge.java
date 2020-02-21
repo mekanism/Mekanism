@@ -11,7 +11,7 @@ public class GuiNumberGauge extends GuiGauge<Void> {
 
     private final INumberInfoHandler infoHandler;
 
-    public GuiNumberGauge(INumberInfoHandler handler, Type type, IGuiWrapper gui, int x, int y) {
+    public GuiNumberGauge(INumberInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y);
         infoHandler = handler;
     }

@@ -13,13 +13,13 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
 
-    public GuiFluidGauge(IFluidInfoHandler handler, Type type, IGuiWrapper gui, int x, int y) {
+    public GuiFluidGauge(IFluidInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y, handler);
         //Ensure it isn't null
         setDummyType(FluidStack.EMPTY);
     }
 
-    public static GuiFluidGauge getDummy(Type type, IGuiWrapper gui, int x, int y) {
+    public static GuiFluidGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
         GuiFluidGauge gauge = new GuiFluidGauge(null, type, gui, x, y);
         gauge.dummy = true;
         return gauge;

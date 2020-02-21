@@ -11,7 +11,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -32,9 +32,9 @@ public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGa
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 5, 4));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 26, 13));
-        guiElements.add(GuiGasGauge.getDummy(GuiGauge.Type.STANDARD, this, 133, 13));
+        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 5, 4));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 26, 13));
+        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
         guiElements.add(new GuiSlot(SlotType.POWER, this, 154, 4).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, 154, 55).with(SlotOverlay.MINUS));
         guiElements.add(new GuiProgress(() -> 1, ProgressBar.LARGE_RIGHT, this, 62, 38));

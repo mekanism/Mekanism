@@ -18,7 +18,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
 
     protected final ITankInfoHandler<TANK> infoHandler;
 
-    public GuiTankGauge(Type type, IGuiWrapper gui, int x, int y, ITankInfoHandler<TANK> infoHandler) {
+    public GuiTankGauge(GaugeType type, IGuiWrapper gui, int x, int y, ITankInfoHandler<TANK> infoHandler) {
         super(type, gui, x, y);
         this.infoHandler = infoHandler;
     }

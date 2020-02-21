@@ -10,7 +10,7 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
@@ -36,8 +36,8 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 28, 51));
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 132, 20));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 132, 51));
-        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 6, 13));
-        guiElements.add(GuiFluidGauge.getDummy(GuiGauge.Type.STANDARD, this, 152, 13));
+        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 6, 13));
+        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 152, 13));
     }
 
     @Override

@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -21,7 +22,7 @@ public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, MekanismT
         super.init();
         addButton(new GuiContainerEditMode(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, GuiFluidGauge.Type.WIDE, this, 48, 18));
+        addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.WIDE, this, 48, 18));
     }
 
     @Override

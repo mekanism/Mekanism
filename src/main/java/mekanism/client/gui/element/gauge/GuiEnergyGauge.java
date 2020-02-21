@@ -13,7 +13,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
     private final IEnergyInfoHandler infoHandler;
 
-    public GuiEnergyGauge(IEnergyInfoHandler handler, Type type, IGuiWrapper gui, int x, int y) {
+    public GuiEnergyGauge(IEnergyInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y);
         infoHandler = handler;
     }

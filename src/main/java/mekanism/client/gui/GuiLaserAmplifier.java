@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.gauge.GuiGauge.Type;
+import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiNumberGauge;
 import mekanism.client.gui.element.gauge.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.gui.element.tab.GuiAmplifierTab;
@@ -55,7 +55,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
             public ITextComponent getText(double level) {
                 return MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()));
             }
-        }, Type.STANDARD, this, 6, 10));
+        }, GaugeType.STANDARD, this, 6, 10));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiAmplifierTab(this, tile));

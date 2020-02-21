@@ -14,7 +14,7 @@ import mekanism.api.infuse.InfusionStack;
 import mekanism.api.providers.IBaseProvider;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
-import mekanism.client.gui.element.gauge.GuiGauge.Type;
+import mekanism.client.gui.element.gauge.GaugeOverlay;
 import mekanism.client.jei.chemical.ChemicalStackRenderer;
 import mekanism.client.jei.chemical.GasStackRenderer;
 import mekanism.client.jei.chemical.InfusionStackRenderer;
@@ -50,12 +50,8 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     private final IDrawable background;
 
-    protected BaseRecipeCategory(IGuiHelper helper, String guiTexture, IBaseProvider provider, int xOffset, int yOffset, int width, int height) {
-        this(helper, new ResourceLocation(guiTexture), provider, xOffset, yOffset, width, height);
-    }
-
     protected BaseRecipeCategory(IGuiHelper helper, IBaseProvider provider, int xOffset, int yOffset, int width, int height) {
-        this(helper, (ResourceLocation) null, provider, xOffset, yOffset, width, height);
+        this(helper, null, provider, xOffset, yOffset, width, height);
     }
 
     protected BaseRecipeCategory(IGuiHelper helper, @Nullable ResourceLocation guiLocation, IBaseProvider provider, int xOffset, int yOffset, int width, int height) {
@@ -66,9 +62,8 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
         timer = helper.createTickTimer(20, 20, false);
 
-        ResourceLocation resource = Type.STANDARD.getLocation();
-        fluidOverlayLarge = guiHelper.createDrawable(resource, 19, 1, 16, 59);
-        fluidOverlaySmall = guiHelper.createDrawable(resource, 19, 1, 16, 29);
+        fluidOverlayLarge = createDrawable(guiHelper, GaugeOverlay.STANDARD);
+        fluidOverlaySmall = createDrawable(guiHelper, GaugeOverlay.SMALL);
 
         this.xOffset = xOffset;
         this.yOffset = yOffset;
@@ -78,6 +73,12 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
             background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, width, height);
         }
         addGuiElements();
+    }
+
+    private IDrawable createDrawable(IGuiHelper helper, GaugeOverlay gaugeOverlay) {
+        return helper.drawableBuilder(gaugeOverlay.getBarOverlay(), 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight())
+              .setTextureSize(gaugeOverlay.getWidth(), gaugeOverlay.getHeight())
+              .build();
     }
 
     @Override
@@ -154,15 +155,14 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         return background;
     }
 
-    @Nonnull
     @Override
     public IDrawable getIcon() {
-        //TODO
+        //Note: This is allowed to be null even though annotations imply it isn't supposed to be
         return null;
     }
 
     protected void initInfusion(IGuiIngredientGroup<@NonNull InfusionStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<InfusionStack> stacks) {
-        initChemical(group, slot, input, x, y, width, height, stacks, max -> new InfusionStackRenderer(max, width, height,null));
+        initChemical(group, slot, input, x, y, width, height, stacks, max -> new InfusionStackRenderer(max, width, height));
     }
 
     protected void initGas(IGuiIngredientGroup<@NonNull GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<GasStack> stacks, boolean overlay) {
@@ -178,6 +178,5 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         int max = stacks.stream().mapToInt(STACK::getAmount).filter(stack -> stack >= 0).max().orElse(0);
         group.init(slot, input, rendererSupplier.apply(max), x, y, width, height, 0, 0);
         group.set(slot, stacks);
-        //TODO: Make sure it renders properly once we have multiple different types
     }
 }
