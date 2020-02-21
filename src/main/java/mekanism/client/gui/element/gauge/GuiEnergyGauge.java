@@ -9,7 +9,7 @@ import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiEnergyGauge extends GuiGauge {
+public class GuiEnergyGauge extends GuiGauge<Void> {
 
     private final IEnergyInfoHandler infoHandler;
 

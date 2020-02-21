@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -15,8 +14,7 @@ import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
-import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvider;
+import mekanism.client.gui.element.bar.GuiEmptyBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
@@ -53,18 +51,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, 63, 52));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 116, 35));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiVerticalChemicalBar<>(this, new ChemicalInfoProvider<Gas>() {
-            @Override
-            public double getLevel() {
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public Gas getType() {
-                return MekanismAPI.EMPTY_GAS;
-            }
-        }, 68, 36, 6, 12));
+        guiElements.add(new GuiEmptyBar(this, 68, 36, 6, 12));
     }
 
     @Override

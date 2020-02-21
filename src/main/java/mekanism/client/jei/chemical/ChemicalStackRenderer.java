@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -53,17 +54,18 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         float uMax = textureSprite.getMaxU();
         float vMin = textureSprite.getMinV();
         float vMax = textureSprite.getMaxV();
-        uMax = (float) (uMax - (maskRight / 16.0 * (uMax - uMin)));
-        vMax = (float) (vMax - (maskTop / 16.0 * (vMax - vMin)));
+        uMax = (float) (uMax - (maskRight / (double) TEX_WIDTH * (uMax - uMin)));
+        vMax = (float) (vMax - (maskTop / (double) TEX_HEIGHT * (vMax - vMin)));
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexBuffer = tessellator.getBuffer();
         vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        vertexBuffer.pos(xCoord, yCoord + 16, zLevel).tex(uMin, vMax).endVertex();
-        vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + 16, zLevel).tex(uMax, vMax).endVertex();
-        vertexBuffer.pos(xCoord + 16 - maskRight, yCoord + maskTop, zLevel).tex(uMax, vMin).endVertex();
+        vertexBuffer.pos(xCoord, yCoord + TEX_HEIGHT, zLevel).tex(uMin, vMax).endVertex();
+        vertexBuffer.pos(xCoord + TEX_WIDTH - maskRight, yCoord + TEX_HEIGHT, zLevel).tex(uMax, vMax).endVertex();
+        vertexBuffer.pos(xCoord + TEX_WIDTH - maskRight, yCoord + maskTop, zLevel).tex(uMax, vMin).endVertex();
         vertexBuffer.pos(xCoord, yCoord + maskTop, zLevel).tex(uMin, vMin).endVertex();
-        tessellator.draw();
+        vertexBuffer.finishDrawing();
+        WorldVertexBufferUploader.draw(vertexBuffer);
     }
 
     @Override

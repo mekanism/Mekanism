@@ -10,9 +10,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldVertexBufferUploader;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import org.lwjgl.opengl.GL11;
 
 public abstract class GuiElement extends Widget {
 
@@ -235,5 +242,56 @@ public abstract class GuiElement extends Widget {
         if (playClickSound) {
             super.playDownSound(soundHandler);
         }
+    }
+
+    protected void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite) {
+        drawTiledSprite(xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16);
+    }
+
+    protected void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite, int textureWidth, int textureHeight) {
+        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        final int xTileCount = desiredWidth / textureWidth;
+        final int xRemainder = desiredWidth - (xTileCount * textureWidth);
+        final int yTileCount = desiredHeight / textureHeight;
+        final int yRemainder = desiredHeight - (yTileCount * textureHeight);
+        final int yStart = yPosition + yOffset;
+        int zLevel = getBlitOffset();
+        RenderSystem.enableBlend();
+        RenderSystem.enableAlphaTest();
+        for (int xTile = 0; xTile <= xTileCount; xTile++) {
+            int width = (xTile == xTileCount) ? xRemainder : textureWidth;
+            if (width > 0) {
+                int x = xPosition + (xTile * textureWidth);
+                int maskRight = textureWidth - width;
+                for (int yTile = 0; yTile <= yTileCount; yTile++) {
+                    int height = (yTile == yTileCount) ? yRemainder : textureHeight;
+                    if (height > 0) {
+                        int y = yStart - ((yTile + 1) * textureHeight);
+                        int maskTop = textureHeight - height;
+                        drawTextureWithMasking(x, y, sprite, maskTop, maskRight, zLevel, textureWidth, textureHeight);
+                    }
+                }
+            }
+        }
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableBlend();
+    }
+
+    private static void drawTextureWithMasking(double xCoord, double yCoord, TextureAtlasSprite textureSprite, int maskTop, int maskRight, double zLevel, int textureWidth, int textureHeight) {
+        float uMin = textureSprite.getMinU();
+        float uMax = textureSprite.getMaxU();
+        float vMin = textureSprite.getMinV();
+        float vMax = textureSprite.getMaxV();
+        uMax = (float) (uMax - (maskRight / (double) textureWidth * (uMax - uMin)));
+        vMax = (float) (vMax - (maskTop / (double) textureHeight * (vMax - vMin)));
+
+        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
+        vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        vertexBuffer.pos(xCoord, yCoord + textureHeight, zLevel).tex(uMin, vMax).endVertex();
+        vertexBuffer.pos(xCoord + textureWidth - maskRight, yCoord + textureHeight, zLevel).tex(uMax, vMax).endVertex();
+        vertexBuffer.pos(xCoord + textureWidth - maskRight, yCoord + maskTop, zLevel).tex(uMax, vMin).endVertex();
+        vertexBuffer.pos(xCoord, yCoord + maskTop, zLevel).tex(uMin, vMin).endVertex();
+        vertexBuffer.finishDrawing();
+        WorldVertexBufferUploader.draw(vertexBuffer);
     }
 }

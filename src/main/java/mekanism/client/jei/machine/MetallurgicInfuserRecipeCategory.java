@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
@@ -14,8 +13,7 @@ import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
-import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvider;
+import mekanism.client.gui.element.bar.GuiEmptyBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
@@ -45,18 +43,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 108, 42));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
         guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.MEDIUM, this, 70, 46));
-        guiElements.add(new GuiVerticalChemicalBar<>(this, new ChemicalInfoProvider<InfuseType>() {
-            @Override
-            public double getLevel() {
-                return 0;
-            }
-
-            @Nonnull
-            @Override
-            public InfuseType getType() {
-                return MekanismAPI.EMPTY_INFUSE_TYPE;
-            }
-        }, 7, 15, 4, 52));
+        guiElements.add(new GuiEmptyBar(this, 7, 15, 4, 52));
     }
 
     @Override

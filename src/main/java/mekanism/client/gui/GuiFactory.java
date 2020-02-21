@@ -7,9 +7,8 @@ import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiVerticalProgress;
-import mekanism.client.gui.element.bar.GuiHorizontalChemicalBar;
-import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
-import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvider;
+import mekanism.client.gui.element.bar.GuiChemicalBar;
+import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
@@ -65,12 +64,12 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
         if (tile.hasSecondaryResourceBar()) {
             ChemicalInfoProvider<? extends Chemical<?>> provider = null;
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {
-                provider = GuiVerticalChemicalBar.getProvider(((TileEntityMetallurgicInfuserFactory) tile).getInfusionTank());
+                provider = GuiChemicalBar.getProvider(((TileEntityMetallurgicInfuserFactory) tile).getInfusionTank());
             } else if (tile instanceof TileEntityItemStackGasToItemStackFactory) {
-                provider = GuiVerticalChemicalBar.getProvider(((TileEntityItemStackGasToItemStackFactory) tile).getGasTank());
+                provider = GuiChemicalBar.getProvider(((TileEntityItemStackGasToItemStackFactory) tile).getGasTank());
             }
             if (provider != null) {
-                addButton(new GuiHorizontalChemicalBar<>(this, provider, 7, 76, tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4));
+                addButton(new GuiChemicalBar<>(this, provider, 7, 76, tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
                 addButton(new GuiDumpButton<>(this, tile, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76,
                       () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1)))));
             }

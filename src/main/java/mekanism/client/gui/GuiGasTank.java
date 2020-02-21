@@ -5,8 +5,7 @@ import mekanism.api.gas.GasStack;
 import mekanism.client.gui.button.GuiGasMode;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.bar.GuiHorizontalChemicalBar;
-import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
+import mekanism.client.gui.element.bar.GuiChemicalBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
@@ -28,7 +27,7 @@ public class GuiGasTank extends GuiMekanismTile<TileEntityGasTank, MekanismTileC
     @Override
     public void init() {
         super.init();
-        addButton(new GuiHorizontalChemicalBar<>(this, GuiVerticalChemicalBar.getProvider(tile.gasTank), 42, 16, 116, 10));
+        addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.gasTank), 42, 16, 116, 10, true));
         addButton(new GuiInnerScreen(this, 42, 37, 118, 28));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));

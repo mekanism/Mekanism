@@ -16,7 +16,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
@@ -56,24 +55,10 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
             int scale = getScaledLevel();
             TextureAtlasSprite icon = getIcon();
             if (scale > 0 && icon != null) {
-                int start = 0;
                 applyRenderColor();
-                minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-                while (scale > 0) {
-                    int renderRemaining;
-                    if (scale > 16) {
-                        renderRemaining = 16;
-                        scale -= 16;
-                    } else {
-                        renderRemaining = scale;
-                        scale = 0;
-                    }
-                    for (int i = 0; i < number; i++) {
-                        guiObj.drawTexturedRectFromIcon(x + 16 * i + 1, y + height - renderRemaining - start - 1, icon, 16, renderRemaining);
-                    }
-                    start += 16;
-                }
+                drawTiledSprite(x + 1, y + 1, height - 2, width - 2, scale, icon);
                 MekanismRenderer.resetColor();
+                //Reset the texture back to the gauge so that we can draw the bars as an overlay to it
                 minecraft.textureManager.bindTexture(getResource());
             }
             guiObj.drawTexturedRect(x, y, width, 0, width, height);

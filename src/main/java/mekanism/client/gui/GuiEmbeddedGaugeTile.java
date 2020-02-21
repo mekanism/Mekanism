@@ -28,6 +28,7 @@ public abstract class GuiEmbeddedGaugeTile<TILE extends TileEntityMekanism, CONT
     }
 
     protected void displayGauge(int xPos, int yPos, int scale, int side /*0-left, 1-right*/, TextureAtlasSprite sprite) {
+        //TODO: Make this use the newer method of displaying the contents. Holding off until this gets moved to properly just being a GuiGauge instead though
         minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         int start = 0;
         int x = getGuiLeft() + xPos;

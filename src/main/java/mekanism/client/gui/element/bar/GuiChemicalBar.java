@@ -5,44 +5,37 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTank;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvider;
+import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiVerticalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<ChemicalInfoProvider<CHEMICAL>> {
+public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<ChemicalInfoProvider<CHEMICAL>> {
 
-    public GuiVerticalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, int x, int y, int width, int height) {
+    private final boolean horizontal;
+
+    public GuiChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, int x, int y, int width, int height, boolean horizontal) {
         super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, width, height);
+        this.horizontal = horizontal;
     }
 
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
         CHEMICAL type = getHandler().getType();
         if (!type.isEmptyType()) {
-            //TODO: Unify this code some, as there is a lot of code we have for drawing "tiled" but it is duplicated all over the place
-            int scale = (int) (getHandler().getLevel() * (height - 2));
-            MekanismRenderer.color(type);
-            TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(type);
-            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            int start = 0;
-            int x = this.x + 1;
-            int y = this.y + height - 1;
-            while (scale > 0) {
-                int renderRemaining;
-                if (scale > 16) {
-                    renderRemaining = 16;
-                    scale -= 16;
+            double level = getHandler().getLevel();
+            if (level > 0) {
+                MekanismRenderer.color(type);
+                TextureAtlasSprite icon = MekanismRenderer.getChemicalTexture(type);
+                if (horizontal) {
+                    drawTiledSprite(x + 1, y + 1, height - 2, (int) (level * (width - 2)), height - 2, icon);
                 } else {
-                    renderRemaining = scale;
-                    scale = 0;
+                    drawTiledSprite(x + 1, y + 1, height - 2, width - 2, (int) (level * (height - 2)), icon);
                 }
-                guiObj.drawTexturedRectFromIcon(x, y - renderRemaining - start, icon, width - 2, renderRemaining);
-                start += 16;
+                MekanismRenderer.resetColor();
             }
-            MekanismRenderer.resetColor();
         }
     }
 
@@ -73,7 +66,7 @@ public class GuiVerticalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends
 
             @Override
             public double getLevel() {
-                return (double) tank.getStored() / (double) tank.getCapacity();
+                return tank.getStored() / (double) tank.getCapacity();
             }
         };
     }

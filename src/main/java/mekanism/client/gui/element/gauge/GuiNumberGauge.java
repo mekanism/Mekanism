@@ -7,7 +7,7 @@ import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiNumberGauge extends GuiGauge {
+public class GuiNumberGauge extends GuiGauge<Void> {
 
     private final INumberInfoHandler infoHandler;
 
