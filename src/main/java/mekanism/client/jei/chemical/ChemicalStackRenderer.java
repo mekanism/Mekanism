@@ -26,7 +26,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.opengl.GL11;
 
-//TODO: Fix the fact that the textures look stretched in JEI (see infuser)
 public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientRenderer<STACK> {
 
     private static final NumberFormat nf = NumberFormat.getIntegerInstance();
@@ -47,25 +46,6 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         this.width = width;
         this.height = height;
         this.overlay = overlay;
-    }
-
-    private static void drawTextureWithMasking(double xCoord, double yCoord, TextureAtlasSprite textureSprite, int maskTop, int maskRight, double zLevel) {
-        float uMin = textureSprite.getMinU();
-        float uMax = textureSprite.getMaxU();
-        float vMin = textureSprite.getMinV();
-        float vMax = textureSprite.getMaxV();
-        uMax = (float) (uMax - (maskRight / (double) TEX_WIDTH * (uMax - uMin)));
-        vMax = (float) (vMax - (maskTop / (double) TEX_HEIGHT * (vMax - vMin)));
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder vertexBuffer = tessellator.getBuffer();
-        vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        vertexBuffer.pos(xCoord, yCoord + TEX_HEIGHT, zLevel).tex(uMin, vMax).endVertex();
-        vertexBuffer.pos(xCoord + TEX_WIDTH - maskRight, yCoord + TEX_HEIGHT, zLevel).tex(uMax, vMax).endVertex();
-        vertexBuffer.pos(xCoord + TEX_WIDTH - maskRight, yCoord + maskTop, zLevel).tex(uMax, vMin).endVertex();
-        vertexBuffer.pos(xCoord, yCoord + maskTop, zLevel).tex(uMin, vMin).endVertex();
-        vertexBuffer.finishDrawing();
-        WorldVertexBufferUploader.draw(vertexBuffer);
     }
 
     @Override
@@ -90,41 +70,65 @@ public class ChemicalStackRenderer<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         if (stack.isEmpty()) {
             return;
         }
-        int scaledAmount = (stack.getAmount() * height) / capacityMb;
-        if (scaledAmount < MIN_FLUID_HEIGHT) {
-            scaledAmount = MIN_FLUID_HEIGHT;
+        int desiredHeight = (stack.getAmount() * height) / capacityMb;
+        if (desiredHeight < MIN_FLUID_HEIGHT) {
+            desiredHeight = MIN_FLUID_HEIGHT;
         }
-        if (scaledAmount > height) {
-            scaledAmount = height;
+        if (desiredHeight > height) {
+            desiredHeight = height;
         }
         CHEMICAL chemical = stack.getType();
-        drawTiledSprite(xPosition, yPosition, width, height, chemical, scaledAmount, MekanismRenderer.getSprite(chemical.getIcon()));
+        drawTiledSprite(xPosition, yPosition, width, desiredHeight, height, chemical);
     }
 
-    private void drawTiledSprite(int xPosition, int yPosition, int tiledWidth, int tiledHeight, @Nonnull CHEMICAL chemical, int scaledAmount, TextureAtlasSprite sprite) {
-        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+    private void drawTiledSprite(int xPosition, int yPosition, int desiredWidth, int desiredHeight, int yOffset, @Nonnull CHEMICAL chemical) {
+        if (desiredWidth == 0 || desiredHeight == 0) {
+            return;
+        }
         MekanismRenderer.color(chemical);
-
-        final int xTileCount = tiledWidth / TEX_WIDTH;
-        final int xRemainder = tiledWidth - (xTileCount * TEX_WIDTH);
-        final int yTileCount = scaledAmount / TEX_HEIGHT;
-        final int yRemainder = scaledAmount - (yTileCount * TEX_HEIGHT);
-        final int yStart = yPosition + tiledHeight;
+        TextureAtlasSprite sprite = MekanismRenderer.getSprite(chemical.getIcon());
+        MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        int xTileCount = desiredWidth / TEX_WIDTH;
+        int xRemainder = desiredWidth - (xTileCount * TEX_WIDTH);
+        int yTileCount = desiredHeight / TEX_HEIGHT;
+        int yRemainder = desiredHeight - (yTileCount * TEX_HEIGHT);
+        int yStart = yPosition + yOffset;
+        int zLevel = 100;
+        float uMin = sprite.getMinU();
+        float uMax = sprite.getMaxU();
+        float vMin = sprite.getMinV();
+        float vMax = sprite.getMaxV();
+        float uDif = uMax - uMin;
+        float vDif = vMax - vMin;
+        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
+        vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         for (int xTile = 0; xTile <= xTileCount; xTile++) {
             int width = (xTile == xTileCount) ? xRemainder : TEX_WIDTH;
-            if (width > 0) {
-                int x = xPosition + (xTile * TEX_WIDTH);
-                int maskRight = TEX_WIDTH - width;
-                for (int yTile = 0; yTile <= yTileCount; yTile++) {
-                    int height = (yTile == yTileCount) ? yRemainder : TEX_HEIGHT;
-                    if (height > 0) {
-                        int y = yStart - ((yTile + 1) * TEX_HEIGHT);
-                        int maskTop = TEX_HEIGHT - height;
-                        drawTextureWithMasking(x, y, sprite, maskTop, maskRight, 100);
-                    }
+            if (width == 0) {
+                break;
+            }
+            int x = xPosition + (xTile * TEX_WIDTH);
+            int maskRight = TEX_WIDTH - width;
+            int shiftedX = x + TEX_WIDTH - maskRight;
+            float uMaxLocal = uMax - (uDif * maskRight / TEX_WIDTH);
+            for (int yTile = 0; yTile <= yTileCount; yTile++) {
+                int height = (yTile == yTileCount) ? yRemainder : TEX_HEIGHT;
+                if (height == 0) {
+                    //Note: We don't want to fully break out because our height will be zero if we are looking to
+                    // draw the remainder, but there is no remainder as it divided evenly
+                    break;
                 }
+                int y = yStart - ((yTile + 1) * TEX_HEIGHT);
+                int maskTop = TEX_HEIGHT - height;
+                float vMaxLocal = vMax - (vDif * maskTop / TEX_HEIGHT);
+                vertexBuffer.pos(x, y + TEX_HEIGHT, zLevel).tex(uMin, vMaxLocal).endVertex();
+                vertexBuffer.pos(shiftedX, y + TEX_HEIGHT, zLevel).tex(uMaxLocal, vMaxLocal).endVertex();
+                vertexBuffer.pos(shiftedX, y + maskTop, zLevel).tex(uMaxLocal, vMin).endVertex();
+                vertexBuffer.pos(x, y + maskTop, zLevel).tex(uMin, vMin).endVertex();
             }
         }
+        vertexBuffer.finishDrawing();
+        WorldVertexBufferUploader.draw(vertexBuffer);
         MekanismRenderer.resetColor();
     }
 

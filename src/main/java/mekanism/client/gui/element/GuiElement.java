@@ -249,49 +249,54 @@ public abstract class GuiElement extends Widget {
     }
 
     protected void drawTiledSprite(int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite, int textureWidth, int textureHeight) {
+        if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
+            return;
+        }
         MekanismRenderer.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        final int xTileCount = desiredWidth / textureWidth;
-        final int xRemainder = desiredWidth - (xTileCount * textureWidth);
-        final int yTileCount = desiredHeight / textureHeight;
-        final int yRemainder = desiredHeight - (yTileCount * textureHeight);
-        final int yStart = yPosition + yOffset;
+        int xTileCount = desiredWidth / textureWidth;
+        int xRemainder = desiredWidth - (xTileCount * textureWidth);
+        int yTileCount = desiredHeight / textureHeight;
+        int yRemainder = desiredHeight - (yTileCount * textureHeight);
+        int yStart = yPosition + yOffset;
         int zLevel = getBlitOffset();
+        float uMin = sprite.getMinU();
+        float uMax = sprite.getMaxU();
+        float vMin = sprite.getMinV();
+        float vMax = sprite.getMaxV();
+        float uDif = uMax - uMin;
+        float vDif = vMax - vMin;
         RenderSystem.enableBlend();
         RenderSystem.enableAlphaTest();
-        for (int xTile = 0; xTile <= xTileCount; xTile++) {
-            int width = (xTile == xTileCount) ? xRemainder : textureWidth;
-            if (width > 0) {
-                int x = xPosition + (xTile * textureWidth);
-                int maskRight = textureWidth - width;
-                for (int yTile = 0; yTile <= yTileCount; yTile++) {
-                    int height = (yTile == yTileCount) ? yRemainder : textureHeight;
-                    if (height > 0) {
-                        int y = yStart - ((yTile + 1) * textureHeight);
-                        int maskTop = textureHeight - height;
-                        drawTextureWithMasking(x, y, sprite, maskTop, maskRight, zLevel, textureWidth, textureHeight);
-                    }
-                }
-            }
-        }
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableBlend();
-    }
-
-    private static void drawTextureWithMasking(double xCoord, double yCoord, TextureAtlasSprite textureSprite, int maskTop, int maskRight, double zLevel, int textureWidth, int textureHeight) {
-        float uMin = textureSprite.getMinU();
-        float uMax = textureSprite.getMaxU();
-        float vMin = textureSprite.getMinV();
-        float vMax = textureSprite.getMaxV();
-        uMax = (float) (uMax - (maskRight / (double) textureWidth * (uMax - uMin)));
-        vMax = (float) (vMax - (maskTop / (double) textureHeight * (vMax - vMin)));
-
         BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
         vertexBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        vertexBuffer.pos(xCoord, yCoord + textureHeight, zLevel).tex(uMin, vMax).endVertex();
-        vertexBuffer.pos(xCoord + textureWidth - maskRight, yCoord + textureHeight, zLevel).tex(uMax, vMax).endVertex();
-        vertexBuffer.pos(xCoord + textureWidth - maskRight, yCoord + maskTop, zLevel).tex(uMax, vMin).endVertex();
-        vertexBuffer.pos(xCoord, yCoord + maskTop, zLevel).tex(uMin, vMin).endVertex();
+        for (int xTile = 0; xTile <= xTileCount; xTile++) {
+            int width = (xTile == xTileCount) ? xRemainder : textureWidth;
+            if (width == 0) {
+                break;
+            }
+            int x = xPosition + (xTile * textureWidth);
+            int maskRight = textureWidth - width;
+            int shiftedX = x + textureWidth - maskRight;
+            float uMaxLocal = uMax - (uDif * maskRight / textureWidth);
+            for (int yTile = 0; yTile <= yTileCount; yTile++) {
+                int height = (yTile == yTileCount) ? yRemainder : textureHeight;
+                if (height == 0) {
+                    //Note: We don't want to fully break out because our height will be zero if we are looking to
+                    // draw the remainder, but there is no remainder as it divided evenly
+                    break;
+                }
+                int y = yStart - ((yTile + 1) * textureHeight);
+                int maskTop = textureHeight - height;
+                float vMaxLocal = vMax - (vDif * maskTop / textureHeight);
+                vertexBuffer.pos(x, y + textureHeight, zLevel).tex(uMin, vMaxLocal).endVertex();
+                vertexBuffer.pos(shiftedX, y + textureHeight, zLevel).tex(uMaxLocal, vMaxLocal).endVertex();
+                vertexBuffer.pos(shiftedX, y + maskTop, zLevel).tex(uMaxLocal, vMin).endVertex();
+                vertexBuffer.pos(x, y + maskTop, zLevel).tex(uMin, vMin).endVertex();
+            }
+        }
         vertexBuffer.finishDrawing();
         WorldVertexBufferUploader.draw(vertexBuffer);
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableBlend();
     }
 }
