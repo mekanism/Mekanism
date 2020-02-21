@@ -56,7 +56,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         guiElements.add(new GuiVerticalChemicalBar<>(this, new ChemicalInfoProvider<Gas>() {
             @Override
             public double getLevel() {
-                return 1;
+                return 0;
             }
 
             @Nonnull

@@ -1,7 +1,7 @@
 @ParametersAreNonnullByDefault
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package mekanism.client.jei.gas;
+package mekanism.client.jei.chemical;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;

@@ -77,6 +77,6 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         fluidStacks.set(0, fluidInputs);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, recipe.getInputGas().getRepresentations(), true);
-        initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, outputDefinition.getRight(), true);
+        initGas(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, Collections.singletonList(outputDefinition.getRight()), true);
     }
 }

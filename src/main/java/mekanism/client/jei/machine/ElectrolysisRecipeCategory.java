@@ -64,7 +64,7 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
         fluidStacks.init(0, true, 2, 2, 16, 58, max, false, fluidOverlayLarge);
         fluidStacks.set(0, fluidInputs);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, false, 59 - xOffset, 19 - yOffset, 16, 28, recipe.getLeftGasOutputRepresentation(), true);
-        initGas(gasStacks, 1, false, 101 - xOffset, 19 - yOffset, 16, 28, recipe.getRightGasOutputRepresentation(), true);
+        initGas(gasStacks, 0, false, 59 - xOffset, 19 - yOffset, 16, 28, Collections.singletonList(recipe.getLeftGasOutputRepresentation()), true);
+        initGas(gasStacks, 1, false, 101 - xOffset, 19 - yOffset, 16, 28, Collections.singletonList(recipe.getRightGasOutputRepresentation()), true);
     }
 }

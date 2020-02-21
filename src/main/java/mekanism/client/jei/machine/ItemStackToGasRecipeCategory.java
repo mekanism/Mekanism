@@ -49,6 +49,6 @@ public class ItemStackToGasRecipeCategory extends BaseRecipeCategory<ItemStackTo
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
         itemStacks.set(0, recipe.getInput().getRepresentations());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getOutputDefinition(), true);
+        initGas(gasStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
     }
 }

@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.infuse.InfusionStack;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiCombiner;
 import mekanism.client.gui.GuiElectrolyticSeparator;
@@ -20,7 +21,10 @@ import mekanism.client.gui.chemical.GuiChemicalDissolutionChamber;
 import mekanism.client.gui.chemical.GuiChemicalInfuser;
 import mekanism.client.gui.chemical.GuiChemicalOxidizer;
 import mekanism.client.gui.chemical.GuiChemicalWasher;
-import mekanism.client.jei.gas.GasStackRenderer;
+import mekanism.client.jei.chemical.GasStackHelper;
+import mekanism.client.jei.chemical.GasStackRenderer;
+import mekanism.client.jei.chemical.InfusionStackHelper;
+import mekanism.client.jei.chemical.InfusionStackRenderer;
 import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
 import mekanism.client.jei.machine.CombinerRecipeCategory;
@@ -63,8 +67,8 @@ import net.minecraftforge.fluids.FluidAttributes;
 @JeiPlugin
 public class MekanismJEI implements IModPlugin {
 
-    //TODO: Make type for infusion
     public static final IIngredientType<GasStack> TYPE_GAS = () -> GasStack.class;
+    public static final IIngredientType<InfusionStack> TYPE_INFUSION = () -> InfusionStack.class;
 
     private static final ISubtypeInterpreter GAS_TANK_NBT_INTERPRETER = itemStack -> {
         if (!itemStack.hasTag() || !(itemStack.getItem() instanceof IGasItem)) {
@@ -122,15 +126,16 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {
-        List<GasStack> list = MekanismAPI.GAS_REGISTRY.getValues().stream().filter(g -> !g.isHidden()).map(g -> new GasStack(g, FluidAttributes.BUCKET_VOLUME)).collect(Collectors.toList());
-        registry.register(MekanismJEI.TYPE_GAS, list, new GasStackHelper(), new GasStackRenderer());
+        List<GasStack> gases = MekanismAPI.GAS_REGISTRY.getValues().stream().filter(g -> !g.isEmptyType() && !g.isHidden()).map(g -> new GasStack(g, FluidAttributes.BUCKET_VOLUME)).collect(Collectors.toList());
+        registry.register(MekanismJEI.TYPE_GAS, gases, new GasStackHelper(), new GasStackRenderer());
+        List<InfusionStack> infuseTypes = MekanismAPI.INFUSE_TYPE_REGISTRY.getValues().stream().filter(g -> !g.isEmptyType()).map(g -> new InfusionStack(g, FluidAttributes.BUCKET_VOLUME)).collect(Collectors.toList());
+        registry.register(MekanismJEI.TYPE_INFUSION, infuseTypes, new InfusionStackHelper(), new InfusionStackRenderer());
     }
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
         IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
 
-        //TODO: Fix adding the recipes to this as I think it probably grabs it from all the matching recipe types
         registry.addRecipeCategories(new ChemicalCrystallizerRecipeCategory(guiHelper));
         registry.addRecipeCategories(new ItemStackGasToGasRecipeCategory(guiHelper));
         registry.addRecipeCategories(new ChemicalInfuserRecipeCategory(guiHelper));

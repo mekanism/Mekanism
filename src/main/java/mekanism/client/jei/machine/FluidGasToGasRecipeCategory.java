@@ -61,6 +61,6 @@ public class FluidGasToGasRecipeCategory extends BaseRecipeCategory<FluidGasToGa
         fluidStacks.set(0, fluidInputs);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initGas(gasStacks, 0, true, 27 - xOffset, 14 - yOffset, 16, 58, recipe.getGasInput().getRepresentations(), true);
-        initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getOutputRepresentation(), true);
+        initGas(gasStacks, 1, false, 134 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputRepresentation()), true);
     }
 }

@@ -1,19 +1,23 @@
 package mekanism.client.jei;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gas.GasStack;
+import mekanism.api.infuse.InfusionStack;
 import mekanism.api.providers.IBaseProvider;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.gauge.GuiGauge.Type;
-import mekanism.client.jei.gas.GasStackRenderer;
+import mekanism.client.jei.chemical.ChemicalStackRenderer;
+import mekanism.client.jei.chemical.GasStackRenderer;
+import mekanism.client.jei.chemical.InfusionStackRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -159,35 +163,23 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         return null;
     }
 
-    public List<ITextComponent> getTooltipComponents(RECIPE recipe, double mouseX, double mouseY) {
-        //TODO: Query the gui elements, except they will have to return a list instead of rendering it
-        return Collections.emptyList();
-    }
-
-    @Override
-    public final List<String> getTooltipStrings(RECIPE recipe, double mouseX, double mouseY) {
-        return getTooltipComponents(recipe, mouseX, mouseY).stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
+    protected void initInfusion(IGuiIngredientGroup<@NonNull InfusionStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<InfusionStack> stacks) {
+        initChemical(group, slot, input, x, y, width, height, stacks, max -> new InfusionStackRenderer(max, width, height,null));
     }
 
     protected void initGas(IGuiIngredientGroup<@NonNull GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull List<GasStack> stacks, boolean overlay) {
+        initChemical(group, slot, input, x, y, width, height, stacks, max -> new GasStackRenderer(max, false, width, height,
+              overlay ? height > 50 ? fluidOverlayLarge : fluidOverlaySmall : null));
+    }
+
+    protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void initChemical(IGuiIngredientGroup<@NonNull STACK> group, int slot,
+          boolean input, int x, int y, int width, int height, @Nonnull List<STACK> stacks, Int2ObjectFunction<ChemicalStackRenderer<CHEMICAL, STACK>> rendererSupplier) {
         if (stacks.isEmpty()) {
             return;
         }
-        IDrawable fluidOverlay = height > 50 ? fluidOverlayLarge : fluidOverlaySmall;
-        int max = stacks.stream().mapToInt(GasStack::getAmount).filter(stack -> stack >= 0).max().orElse(0);
-        GasStackRenderer renderer = new GasStackRenderer(max, false, width, height, overlay ? fluidOverlay : null);
-        group.init(slot, input, renderer, x, y, width, height, 0, 0);
+        int max = stacks.stream().mapToInt(STACK::getAmount).filter(stack -> stack >= 0).max().orElse(0);
+        group.init(slot, input, rendererSupplier.apply(max), x, y, width, height, 0, 0);
         group.set(slot, stacks);
-        //TODO: Make sure it renders properly once we have multiple different types (might not have to deal with it until 1.14)
-    }
-
-    protected void initGas(IGuiIngredientGroup<@NonNull GasStack> group, int slot, boolean input, int x, int y, int width, int height, @Nonnull GasStack stack, boolean overlay) {
-        if (stack.isEmpty()) {
-            return;
-        }
-        IDrawable fluidOverlay = height > 50 ? fluidOverlayLarge : fluidOverlaySmall;
-        GasStackRenderer renderer = new GasStackRenderer(stack.getAmount(), false, width, height, overlay ? fluidOverlay : null);
-        group.init(slot, input, renderer, x, y, width, height, 0, 0);
-        group.set(slot, stack);
+        //TODO: Make sure it renders properly once we have multiple different types
     }
 }
