@@ -5,6 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
@@ -13,7 +14,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class ReactorLogicButton extends MekanismButton {
 
-    private static final ResourceLocation TEXTURE = MekanismGenerators.rl("gui/elements/logic_button.png");
+    private static final ResourceLocation TEXTURE = MekanismGenerators.rl(ResourceType.GUI_BUTTON.getPrefix() + "reactor_logic.png");
     @Nonnull
     private final TileEntityReactorLogicAdapter tile;
     private final ReactorLogic type;

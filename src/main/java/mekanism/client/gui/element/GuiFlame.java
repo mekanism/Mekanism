@@ -12,7 +12,7 @@ public class GuiFlame extends GuiTexturedElement {
     private final IProgressInfoHandler handler;
 
     public GuiFlame(IProgressInfoHandler handler, IGuiWrapper gui, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "flame.png"), gui, x, y, 13, 13);
+        super(MekanismUtils.getResource(ResourceType.GUI_PROGRESS, "flame.png"), gui, x, y, 13, 13);
         this.handler = handler;
     }
 

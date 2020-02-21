@@ -11,7 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedElement {
 
-    private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "bar.png");
+    private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "base.png");
 
     private final INFO handler;
 

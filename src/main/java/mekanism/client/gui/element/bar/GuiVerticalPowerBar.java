@@ -11,7 +11,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
 
-    private static final ResourceLocation ENERGY_BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "vertical_power_bar.png");
+    private static final ResourceLocation ENERGY_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "vertical_power.png");
     private static final int texWidth = 4;
     private static final int texHeight = 52;
 

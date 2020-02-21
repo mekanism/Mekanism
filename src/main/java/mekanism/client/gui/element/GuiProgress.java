@@ -10,7 +10,7 @@ public class GuiProgress extends GuiTexturedElement {
     private final ProgressBar type;
 
     public GuiProgress(IProgressInfoHandler handler, ProgressBar type, IGuiWrapper gui, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "progress.png"), gui, x, y, type.width, type.height);
+        super(MekanismUtils.getResource(ResourceType.GUI_PROGRESS, "progress.png"), gui, x, y, type.width, type.height);
         this.type = type;
         this.handler = handler;
     }

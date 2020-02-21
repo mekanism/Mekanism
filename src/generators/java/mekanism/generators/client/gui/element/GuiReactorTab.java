@@ -24,7 +24,7 @@ public class GuiReactorTab extends GuiTabElementType<TileEntityReactorController
 
     public enum ReactorTab implements TabType<TileEntityReactorController> {
         HEAT(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "heat.png"), GeneratorsLang.HEAT_TAB, 6, ClickedGeneratorsTileButton.TAB_HEAT),
-        FUEL(MekanismGenerators.rl("gui/elements/fuel.png"), GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL),
+        FUEL(MekanismGenerators.rl(ResourceType.GUI_ELEMENT.getPrefix() + "fuel.png"), GeneratorsLang.FUEL_TAB, 34, ClickedGeneratorsTileButton.TAB_FUEL),
         STAT(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "stats.png"), GeneratorsLang.STATS_TAB, 62, ClickedGeneratorsTileButton.TAB_STATS);
 
         private final ClickedGeneratorsTileButton button;

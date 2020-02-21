@@ -8,6 +8,7 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiStateTexture;
 import mekanism.generators.common.GeneratorsLang;
@@ -31,7 +32,8 @@ public class GuiSolarGenerator extends GuiMekanismTile<TileEntitySolarGenerator,
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiEnergyInfo(Collections::emptyList, this));
-        addButton(new GuiStateTexture(this, 18, 35, tile::canSeeSun, MekanismGenerators.rl("gui/elements/sees_sun.png"), MekanismGenerators.rl("gui/elements/no_sun.png")));
+        addButton(new GuiStateTexture(this, 18, 35, tile::canSeeSun, MekanismGenerators.rl(ResourceType.GUI_ELEMENT.getPrefix() + "sees_sun.png"),
+              MekanismGenerators.rl(ResourceType.GUI_ELEMENT.getPrefix() + "no_sun.png")));
     }
 
     @Override

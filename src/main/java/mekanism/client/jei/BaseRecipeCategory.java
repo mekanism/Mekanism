@@ -19,8 +19,6 @@ import mekanism.client.jei.chemical.ChemicalStackRenderer;
 import mekanism.client.jei.chemical.GasStackRenderer;
 import mekanism.client.jei.chemical.InfusionStackRenderer;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -68,7 +66,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
         timer = helper.createTickTimer(20, 20, false);
 
-        ResourceLocation resource = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, Type.STANDARD.textureLocation);
+        ResourceLocation resource = Type.STANDARD.getLocation();
         fluidOverlayLarge = guiHelper.createDrawable(resource, 19, 1, 16, 59);
         fluidOverlaySmall = guiHelper.createDrawable(resource, 19, 1, 16, 29);
 

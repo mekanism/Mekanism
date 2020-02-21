@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiVerticalRateBar extends GuiBar<IBarInfoHandler> {
 
-    private static final ResourceLocation RATE_BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "vertical_rate_bar.png");
+    private static final ResourceLocation RATE_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "vertical_rate.png");
     private static final int texWidth = 6;
     private static final int texHeight = 58;
 

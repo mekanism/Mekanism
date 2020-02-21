@@ -10,7 +10,7 @@ public class GuiVerticalProgress extends GuiTexturedElement {
     private final IProgressInfoHandler handler;
 
     public GuiVerticalProgress(IGuiWrapper gui, IProgressInfoHandler handler, int x, int y) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "vertical_progress.png"), gui, x, y, 8, 20);
+        super(MekanismUtils.getResource(ResourceType.GUI_PROGRESS, "vertical.png"), gui, x, y, 8, 20);
         this.handler = handler;
     }
 

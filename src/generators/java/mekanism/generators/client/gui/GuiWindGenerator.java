@@ -13,6 +13,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiStateTexture;
 import mekanism.generators.common.GeneratorsLang;
@@ -41,7 +42,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier() : 0)),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
-        addButton(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl("gui/elements/wind_on.png"), MekanismGenerators.rl("gui/elements/wind_off.png")));
+        addButton(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl(ResourceType.GUI_ELEMENT.getPrefix() + "wind_on.png"),
+              MekanismGenerators.rl(ResourceType.GUI_ELEMENT.getPrefix() + "wind_off.png")));
     }
 
     @Override
