@@ -5,33 +5,30 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityCombiner;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiCombiner extends GuiMekanismTile<TileEntityCombiner, MekanismTileContainer<TileEntityCombiner>> {
 
     public GuiCombiner(MekanismTileContainer<TileEntityCombiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
+        addButton(new GuiUpArrow(this, 68, 38));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
@@ -40,11 +37,7 @@ public class GuiCombiner extends GuiMekanismTile<TileEntityCombiner, MekanismTil
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
-        addButton(new GuiSlot(SlotType.INPUT, this, 55, 16));
-        addButton(new GuiSlot(SlotType.POWER, this, 30, 34).with(SlotOverlay.POWER));
-        addButton(new GuiSlot(SlotType.EXTRA, this, 55, 52));
-        addButton(new GuiSlot(SlotType.OUTPUT_LARGE, this, 111, 30));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressBar.BAR, this, 77, 37));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressBar.BAR, this, 85, 37));
     }
 
     @Override
@@ -52,10 +45,5 @@ public class GuiCombiner extends GuiMekanismTile<TileEntityCombiner, MekanismTil
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "basic_machine.png");
     }
 }

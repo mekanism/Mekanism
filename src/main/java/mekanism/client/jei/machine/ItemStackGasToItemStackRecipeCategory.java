@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -12,10 +13,10 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.bar.GuiVerticalChemicalBar;
+import mekanism.client.gui.element.bar.GuiVerticalChemicalBar.ChemicalInfoProvider;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
@@ -37,7 +38,7 @@ import net.minecraft.world.World;
 public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackGasToItemStackRecipe> {
 
     public ItemStackGasToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, "mekanism:gui/advanced_machine.png", mekanismBlock, 28, 16, 144, 54);
+        super(helper, mekanismBlock, 28, 16, 144, 54);
     }
 
     @Override
@@ -47,12 +48,23 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 55, 16));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 30, 34).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 55, 52));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, 111, 30));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 63, 16));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 38, 34).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 63, 52));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 116, 35));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.BAR, this, 77, 37));
+        guiElements.add(new GuiVerticalChemicalBar<>(this, new ChemicalInfoProvider<Gas>() {
+            @Override
+            public double getLevel() {
+                return 1;
+            }
+
+            @Nonnull
+            @Override
+            public Gas getType() {
+                return MekanismAPI.EMPTY_GAS;
+            }
+        }, 68, 36, 6, 12));
     }
 
     @Override
@@ -68,9 +80,9 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ItemStackGasToItemStackRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 27, 0);
-        itemStacks.init(1, false, 87, 18);
-        itemStacks.init(2, false, 27, 36);
+        itemStacks.init(0, true, 35, 0);
+        itemStacks.init(1, false, 88, 19);
+        itemStacks.init(2, false, 35, 36);
         itemStacks.set(0, recipe.getItemInput().getRepresentations());
         itemStacks.set(1, recipe.getOutputDefinition());
         GasStackIngredient gasInput = recipe.getGasInput();
@@ -85,7 +97,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
         }
         itemStacks.set(2, gasItemProviders);
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initGas(gasStacks, 0, true, 33, 21, 6, 12, scaledGases, false);
+        initGas(gasStacks, 0, true, 41, 21, 6, 12, scaledGases, false);
     }
 
     /**

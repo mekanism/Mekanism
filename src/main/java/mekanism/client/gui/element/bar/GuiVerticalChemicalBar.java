@@ -14,8 +14,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiVerticalChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<ChemicalInfoProvider<CHEMICAL>> {
 
-    public GuiVerticalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, int x, int y) {
-        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, 4, 52);
+    public GuiVerticalChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<CHEMICAL> infoProvider, int x, int y, int width, int height) {
+        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, width, height);
     }
 
     @Override

@@ -63,6 +63,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 @JeiPlugin
 public class MekanismJEI implements IModPlugin {
 
+    //TODO: Make type for infusion
     public static final IIngredientType<GasStack> TYPE_GAS = () -> GasStack.class;
 
     private static final ISubtypeInterpreter GAS_TANK_NBT_INTERPRETER = itemStack -> {

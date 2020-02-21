@@ -26,7 +26,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.text.TextComponentUtil;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
@@ -84,7 +83,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 108, 42));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
         guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.MEDIUM, this, 70, 46));
-        guiElements.add(infuseBar = new GuiVerticalChemicalBar<>(this, infoProvider = new RecipeInfuseInfoProvider(), 7, 15));
+        guiElements.add(infuseBar = new GuiVerticalChemicalBar<>(this, infoProvider = new RecipeInfuseInfoProvider(), 7, 15, 4, 52));
     }
 
     @Override
@@ -156,7 +155,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
                 if (!representations.isEmpty()) {
                     InfusionStack infuse = representations.get(0);
                     if (!infuse.isEmpty()) {
-                        return TextComponentUtil.build(infuse.getType(), ": " + infuse.getAmount());
+                        return MekanismLang.GENERIC_STORED.translate(infuse.getType(), infuse.getAmount());
                     }
                 }
             }

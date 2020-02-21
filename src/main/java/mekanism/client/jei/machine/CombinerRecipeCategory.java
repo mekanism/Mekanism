@@ -8,6 +8,7 @@ import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -20,17 +21,18 @@ import mezz.jei.api.ingredients.IIngredients;
 public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
 
     public CombinerRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, "mekanism:gui/basic_machine.png", mekanismBlock, 28, 16, 144, 54);
+        super(helper, mekanismBlock, 28, 16, 144, 54);
     }
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 55, 16));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 30, 34).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 55, 52));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT_LARGE, this, 111, 30));
+        guiElements.add(new GuiUpArrow(this, 68, 38));
+        guiElements.add(new GuiSlot(SlotType.INPUT, this, 63, 16));
+        guiElements.add(new GuiSlot(SlotType.POWER, this, 38, 34).with(SlotOverlay.POWER));
+        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 63, 52));
+        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 116, 35));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.BAR, this, 77, 37));
+        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.BAR, this, 85, 37));
     }
 
     @Override
@@ -47,9 +49,9 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, CombinerRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 27, 0);
-        itemStacks.init(1, false, 87, 18);
-        itemStacks.init(2, false, 27, 36);
+        itemStacks.init(0, true, 35, 0);
+        itemStacks.init(1, false, 88, 19);
+        itemStacks.init(2, false, 35, 36);
         itemStacks.set(0, recipe.getMainInput().getRepresentations());
         itemStacks.set(1, recipe.getOutputDefinition());
         itemStacks.set(2, recipe.getExtraInput().getRepresentations());

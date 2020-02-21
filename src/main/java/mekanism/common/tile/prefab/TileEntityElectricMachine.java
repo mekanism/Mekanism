@@ -78,9 +78,9 @@ public abstract class TileEntityElectricMachine extends TileEntityBasicMachine<I
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 56, 17));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 64, 17));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 56, 53));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 64, 53));
         return builder.build();
     }
 

@@ -11,6 +11,7 @@ import mekanism.api.recipes.cache.CombinerCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.common.base.ITileComponent;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -35,6 +36,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
         builder.addSlot(extraSlot = InputInventorySlot.at(stack -> containsRecipe(recipe -> recipe.getExtraInput().testType(stack)), this, 7, 57));
+        extraSlot.setSlotType(ContainerSlotType.EXTRA);
     }
 
     @Override

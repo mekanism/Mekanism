@@ -8,6 +8,7 @@ import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -20,11 +21,12 @@ import mezz.jei.api.ingredients.IIngredients;
 public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
 
     public SawmillRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, "mekanism:gui/basic_machine.png", mekanismBlock, 28, 16, 144, 54);
+        super(helper, mekanismBlock, 28, 16, 144, 54);
     }
 
     @Override
     protected void addGuiElements() {
+        guiElements.add(new GuiUpArrow(this, 60, 38));
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 55, 16));
         guiElements.add(new GuiSlot(SlotType.POWER, this, 55, 52).with(SlotOverlay.POWER));
         guiElements.add(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
