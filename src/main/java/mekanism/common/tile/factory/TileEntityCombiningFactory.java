@@ -39,6 +39,12 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
         extraSlot.setSlotType(ContainerSlotType.EXTRA);
     }
 
+    @Nullable
+    @Override
+    protected InputInventorySlot getExtraSlot() {
+        return extraSlot;
+    }
+
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
         return containsRecipe(recipe -> recipe.getMainInput().testType(stack));
