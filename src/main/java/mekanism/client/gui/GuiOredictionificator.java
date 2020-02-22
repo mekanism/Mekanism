@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;

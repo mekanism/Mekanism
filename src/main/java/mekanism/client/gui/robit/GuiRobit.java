@@ -1,7 +1,7 @@
 package mekanism.client.gui.robit;
 
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.button.MekanismImageButton;
+import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.tab.GuiRobitTab;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;

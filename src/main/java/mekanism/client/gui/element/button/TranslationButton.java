@@ -1,4 +1,4 @@
-package mekanism.client.gui.button;
+package mekanism.client.gui.element.button;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.base.ILangEntry;

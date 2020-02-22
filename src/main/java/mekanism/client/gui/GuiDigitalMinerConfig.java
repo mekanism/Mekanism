@@ -3,15 +3,15 @@ package mekanism.client.gui;
 import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.MekanismImageButton;
-import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.OreDictCache;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
@@ -26,7 +26,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -49,63 +48,17 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-        if (button == 0) {
-            double xAxis = mouseX - getGuiLeft();
-            double yAxis = mouseY - getGuiTop();
-
-            if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
-                if (needsScrollBars()) {
-                    dragOffset = (int) (yAxis - (getScroll() + 18));
-                    isDragging = true;
-                } else {
-                    scroll = 0;
-                }
-            }
-
-            HashList<MinerFilter<?>> filters = tile.getFilters();
-            //Check for filter interaction
-            for (int i = 0; i < 4; i++) {
-                int index = getFilterIndex() + i;
-                MinerFilter<?> filter = filters.get(index);
-                if (filter != null) {
-                    int yStart = i * filterH + filterY;
-                    if (xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH) {
-                        //Check for sorting button
-                        int arrowX = filterX + filterW - 12;
-                        if (index > 0) {
-                            if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20) {
-                                //Process up button click
-                                sendDataFromClick(TileNetworkList.withContents(11, index));
-                                return true;
-                            }
-                        }
-                        if (index < filters.size() - 1) {
-                            if (xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27) {
-                                //Process down button click
-                                sendDataFromClick(TileNetworkList.withContents(12, index));
-                                return true;
-                            }
-                        }
-                        if (filter instanceof IItemStackFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_ITEMSTACK, tile.getPos(), index));
-                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        } else if (filter instanceof ITagFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_TAG, tile.getPos(), index));
-                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        } else if (filter instanceof IMaterialFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MATERIAL, tile.getPos(), index));
-                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        } else if (filter instanceof IModIDFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MOD_ID, tile.getPos(), index));
-                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        }
-                    }
-                }
-            }
+    protected void upButtonPress(int index) {
+        if (index > 0) {
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(11, index)));
         }
-        return true;
+    }
+
+    @Override
+    protected void downButtonPress(int index) {
+        if (index < getFilters().size() - 1) {
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(12, index)));
+        }
     }
 
     @Override
@@ -114,7 +67,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         addButton(new GuiInnerScreen(this, 38, 66, 13, 13));
         addButton(new GuiInnerScreen(this, 38, 91, 13, 13));
         addButton(new GuiInnerScreen(this, 38, 116, 13, 13));
-        addButton(new TranslationButton(this, getGuiLeft() + filterX, getGuiTop() + 136, filterW, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_SELECT_FILTER_TYPE, tile.getPos()))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
@@ -143,7 +96,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        HashList<MinerFilter<?>> filters = tile.getFilters();
+        HashList<MinerFilter<?>> filters = getFilters();
         drawString(MekanismLang.MINER_CONFIG.translate(), 43, 6, 0x404040);
         drawString(MekanismLang.FILTERS.translate(), 11, 19, 0x00CD00);
         drawString(MekanismLang.FILTER_COUNT.translate(filters.size()), 11, 28, 0x00CD00);
@@ -152,10 +105,10 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         drawString(MekanismLang.MIN.translate(tile.minY), 11, 83, 0x00CD00);
         drawString(MekanismLang.MAX.translate(tile.maxY), 11, 108, 0x00CD00);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < FILTER_COUNT; i++) {
             MinerFilter<?> filter = filters.get(getFilterIndex() + i);
             if (filter != null) {
-                int yStart = i * filterH + filterY;
+                int yStart = i * 29 + 18;
                 if (filter instanceof IItemStackFilter) {
                     renderItem(((IItemStackFilter<?>) filter).getItemStack(), 59, yStart + 3);
                     drawString(MekanismLang.ITEM_FILTER.translate(), 78, yStart + 2, 0x404040);
@@ -180,6 +133,19 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
+
+    @Override
+    protected void onClick(IFilter<?> filter, int index) {
+        if (filter instanceof IItemStackFilter) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_ITEMSTACK, tile.getPos(), index));
+        } else if (filter instanceof ITagFilter) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_TAG, tile.getPos(), index));
+        } else if (filter instanceof IMaterialFilter) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MATERIAL, tile.getPos(), index));
+        } else if (filter instanceof IModIDFilter) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DM_FILTER_MOD_ID, tile.getPos(), index));
+        }
     }
 
     @Override

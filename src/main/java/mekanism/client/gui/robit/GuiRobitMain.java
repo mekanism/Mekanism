@@ -1,9 +1,9 @@
 package mekanism.client.gui.robit;
 
 import mekanism.client.gui.GuiMekanism;
-import mekanism.client.gui.button.MekanismButton;
-import mekanism.client.gui.button.MekanismImageButton;
-import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.button.MekanismButton;
+import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;

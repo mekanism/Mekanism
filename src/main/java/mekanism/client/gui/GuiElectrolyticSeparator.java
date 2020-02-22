@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.GuiGasMode;
+import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;

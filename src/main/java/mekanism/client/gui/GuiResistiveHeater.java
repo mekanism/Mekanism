@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.MekanismImageButton;
+import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;

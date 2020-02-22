@@ -6,21 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import mekanism.api.TileNetworkList;
-import mekanism.api.text.EnumColor;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.render.MekanismRenderer;
-import mekanism.client.sound.SoundHandler;
+import mekanism.client.gui.element.button.FilterButton;
 import mekanism.common.HashList;
-import mekanism.common.Mekanism;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.filter.IFilter;
-import mekanism.common.content.filter.IItemStackFilter;
-import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
@@ -28,17 +22,15 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends EmptyTileContainer<TILE>>
       extends GuiMekanismTile<TILE, CONTAINER> {
 
-    // Filter dimensions
-    protected final int filterX = 56;
-    protected final int filterY = 18;
-    protected final int filterW = 96;
-    protected final int filterH = 29;
+    /**
+     * The number of filters that can be displayed
+     */
+    protected static final int FILTER_COUNT = 4;
 
     protected Map<ITagFilter<?>, StackData> oreDictStacks = new Object2ObjectOpenHashMap<>();
     protected Map<IModIDFilter<?>, StackData> modIDStacks = new Object2ObjectOpenHashMap<>();
@@ -61,7 +53,28 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 9, 17, 46, 140));
+        //Filter holder
+        addButton(new GuiElementHolder(this, 55, 17, 98, 118));
+        //new filter button border
+        addButton(new GuiElementHolder(this, 55, 135, 98, 22));
+        //Scroll bar holder
+        addButton(new GuiElementHolder(this, 153, 17, 14, 140));
+        //Add each of the buttons and then just change visibility state to match filter info
+        for (int i = 0; i < FILTER_COUNT; i++) {
+            addButton(new FilterButton(this, 56, 18 + i * 29, i, this::getFilterIndex, this::getFilters, this::upButtonPress,
+                  this::downButtonPress, this::onClick));
+        }
     }
+
+    protected HashList<FILTER> getFilters() {
+        return tile.getFilters();
+    }
+
+    protected abstract void onClick(IFilter<?> filter, int index);
+
+    protected abstract void upButtonPress(int index);
+
+    protected abstract void downButtonPress(int index);
 
     public int getScroll() {
         // Calculate thumb position along scrollbar
@@ -71,7 +84,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     // Get index to displayed filters
     public int getFilterIndex() {
         if (needsScrollBars()) {
-            int scrollSize = tile.getFilters().size() - 4;
+            int scrollSize = getFilters().size() - FILTER_COUNT;
             return (int) ((scrollSize + 0.5) * scroll);
         }
         return 0;
@@ -113,9 +126,9 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         Set<ITagFilter<?>> oreDictFilters = new ObjectOpenHashSet<>();
         Set<IModIDFilter<?>> modIDFilters = new ObjectOpenHashSet<>();
 
-        HashList<FILTER> filters = tile.getFilters();
+        HashList<FILTER> filters = getFilters();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < FILTER_COUNT; i++) {
             FILTER filter = filters.get(getFilterIndex() + i);
             if (filter instanceof ITagFilter) {
                 oreDictFilters.add((ITagFilter<?>) filter);
@@ -138,47 +151,31 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         // Draw scrollbar
         drawTexturedRect(getGuiLeft() + 154, getGuiTop() + 18 + getScroll(), 232 + (needsScrollBars() ? 0 : 12), 0, 12, 15);
+    }
 
-        HashList<FILTER> filters = tile.getFilters();
-        // Draw filter backgrounds
-        for (int i = 0; i < 4; i++) {
-            FILTER filter = filters.get(getFilterIndex() + i);
-            if (filter != null) {
-                // Change color based on filter type
-                if (filter instanceof IItemStackFilter) {
-                    MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
-                } else if (filter instanceof ITagFilter) {
-                    MekanismRenderer.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
-                } else if (filter instanceof IMaterialFilter) {
-                    MekanismRenderer.color(EnumColor.PURPLE, 1.0F, 4F);
-                } else if (filter instanceof IModIDFilter) {
-                    MekanismRenderer.color(EnumColor.PINK, 1.0F, 2.5F);
-                }
-                int yStart = i * filterH + filterY;
-                // Flag for mouse over this filter
-                boolean mouseOver = xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH;
-                drawTexturedRect(getGuiLeft() + filterX, getGuiTop() + yStart, mouseOver ? 0 : filterW, 166, filterW, filterH);
-                MekanismRenderer.resetColor();
-
-                // Draw sort buttons
-                int arrowX = filterX + filterW - 12;
-                if (getFilterIndex() + i > 0) {
-                    mouseOver = xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20;
-                    drawTexturedRect(getGuiLeft() + arrowX, getGuiTop() + yStart + 14, 190, mouseOver ? 143 : 115, 11, 7);
-                }
-                if (getFilterIndex() + i < filters.size() - 1) {
-                    mouseOver = xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27;
-                    drawTexturedRect(getGuiLeft() + arrowX, getGuiTop() + yStart + 21, 190, mouseOver ? 157 : 129, 11, 7);
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            // Check for scrollbar interaction
+            double xAxis = mouseX - getGuiLeft();
+            double yAxis = mouseY - getGuiTop();
+            if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
+                if (needsScrollBars()) {
+                    dragOffset = (int) (yAxis - (getScroll() + 18));
+                    isDragging = true;
+                    return true;
+                } else {
+                    scroll = 0;
                 }
             }
         }
-
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         if (delta != 0 && needsScrollBars()) {
-            int j = tile.getFilters().size() - 4;
+            int j = getFilters().size() - FILTER_COUNT;
             if (delta > 0) {
                 delta = 1;
             } else {
@@ -197,7 +194,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
-        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         if (isDragging) {
             // Get mouse position relative to gui
@@ -239,11 +235,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         modIDStacks.get(filter).stackIndex = -1;
     }
 
-    protected void sendDataFromClick(TileNetworkList data) {
-        Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
-        SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-    }
-
     private void setNextRenderStack(StackData data) {
         if (data.iterStacks != null && !data.iterStacks.isEmpty()) {
             if (data.stackIndex == -1 || data.stackIndex == data.iterStacks.size() - 1) {
@@ -258,8 +249,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     /**
      * returns true if there are more filters than can fit in the gui
      */
-    protected boolean needsScrollBars() {
-        return tile.getFilters().size() > 4;
+    private boolean needsScrollBars() {
+        return getFilters().size() > FILTER_COUNT;
     }
 
     @Override

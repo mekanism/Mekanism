@@ -1,7 +1,7 @@
 package mekanism.generators.client.gui;
 
 import mekanism.client.gui.GuiMekanismTile;
-import mekanism.client.gui.button.MekanismImageButton;
+import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketGuiButtonPress;

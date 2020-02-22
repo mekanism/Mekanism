@@ -1,4 +1,4 @@
-package mekanism.client.gui.button;
+package mekanism.client.gui.element.button;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -49,7 +49,6 @@ public class MekanismButton extends GuiElement {
         }
         return false;
     }
-
 
     @Override
     public void renderToolTip(int mouseX, int mouseY) {

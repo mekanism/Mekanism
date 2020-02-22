@@ -1,9 +1,9 @@
-package mekanism.generators.client.gui.button;
+package mekanism.generators.client.gui.element.button;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.button.MekanismButton;
+import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;

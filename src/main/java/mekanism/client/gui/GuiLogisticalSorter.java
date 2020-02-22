@@ -2,19 +2,19 @@ package mekanism.client.gui;
 
 import java.util.List;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.button.ColorButton;
-import mekanism.client.gui.button.MekanismImageButton;
-import mekanism.client.gui.button.TranslationButton;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.button.ColorButton;
+import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.OreDictCache;
+import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
@@ -29,7 +29,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -47,7 +46,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
 
-        addButton(new TranslationButton(this, getGuiLeft() + filterX, getGuiTop() + 136, filterW, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, getGuiLeft() + 56, getGuiTop() + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_SELECT_FILTER_TYPE, tile.getPos()))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 12, getGuiTop() + 58, 14, getButtonLocation("single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(5))),
@@ -64,80 +63,23 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, 1)))));
     }
 
-    private boolean overUpArrow(double xAxis, double yAxis, int arrowX, int yStart) {
-        return xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 14 && yAxis <= yStart + 20;
-    }
-
-    private boolean overDownArrow(double xAxis, double yAxis, int arrowX, int yStart) {
-        return xAxis >= arrowX && xAxis <= arrowX + 10 && yAxis >= yStart + 21 && yAxis <= yStart + 27;
+    @Override
+    protected void upButtonPress(int index) {
+        if (index > 0) {
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(3, index)));
+        }
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        super.mouseClicked(mouseX, mouseY, button);
-
-        // Get mouse position relative to gui
-        double xAxis = mouseX - getGuiLeft();
-        double yAxis = mouseY - getGuiTop();
-
-        if (button == 0) {
-            // Check for scrollbar interaction
-            if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
-                if (needsScrollBars()) {
-                    dragOffset = (int) (yAxis - (getScroll() + 18));
-                    isDragging = true;
-                } else {
-                    scroll = 0;
-                }
-            }
-
-            //Check for filter interaction
-            HashList<TransporterFilter<?>> filters = tile.getFilters();
-            for (int i = 0; i < 4; i++) {
-                int index = getFilterIndex() + i;
-                TransporterFilter<?> filter = filters.get(index);
-                if (filter != null) {
-                    int yStart = i * filterH + filterY;
-                    if (xAxis >= filterX && xAxis <= filterX + filterW && yAxis >= yStart && yAxis <= yStart + filterH) {
-                        //Check for sorting button
-                        int arrowX = filterX + filterW - 12;
-                        if (index > 0 && overUpArrow(xAxis, yAxis, arrowX, yStart)) {
-                            //Process up button click
-                            sendDataFromClick(TileNetworkList.withContents(3, index));
-                            return true;
-                        }
-                        if (index < filters.size() - 1 && overDownArrow(xAxis, yAxis, arrowX, yStart)) {
-                            //Process down button click
-                            sendDataFromClick(TileNetworkList.withContents(4, index));
-                            return true;
-                        }
-                        if (filter instanceof IItemStackFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tile.getPos(), index));
-                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        } else if (filter instanceof ITagFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_TAG, tile.getPos(), index));
-                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        } else if (filter instanceof IMaterialFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MATERIAL, tile.getPos(), index));
-                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        } else if (filter instanceof IModIDFilter) {
-                            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MOD_ID, tile.getPos(), index));
-                            SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
-                        }
-                    }
-                }
-            }
+    protected void downButtonPress(int index) {
+        if (index < getFilters().size() - 1) {
+            Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(4, index)));
         }
-        return true;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        // Get mouse position relative to gui
-        int xAxis = mouseX - getGuiLeft();
-        int yAxis = mouseY - getGuiTop();
-
-        HashList<TransporterFilter<?>> filters = tile.getFilters();
+        HashList<TransporterFilter<?>> filters = getFilters();
         // Write to info display
         drawString(tile.getName(), 43, 6, 0x404040);
         drawString(MekanismLang.FILTERS.translate(), 11, 19, 0x00CD00);
@@ -151,11 +93,11 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         drawString(MekanismLang.SORTER_DEFAULT.translate(), 12, 126, 0x00CD00);
 
         //TODO: Convert filters into "proper" buttons/widgets
-        // Draw filters
-        for (int i = 0; i < 4; i++) {
+        //Draw the filters
+        for (int i = 0; i < FILTER_COUNT; i++) {
             TransporterFilter<?> filter = filters.get(getFilterIndex() + i);
             if (filter != null) {
-                int yStart = i * filterH + filterY;
+                int yStart = i * 29 + 18;
                 if (filter instanceof IItemStackFilter) {
                     IItemStackFilter<?> itemFilter = (IItemStackFilter<?>) filter;
                     renderItem(itemFilter.getItemStack(), 59, yStart + 3);
@@ -199,19 +141,22 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
                         drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
                     }
                 }
-
-                // Draw hover text for sorting buttons
-                int arrowX = filterX + filterW - 12;
-
-                if (getFilterIndex() + i > 0 && overUpArrow(xAxis, yAxis, arrowX, yStart)) {
-                    displayTooltip(MekanismLang.MOVE_UP.translate(), xAxis, yAxis);
-                }
-                if (getFilterIndex() + i < filters.size() - 1 && overDownArrow(xAxis, yAxis, arrowX, yStart)) {
-                    displayTooltip(MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis);
-                }
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
+
+    @Override
+    protected void onClick(IFilter<?> filter, int index) {
+        if (filter instanceof IItemStackFilter) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_ITEMSTACK, tile.getPos(), index));
+        } else if (filter instanceof ITagFilter) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_TAG, tile.getPos(), index));
+        } else if (filter instanceof IMaterialFilter) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MATERIAL, tile.getPos(), index));
+        } else if (filter instanceof IModIDFilter) {
+            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.LS_FILTER_MOD_ID, tile.getPos(), index));
+        }
     }
 
     @Override

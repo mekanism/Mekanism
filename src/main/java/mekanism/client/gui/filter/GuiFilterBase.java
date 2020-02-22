@@ -2,8 +2,8 @@ package mekanism.client.gui.filter;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.MekanismButton;
-import mekanism.client.gui.button.MekanismButton.IHoverable;
+import mekanism.client.gui.element.button.MekanismButton;
+import mekanism.client.gui.element.button.MekanismButton.IHoverable;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;

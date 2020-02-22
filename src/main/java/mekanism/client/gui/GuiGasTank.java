@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
-import mekanism.client.gui.button.GuiGasMode;
+import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiChemicalBar;

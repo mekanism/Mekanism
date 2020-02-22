@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.MekanismButton.IHoverable;
+import mekanism.client.gui.element.button.MekanismButton.IHoverable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -136,6 +136,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
+        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
         return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }

@@ -1,4 +1,4 @@
-package mekanism.client.gui.button;
+package mekanism.client.gui.element.button;
 
 import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;

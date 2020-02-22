@@ -1,8 +1,8 @@
 package mekanism.client.gui.filter;
 
-import mekanism.client.gui.button.MekanismButton;
-import mekanism.client.gui.button.MekanismImageButton;
-import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.button.MekanismButton;
+import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;

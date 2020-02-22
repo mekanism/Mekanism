@@ -2,7 +2,7 @@ package mekanism.client.gui.filter;
 
 import java.util.List;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.button.MekanismButton;
+import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
