@@ -16,6 +16,7 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
+import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
@@ -67,7 +68,22 @@ public class FilterButton extends MekanismButton {
             downButton.renderToolTip(xAxis, yAxis);
         } else  {
             super.renderForeground(mouseX, mouseY, xAxis, yAxis);
-            //TODO: render tooltip text
+            int x = this.x - guiObj.getLeft();
+            int y = this.y - guiObj.getTop();
+            IFilter<?> filter = filters.get().get(filterIndex.getAsInt() + index);
+            if (filter instanceof IItemStackFilter) {
+                drawString(MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, 0x404040);
+            } else if (filter instanceof ITagFilter) {
+                drawString(MekanismLang.TAG_FILTER.translate(), x + 22, y + 2, 0x404040);
+            } else if (filter instanceof IMaterialFilter) {
+                drawString(MekanismLang.MATERIAL_FILTER.translate(), x + 22, y + 2, 0x404040);
+            } else if (filter instanceof IModIDFilter) {
+                drawString(MekanismLang.MODID_FILTER.translate(), x + 22, y + 2, 0x404040);
+            }
+            if (filter instanceof TransporterFilter<?>) {
+                TransporterFilter<?> sorterFilter = (TransporterFilter<?>) filter;
+                drawString(sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), x + 22, y + 11, 0x404040);
+            }
         }
     }
 

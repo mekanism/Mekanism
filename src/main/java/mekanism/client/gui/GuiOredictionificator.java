@@ -4,12 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.GuiScrollBar;
+import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
@@ -32,24 +32,32 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictionificator, MekanismTileContainer<TileEntityOredictionificator>> {
 
+    /**
+     * The number of filters that can be displayed
+     */
+    private static final int FILTER_COUNT = 3;
+
     private Map<OredictionificatorFilter, ItemStack> renderStacks = new Object2ObjectOpenHashMap<>();
-    private boolean isDragging = false;
-    private double dragOffset = 0;
     private double scroll;
 
     public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize += 64;
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
+        //Filter holder
+        addButton(new GuiElementHolder(this, 9, 17, 144, 68));
+        //new filter button border
+        addButton(new GuiElementHolder(this, 9, 85, 144, 22));
+        //Scroll bar
+        addButton(new GuiScrollBar(this, 153, 17, 90, () -> tile.getFilters().size() > FILTER_COUNT, () -> scroll, value -> scroll = value));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiProgress(() -> tile.didProcess ? 1 : 0, ProgressBar.LARGE_RIGHT, this, 62, 118));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 25, 114));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 133, 114));
         addButton(new TranslationButton(this, getGuiLeft() + 10, getGuiTop() + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile.getPos(), 0))));
     }
@@ -58,13 +66,9 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         return xAxis > 10 && xAxis <= 152 && yAxis > yStart && yAxis <= yStart + 22;
     }
 
-    private int getScroll() {
-        return Math.max(Math.min((int) (scroll * 73), 73), 0);
-    }
-
     private int getFilterIndex() {
         int size = tile.getFilters().size();
-        return size <= 3 ? 0 : (int) (size * scroll - (3F / (float) size) * scroll);
+        return size <= FILTER_COUNT ? 0 : (int) (size * scroll - (3F / (float) size) * scroll);
     }
 
     @Override
@@ -90,9 +94,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(getGuiLeft() + 154, getGuiTop() + 18 + getScroll(), 232, 0, 12, 15);
         HashList<OredictionificatorFilter> filters = tile.getFilters();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < FILTER_COUNT; i++) {
             if (filters.get(getFilterIndex() + i) != null) {
                 int yStart = i * 22 + 18;
                 boolean mouseOver = overFilter(xAxis, yAxis, yStart);
@@ -114,16 +117,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
             double xAxis = mouseX - getGuiLeft();
             double yAxis = mouseY - getGuiTop();
             HashList<OredictionificatorFilter> filters = tile.getFilters();
-            if (xAxis >= 154 && xAxis <= 166 && yAxis >= getScroll() + 18 && yAxis <= getScroll() + 18 + 15) {
-                if (filters.size() > 3) {
-                    dragOffset = yAxis - (getScroll() + 18);
-                    isDragging = true;
-                } else {
-                    scroll = 0;
-                }
-            }
-
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < FILTER_COUNT; i++) {
                 if (filters.get(getFilterIndex() + i) != null && overFilter(xAxis, yAxis, i * 22 + 18)) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile.getPos(), getFilterIndex() + i));
                     SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
@@ -134,32 +128,11 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
-        //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
-        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        if (isDragging) {
-            double yAxis = mouseY - (height - getYSize()) / 2D;
-            scroll = Math.min(Math.max((yAxis - 18 - dragOffset) / 73F, 0), 1);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int type) {
-        super.mouseReleased(mouseX, mouseY, type);
-        if (type == 0 && isDragging) {
-            dragOffset = 0;
-            isDragging = false;
-        }
-        return true;
-    }
-
-    @Override
     protected ResourceLocation getGuiLocation() {
         return MekanismUtils.getResource(ResourceType.GUI, "oredictionificator.png");
     }
 
-    public void updateRenderStacks() {
+    private void updateRenderStacks() {
         renderStacks.clear();
         for (OredictionificatorFilter filter : tile.getFilters()) {
             if (filter.hasFilter()) {

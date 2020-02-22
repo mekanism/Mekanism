@@ -104,34 +104,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         drawString(MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 11, 58, 0x00CD00);
         drawString(MekanismLang.MIN.translate(tile.minY), 11, 83, 0x00CD00);
         drawString(MekanismLang.MAX.translate(tile.maxY), 11, 108, 0x00CD00);
-
-        for (int i = 0; i < FILTER_COUNT; i++) {
-            MinerFilter<?> filter = filters.get(getFilterIndex() + i);
-            if (filter != null) {
-                int yStart = i * 29 + 18;
-                if (filter instanceof IItemStackFilter) {
-                    renderItem(((IItemStackFilter<?>) filter).getItemStack(), 59, yStart + 3);
-                    drawString(MekanismLang.ITEM_FILTER.translate(), 78, yStart + 2, 0x404040);
-                } else if (filter instanceof ITagFilter) {
-                    ITagFilter<?> oreFilter = (ITagFilter<?>) filter;
-                    if (!oreDictStacks.containsKey(oreFilter)) {
-                        updateStackList(oreFilter);
-                    }
-                    renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(MekanismLang.TAG_FILTER.translate(), 78, yStart + 2, 0x404040);
-                } else if (filter instanceof IMaterialFilter) {
-                    renderItem(((IMaterialFilter<?>) filter).getMaterialItem(), 59, yStart + 3);
-                    drawString(MekanismLang.MATERIAL_FILTER.translate(), 78, yStart + 2, 0x404040);
-                } else if (filter instanceof IModIDFilter) {
-                    IModIDFilter<?> modFilter = (IModIDFilter<?>) filter;
-                    if (!modIDStacks.containsKey(modFilter)) {
-                        updateStackList(modFilter);
-                    }
-                    renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(MekanismLang.MODID_FILTER.translate(), 78, yStart + 2, 0x404040);
-                }
-            }
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 

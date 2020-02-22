@@ -91,58 +91,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
         drawString(MekanismLang.SORTER_AUTO_EJECT.translate(), 12, 100, 0x00CD00);
         drawString(OnOff.of(tile.autoEject).getTextComponent(), 27, 112, 0x00CD00);
         drawString(MekanismLang.SORTER_DEFAULT.translate(), 12, 126, 0x00CD00);
-
-        //TODO: Convert filters into "proper" buttons/widgets
-        //Draw the filters
-        for (int i = 0; i < FILTER_COUNT; i++) {
-            TransporterFilter<?> filter = filters.get(getFilterIndex() + i);
-            if (filter != null) {
-                int yStart = i * 29 + 18;
-                if (filter instanceof IItemStackFilter) {
-                    IItemStackFilter<?> itemFilter = (IItemStackFilter<?>) filter;
-                    renderItem(itemFilter.getItemStack(), 59, yStart + 3);
-                    drawString(MekanismLang.ITEM_FILTER.translate(), 78, yStart + 2, 0x404040);
-                    if (filter.color != null) {
-                        drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
-                    } else {
-                        drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
-                    }
-                } else if (filter instanceof ITagFilter) {
-                    ITagFilter<?> oreFilter = (ITagFilter<?>) filter;
-                    if (!oreDictStacks.containsKey(oreFilter)) {
-                        updateStackList(oreFilter);
-                    }
-                    renderItem(oreDictStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(MekanismLang.TAG_FILTER.translate(), 78, yStart + 2, 0x404040);
-                    if (filter.color != null) {
-                        drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
-                    } else {
-                        drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
-                    }
-                } else if (filter instanceof IMaterialFilter) {
-                    IMaterialFilter<?> itemFilter = (IMaterialFilter<?>) filter;
-                    renderItem(itemFilter.getMaterialItem(), 59, yStart + 3);
-                    drawString(MekanismLang.MATERIAL_FILTER.translate(), 78, yStart + 2, 0x404040);
-                    if (filter.color != null) {
-                        drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
-                    } else {
-                        drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
-                    }
-                } else if (filter instanceof IModIDFilter) {
-                    IModIDFilter<?> modFilter = (IModIDFilter<?>) filter;
-                    if (!modIDStacks.containsKey(modFilter)) {
-                        updateStackList(modFilter);
-                    }
-                    renderItem(modIDStacks.get(filter).renderStack, 59, yStart + 3);
-                    drawString(MekanismLang.MODID_FILTER.translate(), 78, yStart + 2, 0x404040);
-                    if (filter.color != null) {
-                        drawString(filter.color.getColoredName(), 78, yStart + 11, 0x404040);
-                    } else {
-                        drawString(MekanismLang.NONE.translate(), 78, yStart + 11, 0x404040);
-                    }
-                }
-            }
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
