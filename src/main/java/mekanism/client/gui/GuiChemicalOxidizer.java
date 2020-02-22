@@ -1,4 +1,4 @@
-package mekanism.client.gui.chemical;
+package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.client.gui.GuiMekanismTile;

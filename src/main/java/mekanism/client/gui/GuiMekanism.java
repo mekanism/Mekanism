@@ -282,8 +282,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         //TODO: Evaluate if we want to use this for splitting the text
         List<String> toolTips = components.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
         GuiUtils.drawHoveringText(toolTips, xAxis, yAxis, width, height, -1, font);
-        //Fix unwanted lighting changes made by drawHoveringText
-        RenderHelper.disableStandardItemLighting();
     }
 
     @Override

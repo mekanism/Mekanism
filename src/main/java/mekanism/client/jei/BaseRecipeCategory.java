@@ -1,11 +1,13 @@
 package mekanism.client.jei;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -18,7 +20,7 @@ import mekanism.client.gui.element.gauge.GaugeOverlay;
 import mekanism.client.jei.chemical.ChemicalStackRenderer;
 import mekanism.client.jei.chemical.GasStackRenderer;
 import mekanism.client.jei.chemical.InfusionStackRenderer;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -27,10 +29,12 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
@@ -38,8 +42,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     };
 
     private IGuiHelper guiHelper;
-    @Nullable
-    protected ResourceLocation guiLocation;
     protected ITickTimer timer;
     protected int xOffset;
     protected int yOffset;
@@ -51,27 +53,15 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     private final IDrawable background;
 
     protected BaseRecipeCategory(IGuiHelper helper, IBaseProvider provider, int xOffset, int yOffset, int width, int height) {
-        this(helper, null, provider, xOffset, yOffset, width, height);
-    }
-
-    protected BaseRecipeCategory(IGuiHelper helper, @Nullable ResourceLocation guiLocation, IBaseProvider provider, int xOffset, int yOffset, int width, int height) {
-        guiHelper = helper;
-        this.guiLocation = guiLocation;
-
+        this.guiHelper = helper;
         this.provider = provider;
-
-        timer = helper.createTickTimer(20, 20, false);
-
-        fluidOverlayLarge = createDrawable(guiHelper, GaugeOverlay.STANDARD);
-        fluidOverlaySmall = createDrawable(guiHelper, GaugeOverlay.SMALL);
-
+        //TODO: Only make a timer for ones we need it
+        this.timer = helper.createTickTimer(20, 20, false);
+        this.fluidOverlayLarge = createDrawable(guiHelper, GaugeOverlay.STANDARD);
+        this.fluidOverlaySmall = createDrawable(guiHelper, GaugeOverlay.SMALL);
         this.xOffset = xOffset;
         this.yOffset = yOffset;
-        if (guiLocation == null) {
-            background = new NOOPDrawable(width, height);
-        } else {
-            background = guiHelper.createDrawable(guiLocation, xOffset, yOffset, width, height);
-        }
+        this.background = new NOOPDrawable(width, height);
         addGuiElements();
     }
 
@@ -92,6 +82,17 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
+    public int getWidth() {
+        return background.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+
+    @Override
     public ResourceLocation getUid() {
         return provider.getRegistryName();
     }
@@ -103,15 +104,27 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public void draw(RECIPE recipe, double mouseX, double mouseY) {
-        if (guiLocation != null) {
-            MekanismRenderer.bindTexture(guiLocation);
-        }
         guiElements.forEach(e -> e.render((int) mouseX, (int) mouseY, 0));
     }
 
     @Override
     public void renderItem(@Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
-        //NO-OP at least for now
+        if (!stack.isEmpty()) {
+            try {
+                RenderSystem.pushMatrix();
+                RenderSystem.enableDepthTest();
+                RenderHelper.enableStandardItemLighting();
+                if (scale != 1) {
+                    RenderSystem.scalef(scale, scale, scale);
+                }
+                Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, xAxis, yAxis);
+                RenderHelper.disableStandardItemLighting();
+                RenderSystem.disableDepthTest();
+                RenderSystem.popMatrix();
+            } catch (Exception e) {
+                Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
+            }
+        }
     }
 
     @Override
@@ -135,11 +148,14 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
-    public void displayTooltip(ITextComponent component, int xAxis, int yAxis) {
+    public void displayTooltip(ITextComponent component, int x, int y) {
+        this.displayTooltips(Collections.singletonList(component), x, y);
     }
 
     @Override
     public void displayTooltips(List<ITextComponent> components, int xAxis, int yAxis) {
+        List<String> toolTips = components.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
+        GuiUtils.drawHoveringText(toolTips, xAxis, yAxis, getWidth(), getHeight(), -1, getFont());
     }
 
     @Override

@@ -3,6 +3,7 @@ package mekanism.client.gui.filter;
 import mekanism.client.gui.button.MekanismButton;
 import mekanism.client.gui.button.MekanismImageButton;
 import mekanism.client.gui.button.TranslationButton;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -23,6 +24,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism, CONTAINER
 
     @Override
     protected void addButtons() {
+        addButton(new GuiElementHolder(this, 23, 31, 130, 82));
         addButton(itemStackButton = new TranslationButton(this, getGuiLeft() + 24, getGuiTop() + 32, 128, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER, onItemStackButton()));
         addButton(oredictButton = new TranslationButton(this, getGuiLeft() + 24, getGuiTop() + 52, 128, 20, MekanismLang.BUTTON_TAG_FILTER, onTagButton()));
         addButton(materialButton = new TranslationButton(this, getGuiLeft() + 24, getGuiTop() + 72, 128, 20, MekanismLang.BUTTON_MATERIAL_FILTER, onMaterialButton()));

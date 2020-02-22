@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.HashList;
@@ -22,8 +23,11 @@ import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 
@@ -51,6 +55,12 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
     public GuiFilterHolder(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        addButton(new GuiInnerScreen(this, 9, 17, 46, 140));
     }
 
     public int getScroll() {
@@ -165,29 +175,26 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
     }
 
-    /**
-     * Handles mouse input.
-     */
-    //TODO: Mouse scrolling
-    /*@Override
-    public void handleMouseInput() throws IOException {
-        super.handleMouseInput();
-        int i = Mouse.getEventDWheel();
-        if (i != 0 && needsScrollBars()) {
-            int j = getFilters().size() - 4;
-            if (i > 0) {
-                i = 1;
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (delta != 0 && needsScrollBars()) {
+            int j = tile.getFilters().size() - 4;
+            if (delta > 0) {
+                delta = 1;
             } else {
-                i = -1;
+                delta = -1;
             }
-            scroll = (float) (scroll - (double) i / (double) j);
+            scroll = (float) (scroll - delta / j);
             if (scroll < 0.0F) {
                 scroll = 0.0F;
             } else if (scroll > 1.0F) {
                 scroll = 1.0F;
             }
+            return true;
         }
-    }*/
+        return super.mouseScrolled(mouseX, mouseY, delta);
+    }
+
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         //TODO: mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance. look closer
@@ -253,6 +260,11 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
      */
     protected boolean needsScrollBars() {
         return tile.getFilters().size() > 4;
+    }
+
+    @Override
+    protected ResourceLocation getGuiLocation() {
+        return MekanismUtils.getResource(ResourceType.GUI, "filter_holder.png");
     }
 
     public static class StackData {

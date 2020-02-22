@@ -4,6 +4,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.button.MekanismImageButton;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
@@ -11,11 +12,9 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.generators.client.gui.button.ReactorLogicButton;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter;
 import mekanism.generators.common.tile.reactor.TileEntityReactorLogicAdapter.ReactorLogic;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLogicAdapter, EmptyTileContainer<TileEntityReactorLogicAdapter>> {
@@ -27,6 +26,7 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
     @Override
     public void init() {
         super.init();
+        addButton(new GuiElementHolder(this, 23, 31, 130, 90));
         addButton(new MekanismImageButton(this, getGuiLeft() + 23, getGuiTop() + 19, 11, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));
         for (ReactorLogic type : ReactorLogic.values()) {
@@ -44,10 +44,5 @@ public class GuiReactorLogicAdapter extends GuiMekanismTile<TileEntityReactorLog
         drawCenteredText(MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
               0, getXSize(), 136, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismGenerators.rl("gui/reactor_logic_adapter.png");
     }
 }

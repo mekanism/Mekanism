@@ -3,10 +3,7 @@ package mekanism.client.gui.filter;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiMFilterSelect extends GuiFilterSelect<TileEntityDigitalMiner, EmptyTileContainer<TileEntityDigitalMiner>> {
@@ -38,10 +35,5 @@ public class GuiMFilterSelect extends GuiFilterSelect<TileEntityDigitalMiner, Em
     @Override
     protected Runnable onBackButton() {
         return () -> sendPacketToServer(ClickedTileButton.DIGITAL_MINER_CONFIG);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "filter_select.png");
     }
 }

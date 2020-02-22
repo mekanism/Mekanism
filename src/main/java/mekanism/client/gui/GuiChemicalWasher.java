@@ -1,7 +1,6 @@
-package mekanism.client.gui.chemical;
+package mekanism.client.gui;
 
 import java.util.Arrays;
-import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiBucketIO;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiProgress;
