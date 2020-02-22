@@ -15,10 +15,11 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
 
-    public static final int FLUID_PER_TANK = 64000;
+    public static final int FLUID_PER_TANK = 64_000;
 
     public TankUpdateProtocol(TileEntityDynamicTank tile) {
         super(tile);
@@ -37,7 +38,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
 
     @Override
     protected SynchronizedTankData getNewStructure() {
-        return new SynchronizedTankData();
+        return new SynchronizedTankData((TileEntityDynamicTank) pointer);
     }
 
     @Override
@@ -55,18 +56,19 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
             tankCache.fluid.setAmount(tankCache.fluid.getAmount() + mergeCache.fluid.getAmount());
         }
         tankCache.editMode = mergeCache.editMode;
-        List<ItemStack> rejects = StackUtils.getMergeRejects(tankCache.getInventorySlots(), mergeCache.getInventorySlots());
+        List<ItemStack> rejects = StackUtils.getMergeRejects(tankCache.getInventorySlots(null), mergeCache.getInventorySlots(null));
         if (!rejects.isEmpty()) {
             rejectedItems.addAll(rejects);
         }
-        StackUtils.merge(tankCache.getInventorySlots(), mergeCache.getInventorySlots());
+        StackUtils.merge(tankCache.getInventorySlots(null), mergeCache.getInventorySlots(null));
     }
 
     @Override
     protected void onFormed() {
         super.onFormed();
-        if (!structureFound.fluidStored.isEmpty()) {
-            structureFound.fluidStored.setAmount(Math.min(structureFound.fluidStored.getAmount(), structureFound.volume * FLUID_PER_TANK));
+        if (!structureFound.fluidTank.isEmpty()) {
+            FluidStack fluid = structureFound.fluidTank.getFluid();
+            structureFound.fluidTank.setFluid(new FluidStack(fluid, Math.min(fluid.getAmount(), structureFound.volume * FLUID_PER_TANK)));
         }
     }
 

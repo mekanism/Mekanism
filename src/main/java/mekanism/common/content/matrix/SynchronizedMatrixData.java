@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.slot.IInventorySlot;
@@ -14,6 +15,7 @@ import mekanism.common.tile.TileEntityInductionCell;
 import mekanism.common.tile.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
 //TODO: Do something better for purposes of double precision such as BigInt
@@ -40,24 +42,27 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
         inventorySlots = createBaseInventorySlots();
     }
 
-    //TODO: Fix this for the cache to be done better
-    public static List<IInventorySlot> createBaseInventorySlots() {
-        //TODO: Look into some way of allowing slot position to be set differently if needed
+    private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
-        //TODO: FIXME?? ideally we don't pass null as the inventory??
-        inventorySlots.add(EnergyInventorySlot.charge(null, 146, 20));
-        inventorySlots.add(EnergyInventorySlot.discharge(null, 146, 51));
+        inventorySlots.add(EnergyInventorySlot.charge(this, 146, 20));
+        inventorySlots.add(EnergyInventorySlot.discharge(this, 146, 51));
         return inventorySlots;
     }
 
     @Nonnull
     @Override
-    public List<IInventorySlot> getInventorySlots() {
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
     }
 
     public void setInventoryData(@Nonnull List<IInventorySlot> toCopy) {
-        inventorySlots = toCopy;
+        for (int i = 0; i < toCopy.size(); i++) {
+            if (i < inventorySlots.size()) {
+                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there
+                // is a problem with the types somehow
+                inventorySlots.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
+            }
+        }
     }
 
     public void addCell(Coord4D coord, TileEntityInductionCell cell) {

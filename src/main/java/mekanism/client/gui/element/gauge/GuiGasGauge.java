@@ -33,10 +33,11 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
             return height - 2;
         }
         //TODO: Can capacity ever be zero when tank is not empty?
-        if (infoHandler.getTank().isEmpty() || infoHandler.getTank().getCapacity() == 0) {
+        GasTank tank = infoHandler.getTank();
+        if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
-        return infoHandler.getTank().getStored() * (height - 2) / infoHandler.getTank().getCapacity();
+        return tank.getStored() * (height - 2) / tank.getCapacity();
     }
 
     @Override
@@ -44,7 +45,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (dummy) {
             return MekanismRenderer.getChemicalTexture(dummyType);
         }
-        return (infoHandler.getTank() != null && !infoHandler.getTank().isEmpty()) ? MekanismRenderer.getChemicalTexture(infoHandler.getTank().getType()) : null;
+        return infoHandler.getTank() == null || infoHandler.getTank().isEmpty() ? null : MekanismRenderer.getChemicalTexture(infoHandler.getTank().getType());
     }
 
     @Override
@@ -52,19 +53,20 @@ public class GuiGasGauge extends GuiTankGauge<Gas, GasTank> {
         if (dummy) {
             return TextComponentUtil.build(dummyType);
         }
-        if (infoHandler.getTank().isEmpty()) {
+        GasTank tank = infoHandler.getTank();
+        if (tank == null || tank.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         }
-        int amount = infoHandler.getTank().getStored();
+        int amount = tank.getStored();
         if (amount == Integer.MAX_VALUE) {
-            return MekanismLang.GENERIC_STORED.translate(infoHandler.getTank().getType(), MekanismLang.INFINITE);
+            return MekanismLang.GENERIC_STORED.translate(tank.getType(), MekanismLang.INFINITE);
         }
-        return MekanismLang.GENERIC_STORED_MB.translate(infoHandler.getTank().getType(), amount);
+        return MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), amount);
     }
 
     @Override
     protected void applyRenderColor() {
-        if (dummy) {
+        if (dummy || infoHandler.getTank() == null) {
             MekanismRenderer.color(dummyType);
         } else {
             MekanismRenderer.color(infoHandler.getTank().getStack());

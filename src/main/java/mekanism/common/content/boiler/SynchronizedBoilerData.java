@@ -10,6 +10,7 @@ import mekanism.api.IHeatTransfer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,13 +23,11 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public static double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
     public static double BASE_BOIL_TEMP = 100 - (TemperatureUnit.AMBIENT.zeroOffset - TemperatureUnit.CELSIUS.zeroOffset);
 
-    @Nonnull
-    public FluidStack waterStored = FluidStack.EMPTY;
+    public BoilerTank waterTank;
     @Nonnull
     public FluidStack prevWater = FluidStack.EMPTY;
     //TODO: Do we want to make the boiler have steam be a gas instead of a fluid?
-    @Nonnull
-    public FluidStack steamStored = FluidStack.EMPTY;
+    public BoilerTank steamTank;
     @Nonnull
     public FluidStack prevSteam = FluidStack.EMPTY;
 
@@ -54,6 +53,11 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
+    public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
+        waterTank = new BoilerWaterTank(tile);
+        steamTank = new BoilerSteamTank(tile);
+    }
+
     /**
      * @return how much heat energy is needed to convert one unit of water into steam
      */
@@ -67,19 +71,19 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     }
 
     public boolean needsRenderUpdate() {
-        if ((waterStored.isEmpty() && !prevWater.isEmpty()) || (!waterStored.isEmpty() && prevWater.isEmpty())) {
+        if ((waterTank.isEmpty() && !prevWater.isEmpty()) || (!waterTank.isEmpty() && prevWater.isEmpty())) {
             return true;
         }
-        if (!waterStored.isEmpty()) {
-            if ((waterStored.getFluid() != prevWater.getFluid()) || (waterStored.getAmount() != prevWater.getAmount())) {
+        if (!waterTank.isEmpty()) {
+            if (!waterTank.getFluid().isFluidEqual(prevWater) || (waterTank.getFluidAmount() != prevWater.getAmount())) {
                 return true;
             }
         }
-        if ((steamStored.isEmpty() && !prevSteam.isEmpty()) || (!steamStored.isEmpty() && prevSteam.isEmpty())) {
+        if ((steamTank.isEmpty() && !prevSteam.isEmpty()) || (!steamTank.isEmpty() && prevSteam.isEmpty())) {
             return true;
         }
-        if (!steamStored.isEmpty()) {
-            return (steamStored.getFluid() != prevSteam.getFluid()) || (steamStored.getAmount() != prevSteam.getAmount());
+        if (!steamTank.isEmpty()) {
+            return !steamTank.getFluid().isFluidEqual(prevSteam) || steamTank.getFluidAmount() != prevSteam.getAmount();
         }
         return false;
     }

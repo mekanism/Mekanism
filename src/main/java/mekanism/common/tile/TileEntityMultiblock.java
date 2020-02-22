@@ -272,6 +272,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         //Otherwise we get the inventory slots for our structure.
         // NOTE: Currently we have nothing that "cares" about facing/can give different output to different sides
         // so we are just returning the list directly instead of dealing with the side
-        return structure.getInventorySlots();
+        return structure.getInventorySlots(side);
     }
 }

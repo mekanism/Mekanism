@@ -15,15 +15,15 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> {
 
     @Override
     public void apply(SynchronizedBoilerData data) {
-        data.waterStored = water;
-        data.steamStored = steam;
+        data.waterTank.setFluid(water);
+        data.steamTank.setFluid(steam);
         data.temperature = temperature;
     }
 
     @Override
     public void sync(SynchronizedBoilerData data) {
-        water = data.waterStored;
-        steam = data.steamStored;
+        water = data.waterTank.getFluid();
+        steam = data.steamTank.getFluid();
         temperature = data.temperature;
     }
 

@@ -1,18 +1,13 @@
 package mekanism.common.content.matrix;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import mekanism.api.inventory.slot.IInventorySlot;
-import mekanism.common.multiblock.MultiblockCache;
+import mekanism.common.multiblock.InventoryMultiblockCache;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
-
-    //TODO: FIX INVENTORY PERSISTENCE??
-    @Nonnull
-    private List<IInventorySlot> inventorySlots = SynchronizedMatrixData.createBaseInventorySlots();
+public class MatrixCache extends InventoryMultiblockCache<SynchronizedMatrixData> {
 
     @Override
     public void apply(SynchronizedMatrixData data) {
@@ -21,12 +16,13 @@ public class MatrixCache extends MultiblockCache<SynchronizedMatrixData> {
 
     @Override
     public void sync(SynchronizedMatrixData data) {
-        inventorySlots = data.getInventorySlots();
-    }
-
-    @Nonnull
-    public List<IInventorySlot> getInventorySlots() {
-        return inventorySlots;
+        List<IInventorySlot> toCopy = data.getInventorySlots(null);
+        for (int i = 0; i < toCopy.size(); i++) {
+            if (i < inventorySlots.size()) {
+                //Just directly set it as we don't have any restrictions on our slots here
+                inventorySlots.get(i).setStack(toCopy.get(i).getStack());
+            }
+        }
     }
 
     @Override

@@ -7,10 +7,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 
 public enum GaugeInfo {
-    STANDARD(MekanismUtils.getResource(ResourceType.GUI_GAUGE, "normal.png"), 2, 2, null),
-    BLUE(MekanismUtils.getResource(ResourceType.GUI_GAUGE, "blue.png"), 2, 2, EnumColor.DARK_BLUE),
-    RED(MekanismUtils.getResource(ResourceType.GUI_GAUGE, "red.png"), 2, 2, EnumColor.DARK_RED),
-    YELLOW(MekanismUtils.getResource(ResourceType.GUI_GAUGE, "yellow.png"), 2, 2, EnumColor.YELLOW);
+    STANDARD("normal.png", 2, 2, null),
+    BLUE("blue.png", 2, 2, EnumColor.DARK_BLUE),
+    RED("red.png", 2, 2, EnumColor.DARK_RED),
+    YELLOW("yellow.png", 2, 2, EnumColor.YELLOW);
 
     @Nullable
     private final EnumColor color;
@@ -18,8 +18,8 @@ public enum GaugeInfo {
     private final int sideHeight;
     private final ResourceLocation resourceLocation;
 
-    GaugeInfo(ResourceLocation resourceLocation, int sideWidth, int sideHeight, @Nullable EnumColor color) {
-        this.resourceLocation = resourceLocation;
+    GaugeInfo(String texture, int sideWidth, int sideHeight, @Nullable EnumColor color) {
+        this.resourceLocation = MekanismUtils.getResource(ResourceType.GUI_GAUGE, texture);
         this.sideWidth = sideWidth;
         this.sideHeight = sideHeight;
         this.color = color;

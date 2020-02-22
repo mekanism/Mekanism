@@ -57,11 +57,11 @@ public class MatrixUpdateProtocol extends UpdateProtocol<SynchronizedMatrixData>
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedMatrixData> cache, MultiblockCache<SynchronizedMatrixData> merge) {
         MatrixCache matrixCache = (MatrixCache) cache;
         MatrixCache mergeCache = (MatrixCache) merge;
-        List<ItemStack> rejects = StackUtils.getMergeRejects(matrixCache.getInventorySlots(), mergeCache.getInventorySlots());
+        List<ItemStack> rejects = StackUtils.getMergeRejects(matrixCache.getInventorySlots(null), mergeCache.getInventorySlots(null));
         if (!rejects.isEmpty()) {
             rejectedItems.addAll(rejects);
         }
-        StackUtils.merge(matrixCache.getInventorySlots(), mergeCache.getInventorySlots());
+        StackUtils.merge(matrixCache.getInventorySlots(null), mergeCache.getInventorySlots(null));
     }
 
     @Override

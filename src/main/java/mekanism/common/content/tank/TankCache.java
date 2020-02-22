@@ -3,18 +3,14 @@ package mekanism.common.content.tank;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.inventory.slot.IInventorySlot;
-import mekanism.common.multiblock.MultiblockCache;
+import mekanism.common.multiblock.InventoryMultiblockCache;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TankCache extends MultiblockCache<SynchronizedTankData> {
-
-    //TODO: FIX INVENTORY PERSISTENCE??
-    @Nonnull
-    private List<IInventorySlot> inventorySlots = SynchronizedTankData.createBaseInventorySlots();
+public class TankCache extends InventoryMultiblockCache<SynchronizedTankData> {
 
     @Nonnull
     public FluidStack fluid = FluidStack.EMPTY;
@@ -24,20 +20,21 @@ public class TankCache extends MultiblockCache<SynchronizedTankData> {
     @Override
     public void apply(SynchronizedTankData data) {
         data.setInventoryData(inventorySlots);
-        data.fluidStored = fluid;
+        data.fluidTank.setFluid(fluid);
         data.editMode = editMode;
     }
 
     @Override
     public void sync(SynchronizedTankData data) {
-        inventorySlots = data.getInventorySlots();
-        fluid = data.fluidStored;
+        List<IInventorySlot> toCopy = data.getInventorySlots(null);
+        for (int i = 0; i < toCopy.size(); i++) {
+            if (i < inventorySlots.size()) {
+                //Just directly set it as we don't have any restrictions on our slots here
+                inventorySlots.get(i).setStack(toCopy.get(i).getStack());
+            }
+        }
+        fluid = data.fluidTank.getFluid();
         editMode = data.editMode;
-    }
-
-    @Nonnull
-    public List<IInventorySlot> getInventorySlots() {
-        return inventorySlots;
     }
 
     @Override

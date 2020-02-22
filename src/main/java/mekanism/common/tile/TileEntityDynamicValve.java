@@ -1,11 +1,9 @@
 package mekanism.common.tile;
 
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
-import mekanism.common.content.tank.DynamicFluidTank;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
@@ -20,18 +18,13 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper {
 
-    //TODO: Move the dynamic fluid tank to SynchronizedTankData??
-    // There is no real sense in having them be separate
-    public DynamicFluidTank fluidTank;
-
     public TileEntityDynamicValve() {
         super(MekanismBlocks.DYNAMIC_VALVE);
-        fluidTank = new DynamicFluidTank(this);
     }
 
     @Override
     public IFluidTank[] getTankInfo(Direction from) {
-        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) ? new IFluidTank[]{fluidTank} : PipeUtils.EMPTY;
+        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) ? new IFluidTank[]{structure.fluidTank} : PipeUtils.EMPTY;
     }
 
     @Override
@@ -41,13 +34,19 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Override
     public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        return fluidTank.fill(resource, fluidAction);
+        if (structure == null) {
+            return 0;
+        }
+        return structure.fluidTank.fill(resource, fluidAction);
     }
 
     @Nonnull
     @Override
     public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
-        return fluidTank.drain(maxDrain, fluidAction);
+        if (structure == null) {
+            return FluidStack.EMPTY;
+        }
+        return structure.fluidTank.drain(maxDrain, fluidAction);
     }
 
     @Override
@@ -57,7 +56,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) && FluidContainerUtils.canDrain(Objects.requireNonNull(structure).fluidStored, fluid);
+        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) && FluidContainerUtils.canDrain(structure.fluidTank.getFluid(), fluid);
     }
 
     @Nonnull
@@ -73,6 +72,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+        return structure == null ? 0 : MekanismUtils.redstoneLevelFromContents(structure.fluidTank.getFluidAmount(), structure.fluidTank.getCapacity());
     }
 }

@@ -1,9 +1,11 @@
 package mekanism.common.tile;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -11,8 +13,10 @@ import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
 import mekanism.common.integration.computer.IComputerIntegration;
+import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -21,6 +25,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration {
 
@@ -40,12 +45,20 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
         if (!isRemote()) {
             if (structure != null && isRendering) {
                 structure.tick(getWorld());
-                //TODO: FIXME??
-                /*List<IInventorySlot> inventorySlots = getInventorySlots(null);
+                List<IInventorySlot> inventorySlots = getInventorySlots(null);
                 ((EnergyInventorySlot) inventorySlots.get(0)).charge(this);
-                ((EnergyInventorySlot) inventorySlots.get(1)).discharge(this);*/
+                ((EnergyInventorySlot) inventorySlots.get(1)).discharge(this);
             }
         }
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
+        //Disable item handler caps if we are the induction casing, don't disable it for the subclassed port though
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getType() == MekanismTileEntityTypes.INDUCTION_CASING.getTileEntityType()) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

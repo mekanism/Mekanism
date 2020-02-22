@@ -9,6 +9,7 @@ import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -36,7 +37,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
           int overlayLight) {
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.renderLocation != null &&
             tile.structure.upperRenderLocation != null) {
-            FluidStack waterStored = tile.structure.waterStored;
+            FluidStack waterStored = tile.structure.waterTank.getFluid();
             BlockPos pos = tile.getPos();
             if (waterStored.getAmount() > 0) {
                 RenderData data = new RenderData();
@@ -52,7 +53,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                     GlowInfo glowInfo = MekanismRenderer.enableGlow(waterStored);
                     Model3D fluidModel = FluidRenderer.getFluidModel(data, tile.prevWaterScale);
                     MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                          MekanismRenderer.getColorARGB(data.fluidType, (float) waterStored.getAmount() / (float) tile.clientWaterCapacity));
+                          MekanismRenderer.getColorARGB(data.fluidType, (float) waterStored.getAmount() / (float) (tile.structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK)));
                     MekanismRenderer.disableGlow(glowInfo);
                     matrix.pop();
 
@@ -69,7 +70,7 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 }
             }
 
-            if (tile.structure.steamStored.getAmount() > 0) {
+            if (!tile.structure.steamTank.isEmpty()) {
                 if (STEAM.isEmpty()) {
                     STEAM = MekanismFluids.STEAM.getFluidStack(1);
                 }
@@ -79,13 +80,13 @@ public class RenderThermoelectricBoiler extends TileEntityRenderer<TileEntityBoi
                 data.length = tile.structure.volLength;
                 data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
-                if (data.height >= 1 && !tile.structure.steamStored.isEmpty()) {
+                if (data.height >= 1 && !tile.structure.steamTank.isEmpty()) {
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
-                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.steamStored);
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.steamTank.getFluid());
                     Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
                     MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                          MekanismRenderer.getColorARGB(tile.structure.steamStored, (float) tile.structure.steamStored.getAmount() / (float) tile.clientSteamCapacity));
+                          MekanismRenderer.getColorARGB(tile.structure.steamTank.getFluid(), (float) tile.structure.steamTank.getFluidAmount() / (float) (tile.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK)));
                     MekanismRenderer.disableGlow(glowInfo);
                     matrix.pop();
                 }

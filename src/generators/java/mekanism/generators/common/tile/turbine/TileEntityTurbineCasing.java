@@ -43,7 +43,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             structure.lastSteamInput = structure.newSteamInput;
             structure.newSteamInput = 0;
 
-            int stored = structure.fluidStored.getAmount();
+            int stored = structure.fluidTank.getFluidAmount();
             double proportion = (double) stored / (double) structure.getFluidCapacity();
             double flowRate = 0;
 
@@ -59,22 +59,18 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 flowRate = rate / origRate;
                 setEnergy(getEnergy() + (int) rate * energyMultiplier);
 
-                structure.fluidStored.setAmount((int) (structure.fluidStored.getAmount() - rate));
+                FluidStack fluid = structure.fluidTank.getFluid();
+                structure.fluidTank.setFluid(new FluidStack(fluid, (int) (fluid.getAmount() - rate)));
                 structure.clientFlow = (int) rate;
                 structure.flowRemaining = Math.min((int) rate, structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get());
-                if (structure.fluidStored.getAmount() == 0) {
-                    structure.fluidStored = FluidStack.EMPTY;
-                }
             } else {
                 structure.clientFlow = 0;
             }
 
-            if (structure.dumpMode == GasMode.DUMPING && !structure.fluidStored.isEmpty()) {
-                structure.fluidStored.setAmount(structure.fluidStored.getAmount() - Math.min(structure.fluidStored.getAmount(),
-                      Math.max(structure.fluidStored.getAmount() / 50, structure.lastSteamInput * 2)));
-                if (structure.fluidStored.getAmount() == 0) {
-                    structure.fluidStored = FluidStack.EMPTY;
-                }
+            if (structure.dumpMode == GasMode.DUMPING && !structure.fluidTank.isEmpty()) {
+                FluidStack fluid = structure.fluidTank.getFluid();
+                int amount = fluid.getAmount();
+                structure.fluidTank.setFluid(new FluidStack(fluid, amount - Math.min(amount, Math.max(amount / 50, structure.lastSteamInput * 2))));
             }
 
             float newRotation = (float) flowRate;
@@ -88,7 +84,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             if (structure.needsRenderUpdate() || needsRotationUpdate) {
                 sendPacketToRenderer();
             }
-            structure.prevFluid = structure.fluidStored.isEmpty() ? FluidStack.EMPTY : structure.fluidStored.copy();
+            structure.prevFluid = structure.fluidTank.isEmpty() ? FluidStack.EMPTY : structure.fluidTank.getFluid().copy();
         }
     }
 
@@ -118,13 +114,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
         return structure != null ? structure.getEnergyCapacity() : 0;
     }
 
-    public int getScaledFluidLevel(long i) {
-        if (structure == null || structure.getFluidCapacity() == 0 || structure.fluidStored.isEmpty()) {
-            return 0;
-        }
-        return (int) (structure.fluidStored.getAmount() * i / structure.getFluidCapacity());
-    }
-
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
@@ -140,7 +129,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             data.add(structure.clientFlow);
             data.add(structure.lastSteamInput);
             data.add(structure.dumpMode);
-            data.add(structure.fluidStored);
+            data.add(structure.fluidTank.getFluid());
             if (isRendering) {
                 structure.complex.write(data);
                 data.add(structure.clientRotation);
@@ -177,7 +166,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.lastSteamInput = dataStream.readInt();
                 structure.dumpMode = dataStream.readEnumValue(GasMode.class);
 
-                structure.fluidStored = dataStream.readFluidStack();
+                structure.fluidTank.setFluid(dataStream.readFluidStack());
 
                 if (isRendering) {
                     structure.complex = Coord4D.read(dataStream);
@@ -191,7 +180,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     @Nonnull
     @Override
     protected SynchronizedTurbineData getNewStructure() {
-        return new SynchronizedTurbineData();
+        return new SynchronizedTurbineData(this);
     }
 
     @Override

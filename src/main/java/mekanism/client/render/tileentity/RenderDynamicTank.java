@@ -10,6 +10,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -25,13 +26,13 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
 
     @Override
     public void render(@Nonnull TileEntityDynamicTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.fluidStored.getAmount() > 0) {
+        if (tile.clientHasStructure && tile.isRendering && tile.structure != null && !tile.structure.fluidTank.isEmpty()) {
             RenderData data = new RenderData();
             data.location = tile.structure.renderLocation;
             data.height = tile.structure.volHeight - 2;
             data.length = tile.structure.volLength;
             data.width = tile.structure.volWidth;
-            data.fluidType = tile.structure.fluidStored;
+            data.fluidType = tile.structure.fluidTank.getFluid();
 
             if (data.location != null && data.height >= 1) {
                 matrix.push();
@@ -40,7 +41,7 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
                 GlowInfo glowInfo = MekanismRenderer.enableGlow(data.fluidType);
                 Model3D fluidModel = FluidRenderer.getFluidModel(data, tile.prevScale);
                 MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                      MekanismRenderer.getColorARGB(data.fluidType, (float) data.fluidType.getAmount() / (float) tile.clientCapacity));
+                      MekanismRenderer.getColorARGB(data.fluidType, (float) data.fluidType.getAmount() / (float) (tile.structure.volume * TankUpdateProtocol.FLUID_PER_TANK)));
                 MekanismRenderer.disableGlow(glowInfo);
                 matrix.pop();
 
@@ -60,6 +61,6 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
 
     @Override
     public boolean isGlobalRenderer(TileEntityDynamicTank tile) {
-        return tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.fluidStored.getAmount() > 0;
+        return tile.clientHasStructure && tile.isRendering && tile.structure != null && !tile.structure.fluidTank.isEmpty();
     }
 }

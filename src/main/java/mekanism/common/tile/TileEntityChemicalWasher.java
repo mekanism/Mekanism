@@ -27,6 +27,7 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
@@ -104,6 +105,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
         builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
         gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
+        fluidSlot.setSlotType(ContainerSlotType.INPUT);
         return builder.build();
     }
 
@@ -111,6 +113,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
+            //TODO: Fix this not moving the item to the output slot
             fluidSlot.fillTank();
             gasOutputSlot.drainTank();
             double prev = getEnergy();

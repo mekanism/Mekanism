@@ -1,6 +1,7 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
@@ -15,7 +16,8 @@ import mekanism.common.tile.TileEntityInductionCasing;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 
-public class BlockInductionCasing extends BlockBasicMultiblock implements IHasTileEntity<TileEntityInductionCasing>, IHasGui<TileEntityInductionCasing>, IHasDescription {
+public class BlockInductionCasing extends BlockBasicMultiblock implements IHasTileEntity<TileEntityInductionCasing>, IHasGui<TileEntityInductionCasing>, IHasDescription,
+      IHasInventory {
 
     @Override
     public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityInductionCasing>> getContainerType() {

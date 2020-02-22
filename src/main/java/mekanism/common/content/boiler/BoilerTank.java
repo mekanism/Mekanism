@@ -7,7 +7,7 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 
 public abstract class BoilerTank extends MultiblockFluidTank<TileEntityBoilerCasing> {
 
-    public BoilerTank(TileEntityBoilerCasing tile) {
+    protected BoilerTank(TileEntityBoilerCasing tile) {
         super(tile);
     }
 

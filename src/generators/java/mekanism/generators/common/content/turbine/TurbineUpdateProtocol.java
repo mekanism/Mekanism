@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineData> {
 
@@ -178,7 +179,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
 
     @Override
     protected SynchronizedTurbineData getNewStructure() {
-        return new SynchronizedTurbineData();
+        return new SynchronizedTurbineData((TileEntityTurbineCasing) pointer);
     }
 
     @Override
@@ -202,8 +203,9 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     @Override
     protected void onFormed() {
         super.onFormed();
-        if (!structureFound.fluidStored.isEmpty()) {
-            structureFound.fluidStored.setAmount(Math.min(structureFound.fluidStored.getAmount(), structureFound.getFluidCapacity()));
+        if (!structureFound.fluidTank.isEmpty()) {
+            FluidStack fluid = structureFound.fluidTank.getFluid();
+            structureFound.fluidTank.setFluid(new FluidStack(fluid, Math.min(fluid.getAmount(), structureFound.getFluidCapacity())));
         }
         structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
     }

@@ -1,6 +1,7 @@
 package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
+import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.MekanismLang;
@@ -16,7 +17,8 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
 
-public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel, IHasTileEntity<TileEntityDynamicTank>, IHasGui<TileEntityDynamicTank>, IHasDescription {
+public class BlockDynamicTank extends BlockBasicMultiblock implements IHasModel, IHasTileEntity<TileEntityDynamicTank>, IHasGui<TileEntityDynamicTank>, IHasDescription,
+      IHasInventory {
 
     @Override
     public ContainerTypeRegistryObject<MekanismTileContainer<TileEntityDynamicTank>> getContainerType() {

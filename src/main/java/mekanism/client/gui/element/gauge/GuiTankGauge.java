@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
 import java.util.Arrays;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
@@ -30,12 +31,15 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntity tile = ((GuiMekanismTile<?, ?>) guiObj).getTileEntity();
                 if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {
-                    int index = Arrays.asList(((ITankManager) tile).getTanks()).indexOf(infoHandler.getTank());
-                    if (index != -1) {
-                        if (button == 0 && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                            button = 2;
+                    TANK tank = infoHandler.getTank();
+                    if (tank != null) {
+                        int index = Arrays.asList(((ITankManager) tile).getTanks()).indexOf(tank);
+                        if (index != -1) {
+                            if (button == 0 && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                                button = 2;
+                            }
+                            Mekanism.packetHandler.sendToServer(new PacketDropperUse(Coord4D.get(tile), button, index));
                         }
-                        Mekanism.packetHandler.sendToServer(new PacketDropperUse(Coord4D.get(tile), button, index));
                     }
                 }
                 return true;
@@ -46,6 +50,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
 
     public interface ITankInfoHandler<TANK> {
 
+        @Nullable
         TANK getTank();
     }
 }

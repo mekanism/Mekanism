@@ -1,12 +1,13 @@
 package mekanism.client.gui.element.gauge;
 
 public enum GaugeType {
+    SMALL(GaugeInfo.STANDARD, GaugeOverlay.SMALL),
+    SMALL_BLUE(GaugeInfo.BLUE, GaugeOverlay.SMALL),
     STANDARD(GaugeInfo.STANDARD, GaugeOverlay.STANDARD),
     STANDARD_RED(GaugeInfo.RED, GaugeOverlay.STANDARD),
     STANDARD_YELLOW(GaugeInfo.YELLOW, GaugeOverlay.STANDARD),
-    WIDE(GaugeInfo.STANDARD, GaugeOverlay.WIDE),
-    SMALL(GaugeInfo.STANDARD, GaugeOverlay.SMALL),
-    SMALL_BLUE(GaugeInfo.BLUE, GaugeOverlay.SMALL);
+    MEDIUM(GaugeInfo.STANDARD, GaugeOverlay.MEDIUM),
+    WIDE(GaugeInfo.STANDARD, GaugeOverlay.WIDE);
 
     private final GaugeInfo gaugeInfo;
     private final GaugeOverlay gaugeOverlay;

@@ -1,8 +1,8 @@
 package mekanism.common.content.boiler;
 
 import javax.annotation.Nonnull;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityBoilerCasing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 public class BoilerSteamTank extends BoilerTank {
@@ -11,26 +11,13 @@ public class BoilerSteamTank extends BoilerTank {
         super(tile);
     }
 
-    @Nonnull
-    @Override
-    public FluidStack getFluid() {
-        return multiblock.structure != null ? multiblock.structure.steamStored : FluidStack.EMPTY;
-    }
-
-    @Override
-    public void setFluid(@Nonnull FluidStack stack) {
-        if (multiblock.structure != null) {
-            multiblock.structure.steamStored = stack;
-        }
-    }
-
     @Override
     public int getCapacity() {
-        return multiblock.structure != null ? multiblock.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK : 0;
+        return multiblock.structure == null ? 0 : multiblock.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK;
     }
 
     @Override
     public boolean isFluidValid(@Nonnull FluidStack stack) {
-        return stack.getFluid().getTags().contains(new ResourceLocation("forge", "steam"));
+        return super.isFluidValid(stack) && stack.getFluid().isIn(MekanismTags.Fluids.STEAM);
     }
 }

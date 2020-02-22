@@ -5,20 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData> {
 
-    @Nonnull
-    public FluidStack fluidStored = FluidStack.EMPTY;
+    public DynamicFluidTank fluidTank;
 
     /**
      * For use by rendering segment
@@ -33,43 +33,46 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     @Nonnull
     private List<IInventorySlot> inventorySlots;
 
-    public SynchronizedTankData() {
+    public SynchronizedTankData(TileEntityDynamicTank tile) {
+        fluidTank = new DynamicFluidTank(tile);
         inventorySlots = createBaseInventorySlots();
     }
 
-    //TODO: Fix this for the cache to be done better
-    public static List<IInventorySlot> createBaseInventorySlots() {
-        //TODO: Look into some way of allowing slot position to be set differently if needed
+    private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
-        //TODO: Replace this with a fluid handler representing our fluid (fluidStored)
-        //TODO: FIXME?? ideally we don't pass null as the inventory??
-        inventorySlots.add(FluidInventorySlot.input(EmptyFluidHandler.INSTANCE, fluid -> true, null, 146, 20));
-        inventorySlots.add(OutputInventorySlot.at(null, 146, 51));
+        inventorySlots.add(FluidInventorySlot.input(fluidTank, fluid -> true, this, 146, 20));
+        inventorySlots.add(OutputInventorySlot.at(this, 146, 51));
         return inventorySlots;
     }
 
     @Nonnull
     @Override
-    public List<IInventorySlot> getInventorySlots() {
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return inventorySlots;
     }
 
     public void setInventoryData(@Nonnull List<IInventorySlot> toCopy) {
-        inventorySlots = toCopy;
+        for (int i = 0; i < toCopy.size(); i++) {
+            if (i < inventorySlots.size()) {
+                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there
+                // is a problem with the types somehow
+                inventorySlots.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
+            }
+        }
     }
 
     public boolean needsRenderUpdate() {
-        if ((fluidStored.isEmpty() && !prevFluid.isEmpty()) || (!fluidStored.isEmpty() && prevFluid.isEmpty())) {
+        if ((fluidTank.isEmpty() && !prevFluid.isEmpty()) || (!fluidTank.isEmpty() && prevFluid.isEmpty())) {
             return true;
         }
-        if (fluidStored.isEmpty()) {
+        if (fluidTank.isEmpty()) {
             return false;
         }
         int totalStage = (volHeight - 2) * (TankUpdateProtocol.FLUID_PER_TANK / 100);
-        int currentStage = (int) ((fluidStored.getAmount() / (float) (volume * TankUpdateProtocol.FLUID_PER_TANK)) * totalStage);
+        int currentStage = (int) ((fluidTank.getFluidAmount() / (float) (volume * TankUpdateProtocol.FLUID_PER_TANK)) * totalStage);
         boolean stageChanged = currentStage != prevFluidStage;
         prevFluidStage = currentStage;
-        return (fluidStored.getFluid() != prevFluid.getFluid()) || stageChanged;
+        return !fluidTank.getFluid().isFluidEqual(prevFluid) || stageChanged;
     }
 
     public static class ValveData {

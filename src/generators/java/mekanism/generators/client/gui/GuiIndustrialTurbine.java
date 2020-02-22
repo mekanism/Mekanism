@@ -2,13 +2,15 @@ package mekanism.generators.client.gui;
 
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
-import mekanism.client.gui.GuiEmbeddedGaugeTile;
+import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.button.GuiGasMode;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
+import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -19,15 +21,13 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.client.gui.element.GuiTurbineTab;
 import mekanism.generators.client.gui.element.GuiTurbineTab.TurbineTab;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbineCasing, MekanismTileContainer<TileEntityTurbineCasing>> {
+public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasing, MekanismTileContainer<TileEntityTurbineCasing>> {
 
     public GuiIndustrialTurbine(MekanismTileContainer<TileEntityTurbineCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -59,6 +59,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
                 return (double) tile.structure.lastSteamInput / rate;
             }
         }, 40, 13));
+        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidTank, GaugeType.MEDIUM, this, 6, 13));
         addButton(new GuiEnergyInfo(() -> {
             double producing = tile.structure == null ? 0 : tile.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                                             Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
@@ -83,39 +84,7 @@ public class GuiIndustrialTurbine extends GuiEmbeddedGaugeTile<TileEntityTurbine
             renderScaledText(GeneratorsLang.TURBINE_FLOW_RATE.translate(tile.structure.clientFlow), 53, 35, 0x00CD00, 106);
             renderScaledText(GeneratorsLang.TURBINE_CAPACITY.translate(tile.structure.getFluidCapacity()), 53, 44, 0x00CD00, 106);
             renderScaledText(GeneratorsLang.TURBINE_MAX_FLOW.translate(rate), 53, 53, 0x00CD00, 106);
-            int xAxis = mouseX - getGuiLeft();
-            int yAxis = mouseY - getGuiTop();
-            //TODO: Convert to GuiElement
-            if (xAxis >= 7 && xAxis <= 39 && yAxis >= 14 && yAxis <= 72) {
-                if (tile.structure.fluidStored.isEmpty()) {
-                    displayTooltip(MekanismLang.EMPTY.translate(), xAxis, yAxis);
-                } else {
-                    displayTooltip(MekanismLang.GENERIC_STORED_MB.translate(tile.structure.fluidStored, tile.structure.fluidStored.getAmount()), xAxis, yAxis);
-                }
-            }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tile.structure != null) {
-            int scaledFluidLevel = tile.getScaledFluidLevel(58);
-            if (scaledFluidLevel > 0) {
-                displayGauge(7, 14, scaledFluidLevel, tile.structure.fluidStored, 0);
-                displayGauge(23, 14, scaledFluidLevel, tile.structure.fluidStored, 1);
-            }
-        }
-    }
-
-    @Override
-    protected ResourceLocation getGaugeResource() {
-        return MekanismGenerators.rl("gui/industrial_turbine.png");
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismGenerators.rl("gui/industrial_turbine.png");
     }
 }

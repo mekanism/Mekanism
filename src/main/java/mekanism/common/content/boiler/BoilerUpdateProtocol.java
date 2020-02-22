@@ -18,11 +18,12 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.FluidStack;
 
 public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData> {
 
-    public static final int WATER_PER_TANK = 16000;
-    public static final int STEAM_PER_TANK = 160000;
+    public static final int WATER_PER_TANK = 16_000;
+    public static final int STEAM_PER_TANK = 160_000;
 
     public BoilerUpdateProtocol(TileEntityBoilerCasing tile) {
         super(tile);
@@ -153,7 +154,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
 
     @Override
     protected SynchronizedBoilerData getNewStructure() {
-        return new SynchronizedBoilerData();
+        return new SynchronizedBoilerData((TileEntityBoilerCasing) pointer);
     }
 
     @Override
@@ -181,11 +182,13 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     @Override
     protected void onFormed() {
         super.onFormed();
-        if (!structureFound.waterStored.isEmpty()) {
-            structureFound.waterStored.setAmount(Math.min(structureFound.waterStored.getAmount(), structureFound.waterVolume * WATER_PER_TANK));
+        if (!structureFound.waterTank.isEmpty()) {
+            FluidStack water = structureFound.waterTank.getFluid();
+            structureFound.waterTank.setFluid(new FluidStack(water, Math.min(water.getAmount(), structureFound.waterVolume * WATER_PER_TANK)));
         }
-        if (!structureFound.steamStored.isEmpty()) {
-            structureFound.steamStored.setAmount(Math.min(structureFound.steamStored.getAmount(), structureFound.steamVolume * STEAM_PER_TANK));
+        if (!structureFound.steamTank.isEmpty()) {
+            FluidStack steam = structureFound.steamTank.getFluid();
+            structureFound.steamTank.setFluid(new FluidStack(steam, Math.min(steam.getAmount(), structureFound.steamVolume * STEAM_PER_TANK)));
         }
     }
 

@@ -18,6 +18,7 @@ import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
@@ -27,10 +28,12 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTankData> implements IFluidContainerManager {
 
@@ -38,11 +41,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
      * A client-sided set of valves on this tank's structure that are currently active, used on the client for rendering fluids.
      */
     public Set<ValveData> valveViewing = new ObjectOpenHashSet<>();
-
-    /**
-     * The capacity this tank has on the client-side.
-     */
-    public int clientCapacity;
 
     public float prevScale;
 
@@ -60,7 +58,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (isRemote()) {
             if (clientHasStructure && isRendering) {
                 if (structure != null) {
-                    float targetScale = (float) structure.fluidStored.getAmount() / clientCapacity;
+                    float targetScale = (float) structure.fluidTank.getFluidAmount() / (structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
                     if (Math.abs(prevScale - targetScale) > 0.01) {
                         prevScale = (9 * prevScale + targetScale) / 10;
                     }
@@ -89,19 +87,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 if (needsValveUpdate || structure.needsRenderUpdate()) {
                     sendPacketToRenderer();
                 }
-                structure.prevFluid = structure.fluidStored.isEmpty() ? FluidStack.EMPTY : structure.fluidStored.copy();
-                //TODO: Remove shouldn't be needed anymore once we finish implementing the inventory again for the dynamic tank
-                //int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - structure.fluidStored.getAmount();
-                List<IInventorySlot> inventorySlots = structure.getInventorySlots();
+                structure.prevFluid = structure.fluidTank.isEmpty() ? FluidStack.EMPTY : structure.fluidTank.getFluid().copy();
+                List<IInventorySlot> inventorySlots = structure.getInventorySlots(null);
                 //TODO: No magic numbers??
                 FluidInventorySlot inputSlot = (FluidInventorySlot) inventorySlots.get(0);
-                //TODO: Note - this does not work due to it not updating the fluid stored or anything
                 inputSlot.handleTank(inventorySlots.get(1), structure.editMode);
-                //TODO: Remove shouldn't be needed anymore once we finish implementing the inventory again for the dynamic tank
-                /*if (FluidContainerUtils.isFluidContainer(inputSlot.getStack())) {
-                    structure.fluidStored = FluidContainerUtils.handleContainerItem(this, structure.editMode, structure.fluidStored, needed, inputSlot, inventorySlots.get(1));
-                    Mekanism.packetHandler.sendUpdatePacket(this);
-                }*/
             }
         }
     }
@@ -122,7 +112,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Nonnull
     @Override
     protected SynchronizedTankData getNewStructure() {
-        return new SynchronizedTankData();
+        return new SynchronizedTankData(this);
     }
 
     @Override
@@ -144,9 +134,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         if (structure != null) {
-            data.add(structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
+            data.add(structure.volume);
             data.add(structure.editMode);
-            data.add(structure.fluidStored);
+            data.add(structure.fluidTank.getFluid());
 
             if (isRendering) {
                 Set<ValveData> toSend = new ObjectOpenHashSet<>();
@@ -171,9 +161,9 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         super.handlePacketData(dataStream);
         if (isRemote()) {
             if (clientHasStructure) {
-                clientCapacity = dataStream.readInt();
+                structure.volume = dataStream.readInt();
                 structure.editMode = dataStream.readEnumValue(ContainerEditMode.class);
-                structure.fluidStored = dataStream.readFluidStack();
+                structure.fluidTank.setFluid(dataStream.readFluidStack());
 
                 if (isRendering) {
                     int size = dataStream.readInt();
@@ -193,19 +183,12 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         }
     }
 
-    public int getScaledFluidLevel(long i) {
-        if (clientCapacity == 0 || structure.fluidStored.isEmpty()) {
-            return 0;
-        }
-        return (int) (structure.fluidStored.getAmount() * i / clientCapacity);
-    }
-
     @Override
     public ContainerEditMode getContainerEditMode() {
-        if (structure != null) {
-            return structure.editMode;
+        if (structure == null) {
+            return ContainerEditMode.BOTH;
         }
-        return ContainerEditMode.BOTH;
+        return structure.editMode;
     }
 
     @Override
@@ -224,38 +207,40 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (fluidHandlerItem.isPresent()) {
             IFluidHandlerItem handler = fluidHandlerItem.get();
             FluidStack fluidInItem;
-            if (structure.fluidStored.isEmpty()) {
+            if (structure.fluidTank.isEmpty()) {
                 //If we don't have a fluid stored try draining in general
                 fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
             } else {
                 //Otherwise try draining the same type of fluid we have stored
                 // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
                 // second tank but just asking to drain a specific amount
-                fluidInItem = handler.drain(new FluidStack(structure.fluidStored, Integer.MAX_VALUE), FluidAction.SIMULATE);
+                fluidInItem = handler.drain(new FluidStack(structure.fluidTank.getFluid(), Integer.MAX_VALUE), FluidAction.SIMULATE);
             }
             if (fluidInItem.isEmpty()) {
-                if (!structure.fluidStored.isEmpty()) {
-                    int filled = handler.fill(structure.fluidStored, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+                if (!structure.fluidTank.isEmpty()) {
+                    int filled = handler.fill(structure.fluidTank.getFluid(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                     ItemStack container = handler.getContainer();
                     if (filled > 0) {
+                        boolean removeFluid = false;
                         if (player.isCreative()) {
-                            structure.fluidStored.shrink(filled);
+                            removeFluid = true;
                         } else if (itemStack.getCount() == 1) {
-                            structure.fluidStored.shrink(filled);
+                            removeFluid = true;
                             player.setHeldItem(hand, container);
                         } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(container)) {
-                            structure.fluidStored.shrink(filled);
+                            removeFluid = true;
                             itemStack.shrink(1);
                         }
-                        if (structure.fluidStored.isEmpty()) {
-                            structure.fluidStored = FluidStack.EMPTY;
+                        if (removeFluid) {
+                            FluidStack fluid = structure.fluidTank.getFluid();
+                            structure.fluidTank.setFluid(new FluidStack(fluid, fluid.getAmount() - filled));
                         }
                         return true;
                     }
                 }
-            } else if (structure.fluidStored.isEmpty() || structure.fluidStored.isFluidEqual(fluidInItem)) {
+            } else if (structure.fluidTank.isEmpty() || structure.fluidTank.getFluid().isFluidEqual(fluidInItem)) {
                 boolean filled = false;
-                int stored = structure.fluidStored.getAmount();
+                int stored = structure.fluidTank.getFluidAmount();
                 int needed = (structure.volume * TankUpdateProtocol.FLUID_PER_TANK) - stored;
                 FluidStack drained = handler.drain(needed, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                 ItemStack container = handler.getContainer();
@@ -278,10 +263,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                         filled = true;
                     }
                     if (filled) {
-                        if (structure.fluidStored.isEmpty()) {
-                            structure.fluidStored = drained;
+                        if (structure.fluidTank.isEmpty()) {
+                            structure.fluidTank.setFluid(drained);
                         } else {
-                            structure.fluidStored.grow(drained.getAmount());
+                            FluidStack fluid = structure.fluidTank.getFluid();
+                            structure.fluidTank.setFluid(new FluidStack(fluid, fluid.getAmount() + drained.getAmount()));
                         }
                         return true;
                     }
@@ -289,5 +275,14 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
+        //Disable item handler caps if we are the dynamic tank, don't disable it for the subclassed valve though
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && getType() == MekanismTileEntityTypes.DYNAMIC_TANK.getTileEntityType()) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
     }
 }

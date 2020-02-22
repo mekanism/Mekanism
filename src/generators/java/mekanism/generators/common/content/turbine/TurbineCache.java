@@ -15,14 +15,14 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> {
 
     @Override
     public void apply(SynchronizedTurbineData data) {
-        data.fluidStored = fluid;
+        data.fluidTank.setFluid(fluid);
         data.electricityStored = electricity;
         data.dumpMode = dumpMode;
     }
 
     @Override
     public void sync(SynchronizedTurbineData data) {
-        fluid = data.fluidStored;
+        fluid = data.fluidTank.getFluid();
         electricity = data.electricityStored;
         dumpMode = data.dumpMode;
     }

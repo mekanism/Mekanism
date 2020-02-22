@@ -8,8 +8,8 @@ public class GuiBucketIO extends GuiTexturedElement {
 
     public GuiBucketIO(IGuiWrapper gui) {
         super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "bucket.png"), gui, gui.getWidth(), 66, 26, 57);
-        //Mark the slot as inactive as we really just want to be drawing it and not intercepting the mouse clicks
         active = false;
+        //TODO: Clean this up, the texture doesn't need the slots on it anymore, and we can use the down arrow texture we have
     }
 
     @Override
@@ -17,21 +17,4 @@ public class GuiBucketIO extends GuiTexturedElement {
         minecraft.textureManager.bindTexture(getResource());
         guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
     }
-
-    //TODO: Figure out what the point of the below was
-    /*@Override
-    public void preMouseClicked(double mouseX, double mouseY, int button) {
-        if (inBounds(mouseX, mouseY)) {
-            offsetX(26);
-        }
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (inBounds(mouseX, mouseY)) {
-            offsetX(-26);
-            return true;
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
-    }*/
 }

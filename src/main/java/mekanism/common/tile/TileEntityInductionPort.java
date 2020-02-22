@@ -124,7 +124,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             return Collections.emptyList();
         }
         //TODO: Cache this??
-        return Collections.singletonList(structure.getInventorySlots().get(getActive() ? 0 : 1));
+        return Collections.singletonList(structure.getInventorySlots(side).get(getActive() ? 0 : 1));
     }
 
     @Override

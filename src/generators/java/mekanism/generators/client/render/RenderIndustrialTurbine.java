@@ -50,7 +50,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
 
             RenderTurbineRotor.internalRender = false;
 
-            if (tile.structure.fluidStored.getAmount() > 0 && tile.structure.volLength > 0) {
+            if (!tile.structure.fluidTank.isEmpty() && tile.structure.volLength > 0) {
                 if (STEAM.isEmpty()) {
                     STEAM = MekanismFluids.STEAM.getFluidStack(1);
                 }
@@ -62,13 +62,13 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
                 data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
 
-                if (data.location != null && data.height >= 1 && !tile.structure.fluidStored.isEmpty()) {
+                if (data.location != null && data.height >= 1 && !tile.structure.fluidTank.isEmpty()) {
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
-                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.fluidStored);
+                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.fluidTank.getFluid());
                     Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
                     MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                          MekanismRenderer.getColorARGB(tile.structure.fluidStored, (float) tile.structure.fluidStored.getAmount() / (float) tile.structure.getFluidCapacity()));
+                          MekanismRenderer.getColorARGB(tile.structure.fluidTank.getFluid(), (float) tile.structure.fluidTank.getFluidAmount() / (float) tile.structure.getFluidCapacity()));
                     MekanismRenderer.disableGlow(glowInfo);
                     matrix.pop();
                 }

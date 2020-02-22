@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbineData> {
@@ -13,8 +14,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static Object2FloatMap<String> clientRotationMap = new Object2FloatOpenHashMap<>();
 
-    @Nonnull
-    public FluidStack fluidStored = FluidStack.EMPTY;
+    public TurbineFluidTank fluidTank;
 
     @Nonnull
     public FluidStack prevFluid = FluidStack.EMPTY;
@@ -41,6 +41,10 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public int clientFlow;
     public float clientRotation;
 
+    public SynchronizedTurbineData(TileEntityTurbineCasing tile) {
+        fluidTank = new TurbineFluidTank(tile);
+    }
+
     public int getDispersers() {
         return (volLength - 2) * (volWidth - 2) - 1;
     }
@@ -54,11 +58,11 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     }
 
     public boolean needsRenderUpdate() {
-        if ((fluidStored.isEmpty() && !prevFluid.isEmpty()) || (!fluidStored.isEmpty() && prevFluid.isEmpty())) {
+        if ((fluidTank.isEmpty() && !prevFluid.isEmpty()) || (!fluidTank.isEmpty() && prevFluid.isEmpty())) {
             return true;
         }
-        if (!fluidStored.isEmpty()) {
-            return (fluidStored.getFluid() != prevFluid.getFluid()) || (fluidStored.getAmount() != prevFluid.getAmount());
+        if (!fluidTank.isEmpty()) {
+            return !fluidTank.getFluid().isFluidEqual(prevFluid) || fluidTank.getFluidAmount() != prevFluid.getAmount();
         }
         return false;
     }

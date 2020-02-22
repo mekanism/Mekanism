@@ -5,9 +5,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 
 public enum GaugeOverlay {
+    SMALL(16, 28, "small.png"),
     STANDARD(16, 58, "standard.png"),
-    WIDE(64, 48, "wide.png"),
-    SMALL(16, 28, "small.png");
+    MEDIUM(32, 58, "medium.png"),
+    WIDE(64, 48, "wide.png");
 
     private final int width;
     private final int height;

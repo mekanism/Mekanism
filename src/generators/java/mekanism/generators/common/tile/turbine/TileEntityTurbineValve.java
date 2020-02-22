@@ -16,7 +16,6 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import mekanism.generators.common.content.turbine.TurbineFluidTank;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -30,12 +29,10 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration {
 
     private static final String[] methods = new String[]{"isFormed", "getSteam", "getFlowRate", "getMaxFlow", "getSteamInput"};
-    public TurbineFluidTank fluidTank;
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
     public TileEntityTurbineValve() {
         super(GeneratorsBlocks.TURBINE_VALVE);
-        fluidTank = new TurbineFluidTank(this);
     }
 
     @Override
@@ -82,7 +79,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Override
     public IFluidTank[] getTankInfo(Direction from) {
-        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) ? new IFluidTank[]{fluidTank} : PipeUtils.EMPTY;
+        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) ? new IFluidTank[]{structure.fluidTank} : PipeUtils.EMPTY;
     }
 
     @Override
@@ -92,7 +89,10 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Override
     public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        int filled = fluidTank.fill(resource, fluidAction);
+        if (structure == null) {
+            return 0;
+        }
+        int filled = structure.fluidTank.fill(resource, fluidAction);
         if (fluidAction.execute()) {
             structure.newSteamInput += filled;
         }
@@ -122,7 +122,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             }
             switch (method) {
                 case 1:
-                    return new Object[]{structure.fluidStored.getAmount()};
+                    return new Object[]{structure.fluidTank.getFluidAmount()};
                 case 2:
                     return new Object[]{structure.clientFlow};
                 case 3:
@@ -158,6 +158,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+        return structure == null ? 0 : MekanismUtils.redstoneLevelFromContents(structure.fluidTank.getFluidAmount(), structure.fluidTank.getCapacity());
     }
 }

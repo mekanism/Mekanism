@@ -7,9 +7,11 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.inventory.slot.IInventorySlot;
+import net.minecraft.util.Direction;
 
-public abstract class SynchronizedData<T extends SynchronizedData<T>> {
+public abstract class SynchronizedData<T extends SynchronizedData<T>> implements IMekanismInventory {
 
     public Set<Coord4D> locations = new ObjectOpenHashSet<>();
 
@@ -38,8 +40,13 @@ public abstract class SynchronizedData<T extends SynchronizedData<T>> {
     public Set<Coord4D> internalLocations = new ObjectOpenHashSet<>();
 
     @Nonnull
-    public List<IInventorySlot> getInventorySlots() {
+    @Override
+    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public void onContentsChanged() {
     }
 
     @Override
