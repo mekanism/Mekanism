@@ -268,7 +268,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             totalLoss = 0;
         }
         heatToAbsorb = 0;
-        tempMultiplier =  Math.max(0, temperature) * MekanismConfig.general.evaporationTempMultiplier.get() * height / MAX_HEIGHT;
+        tempMultiplier = Math.max(0, temperature) * MekanismConfig.general.evaporationTempMultiplier.get() * height / MAX_HEIGHT;
         MekanismUtils.saveChunk(this);
     }
 

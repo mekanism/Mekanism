@@ -19,6 +19,6 @@ public class GuiHorizontalRateBar extends GuiBar<IBarInfoHandler> {
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
         int displayInt = (int) (getHandler().getLevel() * texWidth);
-        blit(x + 1, y + 1,0, 0, displayInt, texHeight, texWidth, texHeight);
+        blit(x + 1, y + 1, 0, 0, displayInt, texHeight, texWidth, texHeight);
     }
 }

@@ -55,7 +55,7 @@ public class FilterButton extends MekanismButton {
             upButton.onClick(mouseX, mouseY);
         } else if (downButton.isMouseOver(mouseX, mouseY)) {
             downButton.onClick(mouseX, mouseY);
-        } else  {
+        } else {
             super.onClick(mouseX, mouseY);
         }
     }
@@ -66,7 +66,7 @@ public class FilterButton extends MekanismButton {
             upButton.renderToolTip(xAxis, yAxis);
         } else if (downButton.isMouseOver(mouseX, mouseY)) {
             downButton.renderToolTip(xAxis, yAxis);
-        } else  {
+        } else {
             super.renderForeground(mouseX, mouseY, xAxis, yAxis);
             int x = this.x - guiObj.getLeft();
             int y = this.y - guiObj.getTop();

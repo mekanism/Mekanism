@@ -1,9 +1,9 @@
 package mekanism.client.gui;
 
 import java.util.Collections;
-import mekanism.client.gui.element.progress.GuiFlame;
 import mekanism.client.gui.element.GuiHeatInfo;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.progress.GuiFlame;
 import mekanism.client.gui.element.progress.IProgressInfoHandler;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
