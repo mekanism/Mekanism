@@ -10,15 +10,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public interface IGuiWrapper {
 
-    //TODO: Replace some of these with direct blit calls?
-    void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height);
-
-    //TODO: Rename
-    void drawModalRectWithCustomSizedTexture(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
-
-    //TODO: Rename
-    void drawModalRectWithCustomSizedTexture(int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
-
     void displayTooltip(ITextComponent component, int xAxis, int yAxis);
 
     void displayTooltips(List<ITextComponent> list, int xAxis, int yAxis);

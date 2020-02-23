@@ -116,7 +116,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             renderItem(tile.missingStack, 144, 27);
         } else {
             minecraft.getTextureManager().bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"));
-            drawTexturedRect(143, 26, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
+            blit(143, 26, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
         }
 
         int xAxis = mouseX - getGuiLeft();
@@ -137,6 +137,6 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = tile.getScaledEnergyLevel(52);
-        drawTexturedRect(getGuiLeft() + 164, getGuiTop() + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
+        blit(getGuiLeft() + 164, getGuiTop() + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
     }
 }

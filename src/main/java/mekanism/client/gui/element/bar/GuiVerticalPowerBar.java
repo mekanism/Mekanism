@@ -48,6 +48,6 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
         int displayInt = (int) (getHandler().getLevel() * texHeight);
         int scaled = calculateScaled(heightScale, displayInt);
-        guiObj.drawModalRectWithCustomSizedTexture(x + 1, y + height - 1 - scaled, texWidth, scaled, 0, 0, texWidth, displayInt, texWidth, texHeight);
+        blit(x + 1, y + height - 1 - scaled, texWidth, scaled, 0, 0, texWidth, displayInt, texWidth, texHeight);
     }
 }

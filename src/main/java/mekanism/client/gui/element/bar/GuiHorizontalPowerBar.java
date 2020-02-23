@@ -39,6 +39,6 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
     @Override
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
         int displayInt = (int) (getHandler().getLevel() * texWidth);
-        guiObj.drawModalRectWithCustomSizedTexture(x + 1, y + 1, calculateScaled(widthScale, displayInt), texHeight, 0, 0, displayInt, texHeight, texWidth, texHeight);
+        blit(x + 1, y + 1, calculateScaled(widthScale, displayInt), texHeight, 0, 0, displayInt, texHeight, texWidth, texHeight);
     }
 }

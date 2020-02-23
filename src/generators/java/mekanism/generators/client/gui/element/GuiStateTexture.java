@@ -25,8 +25,8 @@ public class GuiStateTexture extends GuiTexturedElement {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
+        blit(x, y, 0, 0, width, height, width, height);
         minecraft.textureManager.bindTexture(onSupplier.getAsBoolean() ? onTexture : offTexture);
-        guiObj.drawModalRectWithCustomSizedTexture(x + 2, y + 2, 0, 0, width - 4, height - 4, width - 4, height - 4);
+        blit(x + 2, y + 2, 0, 0, width - 4, height - 4, width - 4, height - 4);
     }
 }

@@ -208,35 +208,35 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         minecraft.textureManager.bindTexture(BASE_BACKGROUND);
         //Left Side
         //Top Left Corner
-        drawModalRectWithCustomSizedTexture(left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        blit(left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
         //Left Middle
         if (centerHeight > 0) {
-            drawModalRectWithCustomSizedTexture(left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+            blit(left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
         //Bottom Left Corner
-        drawModalRectWithCustomSizedTexture(left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        blit(left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
 
         //Middle
         if (centerWidth > 0) {
             //Top Middle
-            drawModalRectWithCustomSizedTexture(leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
+            blit(leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
             if (centerHeight > 0) {
                 //Center
-                drawModalRectWithCustomSizedTexture(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
+                blit(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
             }
             //Bottom Middle
-            drawModalRectWithCustomSizedTexture(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
+            blit(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
         }
 
         //Right side
         //Top Right Corner
-        drawModalRectWithCustomSizedTexture(rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
+        blit(rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
         //Right Middle
         if (centerHeight > 0) {
-            drawModalRectWithCustomSizedTexture(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
+            blit(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
         }
         //Bottom Right Corner
-        drawModalRectWithCustomSizedTexture(rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
+        blit(rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
     }
 
     @Override
@@ -249,26 +249,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             drawBackground();
         } else {
             minecraft.textureManager.bindTexture(guiLocation);
-            drawTexturedRect(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
+            blit(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
         }
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
-    }
-
-    @Override
-    public void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height) {
-        blit(x, y, textureX, textureY, width, height);
-    }
-
-    @Override
-    public void drawModalRectWithCustomSizedTexture(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight) {
-        blit(x, y, textureX, textureY, width, height, textureWidth, textureHeight);
-    }
-
-    @Override
-    public void drawModalRectWithCustomSizedTexture(int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight) {
-        blit(x, y, desiredWidth, desiredHeight, textureX, textureY, width, height, textureWidth, textureHeight);
     }
 
     @Override
@@ -328,4 +313,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         // which means to fallback and use the dynamic background
         return null;
     }
+
+    //Some blit param namings
+    //blit(int x, int y, int textureX, int textureY, int width, int height);
+    //blit(int x, int y, TextureAtlasSprite icon, int width, int height);
+    //blit(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
+    //blit(int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
 }

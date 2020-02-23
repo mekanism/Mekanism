@@ -27,7 +27,6 @@ import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -36,9 +35,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
-
-    private static final AbstractGui gui = new AbstractGui() {
-    };
 
     private IGuiHelper guiHelper;
     protected ITickTimer timer;
@@ -124,21 +120,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }
         }
-    }
-
-    @Override
-    public void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height) {
-        gui.blit(x, y, textureX, textureY, width, height);
-    }
-
-    @Override
-    public void drawModalRectWithCustomSizedTexture(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight) {
-        AbstractGui.blit(x, y, textureX, textureY, width, height, textureWidth, textureHeight);
-    }
-
-    @Override
-    public void drawModalRectWithCustomSizedTexture(int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight) {
-        AbstractGui.blit(x, y, desiredWidth, desiredHeight, textureX, textureY, width, height, textureWidth, textureHeight);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTexturedE
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, width, height);
+        blit(x, y, 0, 0, width, height, width, height);
     }
 
     @Override

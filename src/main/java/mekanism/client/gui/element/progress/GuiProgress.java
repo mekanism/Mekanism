@@ -18,14 +18,14 @@ public class GuiProgress extends GuiTexturedElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         if (handler.isActive()) {
             minecraft.textureManager.bindTexture(getResource());
-            guiObj.drawModalRectWithCustomSizedTexture(x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
+            blit(x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             if (type.isVertical()) {
                 int displayInt = (int) (handler.getProgress() * height);
-                guiObj.drawModalRectWithCustomSizedTexture(x, y, type.getOverlayX(), type.getOverlayY(), width, displayInt, type.getTextureWidth(), type.getTextureHeight());
+                blit(x, y, type.getOverlayX(), type.getOverlayY(), width, displayInt, type.getTextureWidth(), type.getTextureHeight());
             } else {
                 int innerOffsetX = type == ProgressType.BAR ? 1 : 0;
                 int displayInt = (int) (handler.getProgress() * (width - 2 * innerOffsetX));
-                guiObj.drawModalRectWithCustomSizedTexture(x + innerOffsetX, y, type.getOverlayX() + innerOffsetX, type.getOverlayY(), displayInt, height, type.getTextureWidth(), type.getTextureHeight());
+                blit(x + innerOffsetX, y, type.getOverlayX() + innerOffsetX, type.getOverlayY(), displayInt, height, type.getTextureWidth(), type.getTextureHeight());
             }
         }
     }

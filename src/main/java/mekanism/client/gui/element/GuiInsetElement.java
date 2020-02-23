@@ -62,6 +62,6 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiSideHo
         drawButtonBackground(mouseX, mouseY, partialTicks);
         //Draw the overlay onto the button
         minecraft.textureManager.bindTexture(overlay);
-        guiObj.drawModalRectWithCustomSizedTexture(getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
+        blit(getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
     }
 }

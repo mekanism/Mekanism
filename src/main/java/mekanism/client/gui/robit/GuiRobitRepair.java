@@ -98,9 +98,9 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        drawTexturedRect(getGuiLeft() + 59, getGuiTop() + 20, 0, getYSize() + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
+        blit(getGuiLeft() + 59, getGuiTop() + 20, 0, getYSize() + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
         if ((container.getSlot(0).getHasStack() || container.getSlot(1).getHasStack()) && !container.getSlot(2).getHasStack()) {
-            drawTexturedRect(getGuiLeft() + 99, getGuiTop() + 45, getXSize(), 0, 28, 21);
+            blit(getGuiLeft() + 99, getGuiTop() + 45, getXSize(), 0, 28, 21);
         }
     }
 

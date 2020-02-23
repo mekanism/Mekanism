@@ -13,7 +13,6 @@ public class GuiVerticalRateBar extends GuiBar<IBarInfoHandler> {
     private static final int texHeight = 58;
 
     public GuiVerticalRateBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
-        //TODO: I believe the width and height will need to be changed/make it stretch
         super(RATE_BAR, gui, handler, x, y, texWidth, texHeight);
     }
 
@@ -21,6 +20,6 @@ public class GuiVerticalRateBar extends GuiBar<IBarInfoHandler> {
     protected void renderBarOverlay(int mouseX, int mouseY, float partialTicks) {
         int displayInt = (int) (getHandler().getLevel() * texHeight);
         //TODO: Should textureX be texWidth + 2
-        guiObj.drawModalRectWithCustomSizedTexture(x + 1, y + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, texWidth, texHeight);
+        blit(x + 1, y + height - 1 - displayInt, 8, height - 2 - displayInt, width - 2, displayInt, texWidth, texHeight);
     }
 }

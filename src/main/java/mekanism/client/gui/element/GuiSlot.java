@@ -29,9 +29,9 @@ public class GuiSlot extends GuiTexturedElement {
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
-        guiObj.drawTexturedRect(x, y, textureX, textureY, width, height);
+        blit(x, y, textureX, textureY, width, height);
         if (overlay != null) {
-            guiObj.drawTexturedRect(x + (width - overlay.width) / 2, y + (height - overlay.height) / 2, overlay.textureX, overlay.textureY, overlay.width, overlay.height);
+            blit(x + (width - overlay.width) / 2, y + (height - overlay.height) / 2, overlay.textureX, overlay.textureY, overlay.width, overlay.height);
         }
     }
 

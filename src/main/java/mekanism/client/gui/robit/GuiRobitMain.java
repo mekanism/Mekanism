@@ -134,7 +134,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (nameChangeField.visible) {
-            drawTexturedRect(getGuiLeft() + 28, getGuiTop() + 17, 0, 166 + 4, 120, 54);
+            blit(getGuiLeft() + 28, getGuiTop() + 17, 0, 166 + 4, 120, 54);
             MekanismRenderer.resetColor();
         }
     }
@@ -144,9 +144,4 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         super.tick();
         nameChangeField.tick();
     }
-
-    /*@Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "robit_main.png");
-    }*/
 }

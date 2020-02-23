@@ -80,6 +80,6 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = tile.getScaledEnergyLevel(52);
-        drawTexturedRect(getGuiLeft() + 116, getGuiTop() + 76, 176, 36, displayInt, 4);
+        blit(getGuiLeft() + 116, getGuiTop() + 76, 176, 36, displayInt, 4);
     }
 }

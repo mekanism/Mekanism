@@ -69,7 +69,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         innerScreen.renderButton(mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        guiObj.drawModalRectWithCustomSizedTexture(slotX, slotY, 0, 0, SLOT_TEXTURE_WIDTH, SLOT_TEXTURE_HEIGHT, SLOT_TEXTURE_WIDTH, SLOT_TEXTURE_HEIGHT);
+        blit(slotX, slotY, 0, 0, SLOT_TEXTURE_WIDTH, SLOT_TEXTURE_HEIGHT, SLOT_TEXTURE_WIDTH, SLOT_TEXTURE_HEIGHT);
         if (!renderStack.isEmpty()) {
             guiObj.renderItem(renderStack, slotX + 1, slotY + 1);
         }

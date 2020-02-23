@@ -102,7 +102,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
                 if (mouseOver) {
                     MekanismRenderer.color(EnumColor.GRAY);
                 }
-                drawTexturedRect(getGuiLeft() + 10, getGuiTop() + yStart, 0, 230, 142, 22);
+                blit(getGuiLeft() + 10, getGuiTop() + yStart, 0, 230, 142, 22);
                 if (mouseOver) {
                     MekanismRenderer.resetColor();
                 }

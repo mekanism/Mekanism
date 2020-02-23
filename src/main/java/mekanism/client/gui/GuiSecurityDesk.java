@@ -202,9 +202,9 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tile.frequency != null && tile.ownerUUID != null && tile.ownerUUID.equals(minecraft.player.getUniqueID())) {
-            drawTexturedRect(getGuiLeft() + 145, getGuiTop() + 78, getXSize() + (tile.frequency.override ? 0 : 6), 22, 6, 6);
+            blit(getGuiLeft() + 145, getGuiTop() + 78, getXSize() + (tile.frequency.override ? 0 : 6), 22, 6, 6);
         } else {
-            drawTexturedRect(getGuiLeft() + 145, getGuiTop() + 78, getXSize(), 28, 6, 6);
+            blit(getGuiLeft() + 145, getGuiTop() + 78, getXSize(), 28, 6, 6);
         }
         MekanismRenderer.resetColor();
     }

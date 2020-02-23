@@ -60,7 +60,7 @@ public class GuiGraph extends GuiTexturedElement {
         for (int i = 0; i < size; i++) {
             int data = Math.min(currentScale, graphData.getInt(i));
             int relativeHeight = (int) (data * height / (double) currentScale);
-            guiObj.drawModalRectWithCustomSizedTexture(x + i, y + height - relativeHeight, 0, 0, 1, 1, textureWidth, textureHeight);
+            blit(x + i, y + height - relativeHeight, 0, 0, 1, 1, textureWidth, textureHeight);
 
             int relativeModulo = (relativeHeight - 1) % 10;
             int displays = (relativeHeight - 1) / 10 + (relativeModulo > 0 ? 1 : 0);
@@ -72,7 +72,7 @@ public class GuiGraph extends GuiTexturedElement {
             RenderSystem.color4f(1, 1, 1, 0.2F + 0.8F * i / size);
             for (int iter = 0; iter < displays; iter++) {
                 int heightComponent = relativeModulo > 0 && iter == displays - 1 ? relativeModulo : 10;
-                guiObj.drawModalRectWithCustomSizedTexture(x + i, y + height - heightComponent - 10 * iter, 11, 0, 1, heightComponent, textureWidth, textureHeight);
+                blit(x + i, y + height - heightComponent - 10 * iter, 11, 0, 1, heightComponent, textureWidth, textureHeight);
             }
             MekanismRenderer.resetColor();
             RenderSystem.disableBlend();

@@ -81,7 +81,7 @@ public class GuiScrollList extends GuiTexturedElement {
         //Draw Selected
         int scroll = getScrollIndex();
         if (selected != -1 && selected >= scroll && selected <= scroll + getElementCount() - 1) {
-            guiObj.drawModalRectWithCustomSizedTexture(x, y + (selected - scroll) * 10, width, 10, 4, 2, 2, 2, textureWidth, textureHeight);
+            blit(x, y + (selected - scroll) * 10, width, 10, 4, 2, 2, 2, textureWidth, textureHeight);
         }
         //Draw Scroll
         drawScroll();
@@ -99,13 +99,13 @@ public class GuiScrollList extends GuiTexturedElement {
     private void drawScroll() {
         int xStart = x + width - 6;
         //Top
-        guiObj.drawModalRectWithCustomSizedTexture(xStart, y, 0, 0, 6, 1, textureWidth, textureHeight);
+        blit(xStart, y, 0, 0, 6, 1, textureWidth, textureHeight);
         //Middle
-        guiObj.drawModalRectWithCustomSizedTexture(xStart, y + 1, 6, height - 2, 0, 1, 6, 1, textureWidth, textureHeight);
+        blit(xStart, y + 1, 6, height - 2, 0, 1, 6, 1, textureWidth, textureHeight);
         //Bottom
-        guiObj.drawModalRectWithCustomSizedTexture(xStart, y + height - 1, 0, 0, 6, 1, textureWidth, textureHeight);
+        blit(xStart, y + height - 1, 0, 0, 6, 1, textureWidth, textureHeight);
         //Scroll bar
-        guiObj.drawModalRectWithCustomSizedTexture(xStart + 1, y + 1 + getScroll(), 0, 2, 4, 4, textureWidth, textureHeight);
+        blit(xStart + 1, y + 1 + getScroll(), 0, 2, 4, 4, textureWidth, textureHeight);
     }
 
     private int getMaxScroll() {

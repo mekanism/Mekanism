@@ -76,7 +76,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         //TODO: Convert to GuiElement (selection box/button)
         minecraft.textureManager.bindTexture(getGuiLocation());
-        drawTexturedRect(84, 8 + getScroll(), 202, 0, 4, 4);
+        blit(84, 8 + getScroll(), 202, 0, 4, 4);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         drawString(MekanismLang.UPGRADES_SUPPORTED.translate(), 26, 59, 0x404040);
         if (selectedType == null) {
@@ -134,7 +134,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         int displayInt = tile.getComponent().getScaledUpgradeProgress(14);
-        drawTexturedRect(getGuiLeft() + 154, getGuiTop() + 26, 176, 28, 10, displayInt);
+        blit(getGuiLeft() + 154, getGuiTop() + 26, 176, 28, 10, displayInt);
         if (selectedType != null && tile.getComponent().getUpgrades(selectedType) == 0) {
             selectedType = null;
         }
@@ -156,7 +156,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
                 yRender = 166 + 12;
             }
             MekanismRenderer.color(upgrade.getColor(), 1.0F, 2.5F);
-            drawTexturedRect(getGuiLeft() + xPos, getGuiTop() + yPos, 0, yRender, 58, 12);
+            blit(getGuiLeft() + xPos, getGuiTop() + yPos, 0, yRender, 58, 12);
             MekanismRenderer.resetColor();
         }
     }

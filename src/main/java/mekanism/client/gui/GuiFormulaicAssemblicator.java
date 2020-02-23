@@ -106,11 +106,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
         if (tile.operatingTicks > 0) {
             int display = (int) ((double) tile.operatingTicks * 22 / (double) tile.ticksRequired);
-            drawTexturedRect(getGuiLeft() + 86, getGuiTop() + 43, 176, 48, display, 16);
+            blit(getGuiLeft() + 86, getGuiTop() + 43, 176, 48, display, 16);
         }
 
         minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"));
-        drawTexturedRect(getGuiLeft() + 90, getGuiTop() + 25, tile.isRecipe ? 2 : 20, 39, 14, 12);
+        blit(getGuiLeft() + 90, getGuiTop() + 25, tile.isRecipe ? 2 : 20, 39, 14, 12);
 
         if (tile.formula != null) {
             for (int i = 0; i < 9; i++) {
