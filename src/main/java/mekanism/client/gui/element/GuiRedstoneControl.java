@@ -37,7 +37,7 @@ public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
     }
 
     @Override
-    protected ResourceLocation getResource() {
+    protected ResourceLocation getOverlay() {
         switch (((IRedstoneControl) tile).getControlType()) {
             case HIGH:
                 return HIGH;
@@ -46,7 +46,7 @@ public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
             case PULSE:
                 return PULSE;
         }
-        return super.getResource();
+        return super.getOverlay();
     }
 
     @Override

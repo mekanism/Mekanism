@@ -1,13 +1,13 @@
 package mekanism.client.gui.robit;
 
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSideHolder;
+import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
+import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
-import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
-import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
-import mekanism.client.gui.element.tab.GuiRobitTab;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -54,7 +54,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiRobitTab(this));
+        addButton(new GuiSideHolder(this, 176, 6, 106));
         addButton(new GuiInnerScreen(this, 27, 16, 122, 56));
         addButton(new GuiHorizontalPowerBar(this, new IBarInfoHandler() {
             @Override

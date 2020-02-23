@@ -11,20 +11,11 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
 
-    private static final ResourceLocation HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "extended_holder_left.png");
-
     public GuiSortingTab(IGuiWrapper gui, TileEntityFactory<?> tile) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "sorting.png"), gui, tile, -26, 62, 26, 35, 18);
-    }
-
-    @Override
-    protected ResourceLocation getHolderTexture() {
-        //TODO: Override the right tab holder at some point if we need it
-        return left ? HOLDER_LEFT : GuiInsetElement.INSET_HOLDER_RIGHT;
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "sorting.png"), gui, tile, -26, 62, 35, 18);
     }
 
     @Override

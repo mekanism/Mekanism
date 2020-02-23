@@ -6,13 +6,15 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
 //TODO: Should this extend MekanismImageButton
-public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTileEntityElement<TILE> {
+public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTexturedElement {
 
     private final Runnable onPress;
+    protected final TILE tile;
 
     //TODO: Make it some tile that implements a dumping interface
     public GuiDumpButton(IGuiWrapper gui, TILE tile, int x, int y, Runnable onPress) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "dump.png"), gui, tile, x, y, 21, 10);
+        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "dump.png"), gui, x, y, 21, 10);
+        this.tile = tile;
         this.onPress = onPress;
         playClickSound = true;
     }

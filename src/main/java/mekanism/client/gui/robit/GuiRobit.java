@@ -1,8 +1,8 @@
 package mekanism.client.gui.robit;
 
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.button.MekanismImageButton;
-import mekanism.client.gui.element.tab.GuiRobitTab;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.entity.IEntityContainer;
@@ -24,7 +24,7 @@ public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<En
     @Override
     public void init() {
         super.init();
-        addButton(new GuiRobitTab(this));
+        addButton(new GuiSideHolder(this, 176, 6, 106));
         addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 10, 18, getButtonLocation("main"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, robit.getEntityId()))));
         addButton(new MekanismImageButton(this, getGuiLeft() + 179, getGuiTop() + 30, 18, getButtonLocation("crafting"), () -> {
