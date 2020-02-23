@@ -26,9 +26,12 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        for (ItemCapability cap : capabilities) {
-            if (cap.canProcess(capability)) {
-                return LazyOptional.of(() -> cap).cast();
+        if (!itemStack.isEmpty()) {
+            //Only provide capabilities if we are not empty
+            for (ItemCapability cap : capabilities) {
+                if (cap.canProcess(capability)) {
+                    return LazyOptional.of(() -> cap).cast();
+                }
             }
         }
         return LazyOptional.empty();
