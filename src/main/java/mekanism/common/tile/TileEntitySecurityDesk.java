@@ -143,7 +143,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             int type = dataStream.readInt();
             if (type == 0) {
                 if (frequency != null) {
-                    GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(dataStream.readString());
+                    GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(PacketHandler.readString(dataStream));
                     if (profile != null) {
                         frequency.trusted.add(profile.getId());
                     }
