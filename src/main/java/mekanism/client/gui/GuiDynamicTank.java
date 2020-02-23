@@ -2,16 +2,14 @@ package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
 import mekanism.client.gui.element.GuiDownArrow;
+import mekanism.client.gui.element.GuiInnerHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -20,6 +18,11 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
     public GuiDynamicTank(MekanismTileContainer<TileEntityDynamicTank> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
+    }
+
+    @Override
+    protected void initPreSlots() {
+        addButton(new GuiInnerHolder(this, 141, 15, 26, 57));
     }
 
     @Override
@@ -44,10 +47,5 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             drawString(MekanismLang.GENERIC_MB.translate(fluidStored.getAmount()), 53, 53, 0x00CD00);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "dynamic_tank.png");
     }
 }

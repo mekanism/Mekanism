@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiInnerHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
@@ -10,11 +11,8 @@ import mekanism.client.gui.element.tab.GuiMatrixTab.MatrixTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityInductionCasing;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasing, MekanismTileContainer<TileEntityInductionCasing>> {
@@ -22,6 +20,11 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
     public GuiInductionMatrix(MekanismTileContainer<TileEntityInductionCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
+    }
+
+    @Override
+    protected void initPreSlots() {
+        addButton(new GuiInnerHolder(this, 141, 15, 26, 57));
     }
 
     @Override
@@ -45,10 +48,5 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
         drawString(MekanismLang.MATRIX_OUTPUT_AMOUNT.translate(), 53, 44, 0x00CD00);
         drawString(MekanismLang.GENERIC_PER_TICK.translate(EnergyDisplay.of(tile.getLastOutput())), 53, 53, 0x00CD00);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "dynamic_tank.png");
     }
 }

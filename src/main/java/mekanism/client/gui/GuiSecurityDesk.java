@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.element.GuiInnerHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiScrollList;
+import mekanism.client.gui.element.GuiSecurityLight;
+import mekanism.client.gui.element.GuiSecurityPrivate;
+import mekanism.client.gui.element.GuiSecurityPublic;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -19,12 +22,10 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
@@ -44,6 +45,14 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     public GuiSecurityDesk(MekanismTileContainer<TileEntitySecurityDesk> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize += 64;
+        dynamicSlots = true;
+    }
+
+    @Override
+    protected void initPreSlots() {
+        addButton(new GuiInnerHolder(this, 141, 13, 26, 37));
+        addButton(new GuiInnerHolder(this, 141, 54, 26, 34));
+        addButton(new GuiInnerHolder(this, 141, 92, 26, 37));
     }
 
     @Override
@@ -51,8 +60,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         super.init();
         addButton(new GuiInnerScreen(this, 34, 67, 89, 13));
         addButton(new GuiInnerScreen(this, 122, 67, 13, 13));
+        addButton(new GuiSecurityLight(this, 144, 77, () -> tile.frequency == null || tile.ownerUUID == null ||
+                                                            !tile.ownerUUID.equals(minecraft.player.getUniqueID()) ? 2 : tile.frequency.override ? 0 : 1));
+        addButton(new GuiSecurityPublic(this, 146, 33));
+        addButton(new GuiSecurityPrivate(this, 146, 112));
         addButton(scrollList = new GuiScrollList(this, 14, 14, 120, 40));
-
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();
             if (tile.frequency != null && selection != -1) {
@@ -147,11 +159,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "security_desk.png");
-    }
-
-    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (trustedField.isFocused()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
@@ -188,7 +195,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         drawString(ownerComponent, getXSize() - 7 - getStringWidth(ownerComponent), (getYSize() - 96) + 2, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         drawCenteredText(MekanismLang.TRUSTED_PLAYERS.translate(), 74, 57, 0x787878);
-        //TODO: Convert to GuiElement
         if (tile.frequency != null) {
             drawString(MekanismLang.SECURITY.translate(tile.frequency.securityMode), 13, 103, 0x404040);
         } else {
@@ -196,16 +202,5 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         }
         renderScaledText(MekanismLang.SECURITY_ADD.translate(), 13, 70, 0x404040, 20);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tile.frequency != null && tile.ownerUUID != null && tile.ownerUUID.equals(minecraft.player.getUniqueID())) {
-            blit(getGuiLeft() + 145, getGuiTop() + 78, getXSize() + (tile.frequency.override ? 0 : 6), 22, 6, 6);
-        } else {
-            blit(getGuiLeft() + 145, getGuiTop() + 78, getXSize(), 28, 6, 6);
-        }
-        MekanismRenderer.resetColor();
     }
 }

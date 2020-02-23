@@ -3,15 +3,20 @@ package mekanism.client.gui.element;
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiScalableElement extends GuiTexturedElement {
+public abstract class GuiScalableElement extends GuiTexturedElement {
 
-    public GuiScalableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height) {
+    private final int sideWidth;
+    private final int sideHeight;
+
+    protected GuiScalableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height, int sideWidth, int sideHeight) {
         super(resource, gui, x, y, width, height);
         active = false;
+        this.sideWidth = sideWidth;
+        this.sideHeight = sideHeight;
     }
 
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
-        renderExtendedTexture(getResource(), 2, 2);
+        renderExtendedTexture(getResource(), sideWidth, sideHeight);
     }
 }
