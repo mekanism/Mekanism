@@ -3,8 +3,8 @@ package mekanism.generators.client.gui;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -59,7 +59,7 @@ public class GuiReactorHeat extends GuiReactorInfo {
                 return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, GaugeType.STANDARD, this, 7, 50));
-        addButton(new GuiProgress(() -> tile.getPlasmaTemp() > tile.getCaseTemp() ? 1 : 0, ProgressBar.SMALL_RIGHT, this, 27, 75));
+        addButton(new GuiProgress(() -> tile.getPlasmaTemp() > tile.getCaseTemp() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 29, 76));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
@@ -81,9 +81,9 @@ public class GuiReactorHeat extends GuiReactorInfo {
                 return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(level, TemperatureUnit.KELVIN));
             }
         }, GaugeType.STANDARD, this, 61, 50));
-        addButton(new GuiProgress(() -> tile.getCaseTemp() > 0 ? 1 : 0, ProgressBar.SMALL_RIGHT, this, 81, 60));
+        addButton(new GuiProgress(() -> tile.getCaseTemp() > 0 ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
         addButton(new GuiProgress(() -> (tile.getCaseTemp() > 0 && !tile.waterTank.isEmpty() && tile.steamTank.getFluidAmount() < tile.steamTank.getCapacity()) ? 1 : 0,
-              ProgressBar.SMALL_RIGHT, this, 81, 90));
+              ProgressType.SMALL_RIGHT, this, 83, 91));
         addButton(new GuiFluidGauge(() -> tile.waterTank, GaugeType.SMALL, this, 115, 84));
         addButton(new GuiFluidGauge(() -> tile.steamTank, GaugeType.SMALL, this, 151, 84));
         addButton(new GuiEnergyGauge(() -> tile, GaugeType.SMALL, this, 115, 46));

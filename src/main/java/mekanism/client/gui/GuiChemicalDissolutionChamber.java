@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -35,7 +35,7 @@ public class GuiChemicalDissolutionChamber extends GuiMekanismTile<TileEntityChe
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
         addButton(new GuiGasGauge(() -> tile.injectTank, GaugeType.STANDARD, this, 5, 4));
         addButton(new GuiGasGauge(() -> tile.outputTank, GaugeType.STANDARD, this, 133, 13));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressBar.LARGE_RIGHT, this, 62, 39));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 64, 40));
     }
 
     @Override

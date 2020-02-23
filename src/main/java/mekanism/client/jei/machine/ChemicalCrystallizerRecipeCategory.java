@@ -7,8 +7,8 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.client.gui.element.GuiCrystallizerScreen;
 import mekanism.client.gui.element.GuiCrystallizerScreen.IOreInfo;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -49,7 +49,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<GasTo
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 5, 4));
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, 5, 64).with(SlotOverlay.PLUS));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 130, 56));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.LARGE_RIGHT, this, 51, 60));
+        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 53, 61));
     }
 
     @Override

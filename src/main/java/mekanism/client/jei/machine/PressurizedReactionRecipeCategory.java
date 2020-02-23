@@ -5,8 +5,8 @@ import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -44,7 +44,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD_RED, this, 28, 10));
         guiElements.add(GuiGasGauge.getDummy(GaugeType.SMALL_BLUE, this, 140, 40));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.MEDIUM, this, 75, 37));
+        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.RIGHT, this, 77, 38));
     }
 
     @Override

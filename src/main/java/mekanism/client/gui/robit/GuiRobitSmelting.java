@@ -1,7 +1,7 @@
 package mekanism.client.gui.robit;
 
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
 import net.minecraft.entity.player.PlayerInventory;
@@ -17,7 +17,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiProgress(robit::getScaledProgress, ProgressBar.BAR, this, 77, 37));
+        addButton(new GuiProgress(robit::getScaledProgress, ProgressType.BAR, this, 78, 38));
     }
 
     @Override

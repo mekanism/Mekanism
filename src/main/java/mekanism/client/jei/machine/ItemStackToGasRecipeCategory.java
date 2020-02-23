@@ -3,8 +3,8 @@ package mekanism.client.jei.machine;
 import java.util.Collections;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -29,7 +29,7 @@ public class ItemStackToGasRecipeCategory extends BaseRecipeCategory<ItemStackTo
     protected void addGuiElements() {
         guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 25, 35));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.LARGE_RIGHT, this, 62, 39));
+        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 64, 40));
     }
 
     @Override

@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -37,7 +37,7 @@ public class GuiElectricMachine<TILE extends TileEntityElectricMachine, CONTAINE
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressBar.BAR, this, 85, 37));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 86, 38));
     }
 
     @Override

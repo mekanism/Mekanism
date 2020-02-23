@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
-import mekanism.client.gui.element.button.MekanismButton.IHoverable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.button.MekanismButton.IHoverable;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILangEntry;
@@ -24,7 +24,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
@@ -260,11 +259,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height) {
         blit(x, y, textureX, textureY, width, height);
-    }
-
-    @Override
-    public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height) {
-        blit(x, y, getBlitOffset(), width, height, icon);
     }
 
     @Override

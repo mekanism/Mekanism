@@ -4,8 +4,8 @@ import java.util.Arrays;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -50,7 +50,7 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber
         addButton(new GuiGasGauge(() -> tile.inputGasTank, GaugeType.STANDARD_RED, this, 28, 10));
         addButton(new GuiGasGauge(() -> tile.outputGasTank, GaugeType.SMALL_BLUE, this, 140, 40));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
-        addButton(new GuiProgress(tile::getScaledProgress, getProgressType(), this, 75, 37));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 77, 38));
     }
 
     @Override
@@ -58,9 +58,5 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    public ProgressBar getProgressType() {
-        return ProgressBar.MEDIUM;
     }
 }

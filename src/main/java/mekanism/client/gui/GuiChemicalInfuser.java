@@ -1,10 +1,9 @@
 package mekanism.client.gui;
 
 import java.util.Arrays;
-import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -37,8 +36,8 @@ public class GuiChemicalInfuser extends GuiMekanismTile<TileEntityChemicalInfuse
         addButton(new GuiGasGauge(() -> tile.leftTank, GaugeType.STANDARD, this, 25, 13));
         addButton(new GuiGasGauge(() -> tile.centerTank, GaugeType.STANDARD, this, 79, 4));
         addButton(new GuiGasGauge(() -> tile.rightTank, GaugeType.STANDARD, this, 133, 13));
-        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.SMALL_RIGHT, this, 45, 38));
-        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.SMALL_LEFT, this, 99, 38));
+        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 47, 39));
+        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 39));
     }
 
     @Override

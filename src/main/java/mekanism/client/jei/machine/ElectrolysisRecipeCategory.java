@@ -6,8 +6,8 @@ import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -42,7 +42,7 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 58, 51));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 100, 51));
         guiElements.add(new GuiSlot(SlotType.POWER, this, 142, 34).with(SlotOverlay.POWER));
-        guiElements.add(new GuiProgress(() -> 1, ProgressBar.BI, this, 78, 29));
+        guiElements.add(new GuiProgress(() -> 1, ProgressType.BI, this, 80, 30));
     }
 
     @Override

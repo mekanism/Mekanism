@@ -5,9 +5,9 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.IProgressInfoHandler;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -53,7 +53,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             public boolean isActive() {
                 return !tile.mode;
             }
-        }, ProgressBar.LARGE_RIGHT, this, 62, 38));
+        }, ProgressType.LARGE_RIGHT, this, 64, 39));
         addButton(new GuiProgress(new IProgressInfoHandler() {
             @Override
             public double getProgress() {
@@ -64,7 +64,7 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
             public boolean isActive() {
                 return tile.mode;
             }
-        }, ProgressBar.LARGE_LEFT, this, 62, 38));
+        }, ProgressType.LARGE_LEFT, this, 64, 39));
         addButton(new MekanismImageButton(this, getGuiLeft() + 4, getGuiTop() + 4, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0))), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }

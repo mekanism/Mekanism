@@ -2,8 +2,8 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
@@ -41,7 +41,7 @@ public class GuiPrecisionSawmill extends GuiMekanismTile<TileEntityPrecisionSawm
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
         //TODO: Evaluate not having this, for now we just draw the wide slot on top of the normal slots so that it looks a bit better
         addButton(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressBar.BAR, this, 77, 37));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 78, 38));
     }
 
     @Override

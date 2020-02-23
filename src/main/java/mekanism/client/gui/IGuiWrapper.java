@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
@@ -13,8 +12,6 @@ public interface IGuiWrapper {
 
     //TODO: Replace some of these with direct blit calls?
     void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height);
-
-    void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height);
 
     //TODO: Rename
     void drawModalRectWithCustomSizedTexture(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);

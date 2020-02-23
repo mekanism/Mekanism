@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.CombinerRecipe;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.GuiUpArrow;
@@ -32,7 +32,7 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
         guiElements.add(new GuiSlot(SlotType.EXTRA, this, 63, 52));
         guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 116, 35));
         guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressBar.BAR, this, 85, 37));
+        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.BAR, this, 86, 38));
     }
 
     @Override

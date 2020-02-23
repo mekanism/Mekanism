@@ -3,8 +3,8 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiEnergyInfo;
-import mekanism.client.gui.element.GuiProgress;
-import mekanism.client.gui.element.GuiProgress.ProgressBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -50,7 +50,7 @@ public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher,
         addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.STANDARD, this, 5, 4));
         addButton(new GuiGasGauge(() -> tile.inputTank, GaugeType.STANDARD, this, 26, 13));
         addButton(new GuiGasGauge(() -> tile.outputTank, GaugeType.STANDARD, this, 133, 13));
-        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressBar.LARGE_RIGHT, this, 62, 38));
+        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressType.LARGE_RIGHT, this, 64, 39));
     }
 
     @Override

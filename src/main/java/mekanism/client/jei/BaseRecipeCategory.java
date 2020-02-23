@@ -30,7 +30,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -130,11 +129,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     @Override
     public void drawTexturedRect(int x, int y, int textureX, int textureY, int width, int height) {
         gui.blit(x, y, textureX, textureY, width, height);
-    }
-
-    @Override
-    public void drawTexturedRectFromIcon(int x, int y, TextureAtlasSprite icon, int width, int height) {
-        AbstractGui.blit(x, y, gui.getBlitOffset(), width, height, icon);
     }
 
     @Override

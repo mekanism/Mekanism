@@ -6,10 +6,11 @@ import mekanism.api.chemical.Chemical;
 import mekanism.client.gui.element.GuiDumpButton;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiVerticalProgress;
 import mekanism.client.gui.element.bar.GuiChemicalBar;
 import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
@@ -79,7 +80,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
         int baseXMult = tile.tier == FactoryTier.BASIC ? 38 : tile.tier == FactoryTier.ADVANCED ? 26 : 19;
         for (int i = 0; i < tile.tier.processes; i++) {
             int cacheIndex = i;
-            addButton(new GuiVerticalProgress(this, () -> tile.getScaledProgress(1, cacheIndex), 4 + baseX + (i * baseXMult), 33));
+            addButton(new GuiProgress(() -> tile.getScaledProgress(1, cacheIndex), ProgressType.DOWN, this, 4 + baseX + (i * baseXMult), 33));
         }
     }
 
