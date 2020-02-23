@@ -5,7 +5,6 @@ import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-//TODO: Now these are full fledged widgets figure out if they have to offload things to the main gui obj still
 public abstract class GuiTexturedElement extends GuiElement {
 
     protected final ResourceLocation resource;

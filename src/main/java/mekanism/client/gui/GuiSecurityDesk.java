@@ -10,8 +10,7 @@ import mekanism.client.gui.element.GuiInnerHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSecurityLight;
-import mekanism.client.gui.element.GuiSecurityPrivate;
-import mekanism.client.gui.element.GuiSecurityPublic;
+import mekanism.client.gui.element.GuiTextureOnlyElement;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -22,15 +21,19 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, MekanismTileContainer<TileEntitySecurityDesk>> {
 
+    private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "public.png");
+    private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "private.png");
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private static final int MAX_LENGTH = 24;
     private MekanismButton removeButton;
@@ -62,8 +65,8 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         addButton(new GuiInnerScreen(this, 122, 67, 13, 13));
         addButton(new GuiSecurityLight(this, 144, 77, () -> tile.frequency == null || tile.ownerUUID == null ||
                                                             !tile.ownerUUID.equals(minecraft.player.getUniqueID()) ? 2 : tile.frequency.override ? 0 : 1));
-        addButton(new GuiSecurityPublic(this, 146, 33));
-        addButton(new GuiSecurityPrivate(this, 146, 112));
+        addButton(new GuiTextureOnlyElement(PUBLIC, this, 146, 33, 18, 18));
+        addButton(new GuiTextureOnlyElement(PRIVATE, this, 146, 112, 18, 18));
         addButton(scrollList = new GuiScrollList(this, 14, 14, 120, 40));
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();

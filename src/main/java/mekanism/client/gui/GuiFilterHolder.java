@@ -9,7 +9,7 @@ import java.util.Set;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiScrollBar;
-import mekanism.client.gui.element.button.FilterButton;
+import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.common.HashList;
 import mekanism.common.OreDictCache;
 import mekanism.common.content.filter.IFilter;
@@ -56,7 +56,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         addButton(new GuiScrollBar(this, 153, 17, 140, this::needsScrollBars, () -> scroll, value -> scroll = value));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addButton(new FilterButton(this, 56, 18 + i * 29, i, this::getFilterIndex, this::getFilters, this::upButtonPress,
+            addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, this::getFilterIndex, this::getFilters, this::upButtonPress,
                   this::downButtonPress, this::onClick));
         }
     }
