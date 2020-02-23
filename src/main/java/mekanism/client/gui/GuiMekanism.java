@@ -11,7 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
-import mekanism.client.gui.element.button.MekanismButton.IHoverable;
+import mekanism.client.gui.element.GuiElement.IHoverable;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ILangEntry;
@@ -30,7 +30,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 //TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
 public abstract class GuiMekanism<CONTAINER extends Container> extends ContainerScreen<CONTAINER> implements IGuiWrapper {
@@ -183,60 +182,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         }
     }
 
-    //TODO: Inline into drawGuiContainerBackgroundLayer
-    private void drawBackground() {
-        int width = getXSize();
-        int height = getYSize();
-        if (width < 8 || height < 8) {
-            Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
-            return;
-        }
-        int top = getGuiTop();
-        int left = getGuiLeft();
-        int sideWidth = 4;
-        int sideHeight = 4;
-        int textureWidth = 2 * sideWidth + 1;
-        int textureHeight = 2 * sideHeight + 1;
-        int centerWidth = width - 2 * sideWidth;
-        int centerHeight = height - 2 * sideHeight;
-        int leftEdgeEnd = left + sideHeight;
-        int rightEdgeStart = leftEdgeEnd + centerWidth;
-        int topEdgeEnd = top + sideWidth;
-        int bottomEdgeStart = topEdgeEnd + centerHeight;
-        minecraft.textureManager.bindTexture(BASE_BACKGROUND);
-        //Left Side
-        //Top Left Corner
-        blit(left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
-        //Left Middle
-        if (centerHeight > 0) {
-            blit(left, topEdgeEnd, sideWidth, centerHeight, 0, sideHeight, sideWidth, 1, textureWidth, textureHeight);
-        }
-        //Bottom Left Corner
-        blit(left, bottomEdgeStart, 0, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
-
-        //Middle
-        if (centerWidth > 0) {
-            //Top Middle
-            blit(leftEdgeEnd, top, centerWidth, sideHeight, sideWidth, 0, 1, sideHeight, textureWidth, textureHeight);
-            if (centerHeight > 0) {
-                //Center
-                blit(leftEdgeEnd, topEdgeEnd, centerWidth, centerHeight, sideWidth, sideHeight, 1, 1, textureWidth, textureHeight);
-            }
-            //Bottom Middle
-            blit(leftEdgeEnd, bottomEdgeStart, centerWidth, sideHeight, sideWidth, sideHeight + 1, 1, sideHeight, textureWidth, textureHeight);
-        }
-
-        //Right side
-        //Top Right Corner
-        blit(rightEdgeStart, top, sideWidth + 1, 0, sideWidth, sideHeight, textureWidth, textureHeight);
-        //Right Middle
-        if (centerHeight > 0) {
-            blit(rightEdgeStart, topEdgeEnd, sideWidth, centerHeight, sideWidth + 1, sideHeight, sideWidth, 1, textureWidth, textureHeight);
-        }
-        //Bottom Right Corner
-        blit(rightEdgeStart, bottomEdgeStart, sideWidth + 1, sideHeight + 1, sideWidth, sideHeight, textureWidth, textureHeight);
-    }
-
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
@@ -244,7 +189,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         MekanismRenderer.resetColor();
         ResourceLocation guiLocation = getGuiLocation();
         if (guiLocation == null) {
-            drawBackground();
+            if (width < 8 || height < 8) {
+                Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
+                return;
+            }
+            GuiUtils.renderExtendedTexture(BASE_BACKGROUND, 4, 4, getGuiLeft(), getGuiTop(), getXSize(), getYSize());
         } else {
             minecraft.textureManager.bindTexture(guiLocation);
             blit(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
@@ -263,7 +212,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     public void displayTooltips(List<ITextComponent> components, int xAxis, int yAxis) {
         //TODO: Evaluate if we want to use this for splitting the text
         List<String> toolTips = components.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
-        GuiUtils.drawHoveringText(toolTips, xAxis, yAxis, width, height, -1, font);
+        net.minecraftforge.fml.client.gui.GuiUtils.drawHoveringText(toolTips, xAxis, yAxis, width, height, -1, font);
     }
 
     @Override
@@ -316,5 +265,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     //blit(int x, int y, int textureX, int textureY, int width, int height);
     //blit(int x, int y, TextureAtlasSprite icon, int width, int height);
     //blit(int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
+    //blit(int x, int y, int zLevel, float textureX, float textureY, int width, int height, int textureWidth, int textureHeight);
     //blit(int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
+    //innerBlit(int x, int endX, int y, int endY, int zLevel, int width, int height, float textureX, float textureY, int textureWidth, int textureHeight);
 }

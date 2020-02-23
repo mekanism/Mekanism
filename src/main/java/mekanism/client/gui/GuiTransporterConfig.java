@@ -11,7 +11,7 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.button.ColorButton;
-import mekanism.client.gui.element.button.MekanismButton.IHoverable;
+import mekanism.client.gui.element.GuiElement.IHoverable;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.SideDataButton;
 import mekanism.common.Mekanism;

@@ -80,9 +80,4 @@ public class MekanismButton extends GuiElement {
         }
     }
 
-    @FunctionalInterface
-    public interface IHoverable {
-
-        void onHover(MekanismButton button, int mouseX, int mouseY);
-    }
 }
