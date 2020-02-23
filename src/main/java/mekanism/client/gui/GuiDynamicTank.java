@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import mekanism.client.gui.element.GuiContainerEditMode;
+import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -18,12 +19,14 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
 
     public GuiDynamicTank(MekanismTileContainer<TileEntityDynamicTank> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
         addButton(new GuiInnerScreen(this, 50, 23, 80, 42));
+        addButton(new GuiDownArrow(this, 150, 38));
         addButton(new GuiContainerEditMode(this, tile));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidTank, GaugeType.MEDIUM, this, 6, 13));
     }

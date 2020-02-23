@@ -47,9 +47,13 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     @Override
     public void init() {
         super.init();
+        initPreSlots();
         if (dynamicSlots) {
             addSlots();
         }
+    }
+
+    protected void initPreSlots() {
     }
 
     protected IHoverable getOnHover(ILangEntry translationHelper) {

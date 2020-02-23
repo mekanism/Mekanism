@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityInductionCell;
@@ -44,8 +45,12 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
 
     private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
-        inventorySlots.add(EnergyInventorySlot.charge(this, 146, 20));
-        inventorySlots.add(EnergyInventorySlot.discharge(this, 146, 51));
+        EnergyInventorySlot energyInputSlot;
+        EnergyInventorySlot energyOutputSlot;
+        inventorySlots.add(energyInputSlot = EnergyInventorySlot.charge(this, 146, 20));
+        inventorySlots.add(energyOutputSlot = EnergyInventorySlot.discharge(this, 146, 51));
+        energyInputSlot.setSlotOverlay(SlotOverlay.PLUS);
+        energyOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         return inventorySlots;
     }
 

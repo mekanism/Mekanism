@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.multiblock.SynchronizedData;
@@ -40,8 +41,10 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 
     private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
-        inventorySlots.add(FluidInventorySlot.input(fluidTank, fluid -> true, this, 146, 20));
+        FluidInventorySlot input;
+        inventorySlots.add(input = FluidInventorySlot.input(fluidTank, fluid -> true, this, 146, 20));
         inventorySlots.add(OutputInventorySlot.at(this, 146, 51));
+        input.setSlotType(ContainerSlotType.INPUT);
         return inventorySlots;
     }
 

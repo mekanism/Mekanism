@@ -32,14 +32,19 @@ public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher,
     }
 
     @Override
+    protected void initPreSlots() {
+        //Add the side holder before the slots, as it holds a couple of the slots
+        addButton(new GuiSideHolder(this, getXSize(), 66, 57));
+    }
+
+    @Override
     public void init() {
         super.init();
+        addButton(new GuiDownArrow(this, getXSize() + 8, 91));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiHorizontalPowerBar(this, tile, 115, 75));
-        addButton(new GuiSideHolder(this, getXSize(), 66, 57));
-        addButton(new GuiDownArrow(this, getXSize() + 8, 91));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.clientEnergyUsed)),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.STANDARD, this, 5, 4));
