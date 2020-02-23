@@ -75,11 +75,4 @@ public class GuiRotaryCondensentrator extends GuiMekanismTile<TileEntityRotaryCo
         drawString((tile.mode ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING).translate(), 6, (getYSize() - 94) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int displayInt = tile.getScaledEnergyLevel(52);
-        blit(getGuiLeft() + 116, getGuiTop() + 76, 176, 36, displayInt, 4);
-    }
 }

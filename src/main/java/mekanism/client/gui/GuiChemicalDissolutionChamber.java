@@ -39,12 +39,6 @@ public class GuiChemicalDissolutionChamber extends GuiMekanismTile<TileEntityChe
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        blit(getGuiLeft() + 116, getGuiTop() + 76, 176, 0, tile.getScaledEnergyLevel(52), 4);
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(MekanismLang.CHEMICAL_DISSOLUTION_CHAMBER_SHORT.translate(), 35, 4, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

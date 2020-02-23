@@ -152,8 +152,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     }
 
     private void addSlots() {
-        //TODO: Evaluate if we want any of the things that are currently colored due to being "extra" to not
-        // be colored, for example fluid input slot on the electrolytic separator
         for (Slot slot : container.inventorySlots) {
             if (slot instanceof InventoryContainerSlot) {
                 InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;

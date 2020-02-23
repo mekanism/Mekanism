@@ -132,11 +132,4 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int displayInt = tile.getScaledEnergyLevel(52);
-        blit(getGuiLeft() + 164, getGuiTop() + 25 + 52 - displayInt, 176, 52 - displayInt, 4, displayInt);
-    }
 }

@@ -106,7 +106,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
             if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
                 CableUtils.emit(this);
             }
-            int newScale = getScaledEnergyLevel(20);
+            int newScale = (int) (getEnergy() * 20 / getMaxEnergy());
             if (newScale != prevScale) {
                 Mekanism.packetHandler.sendUpdatePacket(this);
             }

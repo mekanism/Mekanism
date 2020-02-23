@@ -54,12 +54,6 @@ public class GuiChemicalWasher extends GuiMekanismTile<TileEntityChemicalWasher,
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        blit(getGuiLeft() + 116, getGuiTop() + 76, 176, 0, tile.getScaledEnergyLevel(52), 4);
-    }
-
-    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), 45, 4, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
