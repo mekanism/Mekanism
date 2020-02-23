@@ -9,7 +9,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.util.Constants.NBT;
 
-//TODO: Should this be rewritten to be a mekanism inventory
+//TODO: Rewrite this to be an IMekanismInventory
 public class InventoryPersonalChest extends Inventory {
 
     private final ItemStack itemStack;

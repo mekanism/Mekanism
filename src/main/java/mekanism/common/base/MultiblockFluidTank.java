@@ -30,7 +30,7 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
 
     @Override
     public int fill(@Nonnull FluidStack resource, FluidAction fluidAction) {
-        if (multiblock.structure == null || multiblock.getWorld().isRemote() || resource.isEmpty()) {
+        if (multiblock.structure == null || resource.isEmpty()) {
             return 0;
         }
         FluidStack fluidStack = getFluid();
@@ -39,16 +39,16 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
         }
         if (fluidStack.isEmpty()) {
             if (resource.getAmount() <= getCapacity()) {
-                if (fluidAction.execute()) {
+                if (fluidAction.execute() && !multiblock.getWorld().isRemote()) {
                     setFluid(fluidStack = resource.copy());
-                    if (resource.getAmount() > 0) {
+                    if (!resource.isEmpty()) {
                         MekanismUtils.saveChunk(multiblock);
                         updateValveData();
                     }
                 }
                 return resource.getAmount();
             }
-            if (fluidAction.execute()) {
+            if (fluidAction.execute() && !multiblock.getWorld().isRemote()) {
                 setFluid(fluidStack = resource.copy());
                 fluidStack.setAmount(getCapacity());
                 if (getCapacity() > 0) {
@@ -60,16 +60,16 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
         }
         int needed = getCapacity() - fluidStack.getAmount();
         if (resource.getAmount() <= needed) {
-            if (fluidAction.execute()) {
+            if (fluidAction.execute() && !multiblock.getWorld().isRemote()) {
                 fluidStack.setAmount(fluidStack.getAmount() + resource.getAmount());
-                if (resource.getAmount() > 0) {
+                if (!resource.isEmpty()) {
                     MekanismUtils.saveChunk(multiblock);
                     updateValveData();
                 }
             }
             return resource.getAmount();
         }
-        if (fluidAction.execute()) {
+        if (fluidAction.execute() && !multiblock.getWorld().isRemote()) {
             fluidStack.setAmount(fluidStack.getAmount() + getCapacity());
             if (needed > 0) {
                 MekanismUtils.saveChunk(multiblock);
@@ -94,7 +94,7 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
     @Nonnull
     @Override
     public FluidStack drain(@Nonnull FluidStack resource, FluidAction fluidAction) {
-        if (multiblock.structure == null || multiblock.getWorld().isRemote()) {
+        if (multiblock.structure == null) {
             return FluidStack.EMPTY;
         }
         FluidStack fluidStack = getFluid();
@@ -112,7 +112,7 @@ public abstract class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultibloc
         if (fluidStack.isEmpty()) {
             setFluid(FluidStack.EMPTY);
         }
-        if (drained.getAmount() > 0 && fluidAction.execute()) {
+        if (!drained.isEmpty() && fluidAction.execute() && !multiblock.getWorld().isRemote()) {
             MekanismUtils.saveChunk(multiblock);
             multiblock.sendPacketToRenderer();
         }
