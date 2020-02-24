@@ -12,13 +12,16 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected final int barY;
     protected final int barWidth;
     protected final int barHeight;
+    protected final int maxBarHeight;
 
-    protected GuiScrollableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height, int barXShift, int barYShift, int barWidth, int barHeight) {
+    protected GuiScrollableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height,
+          int barXShift, int barYShift, int barWidth, int barHeight, int maxBarHeight) {
         super(resource, gui, x, y, width, height);
         this.barX = this.x + barXShift;
         this.barY = this.y + barYShift;
         this.barWidth = barWidth;
         this.barHeight = barHeight;
+        this.maxBarHeight = maxBarHeight;
     }
 
     protected abstract int getMaxElements();
@@ -59,7 +62,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     }
 
     private int getMax() {
-        return height - 2 - barHeight;
+        return maxBarHeight - barHeight;
     }
 
     protected int getScroll() {

@@ -67,7 +67,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                                                             !tile.ownerUUID.equals(minecraft.player.getUniqueID()) ? 2 : tile.frequency.override ? 0 : 1));
         addButton(new GuiTextureOnlyElement(PUBLIC, this, 146, 33, 18, 18));
         addButton(new GuiTextureOnlyElement(PRIVATE, this, 146, 112, 18, 18));
-        addButton(scrollList = new GuiScrollList(this, 14, 14, 120, 40));
+        addButton(scrollList = new GuiScrollList(this, 13, 13, 122, 42));
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();
             if (tile.frequency != null && selection != -1) {

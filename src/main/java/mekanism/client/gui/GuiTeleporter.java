@@ -73,7 +73,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             }
         }, 158, 26));
         addButton(new GuiSlot(SlotType.NORMAL, this, 152, 6).with(SlotOverlay.POWER));
-        addButton(scrollList = new GuiScrollList(this, 28, 37, 120, 40));
+        addButton(scrollList = new GuiScrollList(this, 27, 36, 122, 42));
 
         addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;

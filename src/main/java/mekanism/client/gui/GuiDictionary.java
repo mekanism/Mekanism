@@ -33,7 +33,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     public void init() {
         super.init();
         addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5));
-        addButton(scrollList = new GuiScrollList(this, 8, 30, 160, 40));
+        addButton(scrollList = new GuiScrollList(this, 7, 29, 162, 42));
     }
 
     @Override

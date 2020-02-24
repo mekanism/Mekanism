@@ -5,9 +5,11 @@ import java.util.List;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.util.ResourceLocation;
 
 public class GuiScrollList extends GuiScrollableElement {
 
+    private static final ResourceLocation SCROLL_LIST = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "scroll_list.png");
     private static int TEXTURE_WIDTH = 6;
     private static int TEXTURE_HEIGHT = 6;
 
@@ -16,9 +18,8 @@ public class GuiScrollList extends GuiScrollableElement {
     private int selected = -1;
 
     public GuiScrollList(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "scroll_list.png"), gui, x, y, width, height, width - 5, 1, 4, 4);
-        //TODO: Include the proper values in our actual thing
-        innerScreen = new GuiInnerScreen(gui, x - 1, y - 1, width + 2, height + 2);
+        super(SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
+        innerScreen = new GuiInnerScreen(gui, x, y, width, height);
     }
 
     @Override
@@ -28,7 +29,7 @@ public class GuiScrollList extends GuiScrollableElement {
 
     @Override
     protected int getFocusedElements() {
-        return height / 10;
+        return (height - 2) / 10;
     }
 
     public boolean hasSelection() {
@@ -64,25 +65,25 @@ public class GuiScrollList extends GuiScrollableElement {
         minecraft.textureManager.bindTexture(getResource());
         //Draw Selected
         int scrollIndex = getCurrentSelection();
-        if (selected != -1 && selected >= scrollIndex && selected <= scrollIndex + getFocusedElements() - 1) {
-            blit(x, y + (selected - scrollIndex) * 10, width, 10, 4, 2, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        int focusedElements = getFocusedElements();
+        if (selected != -1 && selected >= scrollIndex && selected <= scrollIndex + focusedElements - 1) {
+            blit(x + 1, y + 1 + (selected - scrollIndex) * 10, barX - x, 10, 4, 2, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
         //Draw Scroll
-        int xStart = x + width - 6;
         //Top border
-        blit(xStart, y, 0, 0, 6, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(barX - 1, barY - 1, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Middle border
-        blit(xStart, y + 1, 6, height - 2, 0, 1, 6, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(barX - 1, barY, 6, maxBarHeight, 0, 1, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Bottom border
-        blit(xStart, y + height - 1, 0, 0, 6, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(barX - 1, y + maxBarHeight + 2, 0, 0, TEXTURE_WIDTH, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Scroll bar
-        blit(xStart + 1, y + 1 + getScroll(), 0, 2, 4, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(barX, barY + getScroll(), 0, 2, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         //Render the text into the entries
         if (!textEntries.isEmpty()) {
-            for (int i = 0; i < getFocusedElements(); i++) {
+            for (int i = 0; i < focusedElements; i++) {
                 int index = scrollIndex + i;
                 if (index <= textEntries.size() - 1) {
-                    renderScaledText(textEntries.get(index), x + 1, y + 1 + 10 * i, 0x00CD00, width - 6);
+                    renderScaledText(textEntries.get(index), x + 2, y + 2 + 10 * i, 0x00CD00, barX - x - 2);
                 }
             }
         }
@@ -90,12 +91,13 @@ public class GuiScrollList extends GuiScrollableElement {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (mouseX >= x && mouseX <= x + width - 6 && mouseY >= y && mouseY <= y + height) {
+        if (mouseX >= x + 1 && mouseX < barX - 1 && mouseY >= y + 1 && mouseY < y + height - 1) {
             int index = getCurrentSelection();
             clearSelection();
             for (int i = 0; i < getFocusedElements(); i++) {
                 if (index + i <= textEntries.size() - 1) {
-                    if (mouseY >= y + 10 * i && mouseY <= y + 10 + 10 * i) {
+                    int shiftedY = y + 10 * i;
+                    if (mouseY >= shiftedY + 1 && mouseY <= shiftedY + 11) {
                         selected = index + i;
                         break;
                     }
@@ -108,9 +110,6 @@ public class GuiScrollList extends GuiScrollableElement {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (isMouseOver(mouseX, mouseY)) {
-            return adjustScroll(delta);
-        }
-        return false;
+        return isMouseOver(mouseX, mouseY) && adjustScroll(delta);
     }
 }

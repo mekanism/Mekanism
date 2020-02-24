@@ -50,7 +50,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         super.init();
         addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
         addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
-        addButton(scrollList = new GuiScrollList(this, 28, 37, 120, 40));
+        addButton(scrollList = new GuiScrollList(this, 27, 36, 122, 42));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
