@@ -640,7 +640,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Miner
         add(MekanismLang.MINER_INSUFFICIENT_BUFFER, "Insufficient energy buffer!");
         add(MekanismLang.MINER_BUFFER_FREE, "Free Buffer: %s");
-        add(MekanismLang.MINER_TO_MINE, "To mine: %s");
+        add(MekanismLang.MINER_TO_MINE, "To mine:");
         add(MekanismLang.MINER_SILK_ENABLED, "Silk: %s");
         add(MekanismLang.MINER_AUTO_PULL, "Pull: %s");
         add(MekanismLang.MINER_RUNNING, "Running");

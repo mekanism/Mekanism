@@ -709,7 +709,7 @@
   "miner.mekanism.searching": "搜索中",
   "miner.mekanism.silk_enabled": "精准采集: %s",
   "miner.mekanism.silk_touch": "精准采集",
-  "miner.mekanism.to_mine": "挖掘: %s",
+  "miner.mekanism.to_mine": "挖掘:",
   "miner.mekanism.visuals": "视觉显示: %s",
   "miner.mekanism.visuals.too_big": "范围太大无法显示",
   "miner.mekanism.well": "一切正常!",

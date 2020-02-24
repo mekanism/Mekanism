@@ -710,7 +710,7 @@
   "miner.mekanism.searching": "Searching",
   "miner.mekanism.silk_enabled": "Silk: %s",
   "miner.mekanism.silk_touch": "Silk touch",
-  "miner.mekanism.to_mine": "To mine: %s",
+  "miner.mekanism.to_mine": "To mine:",
   "miner.mekanism.visuals": "Visuals: %s",
   "miner.mekanism.visuals.too_big": "Radius too big to display visuals",
   "miner.mekanism.well": "All is well!",
