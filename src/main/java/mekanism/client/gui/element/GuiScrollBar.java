@@ -1,8 +1,6 @@
 package mekanism.client.gui.element;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -15,20 +13,23 @@ public class GuiScrollBar extends GuiTexturedElement {
     private static final int TEXTURE_HEIGHT = 15;
 
     private final GuiElementHolder holder;
-    private final BooleanSupplier canScrollSupplier;
-    private final DoubleSupplier scrollGetter;
-    private final DoubleConsumer scrollSetter;
+    private final IntSupplier maxElements;
+    private final IntSupplier focusedElements;
+    private double scroll;
     private int dragOffset;
 
-    public GuiScrollBar(IGuiWrapper gui, int x, int y, int height, BooleanSupplier canScrollSupplier, DoubleSupplier scrollGetter, DoubleConsumer scrollSetter) {
+    public GuiScrollBar(IGuiWrapper gui, int x, int y, int height, IntSupplier maxElements, IntSupplier focusedElements) {
         super(BAR, gui, x, y, 14, height);
         holder = new GuiElementHolder(gui, x, y, 14, height);
-        this.canScrollSupplier = canScrollSupplier;
-        this.scrollGetter = scrollGetter;
-        this.scrollSetter = scrollSetter;
+        this.maxElements = maxElements;
+        this.focusedElements = focusedElements;
         //Note: scroll wheel is handled by the class that adds the scroll bar
         // This is because it is a large scroll bar and makes more sense to have it be able to be used with the scroll wheel
         // from anywhere on the gui
+    }
+
+    private boolean needsScrollBars() {
+        return maxElements.getAsInt() > focusedElements.getAsInt();
     }
 
     @Override
@@ -36,7 +37,7 @@ public class GuiScrollBar extends GuiTexturedElement {
         //Draw Black and border
         holder.renderButton(mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        blit(x + 1, y + 1 + getScroll(), canScrollSupplier.getAsBoolean() ? 0 : 12, 0, 12, TEXTURE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        blit(x + 1, y + 1 + getScroll(), needsScrollBars() ? 0 : 12, 0, 12, TEXTURE_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     @Override
@@ -44,20 +45,20 @@ public class GuiScrollBar extends GuiTexturedElement {
         int scroll = getScroll();
         int yStart = y + 1 + scroll;
         if (mouseX >= x + 1 && mouseX <= x + 13 && mouseY >= yStart && mouseY <= yStart + TEXTURE_HEIGHT) {
-            if (canScrollSupplier.getAsBoolean()) {
+            if (needsScrollBars()) {
                 double yAxis = mouseY - guiObj.getTop();
                 dragOffset = (int) (yAxis - (scroll + 18));
             } else {
-                scrollSetter.accept(0);
+                this.scroll = 0;
             }
         }
     }
 
     @Override
     public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
-        if (canScrollSupplier.getAsBoolean()) {
+        if (needsScrollBars()) {
             double yAxis = mouseY - guiObj.getTop();
-            scrollSetter.accept(Math.min(Math.max((yAxis - 18 - dragOffset) / (float) getMax(), 0), 1));
+            scroll = Math.min(Math.max((yAxis - 18 - dragOffset) / (float) getMax(), 0), 1);
         }
     }
 
@@ -73,6 +74,35 @@ public class GuiScrollBar extends GuiTexturedElement {
     private int getScroll() {
         //Calculate thumb position along scrollbar
         int max = getMax();
-        return Math.max(Math.min((int) (scrollGetter.getAsDouble() * max), max), 0);
+        return Math.max(Math.min((int) (scroll * max), max), 0);
+    }
+
+    public int getCurrentSelection() {
+        if (needsScrollBars()) {
+            int size = maxElements.getAsInt() - focusedElements.getAsInt();
+            return size - (int) ((size + 0.5) * scroll);
+        }
+        return 0;
+    }
+
+    public boolean adjustScroll(double delta) {
+        if (delta != 0 && needsScrollBars()) {
+            int elements = maxElements.getAsInt() - focusedElements.getAsInt();
+            if (elements > 0) {
+                if (delta > 0) {
+                    delta = 1;
+                } else {
+                    delta = -1;
+                }
+                scroll = (float) (scroll - delta / elements);
+                if (scroll < 0.0F) {
+                    scroll = 0.0F;
+                } else if (scroll > 1.0F) {
+                    scroll = 1.0F;
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

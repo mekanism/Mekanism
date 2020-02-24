@@ -28,7 +28,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     private Object2IntMap<Block> frequencies = new Object2IntOpenHashMap<>();
     private MekanismButton upButton;
     private MekanismButton downButton;
-    private double scroll;
+    private GuiScrollBar scrollBar;
 
     public GuiSeismicReader(SeismicReaderContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -46,48 +46,43 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         super.init();
         addButton(new GuiInnerScreen(this, 7, 11, 63, 49));
         addButton(new GuiInnerScreen(this, 74, 11, 51, 159));
+        addButton(scrollBar = new GuiScrollBar(this, 126, 25, 131, () -> blockList.size(), () -> 1));
         addButton(new GuiArrowSelection(this, 76, 81, () -> {
-            int currentLayer = getCurrentLayer();
-            if (currentLayer - 1 >= 0) {
-                return blockList.get(currentLayer - 1).getBlock().getNameTextComponent();
+            int currentLayer = scrollBar.getCurrentSelection();
+            if (currentLayer >= 0) {
+                return blockList.get(currentLayer).getBlock().getNameTextComponent();
             }
             return null;
         }));
-        //Scroll bar
-        addButton(new GuiScrollBar(this, 126, 25, 131, this::needsScrollBars, () -> scroll, value -> {
-            scroll = value;
-            updateButtons();
-        }));
         addButton(upButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 11, 14,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> adjustScroll(1)));
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> scrollBar.adjustScroll(1)));
         addButton(downButton = new MekanismImageButton(this, getGuiLeft() + 126, getGuiTop() + 156, 14,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> adjustScroll(-1)));
-        updateButtons();
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> scrollBar.adjustScroll(-1)));
+        updateEnabledButtons();
     }
 
-    private void updateButtons() {
-        upButton.active = scroll > 0;
-        downButton.active = scroll < 1;
+    @Override
+    public void tick() {
+        super.tick();
+        updateEnabledButtons();
     }
 
-    private int getCurrentLayer() {
-        if (needsScrollBars()) {
-            int size = blockList.size() - 1;
-            return size - (int) ((size - 0.5) * scroll);
-        }
-        return 1;
+    private void updateEnabledButtons() {
+        int currentLayer = scrollBar.getCurrentSelection();
+        upButton.active = currentLayer + 1 < blockList.size();
+        downButton.active = currentLayer > 0;
     }
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        int currentLayer = getCurrentLayer();
+        int currentLayer = scrollBar.getCurrentSelection();
         //Render the layer text scaled, so that it does not start overlapping past 100
         renderScaledText(MekanismLang.GENERIC.translate(currentLayer), 111, 87, 0x00CD00, 13);
 
         //TODO: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks
         for (int i = 0; i < 9; i++) {
-            int layer = currentLayer + (i - 5);
+            int layer = currentLayer + (i - 4);
             if (0 <= layer && layer < blockList.size()) {
                 BlockState state = blockList.get(layer);
                 ItemStack stack = new ItemStack(state.getBlock());
@@ -111,8 +106,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         }
         int frequency = 0;
         // Get the name from the stack and render it
-        if (currentLayer - 1 >= 0) {
-            Block block = blockList.get(currentLayer - 1).getBlock();
+        if (currentLayer >= 0) {
+            Block block = blockList.get(currentLayer).getBlock();
             ITextComponent displayName = block.getNameTextComponent();
             renderScaledText(displayName, 10, 16, 0x00CD00, 57);
             frequency = frequencies.computeIntIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
@@ -128,32 +123,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         blockList.clear();
     }
 
-    private boolean needsScrollBars() {
-        return blockList.size() > 1;
-    }
-
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (delta != 0 && needsScrollBars()) {
-            adjustScroll(delta);
-            return true;
-        }
-        return super.mouseScrolled(mouseX, mouseY, delta);
-    }
-
-    private void adjustScroll(double delta) {
-        int j = blockList.size() - 1;
-        if (delta > 0) {
-            delta = 1;
-        } else {
-            delta = -1;
-        }
-        scroll = (float) (scroll - delta / j);
-        if (scroll < 0.0F) {
-            scroll = 0.0F;
-        } else if (scroll > 1.0F) {
-            scroll = 1.0F;
-        }
-        updateButtons();
+        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 }

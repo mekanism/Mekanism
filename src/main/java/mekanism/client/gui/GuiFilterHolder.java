@@ -34,10 +34,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
     private Map<ITagFilter<?>, StackData> oreDictStacks = new Object2ObjectOpenHashMap<>();
     private Map<IModIDFilter<?>, StackData> modIDStacks = new Object2ObjectOpenHashMap<>();
-    /**
-     * Amount scrolled in filter list (0 = top, 1 = bottom)
-     */
-    private double scroll;
+    private GuiScrollBar scrollBar;
     private int stackSwitch;
 
     public GuiFilterHolder(CONTAINER container, PlayerInventory inv, ITextComponent title) {
@@ -52,11 +49,10 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         addButton(new GuiElementHolder(this, 55, 17, 98, 118));
         //new filter button border
         addButton(new GuiElementHolder(this, 55, 135, 98, 22));
-        //Scroll bar
-        addButton(new GuiScrollBar(this, 153, 17, 140, this::needsScrollBars, () -> scroll, value -> scroll = value));
+        addButton(scrollBar = new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, this::getFilterIndex, this::getFilters, this::upButtonPress,
+            addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, this::upButtonPress,
                   this::downButtonPress, this::onClick));
         }
     }
@@ -70,15 +66,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected abstract void upButtonPress(int index);
 
     protected abstract void downButtonPress(int index);
-
-    // Get index to displayed filters
-    private int getFilterIndex() {
-        if (needsScrollBars()) {
-            int scrollSize = getFilters().size() - FILTER_COUNT;
-            return (int) ((scrollSize + 0.5) * scroll);
-        }
-        return 0;
-    }
 
     @Override
     public void tick() {
@@ -119,7 +106,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         HashList<FILTER> filters = getFilters();
 
         for (int i = 0; i < FILTER_COUNT; i++) {
-            FILTER filter = filters.get(getFilterIndex() + i);
+            FILTER filter = filters.get(scrollBar.getCurrentSelection() + i);
             if (filter instanceof ITagFilter) {
                 oreDictFilters.add((ITagFilter<?>) filter);
             } else if (filter instanceof IModIDFilter) {
@@ -141,7 +128,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         //TODO: Eventually we may want to move the item drawing into FilterButton, but for now it does not matter
         HashList<? extends IFilter<?>> filters = getFilters();
         for (int i = 0; i < FILTER_COUNT; i++) {
-            IFilter<?> filter = filters.get(getFilterIndex() + i);
+            IFilter<?> filter = filters.get(scrollBar.getCurrentSelection() + i);
             if (filter != null) {
                 int yStart = i * 29 + 18;
                 if (filter instanceof IItemStackFilter) {
@@ -168,22 +155,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (delta != 0 && needsScrollBars()) {
-            int j = getFilters().size() - FILTER_COUNT;
-            if (delta > 0) {
-                delta = 1;
-            } else {
-                delta = -1;
-            }
-            scroll = (float) (scroll - delta / j);
-            if (scroll < 0.0F) {
-                scroll = 0.0F;
-            } else if (scroll > 1.0F) {
-                scroll = 1.0F;
-            }
-            return true;
-        }
-        return super.mouseScrolled(mouseX, mouseY, delta);
+        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     private void updateStackList(ITagFilter<?> filter) {

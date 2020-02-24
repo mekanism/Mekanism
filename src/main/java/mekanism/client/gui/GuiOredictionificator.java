@@ -33,7 +33,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
     private static final int FILTER_COUNT = 3;
 
     private Map<OredictionificatorFilter, ItemStack> renderStacks = new Object2ObjectOpenHashMap<>();
-    private double scroll;
+    private GuiScrollBar scrollBar;
 
     public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -48,8 +48,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         addButton(new GuiElementHolder(this, 9, 17, 144, 68));
         //new filter button border
         addButton(new GuiElementHolder(this, 9, 85, 144, 22));
-        //Scroll bar
-        addButton(new GuiScrollBar(this, 153, 17, 90, () -> getFilters().size() > FILTER_COUNT, () -> scroll, value -> scroll = value));
+        addButton(scrollBar = new GuiScrollBar(this, 153, 17, 90, () -> getFilters().size(), () -> FILTER_COUNT));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiProgress(() -> tile.didProcess ? 1 : 0, ProgressType.LARGE_RIGHT, this, 64, 119));
@@ -57,7 +56,7 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.OREDICTIONIFICATOR_FILTER, tile.getPos(), -1))));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addButton(new FilterButton(this, 10, 18 + i * 22, 142, 22, i, this::getFilterIndex, this::getFilters, this::onClick));
+            addButton(new FilterButton(this, 10, 18 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, this::getFilters, this::onClick));
         }
     }
 
@@ -71,19 +70,15 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         }
     }
 
-    private int getFilterIndex() {
-        int size = getFilters().size();
-        return size <= FILTER_COUNT ? 0 : (int) (size * scroll - (3F / (float) size) * scroll);
-    }
-
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         HashList<OredictionificatorFilter> filters = getFilters();
         for (int i = 0; i < FILTER_COUNT; i++) {
-            if (filters.get(getFilterIndex() + i) != null) {
-                OredictionificatorFilter filter = filters.get(getFilterIndex() + i);
+            int index = scrollBar.getCurrentSelection() + i;
+            if (filters.get(index) != null) {
+                OredictionificatorFilter filter = filters.get(index);
                 if (!renderStacks.containsKey(filter)) {
                     updateRenderStacks();
                 }
@@ -94,6 +89,11 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     private void updateRenderStacks() {
