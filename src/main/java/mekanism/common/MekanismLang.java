@@ -6,7 +6,6 @@ import net.minecraft.util.Util;
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy pasted all over the place
     INVENTORY("container.inventory"),
-    REPAIR("container.repair"),
     REPAIR_COST("container.repair.cost"),
     REPAIR_EXPENSIVE("container.repair.expensive"),
     //Gui lang strings

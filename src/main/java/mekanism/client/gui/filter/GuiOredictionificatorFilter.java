@@ -8,7 +8,6 @@ import mekanism.client.gui.element.GuiSlot;
 import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
@@ -17,7 +16,6 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityOredictionificator;
 import mekanism.common.tile.TileEntityOredictionificator.OredictionificatorFilter;
-import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -26,6 +24,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiOredictionificatorFilter extends GuiTextFilterBase<OredictionificatorFilter, TileEntityOredictionificator, OredictionificatorFilterContainer> {
+
+    private GuiSlot slot;
 
     public GuiOredictionificatorFilter(OredictionificatorFilterContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -43,7 +43,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
     @Override
     protected void addButtons() {
         addButton(new GuiInnerScreen(this, 129, 47, 14, 14));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 44, 18));
+        addButton(slot = new GuiSlot(SlotType.NORMAL, this, 44, 18));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 31, getGuiTop() + 62, 54, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
                 setText();
@@ -73,7 +73,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 }
                 updateRenderStack();
             }
-        }));
+        }, getOnHover(MekanismLang.LAST_ITEM)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 63, getGuiTop() + 21, 12, getButtonLocation("right"), () -> {
             if (filter.hasFilter()) {
                 List<Item> matchingItems = filter.getMatchingItems();
@@ -84,7 +84,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
                 }
                 updateRenderStack();
             }
-        }));
+        }, getOnHover(MekanismLang.NEXT_ITEM)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 130, getGuiTop() + 48, 12, getButtonLocation("checkmark"), this::setText));
     }
 
@@ -107,7 +107,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
         updateButtons();
     }
 
-    public void updateButtons() {
+    private void updateButtons() {
         saveButton.active = filter.hasFilter();
         deleteButton.active = !isNew;
     }
@@ -131,29 +131,14 @@ public class GuiOredictionificatorFilter extends GuiTextFilterBase<Oredictionifi
             renderScaledText(filter.getFilterText(), 32, 38, 0x404040, 111);
         }
         renderItem(renderStack, 45, 19);
-        //TODO: Convert to GuiElement
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
-        if (xAxis >= 31 && xAxis <= 43 && yAxis >= 21 && yAxis <= 33) {
-            displayTooltip(MekanismLang.LAST_ITEM.translate(), xAxis, yAxis);
-        } else if (xAxis >= 63 && xAxis <= 75 && yAxis >= 21 && yAxis <= 33) {
-            displayTooltip(MekanismLang.NEXT_ITEM.translate(), xAxis, yAxis);
-        } else if (xAxis >= 33 && xAxis <= 129 && yAxis >= 48 && yAxis <= 60) {
+        if (text.isMouseOver(mouseX, mouseY)) {
             displayTooltip(MekanismLang.TAG_COMPAT.translate(), xAxis, yAxis);
-        } else if (xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35) {
-            if (!renderStack.isEmpty()) {
-                displayTooltip(TextComponentUtil.build(renderStack, MekanismLang.GENERIC_PARENTHESIS.translate(renderStack.getItem().getRegistryName().getNamespace())), xAxis, yAxis);
-            }
+        } else if (xAxis >= 45 && xAxis <= 61 && yAxis >= 19 && yAxis <= 35 && !renderStack.isEmpty()) {
+            displayTooltip(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(renderStack, renderStack.getItem().getRegistryName().getNamespace()), xAxis, yAxis);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //TODO: Figure out what the parameters do
-        text.renderButton(0, 0, 0);
-        MekanismRenderer.resetColor();
     }
 
     @Override

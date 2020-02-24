@@ -86,11 +86,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         return font.drawString(text, x, y, color);
     }
 
-    protected void drawCenteredText(ITextComponent component, int y, int color) {
-        //TODO: Go back and evaluate to make sure that the left margin is correct
-        drawCenteredText(component, 0, y, color);
-    }
-
     protected void drawCenteredText(ITextComponent component, int leftMargin, int y, int color) {
         drawCenteredText(component, leftMargin, 0, y, color);
     }
@@ -105,9 +100,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         renderScaledText(component.getFormattedText(), x, y, color, maxX);
     }
 
-    /**
-     * returns scale
-     */
     public void renderScaledText(String text, int x, int y, int color, int maxX) {
         int length = getStringWidth(text);
         if (length <= maxX) {
@@ -127,7 +119,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
-        //TODO: Does color need to be reset before this
         for (Widget widget : this.buttons) {
             if (widget instanceof GuiElement) {
                 //We let our gui element handle drawing any tooltip it may have when it is drawing the foreground

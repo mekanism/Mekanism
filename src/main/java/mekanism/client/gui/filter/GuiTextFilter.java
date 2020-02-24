@@ -67,12 +67,8 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        //TODO: Figure out what the parameters do
-        text.renderButton(0, 0, 0);
-        if (tile instanceof TileEntityDigitalMiner) {
-            if (overReplaceOutput(xAxis, yAxis)) {
-                fill(getGuiLeft() + 149, getGuiTop() + 19, getGuiLeft() + 165, getGuiTop() + 35, 0x80FFFFFF);
-            }
+        if (tile instanceof TileEntityDigitalMiner && overReplaceOutput(xAxis, yAxis)) {
+            fill(getGuiLeft() + 149, getGuiTop() + 19, getGuiLeft() + 165, getGuiTop() + 35, 0x80FFFFFF);
         }
         //This is needed here and not just inside the if statements due to the text box drawing
         MekanismRenderer.resetColor();

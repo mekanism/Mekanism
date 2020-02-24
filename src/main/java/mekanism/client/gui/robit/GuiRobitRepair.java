@@ -48,7 +48,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         RenderSystem.disableBlend();
-        drawString(MekanismLang.REPAIR.translate(), 60, 6, 0x404040);
+        drawString(MekanismLang.ROBIT_REPAIR.translate(), 60, 6, 0x404040);
         int maximumCost = container.getMaximumCost();
         if (maximumCost > 0) {
             int k = 0x80FF20;

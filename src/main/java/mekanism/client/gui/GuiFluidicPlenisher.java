@@ -50,7 +50,6 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
         drawString(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
         drawString(MekanismLang.FINISHED.translate(YesNo.of(tile.finishedCalc)), 51, 35, 0x00CD00);
-        //TODO: Convert to GuiElement
         FluidStack fluid = tile.fluidTank.getFluid();
         if (fluid.isEmpty()) {
             drawString(MekanismLang.NO_FLUID.translate(), 51, 44, 0x00CD00);
