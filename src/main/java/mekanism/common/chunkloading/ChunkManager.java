@@ -1,5 +1,6 @@
 package mekanism.common.chunkloading;
 
+import java.util.Iterator;
 import java.util.function.LongConsumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -65,12 +66,15 @@ public class ChunkManager extends WorldSavedData {
         savedData.chunks.keySet().forEach((LongConsumer) key -> {
             //option 1 - for each position, find TE and get it to refresh chunks
             Chunk chunk = world.getChunk((int) key, (int) (key >> 32));
-            for (BlockPos blockPos : savedData.chunks.get(key)) {
+            for (Iterator<BlockPos> iterator = savedData.chunks.get(key).iterator(); iterator.hasNext(); ) {
+                BlockPos blockPos = iterator.next();
                 TileEntity tileEntity = chunk.getTileEntity(blockPos);
                 if (tileEntity instanceof IChunkLoader) {
                     ((IChunkLoader) tileEntity).getChunkLoader().refreshChunkTickets();
                 } else {
                     LOGGER.warn("Tile at {} was either null or not an IChunkLoader?! Tile: {}", blockPos, tileEntity);
+                    iterator.remove();
+                    savedData.markDirty();
                 }
             }
 
