@@ -10,25 +10,20 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.Slurry;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiCrystallizerScreen extends GuiTexturedElement {
 
-    private static final ResourceLocation SLOT = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "ore_slot.png");
-    private static final int SLOT_TEXTURE_WIDTH = 18;
-    private static final int SLOT_TEXTURE_HEIGHT = 18;
+    private static final SlotType SLOT = SlotType.ORE;
 
     private final GuiInnerScreen innerScreen;
     private final int slotX;
-    private final int slotY;
     private List<ItemStack> iterStacks = new ArrayList<>();
     private ItemStack renderStack = ItemStack.EMPTY;
     private int stackSwitch = 0;
@@ -38,11 +33,10 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     private IOreInfo oreInfo;
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, IOreInfo oreInfo) {
-        super(SLOT, gui, x, y, 121, 42);
+        super(SLOT.getTexture(), gui, x, y, 121, 42);
         innerScreen = new GuiInnerScreen(gui, x, y, width, height);
         this.oreInfo = oreInfo;
-        this.slotX = this.x + 121 - SLOT_TEXTURE_WIDTH;
-        this.slotY = this.y;
+        this.slotX = this.x + 121 - SLOT.getWidth();
         active = false;
     }
 
@@ -69,9 +63,9 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         innerScreen.renderButton(mouseX, mouseY, partialTicks);
         minecraft.textureManager.bindTexture(getResource());
-        blit(slotX, slotY, 0, 0, SLOT_TEXTURE_WIDTH, SLOT_TEXTURE_HEIGHT, SLOT_TEXTURE_WIDTH, SLOT_TEXTURE_HEIGHT);
+        blit(slotX, y, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
         if (!renderStack.isEmpty()) {
-            guiObj.renderItem(renderStack, slotX + 1, slotY + 1);
+            guiObj.renderItem(renderStack, slotX + 1, y + 1);
         }
     }
 

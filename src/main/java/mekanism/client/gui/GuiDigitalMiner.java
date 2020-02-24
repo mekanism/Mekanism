@@ -23,8 +23,6 @@ import mekanism.common.network.PacketGuiButtonPress;
 import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityDigitalMiner;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
@@ -113,12 +111,13 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         drawString(MekanismLang.MINER_TO_MINE.translate(), 9, 59, 0x00CD00);
         drawString(TextComponentUtil.build(tile.clientToMine), 9, 68, 0x00CD00);
 
-        if (!tile.missingStack.isEmpty()) {
+        if (tile.missingStack.isEmpty()) {
+            //TODO: Gui element
+            minecraft.getTextureManager().bindTexture(SlotOverlay.CHECK.getTexture());
+            blit(143, 26, 0, 0, SlotOverlay.CHECK.getWidth(), SlotOverlay.CHECK.getHeight(), SlotOverlay.CHECK.getWidth(), SlotOverlay.CHECK.getHeight());
+        } else {
             drawColorIcon(144, 27, EnumColor.DARK_RED, 0.8F);
             renderItem(tile.missingStack, 144, 27);
-        } else {
-            minecraft.getTextureManager().bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"));
-            blit(143, 26, SlotOverlay.CHECK.textureX, SlotOverlay.CHECK.textureY, 18, 18);
         }
 
         int xAxis = mouseX - getGuiLeft();

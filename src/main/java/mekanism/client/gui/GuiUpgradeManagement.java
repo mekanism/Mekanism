@@ -6,8 +6,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.Upgrade;
+import mekanism.client.gui.element.GuiElementHolder;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -37,11 +41,17 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
 
     public GuiUpgradeManagement(MekanismTileContainer<TileEntityMekanism> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
+        //addButton(new GuiElementHolder(this, 24, 6, 66, 50));
+        addButton(new GuiElementHolder(this, 24, 56, 125, 14));
+        addButton(new GuiInnerScreen(this, 90, 6, 59, 50));
+        addButton(new GuiProgress(() -> tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, this, 154, 26));
+
         addButton(new MekanismImageButton(this, getGuiLeft() + 6, getGuiTop() + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile.getPos()))));
         addButton(removeButton = new MekanismImageButton(this, getGuiLeft() + 136, getGuiTop() + 57, 12, getButtonLocation("remove_upgrade"), () -> {
@@ -133,8 +143,6 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        int displayInt = tile.getComponent().getScaledUpgradeProgress(14);
-        blit(getGuiLeft() + 154, getGuiTop() + 26, 176, 28, 10, displayInt);
         if (selectedType != null && tile.getComponent().getUpgrades(selectedType) == 0) {
             selectedType = null;
         }

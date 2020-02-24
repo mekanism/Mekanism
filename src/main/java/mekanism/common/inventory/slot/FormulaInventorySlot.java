@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.item.ItemCraftingFormula;
 import net.minecraft.item.ItemStack;
 
@@ -17,5 +18,6 @@ public class FormulaInventorySlot extends BasicInventorySlot {
 
     private FormulaInventorySlot(@Nullable IMekanismInventory inventory, int x, int y) {
         super(manualOnly, alwaysTrueBi, validator, inventory, x, y);
+        setSlotOverlay(SlotOverlay.FORMULA);
     }
 }

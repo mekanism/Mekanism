@@ -85,8 +85,8 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
         return upgradeSlot;
     }
 
-    public int getScaledUpgradeProgress(int i) {
-        return upgradeTicks * i / UPGRADE_TICKS_REQUIRED;
+    public double getScaledUpgradeProgress() {
+        return upgradeTicks / (double) UPGRADE_TICKS_REQUIRED;
     }
 
     public int getUpgrades(Upgrade upgrade) {

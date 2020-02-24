@@ -13,6 +13,7 @@ public enum ProgressType {
     SMALL_LEFT(28, 8, false, "small_left.png"),
     BI(16, 6, false, "bidirectional.png"),
     FLAME(13, 13, true, "flame.png"),
+    INSTALLING(10, 14, true, "installing.png"),
     DOWN(8, 20, true, "down.png");
 
     private final int width;

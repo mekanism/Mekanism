@@ -9,6 +9,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.base.IUpgradeItem;
+import mekanism.common.inventory.container.slot.SlotOverlay;
 import net.minecraft.item.Item;
 
 @FieldsAreNonnullByDefault
@@ -33,6 +34,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
             return false;
         }, stack -> stack.getItem() instanceof IUpgradeItem, inventory, 154, 7);
         this.supportedTypes = supportedTypes;
+        setSlotOverlay(SlotOverlay.UPGRADE);
     }
 
     public Set<Upgrade> getSupportedUpgrade() {

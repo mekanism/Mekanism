@@ -5,8 +5,8 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiSlot;
-import mekanism.client.gui.element.GuiSlot.SlotType;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -109,8 +109,10 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
             blit(getGuiLeft() + 86, getGuiTop() + 43, 176, 48, display, 16);
         }
 
-        minecraft.textureManager.bindTexture(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "slot.png"));
-        blit(getGuiLeft() + 90, getGuiTop() + 25, tile.isRecipe ? 2 : 20, 39, 14, 12);
+        //TODO: Gui element
+        SlotOverlay overlay = tile.isRecipe ? SlotOverlay.CHECK : SlotOverlay.X;
+        minecraft.textureManager.bindTexture(overlay.getTexture());
+        blit(getGuiLeft() + 88, getGuiTop() + 22, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
 
         if (tile.formula != null) {
             for (int i = 0; i < 9; i++) {
