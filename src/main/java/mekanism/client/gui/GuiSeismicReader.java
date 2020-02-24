@@ -72,7 +72,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private int getCurrentLayer() {
         if (needsScrollBars()) {
-            int size = blockList.size();
+            int size = blockList.size() - 1;
             return size - (int) ((size - 0.5) * scroll);
         }
         return 1;
