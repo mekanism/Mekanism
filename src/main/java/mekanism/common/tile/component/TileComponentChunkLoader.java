@@ -24,9 +24,12 @@ import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
 import net.minecraftforge.common.util.Constants.NBT;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoader> implements ITileComponent {
 
+    private static final Logger LOGGER = LogManager.getLogger("Mekanism_TileComponentChunkLoader");
     private static final TicketType<TileComponentChunkLoader<?>> TICKET_TYPE = TicketType.create("mekanism:chunk_loader", Comparator.comparing(tccl -> tccl.tile.getPos()));
     /**
      * Not 100% sure what this is, but 2 means the ticket has the same value as a forceChunk()
@@ -58,6 +61,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     private void releaseChunkTickets(@Nonnull World world) {
+        LOGGER.info("Attemptying to remove chunk tickets. Pos: {} World: {}", prevPos, world);
         ServerChunkProvider chunkProvider = (ServerChunkProvider) world.getChunkProvider();
         Iterator<ChunkPos> chunkIt = chunkSet.iterator();
         ChunkManager manager = ChunkManager.getInstance((ServerWorld) world);
