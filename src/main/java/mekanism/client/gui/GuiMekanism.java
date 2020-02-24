@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
@@ -175,17 +174,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
-        ResourceLocation guiLocation = getGuiLocation();
-        if (guiLocation == null) {
-            if (width < 8 || height < 8) {
-                Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
-                return;
-            }
-            GuiUtils.renderExtendedTexture(BASE_BACKGROUND, 4, 4, getGuiLeft(), getGuiTop(), getXSize(), getYSize());
-        } else {
-            minecraft.textureManager.bindTexture(guiLocation);
-            blit(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
+        if (width < 8 || height < 8) {
+            Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
+            return;
         }
+        GuiUtils.renderExtendedTexture(BASE_BACKGROUND, 4, 4, getGuiLeft(), getGuiTop(), getXSize(), getYSize());
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
@@ -228,13 +221,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }
         }
-    }
-
-    @Nullable
-    protected ResourceLocation getGuiLocation() {
-        //TODO: eventually remove this, for now we are just defaulting to null,
-        // which means to fallback and use the dynamic background
-        return null;
     }
 
     //Some blit param namings

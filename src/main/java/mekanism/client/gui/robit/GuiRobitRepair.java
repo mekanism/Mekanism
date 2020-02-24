@@ -91,13 +91,9 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    protected ResourceLocation getGuiLocation() {
-        return ANVIL_RESOURCE;
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
+        minecraft.textureManager.bindTexture(ANVIL_RESOURCE);
+        blit(getGuiLeft(), getGuiTop(), 0, 0, getXSize(), getYSize());
         blit(getGuiLeft() + 59, getGuiTop() + 20, 0, getYSize() + (container.getSlot(0).getHasStack() ? 0 : 16), 110, 16);
         if ((container.getSlot(0).getHasStack() || container.getSlot(1).getHasStack()) && !container.getSlot(2).getHasStack()) {
             blit(getGuiLeft() + 99, getGuiTop() + 45, getXSize(), 0, 28, 21);

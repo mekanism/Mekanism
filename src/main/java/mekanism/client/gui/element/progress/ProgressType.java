@@ -8,6 +8,7 @@ public enum ProgressType {
     BAR(25, 9, false, "bar.png"),
     LARGE_RIGHT(48, 8, false, "large_right.png"),
     LARGE_LEFT(48, 8, false, "large_left.png"),
+    TALL_RIGHT(20, 15, false, "tall_right.png"),
     RIGHT(32, 8, false, "right.png"),
     SMALL_RIGHT(28, 8, false, "small_right.png"),
     SMALL_LEFT(28, 8, false, "small_left.png"),

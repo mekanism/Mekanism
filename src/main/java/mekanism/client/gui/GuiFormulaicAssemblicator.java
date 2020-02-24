@@ -5,11 +5,13 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.slot.GuiSlot;
-import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.progress.ProgressType;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
@@ -21,14 +23,11 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
-import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormulaicAssemblicator, MekanismTileContainer<TileEntityFormulaicAssemblicator>> {
@@ -43,6 +42,7 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     public GuiFormulaicAssemblicator(MekanismTileContainer<TileEntityFormulaicAssemblicator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         ySize += 64;
+        dynamicSlots = true;
     }
 
     @Override
@@ -54,10 +54,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile, 159, 15));
+        //Overwrite the output slots with a "combined" slot
+        addButton(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
+        addButton(new GuiProgress(() -> tile.operatingTicks / (double) tile.ticksRequired, ProgressType.TALL_RIGHT, this, 86, 43));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),
               MekanismLang.NEEDED.translate(EnergyDisplay.of(tile.getNeededEnergy()))), this));
-        addButton(new GuiSlot(SlotType.POWER, this, 151, 75).with(SlotOverlay.POWER));
-
         addButton(encodeFormulaButton = new MekanismImageButton(this, getGuiLeft() + 7, getGuiTop() + 45, 14, getButtonLocation("encode_formula"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),
               getOnHover(MekanismLang.ENCODE_FORMULA)));
@@ -104,11 +105,6 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     @Override
     protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
         super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tile.operatingTicks > 0) {
-            int display = (int) ((double) tile.operatingTicks * 22 / (double) tile.ticksRequired);
-            blit(getGuiLeft() + 86, getGuiTop() + 43, 176, 48, display, 16);
-        }
-
         //TODO: Gui element
         SlotOverlay overlay = tile.isRecipe ? SlotOverlay.CHECK : SlotOverlay.X;
         minecraft.textureManager.bindTexture(overlay.getTexture());
@@ -137,10 +133,5 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
         }
         ItemStack formulaStack = tile.getFormulaSlot().getStack();
         return formulaStack.getItem() instanceof ItemCraftingFormula && ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) == null;
-    }
-
-    @Override
-    protected ResourceLocation getGuiLocation() {
-        return MekanismUtils.getResource(ResourceType.GUI, "formulaic_assemblicator.png");
     }
 }
