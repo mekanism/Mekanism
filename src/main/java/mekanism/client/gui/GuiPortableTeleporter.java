@@ -7,13 +7,13 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiTeleporterStatus;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.frequency.Frequency;
@@ -43,7 +43,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     private MekanismButton setButton;
     private MekanismButton deleteButton;
     private MekanismButton teleportButton;
-    private GuiScrollList scrollList;
+    private GuiTextScrollList scrollList;
     private TextFieldWidget frequencyField;
     private boolean privateMode;
     private Frequency clientFreq;
@@ -85,7 +85,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 return getEnergy() / getMaxEnergy();
             }
         }, 158, 26));
-        addButton(scrollList = new GuiScrollList(this, 27, 36, 122, 42));
+        addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
 
         addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;

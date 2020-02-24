@@ -143,6 +143,11 @@ public abstract class GuiElement extends Widget {
     // Math has also been added to fix rendering odd size buttons.
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        drawButton(mouseX, mouseY);
+    }
+
+    //This method exists so that we don't have to rely on having a path to super.renderButton if we want to draw a background button
+    protected void drawButton(int mouseX, int mouseY) {
         if (resetColorBeforeRender()) {
             //TODO: Support alpha like super? Is there a point
             MekanismRenderer.resetColor();

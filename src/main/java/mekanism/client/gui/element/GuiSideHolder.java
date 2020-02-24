@@ -40,8 +40,4 @@ public class GuiSideHolder extends GuiTexturedElement {
         blit(x, y + 4 + middleHeight, 0, 5, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         MekanismRenderer.resetColor();
     }
-
-    protected void drawButtonBackground(int mouseX, int mouseY, float partialTicks) {
-        super.renderButton(mouseX, mouseY, partialTicks);
-    }
 }

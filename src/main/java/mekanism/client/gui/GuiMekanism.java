@@ -1,10 +1,7 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
@@ -192,18 +189,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         int xAxis = mouseX - getGuiLeft();
         int yAxis = mouseY - getGuiTop();
         drawGuiContainerBackgroundLayer(xAxis, yAxis);
-    }
-
-    @Override
-    public void displayTooltip(ITextComponent component, int x, int y) {
-        this.displayTooltips(Collections.singletonList(component), x, y);
-    }
-
-    @Override
-    public void displayTooltips(List<ITextComponent> components, int xAxis, int yAxis) {
-        //TODO: Evaluate if we want to use this for splitting the text
-        List<String> toolTips = components.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
-        net.minecraftforge.fml.client.gui.GuiUtils.drawHoveringText(toolTips, xAxis, yAxis, width, height, -1, font);
     }
 
     @Override

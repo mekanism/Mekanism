@@ -7,15 +7,15 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiScrollList;
-import mekanism.client.gui.element.slot.GuiSlot;
-import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.GuiTeleporterStatus;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.scroll.GuiTextScrollList;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
@@ -39,7 +39,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     private MekanismButton privateButton;
     private MekanismButton setButton;
     private MekanismButton deleteButton;
-    private GuiScrollList scrollList;
+    private GuiTextScrollList scrollList;
     private TextFieldWidget frequencyField;
     private boolean privateMode;
 
@@ -73,7 +73,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             }
         }, 158, 26));
         addButton(new GuiSlot(SlotType.NORMAL, this, 152, 6).with(SlotOverlay.POWER));
-        addButton(scrollList = new GuiScrollList(this, 27, 36, 122, 42));
+        addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
 
         addButton(publicButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;

@@ -1,9 +1,12 @@
-package mekanism.client.gui.element;
+package mekanism.client.gui.element.scroll;
 
 import java.util.function.IntSupplier;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiScrollBar extends GuiScrollableElement {
@@ -27,8 +30,8 @@ public class GuiScrollBar extends GuiScrollableElement {
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         //Draw background and border
         holder.renderButton(mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getResource());
-        blit(barX, barY + getScroll(), needsScrollBars() ? 0 : barWidth, 0, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        GuiElement.minecraft.textureManager.bindTexture(getResource());
+        AbstractGui.blit(barX, barY + getScroll(), needsScrollBars() ? 0 : barWidth, 0, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     @Override

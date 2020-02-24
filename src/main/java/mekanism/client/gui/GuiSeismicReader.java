@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.client.gui.element.GuiArrowSelection;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.GuiScrollBar;
+import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;

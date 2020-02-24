@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import mekanism.client.gui.element.GuiScrollList;
+import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.render.MekanismRenderer;
@@ -22,7 +22,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     private ItemStack itemType = ItemStack.EMPTY;
 
-    private GuiScrollList scrollList;
+    private GuiTextScrollList scrollList;
 
     public GuiDictionary(DictionaryContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -33,7 +33,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     public void init() {
         super.init();
         addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5));
-        addButton(scrollList = new GuiScrollList(this, 7, 29, 162, 42));
+        addButton(scrollList = new GuiTextScrollList(this, 7, 29, 162, 42));
     }
 
     @Override

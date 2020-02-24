@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.GuiScrollBar;
+import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.common.HashList;
 import mekanism.common.OreDictCache;

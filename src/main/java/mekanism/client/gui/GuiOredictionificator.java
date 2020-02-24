@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiRedstoneControl;
-import mekanism.client.gui.element.GuiScrollBar;
+import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.gui.element.button.FilterButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.progress.GuiProgress;

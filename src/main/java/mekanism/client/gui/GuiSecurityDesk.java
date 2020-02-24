@@ -8,12 +8,12 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.GuiSecurityLight;
 import mekanism.client.gui.element.GuiTextureOnlyElement;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -42,7 +42,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     private MekanismButton trustedButton;
     private MekanismButton checkboxButton;
     private MekanismButton overrideButton;
-    private GuiScrollList scrollList;
+    private GuiTextScrollList scrollList;
     private TextFieldWidget trustedField;
 
     public GuiSecurityDesk(MekanismTileContainer<TileEntitySecurityDesk> container, PlayerInventory inv, ITextComponent title) {
@@ -67,7 +67,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
                                                             !tile.ownerUUID.equals(minecraft.player.getUniqueID()) ? 2 : tile.frequency.override ? 0 : 1));
         addButton(new GuiTextureOnlyElement(PUBLIC, this, 146, 33, 18, 18));
         addButton(new GuiTextureOnlyElement(PRIVATE, this, 146, 112, 18, 18));
-        addButton(scrollList = new GuiScrollList(this, 13, 13, 122, 42));
+        addButton(scrollList = new GuiTextScrollList(this, 13, 13, 122, 42));
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();
             if (tile.frequency != null && selection != -1) {

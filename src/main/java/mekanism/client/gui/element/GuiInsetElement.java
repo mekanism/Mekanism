@@ -59,7 +59,7 @@ public abstract class GuiInsetElement<TILE extends TileEntity> extends GuiSideHo
     public void renderButton(int mouseX, int mouseY, float partialTicks) {
         super.renderButton(mouseX, mouseY, partialTicks);
         //Draw the button background
-        drawButtonBackground(mouseX, mouseY, partialTicks);
+        drawButton(mouseX, mouseY);
         //Draw the overlay onto the button
         minecraft.textureManager.bindTexture(overlay);
         blit(getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);

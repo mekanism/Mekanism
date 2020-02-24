@@ -3,10 +3,8 @@ package mekanism.client.jei;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
@@ -31,8 +29,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.client.gui.GuiUtils;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
@@ -120,17 +116,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
                 Mekanism.logger.error("Failed to render stack into gui: " + stack, e);
             }
         }
-    }
-
-    @Override
-    public void displayTooltip(ITextComponent component, int x, int y) {
-        this.displayTooltips(Collections.singletonList(component), x, y);
-    }
-
-    @Override
-    public void displayTooltips(List<ITextComponent> components, int xAxis, int yAxis) {
-        List<String> toolTips = components.stream().map(ITextComponent::getFormattedText).collect(Collectors.toList());
-        GuiUtils.drawHoveringText(toolTips, xAxis, yAxis, getWidth(), getHeight(), -1, getFont());
     }
 
     @Override

@@ -5,10 +5,10 @@ import java.util.List;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.GuiScrollList;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSideConfigurationTab;
 import mekanism.client.gui.element.tab.GuiTransporterConfigTab;
@@ -32,7 +32,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
     private MekanismButton privateButton;
     private MekanismButton setButton;
     private MekanismButton deleteButton;
-    private GuiScrollList scrollList;
+    private GuiTextScrollList scrollList;
     private TextFieldWidget frequencyField;
     private boolean privateMode;
 
@@ -50,7 +50,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         super.init();
         addButton(new GuiInnerScreen(this, 48, 102, 89, 13));
         addButton(new GuiInnerScreen(this, 136, 102, 13, 13));
-        addButton(scrollList = new GuiScrollList(this, 27, 36, 122, 42));
+        addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
         addButton(new GuiSideConfigurationTab(this, tile));
         addButton(new GuiTransporterConfigTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
