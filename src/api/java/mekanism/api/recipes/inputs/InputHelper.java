@@ -49,12 +49,8 @@ public class InputHelper {
 
             @Override
             public int operationsCanSupport(InputIngredient<@NonNull ItemStack> recipeIngredient, int currentMax, int usageMultiplier) {
-                if (currentMax == 0) {
-                    //Short circuit that if we already can't perform any operations, just return
-                    return 0;
-                }
-                if (usageMultiplier == 0) {
-                    //If we don't actually use any of this, just return our current max
+                if (currentMax <= 0 || usageMultiplier == 0) {
+                    //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
                 ItemStack recipeInput = getRecipeInput(recipeIngredient);
@@ -108,12 +104,8 @@ public class InputHelper {
 
             @Override
             public int operationsCanSupport(InputIngredient<@NonNull GasStack> recipeIngredient, int currentMax, int usageMultiplier) {
-                if (currentMax == 0) {
-                    //Short circuit that if we already can't perform any operations, just return
-                    return 0;
-                }
-                if (usageMultiplier == 0) {
-                    //If we don't actually use any of this, just return our current max
+                if (currentMax <= 0 || usageMultiplier == 0) {
+                    //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
                 GasStack recipeInput = getRecipeInput(recipeIngredient);
@@ -166,12 +158,8 @@ public class InputHelper {
 
             @Override
             public int operationsCanSupport(InputIngredient<@NonNull FluidStack> recipeIngredient, int currentMax, int usageMultiplier) {
-                if (currentMax == 0) {
-                    //Short circuit that if we already can't perform any operations, just return
-                    return 0;
-                }
-                if (usageMultiplier == 0) {
-                    //If we don't actually use any of this, just return our current max
+                if (currentMax <= 0 || usageMultiplier == 0) {
+                    //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
                 FluidStack recipeInput = getRecipeInput(recipeIngredient);
@@ -226,12 +214,8 @@ public class InputHelper {
 
             @Override
             public int operationsCanSupport(InputIngredient<@NonNull InfusionStack> recipeIngredient, int currentMax, int usageMultiplier) {
-                if (currentMax == 0) {
-                    //Short circuit that if we already can't perform any operations, just return
-                    return 0;
-                }
-                if (usageMultiplier == 0) {
-                    //If we don't actually use any of this, just return our current max
+                if (currentMax <= 0 || usageMultiplier == 0) {
+                    //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
                 InfusionStack recipeInput = getRecipeInput(recipeIngredient);

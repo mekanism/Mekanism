@@ -28,30 +28,29 @@ public class MetallurgicInfuserCachedRecipe extends CachedRecipe<MetallurgicInfu
     @Override
     protected int getOperationsThisTick(int currentMax) {
         currentMax = super.getOperationsThisTick(currentMax);
-        if (currentMax == 0) {
+        if (currentMax <= 0) {
             //If our parent checks show we can't operate then return so
-            return 0;
+            return currentMax;
         }
         //TODO: This input getting, is only really needed for getting the output
         ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
-            return 0;
+            return -1;
         }
-
         //Now check the infusion input
         InfusionStack recipeInfuseObject = infusionInputHandler.getRecipeInput(recipe.getInfusionInput());
         if (recipeInfuseObject.isEmpty()) {
-            //TODO: 1.14 have there be an "EMPTY" object instance so that it can never be null
-            return 0;
+            return -1;
         }
-
         //Calculate the current max based on the item input
         currentMax = itemInputHandler.operationsCanSupport(recipe.getItemInput(), currentMax);
-
         //Calculate the current max based on the infusion input
         currentMax = infusionInputHandler.operationsCanSupport(recipe.getInfusionInput(), currentMax);
-
+        if (currentMax <= 0) {
+            //If our input can't handle it return that we should be resetting
+            return -1;
+        }
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(recipeInfuseObject, recipeItem), currentMax);
     }

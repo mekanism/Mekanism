@@ -231,9 +231,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
               })
               .setRequiredTicks(() -> tempMultiplier > 0 && tempMultiplier < 1 ? (int) Math.ceil(1 / tempMultiplier) : 1)
               .setPostProcessOperations(currentMax -> {
-                  if (currentMax == 0) {
+                  if (currentMax <= 0) {
                       //Short circuit that if we already can't perform any outputs, just return
-                      return 0;
+                      return currentMax;
                   }
                   return Math.min(currentMax, tempMultiplier > 0 && tempMultiplier < 1 ? 1 : (int) tempMultiplier);
               });

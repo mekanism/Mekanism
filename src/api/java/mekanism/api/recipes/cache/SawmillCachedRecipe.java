@@ -25,20 +25,22 @@ public class SawmillCachedRecipe extends CachedRecipe<SawmillRecipe> {
     @Override
     protected int getOperationsThisTick(int currentMax) {
         currentMax = super.getOperationsThisTick(currentMax);
-        if (currentMax == 0) {
+        if (currentMax <= 0) {
             //If our parent checks show we can't operate then return so
-            return 0;
+            return currentMax;
         }
         //TODO: This input getting, is only really needed for getting the output
         ItemStack recipeItem = inputHandler.getRecipeInput(recipe.getInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
-            return 0;
+            return -1;
         }
-
         //Calculate the current max based on the input
         currentMax = inputHandler.operationsCanSupport(recipe.getInput(), currentMax);
-
+        if (currentMax <= 0) {
+            //If our input can't handle it return that we should be resetting
+            return -1;
+        }
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(recipeItem), currentMax);
     }

@@ -24,18 +24,22 @@ public class FluidToFluidCachedRecipe extends CachedRecipe<FluidToFluidRecipe> {
     @Override
     protected int getOperationsThisTick(int currentMax) {
         currentMax = super.getOperationsThisTick(currentMax);
-        if (currentMax == 0) {
+        if (currentMax <= 0) {
             //If our parent checks show we can't operate then return so
-            return 0;
+            return currentMax;
         }
         //TODO: This input getting, is only really needed for getting the output
         FluidStack recipeFluid = inputHandler.getRecipeInput(recipe.getInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
         if (recipeFluid.isEmpty()) {
-            return 0;
+            return -1;
         }
         //Calculate the current max based on the fluid input
         currentMax = inputHandler.operationsCanSupport(recipe.getInput(), currentMax);
+        if (currentMax <= 0) {
+            //If our input can't handle it return that we should be resetting
+            return -1;
+        }
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(recipeFluid), currentMax);
     }

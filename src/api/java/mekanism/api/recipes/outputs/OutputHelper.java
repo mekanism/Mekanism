@@ -153,12 +153,8 @@ public class OutputHelper {
     }
 
     private static int operationsRoomFor(@Nonnull GasTank gasTank, @NonNull GasStack toOutput, int currentMax) {
-        if (currentMax == 0) {
-            //Short circuit that if we already can't perform any outputs, just return
-            return 0;
-        }
-        if (toOutput.isEmpty()) {
-            //If the output we want to add is empty we return that we can fit whatever we were told the max is
+        if (currentMax <= 0 || toOutput.isEmpty()) {
+            //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
         }
         //Copy the stack and make it be max size
@@ -170,12 +166,8 @@ public class OutputHelper {
     }
 
     private static int operationsRoomFor(@Nonnull IFluidHandler fluidHandler, @NonNull FluidStack toOutput, int currentMax) {
-        if (currentMax == 0) {
-            //Short circuit that if we already can't perform any outputs, just return
-            return 0;
-        }
-        if (toOutput.isEmpty()) {
-            //If the output we want to add is empty we return that we can fit whatever we were told the max is
+        if (currentMax <= 0 || toOutput.isEmpty()) {
+            //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
         }
         //Copy the stack and make it be max size
@@ -187,22 +179,15 @@ public class OutputHelper {
     }
 
     private static int operationsRoomFor(@Nonnull IInventorySlot inventorySlot, @NonNull ItemStack toOutput, int currentMax) {
-        if (currentMax == 0) {
-            //Short circuit that if we already can't perform any outputs, just return
-            return 0;
-        }
-        if (toOutput.isEmpty()) {
-            //If the output we want to add is empty we return that we can fit whatever we were told the max is
+        if (currentMax <= 0 || toOutput.isEmpty()) {
+            //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
         }
-
         ItemStack output = toOutput.copy();
         //Make a cope of the stack we are outputting with its maximum size
         output.setCount(output.getMaxStackSize());
-
         ItemStack remainder = inventorySlot.insertItem(output, Action.SIMULATE, AutomationType.INTERNAL);
         int amountUsed = output.getCount() - remainder.getCount();
-
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
         return Math.min(amountUsed / toOutput.getCount(), currentMax);
     }

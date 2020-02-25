@@ -53,29 +53,33 @@ public class ChemicalInfuserCachedRecipe extends CachedRecipe<ChemicalInfuserRec
     @Override
     protected int getOperationsThisTick(int currentMax) {
         currentMax = super.getOperationsThisTick(currentMax);
-        if (currentMax == 0) {
+        if (currentMax <= 0) {
             //If our parent checks show we can't operate then return so
-            return 0;
+            return currentMax;
         }
         Pair<GasStackIngredient, GasStackIngredient> ingredients = getIngredients();
         if (ingredients == null) {
             //If either inputs are empty then we are unable to operate
-            return 0;
+            return -1;
         }
         GasStack leftRecipeInput = leftInputHandler.getRecipeInput(ingredients.getLeft());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(leftInputGas)
         if (leftRecipeInput.isEmpty()) {
-            return 0;
+            return -1;
         }
         GasStack rightRecipeInput = rightInputHandler.getRecipeInput(ingredients.getRight());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(rightInputGas)
         if (rightRecipeInput.isEmpty()) {
-            return 0;
+            return -1;
         }
         //Calculate the current max based on the left input
         currentMax = leftInputHandler.operationsCanSupport(ingredients.getLeft(), currentMax);
         //Calculate the current max based on the right input
         currentMax = rightInputHandler.operationsCanSupport(ingredients.getRight(), currentMax);
+        if (currentMax <= 0) {
+            //If our input can't handle it return that we should be resetting
+            return -1;
+        }
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(leftRecipeInput, rightRecipeInput), currentMax);
     }

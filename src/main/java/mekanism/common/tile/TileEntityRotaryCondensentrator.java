@@ -370,9 +370,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
               .setEnergyRequirements(this::getEnergyPerTick, this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
-                  if (currentMax == 0) {
+                  if (currentMax <= 0) {
                       //Short circuit that if we already can't perform any outputs, just return
-                      return 0;
+                      return currentMax;
                   }
                   int possibleProcess = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
                   if (mode) {

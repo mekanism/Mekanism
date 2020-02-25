@@ -35,30 +35,32 @@ public class ItemStackGasToGasCachedRecipe extends CachedRecipe<ItemStackGasToGa
     @Override
     protected int getOperationsThisTick(int currentMax) {
         currentMax = super.getOperationsThisTick(currentMax);
-        if (currentMax == 0) {
+        if (currentMax <= 0) {
             //If our parent checks show we can't operate then return so
-            return 0;
+            return currentMax;
         }
         //TODO: This input getting, is only really needed for getting the output
         ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
-            return 0;
+            return -1;
         }
-
         //Now check the gas input
         GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
         if (recipeGas.isEmpty()) {
+            //Note: we don't force reset based on secondary per tick usages
             return 0;
         }
-
         //Calculate the current max based on the item input
         currentMax = itemInputHandler.operationsCanSupport(recipe.getItemInput(), currentMax);
-
+        if (currentMax <= 0) {
+            //If our input can't handle it return that we should be resetting
+            //Note: we don't force reset based on secondary per tick usages
+            return -1;
+        }
         //Calculate the current max based on the gas input, and the given usage amount
         currentMax = gasInputHandler.operationsCanSupport(recipe.getGasInput(), currentMax, getGasUsage());
-
         //Calculate the max based on the space in the output
         return outputHandler.operationsRoomFor(recipe.getOutput(recipeItem, recipeGas), currentMax);
     }

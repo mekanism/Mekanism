@@ -33,41 +33,47 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
     @Override
     protected int getOperationsThisTick(int currentMax) {
         currentMax = super.getOperationsThisTick(currentMax);
-        if (currentMax == 0) {
+        if (currentMax <= 0) {
             //If our parent checks show we can't operate then return so
-            return 0;
+            return currentMax;
         }
         //Mode == true if fluid to gas
         if (modeSupplier.getAsBoolean()) {
             if (!recipe.hasFluidToGas()) {
                 //If our recipe doesn't have a fluid to gas version, return that we cannot operate
-                return 0;
+                return -1;
             }
             //Handle fluid to gas conversion
             FluidStack recipeFluid = fluidInputHandler.getRecipeInput(recipe.getFluidInput());
             //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
             if (recipeFluid.isEmpty()) {
-                return 0;
+                return -1;
             }
             //Calculate the current max based on the fluid input
             currentMax = fluidInputHandler.operationsCanSupport(recipe.getFluidInput(), currentMax);
-
+            if (currentMax <= 0) {
+                //If our input can't handle it return that we should be resetting
+                return -1;
+            }
             //Calculate the max based on the space in the output
             return gasOutputHandler.operationsRoomFor(recipe.getGasOutput(recipeFluid), currentMax);
         }
         if (!recipe.hasGasToFluid()) {
             //If our recipe doesn't have a gas to fluid version, return that we cannot operate
-            return 0;
+            return -1;
         }
         //Handle gas to fluid conversion
         GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getGasInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(recipeGas)
         if (recipeGas.isEmpty()) {
-            return 0;
+            return -1;
         }
         //Calculate the current max based on the gas input
         currentMax = gasInputHandler.operationsCanSupport(recipe.getGasInput(), currentMax);
-
+        if (currentMax <= 0) {
+            //If our input can't handle it return that we should be resetting
+            return -1;
+        }
         //Calculate the max based on the space in the output
         return fluidOutputHandler.operationsRoomFor(recipe.getFluidOutput(recipeGas), currentMax);
     }

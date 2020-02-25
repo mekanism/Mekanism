@@ -124,6 +124,11 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
             // the energy we have now. Due to the performance improvements that were made to handling the active states, I believe that
             // using the more accurate "disabling" of machines makes more sense
             setActive.accept(false);
+            if (operations < 0) {
+                //Reset the progress
+                operatingTicks = 0;
+                operatingTicksChanged.accept(operatingTicks);
+            }
         }
     }
 
@@ -156,12 +161,14 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
 
     //TODO: Is there a better name for this, basically is how many times this can function this tick
     // Also note that the postProcess doesn't auto get run on this
+    // Values less than one means the progress will be reset, a value of zero means that no operations will take place
+    // but progress will be saved
     protected int getOperationsThisTick(int currentMax) {
         //TODO: Try to deduplicate the code in the implementations as there is a good bit of duplication for calculating the max
         // of the different types that recipe uses
-        if (currentMax == 0) {
+        if (currentMax <= 0) {
             //Short circuit that if we already can't perform any outputs, just return
-            return 0;
+            return currentMax;
         }
         double energyPerTick = getEnergyPerTick();
         if (energyPerTick == 0) {

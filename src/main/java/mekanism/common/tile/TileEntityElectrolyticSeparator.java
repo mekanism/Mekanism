@@ -201,9 +201,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
               .setEnergyRequirements(() -> getEnergyPerTick() * recipe.getEnergyMultiplier(), this::getEnergy, energy -> setEnergy(getEnergy() - energy))
               .setOnFinish(this::markDirty)
               .setPostProcessOperations(currentMax -> {
-                  if (currentMax == 0) {
+                  if (currentMax <= 0) {
                       //Short circuit that if we already can't perform any outputs, just return
-                      return 0;
+                      return currentMax;
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
