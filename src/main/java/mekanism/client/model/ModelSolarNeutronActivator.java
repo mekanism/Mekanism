@@ -90,7 +90,7 @@ public class ModelSolarNeutronActivator extends Model {
         setRotation(port, 0F, 0F, 0F);
         panel1 = new ModelRenderer(this, 84, 32);
         panel1.mirror = true;
-        panel1.addBox(0F, 0F, -16F, 6, 1, 16, false);
+        panel1.addBox(0F, 0F, -16F, 6, 1, 16, true);
         panel1.setRotationPoint(2.75F, -4.95F, 8F);
         panel1.setTextureSize(128, 64);
         setRotation(panel1, -0.1082104F, -0.0279253F, -0.2617994F);
