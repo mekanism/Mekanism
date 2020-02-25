@@ -50,6 +50,7 @@ public abstract class MekanismContainer extends Container {
     protected final List<MainInventorySlot> mainInventorySlots = new ArrayList<>();
     protected final List<HotBarSlot> hotBarSlots = new ArrayList<>();
     private final List<ISyncableData> trackedData = new ArrayList<>();
+    private boolean initialSyncDone;
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, @Nullable PlayerInventory inv) {
         super(type.getContainerType(), id);
@@ -349,7 +350,8 @@ public abstract class MekanismContainer extends Container {
             List<PropertyData> dirtyData = new ArrayList<>();
             for (short i = 0; i < trackedData.size(); i++) {
                 ISyncableData data = trackedData.get(i);
-                DirtyType dirtyType = data.isDirty();
+                //If we haven't done an initial sync yet, treat everything as dirty to make sure we sync it initially to the client
+                DirtyType dirtyType = initialSyncDone ? data.isDirty() : DirtyType.DIRTY;
                 if (dirtyType != DirtyType.CLEAN) {
                     dirtyData.add(data.getPropertyData(i, dirtyType));
                 }
@@ -362,6 +364,7 @@ public abstract class MekanismContainer extends Container {
             } else if (size > 1) {
                 sendChange(new PacketUpdateContainerBatch((short) windowId, dirtyData));
             }
+            initialSyncDone = true;
         }
     }
 
