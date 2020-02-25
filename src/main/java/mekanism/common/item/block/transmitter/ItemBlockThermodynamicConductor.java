@@ -29,10 +29,13 @@ public class ItemBlockThermodynamicConductor extends ItemBlockMultipartAble<Bloc
     @Override
     public ConductorTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockThermodynamicConductor) {
-            return ((ItemBlockThermodynamicConductor) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockThermodynamicConductor ? ((ItemBlockThermodynamicConductor) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public ConductorTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override

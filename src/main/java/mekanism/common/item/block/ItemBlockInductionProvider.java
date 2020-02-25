@@ -27,10 +27,13 @@ public class ItemBlockInductionProvider extends ItemBlockTooltip<BlockInductionP
     @Override
     public InductionProviderTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockInductionProvider) {
-            return ((ItemBlockInductionProvider) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockInductionProvider ? ((ItemBlockInductionProvider) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public InductionProviderTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override

@@ -29,10 +29,13 @@ public class ItemBlockMechanicalPipe extends ItemBlockMultipartAble<BlockMechani
     @Override
     public PipeTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockMechanicalPipe) {
-            return ((ItemBlockMechanicalPipe) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockMechanicalPipe ? ((ItemBlockMechanicalPipe) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public PipeTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override

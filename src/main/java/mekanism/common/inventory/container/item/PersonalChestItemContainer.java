@@ -1,8 +1,9 @@
 package mekanism.common.inventory.container.item;
 
+import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.InventoryPersonalChest;
-import mekanism.common.inventory.container.slot.SlotPersonalChest;
 import mekanism.common.item.block.machine.ItemBlockPersonalChest;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,22 +28,26 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
 
     @Override
     protected void addSlotsAndOpen() {
-        itemInventory = new InventoryPersonalChest(stack, hand);
+        //We have to initialize this before actually adding the slots
+        itemInventory = new InventoryPersonalChest(stack);
         super.addSlotsAndOpen();
     }
 
     @Override
     protected void addSlots() {
-        //TODO: FIXME???
-        for (int slotY = 0; slotY < 6; slotY++) {
-            for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new SlotPersonalChest(itemInventory, slotX + slotY * 9, 8 + slotX * 18, 26 + slotY * 18));
+        super.addSlots();
+        //Get all the inventory slots the tile has
+        List<IInventorySlot> inventorySlots = itemInventory.getInventorySlots(null);
+        for (IInventorySlot inventorySlot : inventorySlots) {
+            Slot containerSlot = inventorySlot.createContainerSlot();
+            if (containerSlot != null) {
+                addSlot(containerSlot);
             }
         }
     }
 
-    public InventoryPersonalChest getItemInventory() {
-        return itemInventory;
+    public Hand getHand() {
+        return hand;
     }
 
     @Override
@@ -50,48 +55,10 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
         return 148;
     }
 
-    @Override
-    protected void closeInventory(PlayerEntity player) {
-        itemInventory.closeInventory(player);
-    }
-
-    @Override
-    protected void openInventory(@Nonnull PlayerInventory inventory) {
-        itemInventory.openInventory(inventory.player);
-    }
-
-    @Nonnull
-    @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
-        //TODO: NOTE: until we do some method for handling this, given we don't have InventoryContainerSlots, We CANNOT use the super method for transferStackInSlot
-        ItemStack stack = ItemStack.EMPTY;
-        Slot currentSlot = inventorySlots.get(slotID);
-        if (currentSlot != null && currentSlot.getHasStack()) {
-            ItemStack slotStack = currentSlot.getStack();
-            stack = slotStack.copy();
-            if (slotID < 54) {
-                if (!mergeItemStack(slotStack, 54, inventorySlots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!mergeItemStack(slotStack, 0, 54, false)) {
-                return ItemStack.EMPTY;
-            }
-            if (slotStack.getCount() == 0) {
-                currentSlot.putStack(ItemStack.EMPTY);
-            } else {
-                currentSlot.onSlotChanged();
-            }
-            if (slotStack.getCount() == stack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-            currentSlot.onTake(player, slotStack);
-        }
-        return stack;
-    }
-
     @Nonnull
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickType, PlayerEntity player) {
+        //TODO: Re-evaluate
         int hotbarSlotId = slotId - 81;
         //Disallow moving Personal Chest if held and accessed directly from inventory (not from a placed block)
         if (hotbarSlotId >= 0 && hotbarSlotId < 9 && player.inventory.currentItem == hotbarSlotId) {

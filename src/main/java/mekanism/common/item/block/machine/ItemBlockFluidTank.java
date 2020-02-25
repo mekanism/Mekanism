@@ -75,10 +75,13 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     @Override
     public FluidTankTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockFluidTank) {
-            return ((ItemBlockFluidTank) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockFluidTank ? ((ItemBlockFluidTank) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public FluidTankTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override

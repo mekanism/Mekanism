@@ -16,7 +16,6 @@ import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.item.ItemNetworkReader;
 import mekanism.common.item.ItemPortableTeleporter;
-import mekanism.common.item.ItemProxy;
 import mekanism.common.item.ItemRobit;
 import mekanism.common.item.ItemSeismicReader;
 import mekanism.common.item.ItemTierInstaller;
@@ -39,9 +38,6 @@ import net.minecraft.item.Item;
 public class MekanismItems {
 
     public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(Mekanism.MODID);
-
-    //TODO: What is the purpose of the item proxy
-    public static final ItemRegistryObject<ItemProxy> ITEM_PROXY = ITEMS.register("item_proxy", ItemProxy::new);
 
     public static final ItemRegistryObject<ItemElectricBow> ELECTRIC_BOW = ITEMS.register("electric_bow", ItemElectricBow::new);
     public static final ItemRegistryObject<ItemRobit> ROBIT = ITEMS.register("robit", ItemRobit::new);

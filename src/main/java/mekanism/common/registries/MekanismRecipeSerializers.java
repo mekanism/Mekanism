@@ -17,6 +17,8 @@ import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.bin.BinExtractRecipe;
+import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.MekanismShapedRecipe;
 import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;
 import mekanism.common.recipe.impl.ChemicalInfuserIRecipe;
@@ -58,6 +60,7 @@ import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.recipe.serializer.SawmillRecipeSerializer;
 import mekanism.common.registration.impl.IRecipeSerializerDeferredRegister;
 import mekanism.common.registration.impl.IRecipeSerializerRegistryObject;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
 
 //TODO: Should this and the serializer implementations be moved to API package? Probably at least the declarations should be moved
 // Ideally we would not have to have a separate class for each one that is basically just a factory for setting the:
@@ -105,4 +108,6 @@ public class MekanismRecipeSerializers {
     public static final IRecipeSerializerRegistryObject<SawmillRecipe> SAWING = RECIPE_SERIALIZERS.register("sawing", () -> new SawmillRecipeSerializer<>(SawmillIRecipe::new));
 
     public static final IRecipeSerializerRegistryObject<MekanismShapedRecipe> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", MekanismShapedRecipeSerializer::new);
+    public static final IRecipeSerializerRegistryObject<BinInsertRecipe> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new SpecialRecipeSerializer<>(BinInsertRecipe::new));
+    public static final IRecipeSerializerRegistryObject<BinExtractRecipe> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new SpecialRecipeSerializer<>(BinExtractRecipe::new));
 }

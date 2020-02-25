@@ -46,10 +46,13 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip<BlockFactory> imp
     @Override
     public FactoryTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockFactory) {
-            return ((ItemBlockFactory) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockFactory ? ((ItemBlockFactory) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public FactoryTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override

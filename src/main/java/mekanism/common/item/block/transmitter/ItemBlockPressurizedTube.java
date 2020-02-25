@@ -29,10 +29,13 @@ public class ItemBlockPressurizedTube extends ItemBlockMultipartAble<BlockPressu
     @Override
     public TubeTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockPressurizedTube) {
-            return ((ItemBlockPressurizedTube) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockPressurizedTube ? ((ItemBlockPressurizedTube) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public TubeTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override
