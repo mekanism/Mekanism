@@ -15,6 +15,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -72,6 +73,10 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 BlockData data = new BlockData(state);
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
                 if (tile != null) {
+                    if (!SecurityUtils.canAccess(player, tile)) {
+                        //If the player cannot access the tile don't allow them to pick it up with a cardboard box
+                        return ActionResultType.FAIL;
+                    }
                     CompoundNBT tag = new CompoundNBT();
                     tile.write(tag);
                     data.tileTag = tag;
