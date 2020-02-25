@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 public class GuiSideConfigurationTab extends GuiInsetElement<TileEntity> {
 
     public GuiSideConfigurationTab(IGuiWrapper gui, TileEntity tile) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "configuration.png"), gui, tile, -26, 6, 26, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI, "configuration.png"), gui, tile, -26, 6, 26, 18);
     }
 
     @Override

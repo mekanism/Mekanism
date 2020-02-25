@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiUpArrow extends GuiTextureOnlyElement {
 
-    private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "up_arrow.png");
+    private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI, "up_arrow.png");
 
     public GuiUpArrow(IGuiWrapper gui, int x, int y) {
         super(ARROW, gui, x, y, 8, 10);

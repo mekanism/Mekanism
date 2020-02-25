@@ -13,7 +13,7 @@ public class GuiDumpButton<TILE extends TileEntityMekanism> extends GuiTexturedE
 
     //TODO: Make it some tile that implements a dumping interface
     public GuiDumpButton(IGuiWrapper gui, TILE tile, int x, int y, Runnable onPress) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "dump.png"), gui, x, y, 21, 10);
+        super(MekanismUtils.getResource(ResourceType.GUI, "dump.png"), gui, x, y, 21, 10);
         this.tile = tile;
         this.onPress = onPress;
         playClickSound = true;

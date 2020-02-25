@@ -14,7 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiArrowSelection extends GuiTexturedElement {
 
-    private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "arrow_selection.png");
+    private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI, "arrow_selection.png");
 
     private final Supplier<ITextComponent> textComponentSupplier;
 

@@ -32,8 +32,8 @@ import org.lwjgl.glfw.GLFW;
 
 public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, MekanismTileContainer<TileEntitySecurityDesk>> {
 
-    private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "public.png");
-    private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "private.png");
+    private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
+    private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
     private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private static final int MAX_LENGTH = 24;
     private MekanismButton removeButton;

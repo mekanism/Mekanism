@@ -12,11 +12,11 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiTeleporterStatus extends GuiTexturedElement {
 
-    private static final ResourceLocation NEEDS_ENERGY = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "teleporter_needs_energy.png");
-    private static final ResourceLocation NO_FRAME = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "teleporter_no_frame.png");
-    private static final ResourceLocation NO_FREQUENCY = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "teleporter_no_frequency.png");
-    private static final ResourceLocation NO_LINK = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "teleporter_no_link.png");
-    private static final ResourceLocation READY = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "teleporter_ready.png");
+    private static final ResourceLocation NEEDS_ENERGY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_needs_energy.png");
+    private static final ResourceLocation NO_FRAME = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_frame.png");
+    private static final ResourceLocation NO_FREQUENCY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_frequency.png");
+    private static final ResourceLocation NO_LINK = MekanismUtils.getResource(ResourceType.GUI, "teleporter_no_link.png");
+    private static final ResourceLocation READY = MekanismUtils.getResource(ResourceType.GUI, "teleporter_ready.png");
 
     private final BooleanSupplier hasFrequency;
     private final ByteSupplier statusSupplier;

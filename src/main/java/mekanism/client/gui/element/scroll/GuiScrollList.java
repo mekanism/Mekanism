@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class GuiScrollList extends GuiScrollableElement {
 
-    protected static final ResourceLocation SCROLL_LIST = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "scroll_list.png");
+    protected static final ResourceLocation SCROLL_LIST = MekanismUtils.getResource(ResourceType.GUI, "scroll_list.png");
     protected static int TEXTURE_WIDTH = 6;
     protected static int TEXTURE_HEIGHT = 6;
 

@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiRightArrow extends GuiTextureOnlyElement {
 
-    private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "right_arrow.png");
+    private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI, "right_arrow.png");
 
     public GuiRightArrow(IGuiWrapper gui, int x, int y) {
         super(ARROW, gui, x, y, 22, 15);

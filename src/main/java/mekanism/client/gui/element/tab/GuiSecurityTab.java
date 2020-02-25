@@ -29,9 +29,9 @@ import net.minecraftforge.api.distmarker.Dist;
 
 public class GuiSecurityTab<TILE extends TileEntity & ISecurityTile> extends GuiInsetElement<TILE> {
 
-    private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "public.png");
-    private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "private.png");
-    private static final ResourceLocation PROTECTED = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "protected.png");
+    private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
+    private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
+    private static final ResourceLocation PROTECTED = MekanismUtils.getResource(ResourceType.GUI, "protected.png");
 
     private final Hand currentHand;
     private boolean isItem;

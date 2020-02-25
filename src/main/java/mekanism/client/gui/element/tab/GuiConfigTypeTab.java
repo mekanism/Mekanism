@@ -22,7 +22,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<TileEntity> {
     }
 
     private static ResourceLocation getResource(TransmissionType t) {
-        return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, t.getTransmission() + ".png");
+        return MekanismUtils.getResource(ResourceType.GUI, t.getTransmission() + ".png");
     }
 
     public TransmissionType getTransmissionType() {

@@ -35,7 +35,7 @@ public class GuiMatrixTab extends GuiTabElementType<TileEntityInductionCasing, M
 
         @Override
         public ResourceLocation getResource() {
-            return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, path);
+            return MekanismUtils.getResource(ResourceType.GUI, path);
         }
 
         @Override

@@ -13,7 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 public class GuiTransporterConfigTab extends GuiInsetElement<TileEntity> {
 
     public GuiTransporterConfigTab(IGuiWrapper gui, TileEntity tile) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "transporter_config.png"), gui, tile, -26, 34, 26, 18);
+        super(MekanismUtils.getResource(ResourceType.GUI, "transporter_config.png"), gui, tile, -26, 34, 26, 18);
     }
 
     @Override

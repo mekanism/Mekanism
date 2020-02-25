@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiStateTexture extends GuiTexturedElement {
 
-    private static final ResourceLocation stateHolder = MekanismGenerators.rl(ResourceType.GUI_ELEMENT.getPrefix() + "state_holder.png");
+    private static final ResourceLocation stateHolder = MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "state_holder.png");
 
     private final BooleanSupplier onSupplier;
     private final ResourceLocation onTexture;

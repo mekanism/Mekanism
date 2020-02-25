@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiScrollBar extends GuiScrollableElement {
 
-    private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "scroll_bar.png");
+    private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI, "scroll_bar.png");
     private static final int TEXTURE_WIDTH = 24;
     private static final int TEXTURE_HEIGHT = 15;
 

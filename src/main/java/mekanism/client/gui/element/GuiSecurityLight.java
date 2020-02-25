@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiSecurityLight extends GuiTexturedElement {
 
-    private static final ResourceLocation LIGHTS = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "security_lights.png");
+    private static final ResourceLocation LIGHTS = MekanismUtils.getResource(ResourceType.GUI, "security_lights.png");
     private final GuiInnerScreen screen;
     private final IntSupplier lightSupplier;
 

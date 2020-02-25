@@ -13,9 +13,9 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
 
-    private static final ResourceLocation OFF = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier_off.png");
-    private static final ResourceLocation ENTITY = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier_entity.png");
-    private static final ResourceLocation CONTENTS = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "amplifier_contents.png");
+    private static final ResourceLocation OFF = MekanismUtils.getResource(ResourceType.GUI, "amplifier_off.png");
+    private static final ResourceLocation ENTITY = MekanismUtils.getResource(ResourceType.GUI, "amplifier_entity.png");
+    private static final ResourceLocation CONTENTS = MekanismUtils.getResource(ResourceType.GUI, "amplifier_contents.png");
 
     public GuiAmplifierTab(IGuiWrapper gui, TileEntityLaserAmplifier tile) {
         super(OFF, gui, tile, -26, 138, 26, 18);

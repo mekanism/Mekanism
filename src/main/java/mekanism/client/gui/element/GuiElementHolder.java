@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiElementHolder extends GuiScalableElement {
 
-    private static final ResourceLocation HOLDER = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "element_holder.png");
+    private static final ResourceLocation HOLDER = MekanismUtils.getResource(ResourceType.GUI, "element_holder.png");
 
     public GuiElementHolder(IGuiWrapper gui, int x, int y, int width, int height) {
         super(HOLDER, gui, x, y, width, height, 2, 2);

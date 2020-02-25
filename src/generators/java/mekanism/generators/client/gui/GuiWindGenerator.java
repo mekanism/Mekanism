@@ -42,8 +42,8 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier() : 0)),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
-        addButton(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl(ResourceType.GUI_ELEMENT.getPrefix() + "wind_on.png"),
-              MekanismGenerators.rl(ResourceType.GUI_ELEMENT.getPrefix() + "wind_off.png")));
+        addButton(new GuiStateTexture(this, 18, 35, tile::getActive, MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "wind_on.png"),
+              MekanismGenerators.rl(ResourceType.GUI.getPrefix() + "wind_off.png")));
     }
 
     @Override

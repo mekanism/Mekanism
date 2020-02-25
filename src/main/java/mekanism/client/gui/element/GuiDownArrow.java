@@ -7,7 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiDownArrow extends GuiTextureOnlyElement {
 
-    private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "down_arrow.png");
+    private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI, "down_arrow.png");
 
     public GuiDownArrow(IGuiWrapper gui, int x, int y) {
         super(ARROW, gui, x, y, 8, 9);

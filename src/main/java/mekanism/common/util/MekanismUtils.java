@@ -1092,12 +1092,11 @@ public final class MekanismUtils {
 
     public enum ResourceType {
         GUI("gui"),
-        GUI_ELEMENT("gui/elements"),
-        GUI_BUTTON("gui/elements/button"),
-        GUI_BAR("gui/elements/bar"),
-        GUI_GAUGE("gui/elements/gauge"),
-        GUI_PROGRESS("gui/elements/progress"),
-        GUI_SLOT("gui/elements/slot"),
+        GUI_BUTTON("gui/button"),
+        GUI_BAR("gui/bar"),
+        GUI_GAUGE("gui/gauge"),
+        GUI_PROGRESS("gui/progress"),
+        GUI_SLOT("gui/slot"),
         SOUND("sound"),
         RENDER("render"),
         TEXTURE_BLOCKS("textures/block"),

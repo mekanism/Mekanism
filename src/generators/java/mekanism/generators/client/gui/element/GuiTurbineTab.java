@@ -38,7 +38,7 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
 
         @Override
         public ResourceLocation getResource() {
-            return MekanismUtils.getResource(ResourceType.GUI_ELEMENT, path);
+            return MekanismUtils.getResource(ResourceType.GUI, path);
         }
 
         @Override

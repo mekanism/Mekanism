@@ -14,7 +14,7 @@ public class GuiHeatInfo extends GuiTexturedElement {
     private final IInfoHandler infoHandler;
 
     public GuiHeatInfo(IInfoHandler handler, IGuiWrapper gui) {
-        super(MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "heat_info.png"), gui, -26, 112, 26, 26);
+        super(MekanismUtils.getResource(ResourceType.GUI, "heat_info.png"), gui, -26, 112, 26, 26);
         infoHandler = handler;
     }
 

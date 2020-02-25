@@ -8,8 +8,8 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiSideHolder extends GuiTexturedElement {
 
-    private static final ResourceLocation HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "holder_left.png");
-    private static final ResourceLocation HOLDER_RIGHT = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "holder_right.png");
+    private static final ResourceLocation HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI, "holder_left.png");
+    private static final ResourceLocation HOLDER_RIGHT = MekanismUtils.getResource(ResourceType.GUI, "holder_right.png");
     private static final int TEXTURE_WIDTH = 26;
     private static final int TEXTURE_HEIGHT = 9;
 

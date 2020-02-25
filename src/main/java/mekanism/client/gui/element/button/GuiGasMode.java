@@ -10,9 +10,9 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiGasMode extends MekanismImageButton {
 
-    private static final ResourceLocation IDLE = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "gas_mode_idle.png");
-    private static final ResourceLocation EXCESS = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "gas_mode_excess.png");
-    private static final ResourceLocation DUMP = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "gas_mode_dump.png");
+    private static final ResourceLocation IDLE = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_idle.png");
+    private static final ResourceLocation EXCESS = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_excess.png");
+    private static final ResourceLocation DUMP = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_dump.png");
 
     private final boolean left;
     private final Supplier<GasMode> gasModeSupplier;

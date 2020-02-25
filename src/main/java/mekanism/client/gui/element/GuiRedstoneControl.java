@@ -15,10 +15,10 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiRedstoneControl extends GuiInsetElement<TileEntity> {
 
-    private static final ResourceLocation DISABLED = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "gun_powder.png");
-    private static final ResourceLocation HIGH = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "redstone_control_high.png");
-    private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "redstone_control_low.png");
-    private static final ResourceLocation PULSE = MekanismUtils.getResource(ResourceType.GUI_ELEMENT, "redstone_control_pulse.png");
+    private static final ResourceLocation DISABLED = MekanismUtils.getResource(ResourceType.GUI, "gun_powder.png");
+    private static final ResourceLocation HIGH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_high.png");
+    private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_low.png");
+    private static final ResourceLocation PULSE = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_pulse.png");
 
     public GuiRedstoneControl(IGuiWrapper gui, TileEntity tile) {
         super(DISABLED, gui, tile, gui.getWidth(), 138, 26, 18);
