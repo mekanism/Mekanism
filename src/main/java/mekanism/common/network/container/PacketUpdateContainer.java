@@ -34,18 +34,15 @@ public abstract class PacketUpdateContainer<PACKET extends PacketUpdateContainer
 
     public static <PACKET extends PacketUpdateContainer<PACKET>> void handle(PACKET message, Supplier<Context> context) {
         Context ctx = context.get();
-        if (ctx.getDirection().getReceptionSide().isClient()) {
-            //Only handle and mark the packet as handled if we are on the client
-            ctx.enqueueWork(() -> {
-                PlayerEntity player = Mekanism.proxy.getPlayer(context);
-                //Ensure that the container is one of ours and that the window id is the same as we expect it to be
-                if (player.openContainer instanceof MekanismContainer && player.openContainer.windowId == message.windowId) {
-                    //If so then handle the packet
-                    message.handle((MekanismContainer) player.openContainer, message);
-                }
-            });
-            ctx.setPacketHandled(true);
-        }
+        ctx.enqueueWork(() -> {
+            PlayerEntity player = Mekanism.proxy.getPlayer(context);
+            //Ensure that the container is one of ours and that the window id is the same as we expect it to be
+            if (player.openContainer instanceof MekanismContainer && player.openContainer.windowId == message.windowId) {
+                //If so then handle the packet
+                message.handle((MekanismContainer) player.openContainer, message);
+            }
+        });
+        ctx.setPacketHandled(true);
     }
 
     public static <PACKET extends PacketUpdateContainer<PACKET>> void encode(PACKET pkt, PacketBuffer buffer) {

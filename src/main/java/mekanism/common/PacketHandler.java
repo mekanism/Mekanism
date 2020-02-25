@@ -2,6 +2,7 @@ package mekanism.common;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -65,6 +66,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -178,8 +180,6 @@ public class PacketHandler {
         return Mekanism.proxy.getPlayer(context);
     }
 
-    //TODO: Make sure to not set packets as handled if we are receiving it from the wrong side
-    // See our PacketUpdateContainer implementations for how to only do so if it is on the side we expect
     public void initialize() {
         registerMessage(PacketRobit.class, PacketRobit::encode, PacketRobit::decode, PacketRobit::handle);
         registerMessage(PacketTransmitterUpdate.class, PacketTransmitterUpdate::encode, PacketTransmitterUpdate::decode, PacketTransmitterUpdate::handle);
@@ -202,35 +202,52 @@ public class PacketHandler {
         registerMessage(PacketDropperUse.class, PacketDropperUse::encode, PacketDropperUse::decode, PacketDropperUse::handle);
         registerMessage(PacketSecurityUpdate.class, PacketSecurityUpdate::encode, PacketSecurityUpdate::decode, PacketSecurityUpdate::handle);
         registerMessage(PacketFreeRunnerData.class, PacketFreeRunnerData::encode, PacketFreeRunnerData::decode, PacketFreeRunnerData::handle);
-        registerMessage(PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
+        registerClientToServer(PacketGuiButtonPress.class, PacketGuiButtonPress::encode, PacketGuiButtonPress::decode, PacketGuiButtonPress::handle);
 
-        registerMessage(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
-        registerMessage(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
+        registerServerToClient(PacketMekanismTags.class, PacketMekanismTags::encode, PacketMekanismTags::decode, PacketMekanismTags::handle);
+        registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
 
         //Register the different sync packets for containers
-        registerMessage(PacketUpdateContainerBoolean.class, PacketUpdateContainer::encode, PacketUpdateContainerBoolean::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerByte.class, PacketUpdateContainer::encode, PacketUpdateContainerByte::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerDouble.class, PacketUpdateContainer::encode, PacketUpdateContainerDouble::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerFloat.class, PacketUpdateContainer::encode, PacketUpdateContainerFloat::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerInt.class, PacketUpdateContainer::encode, PacketUpdateContainerInt::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerLong.class, PacketUpdateContainer::encode, PacketUpdateContainerLong::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerShort.class, PacketUpdateContainer::encode, PacketUpdateContainerShort::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerItemStack.class, PacketUpdateContainer::encode, PacketUpdateContainerItemStack::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerFluidStack.class, PacketUpdateContainer::encode, PacketUpdateContainerFluidStack::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerGasStack.class, PacketUpdateContainer::encode, PacketUpdateContainerGasStack::decode, PacketUpdateContainer::handle);
-        registerMessage(PacketUpdateContainerInfusionStack.class, PacketUpdateContainer::encode, PacketUpdateContainerInfusionStack::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerBoolean.class, PacketUpdateContainer::encode, PacketUpdateContainerBoolean::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerByte.class, PacketUpdateContainer::encode, PacketUpdateContainerByte::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerDouble.class, PacketUpdateContainer::encode, PacketUpdateContainerDouble::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerFloat.class, PacketUpdateContainer::encode, PacketUpdateContainerFloat::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerInt.class, PacketUpdateContainer::encode, PacketUpdateContainerInt::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerLong.class, PacketUpdateContainer::encode, PacketUpdateContainerLong::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerShort.class, PacketUpdateContainer::encode, PacketUpdateContainerShort::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerItemStack.class, PacketUpdateContainer::encode, PacketUpdateContainerItemStack::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerFluidStack.class, PacketUpdateContainer::encode, PacketUpdateContainerFluidStack::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerGasStack.class, PacketUpdateContainer::encode, PacketUpdateContainerGasStack::decode, PacketUpdateContainer::handle);
+        registerServerToClient(PacketUpdateContainerInfusionStack.class, PacketUpdateContainer::encode, PacketUpdateContainerInfusionStack::decode, PacketUpdateContainer::handle);
         //Container sync packet that batches multiple changes into one packet
-        registerMessage(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
+        registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
     }
 
+    //TODO: Go through and limit specific packets to the proper network direction
     private <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
         registerMessage(index++, type, encoder, decoder, consumer);
+    }
+
+    private <MSG> void registerClientToServer(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
+          BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
+        registerMessage(type, encoder, decoder, consumer, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+    }
+
+    private <MSG> void registerServerToClient(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
+          BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
+        registerMessage(type, encoder, decoder, consumer, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+    }
+
+    private <MSG> void registerMessage(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
+          BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer, Optional<NetworkDirection> networkDirection) {
+        netHandler.registerMessage(index++, type, encoder, decoder, consumer, networkDirection);
     }
 
     //TODO: Figure out a better way to do this, for now with generators we are just starting it at id 100 to make sure they don't clash
     // Given we will rewrite our packet system at some point, I am not bothering to do more than just a patch for now
     // One better solution may be to register the information to Mekanism, from the module and let it add it when it is adding the other ones
-    public <MSG> void registerMessage(int id, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<Context>> consumer) {
+    public <MSG> void registerMessage(int id, Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
+          BiConsumer<MSG, Supplier<Context>> consumer) {
         netHandler.registerMessage(id, type, encoder, decoder, consumer);
     }
 
