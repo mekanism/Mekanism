@@ -820,12 +820,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         doPull = nbtTags.getBoolean("doPull");
         silkTouch = nbtTags.getBoolean("silkTouch");
         inverse = nbtTags.getBoolean("inverse");
+        filters.clear();
         if (nbtTags.contains("filters")) {
             ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
+        //send filter update packet, as this isn't tracked by container
+        Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(this, getFilterPacket()), this);
     }
 
     @Override

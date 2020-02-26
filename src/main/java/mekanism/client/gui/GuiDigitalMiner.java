@@ -48,7 +48,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile, 163, 23));
+        addButton(new GuiVerticalPowerBar(this, tile, 163, 25, 50));
         addButton(new GuiVisualsTab(this, tile));
         addButton(new GuiEnergyInfo(() -> {
             double perTick = tile.getEnergyPerTick();

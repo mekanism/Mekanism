@@ -53,6 +53,7 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
@@ -67,6 +68,7 @@ import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.ITileUpgradable;
 import mekanism.common.tile.interfaces.IUpgradeableTile;
 import mekanism.common.upgrade.IUpgradeData;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
@@ -405,6 +407,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             if (isDirectional() && !stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
                 if (configurator.getState(stack) == ItemConfigurator.ConfiguratorMode.ROTATE) {
+                    return ActionResultType.PASS;
+                }
+            }
+            //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
+            if (CapabilityUtils.getCapability(this, Capabilities.CONFIG_CARD_CAPABILITY, null).isPresent()) {
+                if(!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
                     return ActionResultType.PASS;
                 }
             }
