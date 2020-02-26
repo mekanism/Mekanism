@@ -314,7 +314,7 @@ def version_properties = ["version": mod_version, "mc_version": minecraft_versio
 //TODO: Figure out if there is a way to just define one replaceResources task
 task replaceResources(type: Copy) {
     outputs.upToDateWhen { false }
-    from (sourceSets.main.resources) {
+    from(sourceSets.main.resources) {
         include "META-INF/mods.toml"
         expand version_properties
     }
@@ -323,7 +323,7 @@ task replaceResources(type: Copy) {
 
 task replaceResourcesAdditions(type: Copy) {
     outputs.upToDateWhen { false }
-    from (sourceSets.additions.resources) {
+    from(sourceSets.additions.resources) {
         include "META-INF/mods.toml"
         expand version_properties
     }
@@ -332,7 +332,7 @@ task replaceResourcesAdditions(type: Copy) {
 
 task replaceResourcesGenerators(type: Copy) {
     outputs.upToDateWhen { false }
-    from (sourceSets.generators.resources) {
+    from(sourceSets.generators.resources) {
         include "META-INF/mods.toml"
         expand version_properties
     }
@@ -341,7 +341,7 @@ task replaceResourcesGenerators(type: Copy) {
 
 task replaceResourcesTools(type: Copy) {
     outputs.upToDateWhen { false }
-    from (sourceSets.tools.resources) {
+    from(sourceSets.tools.resources) {
         include "META-INF/mods.toml"
         expand version_properties
     }
@@ -427,6 +427,32 @@ reobf {
 task fullBuild(type: Delete) {
     delete jar
     dependsOn "build"
+}
+
+//Minimize/optimize all png files, requires optipng on the PATH
+// Credits: BrainStone
+task optimizePng {
+    def pngPatterns = ["**/*.png"]
+
+    doLast {
+        def sourceSets = [sourceSets.main, sourceSets.additions, sourceSets.generators, sourceSets.tools]
+        for (def sourceSet : sourceSets) {
+            for (dir in sourceSet.resources.srcDirs) {
+                fileTree(dir: dir, includes: pngPatterns).each { File file ->
+                    long size = file.length()
+                    exec {
+                        executable "optipng"
+                        args "-q", "-o7", "-zm1-9", "-strip", "all", file
+                    }
+                    long newSize = file.length()
+                    if (newSize < size) {
+                        System.out.format("Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n",
+                                file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
+                    }
+                }
+            }
+        }
+    }
 }
 
 uploadArchives {
