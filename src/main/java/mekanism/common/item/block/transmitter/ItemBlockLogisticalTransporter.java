@@ -29,10 +29,13 @@ public class ItemBlockLogisticalTransporter extends ItemBlockMultipartAble<Block
     @Override
     public TransporterTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockLogisticalTransporter) {
-            return ((ItemBlockLogisticalTransporter) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockLogisticalTransporter ? ((ItemBlockLogisticalTransporter) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public TransporterTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override

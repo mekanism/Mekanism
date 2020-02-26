@@ -36,6 +36,7 @@ import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.recipe.RecipeCacheManager;
+import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -189,6 +190,7 @@ public class Mekanism {
 
         MinecraftForge.EVENT_BUS.addListener(this::serverAboutToStart);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::serverAboutToStartLowest);
+        MinecraftForge.EVENT_BUS.addListener(BinInsertRecipe::onCrafting);
 
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);

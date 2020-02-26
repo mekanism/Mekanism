@@ -14,6 +14,10 @@ public interface ITieredItem<TIER extends ITier> {
         return tier == null ? null : tier.getBaseTier();
     }
 
+    //TODO: Switch some usages of this to the other getTier, where we know we are getting it for the item we already verified the instance of
     @Nullable
     TIER getTier(@Nonnull ItemStack stack);
+
+    @Nonnull
+    TIER getTier();
 }

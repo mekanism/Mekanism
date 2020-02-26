@@ -42,10 +42,13 @@ public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCub
     @Override
     public EnergyCubeTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockEnergyCube) {
-            return ((ItemBlockEnergyCube) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockEnergyCube ? ((ItemBlockEnergyCube) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public EnergyCubeTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override

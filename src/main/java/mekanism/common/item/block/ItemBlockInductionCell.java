@@ -30,10 +30,13 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockInductionCell>
     @Override
     public InductionCellTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockInductionCell) {
-            return ((ItemBlockInductionCell) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockInductionCell ? ((ItemBlockInductionCell) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public InductionCellTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override

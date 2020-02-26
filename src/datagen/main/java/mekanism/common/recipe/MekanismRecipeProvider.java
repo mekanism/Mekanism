@@ -47,6 +47,7 @@ import mekanism.common.recipe.RecipePattern.TripleLine;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
+import mekanism.common.recipe.builder.SpecialRecipeBuilder;
 import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
 import mekanism.common.recipe.compat.CompatRecipeProvider;
 import mekanism.common.recipe.compat.ILikeWoodRecipeProvider;
@@ -58,6 +59,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -139,6 +141,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
+        //Special recipes (bins)
+        SpecialRecipeBuilder.build(consumer, MekanismRecipeSerializers.BIN_INSERT);
+        SpecialRecipeBuilder.build(consumer, MekanismRecipeSerializers.BIN_EXTRACT);
+        //Mod compat recipes
         compatRecipeProviders.forEach(compatRecipeProvider -> compatRecipeProvider.registerRecipes(consumer));
         addSolarNeutronActivatorRecipes(consumer);
         addBinRecipes(consumer);

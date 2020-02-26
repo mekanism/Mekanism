@@ -30,10 +30,13 @@ public class ItemBlockUniversalCable extends ItemBlockMultipartAble<BlockUnivers
     @Override
     public CableTier getTier(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockUniversalCable) {
-            return ((ItemBlockUniversalCable) item).getBlock().getTier();
-        }
-        return null;
+        return item instanceof ItemBlockUniversalCable ? ((ItemBlockUniversalCable) item).getTier() : null;
+    }
+
+    @Nonnull
+    @Override
+    public CableTier getTier() {
+        return getBlock().getTier();
     }
 
     @Override
