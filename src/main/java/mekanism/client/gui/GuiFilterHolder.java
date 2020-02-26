@@ -11,7 +11,7 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.HashList;
-import mekanism.common.OreDictCache;
+import mekanism.common.TagCache;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -174,7 +174,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         if (!modIDStacks.containsKey(filter)) {
             modIDStacks.put(filter, new StackData());
         }
-        modIDStacks.get(filter).iterStacks = OreDictCache.getModIDStacks(filter.getModID(), false);
+        modIDStacks.get(filter).iterStacks = TagCache.getModIDStacks(filter.getModID(), false);
         stackSwitch = 0;
         tick();
         modIDStacks.get(filter).stackIndex = -1;

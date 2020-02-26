@@ -6,7 +6,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.OreDictCache;
+import mekanism.common.TagCache;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.StackUtils;
@@ -32,7 +32,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
         addButton(scrollList = new GuiTextScrollList(this, 7, 29, 162, 42));
     }
 
@@ -79,7 +79,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
                     ItemStack stack = hovering.getStack();
                     if (!stack.isEmpty()) {
                         itemType = StackUtils.size(stack, 1);
-                        scrollList.setText(OreDictCache.getOreDictName(itemType));
+                        scrollList.setText(TagCache.getItemTags(itemType));
                         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);
                         return true;
                     }
@@ -90,7 +90,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
                 ItemStack stack = minecraft.player.inventory.getItemStack();
                 if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                     itemType = StackUtils.size(stack, 1);
-                    scrollList.setText(OreDictCache.getOreDictName(itemType));
+                    scrollList.setText(TagCache.getItemTags(itemType));
                 } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                     itemType = ItemStack.EMPTY;
                     scrollList.setText(null);

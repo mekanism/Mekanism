@@ -18,15 +18,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 //TODO: Rewrite this entire class to be more of a tag helper class than a caching class
-public final class OreDictCache {
+public final class TagCache {
 
     public static Map<String, List<ItemStack>> blockTagStacks = new Object2ObjectOpenHashMap<>();
     public static Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();
     public static Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();
 
-    public static List<String> getOreDictName(ItemStack check) {
-        //TODO: Switch to other methods
-        return new ArrayList<>();
+    public static List<String> getItemTags(ItemStack check) {
+        if(check == null) {
+            return new ArrayList<>();
+        }
+        return check.getItem().getTags().stream().map(ResourceLocation::toString).collect(Collectors.toList());
     }
 
     public static List<ItemStack> getItemTagStacks(String oreName) {

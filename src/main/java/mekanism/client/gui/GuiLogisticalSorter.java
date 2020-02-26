@@ -13,7 +13,7 @@ import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.OreDictCache;
+import mekanism.common.TagCache;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
@@ -109,6 +109,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
 
     @Override
     protected List<ItemStack> getTagStacks(String tagName) {
-        return OreDictCache.getItemTagStacks(tagName);
+        return TagCache.getItemTagStacks(tagName);
     }
 }

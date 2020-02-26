@@ -9,7 +9,7 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.OreDictCache;
+import mekanism.common.TagCache;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -194,6 +194,6 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Override
     protected List<ItemStack> getTagStacks(String tagName) {
-        return OreDictCache.getBlockTagStacks(tagName);
+        return TagCache.getBlockTagStacks(tagName);
     }
 }

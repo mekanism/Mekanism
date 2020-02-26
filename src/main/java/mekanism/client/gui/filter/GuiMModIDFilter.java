@@ -9,7 +9,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.OreDictCache;
+import mekanism.common.TagCache;
 import mekanism.common.content.miner.MModIDFilter;
 import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
 import mekanism.common.network.PacketEditFilter;
@@ -30,7 +30,7 @@ public class GuiMModIDFilter extends GuiModIDFilter<MModIDFilter, TileEntityDigi
 
     @Override
     protected void updateStackList(String modName) {
-        iterStacks = OreDictCache.getModIDStacks(modName, true);
+        iterStacks = TagCache.getModIDStacks(modName, true);
         stackSwitch = 0;
         stackIndex = -1;
     }

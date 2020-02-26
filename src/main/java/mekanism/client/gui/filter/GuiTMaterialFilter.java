@@ -34,7 +34,7 @@ public class GuiTMaterialFilter extends GuiMaterialFilter<TMaterialFilter, TileE
     @Override
     protected void addButtons() {
         addButton(new GuiInnerScreen(this, 33, 18, 93, 43));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18).setRenderHover(true));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 43));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 47, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!filter.getMaterialItem().isEmpty()) {

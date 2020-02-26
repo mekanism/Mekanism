@@ -10,7 +10,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.OreDictCache;
+import mekanism.common.TagCache;
 import mekanism.common.content.transporter.TTagFilter;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
 import mekanism.common.network.PacketEditFilter;
@@ -71,7 +71,7 @@ public class GuiTTagFilter extends GuiTagFilter<TTagFilter, TileEntityLogistical
 
     @Override
     protected void updateStackList(String oreName) {
-        iterStacks = OreDictCache.getItemTagStacks(oreName);
+        iterStacks = TagCache.getItemTagStacks(oreName);
         stackSwitch = 0;
         stackIndex = -1;
     }

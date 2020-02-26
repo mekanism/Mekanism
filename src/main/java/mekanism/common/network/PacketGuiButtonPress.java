@@ -26,6 +26,7 @@ import mekanism.common.inventory.container.tile.filter.DMModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.DMTagFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSFilterSelectContainer;
 import mekanism.common.inventory.container.tile.filter.LSItemStackFilterContainer;
+import mekanism.common.inventory.container.tile.filter.LSMaterialFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSModIDFilterContainer;
 import mekanism.common.inventory.container.tile.filter.LSTagFilterContainer;
 import mekanism.common.inventory.container.tile.filter.OredictionificatorFilterContainer;
@@ -199,7 +200,7 @@ public class PacketGuiButtonPress {
         }),
         LS_FILTER_MATERIAL((tile, extra) -> {
             if (tile instanceof TileEntityLogisticalSorter) {
-                return new ContainerProvider(MekanismLang.MATERIAL_FILTER, (i, inv, player) -> new LSItemStackFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
+                return new ContainerProvider(MekanismLang.MATERIAL_FILTER, (i, inv, player) -> new LSMaterialFilterContainer(i, inv, (TileEntityLogisticalSorter) tile, extra));
             }
             return null;
         }),

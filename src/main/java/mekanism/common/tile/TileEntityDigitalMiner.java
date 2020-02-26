@@ -827,8 +827,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
             }
         }
-        //send filter update packet, as this isn't tracked by container
-        Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(this, getFilterPacket()), this);
+        if (getWorld() != null) {
+            //send filter update packet, as this isn't tracked by container
+            Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(this, getFilterPacket()), this);
+        }
     }
 
     @Override
