@@ -1,3 +1,6 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 buildscript {
     repositories {
         jcenter()
@@ -310,6 +313,7 @@ dependencies {
 }
 
 def version_properties = ["version": mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version, "loader_version": loader_version]
+def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 //TODO: Figure out if there is a way to just define one replaceResources task
 task replaceResources(type: Copy) {
@@ -352,24 +356,48 @@ processResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     finalizedBy(replaceResources)
+    //Minify json resources
+    doLast {
+        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+        }
+    }
 }
 
 processAdditionsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     finalizedBy(replaceResourcesAdditions)
+    //Minify json resources
+    doLast {
+        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+        }
+    }
 }
 
 processGeneratorsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     finalizedBy(replaceResourcesGenerators)
+    //Minify json resources
+    doLast {
+        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+        }
+    }
 }
 
 processToolsResources {
     //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
     exclude 'META-INF/mods.toml'
     finalizedBy(replaceResourcesTools)
+    //Minify json resources
+    doLast {
+        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
+        }
+    }
 }
 
 jar {
