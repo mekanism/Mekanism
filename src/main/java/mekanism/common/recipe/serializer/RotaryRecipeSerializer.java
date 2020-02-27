@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.SerializerHelper;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.GasStackIngredient;

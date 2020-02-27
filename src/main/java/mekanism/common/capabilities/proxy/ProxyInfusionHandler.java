@@ -5,9 +5,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.infuse.IInfusionHandler;
-import mekanism.api.infuse.ISidedInfusionHandler;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.ISidedInfusionHandler;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.util.Direction;
 

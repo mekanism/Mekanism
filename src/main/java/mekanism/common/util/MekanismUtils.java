@@ -15,7 +15,7 @@ import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.Upgrade;
-import mekanism.api.gas.Gas;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;

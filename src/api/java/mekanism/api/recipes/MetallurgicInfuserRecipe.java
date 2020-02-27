@@ -7,7 +7,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;

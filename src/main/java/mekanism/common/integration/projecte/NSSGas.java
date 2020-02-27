@@ -2,9 +2,9 @@ package mekanism.common.integration.projecte;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTags;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.GasTags;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;

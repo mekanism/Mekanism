@@ -1,7 +1,7 @@
 package mekanism.common.registration.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.api.gas.Slurry;
+import mekanism.api.chemical.gas.Slurry;
 import mekanism.common.registration.DoubleWrappedRegistryObject;
 import net.minecraftforge.fml.RegistryObject;
 

@@ -2,8 +2,8 @@ package mekanism.api.recipes;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

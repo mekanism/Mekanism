@@ -2,7 +2,7 @@ package mekanism.common.network.container;
 
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalUtils;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.network.PacketBuffer;
 

@@ -2,8 +2,8 @@ package mekanism.api.recipes;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

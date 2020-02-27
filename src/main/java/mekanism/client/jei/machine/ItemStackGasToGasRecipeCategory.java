@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;

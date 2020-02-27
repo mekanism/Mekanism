@@ -2,8 +2,8 @@ package mekanism.common.inventory.container.sync;
 
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.network.container.property.GasStackPropertyData;
 import mekanism.common.network.container.property.IntPropertyData;
 import mekanism.common.network.container.property.PropertyData;

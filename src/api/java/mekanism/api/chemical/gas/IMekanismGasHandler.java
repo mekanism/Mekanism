@@ -1,4 +1,4 @@
-package mekanism.api.gas;
+package mekanism.api.chemical.gas;
 
 import java.util.List;
 import javax.annotation.Nullable;

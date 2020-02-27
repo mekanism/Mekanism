@@ -1,7 +1,7 @@
 package mekanism.client.jei.chemical;
 
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
 
 public class InfusionStackHelper extends ChemicalStackHelper<InfuseType, InfusionStack> {
 

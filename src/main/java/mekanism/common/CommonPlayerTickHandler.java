@@ -1,6 +1,6 @@
 package mekanism.common;
 
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;

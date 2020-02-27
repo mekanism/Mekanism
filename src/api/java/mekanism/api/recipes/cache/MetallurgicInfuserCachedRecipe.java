@@ -3,7 +3,7 @@ package mekanism.api.recipes.cache;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;

@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;

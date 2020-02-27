@@ -1,7 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;

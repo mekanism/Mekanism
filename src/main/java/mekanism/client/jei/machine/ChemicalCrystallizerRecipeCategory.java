@@ -3,7 +3,7 @@ package mekanism.client.jei.machine;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.client.gui.element.GuiCrystallizerScreen;
 import mekanism.client.gui.element.GuiCrystallizerScreen.IOreInfo;

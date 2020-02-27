@@ -2,8 +2,8 @@ package mekanism.common.registration.impl;
 
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfuseTypeAttributes;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfuseTypeAttributes;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.util.ResourceLocation;
 

@@ -2,7 +2,7 @@ package mekanism.client.jei.machine;
 
 import java.util.Arrays;
 import java.util.Collections;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;

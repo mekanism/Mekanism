@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;

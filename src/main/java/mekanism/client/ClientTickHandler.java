@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.IClientTicker;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.KeySync;

@@ -1,6 +1,6 @@
 package mekanism.common.registries;
 
-import mekanism.api.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.InfuseTypeDeferredRegister;
 import mekanism.common.registration.impl.InfuseTypeRegistryObject;

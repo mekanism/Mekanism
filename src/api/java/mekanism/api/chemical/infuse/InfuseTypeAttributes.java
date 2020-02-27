@@ -1,4 +1,4 @@
-package mekanism.api.infuse;
+package mekanism.api.chemical.infuse;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;

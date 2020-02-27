@@ -5,9 +5,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.gas.BasicGasTank;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IMekanismGasHandler;
+import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.tier.GasTankTier;
 

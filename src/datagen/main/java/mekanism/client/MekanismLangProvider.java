@@ -1,6 +1,6 @@
 package mekanism.client;
 
-import mekanism.api.gas.Slurry;
+import mekanism.api.chemical.gas.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;

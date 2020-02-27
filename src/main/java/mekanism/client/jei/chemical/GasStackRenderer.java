@@ -1,8 +1,8 @@
 package mekanism.client.jei.chemical;
 
 import javax.annotation.Nullable;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mezz.jei.api.gui.drawable.IDrawable;
 import net.minecraftforge.fluids.FluidAttributes;
 

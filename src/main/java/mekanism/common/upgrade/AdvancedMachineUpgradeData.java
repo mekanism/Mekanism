@@ -1,7 +1,7 @@
 package mekanism.common.upgrade;
 
 import java.util.List;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ITileComponent;

@@ -7,8 +7,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.inventory.IMekanismInventory;
 import net.minecraft.util.Direction;
 
 public abstract class SynchronizedData<T extends SynchronizedData<T>> implements IMekanismInventory {

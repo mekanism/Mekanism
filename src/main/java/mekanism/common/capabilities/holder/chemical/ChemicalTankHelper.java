@@ -6,10 +6,10 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.util.Direction;
 

@@ -1,8 +1,8 @@
 /*package mekanism.common.integration.crafttweaker.gas;
 
 import javax.annotation.Nonnull;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 
 public class CraftTweakerGasDefinition implements IGasDefinition {
 

@@ -1,8 +1,8 @@
 package mekanism.common.base;
 
 import mekanism.api.Action;
-import mekanism.api.gas.BasicGasTank;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.item.ItemGaugeDropper;
 import net.minecraft.entity.player.PlayerEntity;

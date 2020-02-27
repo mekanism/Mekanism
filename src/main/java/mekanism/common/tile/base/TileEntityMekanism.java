@@ -25,21 +25,20 @@ import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.IMekanismGasHandler;
-import mekanism.api.infuse.IInfusionHandler;
-import mekanism.api.infuse.IMekanismInfusionHandler;
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
@@ -51,6 +50,8 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.proxy.ProxyGasHandler;
 import mekanism.common.capabilities.proxy.ProxyInfusionHandler;
 import mekanism.common.capabilities.proxy.ProxyItemHandler;
@@ -67,7 +68,6 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.network.PacketDataRequest;
@@ -460,7 +460,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             }
             //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
             if (CapabilityUtils.getCapability(this, Capabilities.CONFIG_CARD_CAPABILITY, null).isPresent()) {
-                if(!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
+                if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
                     return ActionResultType.PASS;
                 }
             }
@@ -508,7 +508,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             redstoneLastTick = redstone;
         }
 
-        if(!isRemote()) {
+        if (!isRemote()) {
             lastEnergyReceived = 0;
         }
     }

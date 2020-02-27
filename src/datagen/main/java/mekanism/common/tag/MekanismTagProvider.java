@@ -1,6 +1,6 @@
 package mekanism.common.tag;
 
-import mekanism.api.gas.Gas;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;

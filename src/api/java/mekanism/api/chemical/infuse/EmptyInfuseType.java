@@ -1,4 +1,4 @@
-package mekanism.api.infuse;
+package mekanism.api.chemical.infuse;
 
 import java.util.Collections;
 import java.util.Set;

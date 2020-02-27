@@ -75,7 +75,7 @@ public class BinExtractRecipe extends BinRecipe {
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
         NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-        for(int i = 0; i < remaining.size(); ++i) {
+        for (int i = 0; i < remaining.size(); ++i) {
             ItemStack stackInSlot = inv.getStackInSlot(i);
             if (stackInSlot.getItem() instanceof ItemBlockBin) {
                 ItemStack binStack = stackInSlot.copy();

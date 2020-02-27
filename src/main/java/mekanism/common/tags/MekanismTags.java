@@ -1,9 +1,9 @@
 package mekanism.common.tags;
 
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasTags;
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfuseTypeTags;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasTags;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfuseTypeTags;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;

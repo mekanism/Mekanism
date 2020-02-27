@@ -2,12 +2,12 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloat;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;

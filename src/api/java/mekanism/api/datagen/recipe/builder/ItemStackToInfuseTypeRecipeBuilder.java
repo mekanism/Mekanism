@@ -7,8 +7,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.infuse.InfusionStack;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import net.minecraft.util.ResourceLocation;
 

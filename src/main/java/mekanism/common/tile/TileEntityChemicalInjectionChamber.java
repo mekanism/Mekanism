@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
-import mekanism.api.gas.Gas;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -9,9 +8,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
-import net.minecraft.util.Direction;
 
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine {
 

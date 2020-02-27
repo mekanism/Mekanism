@@ -3,7 +3,7 @@ package mekanism.common.integration.projecte.mappers;
 import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.integration.projecte.NSSGas;

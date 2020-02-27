@@ -5,9 +5,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasHandler;
-import mekanism.api.gas.ISidedGasHandler;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.ISidedGasHandler;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.util.Direction;
 

@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.BasicGasTank;
+import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;

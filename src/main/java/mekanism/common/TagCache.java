@@ -25,7 +25,7 @@ public final class TagCache {
     public static Map<String, List<ItemStack>> modIDStacks = new Object2ObjectOpenHashMap<>();
 
     public static List<String> getItemTags(ItemStack check) {
-        if(check == null) {
+        if (check == null) {
             return new ArrayList<>();
         }
         return check.getItem().getTags().stream().map(ResourceLocation::toString).collect(Collectors.toList());

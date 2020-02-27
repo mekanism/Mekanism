@@ -2,7 +2,7 @@ package mekanism.common.integration.projecte.mappers;
 
 import java.util.HashMap;
 import java.util.Map;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.integration.projecte.NSSInfuseType;
 import mekanism.common.recipe.MekanismRecipeType;

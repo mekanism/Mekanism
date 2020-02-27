@@ -3,7 +3,7 @@
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.gas.IGasStack;
 import mekanism.common.temporary.IngredientAny;

@@ -4,7 +4,7 @@ import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.impl.commands.CTCommands.CommandImpl;
 import java.util.Collection;
 import mekanism.api.MekanismAPI;
-import mekanism.api.gas.Gas;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.text.EnumColor;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.util.text.ITextComponent;

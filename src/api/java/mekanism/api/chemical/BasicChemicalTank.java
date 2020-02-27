@@ -21,8 +21,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     private final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert;
     private final int capacity;
     /**
-     * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(STACK)} should be used
-     * instead.
+     * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(STACK)} should be used instead.
      */
     protected STACK stored;
 

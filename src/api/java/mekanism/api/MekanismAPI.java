@@ -1,10 +1,10 @@
 package mekanism.api;
 
 import javax.annotation.Nonnull;
-import mekanism.api.gas.EmptyGas;
-import mekanism.api.gas.Gas;
-import mekanism.api.infuse.EmptyInfuseType;
-import mekanism.api.infuse.InfuseType;
+import mekanism.api.chemical.gas.EmptyGas;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.infuse.EmptyInfuseType;
+import mekanism.api.chemical.infuse.InfuseType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

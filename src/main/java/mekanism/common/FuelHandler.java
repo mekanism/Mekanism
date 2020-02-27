@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
-import mekanism.api.gas.Gas;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.tags.Tag;
 

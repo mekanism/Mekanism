@@ -1,6 +1,6 @@
 package mekanism.common.upgrade.transmitter;
 
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 
 public class PressurizedTubeUpgradeData extends TransmitterUpgradeData {

@@ -3,8 +3,8 @@ package mekanism.common.tile.component.config.slot;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 
 public class GasSlotInfo extends BaseSlotInfo {
 

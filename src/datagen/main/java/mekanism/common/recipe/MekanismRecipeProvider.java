@@ -1,8 +1,6 @@
 package mekanism.common.recipe;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -455,10 +453,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addCrusherBioFuelRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Generate baseline recipes from Composter recipe set
-        for(Entry<net.minecraft.util.IItemProvider> chance : ComposterBlock.CHANCES.object2FloatEntrySet()) {
+        for (Entry<net.minecraft.util.IItemProvider> chance : ComposterBlock.CHANCES.object2FloatEntrySet()) {
             ItemStackToItemStackRecipeBuilder.crushing(
                   ItemStackIngredient.from(chance.getKey().asItem()),
-                  MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue()*8))
+                  MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue() * 8))
             ).addCriterion(Criterion.HAS_CRUSHER)
                   .build(consumer, Mekanism.rl(basePath + chance.getKey().asItem().toString()));
         }

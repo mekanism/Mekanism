@@ -2,9 +2,9 @@ package mekanism.common.integration.projecte;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfuseTypeTags;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfuseTypeTags;
+import mekanism.api.chemical.infuse.InfusionStack;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;

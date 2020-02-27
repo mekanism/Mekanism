@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmissionType;

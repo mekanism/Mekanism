@@ -3,7 +3,7 @@ package mekanism.client.jei.machine;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;

@@ -3,8 +3,8 @@ package mekanism.common.capabilities.basic;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.infuse.IInfusionHandler;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.IInfusionHandler;
+import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 

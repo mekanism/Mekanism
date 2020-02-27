@@ -2,9 +2,9 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasItem;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasItem;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.client.util.ITooltipFlag;

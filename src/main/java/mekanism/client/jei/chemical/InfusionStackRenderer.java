@@ -1,7 +1,7 @@
 package mekanism.client.jei.chemical;
 
-import mekanism.api.infuse.InfuseType;
-import mekanism.api.infuse.InfusionStack;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
 public class InfusionStackRenderer extends ChemicalStackRenderer<InfuseType, InfusionStack> {

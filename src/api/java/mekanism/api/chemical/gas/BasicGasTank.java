@@ -1,4 +1,4 @@
-package mekanism.api.gas;
+package mekanism.api.chemical.gas;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;

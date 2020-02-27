@@ -4,7 +4,7 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.gas.GasStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 //TODO: Move this to our API package?

@@ -1,8 +1,8 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import mekanism.api.gas.GasTags;
-import mekanism.api.infuse.InfuseTypeTags;
+import mekanism.api.chemical.gas.GasTags;
+import mekanism.api.chemical.infuse.InfuseTypeTags;
 import mekanism.common.tags.MekanismTagManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;

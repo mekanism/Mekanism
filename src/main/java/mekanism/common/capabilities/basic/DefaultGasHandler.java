@@ -3,8 +3,8 @@ package mekanism.common.capabilities.basic;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.gas.GasStack;
-import mekanism.api.gas.IGasHandler;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
