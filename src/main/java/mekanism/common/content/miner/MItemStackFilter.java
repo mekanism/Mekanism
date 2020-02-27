@@ -11,8 +11,6 @@ import net.minecraft.network.PacketBuffer;
 public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements IItemStackFilter<MItemStackFilter> {
 
     private ItemStack itemType = ItemStack.EMPTY;
-    //TODO: Fuzzy doesn't do anything due the the removal of meta data
-    public boolean fuzzy;
 
     public MItemStackFilter(ItemStack item) {
         itemType = item;
@@ -27,9 +25,6 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
         if (itemStack.isEmpty()) {
             return false;
         }
-        if (itemStack.getItem() == itemType.getItem() && fuzzy) {
-            return true;
-        }
         return itemType.isItemEqual(itemStack);
     }
 
@@ -37,7 +32,6 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt("type", 0);
-        nbtTags.putBoolean("fuzzy", fuzzy);
         itemType.write(nbtTags);
         return nbtTags;
     }
@@ -45,7 +39,6 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        fuzzy = nbtTags.getBoolean("fuzzy");
         itemType = ItemStack.read(nbtTags);
     }
 
@@ -53,14 +46,12 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
     public void write(TileNetworkList data) {
         data.add(0);
         super.write(data);
-        data.add(fuzzy);
         data.add(itemType);
     }
 
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        fuzzy = dataStream.readBoolean();
         itemType = dataStream.readItemStack();
     }
 
@@ -81,7 +72,6 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
         MItemStackFilter filter = new MItemStackFilter();
         filter.replaceStack = replaceStack;
         filter.requireStack = requireStack;
-        filter.fuzzy = fuzzy;
         filter.itemType = itemType.copy();
         return filter;
     }

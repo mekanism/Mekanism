@@ -12,6 +12,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implements IItemStackFilter<TItemStackFilter> {
 
     public boolean sizeMode;
+    public boolean fuzzyMode;
 
     public int min;
     public int max;
@@ -20,7 +21,8 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
 
     @Override
     public boolean canFilter(ItemStack itemStack, boolean strict) {
-        return super.canFilter(itemStack, strict) && !(strict && sizeMode && (max == 0 || itemStack.getCount() < min)) && ItemHandlerHelper.canItemStacksStackRelaxed(itemType, itemStack);
+        return super.canFilter(itemStack, strict) && !(strict && sizeMode && (max == 0 || itemStack.getCount() < min))
+               && (fuzzyMode ? ItemStack.areItemsEqual(itemType, itemStack) : ItemHandlerHelper.canItemStacksStack(itemType, itemStack));
     }
 
     @Override
@@ -41,6 +43,7 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
         super.write(nbtTags);
         nbtTags.putInt("type", 0);
         nbtTags.putBoolean("sizeMode", sizeMode);
+        nbtTags.putBoolean("fuzzyMode", fuzzyMode);
         nbtTags.putInt("min", min);
         nbtTags.putInt("max", max);
         itemType.write(nbtTags);
@@ -50,6 +53,7 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         sizeMode = nbtTags.getBoolean("sizeMode");
+        fuzzyMode = nbtTags.getBoolean("fuzzyMode");
         min = nbtTags.getInt("min");
         max = nbtTags.getInt("max");
         itemType = ItemStack.read(nbtTags);
@@ -62,6 +66,7 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
         super.write(data);
 
         data.add(sizeMode);
+        data.add(fuzzyMode);
         data.add(min);
         data.add(max);
 
@@ -72,6 +77,7 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         sizeMode = dataStream.readBoolean();
+        fuzzyMode = dataStream.readBoolean();
         min = dataStream.readInt();
         max = dataStream.readInt();
         itemType = dataStream.readItemStack();
@@ -83,6 +89,7 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
         code = 31 * code + super.hashCode();
         code = 31 * code + itemType.hashCode();
         code = 31 * code + (sizeMode ? 1 : 0);
+        code = 31 * code + (fuzzyMode ? 1 : 0);
         code = 31 * code + min;
         code = 31 * code + max;
         return code;
@@ -91,7 +98,8 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
     @Override
     public boolean equals(Object filter) {
         return super.equals(filter) && filter instanceof TItemStackFilter && ((TItemStackFilter) filter).itemType.isItemEqual(itemType)
-               && ((TItemStackFilter) filter).sizeMode == sizeMode && ((TItemStackFilter) filter).min == min && ((TItemStackFilter) filter).max == max;
+               && ((TItemStackFilter) filter).sizeMode == sizeMode && ((TItemStackFilter) filter).fuzzyMode == fuzzyMode && ((TItemStackFilter) filter).min == min
+               && ((TItemStackFilter) filter).max == max;
     }
 
     @Override
@@ -101,6 +109,7 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
         filter.color = color;
         filter.itemType = itemType.copy();
         filter.sizeMode = sizeMode;
+        filter.fuzzyMode = fuzzyMode;
         filter.min = min;
         filter.max = max;
         return filter;

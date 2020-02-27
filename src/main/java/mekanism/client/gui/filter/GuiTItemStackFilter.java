@@ -1,5 +1,6 @@
 package mekanism.client.gui.filter;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.text.EnumColor;
@@ -78,8 +79,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         }));
         addButton(new MekanismImageButton(this, getGuiLeft() + 5, getGuiTop() + 5, 11, 14, getButtonLocation("back"),
               () -> sendPacketToServer(isNew ? ClickedTileButton.LS_SELECT_FILTER_TYPE : ClickedTileButton.BACK_BUTTON)));
-        addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 64, 11, getButtonLocation("default"),
+        addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 62, 10, getButtonLocation("default"),
               () -> filter.allowDefault = !filter.allowDefault, getOnHover(MekanismLang.FILTER_ALLOW_DEFAULT)));
+        addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 72, 10, getButtonLocation("fuzzy"),
+              () -> filter.fuzzyMode = !filter.fuzzyMode, getOnHover(MekanismLang.FUZZY_MODE)));
         addButton(new ColorButton(this, getGuiLeft() + 12, getGuiTop() + 44, 16, 16, () -> filter.color,
               () -> filter.color = InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
               () -> filter.color = TransporterUtils.decrement(filter.color)));
@@ -151,10 +154,17 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         } else {
             drawString(OnOff.of(filter.sizeMode).getTextComponent(), 141, 46, 0x404040);
         }
+        drawString(OnOff.of(filter.fuzzyMode).getTextComponent(), 24, 74, 0x404040);
         drawTransporterForegroundLayer(filter.getItemStack());
         if (!filter.getItemStack().isEmpty()) {
             renderScaledText(filter.getItemStack().getDisplayName(), 35, 41, 0x00CD00, 89);
         }
+    }
+
+    @Override
+    protected void drawTransporterForegroundLayer(@Nonnull ItemStack stack) {
+        drawString(OnOff.of(filter.allowDefault).getTextComponent(), 24, 64, 0x404040);
+        renderItem(stack, 12, 19);
     }
 
     @Override

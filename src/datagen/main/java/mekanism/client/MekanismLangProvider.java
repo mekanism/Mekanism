@@ -513,6 +513,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FILTER_INDEX, "Index: %s");
         add(MekanismLang.SIZE_MODE, "Size Mode");
         add(MekanismLang.SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
+        add(MekanismLang.FUZZY_MODE, "Fuzzy Mode");
         add(MekanismLang.MATERIAL_FILTER, "Material Filter");
         add(MekanismLang.MATERIAL_FILTER_DETAILS, "Using material of:");
         add(MekanismLang.TAG_FILTER, "Tag Filter");
@@ -652,7 +653,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MINER_INVERSE, "Inverse mode");
         add(MekanismLang.MINER_VISUALS, "Visuals: %s");
         add(MekanismLang.MINER_VISUALS_TOO_BIG, "Radius too big to display visuals");
-        add(MekanismLang.MINER_FUZZY_MODE, "Fuzzy mode: %s");
         add(MekanismLang.MINER_REQUIRE_REPLACE, "Require replace: %s");
         add(MekanismLang.MINER_IS_INVERSE, "I: %s");
         add(MekanismLang.MINER_RADIUS, "Radi: %s");
