@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
@@ -18,19 +16,18 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
-import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -40,16 +37,14 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine<GasToItemStackRecipe> implements IGasHandler, ISideConfiguration, ISustainedData,
-      ITankManager, IConfigCardAccess {
+public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine<GasToItemStackRecipe> implements IGasHandler, ISideConfiguration, ITankManager,
+      IConfigCardAccess {
 
     public static final int MAX_GAS = 10_000;
 
@@ -196,25 +191,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public TileComponentEjector getEjector() {
         return ejectorComponent;
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        if (!inputTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "inputTank", inputTank.getStack().write(new CompoundNBT()));
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        inputTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputTank")));
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("inputTank.stored", "inputTank");
-        return remap;
     }
 
     @Override

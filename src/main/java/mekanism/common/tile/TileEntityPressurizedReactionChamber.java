@@ -309,27 +309,17 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         if (!inputFluidTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "inputFluidTank", inputFluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
-        if (!inputGasTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "inputGasTank", inputGasTank.getStack().write(new CompoundNBT()));
-        }
-        if (!outputGasTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "outputGasTank", outputGasTank.getStack().write(new CompoundNBT()));
-        }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
         inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "inputFluidTank")));
-        inputGasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "inputGasTank")));
-        outputGasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "outputGasTank")));
     }
 
     @Override
     public Map<String, String> getTileDataRemap() {
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("inputFluidTank", "inputFluidTank");
-        remap.put("inputGasTank.stored", "inputGasTank");
-        remap.put("outputGasTank.stored", "outputGasTank");
         return remap;
     }
 

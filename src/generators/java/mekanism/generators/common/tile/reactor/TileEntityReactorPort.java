@@ -54,7 +54,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     }
 
     @Override
-    public boolean handlesGas() {
+    public boolean persistGas() {
         //But that we do not handle gas when it comes to syncing it/saving this tile to disk
         return false;
     }

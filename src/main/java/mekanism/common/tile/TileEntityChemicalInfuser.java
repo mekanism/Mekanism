@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -18,29 +16,25 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.api.sustained.ISustainedData;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 
-public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGasHandler, ISustainedData, ITankManager, ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
+public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGasHandler, ITankManager, ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
     public static final int MAX_GAS = 10_000;
     public BasicGasTank leftTank;
@@ -159,35 +153,6 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        if (!leftTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "leftTank", leftTank.getStack().write(new CompoundNBT()));
-        }
-        if (!rightTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "rightTank", rightTank.getStack().write(new CompoundNBT()));
-        }
-        if (!centerTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "centerTank", centerTank.getStack().write(new CompoundNBT()));
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        leftTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "leftTank")));
-        rightTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "rightTank")));
-        centerTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "centerTank")));
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("leftTank.stored", "leftTank");
-        remap.put("rightTank.stored", "rightTank");
-        remap.put("centerTank.stored", "centerTank");
-        return remap;
     }
 
     @Override

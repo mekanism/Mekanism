@@ -213,22 +213,17 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         if (!fluidTank.isEmpty()) {
             ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         }
-        if (!gasTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "gasTank", gasTank.getStack().write(new CompoundNBT()));
-        }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
         fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
-        gasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "gasTank")));
     }
 
     @Override
     public Map<String, String> getTileDataRemap() {
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put("fluidTank", "fluidTank");
-        remap.put("gasTank.stored", "gasTank");
         return remap;
     }
 

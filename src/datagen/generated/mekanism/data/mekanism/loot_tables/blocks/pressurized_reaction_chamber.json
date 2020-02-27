@@ -37,23 +37,18 @@
                   "op": "replace"
                 },
                 {
-                  "source": "inputGasTank.stored",
-                  "target": "mekData.inputGasTank",
-                  "op": "replace"
-                },
-                {
                   "source": "inputFluidTank",
                   "target": "mekData.inputFluidTank",
                   "op": "replace"
                 },
                 {
-                  "source": "outputGasTank.stored",
-                  "target": "mekData.outputGasTank",
+                  "source": "controlType",
+                  "target": "mekData.controlType",
                   "op": "replace"
                 },
                 {
-                  "source": "controlType",
-                  "target": "mekData.controlType",
+                  "source": "GasTanks",
+                  "target": "mekData.GasTanks",
                   "op": "replace"
                 },
                 {

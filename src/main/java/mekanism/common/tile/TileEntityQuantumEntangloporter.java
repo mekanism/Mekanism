@@ -437,7 +437,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean handlesGas() {
+    public boolean persistGas() {
         return false;
     }
 

@@ -32,18 +32,13 @@
                   "op": "replace"
                 },
                 {
-                  "source": "leftTank.stored",
-                  "target": "mekData.leftTank",
-                  "op": "replace"
-                },
-                {
-                  "source": "rightTank.stored",
-                  "target": "mekData.rightTank",
-                  "op": "replace"
-                },
-                {
                   "source": "controlType",
                   "target": "mekData.controlType",
+                  "op": "replace"
+                },
+                {
+                  "source": "GasTanks",
+                  "target": "mekData.GasTanks",
                   "op": "replace"
                 },
                 {

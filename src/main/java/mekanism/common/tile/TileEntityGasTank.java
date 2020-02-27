@@ -258,22 +258,17 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (!gasTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "stored", gasTank.getStack().write(new CompoundNBT()));
-        }
         ItemDataUtils.setInt(itemStack, "dumping", dumping.ordinal());
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        gasTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "stored")));
         dumping = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, "dumping"));
     }
 
     @Override
     public Map<String, String> getTileDataRemap() {
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("gasTank.stored", "stored");
         remap.put("dumping", "dumping");
         return remap;
     }

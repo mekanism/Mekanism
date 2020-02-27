@@ -37,11 +37,6 @@
                   "op": "replace"
                 },
                 {
-                  "source": "infuseStored.stored",
-                  "target": "mekData.infusionStored",
-                  "op": "replace"
-                },
-                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"

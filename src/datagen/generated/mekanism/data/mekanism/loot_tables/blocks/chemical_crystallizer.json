@@ -37,13 +37,13 @@
                   "op": "replace"
                 },
                 {
-                  "source": "inputTank.stored",
-                  "target": "mekData.inputTank",
+                  "source": "controlType",
+                  "target": "mekData.controlType",
                   "op": "replace"
                 },
                 {
-                  "source": "controlType",
-                  "target": "mekData.controlType",
+                  "source": "GasTanks",
+                  "target": "mekData.GasTanks",
                   "op": "replace"
                 },
                 {

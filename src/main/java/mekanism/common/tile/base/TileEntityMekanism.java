@@ -617,7 +617,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 }
             }
         }
-        if (canHandleGas() && handlesGas()) {
+        if (canHandleGas() && persistGas()) {
             ChemicalUtils.readChemicalTanks(getGasTanks(null), nbtTags.getList("GasTanks", NBT.TAG_COMPOUND));
         }
         if (canHandleInfusion() && handlesInfusion()) {
@@ -652,7 +652,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             }
             nbtTags.put("Items", tagList);
         }
-        if (canHandleGas() && handlesGas()) {
+        if (canHandleGas() && persistGas()) {
             nbtTags.put("GasTanks", ChemicalUtils.writeChemicalTanks(getGasTanks(null)));
         }
         if (canHandleInfusion() && handlesInfusion()) {
@@ -685,7 +685,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             }
         }
         if (canHandleGas() && handlesGas()) {
-            //TODO: Make it so we are not needlessly syncing this for the fusion reactor controller
             List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(null);
             for (IChemicalTank<Gas, GasStack> gasTank : gasTanks) {
                 container.track(SyncableGasStack.create(gasTank));
@@ -1031,9 +1030,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return gasTankHolder.getTanks(side);
     }
 
-    //TODO: Re-evaluate this is mainly for quantum entangloporter to not save it to the tile
-    public boolean handlesGas() {
+    public boolean persistGas() {
         return canHandleGas();
+    }
+
+    public boolean handlesGas() {
+        return persistGas();
     }
 
     /**
@@ -1054,6 +1056,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             gasHandlers.put(side, gasHandler = new ProxyGasHandler(this, side, gasTankHolder));
         }
         return gasHandler;
+    }
+
+    public void loadGas(ListNBT nbtTags) {
+        if (nbtTags != null && !nbtTags.isEmpty() && canHandleGas()) {
+            ChemicalUtils.readChemicalTanks(getGasTanks(null), nbtTags);
+        }
     }
     //End methods IMekanismGasHandler
 
@@ -1095,6 +1103,12 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             infusionHandlers.put(side, infusionHandler = new ProxyInfusionHandler(this, side, infusionTankHolder));
         }
         return infusionHandler;
+    }
+
+    public void loadInfusion(ListNBT nbtTags) {
+        if (nbtTags != null && !nbtTags.isEmpty() && canHandleInfusion()) {
+            ChemicalUtils.readChemicalTanks(getInfusionTanks(null), nbtTags);
+        }
     }
     //End methods IMekanismInfusionHandler
 

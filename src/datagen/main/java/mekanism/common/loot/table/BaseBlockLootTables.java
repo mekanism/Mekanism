@@ -110,6 +110,19 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 nbtBuilder.replaceOperation("controlType", ItemDataUtils.DATA_ID + ".controlType");
                 hasData = true;
             }
+            if (tile instanceof TileEntityMekanism) {
+                TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
+                //TODO: Evaluate a way of doing this that doesn't force TileEntityMekanism
+                //TODO: Do we care that technically breaking the reactor controller makes it grab the tanks?
+                if (tileEntity.handlesGas() && tileEntity.getGasTanks(null).size() > 0) {
+                    nbtBuilder.replaceOperation("GasTanks", ItemDataUtils.DATA_ID + ".GasTanks");
+                    hasData = true;
+                }
+                if (tileEntity.handlesInfusion() && tileEntity.getInfusionTanks(null).size() > 0) {
+                    nbtBuilder.replaceOperation("InfusionTanks", ItemDataUtils.DATA_ID + ".InfusionTanks");
+                    hasData = true;
+                }
+            }
             //TODO: If anything for inventories doesn't work we may have to check if the tile is an ISustainedInventory
             // I don't believe it is directly needed anymore for this due to IHasInventory
             if (block instanceof IHasInventory) {

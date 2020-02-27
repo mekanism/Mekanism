@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.sustained.ISustainedInventory;
@@ -83,7 +84,15 @@ public abstract class BlockMekanism extends Block {
         if (tile.supportsRedstone()) {
             ItemDataUtils.setInt(itemStack, "controlType", tile.getControlType().ordinal());
         }
-        if (item instanceof ISustainedInventory && tile.hasInventory() && tile.getSlots() > 0) {
+        if (tile.handlesGas()) {
+            //TODO: Do this better
+            ItemDataUtils.setList(itemStack, "GasTanks", ChemicalUtils.writeChemicalTanks(tile.getGasTanks(null)));
+        }
+        if (tile.handlesInfusion()) {
+            //TODO: Do this better
+            ItemDataUtils.setList(itemStack, "InfusionTanks", ChemicalUtils.writeChemicalTanks(tile.getInfusionTanks(null)));
+        }
+        if (item instanceof ISustainedInventory && tile.handleInventory() && tile.getSlots() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
         }
         if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {
@@ -190,6 +199,12 @@ public abstract class BlockMekanism extends Block {
             config.getConfig().read(ItemDataUtils.getDataMap(stack));
             config.getEjector().read(ItemDataUtils.getDataMap(stack));
         }
+        if (tile.handlesGas()) {
+            tile.loadGas(ItemDataUtils.getList(stack, "GasTanks"));
+        }
+        if (tile.handlesInfusion()) {
+            tile.loadInfusion(ItemDataUtils.getList(stack, "InfusionTanks"));
+        }
         if (tile instanceof ISustainedData && stack.hasTag()) {
             ((ISustainedData) tile).readSustainedData(stack);
         }
@@ -204,7 +219,7 @@ public abstract class BlockMekanism extends Block {
                 ((ISustainedTank) tile).setFluidStack(fluid);
             }
         }
-        if (item instanceof ISustainedInventory && tile.hasInventory()) {
+        if (item instanceof ISustainedInventory && tile.handleInventory()) {
             tile.setInventory(((ISustainedInventory) item).getInventory(stack));
         }
         //The variant of it that was in BlockBasic

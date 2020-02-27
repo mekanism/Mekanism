@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -14,11 +12,12 @@ import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.gas.IMekanismGasHandler;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.sustained.ISustainedData;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -26,16 +25,12 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 
-public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ISustainedData {
+public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
     /**
@@ -183,33 +178,12 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         }
     }
 
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        if (fuelTank != null) {
-            ItemDataUtils.setCompound(itemStack, "fuelTank", fuelTank.getStack().write(new CompoundNBT()));
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, "fuelTank")) {
-            fuelTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "fuelTank")));
-        }
-    }
-
     public double getGenerationRate() {
         return generationRate;
     }
 
     public int getUsed() {
         return used;
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("fuelTank", "fuelTank");
-        return remap;
     }
 
     @Override

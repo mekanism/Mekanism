@@ -15,7 +15,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 
-//TODO: GasHandler - Make sure to test the various methods without the shortcuts
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChemicalUtils {

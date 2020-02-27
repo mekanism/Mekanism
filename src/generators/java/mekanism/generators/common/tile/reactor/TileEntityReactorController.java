@@ -84,6 +84,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         return builder.build();
     }
 
+    @Override
+    public boolean handlesGas() {
+        return false;
+    }
+
     public IInventorySlot getReactorSlot() {
         return reactorSlot;
     }
