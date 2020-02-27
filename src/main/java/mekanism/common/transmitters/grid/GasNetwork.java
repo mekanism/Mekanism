@@ -82,20 +82,18 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 net.gasScale = 0;
                 net.gasTank.setEmpty();
             }
-        } else {
-            if (!net.gasTank.isEmpty()) {
-                if (gasTank.isEmpty()) {
-                    gasTank.setStack(net.getBuffer().copy());
-                } else if (gasTank.getStack().isTypeEqual(net.gasTank.getType())) {
-                    int amount = net.gasTank.getStored();
-                    if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
-                        //TODO: Print warning/error
-                    }
-                } else if (net.gasTank.getStored() > gasTank.getStored()) {
-                    gasTank.setStack(net.getBuffer().copy());
+        } else if (!net.gasTank.isEmpty()) {
+            if (gasTank.isEmpty()) {
+                gasTank.setStack(net.getBuffer());
+            } else if (gasTank.getStack().isTypeEqual(net.gasTank.getType())) {
+                int amount = net.gasTank.getStored();
+                if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
+                    //TODO: Print warning/error
                 }
-                net.gasTank.setEmpty();
+            } else if (net.gasTank.getStored() > gasTank.getStored()) {
+                gasTank.setStack(net.getBuffer());
             }
+            net.gasTank.setEmpty();
         }
         super.adoptTransmittersAndAcceptorsFrom(net);
     }
@@ -103,8 +101,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Nonnull
     @Override
     public GasStack getBuffer() {
-        //TODO: Go through and make sure nothing is directly modifying this?
-        return gasTank.getStack();
+        return gasTank.getStack().copy();
     }
 
     @Override
@@ -120,7 +117,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         }
 
         //TODO: better multiple buffer impl
-        if (getBuffer().isTypeEqual(gas)) {
+        if (gas.isTypeEqual(gasTank.getType())) {
             int amount = gas.getAmount();
             if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
                 //TODO: Print warning/error
@@ -177,7 +174,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
      */
     @Nonnull
     public GasStack emit(@Nonnull GasStack stack, Action action) {
-        if (stack.isEmpty() || (!gasTank.isEmpty() && !getBuffer().isTypeEqual(stack))) {
+        if (stack.isEmpty() || (!gasTank.isEmpty() && !stack.isTypeEqual(gasTank.getType()))) {
             return stack;
         }
         int toAdd = Math.min(gasTank.getNeeded(), stack.getAmount());
@@ -218,7 +215,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
             prevTransfer = didTransfer;
             if (!gasTank.isEmpty()) {
-                prevTransferAmount = tickEmit(getBuffer());
+                prevTransferAmount = tickEmit(gasTank.getStack());
                 if (prevTransferAmount > 0) {
                     didTransfer = true;
                     transferDelay = 2;
@@ -263,7 +260,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         if (gasTank.isEmpty()) {
             return MekanismLang.NONE.translate();
         }
-        return MekanismLang.NETWORK_MB_STORED.translate(getBuffer(), gasTank.getStored());
+        return MekanismLang.NETWORK_MB_STORED.translate(gasTank.getStack(), gasTank.getStored());
     }
 
     @Override
@@ -273,12 +270,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public boolean isCompatibleWith(GasNetwork other) {
-        return super.isCompatibleWith(other) && (gasTank.isEmpty() || other.gasTank.isEmpty() || getBuffer().isTypeEqual(other.getBuffer()));
+        return super.isCompatibleWith(other) && (gasTank.isEmpty() || other.gasTank.isEmpty() || gasTank.getStack().isTypeEqual(other.gasTank.getType()));
     }
 
     @Override
     public boolean compatibleWithBuffer(@Nonnull GasStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (gasTank.isEmpty() || buffer.isEmpty() || getBuffer().isTypeEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (gasTank.isEmpty() || buffer.isEmpty() || buffer.isTypeEqual(gasTank.getType()));
     }
 
     @Override
@@ -300,12 +297,38 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     public class NetworkTank extends BasicGasTank {
 
         protected NetworkTank() {
-            super(0, alwaysTrueBi, alwaysTrueBi, alwaysTrue, GasNetwork.this);
+            super(GasNetwork.this.getCapacity(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, GasNetwork.this);
         }
 
         @Override
         public int getCapacity() {
             return GasNetwork.this.getCapacity();
+        }
+
+        @Override
+        public int setStackSize(int amount, @Nonnull Action action) {
+            if (isEmpty()) {
+                return 0;
+            } else if (amount <= 0) {
+                if (action.execute()) {
+                    setStack(getEmptyStack());
+                }
+                return 0;
+            }
+            int maxStackSize = getCapacity();
+            //Our capacity should never actually be zero, and given we fake it being zero
+            // until we finish building the network, we need to override this method to bypass the upper limit check
+            // when our upper limit is zero
+            if (maxStackSize > 0 && amount > maxStackSize) {
+                amount = maxStackSize;
+            }
+            if (getStored() == amount || action.simulate()) {
+                //If our size is not changing or we are only simulating the change, don't do anything
+                return amount;
+            }
+            stored.setAmount(amount);
+            onContentsChanged();
+            return amount;
         }
     }
 
