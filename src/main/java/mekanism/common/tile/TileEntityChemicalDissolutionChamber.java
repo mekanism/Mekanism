@@ -19,9 +19,9 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.capabilities.holder.ChemicalTankHelper;
 import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.holder.ChemicalTankHelper;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -32,10 +32,10 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -104,7 +104,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
-            TileUtils.emitGas(this, outputTank, gasOutput, getRightSide());
+            GasUtils.emitGas(this, outputTank, gasOutput, getRightSide());
         }
     }
 

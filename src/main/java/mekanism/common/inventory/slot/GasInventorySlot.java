@@ -28,8 +28,7 @@ import net.minecraft.world.World;
 @MethodsReturnNonnullByDefault
 public class GasInventorySlot extends BasicInventorySlot {
 
-    //TODO: Fix improper use of getStack() in TileEntityGasGenerator and TileEntityGasTank
-    // This issue also sort of exists in the rotary condensentrator due to implementing the gas slots differently then intended
+    //TODO: Fix improper use of getStack() in TileEntityGasGenerator
 
     /**
      * Gets the GasStack from ItemStack conversion, ignoring the size of the item stack.
@@ -43,6 +42,7 @@ public class GasInventorySlot extends BasicInventorySlot {
      * Fills/Drains the tank depending on if this item has any contents in it AND if the supplied boolean's mode supports it
      */
     public static GasInventorySlot rotary(IChemicalTank<Gas, GasStack> gasTank, BooleanSupplier modeSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+        //TODO: Make there be a fill/drain version that just based on the mode doesn't allow inserting/extracting
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         //Mode == true if fluid to gas
@@ -86,7 +86,6 @@ public class GasInventorySlot extends BasicInventorySlot {
             }
             //Always allow extraction if something went horribly wrong and we are not an IGasItem AND we can't provide a valid type of gas
             // This might happen after a reload for example
-            //TODO: Should we be checking the tank for if the gas is valid?
             GasStack gasConversion = getPotentialConversion(worldSupplier.get(), stack);
             return gasConversion.isEmpty() || !gasTank.isValid(gasConversion);
         }, stack -> {
@@ -193,7 +192,6 @@ public class GasInventorySlot extends BasicInventorySlot {
     //TODO: Do we want to make other things than just the conversion one have a world supplier?
     // Currently it is the only one that actually needs it
     private final Supplier<World> worldSupplier;
-    //TODO: Replace GasTank with an IGasHandler??
     private final IChemicalTank<Gas, GasStack> gasTank;
 
     private GasInventorySlot(IChemicalTank<Gas, GasStack> gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,

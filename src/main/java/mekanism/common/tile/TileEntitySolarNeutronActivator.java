@@ -20,11 +20,11 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.holder.ChemicalTankHelper;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.holder.ChemicalTankHelper;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -34,9 +34,9 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -114,7 +114,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
                 cachedRecipe.process();
             }
 
-            TileUtils.emitGas(this, outputTank, gasOutput, getDirection());
+            GasUtils.emitGas(this, outputTank, gasOutput, getDirection());
             // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
             // traffic from previous implementation that send the update every 10 ticks.
             if (world.getDayTime() % 20 == 0) {

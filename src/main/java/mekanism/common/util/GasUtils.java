@@ -136,6 +136,16 @@ public final class GasUtils {
         return 0;
     }
 
+    public static void emitGas(TileEntity tile, IChemicalTank<Gas, GasStack> tank, int gasOutput, Direction side) {
+        if (!tank.isEmpty()) {
+            GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), gasOutput));
+            int sent = GasUtils.emit(toSend, tile, EnumSet.of(side));
+            if (tank.shrinkStack(sent, Action.EXECUTE) != sent) {
+                //TODO: Print warning/error
+            }
+        }
+    }
+
     public static boolean canInsert(IGasHandler handler, @Nonnull GasStack unitStack) {
         return handler.insertGas(unitStack, Action.SIMULATE).isEmpty();
     }

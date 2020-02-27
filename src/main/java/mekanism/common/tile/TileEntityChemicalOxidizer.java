@@ -30,9 +30,9 @@ import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -86,7 +86,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
             if (cachedRecipe != null) {
                 cachedRecipe.process();
             }
-            TileUtils.emitGas(this, gasTank, gasOutput, getRightSide());
+            GasUtils.emitGas(this, gasTank, gasOutput, getRightSide());
         }
     }
 

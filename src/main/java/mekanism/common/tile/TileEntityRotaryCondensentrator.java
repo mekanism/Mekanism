@@ -41,10 +41,10 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.FluidContainerUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -81,7 +81,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     public double clientEnergyUsed;
 
     private GasInventorySlot gasInputSlot;
-    private OutputInventorySlot gasOutputSlot;
+    private GasInventorySlot gasOutputSlot;
     private FluidInventorySlot fluidInputSlot;
     private OutputInventorySlot fluidOutputSlot;
     private EnergyInventorySlot energySlot;
@@ -113,12 +113,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //TODO: Fix these, not only is the naming bad, but there is a dedicated drain and empty slot for gas unlike how the fluid is
         builder.addSlot(gasInputSlot = GasInventorySlot.rotary(gasTank, () -> mode, this, 5, 25), RelativeSide.LEFT);
-        builder.addSlot(gasOutputSlot = OutputInventorySlot.at(this, 5, 56), RelativeSide.LEFT);
+        builder.addSlot(gasOutputSlot = GasInventorySlot.rotary(gasTank, () -> mode, this, 5, 56), RelativeSide.LEFT);
         builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, this::isValidFluid, () -> mode, this, 155, 25), RelativeSide.RIGHT);
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
         gasInputSlot.setSlotType(ContainerSlotType.INPUT);
         gasInputSlot.setSlotOverlay(SlotOverlay.PLUS);
+        gasOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
         gasOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         fluidInputSlot.setSlotType(ContainerSlotType.INPUT);
         return builder.build();
@@ -131,10 +132,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             if (mode) {//Fluid to Gas
                 fluidInputSlot.fillTank(fluidOutputSlot);
                 gasInputSlot.drainTank();
-                TileUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
+                GasUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
             } else {//Gas to Fluid
-                //TODO: FIXME make this use logic via GasInventorySlot
-                TileUtils.receiveGas(gasOutputSlot.getStack(), gasTank);
+                gasOutputSlot.fillTank();
                 fluidInputSlot.drainTank(fluidOutputSlot);
                 //TODO: Auto eject fluid?
             }

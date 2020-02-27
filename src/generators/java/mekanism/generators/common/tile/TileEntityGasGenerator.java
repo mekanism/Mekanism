@@ -120,7 +120,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                 total -= toUse;
                 setEnergy(getEnergy() + generationRate * toUse);
 
-                if (fuelTank.getStored() > 0) {
+                if (!fuelTank.isEmpty()) {
+                    //TODO: Improve this as it is sort of hacky
                     fuelTank.setStack(new GasStack(fuelTank.getStack(), total / maxBurnTicks));
                 }
                 burnTicks = total % maxBurnTicks;
@@ -154,7 +155,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
     @Override
     public boolean canOperate() {
-        return (fuelTank.getStored() > 0 || burnTicks > 0) && MekanismUtils.canFunction(this);
+        return (!fuelTank.isEmpty() || burnTicks > 0) && MekanismUtils.canFunction(this);
     }
 
     @Override

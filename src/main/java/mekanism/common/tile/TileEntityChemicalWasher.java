@@ -39,10 +39,10 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -127,7 +127,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
             }
             //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
             clientEnergyUsed = prev - getEnergy();
-            TileUtils.emitGas(this, outputTank, gasOutput, getRightSide());
+            GasUtils.emitGas(this, outputTank, gasOutput, getRightSide());
         }
     }
 

@@ -49,13 +49,13 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     @Override
     public boolean canHandleGas() {
-        //TODO: GasHandler - Evaluate
+        //Mark that we can handle gas
         return true;
     }
 
     @Override
     public boolean handlesGas() {
-        //TODO: GasHandler - Evaluate
+        //But that we do not handle gas when it comes to syncing it/saving this tile to disk
         return false;
     }
 

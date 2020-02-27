@@ -10,13 +10,25 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-//TODO: GasHandler - Finish JavaDocs
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends INBTSerializable<CompoundNBT> {
 
+    /**
+     * Helper to get the empty stack for the {@link Chemical} type that this {@link IChemicalTank} stores.
+     *
+     * @return The empty stack instance.
+     */
     STACK getEmptyStack();
 
+    /**
+     * Helper for creating a stack of the type this {@link IChemicalTank} is storing.
+     *
+     * @param stored The stack to copy the type of.
+     * @param size   The size of the new stack.
+     *
+     * @return A new stack
+     */
     STACK createStack(STACK stored, int size);
 
     /**

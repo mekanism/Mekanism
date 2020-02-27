@@ -36,9 +36,9 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        if (isCreative && isEmpty() && action.execute() && automationType.equals(AutomationType.MANUAL)) {
+        if (isCreative && isEmpty() && action.execute() && automationType != AutomationType.EXTERNAL) {
             //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
-            // Note: We check that it is manual insertion because an empty creative bin acts as a "void" for automation
+            // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
             ItemStack simulatedRemainder = super.insertItem(stack, Action.SIMULATE, automationType);
             if (simulatedRemainder.isEmpty()) {
                 //If we are able to insert it then set perform the action of setting it to full

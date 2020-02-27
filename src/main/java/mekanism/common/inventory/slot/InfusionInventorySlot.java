@@ -10,7 +10,8 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.infuse.BasicInfusionTank;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
@@ -35,7 +36,7 @@ public class InfusionInventorySlot extends BasicInventorySlot {
     }
 
     //TODO: Rewrite this some once we make infusion tanks work as items, so that it also supports handling
-    public static InfusionInventorySlot input(BasicInfusionTank infusionTank, Supplier<World> worldSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    public static InfusionInventorySlot input(IChemicalTank<InfuseType, InfusionStack> infusionTank, Supplier<World> worldSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new InfusionInventorySlot(infusionTank, worldSupplier, stack -> {
@@ -53,10 +54,10 @@ public class InfusionInventorySlot extends BasicInventorySlot {
     }
 
     //TODO: Replace InfusionTank with an IInfusionHandler??
-    private final BasicInfusionTank infusionTank;
+    private final IChemicalTank<InfuseType, InfusionStack> infusionTank;
     private final Supplier<World> worldSupplier;
 
-    private InfusionInventorySlot(BasicInfusionTank infusionTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
+    private InfusionInventorySlot(IChemicalTank<InfuseType, InfusionStack> infusionTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
         setSlotType(ContainerSlotType.EXTRA);

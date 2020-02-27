@@ -13,7 +13,6 @@ import mekanism.api.infuse.InfusionStack;
 import net.minecraft.network.PacketBuffer;
 
 //TODO: GasHandler - Make sure to test the various methods without the shortcuts
-// TODO: Also go through basically all our calls to insert/extract and validate the logic still behaves as intended
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChemicalUtils {

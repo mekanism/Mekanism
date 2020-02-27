@@ -34,9 +34,9 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
@@ -114,7 +114,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
             }
             //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
             clientEnergyUsed = prev - getEnergy();
-            TileUtils.emitGas(this, centerTank, gasOutput, getDirection());
+            GasUtils.emitGas(this, centerTank, gasOutput, getDirection());
         }
     }
 

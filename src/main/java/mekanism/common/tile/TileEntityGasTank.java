@@ -43,7 +43,6 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -131,11 +130,8 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public void onUpdate() {
         if (!isRemote()) {
-            //TODO: FIXME use logic via GasInventorySlot
-            TileUtils.drawGas(drainSlot.getStack(), gasTank, Action.get(tier != GasTankTier.CREATIVE));
-            if (TileUtils.receiveGas(fillSlot.getStack(), gasTank) && tier == GasTankTier.CREATIVE && !gasTank.isEmpty()) {
-                gasTank.setStack(new GasStack(gasTank.getStack(), Integer.MAX_VALUE));
-            }
+            drainSlot.drainTank();
+            fillSlot.fillTank();
             if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
                 ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
                 if (config != null && config.isEjecting()) {

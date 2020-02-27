@@ -709,9 +709,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 container.track(SyncableDouble.create(this::getMaxEnergy, this::setMaxEnergy));
             }
         }
-        //TODO: GasHandler - Look if there is any tile that can handle gas/infusion types where we don't want it to sync
-        //TODO: For example, the fusion reactor, which saves its gas tanks, but doesn't need to sync them
         if (canHandleGas() && handlesGas()) {
+            //TODO: Make it so we are not needlessly syncing this for the fusion reactor controller
             List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(null);
             for (IChemicalTank<Gas, GasStack> gasTank : gasTanks) {
                 container.track(SyncableGasStack.create(gasTank));
