@@ -26,11 +26,11 @@ import net.minecraftforge.items.ItemHandlerHelper;
 @MethodsReturnNonnullByDefault
 public class BasicInventorySlot implements IInventorySlot {
 
-    protected static final Predicate<@NonNull ItemStack> alwaysTrue = stack -> true;
-    protected static final Predicate<@NonNull ItemStack> alwaysFalse = stack -> false;
-    protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
-    protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
-    protected static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
+    public static final Predicate<@NonNull ItemStack> alwaysTrue = stack -> true;
+    public static final Predicate<@NonNull ItemStack> alwaysFalse = stack -> false;
+    public static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
+    public static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
+    public static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
     private static final int DEFAULT_LIMIT = 64;
 
     public static BasicInventorySlot at(@Nullable IMekanismInventory inventory, int x, int y) {
@@ -48,7 +48,6 @@ public class BasicInventorySlot implements IInventorySlot {
         return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, inventory, x, y);
     }
 
-    private final Predicate<@NonNull ItemStack> validator;
     /**
      * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(ItemStack)} should be used
      * instead.
@@ -56,6 +55,7 @@ public class BasicInventorySlot implements IInventorySlot {
     protected ItemStack current = ItemStack.EMPTY;
     private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract;
     private final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert;
+    private final Predicate<@NonNull ItemStack> validator;
     private final int limit;
     @Nullable
     private final IMekanismInventory inventory;

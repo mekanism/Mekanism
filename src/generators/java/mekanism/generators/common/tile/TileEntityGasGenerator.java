@@ -7,21 +7,22 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
-import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.gas.IMekanismGasHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.base.IChemicalTankHolder;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -33,9 +34,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler, ISustainedData {
 
@@ -60,9 +58,12 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         super(GeneratorsBlocks.GAS_BURNING_GENERATOR, MekanismConfig.general.FROM_H2.get() * 2);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        fuelTank = new BasicGasTank(MAX_GAS);
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        builder.addTank(fuelTank = new FuelTank(this), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        return builder.build();
     }
 
     @Nonnull
@@ -96,8 +97,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                     //TODO: FIXME (or more accurately move logic into the slot), as the stack is supposed to not be changed and this method changes it
                     GasStack removed = GasUtils.removeGas(stack, gasType, fuelTank.getNeeded());
                     boolean isTankEmpty = fuelTank.isEmpty();
-                    int fuelReceived = fuelTank.insert(removed, Action.EXECUTE);
-                    if (fuelReceived > 0 && isTankEmpty) {
+                    GasStack remainder = fuelTank.insert(removed, Action.EXECUTE, AutomationType.INTERNAL);
+                    if (remainder.getAmount() < removed.getAmount() && isTankEmpty) {
                         output = FuelHandler.getFuel(fuelTank.getType()).energyPerTick * 2;
                     }
                 }
@@ -182,94 +183,16 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        boolean wasTankEmpty = fuelTank.isEmpty();
-        if (canReceiveGas(side, stack.getType()) && (wasTankEmpty || fuelTank.getStack().isTypeEqual(stack))) {
-            int fuelReceived = fuelTank.insert(stack, action);
-            if (action.execute() && wasTankEmpty && fuelReceived > 0) {
-                output = FuelHandler.getFuel(fuelTank.getType()).energyPerTick * 2;
-            }
-            return fuelReceived;
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{fuelTank};
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        fuelTank.read(nbtTags.getCompound("fuelTank"));
-        FuelGas fuel = fuelTank.isEmpty() ? FuelHandler.EMPTY_FUEL : FuelHandler.getFuel(fuelTank.getType());
-        if (!fuel.isEmpty()) {
-            output = fuel.energyPerTick * 2;
-        }
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("fuelTank", fuelTank.write(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return !FuelHandler.getFuel(type).isEmpty() && side != getDirection();
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side == getDirection();
-        }
-        return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (fuelTank != null) {
-            ItemDataUtils.setCompound(itemStack, "fuelTank", fuelTank.write(new CompoundNBT()));
+            ItemDataUtils.setCompound(itemStack, "fuelTank", fuelTank.getStack().write(new CompoundNBT()));
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
         if (ItemDataUtils.hasData(itemStack, "fuelTank")) {
-            fuelTank.read(ItemDataUtils.getCompound(itemStack, "fuelTank"));
-            //Update energy output based on any existing fuel in tank
-            FuelGas fuel = fuelTank.isEmpty() ? FuelHandler.EMPTY_FUEL : FuelHandler.getFuel(fuelTank.getType());
-            if (!fuel.isEmpty()) {
-                output = fuel.energyPerTick * 2;
-            }
+            fuelTank.setStack(GasStack.readFromNBT(ItemDataUtils.getCompound(itemStack, "fuelTank")));
         }
     }
 
@@ -296,9 +219,34 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableGasStack.create(fuelTank));
         container.track(SyncableDouble.create(this::getGenerationRate, value -> generationRate = value));
         container.track(SyncableDouble.create(() -> output, value -> output = value));
         container.track(SyncableInt.create(this::getUsed, value -> used = value));
+    }
+
+    //Implementation of gas tank that on no longer being empty updates the output rate of this generator
+    private class FuelTank extends BasicGasTank {
+
+        protected FuelTank(@Nullable IMekanismGasHandler gasHandler) {
+            super(MAX_GAS, manualOnly, alwaysTrueBi, gas -> !FuelHandler.getFuel(gas).isEmpty(), gasHandler);
+        }
+
+        @Override
+        public void setStack(@Nonnull GasStack stack) {
+            boolean wasEmpty = isEmpty();
+            super.setStack(stack);
+            if (wasEmpty && !stack.isEmpty()) {
+                output = FuelHandler.getFuel(getType()).energyPerTick * 2;
+            }
+        }
+
+        @Override
+        protected void setStackUnchecked(@Nonnull GasStack stack) {
+            boolean wasEmpty = isEmpty();
+            super.setStackUnchecked(stack);
+            if (wasEmpty && !stack.isEmpty()) {
+                output = FuelHandler.getFuel(getType()).energyPerTick * 2;
+            }
+        }
     }
 }

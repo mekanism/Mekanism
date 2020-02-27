@@ -19,7 +19,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.base.ChemicalTankHelper;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITankManager;
 import mekanism.common.inventory.container.slot.SlotOverlay;

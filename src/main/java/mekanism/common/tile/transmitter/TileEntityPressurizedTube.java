@@ -15,6 +15,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IMekanismGasHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -87,10 +88,21 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
                 for (Direction side : connections) {
                     IGasHandler container = connectedAcceptors[side.ordinal()];
                     if (container != null) {
-                        //TODO: GasHandler - make this more like the mechanical pipe one in that it tries to use the type of gas we have stored
-                        GasStack received = container.drain(getAvailablePull(), Action.SIMULATE);
-                        if (!received.isEmpty() && takeGas(received, Action.SIMULATE) == received.getAmount()) {
-                            container.drain(takeGas(received, Action.EXECUTE), Action.EXECUTE);
+                        GasStack received;
+                        //Note: We recheck the buffer each time in case we ended up accepting gas somewhere
+                        // and our buffer changed and is no longer empty
+                        GasStack bufferWithFallback = getBufferWithFallback();
+                        if (bufferWithFallback.isEmpty()) {
+                            //If we don't have a gas stored try pulling as much as we are able to
+                            received = container.extractGas(getAvailablePull(), Action.SIMULATE);
+                        } else {
+                            //Otherwise try draining the same type of gas we have stored requesting up to as much as we are able to pull
+                            // We do this to better support multiple tanks in case the gas we have stored we could pull out of a block's
+                            // second tank but just asking to drain a specific amount
+                            received = container.extractGas(new GasStack(bufferWithFallback, getAvailablePull()), Action.SIMULATE);
+                        }
+                        if (received.getAmount() > 0 && takeGas(received, Action.SIMULATE) == received.getAmount()) {
+                            container.extractGas(takeGas(received, Action.EXECUTE), Action.EXECUTE);
                         }
                     }
                 }
@@ -279,8 +291,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     }
 
     @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
+    public BasicGasTank[] getTankInfo() {
+        //TODO: Fix
         if (getTransmitter().hasTransmitterNetwork()) {
             GasNetwork network = getTransmitter().getTransmitterNetwork();
             BasicGasTank networkTank = new BasicGasTank(network.getCapacity());

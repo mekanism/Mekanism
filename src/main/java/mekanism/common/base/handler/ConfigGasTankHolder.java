@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.common.base.handler;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +41,6 @@ public class ConfigGasTankHolder extends ConfigChemicalTankHolder<Gas, GasStack>
         }
         RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
         ISlotInfo slotInfo = configInfo.getSlotInfo(side);
-        //TODO: Re-evaluate bothering to check if it is enabled
         if (slotInfo instanceof GasSlotInfo && slotInfo.isEnabled()) {
             return ((GasSlotInfo) slotInfo).getTanks();
         }

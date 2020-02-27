@@ -4,14 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
-import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -22,15 +20,15 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -89,8 +87,15 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     @Override
     protected void presetVariables() {
         fluidTank = new FluidTank(MAX_FLUID);
-        inputTank = new BasicGasTank(MAX_GAS);
-        outputTank = new BasicGasTank(MAX_GAS);
+    }
+
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this), RelativeSide.LEFT);
+        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.RIGHT);
+        return builder.build();
     }
 
     @Nonnull
@@ -169,7 +174,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
               });
     }
 
-    public boolean isValidGas(@Nonnull Gas gas) {
+    private boolean isValidGas(@Nonnull Gas gas) {
         return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
     }
 
@@ -177,8 +182,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         fluidTank.readFromNBT(nbtTags.getCompound("leftTank"));
-        inputTank.read(nbtTags.getCompound("rightTank"));
-        outputTank.read(nbtTags.getCompound("centerTank"));
     }
 
     @Nonnull
@@ -186,55 +189,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.put("leftTank", fluidTank.writeToNBT(new CompoundNBT()));
-        nbtTags.put("rightTank", inputTank.write(new CompoundNBT()));
-        nbtTags.put("centerTank", outputTank.write(new CompoundNBT()));
         return nbtTags;
-    }
-
-    public BasicGasTank getTank(Direction side) {
-        if (side == getLeftSide()) {
-            return inputTank;
-        } else if (side == getRightSide()) {
-            return outputTank;
-        }
-        return null;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        if (getTank(side) == inputTank) {
-            return getTank(side).canReceive(type) && containsRecipe(recipe -> recipe.getGasInput().testType(type));
-        }
-        return false;
-    }
-
-
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (canReceiveGas(side, stack.getType())) {
-            return getTank(side).insert(stack, action);
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return getTank(side).extract(amount, action);
-        }
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return getTank(side) == outputTank && getTank(side).canDraw(type);
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{inputTank, outputTank};
     }
 
     @Nonnull
@@ -242,9 +197,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
@@ -254,9 +206,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && getTank(side) == null;
-        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return side == getDirection() || side == getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
@@ -348,7 +298,5 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
         container.track(SyncableFluidStack.create(fluidTank));
-        container.track(SyncableGasStack.create(inputTank));
-        container.track(SyncableGasStack.create(outputTank));
     }
 }

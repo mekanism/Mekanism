@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.common.base.handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.util.Direction;
 

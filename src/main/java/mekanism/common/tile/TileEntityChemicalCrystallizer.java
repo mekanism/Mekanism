@@ -4,13 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -21,12 +20,12 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -95,16 +94,19 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
         outputHandler = OutputHelper.getOutputHandler(outputSlot);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        inputTank = new BasicGasTank(MAX_GAS);
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this), RelativeSide.LEFT);
+        return builder.build();
     }
 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this, 6, 65));
+        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this::isValidGas, this, 6, 65));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 131, 57));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
         inputSlot.setSlotOverlay(SlotOverlay.PLUS);
@@ -121,6 +123,10 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
                 cachedRecipe.process();
             }
         }
+    }
+
+    private boolean isValidGas(@Nonnull Gas gas) {
+        return containsRecipe(recipe -> recipe.getInput().testType(gas));
     }
 
     @Nonnull
@@ -157,58 +163,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        inputTank.read(nbtTags.getCompound("inputTank"));
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("inputTank", inputTank.write(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return inputTank.canReceive(type) && containsRecipe(recipe -> recipe.getInput().testType(type));
-    }
-
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (canReceiveGas(side, stack.getType())) {
-            return inputTank.insert(stack, action);
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
-    @Override
-    @Nonnull
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{inputTank};
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
@@ -220,8 +179,6 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (configComponent.isCapabilityDisabled(capability, side)) {
             return true;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != getLeftSide();
         }
         return super.isCapabilityDisabled(capability, side);
     }
@@ -263,11 +220,5 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public Object[] getTanks() {
         return new Object[]{inputTank};
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableGasStack.create(inputTank));
     }
 }

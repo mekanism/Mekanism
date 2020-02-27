@@ -4,13 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -22,9 +21,8 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
+import mekanism.common.base.IChemicalTankHolder;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -38,15 +36,11 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine<ItemStackGasToItemStackRecipe> implements IGasHandler, ISustainedData {
 
@@ -116,9 +110,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         outputHandler = OutputHelper.getOutputHandler(outputSlot);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        gasTank = new BasicGasTank(MAX_GAS);
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(gasTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this));
+        return builder.build();
     }
 
     @Nonnull
@@ -188,62 +185,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        gasTank.read(nbtTags.getCompound("gasTank"));
-        gasTank.setCapacity(MAX_GAS);
-        GasUtils.clearIfInvalid(gasTank, this::isValidGas);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (canReceiveGas(side, stack.getType())) {
-            return gasTank.insert(stack, action);
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public abstract boolean canReceiveGas(Direction side, @Nonnull Gas type);
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
-    @Override
-    @Nonnull
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{gasTank};
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED || (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS))) {
@@ -305,11 +246,5 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     public AdvancedMachineUpgradeData getUpgradeData() {
         return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergy(), getOperatingTicks(), gasTank.getStack(), secondarySlot, energySlot, inputSlot,
               outputSlot, getComponents());
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableGasStack.create(gasTank));
     }
 }

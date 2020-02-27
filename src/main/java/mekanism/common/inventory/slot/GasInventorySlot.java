@@ -14,6 +14,7 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasItem;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -60,7 +61,7 @@ public class GasInventorySlot extends BasicInventorySlot {
                     return mode;
                 }
                 //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
-                return !mode && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE) > 0;
+                return !mode && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE, AutomationType.INTERNAL) > 0;
             }
             return false;
         }, stack -> {
@@ -101,11 +102,11 @@ public class GasInventorySlot extends BasicInventorySlot {
                 // Strictly speaking this currently could be done as gasItem.canProvideGas(stack, MekanismAPI.EMPTY_GAS), but is being ignored instead for clarity
                 GasStack containedGas = ((IGasItem) item).getGas(stack);
                 //True if we can fill the tank with any of our contents
-                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE) > 0;
+                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE, AutomationType.INTERNAL) > 0;
             }
             GasStack gasConversion = getPotentialConversion(worldSupplier.get(), stack);
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-            return !gasConversion.isEmpty() && isValidGas.test(gasConversion.getType()) && gasTank.insert(gasConversion, Action.SIMULATE) > 0;
+            return !gasConversion.isEmpty() && isValidGas.test(gasConversion.getType()) && gasTank.insert(gasConversion, Action.SIMULATE, AutomationType.INTERNAL) > 0;
         }, stack -> {
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
@@ -143,7 +144,7 @@ public class GasInventorySlot extends BasicInventorySlot {
             if (item instanceof IGasItem) {
                 GasStack containedGas = ((IGasItem) item).getGas(stack);
                 //True if we can fill the tank with any of our contents
-                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE) > 0;
+                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE, AutomationType.INTERNAL) > 0;
             }
             return false;
         }, stack -> {
@@ -235,7 +236,7 @@ public class GasInventorySlot extends BasicInventorySlot {
                     if (!itemInput.isEmpty()) {
                         GasStack output = foundRecipe.getOutput(itemInput);
                         if (!output.isEmpty() && gasTank.canReceive(output) && isValidGas.test(output.getType())) {
-                            gasTank.insert(output, Action.EXECUTE);
+                            gasTank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
                             int amountUsed = itemInput.getCount();
                             if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
                                 //TODO: Print warning/error
@@ -273,7 +274,7 @@ public class GasInventorySlot extends BasicInventorySlot {
                 if (item.canProvideGas(current, gas) && gasTank.canReceiveType(gas)) {
                     int amount = Math.min(gasTank.getNeeded(), Math.min(gasInItem.getAmount(), item.getRate(current)));
                     if (amount > 0 && isValidGas.test(gas)) {
-                        gasTank.insert(item.removeGas(current, amount), Action.EXECUTE);
+                        gasTank.insert(item.removeGas(current, amount), Action.EXECUTE, AutomationType.INTERNAL);
                         onContentsChanged();
                         return true;
                     }
@@ -297,10 +298,10 @@ public class GasInventorySlot extends BasicInventorySlot {
                 if (gasItem.canReceiveGas(current, storedGas.getType())) {
                     int amount = Math.min(gasItem.getNeeded(current), gasItem.getRate(current));
                     if (amount > 0) {
-                        GasStack drained = gasTank.extract(amount, Action.SIMULATE);
+                        GasStack drained = gasTank.extract(amount, Action.SIMULATE, AutomationType.INTERNAL);
                         if (!drained.isEmpty()) {
                             int amountAccepted = gasItem.addGas(current, drained);
-                            gasTank.extract(amountAccepted, Action.EXECUTE);
+                            gasTank.extract(amountAccepted, Action.EXECUTE, AutomationType.INTERNAL);
                             onContentsChanged();
                         }
                     }

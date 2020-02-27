@@ -4,13 +4,11 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
-import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -20,11 +18,10 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITankManager;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -40,7 +37,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> implements ISustainedData, ITankManager, IGasHandler {
@@ -62,9 +58,12 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
         outputHandler = OutputHelper.getOutputHandler(gasTank);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        gasTank = new BasicGasTank(MAX_GAS);
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        builder.addTank(gasTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.RIGHT);
+        return builder.build();
     }
 
     @Nonnull
@@ -126,36 +125,8 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        gasTank.read(nbtTags.getCompound("gasTank"));
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != getRightSide();
-        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return side == getDirection() || side == getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
@@ -183,42 +154,5 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     public Object[] getTanks() {
         return new Object[]{gasTank};
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
-
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return gasTank.extract(amount, action);
-        }
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return side == getRightSide() && gasTank.canDraw(type);
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{gasTank};
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableGasStack.create(gasTank));
     }
 }

@@ -4,14 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
-import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -22,16 +20,16 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -98,8 +96,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
 
     @Override
     protected void presetVariables() {
-        gasTank = new BasicGasTank(10_000);
         fluidTank = new FluidTank(10_000);
+    }
+
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        builder.addTank(gasTank = BasicGasTank.create(10_000, gas -> mode, gas -> !mode, this::isValidGas, this), RelativeSide.LEFT);
+        return builder.build();
     }
 
     @Nonnull
@@ -143,11 +148,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         }
     }
 
-    public boolean isValidGas(@Nonnull Gas gas) {
+    private boolean isValidGas(@Nonnull Gas gas) {
         return !gas.isEmptyType() && containsRecipe(recipe -> recipe.hasGasToFluid() && recipe.getGasInput().testType(gas));
     }
 
-    public boolean isValidFluid(@Nonnull FluidStack fluidStack) {
+    private boolean isValidFluid(@Nonnull FluidStack fluidStack) {
         return !fluidStack.isEmpty() && containsRecipe(recipe -> recipe.hasFluidToGas() && recipe.getFluidInput().testType(fluidStack));
     }
 
@@ -158,16 +163,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             if (type == 0) {
                 mode = !mode;
             }
-            return;
+        } else {
+            super.handlePacketData(dataStream);
         }
-        super.handlePacketData(dataStream);
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         mode = nbtTags.getBoolean("mode");
-        gasTank.read(nbtTags.getCompound("gasTank"));
         if (nbtTags.contains("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
         }
@@ -178,44 +182,10 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean("mode", mode);
-        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
         if (!fluidTank.isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
-    }
-
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (canReceiveGas(side, stack.getType())) {
-            return gasTank.insert(stack, action);
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return gasTank.extract(amount, action);
-        }
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return mode && side == getLeftSide() && gasTank.canDraw(type);
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return !mode && side == getLeftSide() && gasTank.canReceive(type) && isValidGas(type);
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{gasTank};
     }
 
     @Nonnull
@@ -223,9 +193,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
@@ -235,9 +202,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != getLeftSide();
-        } else if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return side != null && side != getRightSide();
         }
         return super.isCapabilityDisabled(capability, side);
@@ -389,6 +354,5 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         container.track(SyncableBoolean.create(() -> mode, value -> mode = value));
         container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
         container.track(SyncableFluidStack.create(fluidTank));
-        container.track(SyncableGasStack.create(gasTank));
     }
 }

@@ -34,16 +34,6 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
-        if (slotInfo instanceof GasSlotInfo) {
-            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
-            return gasSlotInfo.canInput() && gasSlotInfo.hasTank(gasTank) && gasTank.canReceive(type) && isValidGas(type);
-        }
-        return false;
-    }
-
-    @Override
     public boolean useStatisticalMechanics() {
         return true;
     }

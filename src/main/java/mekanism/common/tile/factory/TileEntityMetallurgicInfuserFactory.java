@@ -16,9 +16,9 @@ import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.common.base.ChemicalTankHelper;
 import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITileComponent;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -47,14 +47,14 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     protected IChemicalTankHolder<InfuseType, InfusionStack> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
-        builder.addTank(infusionTank = BasicInfusionTank.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, infusion -> false, infusion -> true, this));
+        builder.addTank(infusionTank = BasicInfusionTank.input(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, this::isValidInfusion, this));
         return builder.build();
     }
 
     @Override
     protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
-        builder.addSlot(extraSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this::getWorld, this, 7, 57));
+        builder.addSlot(extraSlot = InfusionInventorySlot.input(infusionTank, this::isValidInfusion, this::getWorld, this, 7, 57));
     }
 
     public BasicInfusionTank getInfusionTank() {
@@ -115,6 +115,10 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
             updateCachedRecipe(newCachedRecipe, process);
         }
         return true;
+    }
+
+    private boolean isValidInfusion(@Nonnull InfuseType type) {
+        return containsRecipe(recipe -> recipe.getInfusionInput().testType(type));
     }
 
     @Override

@@ -15,11 +15,11 @@ public class GasHandlerTarget extends Target<IGasHandler, Integer, @NonNull GasS
 
     @Override
     protected void acceptAmount(Direction side, SplitInfo<Integer> splitInfo, Integer amount) {
-        splitInfo.send(handlers.get(side).fill(new GasStack(extra, amount), Action.EXECUTE));
+        splitInfo.send(amount - handlers.get(side).insertGas(new GasStack(extra, amount), Action.EXECUTE).getAmount());
     }
 
     @Override
     protected Integer simulate(IGasHandler handler, Direction side, @NonNull GasStack gasStack) {
-        return handler.fill(gasStack, Action.SIMULATE);
+        return gasStack.getAmount() - handler.insertGas(gasStack, Action.SIMULATE);
     }
 }

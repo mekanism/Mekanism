@@ -21,11 +21,6 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return gasTank.canReceive(type) && isValidGas(type);
-    }
-
-    @Override
     public boolean useStatisticalMechanics() {
         return true;
     }

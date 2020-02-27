@@ -4,31 +4,29 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
+import mekanism.common.base.handler.ChemicalTankHelper;
+import mekanism.common.base.handler.GasTankGasTank;
 import mekanism.common.block.BlockGasTank;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
@@ -39,7 +37,6 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.upgrade.GasTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
@@ -53,7 +50,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler, ISideConfiguration, IComputerIntegration, ISustainedData {
 
@@ -61,7 +57,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     /**
      * The type of gas stored in this tank.
      */
-    public BasicGasTank gasTank;
+    public GasTankGasTank gasTank;
 
     public GasTankTier tier;
 
@@ -109,7 +105,14 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     protected void presetVariables() {
         tier = ((BlockGasTank) getBlockType()).getTier();
-        gasTank = new BasicGasTank(tier.getStorage());
+    }
+
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(gasTank = GasTankGasTank.create(tier, this));
+        return builder.build();
     }
 
     @Nonnull
@@ -162,61 +165,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (tier == GasTankTier.CREATIVE) {
-            return stack.getAmount();
-        }
-        return gasTank.insert(stack, action);
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return gasTank.extract(amount, action.combine(tier != GasTankTier.CREATIVE));
-        }
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
-        if (slotInfo instanceof GasSlotInfo) {
-            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
-            return gasSlotInfo.canOutput() && gasSlotInfo.hasTank(gasTank) && gasTank.canDraw(type);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
-        if (slotInfo instanceof GasSlotInfo) {
-            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
-            return gasSlotInfo.canInput() && gasSlotInfo.hasTank(gasTank) && gasTank.canReceive(type);
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{gasTank};
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
@@ -228,15 +176,14 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
             if (type == 0) {
                 dumping = dumping.getNext();
             }
-            return;
+        } else {
+            super.handlePacketData(dataStream);
         }
-        super.handlePacketData(dataStream);
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        gasTank.read(nbtTags.getCompound("gasTank"));
         dumping = GasMode.byIndexStatic(nbtTags.getInt("dumping"));
     }
 
@@ -244,7 +191,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
         nbtTags.putInt("dumping", dumping.ordinal());
         return nbtTags;
     }
@@ -337,7 +283,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableGasStack.create(gasTank));
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumping, value -> dumping = value));
     }
 

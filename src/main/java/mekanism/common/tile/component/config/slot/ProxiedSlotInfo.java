@@ -3,7 +3,8 @@ package mekanism.common.tile.component.config.slot;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.api.gas.BasicGasTank;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.gas.GasStack;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -33,15 +34,15 @@ public class ProxiedSlotInfo {
 
     public static class Gas extends GasSlotInfo {
 
-        private final Supplier<List<BasicGasTank>> tankSupplier;
+        private final Supplier<List<? extends IChemicalTank<mekanism.api.gas.Gas, GasStack>>> tankSupplier;
 
-        public Gas(boolean canInput, boolean canOutput, Supplier<List<BasicGasTank>> tankSupplier) {
+        public Gas(boolean canInput, boolean canOutput, Supplier<List<? extends IChemicalTank<mekanism.api.gas.Gas, GasStack>>> tankSupplier) {
             super(canInput, canOutput, Collections.emptyList());
             this.tankSupplier = tankSupplier;
         }
 
         @Override
-        public List<BasicGasTank> getTanks() {
+        public List<? extends IChemicalTank<mekanism.api.gas.Gas, GasStack>> getTanks() {
             return tankSupplier.get();
         }
     }

@@ -9,10 +9,11 @@ import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
@@ -22,16 +23,16 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -113,8 +114,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected void presetVariables() {
         fluidTank = new FluidTank(24_000);
-        leftTank = new BasicGasTank(MAX_GAS);
-        rightTank = new BasicGasTank(MAX_GAS);
+    }
+
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        builder.addTank(leftTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.LEFT);
+        builder.addTank(rightTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.RIGHT);
+        return builder.build();
     }
 
     @Nonnull
@@ -157,14 +165,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     private void handleTank(BasicGasTank tank, GasMode mode, Direction side, int dumpAmount) {
         if (!tank.isEmpty()) {
+            //TODO: Evaluate if any of these should be using tank.shrinkStack
             if (mode != GasMode.DUMPING) {
                 GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), output));
-                tank.extract(GasUtils.emit(toSend, this, EnumSet.of(side)), Action.EXECUTE);
+                tank.extract(GasUtils.emit(toSend, this, EnumSet.of(side)), Action.EXECUTE, AutomationType.INTERNAL);
             } else {
-                tank.extract(dumpAmount, Action.EXECUTE);
+                tank.extract(dumpAmount, Action.EXECUTE, AutomationType.INTERNAL);
             }
             if (mode == GasMode.DUMPING_EXCESS && tank.getNeeded() < output) {
-                tank.extract(output - tank.getNeeded(), Action.EXECUTE);
+                tank.extract(output - tank.getNeeded(), Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
     }
@@ -238,8 +247,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         if (nbtTags.contains("fluidTank")) {
             fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
         }
-        leftTank.read(nbtTags.getCompound("leftTank"));
-        rightTank.read(nbtTags.getCompound("rightTank"));
         dumpLeft = GasMode.byIndexStatic(nbtTags.getInt("dumpLeft"));
         dumpRight = GasMode.byIndexStatic(nbtTags.getInt("dumpRight"));
     }
@@ -251,8 +258,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         if (!fluidTank.isEmpty()) {
             nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
-        nbtTags.put("leftTank", leftTank.write(new CompoundNBT()));
-        nbtTags.put("rightTank", rightTank.write(new CompoundNBT()));
         nbtTags.putInt("dumpLeft", dumpLeft.ordinal());
         nbtTags.putInt("dumpRight", dumpRight.ordinal());
         return nbtTags;
@@ -346,51 +351,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         return getTankInfo(null);
     }
 
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        if (side == getLeftSide()) {
-            return leftTank.extract(amount, action);
-        } else if (side == getRightSide()) {
-            return rightTank.extract(amount, action);
-        }
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        if (side == getLeftSide()) {
-            return !leftTank.isEmpty() && leftTank.getStack().isTypeEqual(type);
-        } else if (side == getRightSide()) {
-            return !rightTank.isEmpty() && rightTank.getStack().isTypeEqual(type);
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{leftTank, rightTank};
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
@@ -400,9 +365,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != getLeftSide() && side != getRightSide();
-        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //TODO: Make this just check the specific sides I think it is a shorter list?
             return side != null && side != getDirection() && side != getOppositeDirection() && side != getRightSide();
         }
@@ -433,8 +396,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableFluidStack.create(fluidTank));
-        container.track(SyncableGasStack.create(leftTank));
-        container.track(SyncableGasStack.create(rightTank));
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpLeft, value -> dumpLeft = value));
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpRight, value -> dumpRight = value));
         container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));

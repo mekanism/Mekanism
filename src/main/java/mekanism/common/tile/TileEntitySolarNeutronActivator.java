@@ -20,7 +20,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ChemicalTankHelper;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IChemicalTankHolder;

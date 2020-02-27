@@ -10,14 +10,13 @@ import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
@@ -45,7 +44,6 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
-import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.ProxiedSlotInfo;
 import mekanism.common.util.CableUtils;
@@ -111,7 +109,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {
-            Supplier<List<BasicGasTank>> tankSupplier = () -> hasFrequency() ? Collections.singletonList(frequency.storedGas) : Collections.emptyList();
+            Supplier<List<? extends IChemicalTank<Gas, GasStack>>> tankSupplier = () -> hasFrequency() ? frequency.gasTanks : Collections.emptyList();
             gasConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Gas(true, false, tankSupplier));
             gasConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Gas(false, true, tankSupplier));
             //Set default config directions
@@ -434,45 +432,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        return !hasFrequency() ? 0 : frequency.storedGas.insert(stack, action);
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        return !hasFrequency() ? GasStack.EMPTY : frequency.storedGas.extract(amount, action);
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        if (hasFrequency()) {
-            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
-            if (slotInfo instanceof GasSlotInfo && slotInfo.canInput()) {
-                return frequency.storedGas.isEmpty() || type == frequency.storedGas.getType();
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        if (hasFrequency()) {
-            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
-            if (slotInfo instanceof GasSlotInfo && slotInfo.canOutput()) {
-                return frequency.storedGas.isEmpty() || type == frequency.storedGas.getType();
-            }
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return hasFrequency() ? new GasTankInfo[]{frequency.storedGas} : IGasHandler.NONE;
-    }
-
-    @Override
     public boolean handleInventory() {
         return false;
     }
@@ -624,7 +583,16 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (!hasInventory() || !hasFrequency()) {
             return Collections.emptyList();
         }
-        return frequency.inventorySlots;
+        return frequency.getInventorySlots(side);
+    }
+
+    @Nonnull
+    @Override
+    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+        if (!canHandleGas() || !hasFrequency()) {
+            return Collections.emptyList();
+        }
+        return frequency.getGasTanks(side);
     }
 
     @Override

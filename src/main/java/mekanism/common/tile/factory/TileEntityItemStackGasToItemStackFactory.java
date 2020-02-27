@@ -19,7 +19,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.ChemicalTankHelper;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -71,7 +71,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = BasicGasTank.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, gas -> false, gas -> true, this));
+        builder.addTank(gasTank = BasicGasTank.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::isValidGas, this));
         return builder.build();
     }
 
@@ -144,7 +144,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         return true;
     }
 
-    public boolean isValidGas(@Nonnull Gas gas) {
+    private boolean isValidGas(@Nonnull Gas gas) {
         return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
     }
 

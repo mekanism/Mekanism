@@ -4,14 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
-import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -23,12 +21,12 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.capabilities.Capabilities;
+import mekanism.common.base.handler.ChemicalTankHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -66,9 +64,10 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded",
                                                          "getFluidStored", "getGasStored"};
-    public FluidTank inputFluidTank = new FluidTank(10000);
-    public BasicGasTank inputGasTank = new BasicGasTank(10000);
-    public BasicGasTank outputGasTank = new BasicGasTank(10000);
+    private static final int MAX_GAS = 10_000;
+    public FluidTank inputFluidTank;
+    public BasicGasTank inputGasTank;
+    public BasicGasTank outputGasTank;
 
     private final IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
@@ -127,6 +126,20 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, 0);
         gasInputHandler = InputHelper.getInputHandler(inputGasTank);
         outputHandler = OutputHelper.getOutputHandler(outputGasTank, outputSlot);
+    }
+
+    @Override
+    protected void presetVariables() {
+        inputFluidTank = new FluidTank(10_000);
+    }
+
+    @Nonnull
+    @Override
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(inputGasTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInputGas().testType(gas)), this));
+        builder.addTank(outputGasTank = BasicGasTank.output(MAX_GAS, this));
+        return builder.build();
     }
 
     @Nonnull
@@ -203,8 +216,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         inputFluidTank.readFromNBT(nbtTags.getCompound("inputFluidTank"));
-        inputGasTank.read(nbtTags.getCompound("inputGasTank"));
-        outputGasTank.read(nbtTags.getCompound("outputGasTank"));
     }
 
     @Nonnull
@@ -212,8 +223,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.put("inputFluidTank", inputFluidTank.writeToNBT(new CompoundNBT()));
-        nbtTags.put("inputGasTank", inputGasTank.write(new CompoundNBT()));
-        nbtTags.put("outputGasTank", outputGasTank.write(new CompoundNBT()));
         return nbtTags;
     }
 
@@ -278,57 +287,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         return new IFluidTank[]{inputFluidTank};
     }
 
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (canReceiveGas(side, stack.getType())) {
-            return inputGasTank.insert(stack, action);
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return outputGasTank.extract(amount, action);
-        }
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
-        if (slotInfo instanceof GasSlotInfo) {
-            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
-            return gasSlotInfo.canInput() && gasSlotInfo.hasTank(inputGasTank) && inputGasTank.canReceive(type);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
-        if (slotInfo instanceof GasSlotInfo) {
-            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
-            return gasSlotInfo.canOutput() && gasSlotInfo.hasTank(outputGasTank) && outputGasTank.canDraw(type);
-        }
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{inputGasTank, outputGasTank};
-    }
-
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
@@ -379,7 +342,5 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableFluidStack.create(inputFluidTank));
-        container.track(SyncableGasStack.create(inputGasTank));
-        container.track(SyncableGasStack.create(outputGasTank));
     }
 }

@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.common.base.handler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +12,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.common.base.IChemicalTankHolder;
 import net.minecraft.util.Direction;
 
 public class ChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTankHolder<CHEMICAL, STACK> {

@@ -16,11 +16,11 @@ import net.minecraft.nbt.CompoundNBT;
 @MethodsReturnNonnullByDefault
 public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IGasHandler {
 
-    protected static final Predicate<@NonNull Gas> alwaysTrue = stack -> true;
-    protected static final Predicate<@NonNull Gas> alwaysFalse = stack -> false;
-    protected static final BiPredicate<@NonNull Gas, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
-    protected static final BiPredicate<@NonNull Gas, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
-    protected static final BiPredicate<@NonNull Gas, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
+    public static final Predicate<@NonNull Gas> alwaysTrue = stack -> true;
+    public static final Predicate<@NonNull Gas> alwaysFalse = stack -> false;
+    public static final BiPredicate<@NonNull Gas, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
+    public static final BiPredicate<@NonNull Gas, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
+    public static final BiPredicate<@NonNull Gas, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
 
     @Nullable
     private final IMekanismGasHandler gasHandler;

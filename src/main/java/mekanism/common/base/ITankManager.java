@@ -1,8 +1,9 @@
 package mekanism.common.base;
 
 import mekanism.api.Action;
-import mekanism.api.gas.GasStack;
 import mekanism.api.gas.BasicGasTank;
+import mekanism.api.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.item.ItemGaugeDropper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -44,7 +45,7 @@ public interface ITankManager {
                         }
 
                         int toInsert = Math.min(gasTank.getStored(), ItemGaugeDropper.CAPACITY - dropperStored);
-                        GasStack drawn = gasTank.extract(toInsert, Action.EXECUTE);
+                        GasStack drawn = gasTank.extract(toInsert, Action.EXECUTE, AutomationType.INTERNAL);
                         if (!drawn.isEmpty()) {
                             dropper.setGas(stack, new GasStack(drawn, dropperStored + drawn.getAmount()));
                         }
@@ -55,7 +56,7 @@ public interface ITankManager {
                         }
 
                         int toExtract = Math.min(gasTank.getNeeded(), dropperStored);
-                        toExtract = gasTank.insert(new GasStack(storedGas, toExtract), Action.EXECUTE);
+                        toExtract = gasTank.insert(new GasStack(storedGas, toExtract), Action.EXECUTE, AutomationType.INTERNAL);
                         dropper.setGas(stack, new GasStack(storedGas, dropperStored - toExtract));
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 2) { //Dump the tank

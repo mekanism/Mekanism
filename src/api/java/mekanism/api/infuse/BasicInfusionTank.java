@@ -16,11 +16,11 @@ import net.minecraft.nbt.CompoundNBT;
 @MethodsReturnNonnullByDefault
 public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler {
 
-    protected static final Predicate<@NonNull InfuseType> alwaysTrue = stack -> true;
-    protected static final Predicate<@NonNull InfuseType> alwaysFalse = stack -> false;
-    protected static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
-    protected static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
-    protected static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
+    public static final Predicate<@NonNull InfuseType> alwaysTrue = stack -> true;
+    public static final Predicate<@NonNull InfuseType> alwaysFalse = stack -> false;
+    public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
+    public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
+    public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
 
     @Nullable
     private final IMekanismInfusionHandler infusionHandler;
@@ -38,6 +38,12 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
     public static BasicInfusionTank create(int capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert,
           @Nullable IMekanismInfusionHandler infusionHandler) {
         return create(capacity, canExtract, canInsert, alwaysTrue, infusionHandler);
+    }
+
+    public static BasicInfusionTank input(int capacity, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
+        //TODO: Validate capacity is positive
+        Objects.requireNonNull(validator, "Infuse type validity check cannot be null");
+        return new BasicInfusionTank(capacity, manualOnly, alwaysTrueBi, validator, infusionHandler);
     }
 
     public static BasicInfusionTank create(int capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert,
