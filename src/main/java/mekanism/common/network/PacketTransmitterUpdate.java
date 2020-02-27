@@ -109,7 +109,7 @@ public class PacketTransmitterUpdate {
                 } else if (message.packetType == PacketType.GAS) {
                     if (transmissionType == TransmissionType.GAS) {
                         GasNetwork net = (GasNetwork) transmitter.getTransmitterNetwork();
-                        net.buffer = message.gasStack;
+                        net.gasTank.setStack(message.gasStack);
                         net.didTransfer = message.didGasTransfer;
                     }
                 } else if (message.packetType == PacketType.FLUID) {

@@ -27,7 +27,7 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
             TransmitterImpl<IGasHandler, GasNetwork, GasStack> transmitter = tube.getTransmitter();
             if (transmitter.hasTransmitterNetwork()) {
                 GasNetwork transmitterNetwork = transmitter.getTransmitterNetwork();
-                if (!transmitterNetwork.buffer.isEmpty() && transmitterNetwork.gasScale > 0) {
+                if (!transmitterNetwork.getBuffer().isEmpty() && transmitterNetwork.gasScale > 0) {
                     render(tube, matrix, renderer, light, overlayLight, 0);
                 }
             }
@@ -36,7 +36,7 @@ public class RenderPressurizedTube extends RenderTransmitterSimple<TileEntityPre
 
     @Override
     protected void renderContents(MatrixStack matrix, IVertexBuilder renderer, @Nonnull TileEntityPressurizedTube tube, int light, int overlayLight) {
-        Gas gas = tube.getTransmitter().getTransmitterNetwork().buffer.getType();
+        Gas gas = tube.getTransmitter().getTransmitterNetwork().getBuffer().getType();
         int tint = gas.getTint();
         renderModel(tube, matrix, renderer, MekanismRenderer.getRed(tint), MekanismRenderer.getGreen(tint), MekanismRenderer.getBlue(tint), tube.currentScale, light,
               overlayLight, MekanismRenderer.getChemicalTexture(gas));

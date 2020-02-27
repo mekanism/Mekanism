@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
@@ -43,23 +44,25 @@ import net.minecraftforge.eventbus.api.Event;
 //TODO: Should GasStack have @NonNull in the params
 public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
 
-    public int transferDelay = 0;
+    private final List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
+    public final NetworkTank gasTank;
+
+    private int transferDelay = 0;
 
     public boolean didTransfer;
-    public boolean prevTransfer;
+    private boolean prevTransfer;
 
     public float gasScale;
-
-    @Nonnull
-    public GasStack buffer = GasStack.EMPTY;
-    public int prevStored;
-
-    public int prevTransferAmount = 0;
+    private int prevStored;
+    private int prevTransferAmount;
 
     public GasNetwork() {
+        gasTank = new NetworkTank();
+        gasTanks = Collections.singletonList(gasTank);
     }
 
     public GasNetwork(Collection<GasNetwork> networks) {
+        this();
         for (GasNetwork net : networks) {
             if (net != null) {
                 adoptTransmittersAndAcceptorsFrom(net);
@@ -73,22 +76,25 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void adoptTransmittersAndAcceptorsFrom(GasNetwork net) {
         if (isRemote()) {
-            if (!net.buffer.isEmpty() && net.gasScale > gasScale) {
+            if (!net.gasTank.isEmpty() && net.gasScale > gasScale) {
                 gasScale = net.gasScale;
-                buffer = net.buffer;
+                gasTank.setStack(net.getBuffer());
                 net.gasScale = 0;
-                net.buffer = GasStack.EMPTY;
+                net.gasTank.setEmpty();
             }
         } else {
-            if (!net.buffer.isEmpty()) {
-                if (buffer.isEmpty()) {
-                    buffer = net.buffer.copy();
-                } else if (buffer.isTypeEqual(net.buffer)) {
-                    buffer.grow(net.buffer.getAmount());
-                } else if (net.buffer.getAmount() > buffer.getAmount()) {
-                    buffer = net.buffer.copy();
+            if (!net.gasTank.isEmpty()) {
+                if (gasTank.isEmpty()) {
+                    gasTank.setStack(net.getBuffer().copy());
+                } else if (gasTank.getStack().isTypeEqual(net.gasTank.getType())) {
+                    int amount = net.gasTank.getStored();
+                    if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
+                        //TODO: Print warning/error
+                    }
+                } else if (net.gasTank.getStored() > gasTank.getStored()) {
+                    gasTank.setStack(net.getBuffer().copy());
                 }
-                net.buffer = GasStack.EMPTY;
+                net.gasTank.setEmpty();
             }
         }
         super.adoptTransmittersAndAcceptorsFrom(net);
@@ -97,7 +103,8 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Nonnull
     @Override
     public GasStack getBuffer() {
-        return buffer;
+        //TODO: Go through and make sure nothing is directly modifying this?
+        return gasTank.getStack();
     }
 
     @Override
@@ -106,28 +113,32 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         if (gas.isEmpty()) {
             return;
         }
-        if (buffer.isEmpty()) {
-            buffer = gas.copy();
+        if (gasTank.isEmpty()) {
+            gasTank.setStack(gas.copy());
             gas.setAmount(0);
             return;
         }
 
-        //TODO better multiple buffer impl
-        if (buffer.isTypeEqual(gas)) {
-            buffer.grow(gas.getAmount());
+        //TODO: better multiple buffer impl
+        if (getBuffer().isTypeEqual(gas)) {
+            int amount = gas.getAmount();
+            if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
+                //TODO: Print warning/error
+            }
         }
         gas.setAmount(0);
     }
 
     @Override
     public void clampBuffer() {
-        if (!buffer.isEmpty() && buffer.getAmount() > getCapacity()) {
-            buffer.setAmount(getCapacity());
+        if (!gasTank.isEmpty()) {
+            int capacity = getCapacity();
+            if (gasTank.getStored() > capacity) {
+                if (gasTank.setStackSize(capacity, Action.EXECUTE) != capacity) {
+                    //TODO: Print warning/error
+                }
+            }
         }
-    }
-
-    public int getGasNeeded() {
-        return getCapacity() - buffer.getAmount();
     }
 
     private int tickEmit(@Nonnull GasStack stack) {
@@ -166,15 +177,18 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
      */
     @Nonnull
     public GasStack emit(@Nonnull GasStack stack, Action action) {
-        if (stack.isEmpty() || (!buffer.isEmpty() && !buffer.isTypeEqual(stack))) {
+        if (stack.isEmpty() || (!gasTank.isEmpty() && !getBuffer().isTypeEqual(stack))) {
             return stack;
         }
-        int toAdd = Math.min(getGasNeeded(), stack.getAmount());
+        int toAdd = Math.min(gasTank.getNeeded(), stack.getAmount());
         if (action.execute()) {
-            if (buffer.isEmpty()) {
-                buffer = new GasStack(stack, toAdd);
+            if (gasTank.isEmpty()) {
+                gasTank.setStack(new GasStack(stack, toAdd));
             } else {
-                buffer.grow(toAdd);
+                //Otherwise try to grow the stack
+                if (gasTank.growStack(toAdd, Action.EXECUTE) != toAdd) {
+                    //TODO: Print warning/error
+                }
             }
         }
         return new GasStack(stack, stack.getAmount() - toAdd);
@@ -191,25 +205,27 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
                 transferDelay--;
             }
 
-            int stored = buffer.getAmount();
+            int stored = gasTank.getStored();
             if (stored != prevStored) {
                 needsUpdate = true;
             }
 
             prevStored = stored;
             if (didTransfer != prevTransfer || needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, buffer, didTransfer));
+                MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this, getBuffer(), didTransfer));
                 needsUpdate = false;
             }
 
             prevTransfer = didTransfer;
-            if (!buffer.isEmpty()) {
-                prevTransferAmount = tickEmit(buffer);
+            if (!gasTank.isEmpty()) {
+                prevTransferAmount = tickEmit(getBuffer());
                 if (prevTransferAmount > 0) {
                     didTransfer = true;
                     transferDelay = 2;
                 }
-                buffer.shrink(prevTransferAmount);
+                if (gasTank.shrinkStack(prevTransferAmount, Action.EXECUTE) != prevTransferAmount) {
+                    //TODO: Print warning/error
+                }
             }
         }
     }
@@ -223,13 +239,13 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         } else if (!didTransfer && gasScale > 0) {
             gasScale = Math.max(getScale(), Math.max(0, gasScale - 0.02F));
             if (gasScale == 0) {
-                buffer = GasStack.EMPTY;
+                gasTank.setEmpty();
             }
         }
     }
 
     public float getScale() {
-        return Math.min(1, buffer.isEmpty() || getCapacity() == 0 ? 0 : (float) buffer.getAmount() / getCapacity());
+        return Math.min(1, gasTank.isEmpty() || getCapacity() == 0 ? 0 : (float) gasTank.getStored() / getCapacity());
     }
 
     @Override
@@ -239,15 +255,15 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public ITextComponent getNeededInfo() {
-        return TextComponentUtil.build(getGasNeeded());
+        return TextComponentUtil.build(gasTank.getNeeded());
     }
 
     @Override
     public ITextComponent getStoredInfo() {
-        if (buffer.isEmpty()) {
+        if (gasTank.isEmpty()) {
             return MekanismLang.NONE.translate();
         }
-        return MekanismLang.NETWORK_MB_STORED.translate(buffer, buffer.getAmount());
+        return MekanismLang.NETWORK_MB_STORED.translate(getBuffer(), gasTank.getStored());
     }
 
     @Override
@@ -257,12 +273,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public boolean isCompatibleWith(GasNetwork other) {
-        return super.isCompatibleWith(other) && (this.buffer.isEmpty() || other.buffer.isEmpty() || this.buffer.isTypeEqual(other.buffer));
+        return super.isCompatibleWith(other) && (gasTank.isEmpty() || other.gasTank.isEmpty() || getBuffer().isTypeEqual(other.getBuffer()));
     }
 
     @Override
     public boolean compatibleWithBuffer(@Nonnull GasStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.buffer.isEmpty() || buffer.isEmpty() || this.buffer.isTypeEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (gasTank.isEmpty() || buffer.isEmpty() || getBuffer().isTypeEqual(buffer));
     }
 
     @Override
@@ -273,13 +289,24 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Nonnull
     @Override
     public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
-        //TODO: GasHandler - IMPLEMENT ME
-        return Collections.emptyList();
+        return gasTanks;
     }
 
     @Override
     public void onContentsChanged() {
-        //TODO: Do we want to mark this dirty
+        //TODO: Do we want to mark the network as dirty
+    }
+
+    public class NetworkTank extends BasicGasTank {
+
+        protected NetworkTank() {
+            super(0, alwaysTrueBi, alwaysTrueBi, alwaysTrue, GasNetwork.this);
+        }
+
+        @Override
+        public int getCapacity() {
+            return GasNetwork.this.getCapacity();
+        }
     }
 
     public static class GasTransferEvent extends Event {
