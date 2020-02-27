@@ -85,8 +85,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this::isValidGas, this, 5, 56),
-              RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.RIGHT, RelativeSide.LEFT, RelativeSide.BACK);
+        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 5, 56), RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.RIGHT,
+              RelativeSide.LEFT, RelativeSide.BACK);
         builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.FRONT);
         inputSlot.setSlotType(ContainerSlotType.INPUT);
         inputSlot.setSlotOverlay(SlotOverlay.MINUS);

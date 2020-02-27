@@ -6,7 +6,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.gas.BasicGasTank;
+import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
@@ -89,8 +89,8 @@ public class OutputHelper {
         };
     }
 
-    //TODO: IGasHandler??
-    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(@Nonnull BasicGasTank gasTank, @Nonnull IInventorySlot inventorySlot) {
+    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(@Nonnull IChemicalTank<Gas, GasStack> gasTank,
+          @Nonnull IInventorySlot inventorySlot) {
         return new IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>>() {
 
             @Override
@@ -108,7 +108,8 @@ public class OutputHelper {
     }
 
     //TODO: IGasHandler??
-    public static IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>> getOutputHandler(@Nonnull BasicGasTank leftTank, @Nonnull BasicGasTank rightTank) {
+    public static IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>> getOutputHandler(@Nonnull IChemicalTank<Gas, GasStack> leftTank,
+          @Nonnull IChemicalTank<Gas, GasStack> rightTank) {
         return new IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>>() {
 
             @Override

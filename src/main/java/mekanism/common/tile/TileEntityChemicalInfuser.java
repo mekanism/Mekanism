@@ -83,8 +83,8 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //TODO: Should our gas checking, also check the other tank's contents so we don't let putting the same gas in on both sides
-        builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this::isValidGas, this, 5, 56), RelativeSide.LEFT);
-        builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this::isValidGas, this, 155, 56), RelativeSide.RIGHT);
+        builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this, 5, 56), RelativeSide.LEFT);
+        builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65), RelativeSide.FRONT);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.BOTTOM, RelativeSide.TOP);
         leftInputSlot.setSlotType(ContainerSlotType.INPUT);

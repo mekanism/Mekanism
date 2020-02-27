@@ -9,11 +9,11 @@ import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
@@ -163,17 +163,19 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         }
     }
 
-    private void handleTank(BasicGasTank tank, GasMode mode, Direction side, int dumpAmount) {
+    private void handleTank(IChemicalTank<Gas, GasStack> tank, GasMode mode, Direction side, int dumpAmount) {
         if (!tank.isEmpty()) {
-            //TODO: Evaluate if any of these should be using tank.shrinkStack
-            if (mode != GasMode.DUMPING) {
-                GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), output));
-                tank.extract(GasUtils.emit(toSend, this, EnumSet.of(side)), Action.EXECUTE, AutomationType.INTERNAL);
+            if (mode == GasMode.DUMPING) {
+                tank.shrinkStack(dumpAmount, Action.EXECUTE);
             } else {
-                tank.extract(dumpAmount, Action.EXECUTE, AutomationType.INTERNAL);
-            }
-            if (mode == GasMode.DUMPING_EXCESS && tank.getNeeded() < output) {
-                tank.extract(output - tank.getNeeded(), Action.EXECUTE, AutomationType.INTERNAL);
+                GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), output));
+                tank.shrinkStack(GasUtils.emit(toSend, this, EnumSet.of(side)), Action.EXECUTE);
+                if (mode == GasMode.DUMPING_EXCESS) {
+                    int needed = tank.getNeeded();
+                    if (needed < output) {
+                        tank.shrinkStack(output - needed, Action.EXECUTE);
+                    }
+                }
             }
         }
     }

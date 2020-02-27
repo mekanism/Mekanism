@@ -161,20 +161,23 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack.getAmount(), stack);
     }
 
-    public int emit(@Nonnull GasStack stack, Action action) {
+    /**
+     * @return remainder
+     */
+    @Nonnull
+    public GasStack emit(@Nonnull GasStack stack, Action action) {
         if (stack.isEmpty() || (!buffer.isEmpty() && !buffer.isTypeEqual(stack))) {
-            return 0;
+            return stack;
         }
-        int toUse = Math.min(getGasNeeded(), stack.getAmount());
+        int toAdd = Math.min(getGasNeeded(), stack.getAmount());
         if (action.execute()) {
             if (buffer.isEmpty()) {
-                buffer = stack.copy();
-                buffer.setAmount(toUse);
+                buffer = new GasStack(stack, toAdd);
             } else {
-                buffer.grow(toUse);
+                buffer.grow(toAdd);
             }
         }
-        return toUse;
+        return new GasStack(stack, stack.getAmount() - toAdd);
     }
 
     @Override

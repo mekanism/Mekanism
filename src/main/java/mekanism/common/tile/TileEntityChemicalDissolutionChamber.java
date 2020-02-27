@@ -82,7 +82,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::isValidGas, this::getWorld, this, 6, 65), RelativeSide.BOTTOM);
+        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::getWorld, this, 6, 65), RelativeSide.BOTTOM);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 26, 36),
               RelativeSide.TOP, RelativeSide.LEFT);
         builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 25), RelativeSide.RIGHT);

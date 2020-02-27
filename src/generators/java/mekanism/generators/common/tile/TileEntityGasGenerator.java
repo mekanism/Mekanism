@@ -45,7 +45,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     /**
      * The tank this block is storing fuel in.
      */
-    public BasicGasTank fuelTank;
+    public FuelTank fuelTank;
     private int burnTicks = 0;
     private int maxBurnTicks;
     private double generationRate = 0;
@@ -70,7 +70,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fuelSlot = GasInventorySlot.fill(fuelTank, gas -> !FuelHandler.getFuel(gas).isEmpty(), this, 17, 35),
+        builder.addSlot(fuelSlot = GasInventorySlot.fill(fuelTank, this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
         fuelSlot.setSlotOverlay(SlotOverlay.MINUS);
@@ -96,9 +96,9 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                 if (!gasType.isEmptyType() && !FuelHandler.getFuel(gasType).isEmpty()) {
                     //TODO: FIXME (or more accurately move logic into the slot), as the stack is supposed to not be changed and this method changes it
                     GasStack removed = GasUtils.removeGas(stack, gasType, fuelTank.getNeeded());
-                    boolean isTankEmpty = fuelTank.isEmpty();
+                    boolean wasTankEmpty = fuelTank.isEmpty();
                     GasStack remainder = fuelTank.insert(removed, Action.EXECUTE, AutomationType.INTERNAL);
-                    if (remainder.getAmount() < removed.getAmount() && isTankEmpty) {
+                    if (remainder.getAmount() < removed.getAmount() && wasTankEmpty) {
                         output = FuelHandler.getFuel(fuelTank.getType()).energyPerTick * 2;
                     }
                 }

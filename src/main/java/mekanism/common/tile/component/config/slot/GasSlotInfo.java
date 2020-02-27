@@ -3,7 +3,6 @@ package mekanism.common.tile.component.config.slot;
 import java.util.Arrays;
 import java.util.List;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 
@@ -21,7 +20,7 @@ public class GasSlotInfo extends BaseSlotInfo {
         this.tanks = tanks;
     }
 
-    public boolean hasTank(BasicGasTank tank) {
+    public boolean hasTank(IChemicalTank<Gas, GasStack> tank) {
         //TODO: Does this even work
         return getTanks().contains(tank);
     }

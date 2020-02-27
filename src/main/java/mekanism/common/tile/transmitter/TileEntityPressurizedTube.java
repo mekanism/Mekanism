@@ -103,8 +103,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
                             // second tank but just asking to drain a specific amount
                             received = container.extractGas(new GasStack(bufferWithFallback, getAvailablePull()), Action.SIMULATE);
                         }
-                        if (received.getAmount() > 0 && takeGas(received, Action.SIMULATE, AutomationType.INTERNAL) == received.getAmount()) {
-                            container.extractGas(takeGas(received, Action.EXECUTE, AutomationType.INTERNAL), Action.EXECUTE);
+                        if (received.getAmount() > 0 && takeGas(received, Action.SIMULATE).isEmpty()) {
+                            //If we received some gas and are able to insert it all
+                            container.extractGas(takeGas(received, Action.EXECUTE), Action.EXECUTE);
                         }
                     }
                 }
@@ -270,12 +271,15 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         }
     }
 
-    private int takeGas(GasStack gasStack, Action action, AutomationType automationType) {
-        //TODO: GasHandler - Improve on this, maybe change this to properly just directly return the remaining
+    /**
+     * @return remainder
+     */
+    @Nonnull
+    private GasStack takeGas(GasStack gasStack, Action action) {
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().emit(gasStack, action);
         }
-        return gasStack.getAmount() - buffer.insert(gasStack, action, automationType).getAmount();
+        return buffer.insert(gasStack, action, AutomationType.INTERNAL);
     }
 
     @Nonnull
@@ -331,7 +335,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
             PressurizedTubeUpgradeData data = (PressurizedTubeUpgradeData) upgradeData;
             redstoneReactive = data.redstoneReactive;
             connectionTypes = data.connectionTypes;
-            takeGas(data.contents, Action.EXECUTE, AutomationType.INTERNAL);
+            takeGas(data.contents, Action.EXECUTE);
         } else {
             super.parseUpgradeData(upgradeData);
         }

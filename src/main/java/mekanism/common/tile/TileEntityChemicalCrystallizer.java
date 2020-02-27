@@ -106,7 +106,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this::isValidGas, this, 6, 65));
+        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 6, 65));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 131, 57));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5));
         inputSlot.setSlotOverlay(SlotOverlay.PLUS);

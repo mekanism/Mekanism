@@ -103,7 +103,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
                 return containsRecipe(recipe -> recipe.getItemInput().testType(stack) && recipe.getInfusionInput().testType(type));
             }
             //Otherwise just look for items that can be used
-            return isValidInfusion(type);
+            return containsRecipe(recipe -> recipe.getInfusionInput().testType(type));
         }, this));
         return builder.build();
     }
@@ -112,7 +112,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(infusionSlot = InfusionInventorySlot.input(infusionTank, this::isValidInfusion, this::getWorld, this, 17, 35));
+        builder.addSlot(infusionSlot = InfusionInventorySlot.input(infusionTank, this::getWorld, this, 17, 35));
         //TODO: Verify that it is properly querying the infusion tank's type if it changes
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             if (!infusionTank.isEmpty()) {
@@ -136,10 +136,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
                 cachedRecipe.process();
             }
         }
-    }
-
-    private boolean isValidInfusion(@Nonnull InfuseType type) {
-        return containsRecipe(recipe -> recipe.getInfusionInput().testType(type));
     }
 
     @Nonnull

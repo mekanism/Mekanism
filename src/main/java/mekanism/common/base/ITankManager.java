@@ -45,19 +45,16 @@ public interface ITankManager {
                         }
 
                         int toInsert = Math.min(gasTank.getStored(), ItemGaugeDropper.CAPACITY - dropperStored);
-                        GasStack drawn = gasTank.extract(toInsert, Action.EXECUTE, AutomationType.INTERNAL);
-                        if (!drawn.isEmpty()) {
-                            dropper.setGas(stack, new GasStack(drawn, dropperStored + drawn.getAmount()));
+                        GasStack extracted = gasTank.extract(toInsert, Action.EXECUTE, AutomationType.INTERNAL);
+                        if (!extracted.isEmpty()) {
+                            dropper.setGas(stack, new GasStack(extracted, dropperStored + extracted.getAmount()));
                         }
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 1) { //Extract gas from dropper
                         if (FluidUtil.getFluidContained(stack).isPresent() || gasTank.getNeeded() == 0) {
                             return;
                         }
-
-                        int toExtract = Math.min(gasTank.getNeeded(), dropperStored);
-                        toExtract = toExtract - gasTank.insert(new GasStack(storedGas, toExtract), Action.EXECUTE, AutomationType.INTERNAL).getAmount();
-                        dropper.setGas(stack, new GasStack(storedGas, dropperStored - toExtract));
+                        dropper.setGas(stack, gasTank.insert(new GasStack(storedGas, dropperStored), Action.EXECUTE, AutomationType.INTERNAL));
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 2) { //Dump the tank
                         gasTank.setEmpty();

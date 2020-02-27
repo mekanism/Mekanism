@@ -10,7 +10,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.IHasTextComponent;
@@ -121,7 +120,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(drainSlot = GasInventorySlot.drain(gasTank, this, 16, 16));
-        builder.addSlot(fillSlot = GasInventorySlot.fill(gasTank, gas -> true, this, 16, 48));
+        builder.addSlot(fillSlot = GasInventorySlot.fill(gasTank, this, 16, 48));
         drainSlot.setSlotType(ContainerSlotType.OUTPUT);
         drainSlot.setSlotOverlay(SlotOverlay.PLUS);
         fillSlot.setSlotType(ContainerSlotType.INPUT);
@@ -143,17 +142,19 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
                     Set<Direction> sidesForData = config.getSidesForData(DataType.OUTPUT);
                     if (!sidesForData.isEmpty()) {
                         GasStack toSend = new GasStack(gasTank.getStack(), Math.min(gasTank.getStored(), tier.getOutput()));
-                        gasTank.extract(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE), AutomationType.INTERNAL);
+                        gasTank.shrinkStack(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE));
                     }
                 }
             }
 
             if (tier != GasTankTier.CREATIVE) {
                 if (dumping == GasMode.DUMPING) {
-                    gasTank.extract(tier.getStorage() / 400, Action.EXECUTE, AutomationType.INTERNAL);
-                }
-                if (dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < tier.getOutput()) {
-                    gasTank.extract(tier.getOutput() - gasTank.getNeeded(), Action.EXECUTE, AutomationType.INTERNAL);
+                    gasTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
+                } else if (dumping == GasMode.DUMPING_EXCESS) {
+                    int needed = gasTank.getNeeded();
+                    if (needed < tier.getOutput()) {
+                        gasTank.shrinkStack(tier.getOutput() - needed, Action.EXECUTE);
+                    }
                 }
             }
 
