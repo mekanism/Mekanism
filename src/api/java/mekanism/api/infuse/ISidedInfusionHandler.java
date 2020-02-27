@@ -22,7 +22,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
      * @return The default side to use for the normal {@link IInfusionHandler} methods when wrapping them into {@link ISidedInfusionHandler} methods.
      */
     @Nullable
-    default Direction getSideFor() {
+    default Direction getInfusionSideFor() {
         //TODO: Decide if having this method even makes sense or would it be better to just inline null for the built in IInfusionHandler
         // methods, given we just handle sides via the ProxyInfusionHandler anyways, in which we use our extended methods.
         return null;
@@ -41,7 +41,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
 
     @Override
     default int getInfusionTankCount() {
-        return getInfusionTankCount(getSideFor());
+        return getInfusionTankCount(getInfusionSideFor());
     }
 
     /**
@@ -68,7 +68,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
 
     @Override
     default InfusionStack getInfusionInTank(int tank) {
-        return getInfusionInTank(tank, getSideFor());
+        return getInfusionInTank(tank, getInfusionSideFor());
     }
 
     /**
@@ -86,7 +86,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
 
     @Override
     default void setInfusionInTank(int tank, InfusionStack stack) {
-        setInfusionInTank(tank, stack, getSideFor());
+        setInfusionInTank(tank, stack, getInfusionSideFor());
     }
 
     /**
@@ -103,7 +103,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
 
     @Override
     default int getInfusionTankCapacity(int tank) {
-        return getInfusionTankCapacity(tank, getSideFor());
+        return getInfusionTankCapacity(tank, getInfusionSideFor());
     }
 
     /**
@@ -129,7 +129,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
 
     @Override
     default boolean isInfusionValid(int tank, InfusionStack stack) {
-        return isInfusionValid(tank, stack, getSideFor());
+        return isInfusionValid(tank, stack, getInfusionSideFor());
     }
 
     /**
@@ -152,7 +152,7 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
 
     @Override
     default InfusionStack insertInfusion(int tank, InfusionStack stack, Action action) {
-        return insertInfusion(tank, stack, getSideFor(), action);
+        return insertInfusion(tank, stack, getInfusionSideFor(), action);
     }
 
     /**
@@ -175,6 +175,6 @@ public interface ISidedInfusionHandler extends IInfusionHandler {
 
     @Override
     default InfusionStack extractInfusion(int tank, int amount, Action action) {
-        return extractInfusion(tank, amount, getSideFor(), action);
+        return extractInfusion(tank, amount, getInfusionSideFor(), action);
     }
 }

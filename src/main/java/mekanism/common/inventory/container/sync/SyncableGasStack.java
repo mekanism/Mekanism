@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.sync;
 
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.common.network.container.property.GasStackPropertyData;
@@ -14,7 +13,7 @@ import mekanism.common.network.container.property.PropertyData;
  */
 public class SyncableGasStack extends SyncableChemicalStack<Gas, GasStack> {
 
-    public static SyncableGasStack create(BasicGasTank handler) {
+    public static SyncableGasStack create(IChemicalTank<Gas, GasStack> handler) {
         return new SyncableGasStack(handler);
     }
 

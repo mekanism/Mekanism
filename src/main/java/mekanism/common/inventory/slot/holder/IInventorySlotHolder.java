@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.util.Direction;
 
+@FunctionalInterface
 public interface IInventorySlotHolder {
 
     @Nonnull

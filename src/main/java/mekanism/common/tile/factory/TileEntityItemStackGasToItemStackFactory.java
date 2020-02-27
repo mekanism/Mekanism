@@ -4,13 +4,11 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IMekanismGasHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
@@ -21,30 +19,23 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.base.ChemicalTankHelper;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
-import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //Compressing, injecting, purifying
@@ -76,10 +67,12 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         secondaryEnergyPerTick = getSecondaryEnergyPerTick();
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        super.presetVariables();
-        gasTank = BasicGasTank.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this);
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(gasTank = BasicGasTank.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, gas -> false, gas -> true, this));
+        return builder.build();
     }
 
     @Override
@@ -183,7 +176,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Nullable
     @Override
     public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
-        ComposterBlock.CHANCES
         ItemStack stack = inputHandlers[cacheIndex].getInput();
         if (stack.isEmpty()) {
             return null;
@@ -206,25 +198,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
 
-    public int getScaledGasLevel(int i) {
-        return gasTank.getStored() * i / gasTank.getCapacity();
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("gasTank", gasTank.write(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        gasTank.read(nbtTags.getCompound("gasTank"));
-        GasUtils.clearIfInvalid(gasTank, this::isValidGas);
-    }
-
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (!gasTank.isEmpty()) {
@@ -244,48 +217,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         return remap;
     }
 
-    @Nonnull
-    @Override
-    public GasStack getStack() {
-        return gasTank.getStack();
-    }
-
-    @Override
-    public int getCapacity() {
-        return gasTank.getCapacity();
-    }
-
-    @Override
-    public int fill(@Nonnull GasStack stack, @Nonnull Action action) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
-        if (slotInfo instanceof GasSlotInfo) {
-            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
-            Gas type = stack.getType();
-            if (gasSlotInfo.canInput() && gasSlotInfo.hasTank(gasTank) && gasTank.canReceiveType(type) && isValidGas(type)) {
-                return gasTank.insert(stack, action);
-            }
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drain(@Nonnull GasStack stack, @Nonnull Action action) {
-        return GasStack.EMPTY;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drain(int amount, @Nonnull Action action) {
-        return GasStack.EMPTY;
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{gasTank};
-    }
-
     @Override
     public boolean hasSecondaryResourceBar() {
         return true;
@@ -301,18 +232,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     public double getSecondaryEnergyPerTick() {
         return MekanismUtils.getSecondaryEnergyPerTickMean(this, TileEntityAdvancedElectricMachine.BASE_GAS_PER_TICK);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapability(capability, side);
     }
 
     @Override
@@ -352,11 +271,5 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     protected void clearSecondaryTank() {
         gasTank.setEmpty();
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableGasStack.create(gasTank));
     }
 }

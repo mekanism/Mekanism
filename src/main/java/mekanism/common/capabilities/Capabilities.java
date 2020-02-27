@@ -10,6 +10,7 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.infuse.IInfusionHandler;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
@@ -24,6 +25,7 @@ import mekanism.common.capabilities.basic.DefaultEvaporationSolar;
 import mekanism.common.capabilities.basic.DefaultGasHandler;
 import mekanism.common.capabilities.basic.DefaultGridTransmitter;
 import mekanism.common.capabilities.basic.DefaultHeatTransfer;
+import mekanism.common.capabilities.basic.DefaultInfusionHandler;
 import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultLogisticalTransporter;
 import mekanism.common.capabilities.basic.DefaultSpecialConfigData;
@@ -52,6 +54,9 @@ public class Capabilities {
 
     @CapabilityInject(IGasHandler.class)
     public static Capability<IGasHandler> GAS_HANDLER_CAPABILITY = null;
+
+    @CapabilityInject(IInfusionHandler.class)
+    public static Capability<IInfusionHandler> INFUSION_HANDLER_CAPABILITY = null;
 
     @CapabilityInject(IHeatTransfer.class)
     public static Capability<IHeatTransfer> HEAT_TRANSFER_CAPABILITY = null;
@@ -94,6 +99,7 @@ public class Capabilities {
         DefaultBlockableConnection.register();
 
         DefaultGasHandler.register();
+        DefaultInfusionHandler.register();
 
         DefaultConfigurable.register();
         DefaultTileNetwork.register();

@@ -12,7 +12,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.BasicGasTank;
-import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;

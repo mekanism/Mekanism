@@ -18,7 +18,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.BasicGasTank;
-import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
@@ -475,6 +474,16 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public boolean handleInventory() {
+        return false;
+    }
+
+    @Override
+    public boolean handlesGas() {
+        return false;
+    }
+
+    @Override
+    public boolean handlesInfusion() {
         return false;
     }
 

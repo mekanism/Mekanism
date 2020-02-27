@@ -11,7 +11,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.BasicGasTank;
-import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -204,17 +203,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         return nbtTags;
     }
 
-    /**
-     * Gets the scaled secondary energy level for the GUI.
-     *
-     * @param i - multiplier
-     *
-     * @return scaled secondary energy
-     */
-    public int getScaledGasLevel(int i) {
-        return gasTank.getStored() * i / gasTank.getCapacity();
-    }
-
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
@@ -230,9 +218,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     }
 
     @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
+    public abstract boolean canReceiveGas(Direction side, @Nonnull Gas type);
 
     @Override
     public boolean canDrawGas(Direction side, @Nonnull Gas type) {

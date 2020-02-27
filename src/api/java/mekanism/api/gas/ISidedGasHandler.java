@@ -22,7 +22,7 @@ public interface ISidedGasHandler extends IGasHandler {
      * @return The default side to use for the normal {@link IGasHandler} methods when wrapping them into {@link ISidedGasHandler} methods.
      */
     @Nullable
-    default Direction getSideFor() {
+    default Direction getGasSideFor() {
         //TODO: Decide if having this method even makes sense or would it be better to just inline null for the built in IGasHandler
         // methods, given we just handle sides via the ProxyGasHandler anyways, in which we use our extended methods.
         return null;
@@ -41,7 +41,7 @@ public interface ISidedGasHandler extends IGasHandler {
 
     @Override
     default int getGasTankCount() {
-        return getGasTankCount(getSideFor());
+        return getGasTankCount(getGasSideFor());
     }
 
     /**
@@ -68,7 +68,7 @@ public interface ISidedGasHandler extends IGasHandler {
 
     @Override
     default GasStack getGasInTank(int tank) {
-        return getGasInTank(tank, getSideFor());
+        return getGasInTank(tank, getGasSideFor());
     }
 
     /**
@@ -86,7 +86,7 @@ public interface ISidedGasHandler extends IGasHandler {
 
     @Override
     default void setGasInTank(int tank, GasStack stack) {
-        setGasInTank(tank, stack, getSideFor());
+        setGasInTank(tank, stack, getGasSideFor());
     }
 
     /**
@@ -103,7 +103,7 @@ public interface ISidedGasHandler extends IGasHandler {
 
     @Override
     default int getGasTankCapacity(int tank) {
-        return getGasTankCapacity(tank, getSideFor());
+        return getGasTankCapacity(tank, getGasSideFor());
     }
 
     /**
@@ -129,7 +129,7 @@ public interface ISidedGasHandler extends IGasHandler {
 
     @Override
     default boolean isGasValid(int tank, GasStack stack) {
-        return isGasValid(tank, stack, getSideFor());
+        return isGasValid(tank, stack, getGasSideFor());
     }
 
     /**
@@ -152,7 +152,7 @@ public interface ISidedGasHandler extends IGasHandler {
 
     @Override
     default GasStack insertGas(int tank, GasStack stack, Action action) {
-        return insertGas(tank, stack, getSideFor(), action);
+        return insertGas(tank, stack, getGasSideFor(), action);
     }
 
     /**
@@ -175,6 +175,6 @@ public interface ISidedGasHandler extends IGasHandler {
 
     @Override
     default GasStack extractGas(int tank, int amount, Action action) {
-        return extractGas(tank, amount, getSideFor(), action);
+        return extractGas(tank, amount, getGasSideFor(), action);
     }
 }

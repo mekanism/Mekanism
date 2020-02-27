@@ -26,7 +26,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      * @return The default side to use for the normal {@link IItemHandler} methods when wrapping them into {@link ISidedItemHandler} methods.
      */
     @Nullable
-    default Direction getSideFor() {
+    default Direction getInventorySideFor() {
         //TODO: Decide if having this method even makes sense or would it be better to just inline null for the built in IItemHandler
         // methods, given we just handle sides via the ProxyItemHandler anyways, in which we use our extended methods.
         return null;
@@ -48,7 +48,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     @Override
     default void setStackInSlot(int slot, ItemStack stack) {
-        setStackInSlot(slot, stack, getSideFor());
+        setStackInSlot(slot, stack, getInventorySideFor());
     }
 
     /**
@@ -64,7 +64,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     @Override
     default int getSlots() {
-        return getSlots(getSideFor());
+        return getSlots(getInventorySideFor());
     }
 
     /**
@@ -95,7 +95,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     @Override
     default ItemStack getStackInSlot(int slot) {
-        return getStackInSlot(slot, getSideFor());
+        return getStackInSlot(slot, getInventorySideFor());
     }
 
     /**
@@ -120,7 +120,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     @Override
     default ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        return insertItem(slot, stack, getSideFor(), Action.get(!simulate));
+        return insertItem(slot, stack, getInventorySideFor(), Action.get(!simulate));
     }
 
     /**
@@ -146,7 +146,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     @Override
     default ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return extractItem(slot, amount, getSideFor(), Action.get(!simulate));
+        return extractItem(slot, amount, getInventorySideFor(), Action.get(!simulate));
     }
 
     /**
@@ -163,7 +163,7 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     @Override
     default int getSlotLimit(int slot) {
-        return getSlotLimit(slot, getSideFor());
+        return getSlotLimit(slot, getInventorySideFor());
     }
 
     /**
@@ -191,6 +191,6 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     @Override
     default boolean isItemValid(int slot, ItemStack stack) {
-        return isItemValid(slot, stack, getSideFor());
+        return isItemValid(slot, stack, getInventorySideFor());
     }
 }

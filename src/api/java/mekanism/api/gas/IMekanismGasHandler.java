@@ -37,7 +37,7 @@ public interface IMekanismGasHandler extends ISidedGasHandler {
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all tanks in the handler. Additionally, if {@link #canHandleGas()} is false,
      * this <em>MUST</em> return an empty list.
      */
-    List<IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side);
+    List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side);
 
     /**
      * Called when the contents of this gas handler change.
@@ -54,7 +54,7 @@ public interface IMekanismGasHandler extends ISidedGasHandler {
      */
     @Nullable
     default IChemicalTank<Gas, GasStack> getGasTank(int tank, @Nullable Direction side) {
-        List<IChemicalTank<Gas, GasStack>> tanks = getGasTanks(side);
+        List<? extends IChemicalTank<Gas, GasStack>> tanks = getGasTanks(side);
         return tank >= 0 && tank < tanks.size() ? tanks.get(tank) : null;
     }
 

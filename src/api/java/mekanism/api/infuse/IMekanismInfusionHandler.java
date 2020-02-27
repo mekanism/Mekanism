@@ -37,7 +37,7 @@ public interface IMekanismInfusionHandler extends ISidedInfusionHandler {
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all tanks in the handler. Additionally, if {@link #canHandleInfusion()} is
      * false, this <em>MUST</em> return an empty list.
      */
-    List<IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side);
+    List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side);
 
     /**
      * Called when the contents of this infusion handler change.
@@ -54,7 +54,7 @@ public interface IMekanismInfusionHandler extends ISidedInfusionHandler {
      */
     @Nullable
     default IChemicalTank<InfuseType, InfusionStack> getInfusionTank(int tank, @Nullable Direction side) {
-        List<IChemicalTank<InfuseType, InfusionStack>> tanks = getInfusionTanks(side);
+        List<? extends IChemicalTank<InfuseType, InfusionStack>> tanks = getInfusionTanks(side);
         return tank >= 0 && tank < tanks.size() ? tanks.get(tank) : null;
     }
 

@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.basic;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
@@ -18,29 +17,36 @@ public class DefaultGasHandler implements IGasHandler {
     }
 
     @Override
-    public GasStack getStack() {
+    public int getGasTankCount() {
+        return 1;
+    }
+
+    @Override
+    public GasStack getGasInTank(int tank) {
         return GasStack.EMPTY;
     }
 
     @Override
-    public int getCapacity() {
+    public void setGasInTank(int tank, GasStack stack) {
+    }
+
+    @Override
+    public int getGasTankCapacity(int tank) {
         return 0;
     }
 
     @Override
-    public int fill(GasStack stack, Action action) {
-        return 0;
+    public boolean isGasValid(int tank, GasStack stack) {
+        return true;
     }
 
-    @Nonnull
     @Override
-    public GasStack drain(GasStack stack, Action action) {
-        return GasStack.EMPTY;
+    public GasStack insertGas(int tank, GasStack stack, Action action) {
+        return stack;
     }
 
-    @Nonnull
     @Override
-    public GasStack drain(int amount, Action action) {
+    public GasStack extractGas(int tank, int amount, Action action) {
         return GasStack.EMPTY;
     }
 }

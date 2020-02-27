@@ -23,12 +23,24 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
-import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IMekanismGasHandler;
+import mekanism.api.infuse.IInfusionHandler;
+import mekanism.api.infuse.IMekanismInfusionHandler;
+import mekanism.api.infuse.InfuseType;
+import mekanism.api.infuse.InfusionStack;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
@@ -40,6 +52,8 @@ import mekanism.common.block.states.IStateFacing;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.capabilities.IToggleableCapability;
+import mekanism.common.capabilities.proxy.ProxyGasHandler;
+import mekanism.common.capabilities.proxy.ProxyInfusionHandler;
 import mekanism.common.capabilities.proxy.ProxyItemHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -51,6 +65,8 @@ import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
+import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.item.ItemConfigurationCard;
@@ -106,7 +122,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
       ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable,
-      IComparatorSupport, ITrackableContainer {
+      IComparatorSupport, ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler {
     //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
 
     //TODO: Should the implementations of the various stuff be extracted into TileComponents?
@@ -163,14 +179,28 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     //End variables ITileUpgradable
 
     //Variables for handling ITileContainer
-    //TODO: Figure out the proper way to store this here instead of per Tile with inventory
-    // Maybe have one list OR a getter for each side per side, and then if they overlap
     @Nullable
     private IInventorySlotHolder slotHolder;
 
-    private ProxyItemHandler readOnlyHandler;
+    private ProxyItemHandler readOnlyItemHandler;
     private Map<Direction, ProxyItemHandler> itemHandlers;
     //End variables ITileContainer
+
+    //Variables for handling IMekanismGasHandler
+    @Nullable
+    private IChemicalTankHolder<Gas, GasStack> gasTankHolder;
+
+    private ProxyGasHandler readOnlyGasHandler;
+    private Map<Direction, ProxyGasHandler> gasHandlers;
+    //End variables IMekanismGasHandler
+
+    //Variables for handling IMekanismInfusionHandler
+    @Nullable
+    private IChemicalTankHolder<InfuseType, InfusionStack> infusionTankHolder;
+
+    private ProxyInfusionHandler readOnlyInfusionHandler;
+    private Map<Direction, ProxyInfusionHandler> infusionHandlers;
+    //End variables IMekanismInfusionHandler
 
     //Variables for handling ITileElectric
     protected CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
@@ -215,6 +245,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         this.blockProvider = blockProvider;
         setSupportedTypes(this.blockProvider.getBlock());
         presetVariables();
+        gasTankHolder = getInitialGasTanks();
+        if (canHandleGas()) {
+            gasHandlers = new EnumMap<>(Direction.class);
+        }
+        infusionTankHolder = getInitialInfusionTanks();
+        if (canHandleInfusion()) {
+            infusionHandlers = new EnumMap<>(Direction.class);
+        }
         if (hasInventory()) {
             itemHandlers = new EnumMap<>(Direction.class);
             slotHolder = getInitialInventory();
@@ -332,6 +370,16 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public final boolean hasInventory() {
         return hasInventory;
+    }
+
+    @Override
+    public boolean canHandleInfusion() {
+        return infusionTankHolder != null;
+    }
+
+    @Override
+    public boolean canHandleGas() {
+        return gasTankHolder != null;
     }
 
     public void addComponent(ITileComponent component) {
@@ -557,23 +605,40 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (supportsRedstone() && nbtTags.contains("controlType")) {
             controlType = RedstoneControl.byIndexStatic(nbtTags.getInt("controlType"));
         }
-        if (hasInventory()) {
-            if (handleInventory()) {
-                ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
-                List<IInventorySlot> inventorySlots = getInventorySlots(null);
-                int size = inventorySlots.size();
-                for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
-                    CompoundNBT tagCompound = tagList.getCompound(tagCount);
-                    byte slotID = tagCompound.getByte("Slot");
-                    if (slotID >= 0 && slotID < size) {
-                        //TODO: Re-evaluate the slot id stuff
-                        inventorySlots.get(slotID).deserializeNBT(tagCompound);
-                    }
+        if (hasInventory() && handleInventory()) {
+            ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
+            List<IInventorySlot> inventorySlots = getInventorySlots(null);
+            int size = inventorySlots.size();
+            for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
+                CompoundNBT tagCompound = tagList.getCompound(tagCount);
+                byte slotID = tagCompound.getByte("Slot");
+                if (slotID >= 0 && slotID < size) {
+                    //TODO: Re-evaluate the slot id stuff
+                    inventorySlots.get(slotID).deserializeNBT(tagCompound);
                 }
             }
         }
+        if (canHandleGas() && handlesGas()) {
+            readChemicalTanks(getGasTanks(null), nbtTags.getList("GasTanks", NBT.TAG_COMPOUND));
+        }
+        if (canHandleInfusion() && handlesInfusion()) {
+            readChemicalTanks(getInfusionTanks(null), nbtTags.getList("InfusionTanks", NBT.TAG_COMPOUND));
+        }
         if (isElectric()) {
             electricityStored = nbtTags.getDouble("electricityStored");
+        }
+    }
+
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void readChemicalTanks(List<? extends IChemicalTank<CHEMICAL, STACK>> tanks,
+          ListNBT storedTanks) {
+        int size = tanks.size();
+        for (int tagCount = 0; tagCount < storedTanks.size(); tagCount++) {
+            CompoundNBT tagCompound = storedTanks.getCompound(tagCount);
+            byte slotID = tagCompound.getByte("Tank");
+            if (slotID >= 0 && slotID < size) {
+                //TODO: Re-evaluate the slot id stuff
+                tanks.get(slotID).deserializeNBT(tagCompound);
+            }
         }
     }
 
@@ -588,25 +653,41 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (supportsRedstone()) {
             nbtTags.putInt("controlType", controlType.ordinal());
         }
-        if (hasInventory()) {
-            if (handleInventory()) {
-                ListNBT tagList = new ListNBT();
-                List<IInventorySlot> inventorySlots = getInventorySlots(null);
-                for (int slotCount = 0; slotCount < inventorySlots.size(); slotCount++) {
-                    CompoundNBT tagCompound = inventorySlots.get(slotCount).serializeNBT();
-                    if (!tagCompound.isEmpty()) {
-                        //TODO: Re-evaluate how the slot works like this
-                        tagCompound.putByte("Slot", (byte) slotCount);
-                        tagList.add(tagCompound);
-                    }
+        if (hasInventory() && handleInventory()) {
+            ListNBT tagList = new ListNBT();
+            List<IInventorySlot> inventorySlots = getInventorySlots(null);
+            for (int slotCount = 0; slotCount < inventorySlots.size(); slotCount++) {
+                CompoundNBT tagCompound = inventorySlots.get(slotCount).serializeNBT();
+                if (!tagCompound.isEmpty()) {
+                    //TODO: Re-evaluate how the slot works like this
+                    tagCompound.putByte("Slot", (byte) slotCount);
+                    tagList.add(tagCompound);
                 }
-                nbtTags.put("Items", tagList);
             }
+            nbtTags.put("Items", tagList);
+        }
+        if (canHandleGas() && handlesGas()) {
+            nbtTags.put("GasTanks", writeChemicalTanks(getGasTanks(null)));
+        }
+        if (canHandleInfusion() && handlesInfusion()) {
+            nbtTags.put("InfusionTanks", writeChemicalTanks(getInfusionTanks(null)));
         }
         if (isElectric()) {
             nbtTags.putDouble("electricityStored", getEnergy());
         }
         return nbtTags;
+    }
+
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ListNBT writeChemicalTanks(List<? extends IChemicalTank<CHEMICAL, STACK>> tanks) {
+        ListNBT tagList = new ListNBT();
+        for (int tank = 0; tank < tanks.size(); tank++) {
+            CompoundNBT tagCompound = tanks.get(tank).serializeNBT();
+            if (!tagCompound.isEmpty()) {
+                tagCompound.putByte("Tank", (byte) tank);
+                tagList.add(tagCompound);
+            }
+        }
+        return tagList;
     }
 
     @Override
@@ -628,6 +709,19 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 container.track(SyncableDouble.create(this::getMaxEnergy, this::setMaxEnergy));
             }
         }
+        //TODO: Look if there is any tile that can handle gas/infusion types where we don't want it to sync
+        if (canHandleGas()) {
+            List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(null);
+            for (IChemicalTank<Gas, GasStack> gasTank : gasTanks) {
+                container.track(SyncableGasStack.create(gasTank));
+            }
+        }
+        if (canHandleInfusion()) {
+            List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks = getInfusionTanks(null);
+            for (IChemicalTank<InfuseType, InfusionStack> infusionTank : infusionTanks) {
+                container.track(SyncableInfusionStack.create(infusionTank));
+            }
+        }
     }
 
     @Nonnull
@@ -644,6 +738,24 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 //TODO: Should we actually return the item handler regardless??? And then just everything fails?
                 LazyOptional<IItemHandler> lazyItemHandler = inventorySlots.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getItemHandler(side));
                 return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, lazyItemHandler);
+            }
+        }
+        if (canHandleGas()) {
+            if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
+                List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(side);
+                //Don't return an item handler if we don't actually even have any slots for that side
+                //TODO: Should we actually return the item handler regardless??? And then just everything fails?
+                LazyOptional<IGasHandler> lazyGasHandler = gasTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getGasHandler(side));
+                return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, lazyGasHandler);
+            }
+        }
+        if (canHandleInfusion()) {
+            if (capability == Capabilities.INFUSION_HANDLER_CAPABILITY) {
+                List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks = getInfusionTanks(side);
+                //Don't return an item handler if we don't actually even have any slots for that side
+                //TODO: Should we actually return the item handler regardless??? And then just everything fails?
+                LazyOptional<IInfusionHandler> lazyInfusionHandler = infusionTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getInfusionHandler(side));
+                return Capabilities.INFUSION_HANDLER_CAPABILITY.orEmpty(capability, lazyInfusionHandler);
             }
         }
         if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
@@ -916,10 +1028,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             return null;
         }
         if (side == null) {
-            if (readOnlyHandler == null) {
-                readOnlyHandler = new ProxyItemHandler(this, null);
+            if (readOnlyItemHandler == null) {
+                readOnlyItemHandler = new ProxyItemHandler(this, null);
             }
-            return readOnlyHandler;
+            return readOnlyItemHandler;
         }
         ProxyItemHandler itemHandler = itemHandlers.get(side);
         if (itemHandler == null) {
@@ -928,6 +1040,88 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return itemHandler;
     }
     //End methods ITileContainer
+
+    //Methods for implementing IMekanismGasHandler
+    @Nullable
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+        if (!canHandleGas() || gasTankHolder == null) {
+            return Collections.emptyList();
+        }
+        return gasTankHolder.getTanks(side);
+    }
+
+    //TODO: Re-evaluate this is mainly for quantum entangloporter to not save it to the tile
+    public boolean handlesGas() {
+        return canHandleGas();
+    }
+
+    /**
+     * Lazily get and cache an IGasHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
+     */
+    protected IGasHandler getGasHandler(@Nullable Direction side) {
+        if (!canHandleGas()) {
+            return null;
+        }
+        if (side == null) {
+            if (readOnlyGasHandler == null) {
+                readOnlyGasHandler = new ProxyGasHandler(this, null);
+            }
+            return readOnlyGasHandler;
+        }
+        ProxyGasHandler gasHandler = gasHandlers.get(side);
+        if (gasHandler == null) {
+            gasHandlers.put(side, gasHandler = new ProxyGasHandler(this, side));
+        }
+        return gasHandler;
+    }
+    //End methods IMekanismGasHandler
+
+    //Methods for implementing IMekanismInfusionHandler
+    @Nullable
+    protected IChemicalTankHolder<InfuseType, InfusionStack> getInitialInfusionTanks() {
+        return null;
+    }
+
+    @Nonnull
+    @Override
+    public List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side) {
+        if (!canHandleGas() || infusionTankHolder == null) {
+            return Collections.emptyList();
+        }
+        return infusionTankHolder.getTanks(side);
+    }
+
+    //TODO: Re-evaluate this is mainly for quantum entangloporter to not save it to the tile
+    public boolean handlesInfusion() {
+        return canHandleInfusion();
+    }
+
+    /**
+     * Lazily get and cache an IInfusionHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
+     */
+    protected IInfusionHandler getInfusionHandler(@Nullable Direction side) {
+        if (!canHandleGas()) {
+            return null;
+        }
+        if (side == null) {
+            if (readOnlyInfusionHandler == null) {
+                readOnlyInfusionHandler = new ProxyInfusionHandler(this, null);
+            }
+            return readOnlyInfusionHandler;
+        }
+        ProxyInfusionHandler infusionHandler = infusionHandlers.get(side);
+        if (infusionHandler == null) {
+            infusionHandlers.put(side, infusionHandler = new ProxyInfusionHandler(this, side));
+        }
+        return infusionHandler;
+    }
+    //End methods IMekanismInfusionHandler
 
     //Methods for implementing ITileElectric
     protected boolean isStrictEnergy(@Nonnull Capability<?> capability) {

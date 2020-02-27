@@ -5,9 +5,9 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.infuse.BasicInfusionTank;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.infuse.BasicInfusionTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
@@ -16,9 +16,9 @@ import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.sustained.ISustainedData;
+import mekanism.common.base.ChemicalTankHelper;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -43,10 +43,12 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        super.presetVariables();
-        infusionTank = new BasicInfusionTank(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes);
+    protected IChemicalTankHolder<InfuseType, InfusionStack> getInitialInfusionTanks() {
+        ChemicalTankHelper<InfuseType, InfusionStack> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
+        builder.addTank(infusionTank = BasicInfusionTank.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, infusion -> false, infusion -> true, this));
+        return builder.build();
     }
 
     @Override
@@ -190,20 +192,6 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
               inputSlots, outputSlots, sorting, getComponents());
     }
 
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("infuseStored", infusionTank.write(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        infusionTank.read(nbtTags.getCompound("infuseStored"));
-    }
-
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (!infusionTank.isEmpty()) {
@@ -226,11 +214,5 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     protected void clearSecondaryTank() {
         infusionTank.setEmpty();
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableInfusionStack.create(infusionTank));
     }
 }

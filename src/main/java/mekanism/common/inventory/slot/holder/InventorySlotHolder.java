@@ -41,7 +41,6 @@ public class InventorySlotHolder implements IInventorySlotHolder {
         RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
         List<IInventorySlot> slots = directionalSlots.get(side);
         if (slots == null) {
-            //TODO: Go through the code and make sure nothing is getting missed due to this returning an empty list
             return Collections.emptyList();
         }
         return slots;

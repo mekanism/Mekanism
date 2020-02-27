@@ -3,8 +3,11 @@ package mekanism.api.recipes.outputs;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.gas.GasStack;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.gas.BasicGasTank;
+import mekanism.api.gas.GasStack;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
@@ -16,17 +19,18 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class OutputHelper {
 
-    public static IOutputHandler<@NonNull GasStack> getOutputHandler(@Nonnull BasicGasTank gasTank) {
-        return new IOutputHandler<@NonNull GasStack>() {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> IOutputHandler<@NonNull STACK> getOutputHandler(
+          @Nonnull IChemicalTank<CHEMICAL, STACK> tank) {
+        return new IOutputHandler<@NonNull STACK>() {
 
             @Override
-            public void handleOutput(@NonNull GasStack toOutput, int operations) {
-                OutputHelper.handleOutput(gasTank, toOutput, operations);
+            public void handleOutput(@NonNull STACK toOutput, int operations) {
+                OutputHelper.handleOutput(tank, toOutput, operations);
             }
 
             @Override
-            public int operationsRoomFor(@NonNull GasStack toOutput, int currentMax) {
-                return OutputHelper.operationsRoomFor(gasTank, toOutput, currentMax);
+            public int operationsRoomFor(@NonNull STACK toOutput, int currentMax) {
+                return OutputHelper.operationsRoomFor(tank, toOutput, currentMax);
             }
         };
     }
@@ -122,13 +126,14 @@ public class OutputHelper {
     }
 
     //TODO: Should these be public
-    private static void handleOutput(@Nonnull BasicGasTank gasTank, @NonNull GasStack toOutput, int operations) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleOutput(@Nonnull IChemicalTank<CHEMICAL, STACK> tank,
+          @NonNull STACK toOutput, int operations) {
         if (operations == 0) {
             //This should not happen
             return;
         }
-        GasStack output = new GasStack(toOutput, toOutput.getAmount() * operations);
-        gasTank.insert(output, Action.EXECUTE);
+        STACK output = tank.createStack(toOutput, toOutput.getAmount() * operations);
+        tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private static void handleOutput(@Nonnull IFluidHandler fluidHandler, @NonNull FluidStack toOutput, int operations) {
@@ -152,15 +157,17 @@ public class OutputHelper {
         inventorySlot.insertItem(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static int operationsRoomFor(@Nonnull BasicGasTank gasTank, @NonNull GasStack toOutput, int currentMax) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> int operationsRoomFor(@Nonnull IChemicalTank<CHEMICAL, STACK> tank,
+          @NonNull STACK toOutput, int currentMax) {
         if (currentMax <= 0 || toOutput.isEmpty()) {
             //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
         }
         //Copy the stack and make it be max size
-        GasStack maxOutput = new GasStack(toOutput, Integer.MAX_VALUE);
-        //Then simulate filling the fluid tank so we can see how much actually can fit
-        int amountUsed = gasTank.insert(maxOutput, Action.SIMULATE);
+        STACK maxOutput = tank.createStack(toOutput, Integer.MAX_VALUE);
+        //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
+        STACK remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
+        int amountUsed = maxOutput.getAmount() - remainder.getAmount();
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
         return Math.min(amountUsed / toOutput.getAmount(), currentMax);
     }
