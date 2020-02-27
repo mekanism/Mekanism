@@ -183,6 +183,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
      */
     private double maxEnergy;
     private double energyPerTick;
+    private double lastEnergyReceived;
     //End variables ITileElectric
 
     //Variables for handling ITileSecurity
@@ -459,6 +460,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         if (supportsRedstone()) {
             redstoneLastTick = redstone;
         }
+
+        if(!isRemote()) {
+            lastEnergyReceived = 0;
+        }
     }
 
     public <MSG> void sendToAllUsing(Supplier<MSG> packetSupplier) {
@@ -617,6 +622,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (isElectric()) {
             container.track(SyncableDouble.create(this::getEnergy, this::setEnergy));
+            container.track(SyncableDouble.create(this::getInputRate, this::setInputRate));
             if (supportsUpgrades()) {
                 container.track(SyncableDouble.create(this::getEnergyPerTick, this::setEnergyPerTick));
                 container.track(SyncableDouble.create(this::getMaxEnergy, this::setMaxEnergy));
@@ -961,6 +967,14 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return maxEnergy;
     }
 
+    public double getInputRate() {
+        return lastEnergyReceived;
+    }
+
+    public void setInputRate(double inputRate) {
+        this.lastEnergyReceived = inputRate;
+    }
+
     public double getBaseUsage() {
         if (isElectric()) {
             return ((IBlockElectric) blockProvider.getBlock()).getUsage();
@@ -996,6 +1010,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (!simulate) {
             setEnergy(getEnergy() + toUse);
+            this.lastEnergyReceived += toUse;
         }
         return toUse;
     }

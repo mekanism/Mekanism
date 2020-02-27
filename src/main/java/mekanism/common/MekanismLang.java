@@ -81,6 +81,7 @@ public enum MekanismLang implements ILangEntry {
     MAX_OUTPUT("gui", "max_output"),
     STORING("gui", "storing"),
     DISSIPATED_RATE("gui", "dissipated"),
+    TRANSFERRED_RATE("gui", "transferred_rate"),
     FUEL("gui", "fuel"),
     VOLUME("gui", "volume"),
     NO_FLUID("gui", "no_fluid"),

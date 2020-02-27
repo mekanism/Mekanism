@@ -83,6 +83,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue laserEnergyNeededPerHardness;
     public final CachedBooleanValue voidInvalidGases;
     public final CachedIntValue digitalMinerMaxRadius;
+    public final CachedIntValue digitalMinerTicksPerMine;
     public CachedEnumValue<EnergyType> energyUnit;
     public CachedEnumValue<TempType> tempUnit;
 
@@ -230,8 +231,10 @@ public class GeneralConfig extends BaseMekanismConfig {
         laserEnergyNeededPerHardness = CachedIntValue.wrap(this, builder.comment("Energy needed to destroy or attract blocks with a Laser (per block hardness level).")
               .define("laserEnergyNeededPerHardness", 100_000));
         digitalMinerMaxRadius = CachedIntValue.wrap(this, builder.comment("Maximum radius in blocks that the Digital Miner can reach. (Increasing this may have negative effects on stability "
-                                                                          + "and/or performance. We strongly recommend you leave it at the default value.)")
+                                                                          + "and/or performance. We strongly recommend you leave it at the default value).")
               .defineInRange("digitalMinerMaxRadius", 32, 1, Integer.MAX_VALUE));
+        digitalMinerTicksPerMine = CachedIntValue.wrap(this, builder.comment("Number of ticks required to mine a single block with a Digital Miner (without any upgrades).")
+              .defineInRange("digitalMinerTicksPerMine", 80, 1, Integer.MAX_VALUE));
         energyUnit = CachedEnumValue.wrap(this, builder.comment("Displayed energy type in Mekanism GUIs.")
               .defineEnum("energyType", EnergyType.FE));
         tempUnit = CachedEnumValue.wrap(this, builder.comment("Displayed temperature unit in Mekanism GUIs.")

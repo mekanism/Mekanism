@@ -46,7 +46,6 @@
   "gui.mekanismgenerators.output_rate.short": "\u0287/%s :\u0287nO",
   "gui.mekanismgenerators.power": "%s :\u0279\u01DD\u028Do\u0500",
   "gui.mekanismgenerators.producing.amount": "\u0287/%s :\u1D77u\u1D09\u0254npo\u0279\u0500",
-  "heat_generator.mekanismgenerators.transferred_rate": "\u0287/%s :p\u01DD\u0279\u0279\u01DD\u025Fsu\u0250\u0279\u27D8",
   "item.mekanismgenerators.hohlraum": "\u026Fn\u0250\u0279\uA781\u0265oH",
   "item.mekanismgenerators.solar_panel": "\uA781\u01DDu\u0250\u0500 \u0279\u0250\uA781oS",
   "item.mekanismgenerators.turbine_blade": "\u01DDp\u0250\uA781\u15FA \u01DDu\u1D09q\u0279n\u27D8",

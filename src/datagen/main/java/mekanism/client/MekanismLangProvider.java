@@ -378,6 +378,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MAX_OUTPUT, "Max Output: %s/t");
         add(MekanismLang.STORING, "Storing: %s");
         add(MekanismLang.DISSIPATED_RATE, "Dissipated: %s/t");
+        add(MekanismLang.TRANSFERRED_RATE, "Transferred: %s/t");
         add(MekanismLang.FUEL, "Fuel: %s");
         add(MekanismLang.VOLUME, "Volume: %s");
         add(MekanismLang.NO_FLUID, "No fluid");

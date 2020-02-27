@@ -112,11 +112,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     public ItemStack missingStack = ItemStack.EMPTY;
 
-    public int BASE_DELAY = 80;
-
     public int delay;
 
-    public int delayLength = BASE_DELAY;
+    public int delayLength = MekanismConfig.general.digitalMinerTicksPerMine.get();
 
     public int clientToMine;
 
@@ -905,7 +903,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
-            delayLength = MekanismUtils.getTicks(this, BASE_DELAY);
+            delayLength = MekanismUtils.getTicks(this, MekanismConfig.general.digitalMinerTicksPerMine.get());
         }
     }
 

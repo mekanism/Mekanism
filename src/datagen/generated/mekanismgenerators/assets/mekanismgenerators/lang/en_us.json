@@ -46,7 +46,6 @@
   "gui.mekanismgenerators.output_rate.short": "Out: %s/t",
   "gui.mekanismgenerators.power": "Power: %s",
   "gui.mekanismgenerators.producing.amount": "Producing: %s/t",
-  "heat_generator.mekanismgenerators.transferred_rate": "Transferred: %s/t",
   "item.mekanismgenerators.hohlraum": "Hohlraum",
   "item.mekanismgenerators.solar_panel": "Solar Panel",
   "item.mekanismgenerators.turbine_blade": "Turbine Blade",

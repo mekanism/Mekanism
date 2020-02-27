@@ -515,6 +515,7 @@
   "gui.mekanism.none": "\u01DDuoN",
   "gui.mekanism.set": ":\u0287\u01DDS",
   "gui.mekanism.storing": "%s :\u1D77u\u1D09\u0279o\u0287S",
+  "gui.mekanism.transferred_rate": "\u0287/%s :p\u01DD\u0279\u0279\u01DD\u025Fsu\u0250\u0279\u27D8",
   "gui.mekanism.unit": "%s :\u0287\u1D09u\u2229",
   "gui.mekanism.upgrade": "\u01DDp\u0250\u0279\u1D77d\u2229 %s",
   "gui.mekanism.upgrades": "s\u01DDp\u0250\u0279\u1D77d\u2229",

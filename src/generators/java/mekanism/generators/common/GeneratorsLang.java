@@ -11,7 +11,6 @@ public enum GeneratorsLang implements ILangEntry {
     GAS_BURN_RATE("gui", "gas_burning_generator.burn_rate"),
     POWER("gui", "power"),
     OUTPUT_RATE_SHORT("gui", "output_rate.short"),
-    TRANSFERRED_RATE("heat_generator", "transferred_rate"),
     SKY_BLOCKED("wind_generator", "sky_blocked"),
     NO_WIND("wind_generator", "no_wind"),
 

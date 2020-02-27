@@ -89,7 +89,6 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.STORED_BIO_FUEL, "BioFuel: %s");
         add(GeneratorsLang.TURBINE_TANK_VOLUME, "Tank Volume: %s");
         add(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING, "Toggle Cooling Measurements");
-        add(GeneratorsLang.TRANSFERRED_RATE, "Transferred: %s/t");
         add(GeneratorsLang.TURBINE, "Industrial Turbine");
         add(GeneratorsLang.TURBINE_BLADES, "Blades: %s %s");
         add(GeneratorsLang.TURBINE_CAPACITY, "Capacity: %s mB");

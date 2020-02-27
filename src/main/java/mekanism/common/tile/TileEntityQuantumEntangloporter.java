@@ -297,6 +297,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
                 frequency = null;
             }
 
+            lastTransferLoss = dataStream.readDouble();
+            lastEnvironmentLoss = dataStream.readDouble();
+
             publicCache.clear();
             privateCache.clear();
 
@@ -320,6 +323,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         } else {
             data.add(false);
         }
+
+        data.add(lastTransferLoss);
+        data.add(lastEnvironmentLoss);
+
         //TODO: We may want to eventually make a syncable list type thing for containers
         data.add(Mekanism.publicEntangloporters.getFrequencies().size());
         for (Frequency freq : Mekanism.publicEntangloporters.getFrequencies()) {
@@ -632,5 +639,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         remap.put("frequency.name", "frequency.name");
         remap.put("frequency.publicFreq", "frequency.publicFreq");
         return remap;
+    }
+
+    public double getLastTransferLoss() {
+        return lastTransferLoss;
+    }
+
+    public double getLastEnvironmentLoss() {
+        return lastEnvironmentLoss;
     }
 }
