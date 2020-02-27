@@ -66,7 +66,7 @@ import mekanism.common.tile.interfaces.ITileElectric;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.ITileUpgradable;
-import mekanism.common.tile.interfaces.IUpgradeableTile;
+import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -105,7 +105,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 // rather than silently "fail" and just do nothing
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
-      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, IUpgradeableTile,
+      ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable,
       IComparatorSupport, ITrackableContainer {
     //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
 

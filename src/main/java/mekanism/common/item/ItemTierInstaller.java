@@ -6,7 +6,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.IUpgradeableTile;
+import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -63,13 +63,13 @@ public class ItemTierInstaller extends Item {
                     return ActionResultType.PASS;
                 }
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-                if (tile instanceof IUpgradeableTile) {
+                if (tile instanceof ITierUpgradable) {
                     if (tile instanceof TileEntityMekanism && !((TileEntityMekanism) tile).playersUsing.isEmpty()) {
                         return ActionResultType.FAIL;
                     }
-                    IUpgradeData upgradeData = ((IUpgradeableTile) tile).getUpgradeData();
+                    IUpgradeData upgradeData = ((ITierUpgradable) tile).getUpgradeData();
                     if (upgradeData == null) {
-                        if (((IUpgradeableTile) tile).canBeUpgraded()) {
+                        if (((ITierUpgradable) tile).canBeUpgraded()) {
                             Mekanism.logger.warn("Got no upgrade data for block {} at position: {} in {} but it said it would be able to provide some.", block, pos, world);
                             return ActionResultType.FAIL;
                         }

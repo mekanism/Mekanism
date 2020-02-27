@@ -1,5 +1,6 @@
 package mekanism.common.tile.prefab;
 
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
@@ -10,7 +11,9 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ITileCachedRecipeHolder<RECIPE> {
 
@@ -79,6 +82,11 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     @Override
     public boolean lightUpdate() {
         return true;
+    }
+
+    @Override
+    public List<ITextComponent> getInfo(Upgrade upgrade) {
+        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

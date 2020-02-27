@@ -3,8 +3,7 @@ package mekanism.common.tile.interfaces;
 import javax.annotation.Nullable;
 import mekanism.common.upgrade.IUpgradeData;
 
-//TODO: Come up with a better name for this interface
-public interface IUpgradeableTile {
+public interface ITierUpgradable {
 
     boolean canBeUpgraded();
 
