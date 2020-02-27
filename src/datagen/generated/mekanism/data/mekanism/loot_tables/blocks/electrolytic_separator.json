@@ -27,11 +27,6 @@
                   "op": "replace"
                 },
                 {
-                  "source": "rightTank.stored",
-                  "target": "mekData.rightTank",
-                  "op": "replace"
-                },
-                {
                   "source": "fluidTank",
                   "target": "mekData.fluidTank",
                   "op": "replace"
@@ -39,6 +34,11 @@
                 {
                   "source": "leftTank.stored",
                   "target": "mekData.leftTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "rightTank.stored",
+                  "target": "mekData.rightTank",
                   "op": "replace"
                 },
                 {

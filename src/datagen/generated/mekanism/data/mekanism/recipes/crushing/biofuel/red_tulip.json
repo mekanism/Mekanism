@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:red_tulip"
+    }
+  },
+  "output": {
+    "item": "mekanism:bio_fuel",
+    "count": 5
+  }
+}

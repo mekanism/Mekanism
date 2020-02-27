@@ -27,6 +27,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "singleItem",
+                  "target": "mekData.singleItem",
+                  "op": "replace"
+                },
+                {
                   "source": "autoEject",
                   "target": "mekData.autoEject",
                   "op": "replace"
@@ -34,11 +39,6 @@
                 {
                   "source": "color",
                   "target": "mekData.color",
-                  "op": "replace"
-                },
-                {
-                  "source": "singleItem",
-                  "target": "mekData.singleItem",
                   "op": "replace"
                 },
                 {

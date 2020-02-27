@@ -32,13 +32,23 @@
                   "op": "replace"
                 },
                 {
-                  "source": "inverse",
-                  "target": "mekData.inverse",
+                  "source": "radius",
+                  "target": "mekData.radius",
+                  "op": "replace"
+                },
+                {
+                  "source": "filters",
+                  "target": "mekData.filters",
                   "op": "replace"
                 },
                 {
                   "source": "minY",
                   "target": "mekData.minY",
+                  "op": "replace"
+                },
+                {
+                  "source": "silkTouch",
+                  "target": "mekData.silkTouch",
                   "op": "replace"
                 },
                 {
@@ -52,18 +62,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "filters",
-                  "target": "mekData.filters",
-                  "op": "replace"
-                },
-                {
-                  "source": "radius",
-                  "target": "mekData.radius",
-                  "op": "replace"
-                },
-                {
-                  "source": "silkTouch",
-                  "target": "mekData.silkTouch",
+                  "source": "inverse",
+                  "target": "mekData.inverse",
                   "op": "replace"
                 },
                 {

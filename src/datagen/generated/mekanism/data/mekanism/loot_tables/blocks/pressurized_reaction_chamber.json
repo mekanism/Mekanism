@@ -37,8 +37,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "outputGasTank.stored",
-                  "target": "mekData.outputGasTank",
+                  "source": "inputGasTank.stored",
+                  "target": "mekData.inputGasTank",
                   "op": "replace"
                 },
                 {
@@ -47,8 +47,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "inputGasTank.stored",
-                  "target": "mekData.inputGasTank",
+                  "source": "outputGasTank.stored",
+                  "target": "mekData.outputGasTank",
                   "op": "replace"
                 },
                 {

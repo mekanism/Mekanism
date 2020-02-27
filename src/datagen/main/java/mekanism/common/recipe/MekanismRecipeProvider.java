@@ -1,5 +1,8 @@
 package mekanism.common.recipe;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap.Entry;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -61,6 +64,7 @@ import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.fluid.Fluid;
@@ -449,131 +453,15 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "wool_to_string"));
     }
 
-    //TODO: Re-balance these recipes as the amounts of bio fuel various items produces does not make sense
-    // in relation to the amounts other things give
-    //TODO: Evaluate the bio fuel recipes, and maybe add sweet berry bush/coral to it (and maybe bamboo sapling, and honey).
-    // Also add missing flowers that don't get caught by the small flowers tag
     private void addCrusherBioFuelRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        //Apple
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.APPLE),
-              MekanismItems.BIO_FUEL.getItemStack(4)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "apple"));
-        //Baked Potato
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.BAKED_POTATO),
-              MekanismItems.BIO_FUEL.getItemStack(4)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "baked_potato"));
-        //Bamboo
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.BAMBOO),
-              MekanismItems.BIO_FUEL.getItemStack(2)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "bamboo"));
-        //Bread
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.BREAD),
-              MekanismItems.BIO_FUEL.getItemStack(4)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "bread"));
-        //Cactus
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.CACTUS),
-              MekanismItems.BIO_FUEL.getItemStack(2)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "cactus"));
-        //Crops
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Tags.Items.CROPS),
-              MekanismItems.BIO_FUEL.getItemStack(4)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "crops"));
-        //Grass
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.GRASS),
-              MekanismItems.BIO_FUEL.getItemStack(4)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "grass"));
-        //Kelp
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.KELP),
-              MekanismItems.BIO_FUEL.getItemStack(2)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "kelp"));
-        //Leaves
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(ItemTags.LEAVES, 10),
-              MekanismItems.BIO_FUEL.getItemStack()
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "leaves"));
-        //Melon
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.MELON),
-              MekanismItems.BIO_FUEL.getItemStack(16)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "melon"));
-        //Melon Slice
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.MELON_SLICE),
-              MekanismItems.BIO_FUEL.getItemStack(4)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "melon_slice"));
-        //Mushrooms
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Tags.Items.MUSHROOMS),
-              MekanismItems.BIO_FUEL.getItemStack()
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "mushrooms"));
-        //Poisonous Potato
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.POISONOUS_POTATO),
-              MekanismItems.BIO_FUEL.getItemStack(4)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "poisonous_potato"));
-        //Pumpkin
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.PUMPKIN),
-              MekanismItems.BIO_FUEL.getItemStack(6)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "pumpkin"));
-        //Rotten Flesh
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.ROTTEN_FLESH),
-              MekanismItems.BIO_FUEL.getItemStack(2)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "rotten_flesh"));
-        //Saplings
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(ItemTags.SAPLINGS),
-              MekanismItems.BIO_FUEL.getItemStack(2)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "saplings"));
-        //Seeds
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Tags.Items.SEEDS),
-              MekanismItems.BIO_FUEL.getItemStack(2)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "seeds"));
-        //Small Flowers
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(ItemTags.SMALL_FLOWERS),
-              MekanismItems.BIO_FUEL.getItemStack()
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "small_flowers"));
-        //Sugar Cane
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.SUGAR_CANE),
-              MekanismItems.BIO_FUEL.getItemStack(2)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "sugar_cane"));
-        //Sweet Berries
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Items.SWEET_BERRIES),
-              MekanismItems.BIO_FUEL.getItemStack(4)
-        ).addCriterion(Criterion.HAS_CRUSHER)
-              .build(consumer, Mekanism.rl(basePath + "sweet_berries"));
+        //Generate baseline recipes from Composter recipe set
+        for(Entry<net.minecraft.util.IItemProvider> chance : ComposterBlock.CHANCES.object2FloatEntrySet()) {
+            ItemStackToItemStackRecipeBuilder.crushing(
+                  ItemStackIngredient.from(chance.getKey().asItem()),
+                  MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue()*8))
+            ).addCriterion(Criterion.HAS_CRUSHER)
+                  .build(consumer, Mekanism.rl(basePath + chance.getKey().asItem().toString()));
+        }
     }
 
     private void addChemicalCrystallizerRecipes(Consumer<IFinishedRecipe> consumer) {

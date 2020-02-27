@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:lily_pad"
+    }
+  },
+  "output": {
+    "item": "mekanism:bio_fuel",
+    "count": 5
+  }
+}

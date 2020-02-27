@@ -37,13 +37,13 @@
                   "op": "replace"
                 },
                 {
-                  "source": "frequency.publicFreq",
-                  "target": "mekData.frequency.publicFreq",
+                  "source": "frequency.name",
+                  "target": "mekData.frequency.name",
                   "op": "replace"
                 },
                 {
-                  "source": "frequency.name",
-                  "target": "mekData.frequency.name",
+                  "source": "frequency.publicFreq",
+                  "target": "mekData.frequency.publicFreq",
                   "op": "replace"
                 },
                 {

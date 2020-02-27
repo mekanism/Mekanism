@@ -8,10 +8,13 @@ buildscript {
             name "forge"
             url "https://files.minecraftforge.net/maven"
         }
+        maven {
+            url 'http://dogforce-games.com/maven'
+        }
     }
     dependencies {
         //TODO: Change this back to 3.+ once FG is fixed
-        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.0.159", changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.163+pull-657', changing: true
     }
 }
 
@@ -245,15 +248,15 @@ minecraft {
             environment 'target', 'fmluserdevdata'
             properties 'fml.earlyprogresswindow': 'false'
 
-            args '--all', '--output', '"' + file('src/datagen/generated/') + '"',
+            args '--all', '--output', file('src/datagen/generated/'),
                     '--mod', 'mekanism',
-                    '--existing', '"' + sourceSets.main.resources.srcDirs[0] + '"',
+                    '--existing', sourceSets.main.resources.srcDirs[0],
                     '--mod', 'mekanismadditions',
-                    '--existing', '"' + sourceSets.additions.resources.srcDirs[0] + '"',
+                    '--existing', sourceSets.additions.resources.srcDirs[0],
                     '--mod', 'mekanismgenerators',
-                    '--existing', '"' + sourceSets.generators.resources.srcDirs[0] + '"',
+                    '--existing', sourceSets.generators.resources.srcDirs[0],
                     '--mod', 'mekanismtools',
-                    '--existing', '"' + sourceSets.tools.resources.srcDirs[0] + '"'
+                    '--existing', sourceSets.tools.resources.srcDirs[0]
 
             mods {
                 mekanism {
