@@ -9,6 +9,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.BasicGasTank;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
@@ -132,7 +133,7 @@ public class FusionReactor {
     public void vaporiseHohlraum() {
         IInventorySlot reactorSlot = controller.getReactorSlot();
         ItemStack hohlraum = reactorSlot.getStack();
-        getFuelTank().insert(((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum), Action.EXECUTE);
+        getFuelTank().insert(((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum), Action.EXECUTE, AutomationType.INTERNAL);
         lastPlasmaTemperature = plasmaTemperature;
         reactorSlot.setStack(ItemStack.EMPTY);
         burning = true;
@@ -143,14 +144,14 @@ public class FusionReactor {
         int amountAvailable = 2 * Math.min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
         int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
-        getDeuteriumTank().extract(amountToInject / 2, Action.EXECUTE);
-        getTritiumTank().extract(amountToInject / 2, Action.EXECUTE);
-        getFuelTank().insert(MekanismGases.FUSION_FUEL.getGasStack(amountToInject), Action.EXECUTE);
+        getDeuteriumTank().extract(amountToInject / 2, Action.EXECUTE, AutomationType.INTERNAL);
+        getTritiumTank().extract(amountToInject / 2, Action.EXECUTE, AutomationType.INTERNAL);
+        getFuelTank().insert(MekanismGases.FUSION_FUEL.getGasStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     public int burnFuel() {
         int fuelBurned = (int) Math.min(getFuelTank().getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
-        getFuelTank().extract(fuelBurned, Action.EXECUTE);
+        getFuelTank().extract(fuelBurned, Action.EXECUTE, AutomationType.INTERNAL);
         plasmaTemperature += MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * fuelBurned / plasmaHeatCapacity;
         return fuelBurned;
     }

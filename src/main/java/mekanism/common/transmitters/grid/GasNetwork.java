@@ -4,14 +4,19 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IMekanismGasHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
@@ -19,6 +24,7 @@ import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.tileentity.TileEntity;
@@ -35,7 +41,7 @@ import net.minecraftforge.eventbus.api.Event;
  * @author aidancbrady
  */
 //TODO: Should GasStack have @NonNull in the params
-public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> {
+public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
 
     public int transferDelay = 0;
 
@@ -127,7 +133,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     private int tickEmit(@Nonnull GasStack stack) {
         Set<GasHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
         int totalHandlers = 0;
-        Gas type = stack.getType();
+        GasStack unitStack = new GasStack(stack, 1);
         Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
         for (Coord4D coord : possibleAcceptors) {
             EnumSet<Direction> sides = acceptorDirections.get(coord);
@@ -141,7 +147,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
             GasHandlerTarget target = new GasHandlerTarget(stack);
             for (Direction side : sides) {
                 CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, side).ifPresent(acceptor -> {
-                    if (acceptor.canReceiveGas(side, type)) {
+                    if (GasUtils.canInsert(acceptor, unitStack)) {
                         target.addHandler(side, acceptor);
                     }
                 });
@@ -259,6 +265,18 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public ITextComponent getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.GAS_NETWORK, transmitters.size(), possibleAcceptors.size());
+    }
+
+    @Nonnull
+    @Override
+    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+        //TODO: GasHandler - IMPLEMENT ME
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void onContentsChanged() {
+        //TODO: Do we want to mark this dirty
     }
 
     public static class GasTransferEvent extends Event {

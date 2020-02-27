@@ -10,6 +10,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.IHasTextComponent;
@@ -142,17 +143,17 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
                     Set<Direction> sidesForData = config.getSidesForData(DataType.OUTPUT);
                     if (!sidesForData.isEmpty()) {
                         GasStack toSend = new GasStack(gasTank.getStack(), Math.min(gasTank.getStored(), tier.getOutput()));
-                        gasTank.extract(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE));
+                        gasTank.extract(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE), AutomationType.INTERNAL);
                     }
                 }
             }
 
             if (tier != GasTankTier.CREATIVE) {
                 if (dumping == GasMode.DUMPING) {
-                    gasTank.extract(tier.getStorage() / 400, Action.EXECUTE);
+                    gasTank.extract(tier.getStorage() / 400, Action.EXECUTE, AutomationType.INTERNAL);
                 }
                 if (dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < tier.getOutput()) {
-                    gasTank.extract(tier.getOutput() - gasTank.getNeeded(), Action.EXECUTE);
+                    gasTank.extract(tier.getOutput() - gasTank.getNeeded(), Action.EXECUTE, AutomationType.INTERNAL);
                 }
             }
 

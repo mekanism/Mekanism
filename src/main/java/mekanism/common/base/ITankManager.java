@@ -56,7 +56,7 @@ public interface ITankManager {
                         }
 
                         int toExtract = Math.min(gasTank.getNeeded(), dropperStored);
-                        toExtract = gasTank.insert(new GasStack(storedGas, toExtract), Action.EXECUTE, AutomationType.INTERNAL);
+                        toExtract = toExtract - gasTank.insert(new GasStack(storedGas, toExtract), Action.EXECUTE, AutomationType.INTERNAL).getAmount();
                         dropper.setGas(stack, new GasStack(storedGas, dropperStored - toExtract));
                         ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
                     } else if (button == 2) { //Dump the tank

@@ -709,14 +709,15 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
                 container.track(SyncableDouble.create(this::getMaxEnergy, this::setMaxEnergy));
             }
         }
-        //TODO: Look if there is any tile that can handle gas/infusion types where we don't want it to sync
-        if (canHandleGas()) {
+        //TODO: GasHandler - Look if there is any tile that can handle gas/infusion types where we don't want it to sync
+        //TODO: For example, the fusion reactor, which saves its gas tanks, but doesn't need to sync them
+        if (canHandleGas() && handlesGas()) {
             List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(null);
             for (IChemicalTank<Gas, GasStack> gasTank : gasTanks) {
                 container.track(SyncableGasStack.create(gasTank));
             }
         }
-        if (canHandleInfusion()) {
+        if (canHandleInfusion() && handlesInfusion()) {
             List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks = getInfusionTanks(null);
             for (IChemicalTank<InfuseType, InfusionStack> infusionTank : infusionTanks) {
                 container.track(SyncableInfusionStack.create(infusionTank));
@@ -1106,7 +1107,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
      * Lazily get and cache an IInfusionHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
      */
     protected IInfusionHandler getInfusionHandler(@Nullable Direction side) {
-        if (!canHandleGas()) {
+        if (!canHandleInfusion()) {
             return null;
         }
         if (side == null) {

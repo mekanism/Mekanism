@@ -1,14 +1,15 @@
 package mekanism.generators.common.tile.reactor;
 
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -17,7 +18,6 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
@@ -45,6 +45,27 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
 
     public TileEntityReactorPort() {
         super(GeneratorsBlocks.REACTOR_PORT);
+    }
+
+    @Override
+    public boolean canHandleGas() {
+        //TODO: GasHandler - Evaluate
+        return true;
+    }
+
+    @Override
+    public boolean handlesGas() {
+        //TODO: GasHandler - Evaluate
+        return false;
+    }
+
+    @Nonnull
+    @Override
+    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+        if (!canHandleGas() || getReactor() == null) {
+            return Collections.emptyList();
+        }
+        return getReactor().controller.getGasTanks(side);
     }
 
     @Override
@@ -112,44 +133,6 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
     @Override
     public IFluidTank[] getAllTanks() {
         return getTankInfo(null);
-    }
-
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (getReactor() != null) {
-            //TODO: Move this stuff to a recipe type
-            if (stack.getType() == MekanismGases.DEUTERIUM.getGas()) {
-                return getReactor().getDeuteriumTank().insert(stack, action);
-            } else if (stack.getType() == MekanismGases.TRITIUM.getGas()) {
-                return getReactor().getTritiumTank().insert(stack, action);
-            } else if (stack.getType() == MekanismGases.FUSION_FUEL.getGas()) {
-                return getReactor().getFuelTank().insert(stack, action);
-            }
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        //TODO: Move this stuff to a recipe type
-        return type == MekanismGases.DEUTERIUM.getGas() || type == MekanismGases.TRITIUM.getGas() || type == MekanismGases.FUSION_FUEL.getGas();
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return getReactor() != null ? new GasTankInfo[]{getReactor().getDeuteriumTank(), getReactor().getTritiumTank(), getReactor().getFuelTank()} : IGasHandler.NONE;
     }
 
     @Nonnull

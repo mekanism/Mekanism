@@ -3,7 +3,6 @@ package mekanism.common.content.entangloporter;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
@@ -26,8 +25,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismGasHandler {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
-    private static final Supplier<FluidTank> FLUID_TANK_SUPPLIER = () -> new FluidTank(MekanismConfig.general.quantumEntangloporterFluidBuffer.get());
-    private final Supplier<BasicGasTank> GAS_TANK_SUPPLIER = () -> BasicGasTank.create(MekanismConfig.general.quantumEntangloporterGasBuffer.get(), this);
 
     public double storedEnergy;
     public FluidTank storedFluid;
@@ -52,8 +49,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     private void presetVariables() {
-        storedFluid = FLUID_TANK_SUPPLIER.get();
-        storedGas = GAS_TANK_SUPPLIER.get();
+        storedFluid = new FluidTank(MekanismConfig.general.quantumEntangloporterFluidBuffer.get());
+        storedGas = BasicGasTank.create(MekanismConfig.general.quantumEntangloporterGasBuffer.get(), this);
         gasTanks = Collections.singletonList(storedGas);
         storedItem = EntangloporterInventorySlot.create(this);
         inventorySlots = Collections.singletonList(storedItem);

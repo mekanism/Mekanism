@@ -5,10 +5,11 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
 import mekanism.common.base.target.GasHandlerTarget;
@@ -112,6 +113,7 @@ public final class GasUtils {
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
         final GasHandlerTarget target = new GasHandlerTarget(stack);
+        GasStack unitStack = new GasStack(stack, 1);
         EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
 
             //Invert to get access side
@@ -119,7 +121,7 @@ public final class GasUtils {
 
             //Collect cap
             CapabilityUtils.getCapability(acceptor, Capabilities.GAS_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
-                if (handler.canReceiveGas(accessSide, stack.getType())) {
+                if (canInsert(handler, unitStack)) {
                     target.addHandler(accessSide, handler);
                 }
             });
@@ -132,5 +134,9 @@ public final class GasUtils {
             return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), stack);
         }
         return 0;
+    }
+
+    public static boolean canInsert(IGasHandler handler, @Nonnull GasStack unitStack) {
+        return handler.insertGas(unitStack, Action.SIMULATE).isEmpty();
     }
 }
