@@ -13,7 +13,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.InputInventorySlot;
-import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;

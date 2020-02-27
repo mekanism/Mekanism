@@ -8,6 +8,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.infuse.IInfusionHandler;
 import mekanism.api.infuse.ISidedInfusionHandler;
 import mekanism.api.infuse.InfusionStack;
+import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.util.Direction;
 
 @FieldsAreNonnullByDefault
@@ -19,12 +20,16 @@ public class ProxyInfusionHandler implements IInfusionHandler {
     @Nullable
     private final Direction side;
     private final boolean readOnly;
+    private final boolean readOnlyInsert;
+    private final boolean readOnlyExtract;
 
     //TODO: Should this take a supplier for the infusion handler in case it somehow gets invalidated??
-    public ProxyInfusionHandler(ISidedInfusionHandler infusionHandler, @Nullable Direction side) {
+    public ProxyInfusionHandler(ISidedInfusionHandler infusionHandler, @Nullable Direction side, @Nullable IHolder holder) {
         this.infusionHandler = infusionHandler;
         this.side = side;
         this.readOnly = this.side == null;
+        this.readOnlyInsert = holder != null && !holder.canInsert(side);
+        this.readOnlyExtract = holder != null && !holder.canExtract(side);
     }
 
     @Override
@@ -56,41 +61,26 @@ public class ProxyInfusionHandler implements IInfusionHandler {
 
     @Override
     public InfusionStack insertInfusion(int tank, InfusionStack stack, Action action) {
-        if (readOnly) {
-            return stack;
-        }
-        return infusionHandler.insertInfusion(tank, stack, side, action);
+        return readOnly || readOnlyInsert ? stack : infusionHandler.insertInfusion(tank, stack, side, action);
     }
 
     @Override
     public InfusionStack extractInfusion(int tank, int amount, Action action) {
-        if (readOnly) {
-            return InfusionStack.EMPTY;
-        }
-        return infusionHandler.extractInfusion(tank, amount, side, action);
+        return readOnly || readOnlyExtract ? InfusionStack.EMPTY : infusionHandler.extractInfusion(tank, amount, side, action);
     }
 
     @Override
     public InfusionStack insertInfusion(InfusionStack stack, Action action) {
-        if (readOnly) {
-            return stack;
-        }
-        return infusionHandler.insertInfusion(stack, side, action);
+        return readOnly || readOnlyInsert ? stack : infusionHandler.insertInfusion(stack, side, action);
     }
 
     @Override
     public InfusionStack extractInfusion(int amount, Action action) {
-        if (readOnly) {
-            return InfusionStack.EMPTY;
-        }
-        return infusionHandler.extractInfusion(amount, side, action);
+        return readOnly || readOnlyExtract ? InfusionStack.EMPTY : infusionHandler.extractInfusion(amount, side, action);
     }
 
     @Override
     public InfusionStack extractInfusion(InfusionStack stack, Action action) {
-        if (readOnly) {
-            return InfusionStack.EMPTY;
-        }
-        return infusionHandler.extractInfusion(stack, side, action);
+        return readOnly || readOnlyExtract ? InfusionStack.EMPTY : infusionHandler.extractInfusion(stack, side, action);
     }
 }

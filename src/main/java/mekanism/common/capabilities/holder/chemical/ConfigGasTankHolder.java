@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.holder;
+package mekanism.common.capabilities.holder.chemical;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +18,13 @@ import net.minecraft.util.Direction;
 
 public class ConfigGasTankHolder extends ConfigChemicalTankHolder<Gas, GasStack> {
 
-    ConfigGasTankHolder(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
+    public ConfigGasTankHolder(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
         super(facingSupplier, configSupplier);
+    }
+
+    @Override
+    protected TransmissionType getTransmissionType() {
+        return TransmissionType.GAS;
     }
 
     @Nonnull
@@ -34,9 +39,9 @@ public class ConfigGasTankHolder extends ConfigChemicalTankHolder<Gas, GasStack>
             //If we don't have a config (most likely case is it hasn't been setup yet), just return all slots
             return tanks;
         }
-        ConfigInfo configInfo = config.getConfig(TransmissionType.GAS);
+        ConfigInfo configInfo = config.getConfig(getTransmissionType());
         if (configInfo == null) {
-            //We don't support items in our configuration at all so just return all
+            //We don't support gases in our configuration at all so just return all
             return tanks;
         }
         RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);

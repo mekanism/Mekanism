@@ -3,6 +3,7 @@ package mekanism.api.chemical;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import java.util.List;
 import java.util.function.IntSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -10,6 +11,8 @@ import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfusionStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 
 //TODO: GasHandler - Make sure to test the various methods without the shortcuts
@@ -32,6 +35,36 @@ public class ChemicalUtils {
 
     public static InfusionStack readInfusionStack(PacketBuffer buffer) {
         return buffer.readBoolean() ? InfusionStack.readFromPacket(buffer) : InfusionStack.EMPTY;
+    }
+
+    /**
+     * Helper to read and load a list of chemical tanks from a {@link ListNBT}
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void readChemicalTanks(List<? extends IChemicalTank<CHEMICAL, STACK>> tanks,
+          ListNBT storedTanks) {
+        int size = tanks.size();
+        for (int tagCount = 0; tagCount < storedTanks.size(); tagCount++) {
+            CompoundNBT tagCompound = storedTanks.getCompound(tagCount);
+            byte tankID = tagCompound.getByte("Tank");
+            if (tankID >= 0 && tankID < size) {
+                tanks.get(tankID).deserializeNBT(tagCompound);
+            }
+        }
+    }
+
+    /**
+     * Helper to read and load a list of chemical tanks to a {@link ListNBT}
+     */
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ListNBT writeChemicalTanks(List<? extends IChemicalTank<CHEMICAL, STACK>> tanks) {
+        ListNBT tagList = new ListNBT();
+        for (int tank = 0; tank < tanks.size(); tank++) {
+            CompoundNBT tagCompound = tanks.get(tank).serializeNBT();
+            if (!tagCompound.isEmpty()) {
+                tagCompound.putByte("Tank", (byte) tank);
+                tagList.add(tagCompound);
+            }
+        }
+        return tagList;
     }
 
     /**

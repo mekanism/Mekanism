@@ -17,7 +17,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.inventory.slot.holder.InventorySlotHelper;
+import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.upgrade.IUpgradeData;

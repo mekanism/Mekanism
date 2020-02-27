@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.holder;
+package mekanism.common.capabilities.holder.chemical;
 
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -10,7 +10,6 @@ import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.util.Direction;
 

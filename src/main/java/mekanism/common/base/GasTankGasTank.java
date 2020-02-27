@@ -1,4 +1,4 @@
-package mekanism.common.capabilities.holder;
+package mekanism.common.base;
 
 import java.util.Objects;
 import javax.annotation.Nullable;

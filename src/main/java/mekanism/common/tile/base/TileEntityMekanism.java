@@ -23,8 +23,7 @@ import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
@@ -40,7 +39,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedInventory;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
@@ -68,7 +67,7 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
-import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
+import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.network.PacketDataRequest;
@@ -76,13 +75,13 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
+import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileActive;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileElectric;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.ITileUpgradable;
-import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
@@ -619,26 +618,13 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             }
         }
         if (canHandleGas() && handlesGas()) {
-            readChemicalTanks(getGasTanks(null), nbtTags.getList("GasTanks", NBT.TAG_COMPOUND));
+            ChemicalUtils.readChemicalTanks(getGasTanks(null), nbtTags.getList("GasTanks", NBT.TAG_COMPOUND));
         }
         if (canHandleInfusion() && handlesInfusion()) {
-            readChemicalTanks(getInfusionTanks(null), nbtTags.getList("InfusionTanks", NBT.TAG_COMPOUND));
+            ChemicalUtils.readChemicalTanks(getInfusionTanks(null), nbtTags.getList("InfusionTanks", NBT.TAG_COMPOUND));
         }
         if (isElectric()) {
             electricityStored = nbtTags.getDouble("electricityStored");
-        }
-    }
-
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void readChemicalTanks(List<? extends IChemicalTank<CHEMICAL, STACK>> tanks,
-          ListNBT storedTanks) {
-        int size = tanks.size();
-        for (int tagCount = 0; tagCount < storedTanks.size(); tagCount++) {
-            CompoundNBT tagCompound = storedTanks.getCompound(tagCount);
-            byte slotID = tagCompound.getByte("Tank");
-            if (slotID >= 0 && slotID < size) {
-                //TODO: Re-evaluate the slot id stuff
-                tanks.get(slotID).deserializeNBT(tagCompound);
-            }
         }
     }
 
@@ -667,10 +653,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             nbtTags.put("Items", tagList);
         }
         if (canHandleGas() && handlesGas()) {
-            nbtTags.put("GasTanks", writeChemicalTanks(getGasTanks(null)));
+            nbtTags.put("GasTanks", ChemicalUtils.writeChemicalTanks(getGasTanks(null)));
         }
         if (canHandleInfusion() && handlesInfusion()) {
-            nbtTags.put("InfusionTanks", writeChemicalTanks(getInfusionTanks(null)));
+            nbtTags.put("InfusionTanks", ChemicalUtils.writeChemicalTanks(getInfusionTanks(null)));
         }
         if (isElectric()) {
             nbtTags.putDouble("electricityStored", getEnergy());
@@ -678,17 +664,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return nbtTags;
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ListNBT writeChemicalTanks(List<? extends IChemicalTank<CHEMICAL, STACK>> tanks) {
-        ListNBT tagList = new ListNBT();
-        for (int tank = 0; tank < tanks.size(); tank++) {
-            CompoundNBT tagCompound = tanks.get(tank).serializeNBT();
-            if (!tagCompound.isEmpty()) {
-                tagCompound.putByte("Tank", (byte) tank);
-                tagList.add(tagCompound);
-            }
-        }
-        return tagList;
-    }
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
@@ -1029,13 +1004,13 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (side == null) {
             if (readOnlyItemHandler == null) {
-                readOnlyItemHandler = new ProxyItemHandler(this, null);
+                readOnlyItemHandler = new ProxyItemHandler(this, null, slotHolder);
             }
             return readOnlyItemHandler;
         }
         ProxyItemHandler itemHandler = itemHandlers.get(side);
         if (itemHandler == null) {
-            itemHandlers.put(side, itemHandler = new ProxyItemHandler(this, side));
+            itemHandlers.put(side, itemHandler = new ProxyItemHandler(this, side, slotHolder));
         }
         return itemHandler;
     }
@@ -1070,13 +1045,13 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (side == null) {
             if (readOnlyGasHandler == null) {
-                readOnlyGasHandler = new ProxyGasHandler(this, null);
+                readOnlyGasHandler = new ProxyGasHandler(this, null, gasTankHolder);
             }
             return readOnlyGasHandler;
         }
         ProxyGasHandler gasHandler = gasHandlers.get(side);
         if (gasHandler == null) {
-            gasHandlers.put(side, gasHandler = new ProxyGasHandler(this, side));
+            gasHandlers.put(side, gasHandler = new ProxyGasHandler(this, side, gasTankHolder));
         }
         return gasHandler;
     }
@@ -1111,13 +1086,13 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (side == null) {
             if (readOnlyInfusionHandler == null) {
-                readOnlyInfusionHandler = new ProxyInfusionHandler(this, null);
+                readOnlyInfusionHandler = new ProxyInfusionHandler(this, null, infusionTankHolder);
             }
             return readOnlyInfusionHandler;
         }
         ProxyInfusionHandler infusionHandler = infusionHandlers.get(side);
         if (infusionHandler == null) {
-            infusionHandlers.put(side, infusionHandler = new ProxyInfusionHandler(this, side));
+            infusionHandlers.put(side, infusionHandler = new ProxyInfusionHandler(this, side, infusionTankHolder));
         }
         return infusionHandler;
     }

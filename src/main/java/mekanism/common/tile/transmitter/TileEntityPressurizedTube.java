@@ -57,8 +57,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         super(((IHasTileEntity<TileEntityPressurizedTube>) blockProvider.getBlock()).getTileType());
         this.tier = ((BlockPressurizedTube) blockProvider.getBlock()).getTier();
         gasHandlers = new EnumMap<>(Direction.class);
-        //TODO: GasHandler, only allow filling if the side is not set to push
-        // getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL
         buffer = BasicGasTank.create(getCapacity(), BasicGasTank.alwaysFalse, BasicGasTank.alwaysTrue, this);
         tanks = Collections.singletonList(buffer);
     }
@@ -69,13 +67,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     private IGasHandler getGasHandler(@Nullable Direction side) {
         if (side == null) {
             if (readOnlyHandler == null) {
-                readOnlyHandler = new ProxyGasHandler(this, null);
+                readOnlyHandler = new ProxyGasHandler(this, null, null);
             }
             return readOnlyHandler;
         }
         ProxyGasHandler gasHandler = gasHandlers.get(side);
         if (gasHandler == null) {
-            gasHandlers.put(side, gasHandler = new ProxyGasHandler(this, side));
+            gasHandlers.put(side, gasHandler = new ProxyGasHandler(this, side, null));
         }
         return gasHandler;
     }
@@ -124,6 +122,23 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
             return Math.min(tier.getTubePullAmount(), getTransmitter().getTransmitterNetwork().gasTank.getNeeded());
         }
         return Math.min(tier.getTubePullAmount(), buffer.getNeeded());
+    }
+
+    @Nonnull
+    @Override
+    public GasStack insertGas(int tank, @Nonnull GasStack stack, @Nullable Direction side, @Nonnull Action action) {
+        IChemicalTank<Gas, GasStack> gasTank = getGasTank(tank, side);
+        if (gasTank == null) {
+            return stack;
+        } else if (side == null) {
+            return gasTank.insert(stack, action, AutomationType.INTERNAL);
+        }
+        //If we have a side only allow inserting if our connection allows it
+        ConnectionType connectionType = getConnectionType(side);
+        if (connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL) {
+            return gasTank.insert(stack, action, AutomationType.EXTERNAL);
+        }
+        return stack;
     }
 
     @Override

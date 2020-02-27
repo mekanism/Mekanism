@@ -1,4 +1,4 @@
-package mekanism.common.inventory.slot.holder;
+package mekanism.common.capabilities.holder.slot;
 
 import java.util.ArrayList;
 import java.util.Collections;
