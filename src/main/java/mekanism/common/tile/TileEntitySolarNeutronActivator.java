@@ -11,7 +11,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.GasToGasRecipe;
@@ -57,8 +57,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     public static final int MAX_GAS = 10_000;
 
-    public GasTank inputTank;
-    public GasTank outputTank;
+    public BasicGasTank inputTank;
+    public BasicGasTank outputTank;
 
     public int gasOutput = 256;
 
@@ -81,8 +81,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     protected void presetVariables() {
-        inputTank = new GasTank(MAX_GAS);
-        outputTank = new GasTank(MAX_GAS);
+        inputTank = new BasicGasTank(MAX_GAS);
+        outputTank = new BasicGasTank(MAX_GAS);
     }
 
     @Nonnull
@@ -217,7 +217,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
-            return inputTank.fill(stack, action);
+            return inputTank.insert(stack, action);
         }
         return 0;
     }
@@ -226,7 +226,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public GasStack drawGas(Direction side, int amount, Action action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return outputTank.drain(amount, action);
+            return outputTank.extract(amount, action);
         }
         return GasStack.EMPTY;
     }

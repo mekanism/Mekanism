@@ -1,16 +1,22 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.block.IHasTileEntity;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
+import mekanism.api.gas.IMekanismGasHandler;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -19,6 +25,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockPressurizedTube;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.proxy.ProxyGasHandler;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.TubeTier;
 import mekanism.common.transmitters.grid.GasNetwork;
@@ -33,52 +40,45 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IGasHandler {
+public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
 
     public final TubeTier tier;
 
     public float currentScale;
 
-    public GasTank buffer;
-
     @Nonnull
     private GasStack lastWrite = GasStack.EMPTY;
-
-    //Read only handler for support with TOP and getting network data instead of this tube's data
-    private IGasHandler nullHandler = new IGasHandler() {
-        @Override
-        public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-            return 0;
-        }
-
-        @Nonnull
-        @Override
-        public GasStack drawGas(Direction side, int amount, Action action) {
-            return GasStack.EMPTY;
-        }
-
-        @Override
-        public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-            return false;
-        }
-
-        @Override
-        public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-            return false;
-        }
-
-        @Nonnull
-        @Override
-        public GasTankInfo[] getTankInfo() {
-            return TileEntityPressurizedTube.this.getTankInfo();
-        }
-    };
+    private ProxyGasHandler readOnlyHandler;
+    private Map<Direction, ProxyGasHandler> gasHandlers;
+    private List<IChemicalTank<Gas, GasStack>> tanks;
+    public BasicGasTank buffer;
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
         super(((IHasTileEntity<TileEntityPressurizedTube>) blockProvider.getBlock()).getTileType());
         this.tier = ((BlockPressurizedTube) blockProvider.getBlock()).getTier();
-        buffer = new GasTank(getCapacity());
+        gasHandlers = new EnumMap<>(Direction.class);
+        buffer = BasicGasTank.create(getCapacity(), gas -> false, gas -> true, this);
+        tanks = Collections.singletonList(buffer);
+    }
+
+    /**
+     * Lazily get and cache an IGasHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
+     */
+    private IGasHandler getGasHandler(@Nullable Direction side) {
+        if (side == null) {
+            if (readOnlyHandler == null) {
+                readOnlyHandler = new ProxyGasHandler(this, null);
+            }
+            return readOnlyHandler;
+        }
+        ProxyGasHandler gasHandler = gasHandlers.get(side);
+        if (gasHandler == null) {
+            gasHandlers.put(side, gasHandler = new ProxyGasHandler(this, side));
+        }
+        return gasHandler;
     }
 
     @Override
@@ -91,9 +91,10 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
                 for (Direction side : connections) {
                     IGasHandler container = connectedAcceptors[side.ordinal()];
                     if (container != null) {
-                        GasStack received = container.drawGas(side.getOpposite(), getAvailablePull(), Action.SIMULATE);
+                        //TODO: GasHandler - make this more like the mechanical pipe one in that it tries to use the type of gas we have stored
+                        GasStack received = container.drain(getAvailablePull(), Action.SIMULATE);
                         if (!received.isEmpty() && takeGas(received, Action.SIMULATE) == received.getAmount()) {
-                            container.drawGas(side.getOpposite(), takeGas(received, Action.EXECUTE), Action.EXECUTE);
+                            container.drain(takeGas(received, Action.EXECUTE), Action.EXECUTE);
                         }
                     }
                 }
@@ -221,9 +222,23 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         return true;
     }
 
+    @Nonnull
+    @Override
+    public GasStack getStack() {
+        return getBufferWithFallback();
+    }
+
     @Override
     public int getCapacity() {
         return tier.getTubeCapacity();
+    }
+
+    @Override
+    public int fill(@Nonnull GasStack stack, @Nonnull Action action) {
+        if (getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL) {
+            return takeGas(stack, action);
+        }
+        return 0;
     }
 
     @Nonnull
@@ -259,35 +274,12 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
         }
     }
 
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL) {
-            return takeGas(stack, action);
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return getConnectionType(side) == ConnectionType.NORMAL || getConnectionType(side) == ConnectionType.PULL;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
     public int takeGas(GasStack gasStack, Action action) {
+        //TODO: GasHandler - inline this into fill?
         if (getTransmitter().hasTransmitterNetwork()) {
             return getTransmitter().getTransmitterNetwork().emit(gasStack, action);
         }
-        return buffer.fill(gasStack, action);
+        return buffer.insert(gasStack, action);
     }
 
     @Nonnull
@@ -295,11 +287,23 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public GasTankInfo[] getTankInfo() {
         if (getTransmitter().hasTransmitterNetwork()) {
             GasNetwork network = getTransmitter().getTransmitterNetwork();
-            GasTank networkTank = new GasTank(network.getCapacity());
+            BasicGasTank networkTank = new BasicGasTank(network.getCapacity());
             networkTank.setStack(network.getBuffer());
             return new GasTankInfo[]{networkTank};
         }
         return new GasTankInfo[]{buffer};
+    }
+
+    @Nonnull
+    @Override
+    public List<IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+        //TODO: Give access to network
+        return tanks;
+    }
+
+    @Override
+    public void onContentsChanged() {
+        markDirty();
     }
 
     @Override
@@ -350,7 +354,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> side == null ? nullHandler : this));
+            List<IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(side);
+            //Don't return an item handler if we don't actually even have any slots for that side
+            //TODO: Should we actually return the item handler regardless??? And then just everything fails?
+            LazyOptional<IGasHandler> lazyGasHandler = gasTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getGasHandler(side));
+            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, lazyGasHandler);
         }
         return super.getCapability(capability, side);
     }

@@ -2,27 +2,27 @@ package mekanism.common.tile.component.config.slot;
 
 import java.util.Arrays;
 import java.util.List;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 
 public class GasSlotInfo extends BaseSlotInfo {
 
-    private final List<GasTank> tanks;
+    private final List<BasicGasTank> tanks;
 
-    public GasSlotInfo(boolean canInput, boolean canOutput, GasTank... tanks) {
+    public GasSlotInfo(boolean canInput, boolean canOutput, BasicGasTank... tanks) {
         this(canInput, canOutput, Arrays.asList(tanks));
     }
 
-    public GasSlotInfo(boolean canInput, boolean canOutput, List<GasTank> tanks) {
+    public GasSlotInfo(boolean canInput, boolean canOutput, List<BasicGasTank> tanks) {
         super(canInput, canOutput);
         this.tanks = tanks;
     }
 
-    public boolean hasTank(GasTank tank) {
+    public boolean hasTank(BasicGasTank tank) {
         //TODO: Does this even work
         return getTanks().contains(tank);
     }
 
-    public List<GasTank> getTanks() {
+    public List<BasicGasTank> getTanks() {
         return tanks;
     }
 }

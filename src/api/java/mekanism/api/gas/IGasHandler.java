@@ -1,67 +1,107 @@
 package mekanism.api.gas;
 
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import net.minecraft.util.Direction;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-/**
- * Implement this if your tile entity accepts gas from an external source.
- *
- * @author AidanBrady
- */
-//TODO: Figure out if Side in the various methods *can* be null, if not mark it as nonnull, or better yet mark everything here as nonnull by default
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IGasHandler {
 
-    GasTankInfo[] NONE = new GasTankInfo[0];
+    /**
+     * Returns the number of gas storage units ("tanks") available
+     *
+     * @return The number of tanks available
+     */
+    int getGasTankCount();
 
     /**
-     * Transfer a certain amount of gas to this block.
+     * Returns the {@link GasStack} in a given tank.
      *
-     * @param stack - gas to add
+     * <p>
+     * <strong>IMPORTANT:</strong> This {@link GasStack} <em>MUST NOT</em> be modified. This method is not for
+     * altering internal contents. Any implementers who are able to detect modification via this method should throw an exception. It is ENTIRELY reasonable and likely
+     * that the stack returned here will be a copy.
+     * </p>
      *
-     * @return gas added
+     * <p>
+     * <strong><em>SERIOUSLY: DO NOT MODIFY THE RETURNED GAS STACK</em></strong>
+     * </p>
+     *
+     * @param tank Tank to query.
+     *
+     * @return {@link GasStack} in a given tank. {@link GasStack#EMPTY} if the tank is empty.
      */
-    int receiveGas(Direction side, @Nonnull GasStack stack, Action action);
+    GasStack getGasInTank(int tank);
 
     /**
-     * Draws a certain amount of gas from this block.
+     * Overrides the stack in the given tank. This method may throw an error if it is called unexpectedly.
      *
-     * @param amount - amount to draw
+     * @param tank  Tank to modify
+     * @param stack {@link GasStack} to set tank to (may be empty).
      *
-     * @return gas drawn
-     */
-    //TODO: Should we have a method for drawing based on stack?
-    @Nonnull
-    GasStack drawGas(Direction side, int amount, Action action);
+     * @throws RuntimeException if the handler is called in a way that the handler was not expecting.
+     **/
+    void setGasInTank(int tank, GasStack stack);
 
     /**
-     * Whether or not this block can accept gas from a certain side.
+     * Retrieves the maximum amount of gas that can be stored in a given tank.
      *
-     * @param side - side to check
-     * @param type - type of gas to check
+     * @param tank Tank to query.
      *
-     * @return if block accepts gas
+     * @return The maximum gas amount held by the tank.
      */
-    boolean canReceiveGas(Direction side, @Nonnull Gas type);
+    int getGasTankCapacity(int tank);
 
     /**
-     * Whether or not this block can be drawn of gas from a certain side.
+     * <p>
+     * This function should be used instead of simulated insertions in cases where the contents and state of the tank are irrelevant, mainly for the purpose of automation
+     * and logic.
+     * </p>
+     * <ul>
+     * <li>isGasValid is false when insertion of the gas is never valid.</li>
+     * <li>When isGasValid is true, no assumptions can be made and insertion must be simulated case-by-case.</li>
+     * <li>The actual gas in the tank, its fullness, or any other state are <strong>not</strong> considered by isGasValid.</li>
+     * </ul>
      *
-     * @param side - side to check
-     * @param type - type of gas to check
+     * @param tank  Tank to query.
+     * @param stack Stack to test with for validity
      *
-     * @return if block can be drawn of gas
+     * @return true if the tank can accept the {@link GasStack}, not considering the current state of the tank. false if the tank can never support the given {@link
+     * GasStack} in any situation.
      */
-    //TODO: How to handle checking "ANY" Type, pass empty gas type. Needs to support it properly again
-    boolean canDrawGas(Direction side, @Nonnull Gas type);
+    boolean isGasValid(int tank, GasStack stack);
 
     /**
-     * Gets the tanks present on this handler. READ ONLY. DO NOT MODIFY.
+     * <p>
+     * Inserts a {@link GasStack} into a given tank and return the remainder. The {@link GasStack} <em>should not</em> be modified in this function!
+     * </p>
+     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
      *
-     * @return an array of GasTankInfo elements corresponding to all tanks.
+     * @param tank   Tank to insert to.
+     * @param stack  {@link GasStack} to insert. This must not be modified by the tank.
+     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     *
+     * @return The remaining {@link GasStack} that was not inserted (if the entire stack is accepted, then return an empty {@link GasStack}). May be the same as the input
+     * {@link GasStack} if unchanged, otherwise a new {@link GasStack}. The returned {@link GasStack} can be safely modified after
      */
-    @Nonnull
-    default GasTankInfo[] getTankInfo() {
-        return NONE;
-    }
+    GasStack insertGas(int tank, GasStack stack, Action action);
+
+    /**
+     * Extracts a {@link GasStack} from a specific tank in this handler.
+     * <p>
+     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
+     * </p>
+     *
+     * @param tank   Tank to extract from.
+     * @param amount Amount to extract (may be greater than the current stack's max limit)
+     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     *
+     * @return {@link GasStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link GasStack} can be safely modified after, so the
+     * tank should return a new or copied stack.
+     */
+    GasStack extractGas(int tank, int amount, Action action);
 }

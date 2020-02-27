@@ -1,7 +1,7 @@
 package mekanism.common.content.matrix;
 
 import java.util.List;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.multiblock.InventoryMultiblockCache;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;

@@ -11,7 +11,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.PressurizedReactionRecipe;
@@ -68,8 +68,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded",
                                                          "getFluidStored", "getGasStored"};
     public FluidTank inputFluidTank = new FluidTank(10000);
-    public GasTank inputGasTank = new GasTank(10000);
-    public GasTank outputGasTank = new GasTank(10000);
+    public BasicGasTank inputGasTank = new BasicGasTank(10000);
+    public BasicGasTank outputGasTank = new BasicGasTank(10000);
 
     private final IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
@@ -282,7 +282,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
-            return inputGasTank.fill(stack, action);
+            return inputGasTank.insert(stack, action);
         }
         return 0;
     }
@@ -291,7 +291,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Override
     public GasStack drawGas(Direction side, int amount, Action action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return outputGasTank.drain(amount, action);
+            return outputGasTank.extract(amount, action);
         }
         return GasStack.EMPTY;
     }

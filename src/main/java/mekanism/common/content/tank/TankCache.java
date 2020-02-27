@@ -2,7 +2,7 @@ package mekanism.common.content.tank;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.multiblock.InventoryMultiblockCache;
 import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.nbt.CompoundNBT;

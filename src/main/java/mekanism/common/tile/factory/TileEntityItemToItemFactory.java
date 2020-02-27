@@ -1,7 +1,7 @@
 package mekanism.common.tile.factory;
 
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;

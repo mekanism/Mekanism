@@ -11,7 +11,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -76,11 +76,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     /**
      * The amount of oxygen this block is storing.
      */
-    public GasTank leftTank;
+    public BasicGasTank leftTank;
     /**
      * The amount of hydrogen this block is storing.
      */
-    public GasTank rightTank;
+    public BasicGasTank rightTank;
     /**
      * How fast this block can output gas.
      */
@@ -114,8 +114,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected void presetVariables() {
         fluidTank = new FluidTank(24_000);
-        leftTank = new GasTank(MAX_GAS);
-        rightTank = new GasTank(MAX_GAS);
+        leftTank = new BasicGasTank(MAX_GAS);
+        rightTank = new BasicGasTank(MAX_GAS);
     }
 
     @Nonnull
@@ -156,16 +156,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         }
     }
 
-    private void handleTank(GasTank tank, GasMode mode, Direction side, int dumpAmount) {
+    private void handleTank(BasicGasTank tank, GasMode mode, Direction side, int dumpAmount) {
         if (!tank.isEmpty()) {
             if (mode != GasMode.DUMPING) {
                 GasStack toSend = new GasStack(tank.getStack(), Math.min(tank.getStored(), output));
-                tank.drain(GasUtils.emit(toSend, this, EnumSet.of(side)), Action.EXECUTE);
+                tank.extract(GasUtils.emit(toSend, this, EnumSet.of(side)), Action.EXECUTE);
             } else {
-                tank.drain(dumpAmount, Action.EXECUTE);
+                tank.extract(dumpAmount, Action.EXECUTE);
             }
             if (mode == GasMode.DUMPING_EXCESS && tank.getNeeded() < output) {
-                tank.drain(output - tank.getNeeded(), Action.EXECUTE);
+                tank.extract(output - tank.getNeeded(), Action.EXECUTE);
             }
         }
     }
@@ -356,9 +356,9 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     public GasStack drawGas(Direction side, int amount, Action action) {
         if (side == getLeftSide()) {
-            return leftTank.drain(amount, action);
+            return leftTank.extract(amount, action);
         } else if (side == getRightSide()) {
-            return rightTank.drain(amount, action);
+            return rightTank.extract(amount, action);
         }
         return GasStack.EMPTY;
     }

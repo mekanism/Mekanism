@@ -3,7 +3,7 @@ package mekanism.common.inventory.slot.holder;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.tile.component.TileComponentConfig;
 import net.minecraft.util.Direction;
 

@@ -10,7 +10,7 @@ import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
 import mcjty.theoneprobe.api.TextStyleClass;
 import mekanism.api.gas.Gas;
-import mekanism.api.gas.GasTankInfo;
+import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IGasHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -44,13 +44,15 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         }
         TileEntity tile = MekanismUtils.getTileEntity(world, data.getPos());
         if (tile != null) {
+            //TODO: Show infusion type info via this also?
             Optional<IGasHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, null));
             if (capability.isPresent()) {
-                GasTankInfo[] tanks = capability.get().getTankInfo();
-                for (GasTankInfo tank : tanks) {
+                IGasHandler gasHandler = capability.get();
+                for (int i = 0; i < gasHandler.getGasTankCount(); i++) {
+                    GasStack gasInTank = gasHandler.getGasInTank(i);
                     IProgressStyle style = probeInfo.defaultProgressStyle().suffix("mB");
-                    if (!tank.getStack().isEmpty()) {
-                        Gas gas = tank.getStack().getType();
+                    if (!gasInTank.isEmpty()) {
+                        Gas gas = gasInTank.getType();
                         probeInfo.text(TextStyleClass.NAME + MekanismLang.GAS.translate(gas).getFormattedText());
                         int tint = gas.getTint();
                         //TOP respects transparency so we need to filter out the transparent layer
@@ -64,7 +66,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
                             style = style.filledColor(tint).alternateFilledColor(tint);
                         }
                     }
-                    probeInfo.progress(tank.getStored(), tank.getCapacity(), style);
+                    probeInfo.progress(gasInTank.getAmount(), gasHandler.getGasTankCapacity(i), style);
                 }
             }
         }

@@ -3,7 +3,7 @@ package mekanism.common.inventory.container.sync;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTank;
+import mekanism.api.chemical.IChemicalTank;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling chemical stacks
@@ -12,9 +12,9 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
 
     @Nonnull
     private ChemicalStack<CHEMICAL> lastKnownValue;
-    private final ChemicalTank<CHEMICAL, STACK> handler;
+    private final IChemicalTank<CHEMICAL, STACK> handler;
 
-    protected SyncableChemicalStack(ChemicalTank<CHEMICAL, STACK> handler) {
+    protected SyncableChemicalStack(IChemicalTank<CHEMICAL, STACK> handler) {
         this.handler = handler;
         lastKnownValue = getEmptyStack();
         //TODO: Set to empty

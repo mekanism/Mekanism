@@ -1,10 +1,10 @@
 package mekanism.common.inventory.container.sync;
 
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.ChemicalTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.infuse.InfusionTank;
+import mekanism.api.infuse.BasicInfusionTank;
 import mekanism.common.network.container.property.InfusionStackPropertyData;
 import mekanism.common.network.container.property.IntPropertyData;
 import mekanism.common.network.container.property.PropertyData;
@@ -14,11 +14,11 @@ import mekanism.common.network.container.property.PropertyData;
  */
 public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, InfusionStack> {
 
-    public static SyncableInfusionStack create(InfusionTank handler) {
+    public static SyncableInfusionStack create(BasicInfusionTank handler) {
         return new SyncableInfusionStack(handler);
     }
 
-    private SyncableInfusionStack(ChemicalTank<InfuseType, InfusionStack> handler) {
+    private SyncableInfusionStack(IChemicalTank<InfuseType, InfusionStack> handler) {
         super(handler);
     }
 

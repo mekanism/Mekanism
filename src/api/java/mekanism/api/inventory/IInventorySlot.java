@@ -1,10 +1,9 @@
-package mekanism.api.inventory.slot;
+package mekanism.api.inventory;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.inventory.AutomationType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -14,6 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: Should we add a way to read contents to/from network so that things like the bin does not have issues due to it being too large
 @ParametersAreNonnullByDefault
@@ -65,9 +65,43 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * input {@link ItemStack} if unchanged, otherwise a new {@link ItemStack}. The returned ItemStack can be safely modified after
      *
      * @implNote The {@link ItemStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call {@link
-     * #onContentsChanged()}
+     * #onContentsChanged()}. It is also recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every run
      */
-    ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType);
+    default ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
+        if (stack.isEmpty() || !isItemValid(stack)) {
+            //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
+            return stack;
+        }
+        int needed = getLimit(stack) - getCount();
+        if (needed <= 0) {
+            //Fail if we are a full slot
+            return stack;
+        }
+        boolean sameType = false;
+        if (isEmpty() || (sameType = ItemHandlerHelper.canItemStacksStack(getStack(), stack))) {
+            int toAdd = Math.min(stack.getCount(), needed);
+            if (action.execute()) {
+                //If we want to actually insert the item, then update the current item
+                if (sameType) {
+                    // Note: this also will mark that the contents changed
+                    //We can just grow our stack by the amount we want to increase it
+                    growStack(toAdd, action);
+                } else {
+                    //If we are not the same type then we have to copy the stack and set it
+                    // Just set it unchecked as we have already validated it
+                    // Note: this also will mark that the contents changed
+                    ItemStack toSet = stack.copy();
+                    toSet.setCount(toAdd);
+                    setStack(toSet);
+                }
+            }
+            ItemStack remainder = stack.copy();
+            remainder.setCount(stack.getCount() - toAdd);
+            return remainder;
+        }
+        //If we didn't accept this item, then just return the given stack
+        return stack;
+    }
 
     /**
      * Extracts an {@link ItemStack} from this {@link IInventorySlot}.
@@ -84,9 +118,33 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT> {
      * slot should return a new or copied stack.
      *
      * @implNote The returned {@link ItemStack} can be safely modified after, so a new or copied stack should be returned. If the internal stack does get updated make
-     * sure to call {@link #onContentsChanged()}
+     * sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be
+     * made every run
      */
-    ItemStack extractItem(int amount, Action action, AutomationType automationType);
+    default ItemStack extractItem(int amount, Action action, AutomationType automationType) {
+        if (isEmpty() || amount < 1) {
+            //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
+            return ItemStack.EMPTY;
+        }
+        ItemStack current = getStack();
+        //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
+        // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
+        int currentAmount = Math.min(getCount(), current.getMaxStackSize());
+        if (currentAmount < amount) {
+            //If we are trying to extract more than we have, just change it so that we are extracting it all
+            amount = currentAmount;
+        }
+        //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
+        // especially for supporting the fact of limiting by the max stack size.
+        ItemStack toReturn = current.copy();
+        toReturn.setCount(amount);
+        if (action.execute()) {
+            //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
+            // Note: this also will mark that the contents changed
+            shrinkStack(amount, action);
+        }
+        return toReturn;
+    }
 
     /**
      * Retrieves the maximum stack size allowed to exist in this {@link IInventorySlot}. Unlike {@link IItemHandler#getSlotLimit(int)} this takes a stack that it can use

@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.util.Direction;
 
 public class InventorySlotHolder implements IInventorySlotHolder {

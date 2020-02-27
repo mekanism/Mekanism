@@ -10,7 +10,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.GasToItemStackRecipe;
@@ -55,7 +55,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     public static final int MAX_GAS = 10_000;
 
-    public GasTank inputTank;
+    public BasicGasTank inputTank;
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
@@ -98,7 +98,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
 
     @Override
     protected void presetVariables() {
-        inputTank = new GasTank(MAX_GAS);
+        inputTank = new BasicGasTank(MAX_GAS);
     }
 
     @Nonnull
@@ -180,7 +180,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
-            return inputTank.fill(stack, action);
+            return inputTank.insert(stack, action);
         }
         return 0;
     }

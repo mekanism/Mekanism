@@ -10,7 +10,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
@@ -52,8 +52,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     public static final int MAX_GAS = 10_000;
     public static final int BASE_INJECT_USAGE = 1;
     public static final int BASE_TICKS_REQUIRED = 100;
-    public GasTank injectTank;
-    public GasTank outputTank;
+    public BasicGasTank injectTank;
+    public BasicGasTank outputTank;
     public double injectUsage = BASE_INJECT_USAGE;
     public int injectUsageThisTick;
     public int gasOutput = 256;
@@ -76,8 +76,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
 
     @Override
     protected void presetVariables() {
-        injectTank = new GasTank(MAX_GAS);
-        outputTank = new GasTank(MAX_GAS);
+        injectTank = new BasicGasTank(MAX_GAS);
+        outputTank = new BasicGasTank(MAX_GAS);
     }
 
     @Nonnull
@@ -168,7 +168,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
-            return injectTank.fill(stack, action);
+            return injectTank.insert(stack, action);
         }
         return 0;
     }

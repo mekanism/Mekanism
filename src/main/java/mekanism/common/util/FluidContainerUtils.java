@@ -3,7 +3,7 @@ package mekanism.common.util;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.IIncrementalEnum;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;

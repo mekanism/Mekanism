@@ -1,15 +1,16 @@
 package mekanism.common.capabilities.basic;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
-import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class DefaultGasHandler implements IGasHandler {
 
     public static void register() {
@@ -17,29 +18,29 @@ public class DefaultGasHandler implements IGasHandler {
     }
 
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
+    public GasStack getStack() {
+        return GasStack.EMPTY;
+    }
+
+    @Override
+    public int getCapacity() {
+        return 0;
+    }
+
+    @Override
+    public int fill(GasStack stack, Action action) {
         return 0;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
+    public GasStack drain(GasStack stack, Action action) {
         return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return false;
     }
 
     @Nonnull
     @Override
-    public GasTankInfo[] getTankInfo() {
-        return IGasHandler.NONE;
+    public GasStack drain(int amount, Action action) {
+        return GasStack.EMPTY;
     }
 }

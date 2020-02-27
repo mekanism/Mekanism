@@ -10,8 +10,8 @@ import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.gas.BasicGasTank;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ILogisticalTransporter;
@@ -101,11 +101,11 @@ public class TileComponentEjector implements ITileComponent {
         }
     }
 
-    private void ejectGas(Set<Direction> outputSides, GasTank tank) {
+    private void ejectGas(Set<Direction> outputSides, BasicGasTank tank) {
         if (!tank.isEmpty()) {
             GasStack toEmit = new GasStack(tank.getStack(), Math.min(GAS_OUTPUT, tank.getStored()));
             int emit = GasUtils.emit(toEmit, tile, outputSides);
-            tank.drain(emit, Action.EXECUTE);
+            tank.extract(emit, Action.EXECUTE);
         }
     }
 

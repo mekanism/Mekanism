@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.Set;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ISideConfiguration;

@@ -7,9 +7,13 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
-import mekanism.api.gas.GasTank;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.gas.BasicGasTank;
+import mekanism.api.gas.Gas;
+import mekanism.api.gas.GasStack;
+import mekanism.api.gas.IMekanismGasHandler;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.PacketHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -21,17 +25,17 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class InventoryFrequency extends Frequency implements IMekanismInventory {
+public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismGasHandler {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
     private static final Supplier<FluidTank> FLUID_TANK_SUPPLIER = () -> new FluidTank(MekanismConfig.general.quantumEntangloporterFluidBuffer.get());
-    private static final Supplier<GasTank> GAS_TANK_SUPPLIER = () -> new GasTank(MekanismConfig.general.quantumEntangloporterGasBuffer.get());
+    private final Supplier<BasicGasTank> GAS_TANK_SUPPLIER = () -> BasicGasTank.create(MekanismConfig.general.quantumEntangloporterGasBuffer.get(), this);
 
     public double storedEnergy;
     public FluidTank storedFluid;
-    public GasTank storedGas;
+    public BasicGasTank storedGas;
     public double temperature;
-    public IInventorySlot storedItem;
+    private IInventorySlot storedItem;
 
     public List<IInventorySlot> inventorySlots;
 
@@ -78,7 +82,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory 
             storedFluid.readFromNBT(nbtTags.getCompound("storedFluid"));
         }
         if (nbtTags.contains("storedGas")) {
-            storedGas.read(nbtTags.getCompound("storedGas"));
+            storedGas.deserializeNBT(nbtTags.getCompound("storedGas"));
             storedGas.setCapacity(MekanismConfig.general.quantumEntangloporterGasBuffer.get());
         }
 
@@ -102,7 +106,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory 
         storedItem = EntangloporterInventorySlot.create(this);
         inventorySlots = Collections.singletonList(storedItem);
         storedFluid = new FluidTank(FluidTankTier.ULTIMATE.getOutput());
-        storedGas = new GasTank(GasTankTier.ULTIMATE.getOutput());
+        storedGas = new BasicGasTank(GasTankTier.ULTIMATE.getOutput());
         storedEnergy = dataStream.readDouble();
         storedFluid.setFluid(dataStream.readFluidStack());
         storedGas.setStack(PacketHandler.readGasStack(dataStream));

@@ -11,7 +11,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
@@ -62,7 +62,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     /**
      * The type of gas stored in this tank.
      */
-    public GasTank gasTank;
+    public BasicGasTank gasTank;
 
     public GasTankTier tier;
 
@@ -110,7 +110,7 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
     @Override
     protected void presetVariables() {
         tier = ((BlockGasTank) getBlockType()).getTier();
-        gasTank = new GasTank(tier.getStorage());
+        gasTank = new BasicGasTank(tier.getStorage());
     }
 
     @Nonnull
@@ -140,17 +140,17 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
                     Set<Direction> sidesForData = config.getSidesForData(DataType.OUTPUT);
                     if (!sidesForData.isEmpty()) {
                         GasStack toSend = new GasStack(gasTank.getStack(), Math.min(gasTank.getStored(), tier.getOutput()));
-                        gasTank.drain(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE));
+                        gasTank.extract(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE));
                     }
                 }
             }
 
             if (tier != GasTankTier.CREATIVE) {
                 if (dumping == GasMode.DUMPING) {
-                    gasTank.drain(tier.getStorage() / 400, Action.EXECUTE);
+                    gasTank.extract(tier.getStorage() / 400, Action.EXECUTE);
                 }
                 if (dumping == GasMode.DUMPING_EXCESS && gasTank.getNeeded() < tier.getOutput()) {
-                    gasTank.drain(tier.getOutput() - gasTank.getNeeded(), Action.EXECUTE);
+                    gasTank.extract(tier.getOutput() - gasTank.getNeeded(), Action.EXECUTE);
                 }
             }
 
@@ -167,14 +167,14 @@ public class TileEntityGasTank extends TileEntityMekanism implements IGasHandler
         if (tier == GasTankTier.CREATIVE) {
             return stack.getAmount();
         }
-        return gasTank.fill(stack, action);
+        return gasTank.insert(stack, action);
     }
 
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, Action action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return gasTank.drain(amount, action.combine(tier != GasTankTier.CREATIVE));
+            return gasTank.extract(amount, action.combine(tier != GasTankTier.CREATIVE));
         }
         return GasStack.EMPTY;
     }

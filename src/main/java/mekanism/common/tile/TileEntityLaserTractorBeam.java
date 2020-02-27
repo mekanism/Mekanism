@@ -8,7 +8,7 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.client.ClientLaserManager;
 import mekanism.common.LaserManager;

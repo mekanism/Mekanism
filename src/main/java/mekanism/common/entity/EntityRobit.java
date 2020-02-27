@@ -16,7 +16,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;

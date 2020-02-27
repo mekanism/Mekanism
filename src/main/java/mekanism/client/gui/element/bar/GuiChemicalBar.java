@@ -3,7 +3,7 @@ package mekanism.client.gui.element.bar;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.ChemicalTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiChemicalBar.ChemicalInfoProvider;
 import mekanism.client.render.MekanismRenderer;
@@ -46,7 +46,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>> extends GuiBar<
         CHEMICAL getType();
     }
 
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalInfoProvider<CHEMICAL> getProvider(ChemicalTank<CHEMICAL, STACK> tank) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> ChemicalInfoProvider<CHEMICAL> getProvider(IChemicalTank<CHEMICAL, STACK> tank) {
         return new ChemicalInfoProvider<CHEMICAL>() {
             @Nonnull
             @Override

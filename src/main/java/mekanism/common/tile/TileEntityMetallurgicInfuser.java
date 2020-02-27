@@ -8,7 +8,7 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.infuse.InfusionTank;
+import mekanism.api.infuse.BasicInfusionTank;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
@@ -54,7 +54,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
                                                          "getInfuseNeeded"};
 
     public static final int MAX_INFUSE = 1_000;
-    public InfusionTank infusionTank;
+    public BasicInfusionTank infusionTank;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
@@ -94,7 +94,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
 
     @Override
     protected void presetVariables() {
-        infusionTank = new InfusionTank(MAX_INFUSE);
+        infusionTank = new BasicInfusionTank(MAX_INFUSE);
     }
 
     @Nonnull

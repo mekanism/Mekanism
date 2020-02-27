@@ -2,7 +2,7 @@ package mekanism.common.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.item.ItemStack;
 

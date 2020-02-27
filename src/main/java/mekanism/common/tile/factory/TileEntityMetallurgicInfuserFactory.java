@@ -7,8 +7,8 @@ import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.infuse.InfuseType;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.infuse.InfusionTank;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.infuse.BasicInfusionTank;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -36,7 +36,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
     private InfusionInventorySlot extraSlot;
-    private InfusionTank infusionTank;
+    private BasicInfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -46,7 +46,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     protected void presetVariables() {
         super.presetVariables();
-        infusionTank = new InfusionTank(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes);
+        infusionTank = new BasicInfusionTank(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         builder.addSlot(extraSlot = InfusionInventorySlot.input(infusionTank, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this::getWorld, this, 7, 57));
     }
 
-    public InfusionTank getInfusionTank() {
+    public BasicInfusionTank getInfusionTank() {
         return infusionTank;
     }
 

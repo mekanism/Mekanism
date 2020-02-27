@@ -4,9 +4,9 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -16,7 +16,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class OutputHelper {
 
-    public static IOutputHandler<@NonNull GasStack> getOutputHandler(@Nonnull GasTank gasTank) {
+    public static IOutputHandler<@NonNull GasStack> getOutputHandler(@Nonnull BasicGasTank gasTank) {
         return new IOutputHandler<@NonNull GasStack>() {
 
             @Override
@@ -86,7 +86,7 @@ public class OutputHelper {
     }
 
     //TODO: IGasHandler??
-    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(@Nonnull GasTank gasTank, @Nonnull IInventorySlot inventorySlot) {
+    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(@Nonnull BasicGasTank gasTank, @Nonnull IInventorySlot inventorySlot) {
         return new IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>>() {
 
             @Override
@@ -104,7 +104,7 @@ public class OutputHelper {
     }
 
     //TODO: IGasHandler??
-    public static IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>> getOutputHandler(@Nonnull GasTank leftTank, @Nonnull GasTank rightTank) {
+    public static IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>> getOutputHandler(@Nonnull BasicGasTank leftTank, @Nonnull BasicGasTank rightTank) {
         return new IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>>() {
 
             @Override
@@ -122,13 +122,13 @@ public class OutputHelper {
     }
 
     //TODO: Should these be public
-    private static void handleOutput(@Nonnull GasTank gasTank, @NonNull GasStack toOutput, int operations) {
+    private static void handleOutput(@Nonnull BasicGasTank gasTank, @NonNull GasStack toOutput, int operations) {
         if (operations == 0) {
             //This should not happen
             return;
         }
         GasStack output = new GasStack(toOutput, toOutput.getAmount() * operations);
-        gasTank.fill(output, Action.EXECUTE);
+        gasTank.insert(output, Action.EXECUTE);
     }
 
     private static void handleOutput(@Nonnull IFluidHandler fluidHandler, @NonNull FluidStack toOutput, int operations) {
@@ -152,7 +152,7 @@ public class OutputHelper {
         inventorySlot.insertItem(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static int operationsRoomFor(@Nonnull GasTank gasTank, @NonNull GasStack toOutput, int currentMax) {
+    private static int operationsRoomFor(@Nonnull BasicGasTank gasTank, @NonNull GasStack toOutput, int currentMax) {
         if (currentMax <= 0 || toOutput.isEmpty()) {
             //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
@@ -160,7 +160,7 @@ public class OutputHelper {
         //Copy the stack and make it be max size
         GasStack maxOutput = new GasStack(toOutput, Integer.MAX_VALUE);
         //Then simulate filling the fluid tank so we can see how much actually can fit
-        int amountUsed = gasTank.fill(maxOutput, Action.SIMULATE);
+        int amountUsed = gasTank.insert(maxOutput, Action.SIMULATE);
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
         return Math.min(amountUsed / toOutput.getAmount(), currentMax);
     }

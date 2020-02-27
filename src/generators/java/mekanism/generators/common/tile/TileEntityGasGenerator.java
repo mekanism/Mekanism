@@ -9,7 +9,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.gas.IGasItem;
@@ -47,7 +47,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     /**
      * The tank this block is storing fuel in.
      */
-    public GasTank fuelTank;
+    public BasicGasTank fuelTank;
     private int burnTicks = 0;
     private int maxBurnTicks;
     private double generationRate = 0;
@@ -62,7 +62,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
 
     @Override
     protected void presetVariables() {
-        fuelTank = new GasTank(MAX_GAS);
+        fuelTank = new BasicGasTank(MAX_GAS);
     }
 
     @Nonnull
@@ -96,7 +96,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
                     //TODO: FIXME (or more accurately move logic into the slot), as the stack is supposed to not be changed and this method changes it
                     GasStack removed = GasUtils.removeGas(stack, gasType, fuelTank.getNeeded());
                     boolean isTankEmpty = fuelTank.isEmpty();
-                    int fuelReceived = fuelTank.fill(removed, Action.EXECUTE);
+                    int fuelReceived = fuelTank.insert(removed, Action.EXECUTE);
                     if (fuelReceived > 0 && isTankEmpty) {
                         output = FuelHandler.getFuel(fuelTank.getType()).energyPerTick * 2;
                     }
@@ -185,7 +185,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         boolean wasTankEmpty = fuelTank.isEmpty();
         if (canReceiveGas(side, stack.getType()) && (wasTankEmpty || fuelTank.getStack().isTypeEqual(stack))) {
-            int fuelReceived = fuelTank.fill(stack, action);
+            int fuelReceived = fuelTank.insert(stack, action);
             if (action.execute() && wasTankEmpty && fuelReceived > 0) {
                 output = FuelHandler.getFuel(fuelTank.getType()).energyPerTick * 2;
             }

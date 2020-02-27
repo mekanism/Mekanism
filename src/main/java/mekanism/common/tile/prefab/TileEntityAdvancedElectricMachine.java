@@ -10,7 +10,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.providers.IBlockProvider;
@@ -65,7 +65,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
      */
     public double secondaryEnergyPerTick;
     private int gasUsageThisTick;
-    public GasTank gasTank;
+    public BasicGasTank gasTank;
 
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
     protected final IInputHandler<@NonNull ItemStack> itemInputHandler;
@@ -119,7 +119,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
 
     @Override
     protected void presetVariables() {
-        gasTank = new GasTank(MAX_GAS);
+        gasTank = new BasicGasTank(MAX_GAS);
     }
 
     @Nonnull
@@ -218,7 +218,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
-            return gasTank.fill(stack, action);
+            return gasTank.insert(stack, action);
         }
         return 0;
     }

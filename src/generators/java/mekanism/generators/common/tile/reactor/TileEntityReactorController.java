@@ -2,8 +2,8 @@ package mekanism.generators.common.tile.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
-import mekanism.api.gas.GasTank;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.gas.BasicGasTank;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
@@ -40,10 +40,10 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public FluidTank waterTank = new FluidTank(MAX_WATER);
     public FluidTank steamTank = new FluidTank(MAX_STEAM);
 
-    public GasTank deuteriumTank = new GasTank(MAX_FUEL);
-    public GasTank tritiumTank = new GasTank(MAX_FUEL);
+    public BasicGasTank deuteriumTank = new BasicGasTank(MAX_FUEL);
+    public BasicGasTank tritiumTank = new BasicGasTank(MAX_FUEL);
 
-    public GasTank fuelTank = new GasTank(MAX_FUEL);
+    public BasicGasTank fuelTank = new BasicGasTank(MAX_FUEL);
 
     public AxisAlignedBB box;
     public double clientTemp = 0;

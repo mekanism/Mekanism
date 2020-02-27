@@ -13,7 +13,7 @@ import mekanism.api.IMekWrench;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.transmitters.TransmissionType;

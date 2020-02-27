@@ -4,10 +4,10 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.infuse.InfusionTank;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.infuse.BasicInfusionTank;
+import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -65,7 +65,7 @@ public class InputHelper {
     }
 
     //TODO: IGasHandler?
-    public static IInputHandler<@NonNull GasStack> getInputHandler(@Nonnull GasTank gasTank) {
+    public static IInputHandler<@NonNull GasStack> getInputHandler(@Nonnull BasicGasTank gasTank) {
         return new IInputHandler<@NonNull GasStack>() {
 
             @Override
@@ -99,7 +99,7 @@ public class InputHelper {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
-                gasTank.drain(new GasStack(recipeInput, recipeInput.getAmount() * operations), Action.EXECUTE);
+                gasTank.extract(new GasStack(recipeInput, recipeInput.getAmount() * operations), Action.EXECUTE);
             }
 
             @Override
@@ -175,7 +175,7 @@ public class InputHelper {
     }
 
     //TODO: IInfusionHandler??
-    public static IInputHandler<@NonNull InfusionStack> getInputHandler(@Nonnull InfusionTank infusionTank) {
+    public static IInputHandler<@NonNull InfusionStack> getInputHandler(@Nonnull BasicInfusionTank infusionTank) {
         return new IInputHandler<@NonNull InfusionStack>() {
 
             @Override
@@ -209,7 +209,7 @@ public class InputHelper {
                     //Something went wrong, this if should never really be true if we got to finishProcessing
                     return;
                 }
-                infusionTank.drain(new InfusionStack(recipeInput, recipeInput.getAmount() * operations), Action.EXECUTE);
+                infusionTank.extract(new InfusionStack(recipeInput, recipeInput.getAmount() * operations), Action.EXECUTE);
             }
 
             @Override

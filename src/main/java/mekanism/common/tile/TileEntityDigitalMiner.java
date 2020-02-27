@@ -22,7 +22,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
 import mekanism.common.Mekanism;

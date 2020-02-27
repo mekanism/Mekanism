@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 // look for the capabilities, and addons only implement the interface they won't return that they have the capability)
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@Deprecated
 public interface IGasItem {
 
     /**

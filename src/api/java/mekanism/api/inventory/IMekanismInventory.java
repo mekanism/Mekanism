@@ -1,23 +1,25 @@
 package mekanism.api.inventory;
 
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import mekanism.api.inventory.slot.IInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
 //TODO: Move all secondary slot calculations like gas/fluid/energy input/output to the slots so that they can mutate the stack properly instead of breaking API
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IMekanismInventory extends ISidedItemHandler {
 
     /**
-     * Used to check if an instance of IMekanismInventory actually has an inventory.
+     * Used to check if an instance of {@link IMekanismInventory} actually has an inventory.
      *
      * @return True if we are actually an inventory.
      *
-     * @apiNote If for some reason you are comparing to IMekanismInventory without having gotten the object via the item handler capability, then you must call this
-     * method to make sure that it really is an inventory. As most mekanism tiles have this class in their hierarchy.
+     * @apiNote If for some reason you are comparing to {@link IMekanismInventory} without having gotten the object via the item handler capability, then you must call
+     * this method to make sure that it really is an inventory. As most mekanism tiles have this class in their hierarchy.
      * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
      */
     default boolean hasInventory() {
@@ -40,7 +42,6 @@ public interface IMekanismInventory extends ISidedItemHandler {
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all slots in the inventory. This will be used by the container generating code
      * to add all the proper slots that are needed. Additionally, if {@link #hasInventory()} is false, this <em>MUST</em> return an empty list.
      */
-    @Nonnull
     List<IInventorySlot> getInventorySlots(@Nullable Direction side);
 
     /**
@@ -59,14 +60,11 @@ public interface IMekanismInventory extends ISidedItemHandler {
     @Nullable
     default IInventorySlot getInventorySlot(int slot, @Nullable Direction side) {
         List<IInventorySlot> slots = getInventorySlots(side);
-        if (slot < slots.size()) {
-            return slots.get(slot);
-        }
-        return null;
+        return slot >= 0 && slot < slots.size() ? slots.get(slot) : null;
     }
 
     @Override
-    default void setStackInSlot(int slot, @Nonnull ItemStack stack, @Nullable Direction side) {
+    default void setStackInSlot(int slot, ItemStack stack, @Nullable Direction side) {
         IInventorySlot inventorySlot = getInventorySlot(slot, side);
         if (inventorySlot != null) {
             inventorySlot.setStack(stack);
@@ -78,16 +76,14 @@ public interface IMekanismInventory extends ISidedItemHandler {
         return getInventorySlots(side).size();
     }
 
-    @Nonnull
     @Override
     default ItemStack getStackInSlot(int slot, @Nullable Direction side) {
         IInventorySlot inventorySlot = getInventorySlot(slot, side);
         return inventorySlot == null ? ItemStack.EMPTY : inventorySlot.getStack();
     }
 
-    @Nonnull
     @Override
-    default ItemStack insertItem(int slot, @Nonnull ItemStack stack, @Nullable Direction side, Action action) {
+    default ItemStack insertItem(int slot, ItemStack stack, @Nullable Direction side, Action action) {
         IInventorySlot inventorySlot = getInventorySlot(slot, side);
         if (inventorySlot == null) {
             return stack;
@@ -96,7 +92,6 @@ public interface IMekanismInventory extends ISidedItemHandler {
         return inventorySlot.insertItem(stack, action, side == null ? AutomationType.INTERNAL : AutomationType.EXTERNAL);
     }
 
-    @Nonnull
     @Override
     default ItemStack extractItem(int slot, int amount, @Nullable Direction side, Action action) {
         IInventorySlot inventorySlot = getInventorySlot(slot, side);
@@ -114,7 +109,7 @@ public interface IMekanismInventory extends ISidedItemHandler {
     }
 
     @Override
-    default boolean isItemValid(int slot, @Nonnull ItemStack stack, @Nullable Direction side) {
+    default boolean isItemValid(int slot, ItemStack stack, @Nullable Direction side) {
         IInventorySlot inventorySlot = getInventorySlot(slot, side);
         return inventorySlot != null && inventorySlot.isItemValid(stack);
     }

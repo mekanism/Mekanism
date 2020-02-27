@@ -11,7 +11,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.FluidGasToGasRecipe;
@@ -64,8 +64,8 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     public static final int MAX_GAS = 10_000;
     public static final int MAX_FLUID = 10_000;
     public FluidTank fluidTank;
-    public GasTank inputTank;
-    public GasTank outputTank;
+    public BasicGasTank inputTank;
+    public BasicGasTank outputTank;
     public int gasOutput = 256;
 
     public CachedRecipe<FluidGasToGasRecipe> cachedRecipe;
@@ -90,8 +90,8 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     @Override
     protected void presetVariables() {
         fluidTank = new FluidTank(MAX_FLUID);
-        inputTank = new GasTank(MAX_GAS);
-        outputTank = new GasTank(MAX_GAS);
+        inputTank = new BasicGasTank(MAX_GAS);
+        outputTank = new BasicGasTank(MAX_GAS);
     }
 
     @Nonnull
@@ -192,7 +192,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
         return nbtTags;
     }
 
-    public GasTank getTank(Direction side) {
+    public BasicGasTank getTank(Direction side) {
         if (side == getLeftSide()) {
             return inputTank;
         } else if (side == getRightSide()) {
@@ -213,7 +213,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
-            return getTank(side).fill(stack, action);
+            return getTank(side).insert(stack, action);
         }
         return 0;
     }
@@ -222,7 +222,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     @Override
     public GasStack drawGas(Direction side, int amount, Action action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return getTank(side).drain(amount, action);
+            return getTank(side).extract(amount, action);
         }
         return GasStack.EMPTY;
     }

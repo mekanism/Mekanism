@@ -7,12 +7,12 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
 import mekanism.api.gas.GasTankInfo;
-import mekanism.api.gas.IGasHandler;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.gas.IMekanismGasHandler;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -39,6 +39,7 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -47,7 +48,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //Compressing, injecting, purifying
-public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IGasHandler, ISustainedData {
+public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements ISustainedData, IMekanismGasHandler {
 
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
@@ -57,7 +58,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     private double secondaryEnergyPerTick;
     private int secondaryEnergyThisTick;
     private GasInventorySlot extraSlot;
-    private GasTank gasTank;
+    private BasicGasTank gasTank;
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -78,7 +79,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     protected void presetVariables() {
         super.presetVariables();
-        gasTank = new GasTank(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes);
+        gasTank = BasicGasTank.create(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::isValidGas, this::getWorld, this, 7, 57));
     }
 
-    public GasTank getGasTank() {
+    public BasicGasTank getGasTank() {
         return gasTank;
     }
 
@@ -182,6 +183,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Nullable
     @Override
     public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
+        ComposterBlock.CHANCES
         ItemStack stack = inputHandlers[cacheIndex].getInput();
         if (stack.isEmpty()) {
             return null;
@@ -242,33 +244,40 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         return remap;
     }
 
+    @Nonnull
     @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (canReceiveGas(side, stack.getType())) {
-            return gasTank.fill(stack, action);
+    public GasStack getStack() {
+        return gasTank.getStack();
+    }
+
+    @Override
+    public int getCapacity() {
+        return gasTank.getCapacity();
+    }
+
+    @Override
+    public int fill(@Nonnull GasStack stack, @Nonnull Action action) {
+        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
+        if (slotInfo instanceof GasSlotInfo) {
+            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
+            Gas type = stack.getType();
+            if (gasSlotInfo.canInput() && gasSlotInfo.hasTank(gasTank) && gasTank.canReceiveType(type) && isValidGas(type)) {
+                return gasTank.insert(stack, action);
+            }
         }
         return 0;
     }
 
+    @Nonnull
     @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.GAS, side);
-        if (slotInfo instanceof GasSlotInfo) {
-            GasSlotInfo gasSlotInfo = (GasSlotInfo) slotInfo;
-            return gasSlotInfo.canInput() && gasSlotInfo.hasTank(gasTank) && gasTank.canReceiveType(type) && isValidGas(type);
-        }
-        return false;
+    public GasStack drain(@Nonnull GasStack stack, @Nonnull Action action) {
+        return GasStack.EMPTY;
     }
 
     @Nonnull
     @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
+    public GasStack drain(int amount, @Nonnull Action action) {
         return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return false;
     }
 
     @Nonnull

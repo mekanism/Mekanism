@@ -11,7 +11,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
@@ -49,9 +49,9 @@ import net.minecraftforge.common.util.LazyOptional;
 public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGasHandler, ISustainedData, ITankManager, ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
     public static final int MAX_GAS = 10_000;
-    public GasTank leftTank;
-    public GasTank rightTank;
-    public GasTank centerTank;
+    public BasicGasTank leftTank;
+    public BasicGasTank rightTank;
+    public BasicGasTank centerTank;
     public int gasOutput = 256;
 
     public CachedRecipe<ChemicalInfuserRecipe> cachedRecipe;
@@ -76,9 +76,9 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
 
     @Override
     protected void presetVariables() {
-        leftTank = new GasTank(MAX_GAS);
-        centerTank = new GasTank(MAX_GAS);
-        rightTank = new GasTank(MAX_GAS);
+        leftTank = new BasicGasTank(MAX_GAS);
+        centerTank = new BasicGasTank(MAX_GAS);
+        rightTank = new BasicGasTank(MAX_GAS);
     }
 
     @Nonnull
@@ -182,7 +182,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         return nbtTags;
     }
 
-    public GasTank getTank(Direction side) {
+    public BasicGasTank getTank(Direction side) {
         if (side == getLeftSide()) {
             return leftTank;
         } else if (side == getRightSide()) {
@@ -207,7 +207,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
         if (canReceiveGas(side, stack.getType())) {
-            return getTank(side).fill(stack, action);
+            return getTank(side).insert(stack, action);
         }
         return 0;
     }
@@ -216,7 +216,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     @Override
     public GasStack drawGas(Direction side, int amount, Action action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return getTank(side).drain(amount, action);
+            return getTank(side).extract(amount, action);
         }
         return GasStack.EMPTY;
     }

@@ -2,7 +2,7 @@ package mekanism.common.upgrade;
 
 import java.util.List;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.slot.EnergyInventorySlot;

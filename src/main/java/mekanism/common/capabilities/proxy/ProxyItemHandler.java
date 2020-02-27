@@ -1,23 +1,27 @@
 package mekanism.common.capabilities.proxy;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.ISidedItemHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+@FieldsAreNonnullByDefault
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class ProxyItemHandler implements IItemHandlerModifiable {
 
-    @Nonnull
     private final ISidedItemHandler inventory;
     @Nullable
     private final Direction side;
     private final boolean readOnly;
 
     //TODO: Should this take a supplier for the item handler in case it somehow gets invalidated??
-    public ProxyItemHandler(@Nonnull ISidedItemHandler inventory, @Nullable Direction side) {
+    public ProxyItemHandler(ISidedItemHandler inventory, @Nullable Direction side) {
         this.inventory = inventory;
         this.side = side;
         this.readOnly = this.side == null;
@@ -28,22 +32,19 @@ public class ProxyItemHandler implements IItemHandlerModifiable {
         return inventory.getSlots(side);
     }
 
-    @Nonnull
     @Override
     public ItemStack getStackInSlot(int slot) {
         return inventory.getStackInSlot(slot, side);
     }
 
-    @Nonnull
     @Override
-    public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (readOnly) {
             return stack;
         }
         return inventory.insertItem(slot, stack, side, Action.get(!simulate));
     }
 
-    @Nonnull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (readOnly) {
@@ -58,12 +59,12 @@ public class ProxyItemHandler implements IItemHandlerModifiable {
     }
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+    public boolean isItemValid(int slot, ItemStack stack) {
         return !readOnly || inventory.isItemValid(slot, stack, side);
     }
 
     @Override
-    public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+    public void setStackInSlot(int slot, ItemStack stack) {
         if (!readOnly) {
             inventory.setStackInSlot(slot, stack, side);
         }

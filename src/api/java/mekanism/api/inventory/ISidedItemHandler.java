@@ -1,7 +1,8 @@
 package mekanism.api.inventory;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -12,6 +13,11 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+/**
+ * A sided variant of {@link IItemHandlerModifiable}
+ */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface ISidedItemHandler extends IItemHandlerModifiable {
 
     /**
@@ -38,10 +44,10 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      *
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting.
      */
-    void setStackInSlot(int slot, @Nonnull ItemStack stack, @Nullable Direction side);
+    void setStackInSlot(int slot, ItemStack stack, @Nullable Direction side);
 
     @Override
-    default void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+    default void setStackInSlot(int slot, ItemStack stack) {
         setStackInSlot(slot, stack, getSideFor());
     }
 
@@ -85,10 +91,8 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      *
      * @apiNote <strong>IMPORTANT:</strong> Do not modify this {@link ItemStack}.
      */
-    @Nonnull
     ItemStack getStackInSlot(int slot, @Nullable Direction side);
 
-    @Nonnull
     @Override
     default ItemStack getStackInSlot(int slot) {
         return getStackInSlot(slot, getSideFor());
@@ -112,12 +116,10 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      *
      * @implNote The {@link ItemStack} <em>should not</em> be modified in this function!
      */
-    @Nonnull
-    ItemStack insertItem(int slot, @Nonnull ItemStack stack, @Nullable Direction side, Action action);
+    ItemStack insertItem(int slot, ItemStack stack, @Nullable Direction side, Action action);
 
-    @Nonnull
     @Override
-    default ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+    default ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return insertItem(slot, stack, getSideFor(), Action.get(!simulate));
     }
 
@@ -140,10 +142,8 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      *
      * @implNote The returned {@link ItemStack} can be safely modified after, so a new or copied stack should be returned.
      */
-    @Nonnull
     ItemStack extractItem(int slot, int amount, @Nullable Direction side, Action action);
 
-    @Nonnull
     @Override
     default ItemStack extractItem(int slot, int amount, boolean simulate) {
         return extractItem(slot, amount, getSideFor(), Action.get(!simulate));
@@ -187,10 +187,10 @@ public interface ISidedItemHandler extends IItemHandlerModifiable {
      * @return true if the slot can accept the {@link ItemStack}, not considering the current state of the inventory. false if the slot can never insert the {@link
      * ItemStack} in any situation.
      */
-    boolean isItemValid(int slot, @Nonnull ItemStack stack, @Nullable Direction side);
+    boolean isItemValid(int slot, ItemStack stack, @Nullable Direction side);
 
     @Override
-    default boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+    default boolean isItemValid(int slot, ItemStack stack) {
         return isItemValid(slot, stack, getSideFor());
     }
 }

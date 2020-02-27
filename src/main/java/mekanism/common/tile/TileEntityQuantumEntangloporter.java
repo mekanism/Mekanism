@@ -17,10 +17,10 @@ import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
-import mekanism.api.inventory.slot.IInventorySlot;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
@@ -112,7 +112,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {
-            Supplier<List<GasTank>> tankSupplier = () -> hasFrequency() ? Collections.singletonList(frequency.storedGas) : Collections.emptyList();
+            Supplier<List<BasicGasTank>> tankSupplier = () -> hasFrequency() ? Collections.singletonList(frequency.storedGas) : Collections.emptyList();
             gasConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Gas(true, false, tankSupplier));
             gasConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Gas(false, true, tankSupplier));
             //Set default config directions
@@ -436,13 +436,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        return !hasFrequency() ? 0 : frequency.storedGas.fill(stack, action);
+        return !hasFrequency() ? 0 : frequency.storedGas.insert(stack, action);
     }
 
     @Nonnull
     @Override
     public GasStack drawGas(Direction side, int amount, Action action) {
-        return !hasFrequency() ? GasStack.EMPTY : frequency.storedGas.drain(amount, action);
+        return !hasFrequency() ? GasStack.EMPTY : frequency.storedGas.extract(amount, action);
     }
 
     @Override

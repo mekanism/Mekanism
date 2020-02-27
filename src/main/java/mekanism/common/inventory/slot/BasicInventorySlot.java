@@ -3,7 +3,6 @@ package mekanism.common.inventory.slot;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -11,8 +10,8 @@ import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.inventory.slot.IInventorySlot;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -67,7 +66,7 @@ public class BasicInventorySlot implements IInventorySlot {
     @Nullable
     private SlotOverlay slotOverlay;
 
-    protected BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nonnull Predicate<@NonNull ItemStack> validator,
+    protected BasicInventorySlot(Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
           @Nullable IMekanismInventory inventory, int x, int y) {
         //TODO: Re-evaluate this
         this((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
@@ -108,6 +107,8 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public void setStack(ItemStack stack) {
+        //TODO: Should we allow forcefully setting invalid items? At least we need to go through them and check to make sure we allow setting an empty container??
+        // This error of empty container not being valid may not even be an issue once we move logic for resources into the specific slots
         setStack(stack, true);
     }
 
@@ -120,18 +121,21 @@ public class BasicInventorySlot implements IInventorySlot {
         if (stack.isEmpty()) {
             current = ItemStack.EMPTY;
         } else if (!validateStack || isItemValid(stack)) {
-            //TODO: Should we allow forcefully setting invalid items? At least we need to go through them and check to make sure we allow setting an empty container??
-            // This error of empty container not being valid may not even be an issue once we move logic for resources into the specific slots
             current = stack.copy();
         } else {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
-            //TODO: Even if it is valid for this to throw a runtime exception should we be printing an error instead and just refusing to accept the stack
             throw new RuntimeException("Invalid stack for slot: " + stack.getItem().getRegistryName() + " " + stack.getCount() + " " + stack.getTag());
         }
         onContentsChanged();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
+     * instead of having to make a copy.
+     */
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isItemValid(stack) || !canInsert.test(stack, automationType)) {
@@ -165,6 +169,12 @@ public class BasicInventorySlot implements IInventorySlot {
         return stack;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
+     * instead of having to make a copy.
+     */
     @Override
     public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1 || !canExtract.test(current, automationType)) {
@@ -253,11 +263,23 @@ public class BasicInventorySlot implements IInventorySlot {
         return amount;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
+     * instead of having to make a copy.
+     */
     @Override
     public boolean isEmpty() {
         return current.isEmpty();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
+     * instead of having to make a copy.
+     */
     @Override
     public int getCount() {
         return current.getCount();
@@ -287,6 +309,6 @@ public class BasicInventorySlot implements IInventorySlot {
         //Directly set the stack in case the item is no longer valid for the stack.
         // We do this instead of using setStackUnchecked to avoid calling markDirty when we are loading
         // the inventory and the world is still null on the tile
-        current = stack;
+        setStackUnchecked(stack);
     }
 }

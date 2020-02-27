@@ -119,11 +119,11 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IFl
         if (getReactor() != null) {
             //TODO: Move this stuff to a recipe type
             if (stack.getType() == MekanismGases.DEUTERIUM.getGas()) {
-                return getReactor().getDeuteriumTank().fill(stack, action);
+                return getReactor().getDeuteriumTank().insert(stack, action);
             } else if (stack.getType() == MekanismGases.TRITIUM.getGas()) {
-                return getReactor().getTritiumTank().fill(stack, action);
+                return getReactor().getTritiumTank().insert(stack, action);
             } else if (stack.getType() == MekanismGases.FUSION_FUEL.getGas()) {
-                return getReactor().getFuelTank().fill(stack, action);
+                return getReactor().getFuelTank().insert(stack, action);
             }
         }
         return 0;

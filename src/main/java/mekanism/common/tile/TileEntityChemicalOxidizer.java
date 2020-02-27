@@ -10,7 +10,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.GasTank;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.GasTankInfo;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.ItemStackToGasRecipe;
@@ -47,7 +47,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> implements ISustainedData, ITankManager, IGasHandler {
 
     public static final int MAX_GAS = 10_000;
-    public GasTank gasTank;
+    public BasicGasTank gasTank;
     public int gasOutput = 256;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
@@ -65,7 +65,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
 
     @Override
     protected void presetVariables() {
-        gasTank = new GasTank(MAX_GAS);
+        gasTank = new BasicGasTank(MAX_GAS);
     }
 
     @Nonnull
@@ -201,7 +201,7 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
     @Override
     public GasStack drawGas(Direction side, int amount, Action action) {
         if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return gasTank.drain(amount, action);
+            return gasTank.extract(amount, action);
         }
         return GasStack.EMPTY;
     }
