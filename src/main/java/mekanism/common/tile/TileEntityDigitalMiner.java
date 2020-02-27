@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -21,6 +22,7 @@ import mekanism.api.Range4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
@@ -147,17 +149,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         mainSlots = new ArrayList<>();
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
+        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
+        Predicate<@NonNull ItemStack> canInsert = this::isReplaceStack;
+        Predicate<@NonNull ItemStack> canExtract = canInsert.negate();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                BasicInventorySlot slot = BasicInventorySlot.at(this, 8 + slotX * 18, 80 + slotY * 18);
+                BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, this, 8 + slotX * 18, 80 + slotY * 18);
                 builder.addSlot(slot, RelativeSide.BACK, RelativeSide.TOP);
                 mainSlots.add(slot);
-                //TODO: Make it so insertion/extraction is sided but the inventory is the same???
-                //Can insert;
-                //RelativeSide.TOP && isReplaceStack(stack)
-                //Can extract:
-                //RelativeSide.BACK && !isReplaceStack(stack)
             }
         }
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 152, 6));
