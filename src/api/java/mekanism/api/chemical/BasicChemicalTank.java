@@ -16,9 +16,9 @@ import net.minecraft.nbt.CompoundNBT;
 @MethodsReturnNonnullByDefault
 public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTank<CHEMICAL, STACK> {
 
-    private final Predicate<@NonNull STACK> validator;
-    private final BiPredicate<@NonNull STACK, @NonNull AutomationType> canExtract;
-    private final BiPredicate<@NonNull STACK, @NonNull AutomationType> canInsert;
+    private final Predicate<@NonNull CHEMICAL> validator;
+    private final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract;
+    private final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert;
     private final int capacity;
     /**
      * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(STACK)} should be used
@@ -26,8 +26,8 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      */
     protected STACK stored;
 
-    protected BasicChemicalTank(int capacity, BiPredicate<@NonNull STACK, @NonNull AutomationType> canExtract, BiPredicate<@NonNull STACK, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull STACK> validator) {
+    protected BasicChemicalTank(int capacity, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract, BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert,
+          Predicate<@NonNull CHEMICAL> validator) {
         this.capacity = capacity;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -78,7 +78,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      */
     @Override
     public STACK insert(@Nonnull STACK stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack, automationType)) {
+        if (stack.isEmpty() || !isValid(stack) || !canInsert.test(stack.getType(), automationType)) {
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return stack;
         }
@@ -117,7 +117,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
      */
     @Override
     public STACK extract(int amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount < 1 || !canExtract.test(stored, automationType)) {
+        if (isEmpty() || amount < 1 || !canExtract.test(stored.getType(), automationType)) {
             //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
             return getEmptyStack();
         }
@@ -133,7 +133,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public boolean isValid(STACK stack) {
-        return validator.test(stack);
+        return validator.test(stack.getType());
     }
 
     /**

@@ -4,13 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -20,11 +19,10 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
+import mekanism.common.base.ChemicalTankHelper;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITankManager;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -34,7 +32,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityOperationalMachine;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
@@ -43,7 +40,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> implements IGasHandler, ISustainedData, ITankManager {
@@ -73,10 +69,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        injectTank = new BasicGasTank(MAX_GAS);
-        outputTank = new BasicGasTank(MAX_GAS);
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        builder.addTank(injectTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this), RelativeSide.LEFT);
+        builder.addTank(outputTank = BasicGasTank.ejectOutput(MAX_GAS, this), RelativeSide.RIGHT);
+        return builder.build();
     }
 
     @Nonnull
@@ -147,74 +146,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        injectTank.read(nbtTags.getCompound("injectTank"));
-        outputTank.read(nbtTags.getCompound("outputTank"));
-        GasUtils.clearIfInvalid(injectTank, this::isValidGas);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("injectTank", injectTank.write(new CompoundNBT()));
-        nbtTags.put("outputTank", outputTank.write(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (canReceiveGas(side, stack.getType())) {
-            return injectTank.insert(stack, action);
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return side == getLeftSide() && injectTank.canReceive(type) && isValidGas(type);
-    }
-
     private boolean isValidGas(@Nonnull Gas gas) {
         return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
     }
 
     @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return false;
-    }
-
-    @Override
-    @Nonnull
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{injectTank, outputTank};
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != getLeftSide() && side != getRightSide();
-        } else if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return side == getDirection() || side == getOppositeDirection();
         }
         return super.isCapabilityDisabled(capability, side);
@@ -260,12 +198,5 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     public Object[] getTanks() {
         return new Object[]{injectTank, outputTank};
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableGasStack.create(injectTank));
-        container.track(SyncableGasStack.create(outputTank));
     }
 }

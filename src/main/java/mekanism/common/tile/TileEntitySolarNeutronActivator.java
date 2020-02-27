@@ -4,14 +4,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
-import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasHandler;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -22,14 +20,13 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ChemicalTankHelper;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITankManager;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.inventory.slot.holder.IInventorySlotHolder;
 import mekanism.common.inventory.slot.holder.InventorySlotHelper;
@@ -42,14 +39,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TileUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ISustainedData, ITankManager,
       ITileCachedRecipeHolder<GasToGasRecipe> {
@@ -78,10 +72,13 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        inputTank = new BasicGasTank(MAX_GAS);
-        outputTank = new BasicGasTank(MAX_GAS);
+    protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
+        ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
+        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this), RelativeSide.BOTTOM);
+        builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.FRONT);
+        return builder.build();
     }
 
     @Nonnull
@@ -184,22 +181,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        inputTank.read(nbtTags.getCompound("inputTank"));
-        outputTank.read(nbtTags.getCompound("outputTank"));
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("inputTank", inputTank.write(new CompoundNBT()));
-        nbtTags.put("outputTank", outputTank.write(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Override
     public void onPlace() {
         MekanismUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
     }
@@ -211,59 +192,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
             world.removeBlock(getPos().up(), false);
             world.removeBlock(getPos(), false);
         }
-    }
-
-    @Override
-    public int receiveGas(Direction side, @Nonnull GasStack stack, Action action) {
-        if (canReceiveGas(side, stack.getType())) {
-            return inputTank.insert(stack, action);
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack drawGas(Direction side, int amount, Action action) {
-        if (canDrawGas(side, MekanismAPI.EMPTY_GAS)) {
-            return outputTank.extract(amount, action);
-        }
-        return GasStack.EMPTY;
-    }
-
-    @Override
-    public boolean canReceiveGas(Direction side, @Nonnull Gas type) {
-        return side == Direction.DOWN && inputTank.canReceive(type) && isValidGas(type);
-    }
-
-    @Override
-    public boolean canDrawGas(Direction side, @Nonnull Gas type) {
-        return side == getDirection() && outputTank.canDraw(type);
-    }
-
-    @Nonnull
-    @Override
-    public GasTankInfo[] getTankInfo() {
-        return new GasTankInfo[]{inputTank, outputTank};
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return side != null && side != getDirection() && side != Direction.DOWN;
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override
@@ -311,12 +239,5 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableGasStack.create(inputTank));
-        container.track(SyncableGasStack.create(outputTank));
     }
 }
