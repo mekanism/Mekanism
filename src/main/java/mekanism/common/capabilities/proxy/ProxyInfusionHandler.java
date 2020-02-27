@@ -20,7 +20,7 @@ public class ProxyInfusionHandler implements IInfusionHandler {
     private final Direction side;
     private final boolean readOnly;
 
-    //TODO: Should this take a supplier for the item handler in case it somehow gets invalidated??
+    //TODO: Should this take a supplier for the infusion handler in case it somehow gets invalidated??
     public ProxyInfusionHandler(ISidedInfusionHandler infusionHandler, @Nullable Direction side) {
         this.infusionHandler = infusionHandler;
         this.side = side;
@@ -68,5 +68,29 @@ public class ProxyInfusionHandler implements IInfusionHandler {
             return InfusionStack.EMPTY;
         }
         return infusionHandler.extractInfusion(tank, amount, side, action);
+    }
+
+    @Override
+    public InfusionStack insertInfusion(InfusionStack stack, Action action) {
+        if (readOnly) {
+            return stack;
+        }
+        return infusionHandler.insertInfusion(stack, side, action);
+    }
+
+    @Override
+    public InfusionStack extractInfusion(int amount, Action action) {
+        if (readOnly) {
+            return InfusionStack.EMPTY;
+        }
+        return infusionHandler.extractInfusion(amount, side, action);
+    }
+
+    @Override
+    public InfusionStack extractInfusion(InfusionStack stack, Action action) {
+        if (readOnly) {
+            return InfusionStack.EMPTY;
+        }
+        return infusionHandler.extractInfusion(stack, side, action);
     }
 }

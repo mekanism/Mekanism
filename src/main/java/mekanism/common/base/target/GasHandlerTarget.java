@@ -20,6 +20,6 @@ public class GasHandlerTarget extends Target<IGasHandler, Integer, @NonNull GasS
 
     @Override
     protected Integer simulate(IGasHandler handler, Direction side, @NonNull GasStack gasStack) {
-        return gasStack.getAmount() - handler.insertGas(gasStack, Action.SIMULATE);
+        return gasStack.getAmount() - handler.insertGas(gasStack, Action.SIMULATE).getAmount();
     }
 }

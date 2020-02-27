@@ -48,7 +48,7 @@ public class InfusionInventorySlot extends BasicInventorySlot {
         }, stack -> {
             InfusionStack infusionStack = getPotentialConversion(worldSupplier.get(), stack);
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-            return !infusionStack.isEmpty() && isValidInfusion.test(infusionStack.getType()) && infusionTank.insert(infusionStack, Action.SIMULATE, AutomationType.INTERNAL) > 0;
+            return !infusionStack.isEmpty() && isValidInfusion.test(infusionStack.getType()) && infusionTank.insert(infusionStack, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < infusionStack.getAmount();
         }, stack -> {
             InfusionStack infusionStack = getPotentialConversion(worldSupplier.get(), stack);
             return !infusionStack.isEmpty() && isValidInfusion.test(infusionStack.getType());
@@ -74,16 +74,14 @@ public class InfusionInventorySlot extends BasicInventorySlot {
                 ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                 if (!itemInput.isEmpty()) {
                     InfusionStack pendingInfusionInput = foundRecipe.getOutput(itemInput);
-                    if (!pendingInfusionInput.isEmpty()) {
-                        if (infusionTank.insert(pendingInfusionInput, Action.SIMULATE, AutomationType.INTERNAL) == pendingInfusionInput.getAmount()) {
-                            //If we can accept it all, then add it and decrease our input
-                            infusionTank.insert(pendingInfusionInput, Action.EXECUTE, AutomationType.INTERNAL);
-                            int amountUsed = itemInput.getCount();
-                            if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
-                                //TODO: Print warning/error
-                            }
-                            onContentsChanged();
+                    if (!pendingInfusionInput.isEmpty() && infusionTank.insert(pendingInfusionInput, Action.SIMULATE, AutomationType.INTERNAL).isEmpty()) {
+                        //If we can accept it all, then add it and decrease our input
+                        infusionTank.insert(pendingInfusionInput, Action.EXECUTE, AutomationType.INTERNAL);
+                        int amountUsed = itemInput.getCount();
+                        if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
+                            //TODO: Print warning/error
                         }
+                        onContentsChanged();
                     }
                 }
             }

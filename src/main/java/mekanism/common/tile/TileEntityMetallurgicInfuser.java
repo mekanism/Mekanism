@@ -21,7 +21,7 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.handler.ChemicalTankHelper;
+import mekanism.common.capabilities.holder.ChemicalTankHelper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;

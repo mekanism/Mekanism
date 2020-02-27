@@ -21,7 +21,7 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.handler.ChemicalTankHelper;
+import mekanism.common.capabilities.holder.ChemicalTankHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;

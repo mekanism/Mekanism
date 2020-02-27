@@ -23,7 +23,7 @@ import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IChemicalTankHolder;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
-import mekanism.common.base.handler.ChemicalTankHelper;
+import mekanism.common.capabilities.holder.ChemicalTankHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;

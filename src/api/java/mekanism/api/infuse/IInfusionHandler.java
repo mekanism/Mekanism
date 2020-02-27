@@ -3,6 +3,7 @@ package mekanism.api.infuse;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.chemical.ChemicalUtils;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -97,11 +98,71 @@ public interface IInfusionHandler {
      * </p>
      *
      * @param tank   Tank to extract from.
-     * @param amount Amount to extract (may be greater than the current stack's max limit)
+     * @param amount Amount to extract (may be greater than the current stack's amount or the tank's capacity)
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
      * @return {@link InfusionStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link InfusionStack} can be safely modified after,
      * so the tank should return a new or copied stack.
      */
     InfusionStack extractInfusion(int tank, int amount, Action action);
+
+    /**
+     * <p>
+     * Inserts a {@link InfusionStack} into this handler, distribution is left <strong>entirely</strong> to this {@link IInfusionHandler}. The {@link InfusionStack} <em>should not</em>
+     * be modified in this function!
+     * </p>
+     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
+     *
+     * @param stack  {@link InfusionStack} to insert. This must not be modified by the handler.
+     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     *
+     * @return The remaining {@link InfusionStack} that was not inserted (if the entire stack is accepted, then return an empty {@link InfusionStack}). May be the same as the input
+     * {@link InfusionStack} if unchanged, otherwise a new {@link InfusionStack}. The returned {@link InfusionStack} can be safely modified after
+     *
+     * @implNote The default implementation of this method, attempts to insert into tanks that contain the same type of infuse type as the supplied type, and if it will not all
+     * fit, falls back to inserting into any empty tanks.
+     * @apiNote It is not guaranteed that the default implementation will be how this {@link IInfusionHandler} ends up distributing the insertion.
+     */
+    default InfusionStack insertInfusion(InfusionStack stack, Action action) {
+        return ChemicalUtils.insert(stack, action, InfusionStack.EMPTY, this::getInfusionTankCount, this::getInfusionInTank, this::insertInfusion);
+    }
+
+    /**
+     * Extracts a {@link InfusionStack} from this handler, distribution is left <strong>entirely</strong> to this {@link IInfusionHandler}.
+     * <p>
+     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
+     * </p>
+     *
+     * @param amount Amount to extract (may be greater than the current stack's amount or the tank's capacity)
+     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     *
+     * @return {@link InfusionStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link InfusionStack} can be safely modified after, so the
+     * tank should return a new or copied stack.
+     *
+     * @implNote The default implementation of this method, extracts across all tanks to try and reach the desired amount to extract. Once the first infuse type that can be
+     * extracted is found, all future extractions will make sure to also make sure they are for the same type of infusion.
+     * @apiNote It is not guaranteed that the default implementation will be how this {@link IInfusionHandler} ends up distributing the extraction.
+     */
+    default InfusionStack extractInfusion(int amount, Action action) {
+        return ChemicalUtils.extract(amount, action, InfusionStack.EMPTY, this::getInfusionTankCount, this::getInfusionInTank, this::extractInfusion);
+    }
+
+    /**
+     * Extracts a {@link InfusionStack} from this handler, distribution is left <strong>entirely</strong> to this {@link IInfusionHandler}.
+     * <p>
+     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
+     * </p>
+     *
+     * @param stack  {@link InfusionStack} representing the {@link InfuseType} and maximum amount to be drained.
+     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     *
+     * @return {@link InfusionStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link InfusionStack} can be safely modified after, so the
+     * tank should return a new or copied stack.
+     *
+     * @implNote The default implementation of this method, extracts across all tanks that contents match the type of infusion passed into this method.
+     * @apiNote It is not guaranteed that the default implementation will be how this {@link IInfusionHandler} ends up distributing the extraction.
+     */
+    default InfusionStack extractInfusion(InfusionStack stack, Action action) {
+        return ChemicalUtils.extract(stack, action, InfusionStack.EMPTY, this::getInfusionTankCount, this::getInfusionInTank, this::extractInfusion);
+    }
 }

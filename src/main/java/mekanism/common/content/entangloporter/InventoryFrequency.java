@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
@@ -14,7 +15,6 @@ import mekanism.api.gas.GasStack;
 import mekanism.api.gas.IMekanismGasHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.common.PacketHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.slot.EntangloporterInventorySlot;
@@ -100,7 +100,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         presetVariables();
         storedEnergy = dataStream.readDouble();
         storedFluid.setFluid(dataStream.readFluidStack());
-        storedGas.setStack(PacketHandler.readGasStack(dataStream));
+        storedGas.setStack(ChemicalUtils.readGasStack(dataStream));
         storedItem.deserializeNBT(dataStream.readCompoundTag());
         temperature = dataStream.readDouble();
     }

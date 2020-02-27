@@ -18,7 +18,7 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.base.IChemicalTankHolder;
-import mekanism.common.base.handler.ChemicalTankHelper;
+import mekanism.common.capabilities.holder.ChemicalTankHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;

@@ -1,8 +1,8 @@
 package mekanism.common.network.container;
 
 import javax.annotation.Nonnull;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.network.PacketBuffer;
 
@@ -21,13 +21,13 @@ public class PacketUpdateContainerInfusionStack extends PacketUpdateContainer<Pa
 
     private PacketUpdateContainerInfusionStack(PacketBuffer buffer) {
         super(buffer);
-        this.value = PacketHandler.readInfusionStack(buffer);
+        this.value = ChemicalUtils.readInfusionStack(buffer);
     }
 
     @Override
     protected void encode(PacketBuffer buffer) {
         super.encode(buffer);
-        PacketHandler.writeChemicalStack(buffer, value);
+        ChemicalUtils.writeChemicalStack(buffer, value);
     }
 
     @Override

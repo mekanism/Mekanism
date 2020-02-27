@@ -1,8 +1,8 @@
 package mekanism.common.network.container.property;
 
 import javax.annotation.Nonnull;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.infuse.InfusionStack;
-import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.container.PacketUpdateContainerInfusionStack;
 import net.minecraft.network.PacketBuffer;
@@ -30,6 +30,6 @@ public class InfusionStackPropertyData extends PropertyData {
     @Override
     public void writeToPacket(PacketBuffer buffer) {
         super.writeToPacket(buffer);
-        PacketHandler.writeChemicalStack(buffer, value);
+        ChemicalUtils.writeChemicalStack(buffer, value);
     }
 }

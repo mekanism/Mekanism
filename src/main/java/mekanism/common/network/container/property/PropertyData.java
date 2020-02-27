@@ -1,7 +1,7 @@
 package mekanism.common.network.container.property;
 
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.container.PacketUpdateContainer;
 import net.minecraft.network.PacketBuffer;
@@ -58,9 +58,9 @@ public abstract class PropertyData {
             case FLUID_STACK:
                 return new FluidStackPropertyData(property, buffer.readFluidStack());
             case GAS_STACK:
-                return new GasStackPropertyData(property, PacketHandler.readGasStack(buffer));
+                return new GasStackPropertyData(property, ChemicalUtils.readGasStack(buffer));
             case INFUSION_STACK:
-                return new InfusionStackPropertyData(property, PacketHandler.readInfusionStack(buffer));
+                return new InfusionStackPropertyData(property, ChemicalUtils.readInfusionStack(buffer));
             default:
                 Mekanism.logger.error("Unrecognized property type received: {}", type);
                 return null;

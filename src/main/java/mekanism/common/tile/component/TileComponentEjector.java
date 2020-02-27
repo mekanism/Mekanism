@@ -12,6 +12,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -106,7 +107,7 @@ public class TileComponentEjector implements ITileComponent {
         if (!tank.isEmpty()) {
             GasStack toEmit = new GasStack(tank.getStack(), Math.min(GAS_OUTPUT, tank.getStored()));
             int emit = GasUtils.emit(toEmit, tile, outputSides);
-            tank.extract(emit, Action.EXECUTE);
+            tank.extract(emit, Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 

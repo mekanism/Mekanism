@@ -10,9 +10,9 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.Gas;
 import mekanism.api.gas.GasStack;
-import mekanism.api.gas.BasicGasTank;
 import mekanism.api.gas.IGasItem;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
@@ -48,7 +48,7 @@ public class GasInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(isValidGas, "Gas validity check cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         //Mode == true if fluid to gas
-        return new GasInventorySlot(gasTank, isValidGas, alwaysFalse, stack -> {
+        return new GasInventorySlot(gasTank, alwaysFalse, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
@@ -61,7 +61,7 @@ public class GasInventorySlot extends BasicInventorySlot {
                     return mode;
                 }
                 //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
-                return !mode && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE, AutomationType.INTERNAL) > 0;
+                return !mode && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < containedGas.getAmount();
             }
             return false;
         }, stack -> {
@@ -80,7 +80,7 @@ public class GasInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(isValidGas, "Gas validity check cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
-        return new GasInventorySlot(gasTank, isValidGas, worldSupplier, stack -> {
+        return new GasInventorySlot(gasTank, worldSupplier, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
@@ -102,11 +102,13 @@ public class GasInventorySlot extends BasicInventorySlot {
                 // Strictly speaking this currently could be done as gasItem.canProvideGas(stack, MekanismAPI.EMPTY_GAS), but is being ignored instead for clarity
                 GasStack containedGas = ((IGasItem) item).getGas(stack);
                 //True if we can fill the tank with any of our contents
-                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE, AutomationType.INTERNAL) > 0;
+                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) &&
+                       gasTank.insert(containedGas, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < containedGas.getAmount();
             }
             GasStack gasConversion = getPotentialConversion(worldSupplier.get(), stack);
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-            return !gasConversion.isEmpty() && isValidGas.test(gasConversion.getType()) && gasTank.insert(gasConversion, Action.SIMULATE, AutomationType.INTERNAL) > 0;
+            return !gasConversion.isEmpty() && isValidGas.test(gasConversion.getType()) &&
+                   gasTank.insert(gasConversion, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < gasConversion.getAmount();
         }, stack -> {
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
@@ -126,7 +128,7 @@ public class GasInventorySlot extends BasicInventorySlot {
     public static GasInventorySlot fill(BasicGasTank gasTank, Predicate<@NonNull Gas> isValidGas, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         Objects.requireNonNull(isValidGas, "Gas validity check cannot be null");
-        return new GasInventorySlot(gasTank, isValidGas, stack -> {
+        return new GasInventorySlot(gasTank, stack -> {
             //NOTE: Even though we KNOW from isValid when we added the item that this should be an IGasItem, have it double check until we end up switching to a capability
             Item item = stack.getItem();
             //TODO: Use a capability instead of instanceof
@@ -144,7 +146,8 @@ public class GasInventorySlot extends BasicInventorySlot {
             if (item instanceof IGasItem) {
                 GasStack containedGas = ((IGasItem) item).getGas(stack);
                 //True if we can fill the tank with any of our contents
-                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) && gasTank.insert(containedGas, Action.SIMULATE, AutomationType.INTERNAL) > 0;
+                return !containedGas.isEmpty() && isValidGas.test(containedGas.getType()) &&
+                       gasTank.insert(containedGas, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < containedGas.getAmount();
             }
             return false;
         }, stack -> {
@@ -195,30 +198,22 @@ public class GasInventorySlot extends BasicInventorySlot {
         }, inventory, x, y);
     }
 
-    private final Predicate<@NonNull Gas> isValidGas;
     //TODO: Do we want to make other things than just the conversion one have a world supplier?
     // Currently it is the only one that actually needs it
     private final Supplier<World> worldSupplier;
     //TODO: Replace GasTank with an IGasHandler??
     private final BasicGasTank gasTank;
 
-    private GasInventorySlot(BasicGasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
-          @Nullable IMekanismInventory inventory, int x, int y) {
-        //TODO: Decide if this should be always true or always false for being a valid gas. This is current only used by the draining method
-        this(gasTank, gas -> true, canExtract, canInsert, validator, inventory, x, y);
-    }
-
-    private GasInventorySlot(BasicGasTank gasTank, Predicate<@NonNull Gas> isValidGas, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+    private GasInventorySlot(BasicGasTank gasTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
           Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
-        this(gasTank, isValidGas, () -> null, canExtract, canInsert, validator, inventory, x, y);
+        this(gasTank, () -> null, canExtract, canInsert, validator, inventory, x, y);
     }
 
-    private GasInventorySlot(BasicGasTank gasTank, Predicate<@NonNull Gas> isValidGas, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
-          Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
+    private GasInventorySlot(BasicGasTank gasTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
         setSlotType(ContainerSlotType.EXTRA);
         this.gasTank = gasTank;
-        this.isValidGas = isValidGas;
         this.worldSupplier = worldSupplier;
     }
 
@@ -235,7 +230,8 @@ public class GasInventorySlot extends BasicInventorySlot {
                     ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                     if (!itemInput.isEmpty()) {
                         GasStack output = foundRecipe.getOutput(itemInput);
-                        if (!output.isEmpty() && gasTank.canReceive(output) && isValidGas.test(output.getType())) {
+                        if (!output.isEmpty() && gasTank.insert(output, Action.SIMULATE, AutomationType.INTERNAL).isEmpty()) {
+                            //If we can accept it all, then add it and decrease our input
                             gasTank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
                             int amountUsed = itemInput.getCount();
                             if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
@@ -271,9 +267,9 @@ public class GasInventorySlot extends BasicInventorySlot {
             //Check to make sure it can provide the gas it contains
             if (!gasInItem.isEmpty()) {
                 Gas gas = gasInItem.getType();
-                if (item.canProvideGas(current, gas) && gasTank.canReceiveType(gas)) {
+                if (item.canProvideGas(current, gas) && gasTank.insert(gasInItem, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < gasInItem.getAmount()) {
                     int amount = Math.min(gasTank.getNeeded(), Math.min(gasInItem.getAmount(), item.getRate(current)));
-                    if (amount > 0 && isValidGas.test(gas)) {
+                    if (amount > 0) {
                         gasTank.insert(item.removeGas(current, amount), Action.EXECUTE, AutomationType.INTERNAL);
                         onContentsChanged();
                         return true;

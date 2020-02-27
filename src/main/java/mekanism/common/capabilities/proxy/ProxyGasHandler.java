@@ -20,7 +20,7 @@ public class ProxyGasHandler implements IGasHandler {
     private final Direction side;
     private final boolean readOnly;
 
-    //TODO: Should this take a supplier for the item handler in case it somehow gets invalidated??
+    //TODO: Should this take a supplier for the gas handler in case it somehow gets invalidated??
     public ProxyGasHandler(ISidedGasHandler gasHandler, @Nullable Direction side) {
         this.gasHandler = gasHandler;
         this.side = side;
@@ -68,5 +68,29 @@ public class ProxyGasHandler implements IGasHandler {
             return GasStack.EMPTY;
         }
         return gasHandler.extractGas(tank, amount, side, action);
+    }
+
+    @Override
+    public GasStack insertGas(GasStack stack, Action action) {
+        if (readOnly) {
+            return stack;
+        }
+        return gasHandler.insertGas(stack, side, action);
+    }
+
+    @Override
+    public GasStack extractGas(int amount, Action action) {
+        if (readOnly) {
+            return GasStack.EMPTY;
+        }
+        return gasHandler.extractGas(amount, side, action);
+    }
+
+    @Override
+    public GasStack extractGas(GasStack stack, Action action) {
+        if (readOnly) {
+            return GasStack.EMPTY;
+        }
+        return gasHandler.extractGas(stack, side, action);
     }
 }

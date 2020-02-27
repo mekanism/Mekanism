@@ -1,4 +1,4 @@
-package mekanism.common.base.handler;
+package mekanism.common.capabilities.holder;
 
 import java.util.ArrayList;
 import java.util.List;
