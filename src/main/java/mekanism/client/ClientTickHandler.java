@@ -57,6 +57,7 @@ public class ClientTickHandler {
     public static Map<PlayerEntity, TeleportData> portableTeleports = new Object2ObjectOpenHashMap<>();
     public boolean initHoliday = false;
     public boolean shouldReset = false;
+    public static boolean firstTick = true;
 
     public static void killDeadNetworks() {
         tickingSet.removeIf(iClientTicker -> !iClientTicker.needsTicks());
@@ -138,6 +139,11 @@ public class ClientTickHandler {
 
     public void tickStart() {
         MekanismClient.ticksPassed++;
+
+        if(minecraft.world != null && firstTick) {
+            MekanismClient.launchClient();
+            firstTick = false;
+        }
 
         if (!Mekanism.proxy.isPaused()) {
             for (Iterator<IClientTicker> iter = tickingSet.iterator(); iter.hasNext(); ) {
