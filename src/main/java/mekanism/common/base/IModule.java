@@ -28,4 +28,9 @@ public interface IModule {
      * Called when the player returns to the main menu.
      */
     void resetClient();
+
+    /**
+     * Called during the first tick after joining a game.
+     */
+    default void launchClient() {}
 }

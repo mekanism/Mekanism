@@ -96,6 +96,11 @@ public class MekanismAdditions implements IModule {
         AdditionsClient.reset();
     }
 
+    @Override
+    public void launchClient() {
+        AdditionsClient.launch();
+    }
+
     private void commonSetup(FMLCommonSetupEvent event) {
         //Set up VoiceServerManager
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {

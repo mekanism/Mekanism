@@ -33,6 +33,7 @@ public class MekanismClient {
 
         ClientTickHandler.tickingSet.clear();
         ClientTickHandler.portableTeleports.clear();
+        ClientTickHandler.firstTick = true;
 
         Mekanism.playerState.clear();
         Mekanism.activeVibrators.clear();
@@ -42,6 +43,12 @@ public class MekanismClient {
 
         for (IModule module : Mekanism.modulesLoaded) {
             module.resetClient();
+        }
+    }
+
+    public static void launchClient() {
+        for (IModule module : Mekanism.modulesLoaded) {
+            module.launchClient();
         }
     }
 }
