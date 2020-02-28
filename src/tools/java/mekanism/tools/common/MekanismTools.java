@@ -41,7 +41,7 @@ public class MekanismTools implements IModule {
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::onConfigReload);
+        modEventBus.addListener(this::onConfigLoad);
         //Register this class to the event bus for special mob spawning (mobs with Mekanism armor/tools)
         MinecraftForge.EVENT_BUS.addListener(this::onLivingSpecialSpawn);
 
@@ -54,7 +54,9 @@ public class MekanismTools implements IModule {
         return new ResourceLocation(MekanismTools.MODID, path);
     }
 
-    private void onConfigReload(ModConfig.Reloading configEvent) {
+    private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
+        //Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+        // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us
         if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {

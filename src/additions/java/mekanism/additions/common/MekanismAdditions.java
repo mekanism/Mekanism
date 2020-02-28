@@ -61,7 +61,7 @@ public class MekanismAdditions implements IModule {
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopping);
-        modEventBus.addListener(this::onConfigReload);
+        modEventBus.addListener(this::onConfigLoad);
 
         AdditionsItems.ITEMS.register(modEventBus);
         AdditionsBlocks.BLOCKS.register(modEventBus);
@@ -152,7 +152,9 @@ public class MekanismAdditions implements IModule {
         }*/
     }
 
-    private void onConfigReload(ModConfig.Reloading configEvent) {
+    private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
+        //Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+        // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us
         if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {

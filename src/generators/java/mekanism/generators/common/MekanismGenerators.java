@@ -44,7 +44,7 @@ public class MekanismGenerators implements IModule {
         MekanismGeneratorsConfig.registerConfigs(ModLoadingContext.get());
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::onConfigReload);
+        modEventBus.addListener(this::onConfigLoad);
 
         GeneratorsItems.ITEMS.register(modEventBus);
         GeneratorsBlocks.BLOCKS.register(modEventBus);
@@ -94,7 +94,9 @@ public class MekanismGenerators implements IModule {
         SynchronizedTurbineData.clientRotationMap.clear();
     }
 
-    private void onConfigReload(ModConfig.Reloading configEvent) {
+    private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
+        //Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+        // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us
         if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {

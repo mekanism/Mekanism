@@ -184,7 +184,7 @@ public class Mekanism {
         modEventBus.addListener(this::commonSetup);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         MinecraftForge.EVENT_BUS.addListener(this::serverStopped);
-        modEventBus.addListener(this::onConfigReload);
+        modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
         //TODO: Register other listeners and various stuff that is needed
 
@@ -428,7 +428,9 @@ public class Mekanism {
         }
     }
 
-    private void onConfigReload(ModConfig.Reloading configEvent) {
+    private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
+        //Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+        // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us
         if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {
