@@ -1,30 +1,46 @@
 package mekanism.common.inventory.slot;
 
+import com.mojang.datafixers.util.Pair;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.IChemicalHandlerWrapper;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.infuse.InfusionHandlerWrapper;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
-import mekanism.common.inventory.container.slot.ContainerSlotType;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class InfusionInventorySlot extends BasicInventorySlot {
+public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, InfusionStack> {
+
+    @Nullable
+    public static IChemicalHandlerWrapper<InfuseType, InfusionStack> getCapabilityWrapper(ItemStack stack) {
+        if (!stack.isEmpty()) {
+            Optional<IInfusionHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                return new InfusionHandlerWrapper(capability.get());
+            }
+        }
+        return null;
+    }
 
     /**
      * Gets the InfusionStack from ItemStack conversion, ignoring the size of the item stack.
@@ -35,57 +51,46 @@ public class InfusionInventorySlot extends BasicInventorySlot {
         return foundRecipe == null ? InfusionStack.EMPTY : foundRecipe.getOutput(itemStack);
     }
 
-    //TODO: Rewrite this some once we make infusion tanks work as items, so that it also supports handling
-    public static InfusionInventorySlot input(IChemicalTank<InfuseType, InfusionStack> infusionTank, Supplier<World> worldSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
+    /**
+     * Fills the tank from this item OR converts the given item to an infusion type
+     */
+    public static InfusionInventorySlot fillOrConvert(IChemicalTank<InfuseType, InfusionStack> infusionTank, Supplier<World> worldSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(infusionTank, "Infusion tank cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
-        return new InfusionInventorySlot(infusionTank, worldSupplier, stack -> {
-            InfusionStack infusionStack = getPotentialConversion(worldSupplier.get(), stack);
-            //Allow extraction IFF after a reload an item no longer has an infusion type
-            return infusionStack.isEmpty() || !infusionTank.isValid(infusionStack);
-        }, stack -> {
-            InfusionStack infusionStack = getPotentialConversion(worldSupplier.get(), stack);
-            //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-            return !infusionStack.isEmpty() && infusionTank.insert(infusionStack, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < infusionStack.getAmount();
-        }, stack -> {
-            InfusionStack infusionStack = getPotentialConversion(worldSupplier.get(), stack);
-            return !infusionStack.isEmpty() && infusionTank.isValid(infusionStack);
+        Function<ItemStack, InfusionStack> potentialConversionSupplier = stack -> getPotentialConversion(worldSupplier.get(), stack);
+        return new InfusionInventorySlot(infusionTank, worldSupplier, getFillOrConvertExtractPredicate(infusionTank, InfusionInventorySlot::getCapabilityWrapper, potentialConversionSupplier),
+              getFillOrConvertInsertPredicate(infusionTank, InfusionInventorySlot::getCapabilityWrapper, potentialConversionSupplier), stack -> {
+            if (stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent()) {
+                //Note: we mark all infusion items as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
+                return true;
+            }
+            //Allow infusion conversion of items that have a infusion that is valid
+            InfusionStack conversion = getPotentialConversion(worldSupplier.get(), stack);
+            return !conversion.isEmpty() && infusionTank.isValid(conversion);
         }, inventory, x, y);
     }
 
-    //TODO: Replace InfusionTank with an IInfusionHandler??
-    private final IChemicalTank<InfuseType, InfusionStack> infusionTank;
-    private final Supplier<World> worldSupplier;
-
     private InfusionInventorySlot(IChemicalTank<InfuseType, InfusionStack> infusionTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
-        super(canExtract, canInsert, validator, inventory, x, y);
-        setSlotType(ContainerSlotType.EXTRA);
-        this.infusionTank = infusionTank;
-        this.worldSupplier = worldSupplier;
+        super(infusionTank, worldSupplier, canExtract, canInsert, validator, inventory, x, y);
     }
 
-    public void fillTank() {
-        if (!isEmpty()) {
-            ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
-            if (foundRecipe != null) {
-                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
-                if (!itemInput.isEmpty()) {
-                    InfusionStack pendingInfusionInput = foundRecipe.getOutput(itemInput);
-                    if (!pendingInfusionInput.isEmpty() && infusionTank.insert(pendingInfusionInput, Action.SIMULATE, AutomationType.INTERNAL).isEmpty()) {
-                        //If we can accept it all, then add it and decrease our input
-                        int amount = pendingInfusionInput.getAmount();
-                        if (infusionTank.shrinkStack(amount, Action.EXECUTE) != amount) {
-                            //TODO: Print warning/error
-                        }
-                        int amountUsed = itemInput.getCount();
-                        if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
-                            //TODO: Print warning/error
-                        }
-                        onContentsChanged();
-                    }
-                }
+    @Nullable
+    @Override
+    protected IChemicalHandlerWrapper<InfuseType, InfusionStack> getCapabilityWrapper() {
+        return getCapabilityWrapper(current);
+    }
+
+    @Nullable
+    @Override
+    protected Pair<ItemStack, InfusionStack> getConversion() {
+        ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
+        if (foundRecipe != null) {
+            ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
+            if (!itemInput.isEmpty()) {
+                return Pair.of(itemInput, foundRecipe.getOutput(itemInput));
             }
         }
+        return null;
     }
 }

@@ -92,14 +92,14 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     protected IChemicalTankHolder<InfuseType, InfusionStack> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
-        builder.addTank(infusionTank = BasicInfusionTank.input(MAX_INFUSE, type -> {
-            if (!infusionSlot.isEmpty()) {
-                ItemStack stack = infusionSlot.getStack();
+        builder.addTank(infusionTank = BasicInfusionTank.create(MAX_INFUSE, BasicInfusionTank.manualOnly, (type, automationType) -> {
+            if (!inputSlot.isEmpty()) {
+                ItemStack stack = inputSlot.getStack();
                 return containsRecipe(recipe -> recipe.getItemInput().testType(stack) && recipe.getInfusionInput().testType(type));
             }
-            //Otherwise just look for items that can be used
-            return containsRecipe(recipe -> recipe.getInfusionInput().testType(type));
-        }, this));
+            //Otherwise return true, as we already validated the type was valid
+            return true;
+        }, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this));
         return builder.build();
     }
 
@@ -107,15 +107,15 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(infusionSlot = InfusionInventorySlot.input(infusionTank, this::getWorld, this, 17, 35));
+        builder.addSlot(infusionSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getWorld, this, 17, 35));
         //TODO: Verify that it is properly querying the infusion tank's type if it changes
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             if (!infusionTank.isEmpty()) {
                 return containsRecipe(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(stack));
             }
-            //Otherwise just look for items that can be used
-            return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
-        }, this, 51, 43));
+            //Otherwise return true, as we already validated the type was valid
+            return true;
+        }, stack -> containsRecipe(recipe -> recipe.getItemInput().testType(stack)), this, 51, 43));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 109, 43));
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35));
         return builder.build();
@@ -125,7 +125,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     public void onUpdate() {
         if (!isRemote()) {
             energySlot.discharge(this);
-            infusionSlot.fillTank();
+            infusionSlot.fillTankOrConvert();
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();

@@ -49,7 +49,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     protected void addSlots(InventorySlotHelper builder) {
         super.addSlots(builder);
-        builder.addSlot(extraSlot = InfusionInventorySlot.input(infusionTank, this::getWorld, this, 7, 57));
+        builder.addSlot(extraSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getWorld, this, 7, 57));
     }
 
     public BasicInfusionTank getInfusionTank() {
@@ -118,7 +118,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Override
     protected void handleSecondaryFuel() {
-        extraSlot.fillTank();
+        extraSlot.fillTankOrConvert();
     }
 
     @Override

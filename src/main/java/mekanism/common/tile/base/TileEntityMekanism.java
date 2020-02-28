@@ -1074,7 +1074,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Nonnull
     @Override
     public List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side) {
-        if (!canHandleGas() || infusionTankHolder == null) {
+        if (!canHandleInfusion() || infusionTankHolder == null) {
             return Collections.emptyList();
         }
         return infusionTankHolder.getTanks(side);

@@ -55,6 +55,15 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
         return new BasicInfusionTank(capacity, canExtract, canInsert, validator, infusionHandler);
     }
 
+    public static BasicInfusionTank create(int capacity, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canExtract, BiPredicate<@NonNull InfuseType, @NonNull AutomationType> canInsert,
+          Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
+        //TODO: Validate capacity is positive
+        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
+        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
+        Objects.requireNonNull(validator, "Infuse type validity check cannot be null");
+        return new BasicInfusionTank(capacity, canExtract, canInsert, validator, infusionHandler);
+    }
+
     protected BasicInfusionTank(int capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert, Predicate<@NonNull InfuseType> validator,
           @Nullable IMekanismInfusionHandler infusionHandler) {
         this(capacity, (stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
