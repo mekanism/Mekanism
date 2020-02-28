@@ -1,12 +1,15 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
-import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasItem;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.util.ItemDataUtils;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.chemical.RateLimitGasHandler;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -26,11 +29,10 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
-public class ItemGaugeDropper extends Item implements IGasItem {
+public class ItemGaugeDropper extends Item {
 
-    public static final int TRANSFER_RATE = 16;
+    private static final int TRANSFER_RATE = 16;
     public static int CAPACITY = FluidAttributes.BUCKET_VOLUME;
 
     public ItemGaugeDropper(Properties properties) {
@@ -44,11 +46,22 @@ public class ItemGaugeDropper extends Item implements IGasItem {
 
     @Override
     public double getDurabilityForDisplay(ItemStack stack) {
-        double gasRatio = (double) getGas(stack).getAmount() / (double) CAPACITY;
-        //TODO: Better way of doing this?
-        FluidStack fluidStack = CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null ? FluidStack.EMPTY : FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
-        double fluidRatio = (double) fluidStack.getAmount() / (double) CAPACITY;
-        return 1D - Math.max(gasRatio, fluidRatio);
+        if (CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY != null && Capabilities.GAS_HANDLER_CAPABILITY != null) {
+            //Ensure the capability is not null, as the first call to getDurabilityForDisplay happens before capability injection
+            double gasRatio = 0;
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                IGasHandler gasHandlerItem = capability.get();
+                if (gasHandlerItem.getGasTankCount() > 0) {
+                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                    gasRatio = gasHandlerItem.getGasInTank(0).getAmount() / (double) gasHandlerItem.getGasTankCapacity(0);
+                }
+            }
+            FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+            double fluidRatio = fluidStack.getAmount() / (double) CAPACITY;
+            return 1D - Math.max(gasRatio, fluidRatio);
+        }
+        return 1;
     }
 
     @Nonnull
@@ -56,7 +69,13 @@ public class ItemGaugeDropper extends Item implements IGasItem {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         if (player.isShiftKeyDown() && !world.isRemote) {
-            setGas(stack, GasStack.EMPTY);
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                IGasHandler gasHandlerItem = capability.get();
+                for (int tank = 0; tank < gasHandlerItem.getGasTankCount(); tank++) {
+                    gasHandlerItem.setGasInTank(tank, GasStack.EMPTY);
+                }
+            }
             FluidUtil.getFluidHandler(stack).ifPresent(handler -> handler.drain(CAPACITY, FluidAction.EXECUTE));
             ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
@@ -67,10 +86,21 @@ public class ItemGaugeDropper extends Item implements IGasItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
-        GasStack gasStack = getGas(stack);
-        //TODO: Better way of doing this?
-        //TODO: Better way of doing this?
-        FluidStack fluidStack = CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null ? FluidStack.EMPTY : FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+        if (CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null || Capabilities.GAS_HANDLER_CAPABILITY == null) {
+            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
+            tooltip.add(MekanismLang.EMPTY.translate());
+            return;
+        }
+        GasStack gasStack = GasStack.EMPTY;
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem.getGasTankCount() > 0) {
+                //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                gasStack = gasHandlerItem.getGasInTank(0);
+            }
+        }
+        FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
         if (gasStack.isEmpty() && fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translate());
         } else if (!gasStack.isEmpty()) {
@@ -81,78 +111,9 @@ public class ItemGaugeDropper extends Item implements IGasItem {
     }
 
     @Override
-    public int getRate(@Nonnull ItemStack stack) {
-        return TRANSFER_RATE;
-    }
-
-    @Override
-    public int addGas(@Nonnull ItemStack itemStack, @Nonnull GasStack stack) {
-        GasStack gasInItem = getGas(itemStack);
-        if (!gasInItem.isEmpty() && !gasInItem.isTypeEqual(stack)) {
-            return 0;
-        }
-        int toUse = Math.min(getMaxGas(itemStack) - getStored(itemStack), Math.min(getRate(itemStack), stack.getAmount()));
-        setGas(itemStack, new GasStack(stack, getStored(itemStack) + toUse));
-        return toUse;
-    }
-
-    @Nonnull
-    @Override
-    public GasStack removeGas(@Nonnull ItemStack stack, int amount) {
-        GasStack gasInItem = getGas(stack);
-        if (gasInItem.isEmpty()) {
-            return GasStack.EMPTY;
-        }
-        Gas type = gasInItem.getType();
-        int gasToUse = Math.min(getStored(stack), Math.min(getRate(stack), amount));
-        setGas(stack, new GasStack(type, getStored(stack) - gasToUse));
-        return new GasStack(type, gasToUse);
-    }
-
-    private int getStored(ItemStack stack) {
-        return getGas(stack).getAmount();
-    }
-
-    @Override
-    public boolean canReceiveGas(@Nonnull ItemStack stack, @Nonnull Gas type) {
-        GasStack gasInItem = getGas(stack);
-        return gasInItem.isEmpty() || gasInItem.getType().equals(type);
-    }
-
-    @Override
-    public boolean canProvideGas(@Nonnull ItemStack stack, @Nonnull Gas type) {
-        GasStack gasInItem = getGas(stack);
-        return !gasInItem.isEmpty() && (type.isEmptyType() || gasInItem.isTypeEqual(type));
-    }
-
-    private GasStack getGas_do(ItemStack stack) {
-        return GasStack.readFromNBT(ItemDataUtils.getCompound(stack, "gasStack"));
-    }
-
-    @Nonnull
-    @Override
-    public GasStack getGas(@Nonnull ItemStack stack) {
-        return getGas_do(stack);
-    }
-
-    @Override
-    public void setGas(@Nonnull ItemStack itemStack, @Nonnull GasStack stack) {
-        if (stack.isEmpty()) {
-            ItemDataUtils.removeData(itemStack, "gasStack");
-        } else {
-            int amount = Math.max(0, Math.min(stack.getAmount(), getMaxGas(itemStack)));
-            GasStack gasStack = new GasStack(stack, amount);
-            ItemDataUtils.setCompound(itemStack, "gasStack", gasStack.write(new CompoundNBT()));
-        }
-    }
-
-    @Override
-    public int getMaxGas(@Nonnull ItemStack stack) {
-        return CAPACITY;
-    }
-
-    @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new FluidHandlerItemStack(stack, CAPACITY);
+        //TODO: Fix FluidItemWrapper capacity??
+        //return new FluidHandlerItemStack(stack, CAPACITY);
+        return new ItemCapabilityWrapper(stack, /*new FluidItemWrapper(),*/ RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> CAPACITY));
     }
 }

@@ -2,16 +2,12 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
-import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasItem;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
-import mekanism.api.inventory.AutomationType;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -25,10 +21,8 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
-import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.item.ItemStack;
 
 public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler {
 
@@ -77,27 +71,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator implements IGasH
         super.onUpdate();
         if (!isRemote()) {
             energySlot.charge(this);
-            ItemStack stack = fuelSlot.getStack();
-            if (!stack.isEmpty() && fuelTank.getStored() < MAX_GAS) {
-                Gas gasType = MekanismAPI.EMPTY_GAS;
-                if (!fuelTank.isEmpty()) {
-                    gasType = fuelTank.getType();
-                } else if (!stack.isEmpty() && stack.getItem() instanceof IGasItem) {
-                    GasStack gasInItem = ((IGasItem) stack.getItem()).getGas(stack);
-                    if (!gasInItem.isEmpty()) {
-                        gasType = gasInItem.getType();
-                    }
-                }
-                if (!gasType.isEmptyType() && !FuelHandler.getFuel(gasType).isEmpty()) {
-                    //TODO: FIXME (or more accurately move logic into the slot), as the stack is supposed to not be changed and this method changes it
-                    GasStack removed = GasUtils.removeGas(stack, gasType, fuelTank.getNeeded());
-                    boolean wasTankEmpty = fuelTank.isEmpty();
-                    GasStack remainder = fuelTank.insert(removed, Action.EXECUTE, AutomationType.INTERNAL);
-                    if (remainder.getAmount() < removed.getAmount() && wasTankEmpty) {
-                        output = FuelHandler.getFuel(fuelTank.getType()).energyPerTick * 2;
-                    }
-                }
-            }
+            fuelSlot.fillTank();
 
             boolean operate = canOperate();
             if (operate && getEnergy() + generationRate < getMaxEnergy()) {

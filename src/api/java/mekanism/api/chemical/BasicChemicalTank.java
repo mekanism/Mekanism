@@ -17,8 +17,8 @@ import net.minecraft.nbt.CompoundNBT;
 public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IChemicalTank<CHEMICAL, STACK> {
 
     private final Predicate<@NonNull CHEMICAL> validator;
-    private final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract;
-    private final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert;
+    protected final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canExtract;
+    protected final BiPredicate<@NonNull CHEMICAL, @NonNull AutomationType> canInsert;
     private final int capacity;
     /**
      * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(STACK)} should be used instead.
@@ -52,6 +52,19 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
         setStack(stack, true);
     }
 
+    /**
+     * Helper method to allow easily setting a rate at which this {@link BasicChemicalTank} can insert/extract chemicals.
+     *
+     * @return The rate this tank can insert/extract at.
+     *
+     * @implNote By default this returns {@link Integer#MAX_VALUE} so as to not actually limit the tank's rate.
+     * @apiNote By default this is ignored for direct setting of the stack/stack size
+     */
+    protected int getRate() {
+        //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.
+        return Integer.MAX_VALUE;
+    }
+
     protected void setStackUnchecked(STACK stack) {
         setStack(stack, false);
     }
@@ -81,9 +94,9 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
             return stack;
         }
-        int needed = getNeeded();
+        int needed = Math.min(getRate(), getNeeded());
         if (needed <= 0) {
-            //Fail if we are a full slot
+            //Fail if we are a full slot or our rate is zero
             return stack;
         }
         boolean sameType = false;
@@ -121,7 +134,12 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             return getEmptyStack();
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
-        STACK ret = createStack(stored, Math.min(getStored(), amount));
+        // We also are limiting it by the rate this tank has
+        int size = Math.min(Math.min(getRate(), getStored()), amount);
+        if (size == 0) {
+            return getEmptyStack();
+        }
+        STACK ret = createStack(stored, size);
         if (!ret.isEmpty() && action.execute()) {
             //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
             stored.shrink(ret.getAmount());
@@ -162,6 +180,27 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
         stored.setAmount(amount);
         onContentsChanged();
         return amount;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten so that we can make this obey the rate limit our tank may have
+     */
+    @Override
+    public int growStack(int amount, Action action) {
+        //TODO: We should go through all the places we have TODOs about errors/warnings, and debate removing them/add
+        // some form of graceful handling as it is valid they may not grow the full amount due to rate limiting
+        // Though I believe most places we manually call it we have already done a simulation, which should really
+        // have caught any rate limit issues
+        int current = getStored();
+        if (amount > 0) {
+            amount = Math.min(amount, getRate());
+        } else if (amount < 0) {
+            amount = Math.max(amount, -getRate());
+        }
+        int newSize = setStackSize(current + amount, action);
+        return newSize - current;
     }
 
     /**

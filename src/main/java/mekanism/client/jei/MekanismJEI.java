@@ -1,11 +1,13 @@
 package mekanism.client.jei;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasItem;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.GuiChemicalCrystallizer;
@@ -41,12 +43,14 @@ import mekanism.client.jei.machine.PressurizedReactionRecipeCategory;
 import mekanism.client.jei.machine.RotaryCondensentratorRecipeCategory;
 import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.util.MekanismUtils;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
@@ -61,6 +65,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
 
@@ -71,14 +76,28 @@ public class MekanismJEI implements IModPlugin {
     public static final IIngredientType<InfusionStack> TYPE_INFUSION = () -> InfusionStack.class;
 
     private static final ISubtypeInterpreter GAS_TANK_NBT_INTERPRETER = itemStack -> {
-        if (!itemStack.hasTag() || !(itemStack.getItem() instanceof IGasItem)) {
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(itemStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (!itemStack.hasTag() || !capability.isPresent()) {
             return ISubtypeInterpreter.NONE;
         }
-        GasStack gasStack = ((IGasItem) itemStack.getItem()).getGas(itemStack);
-        if (gasStack.isEmpty()) {
+        IGasHandler gasHandlerItem = capability.get();
+        if (gasHandlerItem.getGasTankCount() == 1) {
+            //TODO: Eventually figure out a good way to do this with multiple gas tanks
+            return gasHandlerItem.getGasInTank(0).getType().getRegistryName().toString();
+        }
+        return ISubtypeInterpreter.NONE;
+    };
+    private static final ISubtypeInterpreter INFUSION_TANK_NBT_INTERPRETER = itemStack -> {
+        Optional<IInfusionHandler> capability = MekanismUtils.toOptional(itemStack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY));
+        if (!itemStack.hasTag() || !capability.isPresent()) {
             return ISubtypeInterpreter.NONE;
         }
-        return gasStack.getType().getRegistryName().toString();
+        IInfusionHandler infusionHandlerItem = capability.get();
+        if (infusionHandlerItem.getInfusionTankCount() == 1) {
+            //TODO: Eventually figure out a good way to do this with multiple infusion tanks
+            return infusionHandlerItem.getInfusionInTank(0).getType().getRegistryName().toString();
+        }
+        return ISubtypeInterpreter.NONE;
     };
     private static final ISubtypeInterpreter ENERGY_INTERPRETER = itemStack -> {
         if (!itemStack.hasTag() || !(itemStack.getItem() instanceof IItemEnergized)) {
@@ -100,17 +119,28 @@ public class MekanismJEI implements IModPlugin {
         return Mekanism.rl("jei_plugin");
     }
 
-    @Override
-    public void registerItemSubtypes(ISubtypeRegistration registry) {
-        for (IItemProvider itemProvider : MekanismItems.ITEMS.getAllItems()) {
+    public static void registerItemSubtypes(ISubtypeRegistration registry, List<IItemProvider> itemProviders) {
+        for (IItemProvider itemProvider : itemProviders) {
             Item item = itemProvider.getItem();
+            //TODO: Is there some issue with the fact that maybe these override the other ones so need to be done differently, if there is one
+            // that supports say both energy and gas
             //Handle items
-            if (item instanceof IGasItem) {
-                registry.registerSubtypeInterpreter(item, GAS_TANK_NBT_INTERPRETER);
-            } else if (item instanceof IItemEnergized) {
+            if (item instanceof IItemEnergized) {
                 registry.registerSubtypeInterpreter(item, ENERGY_INTERPRETER);
             }
+            ItemStack itemStack = itemProvider.getItemStack();
+            if (itemStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent()) {
+                registry.registerSubtypeInterpreter(item, GAS_TANK_NBT_INTERPRETER);
+            }
+            if (itemStack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent()) {
+                registry.registerSubtypeInterpreter(item, INFUSION_TANK_NBT_INTERPRETER);
+            }
         }
+    }
+
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistration registry) {
+        registerItemSubtypes(registry, MekanismItems.ITEMS.getAllItems());
         //We don't have a get all blocks so just manually add them
         registry.registerSubtypeInterpreter(MekanismBlocks.BASIC_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);
         registry.registerSubtypeInterpreter(MekanismBlocks.ADVANCED_GAS_TANK.getItem(), GAS_TANK_NBT_INTERPRETER);

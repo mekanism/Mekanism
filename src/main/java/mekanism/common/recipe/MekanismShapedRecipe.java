@@ -7,11 +7,13 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.Action;
 import mekanism.api.Upgrade;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasItem;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergizedItem;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.security.ISecurityItem;
@@ -93,34 +95,39 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
             }
         }
         //Transfer gas
-        if (item instanceof IGasItem) {
-            //TODO: Replace with capabilities
-            IGasItem gasItem = (IGasItem) item;
-            if (gasItem.getMaxGas(toReturn) > 0) {
-                GasStack gasFound = GasStack.EMPTY;
-                for (int i = 0; i < invLength; i++) {
-                    ItemStack stack = inv.getStackInSlot(i);
-                    if (!stack.isEmpty() && stack.getItem() instanceof IGasItem) {
-                        GasStack stored = ((IGasItem) stack.getItem()).getGas(stack);
-                        if (!stored.isEmpty()) {
-                            if (!gasItem.canReceiveGas(toReturn, stored.getType())) {
-                                //If the gas is not valid for the recipe so just return empty
-                                return ItemStack.EMPTY;
-                            }
-                            if (gasFound.isEmpty()) {
-                                gasFound = stored;
-                            } else if (gasFound.isTypeEqual(stored)) {
-                                gasFound.grow(stored.getAmount());
-                            } else {
-                                //If there are multiple types of gases stored in components, just return empty
-                                return ItemStack.EMPTY;
+        Optional<IGasHandler> resultCapability = MekanismUtils.toOptional(toReturn.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (resultCapability.isPresent()) {
+            IGasHandler gasHandlerResult = resultCapability.get();
+            for (int i = 0; i < invLength; i++) {
+                ItemStack stack = inv.getStackInSlot(i);
+                if (!stack.isEmpty()) {
+                    Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                    if (capability.isPresent()) {
+                        IGasHandler gasHandlerItem = capability.get();
+                        for (int tank = 0; tank < gasHandlerItem.getGasTankCount(); tank++) {
+                            GasStack gasInItem = gasHandlerItem.getGasInTank(tank);
+                            if (!gasInItem.isEmpty()) {
+                                //Simulate inserting gas from each tank in the item into our tank
+                                GasStack simulatedRemainder = gasHandlerResult.insertGas(gasInItem, Action.SIMULATE);
+                                int gasInItemAmount = gasInItem.getAmount();
+                                int remainder = simulatedRemainder.getAmount();
+                                if (remainder < gasInItemAmount) {
+                                    //If we were simulated that we could actually insert any, then
+                                    // extract up to as much gas as we were able to accept from the item
+                                    GasStack extractedGas = gasHandlerItem.extractGas(tank, gasInItemAmount - remainder, Action.SIMULATE);
+                                    if (!extractedGas.isEmpty()) {
+                                        //If we were able to actually extract it from the item, then insert it into our gas tank
+                                        if (!gasHandlerResult.insertGas(extractedGas, Action.EXECUTE).isEmpty()) {
+                                            //TODO: Print warning/error
+                                        }
+                                    }
+                                } else {
+                                    //If the gas is not valid for the recipe so just return empty
+                                    return ItemStack.EMPTY;
+                                }
                             }
                         }
                     }
-                }
-                if (!gasFound.isEmpty()) {
-                    gasFound.setAmount(Math.min(gasItem.getMaxGas(toReturn), gasFound.getAmount()));
-                    gasItem.setGas(toReturn, gasFound);
                 }
             }
         }

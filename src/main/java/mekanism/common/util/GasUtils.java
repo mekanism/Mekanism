@@ -1,17 +1,21 @@
 package mekanism.common.util;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.chemical.gas.IGasItem;
+import mekanism.api.providers.IGasProvider;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -52,6 +56,7 @@ public final class GasUtils {
     }
 
     public static void clearIfInvalid(IChemicalTank<Gas, GasStack> tank, Predicate<@NonNull Gas> isValid) {
+        //TODO: Hook this back up
         if (MekanismConfig.general.voidInvalidGases.get()) {
             Gas gas = tank.getType();
             if (!gas.isEmptyType() && !isValid.test(gas)) {
@@ -60,40 +65,44 @@ public final class GasUtils {
         }
     }
 
-    /**
-     * Removes a specified amount of gas from an IGasItem.
-     *
-     * @param itemStack - ItemStack of the IGasItem
-     * @param type      - type of gas to remove from the IGasItem, null if it doesn't matter
-     * @param amount    - amount of gas to remove from the ItemStack
-     *
-     * @return the GasStack removed by the IGasItem
-     */
-    public static GasStack removeGas(@Nonnull ItemStack itemStack, @Nonnull Gas type, int amount) {
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem) {
-            IGasItem item = (IGasItem) itemStack.getItem();
-            GasStack gasInItem = item.getGas(itemStack);
-            if (!type.isEmptyType() && !gasInItem.isEmpty() && !gasInItem.isTypeEqual(type) || !item.canProvideGas(itemStack, type)) {
-                return GasStack.EMPTY;
-            }
-            return item.removeGas(itemStack, amount);
-        }
-        return GasStack.EMPTY;
+    public static ItemStack getFilledVariant(ItemStack toFill, int capacity, IGasProvider gasProvider) {
+        //Manually handle this as capabilities are not necessarily loaded yet
+        // (at least not on the first call to this, which is made via fillItemGroup)
+        BasicGasTank tank = BasicGasTank.create(capacity, null);
+        tank.setStack(gasProvider.getGasStack(tank.getCapacity()));
+        ItemDataUtils.setList(toFill, "GasTanks", ChemicalUtils.writeChemicalTanks(Collections.singletonList(tank)));
+        //The item is now filled return it for convenience
+        return toFill;
     }
 
-    /**
-     * Adds a specified amount of gas to an IGasItem.
-     *
-     * @param itemStack - ItemStack of the IGasItem
-     * @param stack     - stack to add to the IGasItem
-     *
-     * @return amount of gas accepted by the IGasItem
-     */
-    public static int addGas(@Nonnull ItemStack itemStack, @Nonnull GasStack stack) {
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof IGasItem && ((IGasItem) itemStack.getItem()).canReceiveGas(itemStack, stack.getType())) {
-            return ((IGasItem) itemStack.getItem()).addGas(itemStack, stack.copy());
+    public static double getDurabilityForDisplay(ItemStack stack) {
+        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
+            //Ensure the capability is not null, as the first call to getDurabilityForDisplay happens before capability injection
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                IGasHandler gasHandlerItem = capability.get();
+                //TODO: Support having multiple tanks at some point, none of our items
+                // currently do so, so it doesn't matter that much
+                if (gasHandlerItem.getGasTankCount() > 0) {
+                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                    return 1D - gasHandlerItem.getGasInTank(0).getAmount() / (double) gasHandlerItem.getGasTankCapacity(0);
+                }
+            }
         }
-        return 0;
+        return 1;
+    }
+
+    public static boolean hasGas(ItemStack stack) {
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            for (int tank = 0; tank < gasHandlerItem.getGasTankCount(); tank++) {
+                if (!gasHandlerItem.getGasInTank(tank).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

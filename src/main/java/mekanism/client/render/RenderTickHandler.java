@@ -1,12 +1,16 @@
 package mekanism.client.render;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
@@ -15,6 +19,7 @@ import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.block.Block;
@@ -99,11 +104,27 @@ public class RenderTickHandler {
                     if (stack.getItem() instanceof ItemJetpack) {
                         ItemJetpack jetpack = (ItemJetpack) stack.getItem();
                         drawString(MekanismLang.MODE.translate(jetpack.getMode(stack)), alignLeft, y - 20, 0xc8c8c8);
-                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.HYDROGEN, jetpack.getStored(stack)), alignLeft, y - 11, 0xc8c8c8);
+                        GasStack stored = GasStack.EMPTY;
+                        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                        if (capability.isPresent()) {
+                            IGasHandler gasHandlerItem = capability.get();
+                            if (gasHandlerItem.getGasTankCount() > 0) {
+                                stored = gasHandlerItem.getGasInTank(0);
+                            }
+                        }
+                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.HYDROGEN, stored), alignLeft, y - 11, 0xc8c8c8);
                     } else if (stack.getItem() instanceof ItemScubaTank) {
                         ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
                         drawString(MekanismLang.MODE.translate(OnOff.of(scubaTank.getFlowing(stack), true)), alignLeft, y - 20, 0xc8c8c8);
-                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.OXYGEN, scubaTank.getStored(stack)), alignLeft, y - 11, 0xc8c8c8);
+                        GasStack stored = GasStack.EMPTY;
+                        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                        if (capability.isPresent()) {
+                            IGasHandler gasHandlerItem = capability.get();
+                            if (gasHandlerItem.getGasTankCount() > 0) {
+                                stored = gasHandlerItem.getGasInTank(0);
+                            }
+                        }
+                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.OXYGEN, stored), alignLeft, y - 11, 0xc8c8c8);
                     }
                 }
 
@@ -165,7 +186,7 @@ public class RenderTickHandler {
                     for (PlayerEntity p : world.getPlayers()) {
                         if (!Mekanism.playerState.isFlamethrowerOn(p) && !p.isSwingInProgress) {
                             ItemStack currentItem = p.inventory.getCurrentItem();
-                            if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && !((ItemFlamethrower) currentItem.getItem()).getGas(currentItem).isEmpty()) {
+                            if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && GasUtils.hasGas(currentItem)) {
                                 Pos3D playerPos = new Pos3D(p);
                                 Pos3D flameVec;
                                 double flameXCoord = 0;

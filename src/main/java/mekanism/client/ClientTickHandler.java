@@ -29,6 +29,7 @@ import mekanism.common.network.PacketItemStack;
 import mekanism.common.network.PacketPortableTeleporter;
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -67,22 +68,19 @@ public class ClientTickHandler {
         }
         if (!player.isCreative() && !player.isSpectator()) {
             ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-            if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack) {
-                ItemJetpack jetpack = (ItemJetpack) chest.getItem();
-                if (!jetpack.getGas(chest).isEmpty()) {
-                    JetpackMode mode = jetpack.getMode(chest);
-                    if (mode == JetpackMode.NORMAL) {
-                        return minecraft.currentScreen == null && minecraft.gameSettings.keyBindJump.isKeyDown();
-                    } else if (mode == JetpackMode.HOVER) {
-                        boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
-                        boolean descending = MekanismKeyHandler.sneakKey.isKeyDown();
-                        //if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null || (descending && minecraft.currentScreen == null))
-                        //Simplifies to
-                        if (!ascending || descending || minecraft.currentScreen != null) {
-                            return !CommonPlayerTickHandler.isOnGround(player);
-                        }
-                        return true;
+            if (!chest.isEmpty() && chest.getItem() instanceof ItemJetpack && GasUtils.hasGas(chest)) {
+                JetpackMode mode = ((ItemJetpack) chest.getItem()).getMode(chest);
+                if (mode == JetpackMode.NORMAL) {
+                    return minecraft.currentScreen == null && minecraft.gameSettings.keyBindJump.isKeyDown();
+                } else if (mode == JetpackMode.HOVER) {
+                    boolean ascending = minecraft.gameSettings.keyBindJump.isKeyDown();
+                    boolean descending = MekanismKeyHandler.sneakKey.isKeyDown();
+                    //if ((!ascending && !descending) || (ascending && descending) || minecraft.currentScreen != null || (descending && minecraft.currentScreen == null))
+                    //Simplifies to
+                    if (!ascending || descending || minecraft.currentScreen != null) {
+                        return !CommonPlayerTickHandler.isOnGround(player);
                     }
+                    return true;
                 }
             }
         }
@@ -119,10 +117,7 @@ public class ClientTickHandler {
 
     public static boolean hasFlamethrower(PlayerEntity player) {
         ItemStack currentItem = player.inventory.getCurrentItem();
-        if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower) {
-            return !((ItemFlamethrower) currentItem.getItem()).getGas(currentItem).isEmpty();
-        }
-        return false;
+        return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && GasUtils.hasGas(currentItem);
     }
 
     public static void portableTeleport(PlayerEntity player, Hand hand, Frequency freq) {
@@ -219,7 +214,7 @@ public class ClientTickHandler {
             if (!minecraft.player.isCreative() && !minecraft.player.isSpectator()) {
                 if (isFlamethrowerOn(minecraft.player)) {
                     ItemFlamethrower flamethrower = (ItemFlamethrower) minecraft.player.inventory.getCurrentItem().getItem();
-                    flamethrower.useGas(minecraft.player.inventory.getCurrentItem());
+                    flamethrower.useGas(minecraft.player.inventory.getCurrentItem(), 1);
                 }
             }
 
@@ -248,13 +243,13 @@ public class ClientTickHandler {
                     }
                     minecraft.player.fallDistance = 0.0F;
                 }
-                jetpack.useGas(chestStack);
+                jetpack.useGas(chestStack, 1);
             }
 
             if (isGasMaskOn(minecraft.player)) {
                 ItemScubaTank tank = (ItemScubaTank) chestStack.getItem();
                 final int max = 300;
-                tank.useGas(chestStack);
+                tank.useGas(chestStack, 1);
                 GasStack received = tank.useGas(chestStack, max - minecraft.player.getAir());
 
                 if (!received.isEmpty()) {

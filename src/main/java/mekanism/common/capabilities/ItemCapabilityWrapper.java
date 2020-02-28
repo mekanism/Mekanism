@@ -19,6 +19,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
         itemStack = stack;
         for (ItemCapability c : caps) {
             c.wrapper = this;
+            c.init();
             capabilities.add(c);
         }
     }
@@ -30,6 +31,9 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
             //Only provide capabilities if we are not empty
             for (ItemCapability cap : capabilities) {
                 if (cap.canProcess(capability)) {
+                    //Make sure that we load any data the cap needs from the stack, as it doesn't have any NBT set when it is initially initialized
+                    // This also allows us to update to any direct changes on the NBT of the stack that someone may have made
+                    cap.load();
                     return LazyOptional.of(() -> cap).cast();
                 }
             }
@@ -42,6 +46,12 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
         private ItemCapabilityWrapper wrapper;
 
         public abstract boolean canProcess(Capability<?> capability);
+
+        protected void init() {
+        }
+
+        protected void load() {
+        }
 
         public ItemStack getStack() {
             return wrapper.itemStack;

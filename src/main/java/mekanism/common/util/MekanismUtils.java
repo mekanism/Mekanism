@@ -26,7 +26,6 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
-import mekanism.common.item.block.ItemBlockGasTank;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tier.GasTankTier;
@@ -715,9 +714,7 @@ public final class MekanismUtils {
      * @return filled gas tank
      */
     public static ItemStack getFullGasTank(GasTankTier tier, @Nonnull Gas gas) {
-        ItemStack tank = getEmptyGasTank(tier);
-        ((ItemBlockGasTank) tank.getItem()).setGas(tank, gas.getGasStack(tier.getStorage()));
-        return tank;
+        return GasUtils.getFilledVariant(getEmptyGasTank(tier), tier.getStorage(), gas);
     }
 
     public static CraftingInventory getDummyCraftingInv() {

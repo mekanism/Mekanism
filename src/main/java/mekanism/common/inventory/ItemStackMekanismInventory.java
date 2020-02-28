@@ -23,7 +23,7 @@ public abstract class ItemStackMekanismInventory implements IMekanismInventory {
     protected ItemStackMekanismInventory(@Nonnull ItemStack stack) {
         this.stack = stack;
         this.slots = getInitialInventory();
-        if (stack.getItem() instanceof IItemSustainedInventory) {
+        if (!stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory) {
             ListNBT inventory = ((IItemSustainedInventory) stack.getItem()).getInventory(stack);
             int size = slots.size();
             for (int slot = 0; slot < inventory.size(); slot++) {
@@ -47,7 +47,7 @@ public abstract class ItemStackMekanismInventory implements IMekanismInventory {
 
     @Override
     public void onContentsChanged() {
-        if (stack.getItem() instanceof IItemSustainedInventory) {
+        if (!stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory) {
             ListNBT tagList = new ListNBT();
             for (int slot = 0; slot < slots.size(); slot++) {
                 IInventorySlot inventorySlot = slots.get(slot);

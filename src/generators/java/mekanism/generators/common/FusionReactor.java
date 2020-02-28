@@ -2,17 +2,19 @@ package mekanism.generators.common;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.chemical.gas.BasicGasTank;
-import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.LaserManager;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
@@ -81,8 +83,14 @@ public class FusionReactor {
         if (controller != null && !controller.getReactorSlot().isEmpty()) {
             ItemStack hohlraum = controller.getReactorSlot().getStack();
             if (hohlraum.getItem() instanceof ItemHohlraum) {
-                GasStack gasStack = ((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum);
-                return !gasStack.isEmpty() && gasStack.getType() == MekanismGases.FUSION_FUEL.getGas() && gasStack.getAmount() == ItemHohlraum.MAX_GAS;
+                Optional<IGasHandler> capability = MekanismUtils.toOptional(hohlraum.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+                if (capability.isPresent()) {
+                    IGasHandler gasHandlerItem = capability.get();
+                    if (gasHandlerItem.getGasTankCount() > 0) {
+                        //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                        return gasHandlerItem.getGasInTank(0).getAmount() == gasHandlerItem.getGasTankCapacity(0);
+                    }
+                }
             }
         }
         return false;
@@ -133,10 +141,16 @@ public class FusionReactor {
     public void vaporiseHohlraum() {
         IInventorySlot reactorSlot = controller.getReactorSlot();
         ItemStack hohlraum = reactorSlot.getStack();
-        getFuelTank().insert(((ItemHohlraum) hohlraum.getItem()).getGas(hohlraum), Action.EXECUTE, AutomationType.INTERNAL);
-        lastPlasmaTemperature = plasmaTemperature;
-        reactorSlot.setStack(ItemStack.EMPTY);
-        burning = true;
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(hohlraum.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem.getGasTankCount() > 0) {
+                getFuelTank().insert(gasHandlerItem.getGasInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
+                lastPlasmaTemperature = plasmaTemperature;
+                reactorSlot.setStack(ItemStack.EMPTY);
+                burning = true;
+            }
+        }
     }
 
     public void injectFuel() {
