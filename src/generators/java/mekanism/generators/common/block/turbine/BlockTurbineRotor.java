@@ -113,7 +113,7 @@ public class BlockTurbineRotor extends BlockMekanism implements IHasTileEntity<T
                 }
             }
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.PASS;
     }
 
     @Nonnull

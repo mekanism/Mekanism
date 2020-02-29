@@ -121,14 +121,13 @@ public final class HolidayManager {
     public static class Christmas extends Holiday {
         @Override
         public YearlyDate getDate() {
-            return new YearlyDate(2, 29);
+            return new YearlyDate(12, 25);
         }
 
         @Override
         public void onEvent(PlayerEntity player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.DARK_GREEN, EnumColor.DARK_RED}, 13);
             player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)));
-            //TODO: Decide if this should be display name instead of name
             player.sendMessage(MekanismLang.CHRISTMAS_LINE_ONE.translateColored(EnumColor.RED, EnumColor.DARK_BLUE, player.getName()));
             player.sendMessage(MekanismLang.CHRISTMAS_LINE_TWO.translateColored(EnumColor.RED));
             player.sendMessage(MekanismLang.CHRISTMAS_LINE_THREE.translateColored(EnumColor.RED));
