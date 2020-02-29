@@ -17,7 +17,7 @@ public final class MekanismSounds {
     public static final SoundEventRegistryObject<SoundEvent> CHEMICAL_OXIDIZER = SOUND_EVENTS.register("tile.machine.chemical_oxidizer");
     public static final SoundEventRegistryObject<SoundEvent> CHEMICAL_WASHER = SOUND_EVENTS.register("tile.machine.chemical_washer");
     public static final SoundEventRegistryObject<SoundEvent> COMBINER = SOUND_EVENTS.register("tile.machine.combiner");
-    public static final SoundEventRegistryObject<SoundEvent> COMPRESSOR = SOUND_EVENTS.register("tile.machine.compressor");
+    public static final SoundEventRegistryObject<SoundEvent> OSMIUM_COMPRESSOR = SOUND_EVENTS.register("tile.machine.compressor");
     public static final SoundEventRegistryObject<SoundEvent> CRUSHER = SOUND_EVENTS.register("tile.machine.crusher");
     public static final SoundEventRegistryObject<SoundEvent> ELECTROLYTIC_SEPARATOR = SOUND_EVENTS.register("tile.machine.electrolytic_separator");
     public static final SoundEventRegistryObject<SoundEvent> ENRICHMENT_CHAMBER = SOUND_EVENTS.register("tile.machine.enrichment_chamber");

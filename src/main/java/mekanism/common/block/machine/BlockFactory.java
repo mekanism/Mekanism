@@ -186,7 +186,7 @@ public class BlockFactory extends BlockMekanism implements IBlockElectric, ISupp
             case CRUSHING:
                 return MekanismSounds.CRUSHER.getSoundEvent();
             case COMPRESSING:
-                return MekanismSounds.COMPRESSOR.getSoundEvent();
+                return MekanismSounds.OSMIUM_COMPRESSOR.getSoundEvent();
             case COMBINING:
                 return MekanismSounds.COMBINER.getSoundEvent();
             case PURIFYING:
