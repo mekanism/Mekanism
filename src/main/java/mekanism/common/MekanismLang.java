@@ -33,6 +33,7 @@ public enum MekanismLang implements ILangEntry {
     NEW_YEAR_LINE_ONE("holiday", "new_year.1"),
     NEW_YEAR_LINE_TWO("holiday", "new_year.2"),
     NEW_YEAR_LINE_THREE("holiday", "new_year.3"),
+    MAY_4_LINE_ONE("holiday", "may_4.1"),
     //Generic
     GENERIC("generic", "format"),
     GENERIC_STORED("generic", "stored"),

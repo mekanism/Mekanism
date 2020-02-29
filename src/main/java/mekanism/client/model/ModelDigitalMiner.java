@@ -1,8 +1,10 @@
 package mekanism.client.model;
 
+import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.Nonnull;
+import mekanism.client.HolidayManager;
+import mekanism.client.HolidayManager.May4;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
@@ -18,8 +20,10 @@ public class ModelDigitalMiner extends Model {
 
     private static final ResourceLocation MINER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner.png");
     private static final ResourceLocation OVERLAY_ON = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner_overlay_on.png");
+    private static final ResourceLocation OVERLAY_ON_MAY4 = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner_overlay_on_may4.png");
     private static final ResourceLocation OVERLAY_OFF = MekanismUtils.getResource(ResourceType.RENDER, "digital_miner_overlay_off.png");
     private static final RenderType RENDER_TYPE_ON = MekanismRenderType.mekStandard(OVERLAY_ON);
+    private static final RenderType RENDER_TYPE_ON_MAY4 = MekanismRenderType.mekStandard(OVERLAY_ON_MAY4);
     private static final RenderType RENDER_TYPE_OFF = MekanismRenderType.mekStandard(OVERLAY_OFF);
 
     private final RenderType RENDER_TYPE = getRenderType(MINER_TEXTURE);
@@ -433,7 +437,8 @@ public class ModelDigitalMiner extends Model {
         matrix.scale(1.001F, 1.001F, 1.001F);
         matrix.translate(-0.0011, -0.0011, -0.0011);
         GlowInfo glowInfo = MekanismRenderer.enableGlow();
-        render(matrix, renderer.getBuffer(on ? RENDER_TYPE_ON : RENDER_TYPE_OFF), light, overlayLight, 1, 1, 1, 1);
+        boolean may4 = HolidayManager.getHoliday() instanceof May4;
+        render(matrix, renderer.getBuffer(on ? (may4 ? RENDER_TYPE_ON_MAY4 : RENDER_TYPE_ON) : RENDER_TYPE_OFF), light, overlayLight, 1, 1, 1, 1);
         MekanismRenderer.disableGlow(glowInfo);
         matrix.pop();
     }

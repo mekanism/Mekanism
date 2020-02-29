@@ -17,6 +17,7 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.tier.BaseTier;
+import mekanism.client.HolidayManager;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
@@ -173,7 +174,7 @@ public class BlockCrusher extends BlockMekanism implements IBlockElectric, ISupp
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return MekanismSounds.CRUSHER.getSoundEvent();
+        return HolidayManager.filterSound(MekanismSounds.CRUSHER).getSoundEvent();
     }
 
     @Override

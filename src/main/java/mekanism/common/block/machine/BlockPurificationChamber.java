@@ -17,6 +17,7 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.tier.BaseTier;
+import mekanism.client.HolidayManager;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
@@ -174,7 +175,7 @@ public class BlockPurificationChamber extends BlockMekanism implements IBlockEle
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return MekanismSounds.PURIFICATION_CHAMBER.getSoundEvent();
+        return HolidayManager.filterSound(MekanismSounds.PURIFICATION_CHAMBER).getSoundEvent();
     }
 
     @Override

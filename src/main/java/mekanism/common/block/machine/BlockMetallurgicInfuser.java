@@ -18,6 +18,7 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.tier.BaseTier;
+import mekanism.client.HolidayManager;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILangEntry;
@@ -218,7 +219,7 @@ public class BlockMetallurgicInfuser extends BlockMekanism implements IBlockElec
     @Nonnull
     @Override
     public SoundEvent getSoundEvent() {
-        return MekanismSounds.METALLURGIC_INFUSER.getSoundEvent();
+        return HolidayManager.filterSound(MekanismSounds.METALLURGIC_INFUSER).getSoundEvent();
     }
 
     @Override

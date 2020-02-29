@@ -7,9 +7,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.registration.impl.SoundEventRegistryObject;
+import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 
 public final class HolidayManager {
 
@@ -22,6 +24,7 @@ public final class HolidayManager {
         if (MekanismConfig.client.holidays.get()) {
             holidays.add(new Christmas());
             holidays.add(new NewYear());
+            holidays.add(new May4());
         }
         Mekanism.logger.info("Initialized HolidayManager.");
     }
@@ -41,9 +44,12 @@ public final class HolidayManager {
         } catch (Exception ignored) {
         }
     }
+    
+    public static Holiday getHoliday() {
+        return holidaysNotified.isEmpty() ? null : holidaysNotified.get(0);
+    }
 
-    //TODO: Note this is not actually used currently?
-    public static ResourceLocation filterSound(ResourceLocation sound) {
+    public static SoundEventRegistryObject<SoundEvent> filterSound(SoundEventRegistryObject<SoundEvent> sound) {
         if (!MekanismConfig.client.holidays.get()) {
             return sound;
         }
@@ -107,18 +113,15 @@ public final class HolidayManager {
 
         public abstract void onEvent(PlayerEntity player);
 
-        public ResourceLocation filterSound(ResourceLocation sound) {
+        public SoundEventRegistryObject<SoundEvent> filterSound(SoundEventRegistryObject<SoundEvent> sound) {
             return sound;
         }
     }
 
-    private static class Christmas extends Holiday {
-
-        private String[] nutcracker = new String[]{"christmas.1", "christmas.2", "christmas.3", "christmas.4", "christmas.5"};
-
+    public static class Christmas extends Holiday {
         @Override
         public YearlyDate getDate() {
-            return new YearlyDate(12, 25);
+            return new YearlyDate(2, 29);
         }
 
         @Override
@@ -135,24 +138,23 @@ public final class HolidayManager {
         }
 
         @Override
-        public ResourceLocation filterSound(ResourceLocation sound) {
-            String soundLocation = sound.toString();
-            if (soundLocation.contains("machine.enrichment")) {
-                return new ResourceLocation(soundLocation.replace("machine.enrichment", nutcracker[0]));
-            } else if (soundLocation.contains("machine.metalinfuser")) {
-                return new ResourceLocation(soundLocation.replace("machine.metalinfuser", nutcracker[1]));
-            } else if (soundLocation.contains("machine.purification")) {
-                return new ResourceLocation(soundLocation.replace("machine.purification", nutcracker[2]));
-            } else if (soundLocation.contains("machine.smelter")) {
-                return new ResourceLocation(soundLocation.replace("machine.smelter", nutcracker[3]));
-            } else if (soundLocation.contains("machine.dissolution")) {
-                return new ResourceLocation(soundLocation.replace("machine.dissolution", nutcracker[4]));
+        public SoundEventRegistryObject<SoundEvent> filterSound(SoundEventRegistryObject<SoundEvent> sound) {
+            if (sound == MekanismSounds.ENRICHMENT_CHAMBER) {
+                return MekanismSounds.CHRISTMAS1;
+            } else if (sound == MekanismSounds.METALLURGIC_INFUSER) {
+                return MekanismSounds.CHRISTMAS2;
+            } else if (sound == MekanismSounds.PURIFICATION_CHAMBER) {
+                return MekanismSounds.CHRISTMAS3;
+            } else if (sound == MekanismSounds.ENERGIZED_SMELTER) {
+                return MekanismSounds.CHRISTMAS4;
+            } else if (sound == MekanismSounds.CRUSHER) {
+                return MekanismSounds.CHRISTMAS5;
             }
             return sound;
         }
     }
 
-    private static class NewYear extends Holiday {
+    public static class NewYear extends Holiday {
 
         @Override
         public YearlyDate getDate() {
@@ -163,11 +165,26 @@ public final class HolidayManager {
         public void onEvent(PlayerEntity player) {
             String themedLines = getThemedLines(new EnumColor[]{EnumColor.WHITE, EnumColor.YELLOW}, 13);
             player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)));
-            //TODO: Decide if this should be display name instead of name
             player.sendMessage(MekanismLang.NEW_YEAR_LINE_ONE.translateColored(EnumColor.AQUA, EnumColor.DARK_BLUE, player.getName()));
             player.sendMessage(MekanismLang.NEW_YEAR_LINE_TWO.translateColored(EnumColor.AQUA));
             player.sendMessage(MekanismLang.NEW_YEAR_LINE_THREE.translateColored(EnumColor.AQUA, calendar.get(Calendar.YEAR)));
             player.sendMessage(MekanismLang.HOLIDAY_SIGNATURE.translateColored(EnumColor.DARK_GRAY));
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"));
+        }
+    }
+    
+    public static class May4 extends Holiday {
+        
+        @Override
+        public YearlyDate getDate() {
+            return new YearlyDate(5, 4);
+        }
+        
+        @Override
+        public void onEvent(PlayerEntity player) {
+            String themedLines = getThemedLines(new EnumColor[] {EnumColor.BLACK, EnumColor.GRAY, EnumColor.BLACK, EnumColor.YELLOW, EnumColor.BLACK}, 15);
+            player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)));
+            player.sendMessage(MekanismLang.MAY_4_LINE_ONE.translateColored(EnumColor.GRAY, EnumColor.DARK_BLUE, player.getName()));
             player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"));
         }
     }

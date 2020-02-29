@@ -330,6 +330,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.NEW_YEAR_LINE_ONE, "Happy New Year, %s!");
         add(MekanismLang.NEW_YEAR_LINE_TWO, "Best wishes to you as we enter this");
         add(MekanismLang.NEW_YEAR_LINE_THREE, "new and exciting year of %s! :)");
+        add(MekanismLang.MAY_4_LINE_ONE, "May the 4th be with you, %s!");
         //Generic
         add(MekanismLang.GENERIC, "%s");
         add(MekanismLang.GENERIC_STORED, "%s: %s");
