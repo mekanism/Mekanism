@@ -49,7 +49,8 @@ public class MekanismMachines {
         .withFactoryHierarchy(MekanismBlocks.BASIC_COMPRESSING_FACTORY, MekanismBlocks.ADVANCED_COMPRESSING_FACTORY, MekanismBlocks.ELITE_COMPRESSING_FACTORY, MekanismBlocks.ULTIMATE_COMPRESSING_FACTORY)
         .build();
     // Combiner
-    public static final Machine<TileEntityCombiner> COMBINER = MachineBuilder.createFactoryMachine(MekanismTileEntityTypes.COMBINER, MekanismContainerTypes.COMBINER, MekanismLang.DESCRIPTION_COMBINER, MekanismSounds.COMBINER, FactoryType.COMBINING)
+    public static final Machine<TileEntityCombiner> COMBINER = MachineBuilder
+        .createFactoryMachine(MekanismTileEntityTypes.COMBINER, MekanismContainerTypes.COMBINER, MekanismLang.DESCRIPTION_COMBINER, MekanismSounds.COMBINER, FactoryType.COMBINING)
         .withConfig(MekanismConfig.usage.combiner, MekanismConfig.storage.combiner)
         .withFactoryHierarchy(MekanismBlocks.BASIC_COMBINING_FACTORY, MekanismBlocks.ADVANCED_COMBINING_FACTORY, MekanismBlocks.ELITE_COMBINING_FACTORY, MekanismBlocks.ULTIMATE_COMBINING_FACTORY)
         .build();
