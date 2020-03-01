@@ -1,11 +1,12 @@
 package mekanism.common.tile;
 
-import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ContainerEditMode;
@@ -31,7 +32,6 @@ import mekanism.common.upgrade.FluidTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -45,18 +45,17 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidContainerManager, ITankManager {
 
     public FluidTankFluidTank fluidTank;
 
-    public ContainerEditMode editMode = ContainerEditMode.BOTH;
+    private ContainerEditMode editMode = ContainerEditMode.BOTH;
 
     public FluidTankTier tier;
 
-    public int prevAmount;
+    private int prevAmount;
 
     public int valve;
     @Nonnull
@@ -64,7 +63,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     public float prevScale;
 
-    public boolean needsPacket;
+    private boolean needsPacket;
 
     private FluidInventorySlot inputSlot;
     private OutputInventorySlot outputSlot;
@@ -151,26 +150,12 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     private void activeEmit() {
         if (!fluidTank.isEmpty()) {
-            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), pos.down());
+            TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
             CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.UP).ifPresent(handler -> {
                 FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(tier.getOutput(), fluidTank.getFluidAmount()));
-                fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), tier == FluidTankTier.CREATIVE ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+                fluidTank.extract(handler.fill(toDrain, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
             });
         }
-    }
-
-    public int pushUp(@Nonnull FluidStack fluid, FluidAction fluidAction) {
-        TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
-        if (tile != null) {
-            Optional<IFluidHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN));
-            if (capability.isPresent()) {
-                IFluidHandler handler = capability.get();
-                if (PipeUtils.canFill(handler, fluid)) {
-                    return handler.fill(fluid, fluidAction);
-                }
-            }
-        }
-        return 0;
     }
 
     @Nonnull
@@ -209,30 +194,18 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
 
-    public int getCurrentNeeded() {
-        if (tier == FluidTankTier.CREATIVE) {
-            return Integer.MAX_VALUE;
+    @Nonnull
+    @Override
+    public FluidStack insertFluid(int tank, @Nonnull FluidStack stack, @Nullable Direction side, @Nonnull Action action) {
+        FluidStack remainder = super.insertFluid(tank, stack, side, action);
+        if (side == Direction.UP && action.execute() && remainder.getAmount() < stack.getAmount() && !world.isRemote()) {
+            if (valve == 0) {
+                needsPacket = true;
+            }
+            valve = 20;
+            valveFluid = new FluidStack(stack, 1);
         }
-        int needed = fluidTank.getNeeded();
-        TileEntityFluidTank topTank = MekanismUtils.getTileEntity(TileEntityFluidTank.class, getWorld(), pos.up());
-        if (topTank != null) {
-            if (!fluidTank.isEmpty() && !topTank.fluidTank.isEmpty()) {
-                if (!fluidTank.getFluid().isFluidEqual(topTank.fluidTank.getFluid())) {
-                    return needed;
-                }
-            }
-            if (topTank.tier == FluidTankTier.CREATIVE) {
-                //Don't allow creative tanks to be taken into stacked amount as it causes weird things to occur
-                return needed;
-            }
-            int aboveNeeded = topTank.getCurrentNeeded();
-            if ((long) needed + aboveNeeded > Integer.MAX_VALUE) {
-                //If we would overflow, just return we need max value
-                return Integer.MAX_VALUE;
-            }
-            needed += aboveNeeded;
-        }
-        return needed;
+        return remainder;
     }
 
     @Override

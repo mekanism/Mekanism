@@ -16,8 +16,6 @@ import net.minecraftforge.api.distmarker.Dist;
 
 public class TileEntityPersonalChest extends TileEntityMekanism {
 
-    public static int[] INV;
-
     public float lidAngle;
 
     public float prevLidAngle;
