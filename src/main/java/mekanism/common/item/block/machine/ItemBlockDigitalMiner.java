@@ -2,11 +2,10 @@ package mekanism.common.item.block.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.client.render.item.ISTERProvider;
-import mekanism.common.block.machine.BlockMachine;
+import mekanism.common.block.machine.prefab.BlockMachine;
 import mekanism.common.content.machines.Machine;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.MekanismUtils;
@@ -18,7 +17,7 @@ import net.minecraft.world.World;
 public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockDigitalMiner(BlockMachine<TileEntityDigitalMiner, Machine<TileEntityDigitalMiner>> block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::miner));
+        super(block, ISTERProvider::miner);
     }
 
     @Override
@@ -30,7 +29,7 @@ public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemEner
                 for (int zPos = -1; zPos <= 1; zPos++) {
                     BlockPos pos = placePos.add(xPos, yPos, zPos);
                     if (!MekanismUtils.isValidReplaceableBlock(world, pos)) {
-                        //If it won't fit then fail
+                        // If it won't fit then fail
                         return false;
                     }
                 }

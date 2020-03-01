@@ -50,9 +50,17 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
     public double getUsage() {
         return energyUsage.getAsDouble();
     }
+    
+    public boolean hasUsage() {
+        return energyUsage != null;
+    }
 
     public double getConfigStorage() {
         return energyStorage.getAsDouble();
+    }
+    
+    public boolean hasConfigStorage() {
+        return energyStorage != null;
     }
 
     public static class FactoryMachine<TILE extends TileEntityMekanism> extends Machine<TILE> {
@@ -76,9 +84,6 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
     }
 
     public static class MachineBuilder<MACHINE extends Machine<TILE>, TILE extends TileEntityMekanism, T extends MachineBuilder<MACHINE, TILE, T>> extends BlockTileBuilder<MACHINE, TILE, T> {
-
-        private MACHINE holder;
-
         protected MachineBuilder(MACHINE holder) {
             super(holder);
         }

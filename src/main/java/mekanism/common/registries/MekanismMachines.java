@@ -21,9 +21,11 @@ import mekanism.common.tile.TileEntityChemicalWasher;
 import mekanism.common.tile.TileEntityCombiner;
 import mekanism.common.tile.TileEntityCrusher;
 import mekanism.common.tile.TileEntityDigitalMiner;
+import mekanism.common.tile.TileEntityElectricPump;
 import mekanism.common.tile.TileEntityElectrolyticSeparator;
 import mekanism.common.tile.TileEntityEnergizedSmelter;
 import mekanism.common.tile.TileEntityEnrichmentChamber;
+import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.tile.TileEntityFormulaicAssemblicator;
 import mekanism.common.tile.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.TileEntityOsmiumCompressor;
@@ -172,5 +174,19 @@ public class MekanismMachines {
         .withConfig(MekanismConfig.usage.formulaicAssemblicator, MekanismConfig.storage.formulaicAssemblicator)
         .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY))
         .withCustomContainer((tile) -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, tile)))
+        .build();
+    // Electric Pump
+    public static final Machine<TileEntityElectricPump> ELECTRIC_PUMP = MachineBuilder
+        .createMachine(MekanismTileEntityTypes.ELECTRIC_PUMP, MekanismContainerTypes.ELECTRIC_PUMP, MekanismLang.DESCRIPTION_ELECTRIC_PUMP)
+        .withConfig(MekanismConfig.usage.electricPump, MekanismConfig.storage.electricPump)
+        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.FILTER))
+        .withCustomShape(BlockShapes.ELECTRIC_PUMP)
+        .build();
+    // Fluidic Plenisher
+    public static final Machine<TileEntityFluidicPlenisher> FLUIDIC_PLENISHER = MachineBuilder
+        .createMachine(MekanismTileEntityTypes.FLUIDIC_PLENISHER, MekanismContainerTypes.FLUIDIC_PLENISHER, MekanismLang.DESCRIPTION_FLUIDIC_PLENISHER)
+        .withConfig(MekanismConfig.usage.fluidicPlenisher, MekanismConfig.storage.fluidicPlenisher)
+        .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY))
+        .withCustomShape(BlockShapes.FLUIDIC_PLENISHER)
         .build();
 }

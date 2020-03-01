@@ -1,4 +1,4 @@
-package mekanism.common.block.machine;
+package mekanism.common.block.machine.prefab;
 
 import java.util.Random;
 import java.util.Set;
@@ -8,6 +8,7 @@ import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
+import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
@@ -20,6 +21,7 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
+import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.machines.Machine;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -73,12 +75,18 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
 
     @Override
     public double getUsage() {
-        return machineType.getUsage();
+        if(machineType.hasUsage()) {
+            return machineType.getUsage();
+        }
+        return IBlockElectric.super.getUsage();
     }
 
     @Override
     public double getConfigStorage() {
-        return machineType.getConfigStorage();
+        if(machineType.hasConfigStorage()) {
+            return machineType.getConfigStorage();
+        }
+        return IBlockElectric.super.getConfigStorage();
     }
 
     @Nonnull
@@ -201,5 +209,11 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
             return machineType.getCustomContainer(tile);
         }
         return IHasGui.super.getProvider(tile);
+    }
+    
+    public static class BlockMachineModel<TILE extends TileEntityMekanism, MACHINE extends Machine<TILE>> extends BlockMachine<TILE, MACHINE> implements IHasModel, IStateFluidLoggable {
+        public BlockMachineModel(MACHINE machineType) {
+            super(machineType);
+        }
     }
 }

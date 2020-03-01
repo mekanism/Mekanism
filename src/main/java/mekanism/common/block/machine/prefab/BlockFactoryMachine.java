@@ -1,4 +1,4 @@
-package mekanism.common.block.machine;
+package mekanism.common.block.machine.prefab;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.FactoryType;
@@ -25,5 +25,11 @@ public class BlockFactoryMachine<TILE extends TileEntityMekanism> extends BlockM
     @Override
     public BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
         return machineType.upgradeResult(current, tier);
+    }
+    
+    public static class BlockFactoryMachineModel<TILE extends TileEntityMekanism> extends BlockMachineModel<TILE, FactoryMachine<TILE>> {
+        public BlockFactoryMachineModel(FactoryMachine<TILE> machineType) {
+            super(machineType);
+        }
     }
 }

@@ -18,26 +18,28 @@ public final class BlockShapes {
     public static final VoxelShape[] CHEMICAL_INFUSER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] CHEMICAL_DISSOLUTION_CHAMBER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] ROTARY_CONDENSENTRATOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] FLUIDIC_PLENISHER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] ELECTRIC_PUMP = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.combine(
-              makeCuboidShape(0, 0, 0, 16, 4, 16),//base
-              makeCuboidShape(15, 3, 3, 16, 13, 13),//portToggle1
-              makeCuboidShape(0, 4, 4, 1, 12, 12),//portToggle2a
-              makeCuboidShape(4, 4, 0, 12, 12, 1),//portToggle3a
-              makeCuboidShape(4, 4, 15, 12, 12, 16),//portToggle4a
-              makeCuboidShape(1, 4, 7, 3, 11, 9),//portToggle2b
-              makeCuboidShape(7, 4, 1, 8, 11, 3),//portToggle3b
-              makeCuboidShape(7, 4, 13, 8, 11, 15),//portToggle4b
-              makeCuboidShape(8, 4, 0, 16, 16, 16),//tank1
-              makeCuboidShape(0, 4, 9, 7, 14, 16),//tank2
-              makeCuboidShape(0, 4, 0, 7, 14, 7),//tank3
-              makeCuboidShape(6.5, 10, 7.5, 9.5, 11, 8.5),//tube1
-              makeCuboidShape(3, 12, 7.5, 7, 13, 8.5),//tube2
-              makeCuboidShape(3, 12, 7.5, 4, 15, 8.5),//tube3
-              makeCuboidShape(3, 15, 3, 4, 16, 13),//tube4
-              makeCuboidShape(3, 14, 3, 4, 15, 4),//tube5
-              makeCuboidShape(3, 14, 12, 4, 15, 13)//tube6
+            makeCuboidShape(0, 0, 0, 16, 4, 16),//base
+            makeCuboidShape(15, 3, 3, 16, 13, 13),//portToggle1
+            makeCuboidShape(0, 4, 4, 1, 12, 12),//portToggle2a
+            makeCuboidShape(4, 4, 0, 12, 12, 1),//portToggle3a
+            makeCuboidShape(4, 4, 15, 12, 12, 16),//portToggle4a
+            makeCuboidShape(1, 4, 7, 3, 11, 9),//portToggle2b
+            makeCuboidShape(7, 4, 1, 8, 11, 3),//portToggle3b
+            makeCuboidShape(7, 4, 13, 8, 11, 15),//portToggle4b
+            makeCuboidShape(8, 4, 0, 16, 16, 16),//tank1
+            makeCuboidShape(0, 4, 9, 7, 14, 16),//tank2
+            makeCuboidShape(0, 4, 0, 7, 14, 7),//tank3
+            makeCuboidShape(6.5, 10, 7.5, 9.5, 11, 8.5),//tube1
+            makeCuboidShape(3, 12, 7.5, 7, 13, 8.5),//tube2
+            makeCuboidShape(3, 12, 7.5, 4, 15, 8.5),//tube3
+            makeCuboidShape(3, 15, 3, 4, 16, 13),//tube4
+            makeCuboidShape(3, 14, 3, 4, 15, 4),//tube5
+            makeCuboidShape(3, 14, 12, 4, 15, 13)//tube6
         ), Rotation.CLOCKWISE_90, ELECTROLYTIC_SEPARATOR);
         
         setShape(VoxelShapeUtils.combine(
@@ -274,6 +276,36 @@ public final class BlockShapes {
             makeCuboidShape(7, 11, 13, 9, 12, 14),//tube7
             makeCuboidShape(7, 5, 13, 9, 6, 14)//tube8
         ), Rotation.NONE, ROTARY_CONDENSENTRATOR);
+        
+        setShape(VoxelShapeUtils.combine(
+            makeCuboidShape(3, 15, 3, 13, 16, 13),//portTop
+            makeCuboidShape(4, 4, 15, 12, 12, 16),//portBack
+            makeCuboidShape(3.5, 1, 3.5, 12.5, 13, 12.5),//tank
+            makeCuboidShape(5.5, 5.5, 11, 10.5, 10.5, 15),//Connector
+            makeCuboidShape(4.5, 4.5, 13, 11.5, 11.5, 14),//connectorRing
+            makeCuboidShape(2.5, 13, 2.5, 13.5, 14, 13.5),//ringTank
+            makeCuboidShape(4, 0, 4, 12, 1, 12),//ringBottom
+            makeCuboidShape(4, 14, 4, 12, 15, 12),//ringTop
+            makeCuboidShape(12, 6, 6, 13, 10, 10),//bearingLeft
+            makeCuboidShape(3, 6, 6, 4, 10, 10),//bearingRight
+            makeCuboidShape(10, 10, 12, 11, 11, 15),//rod1
+            makeCuboidShape(5, 10, 12, 6, 11, 15),//rod2
+            makeCuboidShape(10, 5, 12, 11, 6, 15),//rod3
+            makeCuboidShape(5, 5, 12, 6, 6, 15)//rod4
+        ), Rotation.NONE, FLUIDIC_PLENISHER);
+        
+        setShape(VoxelShapeUtils.combine(
+            makeCuboidShape(4.5, 1, 4.5, 11.5, 13, 11.5),//pumpCasing
+            makeCuboidShape(5, 0, 5, 11, 15, 11),//pumpBase
+            makeCuboidShape(4, 13, 4, 12, 14, 12),//pumpRingTop
+            makeCuboidShape(4, 15, 4, 12, 16, 12),//pumpPortTop
+            makeCuboidShape(4, 4, 0, 12, 12, 1),//powerPort
+            makeCuboidShape(5.5, 5.5, 1, 10.5, 10.5, 5),//powerConnector
+            makeCuboidShape(10, 10, 1, 11, 11, 5),//powerConnectorFrame1
+            makeCuboidShape(5, 10, 1, 6, 11, 5),//powerConnectorFrame2
+            makeCuboidShape(10, 5, 1, 11, 6, 5),//powerConnectorFrame3
+            makeCuboidShape(5, 5, 1, 6, 6, 5)//powerConnectorFrame4
+        ), Rotation.CLOCKWISE_180, ELECTRIC_PUMP);
     }
     
     private static void setShape(VoxelShape shape, Rotation rotation, VoxelShape[] dest) {
