@@ -8,7 +8,6 @@ import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.Direction;
@@ -18,7 +17,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock implements IFluidHandlerWrapper, IHeatTransfer {
 
@@ -66,7 +64,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         TileEntityThermalEvaporationController controller = getController();
-        return controller != null && !controller.outputTank.isEmpty() && FluidContainerUtils.canDrain(controller.outputTank.getFluid(), fluid);
+        return controller != null && !controller.outputTank.isEmpty() && (fluid.isEmpty() || controller.outputTank.getFluid().isFluidEqual(fluid));
     }
 
     @Override

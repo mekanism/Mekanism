@@ -9,6 +9,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.RateLimitGasHandler;
+import mekanism.common.capabilities.fluid.RateLimitFluidHandler;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -112,8 +113,6 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        //TODO: Fix FluidItemWrapper capacity??
-        //return new FluidHandlerItemStack(stack, CAPACITY);
-        return new ItemCapabilityWrapper(stack, /*new FluidItemWrapper(),*/ RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> CAPACITY));
+        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(() -> TRANSFER_RATE, () -> CAPACITY), RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> CAPACITY));
     }
 }

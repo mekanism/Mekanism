@@ -33,7 +33,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityBioGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData {
 
@@ -68,6 +67,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         ItemStack fuelStack = fuelSlot.getStack();
         if (!fuelStack.isEmpty()) {
             energySlot.charge(this);
+            //TODO: FluidHandler - Evaluate usage of this, and other places as if t is rate limited this won't return the actual amount of fluid in it
+            // and in some places we may care about that
             FluidStack fluidStack = FluidUtil.getFluidContained(fuelStack).orElse(FluidStack.EMPTY);
             if (fluidStack.isEmpty()) {
                 int fuel = getFuel(fuelStack);

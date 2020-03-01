@@ -735,7 +735,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
                 List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(side);
                 //Don't return a gas handler if we don't actually even have any gas tanks for that side
-                //TODO: Should we actually return the item handler regardless??? And then just everything fails?
+                //TODO: Should we actually return the gas handler regardless??? And then just everything fails?
                 LazyOptional<IGasHandler> lazyGasHandler = gasTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getGasHandler(side));
                 return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, lazyGasHandler);
             }
@@ -744,7 +744,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             if (capability == Capabilities.INFUSION_HANDLER_CAPABILITY) {
                 List<? extends IChemicalTank<InfuseType, InfusionStack>> infusionTanks = getInfusionTanks(side);
                 //Don't return an infusion handler if we don't actually even have any infusion tanks for that side
-                //TODO: Should we actually return the item handler regardless??? And then just everything fails?
+                //TODO: Should we actually return the infusion handler regardless??? And then just everything fails?
                 LazyOptional<IInfusionHandler> lazyInfusionHandler = infusionTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getInfusionHandler(side));
                 return Capabilities.INFUSION_HANDLER_CAPABILITY.orEmpty(capability, lazyInfusionHandler);
             }
@@ -753,7 +753,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 List<IExtendedFluidTank> fluidTanks = getFluidTanks(side);
                 //Don't return a fluid handler if we don't actually even have any fluid tanks for that side
-                //TODO: Should we actually return the item handler regardless??? And then just everything fails?
+                //TODO: Should we actually return fluid item handler regardless??? And then just everything fails?
                 LazyOptional<IFluidHandler> lazyFluidHandler = fluidTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getFluidHandler(side));
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, lazyFluidHandler);
             }

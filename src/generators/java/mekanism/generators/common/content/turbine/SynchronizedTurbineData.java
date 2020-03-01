@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
-import mekanism.common.base.MultiblockFluidTank;
+import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityGasTank.GasMode;

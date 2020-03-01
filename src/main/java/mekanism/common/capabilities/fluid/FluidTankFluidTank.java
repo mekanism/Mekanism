@@ -67,11 +67,10 @@ public class FluidTankFluidTank extends BasicFluidTank {
 
     //TODO: FluidHandler - make sure to make growStack increase the one above
     //TODO: FluidHandler - FIXME
-    @Override
     @Deprecated
-    public int fill(FluidStack resource, FluidAction action) {
+    public int fillOldImpl(FluidStack resource, FluidAction action) {
         //TODO: FluidHandler - this was for the implementation in the fluid tank's fill fluid inventory slot method
-        int filled = fill(resource, action);
+        int filled = super.fill(resource, action);
         //Push the fluid upwards
         if (filled < resource.getAmount() && !tile.getActive()) {
             TileEntityFluidTank aboveTile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, tile.getWorld(), tile.getPos().up());
@@ -84,12 +83,12 @@ public class FluidTankFluidTank extends BasicFluidTank {
     }
 
     @Deprecated
-    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
+    public int fillOldImpl(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
         //TODO: FluidHandler, this was from the fluid tanks world fill thing
         if (isCreative) {
             return resource.getAmount();
         }
-        int filled = fill(resource, fluidAction);
+        int filled = super.fill(resource, fluidAction);
         if (filled < resource.getAmount() && !tile.getActive()) {
             filled += tile.pushUp(new FluidStack(resource, resource.getAmount() - filled), fluidAction);
         }

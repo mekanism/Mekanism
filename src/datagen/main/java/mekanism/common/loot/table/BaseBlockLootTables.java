@@ -14,7 +14,6 @@ import mekanism.api.block.ISupportsRedstone;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.sustained.ISustainedData;
-import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.BlockCardboardBox;
@@ -140,11 +139,6 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                         hasData = true;
                     }
                 }
-            }
-            if (tile instanceof ISustainedTank) {
-                //TODO: Should this use a similar system to ISustainedData
-                nbtBuilder.replaceOperation("fluidTank", ItemDataUtils.DATA_ID + ".fluidTank");
-                hasData = true;
             }
             if (block instanceof IBlockElectric) {
                 //If the block is electric but is not part of a multiblock

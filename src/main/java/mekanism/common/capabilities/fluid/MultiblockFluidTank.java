@@ -1,4 +1,4 @@
-package mekanism.common.base;
+package mekanism.common.capabilities.fluid;
 
 import java.util.Objects;
 import java.util.function.IntSupplier;
@@ -8,7 +8,6 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;

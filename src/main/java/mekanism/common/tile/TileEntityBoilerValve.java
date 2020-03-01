@@ -10,7 +10,6 @@ import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
-import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.tags.FluidTags;
@@ -92,7 +91,8 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
         if ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) {
-            return Objects.requireNonNull(structure).upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1 && FluidContainerUtils.canDrain(structure.steamTank.getFluid(), fluid);
+            return Objects.requireNonNull(structure).upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1 &&
+                   !structure.steamTank.isEmpty() && (fluid.isEmpty() || structure.steamTank.getFluid().isFluidEqual(fluid));
         }
         return false;
     }

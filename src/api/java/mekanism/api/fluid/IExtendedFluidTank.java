@@ -25,6 +25,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
      */
     void setStack(FluidStack stack);//TODO: FluidHandler - evaluate direct calls to this
     //TODO: FluidHandler - Also remove calls to getFluid().setStackSize
+    //TODO: FluidHandler - Add helper method for checking "isFluidEqual"
 
     /**
      * <p>

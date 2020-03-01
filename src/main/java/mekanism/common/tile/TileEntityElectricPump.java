@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -55,7 +54,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class TileEntityElectricPump extends TileEntityMekanism implements ISustainedTank, IConfigurable, ITankManager, IComputerIntegration {
+public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable, ITankManager, IComputerIntegration {
 
     private static final String[] methods = new String[]{"reset"};
     /**
@@ -308,22 +307,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements ISusta
     @Override
     public boolean canReceiveEnergy(Direction side) {
         return getOppositeDirection() == side;
-    }
-
-    @Override
-    public void setFluidStack(@Nonnull FluidStack fluidStack, Object... data) {
-        fluidTank.setStack(fluidStack);
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack getFluidStack(Object... data) {
-        return fluidTank.getFluid();
-    }
-
-    @Override
-    public boolean hasTank(Object... data) {
-        return true;
     }
 
     @Override

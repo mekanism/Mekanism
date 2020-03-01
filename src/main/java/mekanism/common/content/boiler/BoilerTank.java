@@ -5,7 +5,7 @@ import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import mekanism.api.Coord4D;
 import mekanism.api.annotations.NonNull;
-import mekanism.common.base.MultiblockFluidTank;
+import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import net.minecraftforge.fluids.FluidStack;

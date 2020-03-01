@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import mekanism.common.base.FluidHandlerWrapper;
 import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.util.Direction;
@@ -14,7 +13,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFluidHandlerWrapper {
 
@@ -56,7 +54,8 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank implements IFl
 
     @Override
     public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) && FluidContainerUtils.canDrain(structure.fluidTank.getFluid(), fluid);
+        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) && !structure.fluidTank.isEmpty() &&
+               (fluid.isEmpty() || structure.fluidTank.getFluid().isFluidEqual(fluid));
     }
 
     @Nonnull

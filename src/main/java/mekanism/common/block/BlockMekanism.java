@@ -9,7 +9,6 @@ import mekanism.api.block.ISupportsComparator;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.sustained.ISustainedInventory;
-import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
@@ -43,7 +42,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Special handling for block drops that need TileEntity data
@@ -98,15 +96,6 @@ public abstract class BlockMekanism extends Block {
         }
         if (item instanceof ISustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
-        }
-        if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {
-            FluidStack fluidStack = ((ISustainedTank) tile).getFluidStack();
-            if (!fluidStack.isEmpty()) {
-                ISustainedTank sustainedTank = (ISustainedTank) item;
-                if (sustainedTank.hasTank(itemStack)) {
-                    sustainedTank.setFluidStack(fluidStack, itemStack);
-                }
-            }
         }
         if (item instanceof IEnergizedItem && tile.isElectric() && !(tile instanceof TileEntityMultiblock<?>)) {
             ((IEnergizedItem) item).setEnergy(itemStack, tile.getEnergy());
@@ -218,12 +207,6 @@ public abstract class BlockMekanism extends Block {
         if (tile.supportsRedstone()) {
             if (ItemDataUtils.hasData(stack, "controlType")) {
                 tile.setControlType(RedstoneControl.byIndexStatic(ItemDataUtils.getInt(stack, "controlType")));
-            }
-        }
-        if (item instanceof ISustainedTank && tile instanceof ISustainedTank && ((ISustainedTank) item).hasTank(stack)) {
-            FluidStack fluid = ((ISustainedTank) item).getFluidStack(stack);
-            if (!fluid.isEmpty()) {
-                ((ISustainedTank) tile).setFluidStack(fluid);
             }
         }
         if (item instanceof ISustainedInventory && tile.persistInventory()) {

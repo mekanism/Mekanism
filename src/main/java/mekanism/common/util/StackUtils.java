@@ -9,7 +9,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -37,17 +36,8 @@ public final class StackUtils {
         return wildcard && (!wild.hasTag() ? !check.hasTag() : (wild.getTag() == check.getTag() || wild.getTag().equals(check.getTag())));
     }
 
-    //assumes stacks same
-    public static ItemStack subtract(ItemStack stack1, ItemStack stack2) {
-        if (stack1.isEmpty()) {
-            return ItemStack.EMPTY;
-        } else if (stack2.isEmpty()) {
-            return stack1;
-        }
-        return size(stack1, stack1.getCount() - stack2.getCount());
-    }
-
     public static ItemStack size(ItemStack stack, int size) {
+        //TODO: We probably can replace this with: ItemHandlerHelper.copyStackWithSize(container, 1)
         if (size <= 0 || stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
@@ -102,15 +92,6 @@ public final class StackUtils {
             return size(orig, newSize - orig.getMaxStackSize());
         }
         return size(orig, newSize);
-    }
-
-    //TODO: Figure out what used this or if this can be safely removed now
-    public static int hashItemStack(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return -1;
-        }
-        ResourceLocation registryName = stack.getItem().getRegistryName();
-        return registryName == null ? 0 : registryName.hashCode();
     }
 
     /**

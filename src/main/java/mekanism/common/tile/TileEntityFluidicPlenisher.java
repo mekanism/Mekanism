@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -41,7 +40,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable, ISustainedTank {
+public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable {
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
@@ -226,22 +225,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public boolean canReceiveEnergy(Direction side) {
         return getOppositeDirection() == side;
-    }
-
-    @Override
-    public void setFluidStack(@Nonnull FluidStack fluidStack, Object... data) {
-        fluidTank.setStack(fluidStack);
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack getFluidStack(Object... data) {
-        return fluidTank.getFluid();
-    }
-
-    @Override
-    public boolean hasTank(Object... data) {
-        return true;
     }
 
     @Override

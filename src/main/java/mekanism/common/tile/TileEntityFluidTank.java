@@ -7,7 +7,6 @@ import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.IActiveState;
@@ -49,7 +48,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, ISustainedTank, IFluidContainerManager, ITankManager {
+public class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidContainerManager, ITankManager {
 
     public FluidTankFluidTank fluidTank;
 
@@ -291,22 +290,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             return side != null && side != Direction.DOWN && side != Direction.UP;
         }
         return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public void setFluidStack(@Nonnull FluidStack fluidStack, Object... data) {
-        fluidTank.setStack(fluidStack);
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack getFluidStack(Object... data) {
-        return fluidTank.getFluid();
-    }
-
-    @Override
-    public boolean hasTank(Object... data) {
-        return true;
     }
 
     @Override
