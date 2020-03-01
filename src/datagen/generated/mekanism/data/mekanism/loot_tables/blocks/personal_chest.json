@@ -25,11 +25,6 @@
                   "source": "Items",
                   "target": "mekData.Items",
                   "op": "replace"
-                },
-                {
-                  "source": "electricityStored",
-                  "target": "mekData.energyStored",
-                  "op": "replace"
                 }
               ]
             }
