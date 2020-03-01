@@ -36,7 +36,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     public List<IInventorySlot> inventorySlots;
     public List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
-    public List<? extends IExtendedFluidTank> fluidTanks;
+    public List<IExtendedFluidTank> fluidTanks;
 
     public InventoryFrequency(String n, UUID uuid) {
         super(n, uuid);
@@ -116,7 +116,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     @Nonnull
     @Override
-    public List<? extends IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
     }
 

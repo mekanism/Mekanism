@@ -10,5 +10,5 @@ import net.minecraft.util.Direction;
 public interface IFluidTankHolder extends IHolder {
 
     @Nonnull
-    List<? extends IExtendedFluidTank> getTanks(@Nullable Direction side);
+    List<IExtendedFluidTank> getTanks(@Nullable Direction side);
 }

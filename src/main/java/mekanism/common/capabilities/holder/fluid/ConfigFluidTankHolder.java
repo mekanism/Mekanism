@@ -35,7 +35,7 @@ public class ConfigFluidTankHolder extends ConfigHolder implements IFluidTankHol
 
     @Nonnull
     @Override
-    public List<? extends IExtendedFluidTank> getTanks(@Nullable Direction direction) {
+    public List<IExtendedFluidTank> getTanks(@Nullable Direction direction) {
         if (direction == null) {
             //If we want the internal, give all of our slots
             return tanks;

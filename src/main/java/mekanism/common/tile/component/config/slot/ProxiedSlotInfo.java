@@ -19,15 +19,15 @@ public class ProxiedSlotInfo {
 
     public static class Fluid extends FluidSlotInfo {
 
-        private final Supplier<List<? extends IExtendedFluidTank>> tankSupplier;
+        private final Supplier<List<IExtendedFluidTank>> tankSupplier;
 
-        public Fluid(boolean canInput, boolean canOutput, Supplier<List<? extends IExtendedFluidTank>> tankSupplier) {
+        public Fluid(boolean canInput, boolean canOutput, Supplier<List<IExtendedFluidTank>> tankSupplier) {
             super(canInput, canOutput, Collections.emptyList());
             this.tankSupplier = tankSupplier;
         }
 
         @Override
-        public List<? extends IExtendedFluidTank> getTanks() {
+        public List<IExtendedFluidTank> getTanks() {
             return tankSupplier.get();
         }
     }

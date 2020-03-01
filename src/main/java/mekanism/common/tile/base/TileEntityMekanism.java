@@ -708,7 +708,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             }
         }
         if (canHandleFluid() && handlesFluid()) {
-            List<? extends IExtendedFluidTank> fluidTanks = getFluidTanks(null);
+            List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
             for (IExtendedFluidTank fluidTank : fluidTanks) {
                 container.track(SyncableFluidStack.create(fluidTank));
             }
@@ -751,7 +751,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (canHandleFluid()) {
             if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-                List<? extends IExtendedFluidTank> fluidTanks = getFluidTanks(side);
+                List<IExtendedFluidTank> fluidTanks = getFluidTanks(side);
                 //Don't return a fluid handler if we don't actually even have any fluid tanks for that side
                 //TODO: Should we actually return the item handler regardless??? And then just everything fails?
                 LazyOptional<IFluidHandler> lazyFluidHandler = fluidTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getFluidHandler(side));
@@ -1140,7 +1140,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Nonnull
     @Override
-    public List<? extends IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         if (!canHandleFluid() || fluidTankHolder == null) {
             return Collections.emptyList();
         }

@@ -7,18 +7,18 @@ import mekanism.api.fluid.IExtendedFluidTank;
 public class FluidSlotInfo extends BaseSlotInfo {
 
     //TODO: Should it be a fluid tank instead
-    private final List<? extends IExtendedFluidTank> tanks;
+    private final List<IExtendedFluidTank> tanks;
 
     public FluidSlotInfo(boolean canInput, boolean canOutput, IExtendedFluidTank... tanks) {
         this(canInput, canOutput, Arrays.asList(tanks));
     }
 
-    public FluidSlotInfo(boolean canInput, boolean canOutput, List<? extends IExtendedFluidTank> tanks) {
+    public FluidSlotInfo(boolean canInput, boolean canOutput, List<IExtendedFluidTank> tanks) {
         super(canInput, canOutput);
         this.tanks = tanks;
     }
 
-    public List<? extends IExtendedFluidTank> getTanks() {
+    public List<IExtendedFluidTank> getTanks() {
         return tanks;
     }
 }

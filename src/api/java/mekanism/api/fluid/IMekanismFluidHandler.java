@@ -38,7 +38,7 @@ public interface IMekanismFluidHandler extends ISidedFluidHandler {
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all tanks in the handler. Additionally, if {@link #canHandleFluid()} is false,
      * this <em>MUST</em> return an empty list.
      */
-    List<? extends IExtendedFluidTank> getFluidTanks(@Nullable Direction side);
+    List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side);
 
     /**
      * Called when the contents of this fluid handler change.
@@ -55,7 +55,7 @@ public interface IMekanismFluidHandler extends ISidedFluidHandler {
      */
     @Nullable
     default IExtendedFluidTank getFluidTank(int tank, @Nullable Direction side) {
-        List<? extends IExtendedFluidTank> tanks = getFluidTanks(side);
+        List<IExtendedFluidTank> tanks = getFluidTanks(side);
         return tank >= 0 && tank < tanks.size() ? tanks.get(tank) : null;
     }
 

@@ -89,7 +89,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo fluidConfig = configComponent.getConfig(TransmissionType.FLUID);
         if (fluidConfig != null) {
-            Supplier<List<? extends IExtendedFluidTank>> tankSupplier = () -> hasFrequency() ? frequency.fluidTanks : Collections.emptyList();
+            Supplier<List<IExtendedFluidTank>> tankSupplier = () -> hasFrequency() ? frequency.fluidTanks : Collections.emptyList();
             fluidConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Fluid(true, false, tankSupplier));
             fluidConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Fluid(false, true, tankSupplier));
             //Set default config directions
@@ -528,7 +528,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    public List<? extends IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return hasFrequency() && canHandleFluid() ? frequency.getFluidTanks(side) : Collections.emptyList();
     }
 
