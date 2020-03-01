@@ -5,18 +5,23 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.item.ItemHohlraum;
@@ -26,6 +31,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +39,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState {
@@ -42,8 +48,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public static final int MAX_STEAM = MAX_WATER * 100;
     public static final int MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
-    public FluidTank waterTank = new FluidTank(MAX_WATER);
-    public FluidTank steamTank = new FluidTank(MAX_STEAM);
+    public IExtendedFluidTank waterTank;
+    public IExtendedFluidTank steamTank;
 
     public BasicGasTank deuteriumTank;
     public BasicGasTank tritiumTank;
@@ -59,6 +65,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     private int playSoundCooldown = 0;
 
     private IInventorySlot reactorSlot;
+
+    private int localMaxWater = MAX_WATER;
+    private int localMaxSteam = MAX_STEAM;
 
     public TileEntityReactorController() {
         super(GeneratorsBlocks.REACTOR_CONTROLLER);
@@ -77,6 +86,15 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Nonnull
     @Override
+    protected IFluidTankHolder getInitialFluidTanks() {
+        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        builder.addTank(waterTank = VariableCapacityFluidTank.input(this::getMaxWater, fluid -> fluid.getFluid().isIn(FluidTags.WATER), this));
+        builder.addTank(steamTank = VariableCapacityFluidTank.output(this::getMaxSteam, fluid -> fluid.getFluid().isIn(MekanismTags.Fluids.STEAM), this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //TODO: FIXME, make the slot only "exist" or at least be accessible when the reactor is formed
@@ -86,6 +104,11 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Override
     public boolean handlesGas() {
+        return false;
+    }
+
+    @Override
+    public boolean handlesFluid() {
         return false;
     }
 
@@ -201,8 +224,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             tag.putInt("injectionRate", 0);
             tag.putBoolean("burning", false);
         }
-        tag.put("waterTank", waterTank.writeToNBT(new CompoundNBT()));
-        tag.put("steamTank", steamTank.writeToNBT(new CompoundNBT()));
         return tag;
     }
 
@@ -218,8 +239,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             getReactor().setBurning(tag.getBoolean("burning"));
             getReactor().updateTemperatures();
         }
-        waterTank.readFromNBT(tag.getCompound("waterTank"));
-        steamTank.readFromNBT(tag.getCompound("steamTank"));
     }
 
     @Override
@@ -238,6 +257,19 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             data.add(steamTank.getFluid());
         }
         return data;
+    }
+
+    public void updateMaxCapacities(int capRate) {
+        localMaxWater = MAX_WATER * capRate;
+        localMaxSteam = MAX_STEAM * capRate;
+    }
+
+    public int getMaxWater() {
+        return localMaxWater;
+    }
+
+    public int getMaxSteam() {
+        return localMaxSteam;
     }
 
     @Override
@@ -275,8 +307,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 fuelTank.setStack(MekanismGases.FUSION_FUEL.getGasStack(dataStream.readInt()));
                 deuteriumTank.setStack(MekanismGases.DEUTERIUM.getGasStack(dataStream.readInt()));
                 tritiumTank.setStack(MekanismGases.TRITIUM.getGasStack(dataStream.readInt()));
-                waterTank.setFluid(dataStream.readFluidStack());
-                steamTank.setFluid(dataStream.readFluidStack());
+                waterTank.setStack(dataStream.readFluidStack());
+                steamTank.setStack(dataStream.readFluidStack());
             } else if (getReactor() != null && world != null) {
                 setReactor(null);
                 MekanismUtils.updateBlock(world, getPos());
@@ -326,8 +358,8 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return !isFormed();
         }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            //Never allow the gas handler cap to be enabled here even though internally we can handle gas
+        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            //Never allow the gas or fluid handler cap to be enabled here even though internally we can handle both of them
             return true;
         }
         return super.isCapabilityDisabled(capability, side);

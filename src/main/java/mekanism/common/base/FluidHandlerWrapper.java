@@ -5,6 +5,8 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+//TODO: FluidHandler - Remove
+@Deprecated
 public class FluidHandlerWrapper implements IFluidHandler {
 
     public IFluidHandlerWrapper wrapper;

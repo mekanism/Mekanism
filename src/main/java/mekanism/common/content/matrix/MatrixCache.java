@@ -1,10 +1,10 @@
 package mekanism.common.content.matrix;
 
 import java.util.List;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.multiblock.InventoryMultiblockCache;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class MatrixCache extends InventoryMultiblockCache<SynchronizedMatrixData> {
@@ -27,26 +27,11 @@ public class MatrixCache extends InventoryMultiblockCache<SynchronizedMatrixData
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        ListNBT tagList = nbtTags.getList("Items", NBT.TAG_COMPOUND);
-        for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
-            CompoundNBT tagCompound = tagList.getCompound(tagCount);
-            byte slotID = tagCompound.getByte("Slot");
-            if (slotID >= 0 && slotID < 2) {
-                inventorySlots.get(slotID).deserializeNBT(tagCompound);
-            }
-        }
+        DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList("Items", NBT.TAG_COMPOUND));
     }
 
     @Override
     public void save(CompoundNBT nbtTags) {
-        ListNBT tagList = new ListNBT();
-        for (int slotCount = 0; slotCount < 2; slotCount++) {
-            CompoundNBT tagCompound = inventorySlots.get(slotCount).serializeNBT();
-            if (!tagCompound.isEmpty()) {
-                tagCompound.putByte("Slot", (byte) slotCount);
-                tagList.add(tagCompound);
-            }
-        }
-        nbtTags.put("Items", tagList);
+        nbtTags.put("Items", DataHandlerUtils.writeSlots(getInventorySlots(null)));
     }
 }

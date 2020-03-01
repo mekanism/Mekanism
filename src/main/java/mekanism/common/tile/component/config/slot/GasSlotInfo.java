@@ -20,11 +20,6 @@ public class GasSlotInfo extends BaseSlotInfo {
         this.tanks = tanks;
     }
 
-    public boolean hasTank(IChemicalTank<Gas, GasStack> tank) {
-        //TODO: Does this even work
-        return getTanks().contains(tank);
-    }
-
     public List<? extends IChemicalTank<Gas, GasStack>> getTanks() {
         return tanks;
     }

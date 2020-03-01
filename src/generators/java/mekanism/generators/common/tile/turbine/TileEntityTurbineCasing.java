@@ -60,7 +60,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 setEnergy(getEnergy() + (int) rate * energyMultiplier);
 
                 FluidStack fluid = structure.fluidTank.getFluid();
-                structure.fluidTank.setFluid(new FluidStack(fluid, (int) (fluid.getAmount() - rate)));
+                structure.fluidTank.setStack(new FluidStack(fluid, (int) (fluid.getAmount() - rate)));
                 structure.clientFlow = (int) rate;
                 structure.flowRemaining = Math.min((int) rate, structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get());
             } else {
@@ -70,7 +70,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             if (structure.dumpMode == GasMode.DUMPING && !structure.fluidTank.isEmpty()) {
                 FluidStack fluid = structure.fluidTank.getFluid();
                 int amount = fluid.getAmount();
-                structure.fluidTank.setFluid(new FluidStack(fluid, amount - Math.min(amount, Math.max(amount / 50, structure.lastSteamInput * 2))));
+                structure.fluidTank.setStack(new FluidStack(fluid, amount - Math.min(amount, Math.max(amount / 50, structure.lastSteamInput * 2))));
             }
 
             float newRotation = (float) flowRate;
@@ -166,7 +166,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.lastSteamInput = dataStream.readInt();
                 structure.dumpMode = dataStream.readEnumValue(GasMode.class);
 
-                structure.fluidTank.setFluid(dataStream.readFluidStack());
+                structure.fluidTank.setStack(dataStream.readFluidStack());
 
                 if (isRendering) {
                     structure.complex = Coord4D.read(dataStream);

@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class ProxiedSlotInfo {
 
@@ -19,15 +19,15 @@ public class ProxiedSlotInfo {
 
     public static class Fluid extends FluidSlotInfo {
 
-        private final Supplier<List<FluidTank>> tankSupplier;
+        private final Supplier<List<? extends IExtendedFluidTank>> tankSupplier;
 
-        public Fluid(boolean canInput, boolean canOutput, Supplier<List<FluidTank>> tankSupplier) {
+        public Fluid(boolean canInput, boolean canOutput, Supplier<List<? extends IExtendedFluidTank>> tankSupplier) {
             super(canInput, canOutput, Collections.emptyList());
             this.tankSupplier = tankSupplier;
         }
 
         @Override
-        public List<FluidTank> getTanks() {
+        public List<? extends IExtendedFluidTank> getTanks() {
             return tankSupplier.get();
         }
     }

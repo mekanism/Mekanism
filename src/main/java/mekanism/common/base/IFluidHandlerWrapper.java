@@ -6,7 +6,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-//TODO: GasHandler - Modernize this
+//TODO: FluidHandler - Remove
+@Deprecated
 public interface IFluidHandlerWrapper {
 
     /**

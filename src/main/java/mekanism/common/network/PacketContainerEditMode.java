@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IFluidContainerManager;
-import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.base.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;

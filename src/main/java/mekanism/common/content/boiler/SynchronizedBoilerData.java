@@ -10,8 +10,10 @@ import mekanism.api.IHeatTransfer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -54,8 +56,10 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
 
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
-        waterTank = new BoilerWaterTank(tile);
-        steamTank = new BoilerSteamTank(tile);
+        waterTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK,
+              fluid -> fluid.getFluid().isIn(FluidTags.WATER));
+        steamTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK,
+              fluid -> fluid.getFluid().isIn(MekanismTags.Fluids.STEAM));
     }
 
     /**

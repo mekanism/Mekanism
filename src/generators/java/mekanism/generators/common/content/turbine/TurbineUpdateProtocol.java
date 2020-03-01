@@ -205,7 +205,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
         super.onFormed();
         if (!structureFound.fluidTank.isEmpty()) {
             FluidStack fluid = structureFound.fluidTank.getFluid();
-            structureFound.fluidTank.setFluid(new FluidStack(fluid, Math.min(fluid.getAmount(), structureFound.getFluidCapacity())));
+            structureFound.fluidTank.setStack(new FluidStack(fluid, Math.min(fluid.getAmount(), structureFound.getFluidCapacity())));
         }
         structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
     }

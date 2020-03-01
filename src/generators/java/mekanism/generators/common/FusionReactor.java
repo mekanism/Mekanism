@@ -8,8 +8,11 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.LaserManager;
@@ -35,7 +38,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class FusionReactor {
 
@@ -180,7 +182,7 @@ public class FusionReactor {
         if (activelyCooled) {
             double caseWaterHeat = caseWaterConductivity * lastCaseTemperature;
             int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
-            waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getSpace()));
+            waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getNeeded()));
             if (waterToVaporize > 0) {
                 getWaterTank().drain(waterToVaporize, FluidAction.EXECUTE);
                 getSteamTank().fill(MekanismFluids.STEAM.getFluidStack(waterToVaporize), FluidAction.EXECUTE);
@@ -201,24 +203,24 @@ public class FusionReactor {
     }
 
     @Nullable
-    public FluidTank getWaterTank() {
+    public IExtendedFluidTank getWaterTank() {
         return controller == null ? null : controller.waterTank;
     }
 
     @Nullable
-    public FluidTank getSteamTank() {
+    public IExtendedFluidTank getSteamTank() {
         return controller == null ? null : controller.steamTank;
     }
 
-    public BasicGasTank getDeuteriumTank() {
+    public IChemicalTank<Gas, GasStack> getDeuteriumTank() {
         return controller.deuteriumTank;
     }
 
-    public BasicGasTank getTritiumTank() {
+    public IChemicalTank<Gas, GasStack> getTritiumTank() {
         return controller.tritiumTank;
     }
 
-    public BasicGasTank getFuelTank() {
+    public IChemicalTank<Gas, GasStack> getFuelTank() {
         return controller.fuelTank;
     }
 
@@ -371,10 +373,7 @@ public class FusionReactor {
         injectionRate = rate;
         int capRate = Math.min(Math.max(1, rate), MAX_INJECTION);
         capRate -= capRate % 2;
-
-        controller.waterTank.setCapacity(TileEntityReactorController.MAX_WATER * capRate);
-        controller.steamTank.setCapacity(TileEntityReactorController.MAX_STEAM * capRate);
-
+        controller.updateMaxCapacities(capRate);
         FluidStack waterTankFluid = controller.waterTank.getFluid();
         if (!waterTankFluid.isEmpty()) {
             waterTankFluid.setAmount(Math.min(waterTankFluid.getAmount(), controller.waterTank.getCapacity()));

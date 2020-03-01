@@ -4,7 +4,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -27,7 +27,7 @@ public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanism
     protected void load() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ChemicalUtils.readChemicalTanks(getInfusionTanks(null), ItemDataUtils.getList(stack, "InfusionTanks"));
+            DataHandlerUtils.readTanks(getInfusionTanks(null), ItemDataUtils.getList(stack, "InfusionTanks"));
         }
     }
 
@@ -40,7 +40,7 @@ public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanism
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, "InfusionTanks", ChemicalUtils.writeChemicalTanks(getInfusionTanks(null)));
+            ItemDataUtils.setList(stack, "InfusionTanks", DataHandlerUtils.writeTanks(getInfusionTanks(null)));
         }
     }
 

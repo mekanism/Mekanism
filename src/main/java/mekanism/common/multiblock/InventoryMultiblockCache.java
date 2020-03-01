@@ -13,7 +13,7 @@ public abstract class InventoryMultiblockCache<T extends SynchronizedData<T>> ex
 
     //Note: We don't care about the types here in the cache as it is just for merging purposes, and then we read the slots over anyways
     @Nonnull
-    protected List<IInventorySlot> inventorySlots = Arrays.asList(BasicInventorySlot.at(this, 0, 0), BasicInventorySlot.at(this, 0, 0));
+    protected final List<IInventorySlot> inventorySlots = Arrays.asList(BasicInventorySlot.at(this, 0, 0), BasicInventorySlot.at(this, 0, 0));
 
     @Nonnull
     @Override

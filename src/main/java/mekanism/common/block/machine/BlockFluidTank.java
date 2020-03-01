@@ -192,7 +192,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                         filled = true;
                     }
                     if (filled) {
-                        int toFill = Math.min(tile.fluidTank.getSpace(), drained.getAmount());
+                        int toFill = Math.min(tile.fluidTank.getNeeded(), drained.getAmount());
                         //Note: if our FluidTank is creative it has a special FluidTank impl that will properly handle modifying the contents
                         tile.fluidTank.fill(new FluidStack(drained, toFill), FluidAction.EXECUTE);
                         if (drained.getAmount() - toFill > 0) {

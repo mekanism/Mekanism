@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -10,7 +8,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.RotaryCachedRecipe;
@@ -18,12 +15,12 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.api.sustained.ISustainedData;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -31,7 +28,6 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -40,28 +36,18 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
-import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ISustainedData, IFluidHandlerWrapper, IGasHandler, ITankManager,
-      ITileCachedRecipeHolder<RotaryRecipe> {
+public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<RotaryRecipe> {
+
+    private static final int CAPACITY = 10_000;
 
     public BasicGasTank gasTank;
-    public FluidTank fluidTank;
+    public BasicFluidTank fluidTank;
     /**
      * True: fluid -> gas
      *
@@ -89,22 +75,33 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     public TileEntityRotaryCondensentrator() {
         super(MekanismBlocks.ROTARY_CONDENSENTRATOR);
         gasInputHandler = InputHelper.getInputHandler(gasTank);
-        fluidInputHandler = InputHelper.getInputHandler(fluidTank, 0);
+        fluidInputHandler = InputHelper.getInputHandler(fluidTank);
         gasOutputHandler = OutputHelper.getOutputHandler(gasTank);
         fluidOutputHandler = OutputHelper.getOutputHandler(fluidTank);
-    }
-
-    @Override
-    protected void presetVariables() {
-        fluidTank = new FluidTank(10_000);
     }
 
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(gasTank = BasicGasTank.create(10_000, gas -> mode, gas -> !mode, this::isValidGas, this), RelativeSide.LEFT);
+        builder.addTank(gasTank = BasicGasTank.create(CAPACITY, gas -> mode, gas -> !mode, this::isValidGas, this), RelativeSide.LEFT);
         return builder.build();
+    }
+
+    private boolean isValidGas(@Nonnull Gas gas) {
+        return containsRecipe(recipe -> recipe.hasGasToFluid() && recipe.getGasInput().testType(gas));
+    }
+
+    @Nonnull
+    @Override
+    protected IFluidTankHolder getInitialFluidTanks() {
+        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        builder.addTank(fluidTank = BasicFluidTank.create(CAPACITY, fluid -> !mode, fluid -> mode, this::isValidFluid, this), RelativeSide.RIGHT);
+        return builder.build();
+    }
+
+    private boolean isValidFluid(@Nonnull FluidStack fluidStack) {
+        return containsRecipe(recipe -> recipe.hasFluidToGas() && recipe.getFluidInput().testType(fluidStack));
     }
 
     @Nonnull
@@ -114,7 +111,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         //TODO: Fix these, not only is the naming bad, but there is a dedicated drain and empty slot for gas unlike how the fluid is
         builder.addSlot(gasInputSlot = GasInventorySlot.rotary(gasTank, () -> mode, this, 5, 25), RelativeSide.LEFT);
         builder.addSlot(gasOutputSlot = GasInventorySlot.rotary(gasTank, () -> mode, this, 5, 56), RelativeSide.LEFT);
-        builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, this::isValidFluid, () -> mode, this, 155, 25), RelativeSide.RIGHT);
+        builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, () -> mode, this, 155, 25), RelativeSide.RIGHT);
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 155, 56), RelativeSide.RIGHT);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 155, 5), RelativeSide.FRONT, RelativeSide.BACK, RelativeSide.BOTTOM, RelativeSide.TOP);
         gasInputSlot.setSlotType(ContainerSlotType.INPUT);
@@ -148,14 +145,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         }
     }
 
-    private boolean isValidGas(@Nonnull Gas gas) {
-        return containsRecipe(recipe -> recipe.hasGasToFluid() && recipe.getGasInput().testType(gas));
-    }
-
-    private boolean isValidFluid(@Nonnull FluidStack fluidStack) {
-        return !fluidStack.isEmpty() && containsRecipe(recipe -> recipe.hasFluidToGas() && recipe.getFluidInput().testType(fluidStack));
-    }
-
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
@@ -172,9 +161,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         mode = nbtTags.getBoolean("mode");
-        if (nbtTags.contains("fluidTank")) {
-            fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
-        }
     }
 
     @Nonnull
@@ -182,93 +168,11 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean("mode", mode);
-        if (!fluidTank.isEmpty()) {
-            nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
-        }
         return nbtTags;
     }
 
-    @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return side != null && side != getRightSide();
-        }
-        return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        if (!fluidTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("fluidTank", "fluidTank");
-        return remap;
-    }
-
-    @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        if (canFill(from, resource)) {
-            return fluidTank.fill(resource, fluidAction);
-        }
-        return 0;
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
-        if (canDrain(from, FluidStack.EMPTY)) {
-            return fluidTank.drain(maxDrain, fluidAction);
-        }
-        return FluidStack.EMPTY;
-    }
-
-    @Override
-    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return mode && from == getRightSide() && FluidContainerUtils.canFill(fluidTank.getFluid(), fluid) && isValidFluid(fluid);
-    }
-
-    @Override
-    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        return !mode && from == getRightSide() && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
-    }
-
-    @Override
-    public IFluidTank[] getTankInfo(Direction from) {
-        if (from == getRightSide()) {
-            return getAllTanks();
-        }
-        return PipeUtils.EMPTY;
-    }
-
-    @Override
-    public IFluidTank[] getAllTanks() {
-        return new IFluidTank[]{fluidTank};
-    }
-
-    @Override
-    public Object[] getTanks() {
+    public Object[] getManagedTanks() {
         return new Object[]{gasTank, fluidTank};
     }
 
@@ -339,7 +243,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
                       return Math.min(Math.min(fluidTank.getFluidAmount(), gasTank.getNeeded()), possibleProcess);
                   }
                   //Gas to fluid
-                  return Math.min(Math.min(gasTank.getStored(), fluidTank.getSpace()), possibleProcess);
+                  return Math.min(Math.min(gasTank.getStored(), fluidTank.getNeeded()), possibleProcess);
               });
     }
 
@@ -348,6 +252,5 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(() -> mode, value -> mode = value));
         container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
-        container.track(SyncableFluidStack.create(fluidTank));
     }
 }

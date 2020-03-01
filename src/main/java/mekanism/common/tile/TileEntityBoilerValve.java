@@ -20,7 +20,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFluidHandlerWrapper, IComputerIntegration {
 
@@ -40,7 +39,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IFl
                         CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                             FluidStack fluid = structure.steamTank.getFluid();
                             if (PipeUtils.canFill(handler, fluid)) {
-                                structure.steamTank.setFluid(new FluidStack(fluid, fluid.getAmount() - handler.fill(fluid, FluidAction.EXECUTE)));
+                                structure.steamTank.setStack(new FluidStack(fluid, fluid.getAmount() - handler.fill(fluid, FluidAction.EXECUTE)));
                             }
                         });
                     }

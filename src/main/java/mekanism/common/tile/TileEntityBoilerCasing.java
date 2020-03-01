@@ -97,12 +97,12 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                         int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
                         amountToBoil = Math.min(amountToBoil, (structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK) - steamAmount);
                         FluidStack water = structure.waterTank.getFluid();
-                        structure.waterTank.setFluid(new FluidStack(water, water.getAmount() - amountToBoil));
+                        structure.waterTank.setStack(new FluidStack(water, water.getAmount() - amountToBoil));
                         if (structure.steamTank.isEmpty()) {
-                            structure.steamTank.setFluid(MekanismFluids.STEAM.getFluidStack(amountToBoil));
+                            structure.steamTank.setStack(MekanismFluids.STEAM.getFluidStack(amountToBoil));
                         } else {
                             FluidStack steam = structure.steamTank.getFluid();
-                            structure.steamTank.setFluid(new FluidStack(steam, steam.getAmount() + amountToBoil));
+                            structure.steamTank.setStack(new FluidStack(steam, steam.getAmount() + amountToBoil));
                         }
 
                         structure.temperature -= (amountToBoil * SynchronizedBoilerData.getHeatEnthalpy()) / structure.locations.size();
@@ -221,8 +221,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.temperature = dataStream.readDouble();
                 structure.lastMaxBoil = dataStream.readInt();
 
-                structure.waterTank.setFluid(dataStream.readFluidStack());
-                structure.steamTank.setFluid(dataStream.readFluidStack());
+                structure.waterTank.setStack(dataStream.readFluidStack());
+                structure.steamTank.setStack(dataStream.readFluidStack());
 
                 structure.upperRenderLocation = Coord4D.read(dataStream);
 

@@ -19,7 +19,7 @@ import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.base.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,7 +31,6 @@ import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -163,7 +162,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             if (clientHasStructure) {
                 structure.volume = dataStream.readInt();
                 structure.editMode = dataStream.readEnumValue(ContainerEditMode.class);
-                structure.fluidTank.setFluid(dataStream.readFluidStack());
+                structure.fluidTank.setStack(dataStream.readFluidStack());
 
                 if (isRendering) {
                     int size = dataStream.readInt();
@@ -233,7 +232,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                         }
                         if (removeFluid) {
                             FluidStack fluid = structure.fluidTank.getFluid();
-                            structure.fluidTank.setFluid(new FluidStack(fluid, fluid.getAmount() - filled));
+                            structure.fluidTank.setStack(new FluidStack(fluid, fluid.getAmount() - filled));
                         }
                         return true;
                     }
@@ -264,10 +263,10 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                     }
                     if (filled) {
                         if (structure.fluidTank.isEmpty()) {
-                            structure.fluidTank.setFluid(drained);
+                            structure.fluidTank.setStack(drained);
                         } else {
                             FluidStack fluid = structure.fluidTank.getFluid();
-                            structure.fluidTank.setFluid(new FluidStack(fluid, fluid.getAmount() + drained.getAmount()));
+                            structure.fluidTank.setStack(new FluidStack(fluid, fluid.getAmount() + drained.getAmount()));
                         }
                         return true;
                     }

@@ -184,11 +184,11 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
         super.onFormed();
         if (!structureFound.waterTank.isEmpty()) {
             FluidStack water = structureFound.waterTank.getFluid();
-            structureFound.waterTank.setFluid(new FluidStack(water, Math.min(water.getAmount(), structureFound.waterVolume * WATER_PER_TANK)));
+            structureFound.waterTank.setStack(new FluidStack(water, Math.min(water.getAmount(), structureFound.waterVolume * WATER_PER_TANK)));
         }
         if (!structureFound.steamTank.isEmpty()) {
             FluidStack steam = structureFound.steamTank.getFluid();
-            structureFound.steamTank.setFluid(new FluidStack(steam, Math.min(steam.getAmount(), structureFound.steamVolume * STEAM_PER_TANK)));
+            structureFound.steamTank.setStack(new FluidStack(steam, Math.min(steam.getAmount(), structureFound.steamVolume * STEAM_PER_TANK)));
         }
     }
 

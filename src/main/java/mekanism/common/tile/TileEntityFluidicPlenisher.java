@@ -12,23 +12,22 @@ import mekanism.api.Upgrade;
 import mekanism.api.sustained.ISustainedTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -41,19 +40,15 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable, IFluidHandlerWrapper, ISustainedTank {
+public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable, ISustainedTank {
 
     private static final String[] methods = new String[]{"reset"};
     private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
     private Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
     private Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
     public boolean finishedCalc;
-    public FluidTank fluidTank;
+    public BasicFluidTank fluidTank;
     /**
      * How many ticks it takes to run an operation.
      */
@@ -72,18 +67,22 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         super(MekanismBlocks.FLUIDIC_PLENISHER);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        fluidTank = new FluidTank(10_000);
+    protected IFluidTankHolder getInitialFluidTanks() {
+        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        //TODO: Is there a better position to use, should it maybe get the default fluid state
+        builder.addTank(fluidTank = BasicFluidTank.input(10_000,
+              fluid -> fluid.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluid), this),
+              RelativeSide.TOP);
+        return builder.build();
     }
 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        //TODO: Is there a better position to use
-        builder.addSlot(inputSlot = FluidInventorySlot.fill(fluidTank, fluidStack ->
-              fluidStack.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluidStack), this, 28, 20), RelativeSide.TOP);
+        builder.addSlot(inputSlot = FluidInventorySlot.fill(fluidTank, this, 28, 20), RelativeSide.TOP);
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 28, 51), RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35), RelativeSide.BACK);
         return builder.build();
@@ -95,9 +94,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             energySlot.discharge(this);
             inputSlot.fillTank(outputSlot);
 
-            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.isEmpty() &&
-                fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, BlockPos.ZERO, fluidTank.getFluid())) {
-                //TODO: Is there a better position to use
+            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.isEmpty()) {
                 if (!finishedCalc) {
                     setEnergy(getEnergy() - getEnergyPerTick());
                 }
@@ -187,10 +184,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         nbtTags.putInt("operatingTicks", operatingTicks);
         nbtTags.putBoolean("finishedCalc", finishedCalc);
 
-        if (!fluidTank.isEmpty()) {
-            nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
-        }
-
         ListNBT activeList = new ListNBT();
         for (BlockPos wrapper : activeNodes) {
             activeList.add(NBTUtil.writeBlockPos(wrapper));
@@ -215,10 +208,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         operatingTicks = nbtTags.getInt("operatingTicks");
         finishedCalc = nbtTags.getBoolean("finishedCalc");
 
-        if (nbtTags.contains("fluidTank")) {
-            fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
-        }
-
         if (nbtTags.contains("activeNodes")) {
             ListNBT tagList = nbtTags.getList("activeNodes", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
@@ -240,21 +229,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public IFluidTank[] getTankInfo(Direction direction) {
-        if (direction == Direction.UP) {
-            return new IFluidTank[]{fluidTank};
-        }
-        return PipeUtils.EMPTY;
-    }
-
-    @Override
-    public IFluidTank[] getAllTanks() {
-        return getTankInfo(Direction.UP);
-    }
-
-    @Override
     public void setFluidStack(@Nonnull FluidStack fluidStack, Object... data) {
-        fluidTank.setFluid(fluidStack);
+        fluidTank.setStack(fluidStack);
     }
 
     @Nonnull
@@ -266,17 +242,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public boolean hasTank(Object... data) {
         return true;
-    }
-
-    @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        return fluidTank.fill(resource, fluidAction);
-    }
-
-    @Override
-    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        //TODO: Is there a better position to use
-        return from == Direction.UP && fluid.getFluid().getAttributes().canBePlacedInWorld(getWorld(), BlockPos.ZERO, fluid);
     }
 
     @Override
@@ -298,9 +263,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
         }
         return super.getCapability(capability, side);
     }
@@ -338,6 +300,5 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(() -> finishedCalc, value -> finishedCalc = value));
-        container.track(SyncableFluidStack.create(fluidTank));
     }
 }

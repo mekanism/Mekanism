@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -10,7 +8,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.recipes.FluidGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.FluidGasToGasCachedRecipe;
@@ -18,19 +15,18 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.api.sustained.ISustainedData;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -40,27 +36,17 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChemicalWasher extends TileEntityMekanism implements IGasHandler, IFluidHandlerWrapper, ISustainedData, ITankManager,
-      ITileCachedRecipeHolder<FluidGasToGasRecipe> {
+public class TileEntityChemicalWasher extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<FluidGasToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
     public static final int MAX_FLUID = 10_000;
-    public FluidTank fluidTank;
+    public BasicFluidTank fluidTank;
     public BasicGasTank inputTank;
     public BasicGasTank outputTank;
     public int gasOutput = 256;
@@ -79,22 +65,26 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
 
     public TileEntityChemicalWasher() {
         super(MekanismBlocks.CHEMICAL_WASHER);
-        fluidInputHandler = InputHelper.getInputHandler(fluidTank, 0);
+        fluidInputHandler = InputHelper.getInputHandler(fluidTank);
         gasInputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
-    }
-
-    @Override
-    protected void presetVariables() {
-        fluidTank = new FluidTank(MAX_FLUID);
     }
 
     @Nonnull
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this), RelativeSide.LEFT);
+        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this), RelativeSide.LEFT);
         builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.RIGHT);
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    protected IFluidTankHolder getInitialFluidTanks() {
+        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipe(recipe -> recipe.getFluidInput().testType(fluid)), this),
+              RelativeSide.TOP);
         return builder.build();
     }
 
@@ -102,8 +92,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, fluid -> containsRecipe(recipe -> recipe.getFluidInput().testType(fluid)), this, 180, 71),
-              RelativeSide.LEFT);
+        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 180, 71), RelativeSide.LEFT);
         //Output slot for the fluid container that was used as an input
         builder.addSlot(OutputInventorySlot.at(this, 180, 102), RelativeSide.TOP);
         builder.addSlot(gasOutputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.RIGHT);
@@ -174,36 +163,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
               });
     }
 
-    private boolean isValidGas(@Nonnull Gas gas) {
-        return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        fluidTank.readFromNBT(nbtTags.getCompound("leftTank"));
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("leftTank", fluidTank.writeToNBT(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
-        }
-        return super.getCapability(capability, side);
-    }
-
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -213,58 +172,7 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        return fluidTank.fill(resource, fluidAction);
-    }
-
-    @Override
-    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        if (from != Direction.UP) {
-            return false;
-        }
-        FluidStack currentFluid = fluidTank.getFluid();
-        if (currentFluid.isEmpty()) {
-            //If we don't have a fluid currently stored, then check if the fluid wanting to be input is valid for this machine
-            return containsRecipe(recipe -> recipe.getFluidInput().testType(fluid));
-        }
-        //Otherwise return true if the fluid is the same as the one we already have stored
-        return currentFluid.isFluidEqual(fluid);
-    }
-
-    @Override
-    public IFluidTank[] getTankInfo(Direction from) {
-        if (from == Direction.UP) {
-            return new IFluidTank[]{fluidTank};
-        }
-        return PipeUtils.EMPTY;
-    }
-
-    @Override
-    public IFluidTank[] getAllTanks() {
-        return new IFluidTank[]{fluidTank};
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        if (!fluidTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("leftTank", "fluidTank");
-        return remap;
-    }
-
-    @Override
-    public Object[] getTanks() {
+    public Object[] getManagedTanks() {
         return new Object[]{fluidTank, inputTank, outputTank};
     }
 
@@ -287,6 +195,5 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements IGas
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
-        container.track(SyncableFluidStack.create(fluidTank));
     }
 }

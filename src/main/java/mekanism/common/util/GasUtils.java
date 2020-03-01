@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
@@ -70,7 +70,7 @@ public final class GasUtils {
         // (at least not on the first call to this, which is made via fillItemGroup)
         BasicGasTank tank = BasicGasTank.create(capacity, null);
         tank.setStack(gasProvider.getGasStack(tank.getCapacity()));
-        ItemDataUtils.setList(toFill, "GasTanks", ChemicalUtils.writeChemicalTanks(Collections.singletonList(tank)));
+        ItemDataUtils.setList(toFill, "GasTanks", DataHandlerUtils.writeTanks(Collections.singletonList(tank)));
         //The item is now filled return it for convenience
         return toFill;
     }

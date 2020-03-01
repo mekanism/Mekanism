@@ -8,6 +8,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+//TODO: FluidHandler - Rewrite
+@Deprecated
 public class FluidItemWrapper extends ItemCapability implements IFluidHandlerItem {
 
     @Override

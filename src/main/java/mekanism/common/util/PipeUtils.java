@@ -81,9 +81,4 @@ public final class PipeUtils {
         //TODO: Check this
         return handler.fill(stack, FluidAction.SIMULATE) > 0;
     }
-
-    public static boolean canDrain(IFluidHandler handler, @Nonnull FluidStack stack) {
-        //TODO: Check this
-        return !handler.drain(stack, FluidAction.SIMULATE).isEmpty();
-    }
 }

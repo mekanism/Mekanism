@@ -8,12 +8,7 @@ import mekanism.common.tile.TileEntityDynamicTank;
 public class DynamicFluidTank extends MultiblockFluidTank<TileEntityDynamicTank> {
 
     public DynamicFluidTank(TileEntityDynamicTank tile) {
-        super(tile);
-    }
-
-    @Override
-    public int getCapacity() {
-        return multiblock.structure == null ? 0 : multiblock.structure.volume * TankUpdateProtocol.FLUID_PER_TANK;
+        super(tile, () -> tile.structure == null ? 0 : tile.structure.volume * TankUpdateProtocol.FLUID_PER_TANK, alwaysTrue);
     }
 
     @Override

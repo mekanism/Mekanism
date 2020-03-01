@@ -1,14 +1,26 @@
 package mekanism.common.content.boiler;
 
+import java.util.Objects;
+import java.util.function.IntSupplier;
+import java.util.function.Predicate;
 import mekanism.api.Coord4D;
+import mekanism.api.annotations.NonNull;
 import mekanism.common.base.MultiblockFluidTank;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.tile.TileEntityBoilerCasing;
+import net.minecraftforge.fluids.FluidStack;
 
-public abstract class BoilerTank extends MultiblockFluidTank<TileEntityBoilerCasing> {
+public class BoilerTank extends MultiblockFluidTank<TileEntityBoilerCasing> {
 
-    protected BoilerTank(TileEntityBoilerCasing tile) {
-        super(tile);
+    public static BoilerTank create(TileEntityBoilerCasing tile, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
+        //TODO: Validate capacity is positive
+        Objects.requireNonNull(tile, "Tile cannot be null");
+        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
+        return new BoilerTank(tile, capacity, validator);
+    }
+
+    private BoilerTank(TileEntityBoilerCasing tile, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
+        super(tile, capacity, validator);
     }
 
     @Override

@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.inventory.IInventorySlot;
@@ -74,7 +75,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -351,15 +352,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         if (homeLocation != null) {
             homeLocation.write(nbtTags);
         }
-        ListNBT tagList = new ListNBT();
-        for (int slotCount = 0; slotCount < inventorySlots.size(); slotCount++) {
-            CompoundNBT tagCompound = inventorySlots.get(slotCount).serializeNBT();
-            if (!tagCompound.isEmpty()) {
-                tagCompound.putByte("Slot", (byte) slotCount);
-                tagList.add(tagCompound);
-            }
-        }
-        nbtTags.put("Items", tagList);
+        nbtTags.put("Items", DataHandlerUtils.writeSlots(getInventorySlots(null)));
     }
 
     @Override
@@ -374,16 +367,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         setFollowing(nbtTags.getBoolean("follow"));
         setDropPickup(nbtTags.getBoolean("dropPickup"));
         homeLocation = Coord4D.read(nbtTags);
-        ListNBT tagList = nbtTags.getList("Items", Constants.NBT.TAG_COMPOUND);
-        List<IInventorySlot> inventorySlots = getInventorySlots((Direction) null);
-        int size = inventorySlots.size();
-        for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
-            CompoundNBT tagCompound = tagList.getCompound(tagCount);
-            byte slotID = tagCompound.getByte("Slot");
-            if (slotID >= 0 && slotID < size) {
-                inventorySlots.get(slotID).deserializeNBT(tagCompound);
-            }
-        }
+        DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList("Items", NBT.TAG_COMPOUND));
     }
 
     @Override
@@ -462,31 +446,14 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     @Override
     public void setInventory(ListNBT nbtTags, Object... data) {
-        if (nbtTags == null || nbtTags.isEmpty()) {
-            return;
-        }
-        List<IInventorySlot> inventorySlots = getInventorySlots((Direction) null);
-        int size = inventorySlots.size();
-        for (int slots = 0; slots < nbtTags.size(); slots++) {
-            CompoundNBT tagCompound = nbtTags.getCompound(slots);
-            byte slotID = tagCompound.getByte("Slot");
-            if (slotID >= 0 && slotID < size) {
-                inventorySlots.get(slotID).deserializeNBT(tagCompound);
-            }
+        if (nbtTags != null && !nbtTags.isEmpty()) {
+            DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags);
         }
     }
 
     @Override
     public ListNBT getInventory(Object... data) {
-        ListNBT tagList = new ListNBT();
-        for (int i = 0; i < inventorySlots.size(); i++) {
-            CompoundNBT tagCompound = inventorySlots.get(i).serializeNBT();
-            if (!tagCompound.isEmpty()) {
-                tagCompound.putByte("Slot", (byte) i);
-                tagList.add(tagCompound);
-            }
-        }
-        return tagList;
+        return DataHandlerUtils.writeSlots(getInventorySlots(null));
     }
 
     @Nonnull
@@ -501,7 +468,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Nonnull
-    public List<IInventorySlot> getInventorySlots(@Nonnull ContainerType<?> containerType) {
+    public List<IInventorySlot> getContainerInventorySlots(@Nonnull ContainerType<?> containerType) {
         if (!hasInventory()) {
             return Collections.emptyList();
         } else if (containerType == MekanismContainerTypes.INVENTORY_ROBIT.getContainerType()) {

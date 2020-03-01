@@ -54,7 +54,7 @@ public class SyncableItemStack implements ISyncableData {
             //Make sure to copy it in case our item stack object is the same object so would be getting modified
             // only do so though if it is dirty, as we don't need to spam object creation
             this.lastKnownValue = value.copy();
-            return !sameItem ? DirtyType.DIRTY : DirtyType.SIZE;
+            return sameItem ? DirtyType.SIZE : DirtyType.DIRTY;
         }
         return DirtyType.CLEAN;
     }

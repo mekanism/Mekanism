@@ -66,7 +66,8 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = BasicGasTank.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::isValidGas, this));
+        builder.addTank(gasTank = BasicGasTank.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes,
+              gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
         return builder.build();
     }
 
@@ -137,10 +138,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             updateCachedRecipe(newCachedRecipe, process);
         }
         return true;
-    }
-
-    private boolean isValidGas(@Nonnull Gas gas) {
-        return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
     }
 
     @Override

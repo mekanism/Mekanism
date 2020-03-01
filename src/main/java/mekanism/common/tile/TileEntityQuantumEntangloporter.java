@@ -17,14 +17,12 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
@@ -43,16 +41,13 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.ProxiedSlotInfo;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -61,14 +56,9 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFluidHandlerWrapper, IFrequencyHandler,
-      IGasHandler, IHeatTransfer, IComputerIntegration, IChunkLoader, ISustainedData {
+public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFrequencyHandler, IHeatTransfer, ISustainedData,
+      IComputerIntegration, IChunkLoader {
 
     private static final String[] methods = new String[]{"setFrequency"};
     public InventoryFrequency frequency;
@@ -99,7 +89,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
         ConfigInfo fluidConfig = configComponent.getConfig(TransmissionType.FLUID);
         if (fluidConfig != null) {
-            Supplier<List<FluidTank>> tankSupplier = () -> hasFrequency() ? Collections.singletonList(frequency.storedFluid) : Collections.emptyList();
+            Supplier<List<? extends IExtendedFluidTank>> tankSupplier = () -> hasFrequency() ? frequency.fluidTanks : Collections.emptyList();
             fluidConfig.addSlotInfo(DataType.INPUT, new ProxiedSlotInfo.Fluid(true, false, tankSupplier));
             fluidConfig.addSlotInfo(DataType.OUTPUT, new ProxiedSlotInfo.Fluid(false, true, tankSupplier));
             //Set default config directions
@@ -383,56 +373,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        return frequency.storedFluid.fill(resource, fluidAction);
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
-        return frequency.storedFluid.drain(maxDrain, fluidAction);
-    }
-
-    @Override
-    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        if (hasFrequency()) {
-            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
-            if (slotInfo != null && slotInfo.canInput()) {
-                return FluidContainerUtils.canFill(frequency.storedFluid.getFluid(), fluid);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        if (hasFrequency()) {
-            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
-            if (slotInfo instanceof FluidSlotInfo && slotInfo.canOutput()) {
-                return FluidContainerUtils.canDrain(frequency.storedFluid.getFluid(), fluid);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public IFluidTank[] getTankInfo(Direction from) {
-        if (hasFrequency()) {
-            ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
-            if (slotInfo instanceof FluidSlotInfo && slotInfo.isEnabled()) {
-                return new IFluidTank[]{frequency.storedFluid};
-            }
-        }
-        return PipeUtils.EMPTY;
-    }
-
-    @Override
-    public IFluidTank[] getAllTanks() {
-        return hasFrequency() ? new IFluidTank[]{frequency.storedFluid} : PipeUtils.EMPTY;
-    }
-
-    @Override
-    public boolean handleInventory() {
+    public boolean persistInventory() {
         return false;
     }
 
@@ -442,7 +383,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public boolean handlesInfusion() {
+    public boolean persistInfusion() {
+        return false;
+    }
+
+    @Override
+    public boolean persistFluid() {
         return false;
     }
 
@@ -497,11 +443,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public Object[] getTanks() {
-        if (!hasFrequency()) {
-            return null;
-        }
-        return new Object[]{frequency.storedFluid, frequency.storedGas};
+    public Object[] getManagedTanks() {
+        //TODO: Given these don't show in the GUI it may make more sense to not have this be implemented
+        // at all as it is only really used for the dropper
+        return hasFrequency() ? new Object[]{frequency.storedFluid, frequency.storedGas} : null;
     }
 
     @Override
@@ -524,15 +469,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (isCapabilityDisabled(capability, side)) {
             return LazyOptional.empty();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
-            return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
         }
         return super.getCapability(capability, side);
     }
@@ -541,8 +479,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (configComponent.isCapabilityDisabled(capability, side)) {
             return true;
-        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == Capabilities.HEAT_TRANSFER_CAPABILITY ||
-                   capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return side != null && !hasFrequency();
         }
         return super.isCapabilityDisabled(capability, side);
@@ -580,19 +517,19 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        if (!hasInventory() || !hasFrequency()) {
-            return Collections.emptyList();
-        }
-        return frequency.getInventorySlots(side);
+        return hasFrequency() && hasInventory() ? frequency.getInventorySlots(side) : Collections.emptyList();
     }
 
     @Nonnull
     @Override
     public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
-        if (!canHandleGas() || !hasFrequency()) {
-            return Collections.emptyList();
-        }
-        return frequency.getGasTanks(side);
+        return hasFrequency() && canHandleGas() ? frequency.getGasTanks(side) : Collections.emptyList();
+    }
+
+    @Nonnull
+    @Override
+    public List<? extends IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        return hasFrequency() && canHandleFluid() ? frequency.getFluidTanks(side) : Collections.emptyList();
     }
 
     @Override

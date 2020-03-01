@@ -122,6 +122,10 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     nbtBuilder.replaceOperation("InfusionTanks", ItemDataUtils.DATA_ID + ".InfusionTanks");
                     hasData = true;
                 }
+                if (tileEntity.handlesFluid() && tileEntity.getFluidTanks(null).size() > 0) {
+                    nbtBuilder.replaceOperation("FluidTanks", ItemDataUtils.DATA_ID + ".FluidTanks");
+                    hasData = true;
+                }
             }
             //TODO: If anything for inventories doesn't work we may have to check if the tile is an ISustainedInventory
             // I don't believe it is directly needed anymore for this due to IHasInventory
@@ -131,7 +135,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 // then only copy the slots if we actually have any slots because otherwise maybe something just went wrong
                 if (!(tile instanceof IItemHandler) || ((IItemHandler) tile).getSlots() > 0) {
                     //If we don't actually handle saving an inventory (such as the quantum entangloporter, don't actually add it as something to copy)
-                    if (!(tile instanceof TileEntityMekanism) || ((TileEntityMekanism) tile).handleInventory()) {
+                    if (!(tile instanceof TileEntityMekanism) || ((TileEntityMekanism) tile).persistInventory()) {
                         nbtBuilder.replaceOperation("Items", ItemDataUtils.DATA_ID + ".Items");
                         hasData = true;
                     }

@@ -33,7 +33,7 @@ public class PacketDropperUse {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             if (tile instanceof ITankManager) {
                 try {
-                    Object tank = ((ITankManager) tile).getTanks()[message.tankId];
+                    Object tank = ((ITankManager) tile).getManagedTanks()[message.tankId];
                     if (tank != null) {
                         DropperHandler.useDropper(player, tank, message.mouseButton);
                     }

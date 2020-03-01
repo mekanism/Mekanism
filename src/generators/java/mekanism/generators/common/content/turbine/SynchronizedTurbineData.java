@@ -4,7 +4,9 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.common.base.MultiblockFluidTank;
 import mekanism.common.multiblock.SynchronizedData;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import net.minecraftforge.fluids.FluidStack;
@@ -14,7 +16,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static Object2FloatMap<String> clientRotationMap = new Object2FloatOpenHashMap<>();
 
-    public TurbineFluidTank fluidTank;
+    public MultiblockFluidTank<TileEntityTurbineCasing> fluidTank;
 
     @Nonnull
     public FluidStack prevFluid = FluidStack.EMPTY;
@@ -42,7 +44,7 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public float clientRotation;
 
     public SynchronizedTurbineData(TileEntityTurbineCasing tile) {
-        fluidTank = new TurbineFluidTank(tile);
+        fluidTank = MultiblockFluidTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.getFluidCapacity(), fluid -> fluid.getFluid().isIn(MekanismTags.Fluids.STEAM));
     }
 
     public int getDispersers() {

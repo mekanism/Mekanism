@@ -8,7 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.network.PacketContainerEditMode;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
+import mekanism.common.base.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;

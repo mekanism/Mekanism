@@ -30,10 +30,10 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
             ItemStack stack = GuiTexturedElement.minecraft.player.inventory.getItemStack();
             if (guiObj instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TileEntity tile = ((GuiMekanismTile<?, ?>) guiObj).getTileEntity();
-                if (tile instanceof ITankManager && ((ITankManager) tile).getTanks() != null) {
+                if (tile instanceof ITankManager && ((ITankManager) tile).getManagedTanks() != null) {
                     TANK tank = infoHandler.getTank();
                     if (tank != null) {
-                        int index = Arrays.asList(((ITankManager) tile).getTanks()).indexOf(tank);
+                        int index = Arrays.asList(((ITankManager) tile).getManagedTanks()).indexOf(tank);
                         if (index != -1) {
                             if (button == 0 && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                                 button = 2;
