@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.machine.BlockMetallurgicInfuser;
+import mekanism.common.block.machine.BlockMachine;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
@@ -33,10 +33,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockMetallurgicInfuser extends ItemBlockAdvancedTooltip<BlockMetallurgicInfuser> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockMachine<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockMetallurgicInfuser(BlockMetallurgicInfuser block) {
+    public ItemBlockMachine(BlockMachine<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+    }
+    
+    public ItemBlockMachine(BlockMachine<?, ?> block, Item.Properties properties) {
+        super(block, properties);
     }
 
     @Override
@@ -60,8 +64,8 @@ public class ItemBlockMetallurgicInfuser extends ItemBlockAdvancedTooltip<BlockM
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
-        if (item instanceof ItemBlockMetallurgicInfuser) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockMetallurgicInfuser) item).getBlock().getStorage());
+        if (item instanceof ItemBlockMachine) {
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockMachine) item).getBlock().getStorage());
         }
         return 0;
     }

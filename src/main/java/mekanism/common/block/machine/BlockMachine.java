@@ -33,6 +33,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
@@ -43,17 +44,19 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
-public class BlockMachine<TILE extends TileEntityMekanism> extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TILE>, IStateFacing, IStateActive,
+public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machine<TILE>> extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TILE>, IStateFacing, IStateActive,
     IHasInventory, IHasSecurity, IHasTileEntity<TILE>, IBlockSound, ISupportsRedstone, ISupportsComparator, IHasDescription {
 
-    protected Machine<TILE> machineType;
+    protected MACHINE machineType;
 
-    public BlockMachine(Machine<TILE> machineType) {
+    public BlockMachine(MACHINE machineType) {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16F));
         this.machineType = machineType;
     }
@@ -88,6 +91,11 @@ public class BlockMachine<TILE extends TileEntityMekanism> extends BlockMekanism
     @Override
     public SoundEvent getSoundEvent() {
         return machineType.getSoundEvent();
+    }
+    
+    @Override
+    public boolean hasSound() {
+        return machineType.hasSound();
     }
 
     @Nonnull
@@ -178,5 +186,20 @@ public class BlockMachine<TILE extends TileEntityMekanism> extends BlockMekanism
                 tile.onNeighborChange(neighborBlock);
             }
         }
+    }
+    
+    @Nonnull
+    @Override
+    @Deprecated
+    public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
+        return machineType.hasCustomShape() ? machineType.getBounds()[getDirection(state).ordinal() - 2] : super.getShape(state, world, pos, context);
+    }
+    
+    @Override
+    public INamedContainerProvider getProvider(TILE tile) {
+        if(machineType.hasCustomContainer()) {
+            return machineType.getCustomContainer(tile);
+        }
+        return IHasGui.super.getProvider(tile);
     }
 }

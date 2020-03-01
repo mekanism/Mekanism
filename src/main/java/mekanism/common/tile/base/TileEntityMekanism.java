@@ -290,7 +290,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         canBeUpgraded = block instanceof IUpgradeableBlock;
         isDirectional = block instanceof IStateFacing;
         supportsRedstone = block instanceof ISupportsRedstone;
-        hasSound = block instanceof IBlockSound;
+        hasSound = block instanceof IBlockSound && ((IBlockSound) block).hasSound();
         hasGui = block instanceof IHasGui;
         hasInventory = block instanceof IHasInventory;
         hasSecurity = block instanceof IHasSecurity;
