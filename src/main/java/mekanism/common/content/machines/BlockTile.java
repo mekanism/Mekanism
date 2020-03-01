@@ -8,11 +8,8 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.EnumUtils;
-import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.shapes.VoxelShape;
 
@@ -76,11 +73,8 @@ public class BlockTile<TILE extends TileEntityMekanism> {
             return getThis();
         }
         
-        public T withCustomShape(VoxelShape shape) {
-            holder.bounds = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-            for (Direction side : EnumUtils.HORIZONTAL_DIRECTIONS) {
-                holder.bounds[side.ordinal() - 2] = VoxelShapeUtils.rotateHorizontal(shape, side);
-            }
+        public T withCustomShape(VoxelShape[] shape) {
+            holder.bounds = shape;
             return getThis();
         }
         

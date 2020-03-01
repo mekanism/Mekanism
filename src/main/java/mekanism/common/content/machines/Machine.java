@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
+import java.util.function.DoubleSupplier;
 import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
@@ -13,7 +13,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.machine.BlockFactory;
-import mekanism.common.config.value.CachedDoubleValue;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -24,8 +23,8 @@ import net.minecraft.block.BlockState;
 
 public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
 
-    protected Supplier<Double> energyUsage;
-    protected Supplier<Double> energyStorage;
+    protected DoubleSupplier energyUsage;
+    protected DoubleSupplier energyStorage;
 
     protected MekanismLang description;
 
@@ -49,11 +48,11 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
     }
 
     public double getUsage() {
-        return energyUsage.get();
+        return energyUsage.getAsDouble();
     }
 
     public double getConfigStorage() {
-        return energyStorage.get();
+        return energyStorage.getAsDouble();
     }
 
     public static class FactoryMachine<TILE extends TileEntityMekanism> extends Machine<TILE> {
@@ -96,13 +95,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
             return builder;
         }
 
-        public T withConfig(CachedDoubleValue energyUsage, CachedDoubleValue energyStorage) {
-            holder.energyUsage = energyUsage::get;
-            holder.energyStorage = energyStorage::get;
-            return getThis();
-        }
-
-        public T withConfig(Supplier<Double> energyUsage, Supplier<Double> energyStorage) {
+        public T withConfig(DoubleSupplier energyUsage, DoubleSupplier energyStorage) {
             holder.energyUsage = energyUsage;
             holder.energyStorage = energyStorage;
             return getThis();

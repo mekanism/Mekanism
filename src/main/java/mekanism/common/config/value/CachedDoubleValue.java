@@ -1,9 +1,10 @@
 package mekanism.common.config.value;
 
+import java.util.function.DoubleSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class CachedDoubleValue extends CachedPrimitiveValue<Double> {
+public class CachedDoubleValue extends CachedPrimitiveValue<Double> implements DoubleSupplier {
 
     private double cachedValue;
 
@@ -22,6 +23,11 @@ public class CachedDoubleValue extends CachedPrimitiveValue<Double> {
             resolved = true;
         }
         return cachedValue;
+    }
+    
+    @Override
+    public double getAsDouble() {
+        return get();
     }
 
     public void set(double value) {
