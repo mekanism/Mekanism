@@ -17,7 +17,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     protected abstract String getType();
 
-    @Nonnull
+    @Nullable
     @Override
     public STACK getMatch(Iterable<STACK> ingredients, @Nonnull STACK toMatch) {
         for (STACK stack : ingredients) {
@@ -25,7 +25,9 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
                 return stack;
             }
         }
-        return getEmptyStack();
+        //JEI expects null to be returned if there is no match
+        // so that it can filter hidden ingredients
+        return null;
     }
 
     @Override
@@ -35,7 +37,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public String getUniqueId(STACK ingredient) {
-        return getType().toLowerCase(Locale.ROOT) + ":" + ingredient.getType().getRegistryName().getPath();
+        return getType().toLowerCase(Locale.ROOT) + ":" + ingredient.getType().getRegistryName();
     }
 
     @Override
@@ -45,12 +47,22 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
 
     @Override
     public String getModId(STACK ingredient) {
-        return ingredient.getType().getIcon().getNamespace();
+        return ingredient.getType().getRegistryName().getNamespace();
     }
+
+    /*@Override
+    public Iterable<Integer> getColors(STACK ingredient) {
+        CHEMICAL chemical = ingredient.getType();
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(chemical.getIcon());
+        int renderColor = chemical.getTint();
+        //TODO: Does tint need alpha applied
+        //TODO: https://github.com/mezz/JustEnoughItems/issues/1886
+        return ColorGetter.getColors(sprite, renderColor, 1);
+    }*/
 
     @Override
     public String getResourceId(STACK ingredient) {
-        return ingredient.getType().getTranslationKey();
+        return ingredient.getType().getRegistryName().getPath();
     }
 
     @Override
