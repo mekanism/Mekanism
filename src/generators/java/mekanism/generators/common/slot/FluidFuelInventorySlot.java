@@ -2,6 +2,7 @@ package mekanism.generators.common.slot;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nullable;
@@ -13,9 +14,11 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.slot.FluidInventorySlot;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 /**
  * Extension of FluidInventorySlot to make it be able to handle raw items as fuels
@@ -25,38 +28,54 @@ import net.minecraftforge.fluids.FluidUtil;
 public class FluidFuelInventorySlot extends FluidInventorySlot {
 
     public static FluidFuelInventorySlot forFuel(IExtendedFluidTank fluidTank, ToIntFunction<@NonNull ItemStack> fuelValue,
-          Int2ObjectFunction<@NonNull FluidStack> fuelCreator, Predicate<@NonNull FluidStack> validFuel, @Nullable IMekanismInventory inventory, int x, int y) {
+          Int2ObjectFunction<@NonNull FluidStack> fuelCreator, @Nullable IMekanismInventory inventory, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
-        Objects.requireNonNull(validFuel, "Fuel validity check cannot be null");
-        //TODO: Eventually maybe add a check for inserting to check against the tank of the inventory
-        //TODO: FluidHandler - improve the logic of these checks, and remove the need for passing a valid fuel predicate, due to it being
-        // contained by our fluid tank
-        //TODO: FluidHandler - Evaluate usage of getFluidContained, as if it is rate limited this won't return the actual amount of fluid it has contained
-        // and some places we may care about that
         return new FluidFuelInventorySlot(fluidTank, fuelValue, fuelCreator, stack -> {
-            FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
-            //If we have no fuel stored, or it is not a valid fuel; and we also don't have a fuel value for our item
-            // then allow it to be extracted as something went wrong.
-            return (fluidContained.isEmpty() || !validFuel.test(fluidContained)) && fuelValue.applyAsInt(stack) == 0;
-        }, stack -> {
-            FluidStack fluidContained = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
-            if (fluidContained.isEmpty()) {
-                return fuelValue.applyAsInt(stack) > 0;
+            Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
+            if (cap.isPresent()) {
+                IFluidHandlerItem fluidHandlerItem = cap.get();
+                for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
+                    if (fluidTank.isFluidValid(fluidHandlerItem.getFluidInTank(tank))) {
+                        //False if the items contents are still valid
+                        return false;
+                    }
+                }
+                //Only allow extraction if our item is out of fluid, but also verify there is no conversion for it
             }
-            return validFuel.test(fluidContained) || fuelValue.applyAsInt(stack) > 0;
+            //Always allow extraction if something went horribly wrong and we are not a chemical item AND we can't provide a valid type of chemical
+            // This might happen after a reload for example
+            return fuelValue.applyAsInt(stack) == 0;
         }, stack -> {
-            //Allow for all fluid containers and items with a fuel value to be valid, so that we don't crash
-            // on empty buckets after draining, but we can't insert them because of the more accurate insertion checks
-            return FluidUtil.getFluidHandler(stack).isPresent() || fuelValue.applyAsInt(stack) > 0;
+            Optional<IFluidHandlerItem> cap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
+            if (cap.isPresent()) {
+                IFluidHandlerItem fluidHandlerItem = cap.get();
+                for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
+                    FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
+                    if (!fluidInTank.isEmpty() && fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
+                        //True if we can fill the tank with any of our contents
+                        // Note: We need to recheck the fact the chemical is not empty in case the item has multiple tanks and only some of the chemicals are valid
+                        return true;
+                    }
+                }
+            }
+            //Note: We recheck about this having a fuel value and that it is still valid as the fuel value might have changed, such as after a reload
+            return fuelValue.applyAsInt(stack) > 0;
+        }, stack -> {
+            if (FluidUtil.getFluidHandler(stack).isPresent()) {
+                //Note: we mark all fluid items as valid and have a more restrictive insert check so that we allow empty buckets when we finish draining
+                return true;
+            }
+            //Allow items that have a fuel conversion value greater than one
+            return fuelValue.applyAsInt(stack) > 0;
         }, inventory, x, y);
     }
 
     private final Int2ObjectFunction<@NonNull FluidStack> fuelCreator;
     private final ToIntFunction<@NonNull ItemStack> fuelValue;
 
-    private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NonNull ItemStack> fuelValue,  Int2ObjectFunction<@NonNull FluidStack> fuelCreator,
+    private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NonNull ItemStack> fuelValue, Int2ObjectFunction<@NonNull FluidStack> fuelCreator,
           Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
           @Nullable IMekanismInventory inventory, int x, int y) {
         super(fluidTank, canExtract, canInsert, validator, inventory, x, y);

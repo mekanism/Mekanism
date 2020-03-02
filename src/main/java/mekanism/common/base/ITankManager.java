@@ -13,6 +13,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -35,9 +36,9 @@ public interface ITankManager {
                 return;
             }
             if (!stack.isEmpty()) {
+                FluidStack storedFluid = StorageUtils.getStoredFluidFromNBT(stack);
                 if (tank instanceof IChemicalTank) {
                     IChemicalTank<?, ?> chemicalTank = (IChemicalTank<?, ?>) tank;
-                    boolean hasFluid = FluidUtil.getFluidContained(stack).isPresent();
                     if (chemicalTank.getEmptyStack() == GasStack.EMPTY) {
                         //It is actually a gas tank
                         IChemicalTank<Gas, GasStack> gasTank = (IChemicalTank<Gas, GasStack>) chemicalTank;
@@ -51,7 +52,7 @@ public interface ITankManager {
                                     return;
                                 }
                                 if (button == 0) { //Insert gas into dropper
-                                    if (hasFluid || gasTank.isEmpty()) {
+                                    if (!storedFluid.isEmpty() || gasTank.isEmpty()) {
                                         return;
                                     }
                                     GasStack gasInTank = gasTank.getStack();
@@ -70,7 +71,7 @@ public interface ITankManager {
                                         }
                                     }
                                 } else if (button == 1) { //Extract gas from dropper
-                                    if (hasFluid || gasTank.getNeeded() == 0) {
+                                    if (!storedFluid.isEmpty() || gasTank.getNeeded() == 0) {
                                         //If the dropper has fluid or the tank interacting with is already full of gas
                                         return;
                                     }
@@ -100,7 +101,6 @@ public interface ITankManager {
                     //TODO: Handle other chemical tanks like maybe infusion tanks
                 } else if (tank instanceof IExtendedFluidTank) {
                     IExtendedFluidTank fluidTank = (IExtendedFluidTank) tank;
-                    FluidStack storedFluid = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
                     if (!storedFluid.isEmpty() && !fluidTank.isEmpty() && !storedFluid.isFluidEqual(fluidTank.getFluid())) {
                         return;
                     }

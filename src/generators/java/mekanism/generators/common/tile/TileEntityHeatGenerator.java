@@ -62,8 +62,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(lavaTank = BasicFluidTank.create(MAX_FLUID, this), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP,
-              RelativeSide.BOTTOM);
+        builder.addTank(lavaTank = BasicFluidTank.create(MAX_FLUID, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA), this), RelativeSide.LEFT,
+              RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
 
@@ -71,9 +71,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> ForgeHooks.getBurnTime(stack) / 2, size -> new FluidStack(Fluids.LAVA, size),
-              fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA), this, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK,
-              RelativeSide.TOP, RelativeSide.BOTTOM);
+        //Divide the burn time by 20 as that is the ratio of how much a bucket of lava would burn for
+        // Eventually we may want to grab the 20 dynamically in case some mod is changing the burn time of a lava bucket
+        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> ForgeHooks.getBurnTime(stack) / 20, size -> new FluidStack(Fluids.LAVA, size),
+              this, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }

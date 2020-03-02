@@ -32,6 +32,12 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return new BasicFluidTank(capacity, alwaysTrueBi, alwaysTrueBi, alwaysTrue, fluidHandler);
     }
 
+    public static BasicFluidTank create(int capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
+        //TODO: Validate capacity is positive
+        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
+        return new BasicFluidTank(capacity, alwaysTrueBi, alwaysTrueBi, validator, fluidHandler);
+    }
+
     public static BasicFluidTank create(int capacity, Predicate<@NonNull FluidStack> canExtract, Predicate<@NonNull FluidStack> canInsert,
           @Nullable IMekanismFluidHandler fluidHandler) {
         return create(capacity, canExtract, canInsert, alwaysTrue, fluidHandler);

@@ -37,8 +37,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                         return false;
                     }
                 }
-                //Only allow extraction if our item is out of chemical
-                return true;
+                //Only allow extraction if our item is out of chemical, and doesn't have a valid conversion for it
             }
             //Always allow extraction if something went horribly wrong and we are not a chemical item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
