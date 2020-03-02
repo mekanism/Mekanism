@@ -19,6 +19,7 @@ import mekanism.generators.common.content.turbine.TurbineCache;
 import mekanism.generators.common.content.turbine.TurbineUpdateProtocol;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
@@ -62,7 +63,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 FluidStack fluid = structure.fluidTank.getFluid();
                 structure.fluidTank.setStack(new FluidStack(fluid, (int) (fluid.getAmount() - rate)));
                 structure.clientFlow = (int) rate;
-                structure.flowRemaining = Math.min((int) rate, structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get());
+                structure.ventTank.setStack(new FluidStack(Fluids.WATER, Math.min((int) rate, structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
             } else {
                 structure.clientFlow = 0;
             }

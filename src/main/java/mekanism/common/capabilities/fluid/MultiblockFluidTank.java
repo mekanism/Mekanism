@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.fluid;
 
-import java.util.Objects;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -16,13 +15,6 @@ import net.minecraftforge.fluids.FluidStack;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultiblock<?>> extends VariableCapacityFluidTank {
-
-    public static <MULTIBLOCK extends TileEntityMultiblock<?>> MultiblockFluidTank<MULTIBLOCK> create(MULTIBLOCK tile, IntSupplier capacity, Predicate<@NonNull FluidStack> validator) {
-        //TODO: Validate capacity is positive
-        Objects.requireNonNull(tile, "Tile cannot be null");
-        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new MultiblockFluidTank<>(tile, capacity, validator);
-    }
 
     protected final MULTIBLOCK multiblock;
 

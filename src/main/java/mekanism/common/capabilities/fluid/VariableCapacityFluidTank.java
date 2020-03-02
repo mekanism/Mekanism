@@ -30,6 +30,15 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
         return new VariableCapacityFluidTank(capacity, alwaysTrueBi, internalOnly, validator, fluidHandler);
     }
 
+    public static VariableCapacityFluidTank create(IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
+          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
+        //TODO: Validate capacity is positive
+        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
+        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
+        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
+        return new VariableCapacityFluidTank(capacity, canExtract, canInsert, validator, fluidHandler);
+    }
+
     private final IntSupplier capacity;
 
     protected VariableCapacityFluidTank(IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,

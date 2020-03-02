@@ -1,26 +1,22 @@
 package mekanism.generators.common.tile.turbine;
 
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.api.Action;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IFluidHandlerWrapper {
-
-    public IFluidTank fakeInfo = new FluidTank(1000);
+public class TileEntityTurbineVent extends TileEntityTurbineCasing {
 
     public TileEntityTurbineVent() {
         super(GeneratorsBlocks.TURBINE_VENT);
@@ -29,54 +25,35 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing implements IF
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!isRemote() && structure != null && structure.flowRemaining > 0) {
-            FluidStack fluidStack = new FluidStack(Fluids.WATER, structure.flowRemaining);
+        if (!isRemote() && structure != null && !structure.ventTank.isEmpty()) {
+            FluidStack fluidStack = structure.ventTank.getFluid().copy();
             EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class),
                   (tile, side) -> CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                       if (PipeUtils.canFill(handler, fluidStack)) {
-                          structure.flowRemaining -= handler.fill(fluidStack, FluidAction.EXECUTE);
+                          structure.ventTank.extract(handler.fill(fluidStack, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
                       }
                   }));
         }
     }
 
     @Override
-    public IFluidTank[] getTankInfo(Direction from) {
-        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) ? new IFluidTank[]{fakeInfo} : PipeUtils.EMPTY;
+    public boolean canHandleFluid() {
+        //Mark that we can handle fluid
+        return true;
     }
 
     @Override
-    public IFluidTank[] getAllTanks() {
-        return getTankInfo(null);
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
-        int amount = Math.min(maxDrain, structure.flowRemaining);
-        if (amount <= 0) {
-            return FluidStack.EMPTY;
-        }
-        FluidStack fluidStack = new FluidStack(Fluids.WATER, amount);
-        if (fluidAction.execute()) {
-            structure.flowRemaining -= amount;
-        }
-        return fluidStack;
-    }
-
-    @Override
-    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        return structure != null && (fluid.isEmpty() || fluid.getFluid() == Fluids.WATER);
+    public boolean persistFluid() {
+        //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
+        return false;
     }
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) {
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
-            }
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        if (!canHandleFluid() || structure == null) {
+            return Collections.emptyList();
         }
-        return super.getCapability(capability, side);
+        return structure.ventTanks;
     }
 }
