@@ -66,7 +66,9 @@ public final class FluidRenderer {
         }
 
         Model3D model = new Model3D();
-        model.baseBlock = Blocks.WATER;
+        BlockState state = MekanismUtils.getFlowingBlockState(data.fluidType);
+        //TODO: Check air better, given we don't have any position information
+        model.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
         MekanismRenderer.prepFlowing(model, data.fluidType);
 
         cachedValveFluids.put(data, model);

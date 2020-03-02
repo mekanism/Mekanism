@@ -154,7 +154,6 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                         if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
                             //TODO: Print warning/error
                         }
-                        onContentsChanged();
                     }
                 }
             }

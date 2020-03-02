@@ -181,9 +181,9 @@ public class FluidInventorySlot extends BasicInventorySlot {
         return false;
     }
 
-    private final IExtendedFluidTank fluidTank;
+    protected final IExtendedFluidTank fluidTank;
 
-    private FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
+    protected FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
           Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
         setSlotType(ContainerSlotType.EXTRA);
@@ -387,7 +387,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
     /**
      * Fills tank from slot, ensuring the stack's count is one, and does not move it to an output slot afterwards
      */
-    public void fillTank() {
+    public boolean fillTank() {
         if (getCount() == 1) {
             //Try filling from the tank's item
             Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(current));
@@ -402,6 +402,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
                         if (fillHandlerFromOther(fluidTank, itemFluidHandler, fluidInItem)) {
                             //Update the stack to the empty container
                             setStack(itemFluidHandler.getContainer());
+                            return true;
                         }
                     }
                 } else if (tanks > 1) {
@@ -435,11 +436,13 @@ public class FluidInventorySlot extends BasicInventorySlot {
                         if (changed) {
                             //Update the stack to the empty container
                             setStack(itemFluidHandler.getContainer());
+                            return true;
                         }
                     }
                 }
             }
         }
+        return false;
     }
 
     /**

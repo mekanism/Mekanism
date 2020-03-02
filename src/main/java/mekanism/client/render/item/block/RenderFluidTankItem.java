@@ -19,6 +19,7 @@ import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
@@ -102,7 +103,9 @@ public class RenderFluidTankItem extends MekanismItemStackRenderer {
             return cachedCenterFluids.get(fluid).get(stage);
         }
         Model3D model = new Model3D();
-        model.baseBlock = Blocks.WATER;
+        BlockState state = MekanismUtils.getFlowingBlockState(fluid);
+        //TODO: Check air better, given we don't have any position information
+        model.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
         model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
         if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
             model.minX = 0.125 + .01;

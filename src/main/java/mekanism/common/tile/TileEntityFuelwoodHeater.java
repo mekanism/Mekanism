@@ -2,7 +2,6 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
 import mekanism.api.IHeatTransfer;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
@@ -18,7 +17,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -57,17 +55,9 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
             if (burnTime > 0) {
                 burnTime--;
                 burning = true;
-            } else if (!fuelSlot.isEmpty()) {
-                ItemStack stack = fuelSlot.getStack();
-                maxBurnTime = burnTime = ForgeHooks.getBurnTime(stack) / 2;
+            } else {
+                maxBurnTime = burnTime = fuelSlot.burn();
                 if (burnTime > 0) {
-                    ItemStack preShrunk = stack.copy();
-                    if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                        //TODO: Print error something went wrong
-                    }
-                    if (fuelSlot.isEmpty()) {
-                        fuelSlot.setStack(preShrunk.getItem().getContainerItem(preShrunk));
-                    }
                     burning = true;
                 }
             }

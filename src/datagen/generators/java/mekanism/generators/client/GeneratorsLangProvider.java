@@ -4,6 +4,7 @@ import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.data.DataGenerator;
 
@@ -17,6 +18,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
     protected void addTranslations() {
         addItems();
         addBlocks();
+        addFluids();
         addMisc();
     }
 
@@ -46,6 +48,10 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsBlocks.TURBINE_VALVE, "Turbine Valve");
         add(GeneratorsBlocks.TURBINE_VENT, "Turbine Vent");
         add(GeneratorsBlocks.WIND_GENERATOR, "Wind Generator");
+    }
+
+    private void addFluids() {
+        addFluid(GeneratorsFluids.BIOETHANOL, "Bioethanol");
     }
 
     private void addMisc() {

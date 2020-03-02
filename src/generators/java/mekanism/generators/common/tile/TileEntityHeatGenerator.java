@@ -17,15 +17,14 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -35,12 +34,11 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator implements IHeatTransfer {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
+    private static final int MAX_FLUID = 24_000;
     /**
      * The FluidTank for this generator.
      */
@@ -53,7 +51,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
 
-    private FuelInventorySlot fuelSlot;
+    private FluidFuelInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator() {
@@ -64,7 +62,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(lavaTank = BasicFluidTank.create(24_000, this), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP,
+        builder.addTank(lavaTank = BasicFluidTank.create(MAX_FLUID, this), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP,
               RelativeSide.BOTTOM);
         return builder.build();
     }
@@ -73,9 +71,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        //TODO: See if this can be cleaned up/optimized
-        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(this::getFuel, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA), this, 17, 35),
-              RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> ForgeHooks.getBurnTime(stack) / 2, size -> new FluidStack(Fluids.LAVA, size),
+              fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA), this, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK,
+              RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
@@ -85,37 +83,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
         super.onUpdate();
         if (!isRemote()) {
             energySlot.charge(this);
-            ItemStack fuelStack = fuelSlot.getStack();
-            if (!fuelStack.isEmpty()) {
-                //TODO: FluidHandler - Move this to the FuelSlot, as we are basically modifying the slot's stack
-                Optional<IFluidHandlerItem> fluidHandlerItem = MekanismUtils.toOptional(FluidUtil.getFluidHandler(fuelStack));
-                if (fluidHandlerItem.isPresent()) {
-                    IFluidHandlerItem handler = fluidHandlerItem.get();
-                    FluidStack fluidStack = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
-                    if (!fluidStack.isEmpty() && fluidStack.getFluid().isIn(FluidTags.LAVA)) {
-                        lavaTank.insert(handler.drain(lavaTank.getNeeded(), FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
-                    }
-                    //TODO: FluidHandler - Check if we want to be doing this when ret is empty
-                    fuelSlot.setStack(handler.getContainer());
-                } else {
-                    int fuel = getFuel(fuelStack);
-                    if (fuel > 0) {
-                        int fuelNeeded = lavaTank.getNeeded();
-                        if (fuel <= fuelNeeded) {
-                            lavaTank.insert(new FluidStack(Fluids.LAVA, fuel), Action.EXECUTE, AutomationType.INTERNAL);
-                            ItemStack containerItem = fuelStack.getItem().getContainerItem(fuelStack);
-                            if (!containerItem.isEmpty()) {
-                                fuelSlot.setStack(containerItem);
-                            } else {
-                                if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                                    //TODO: Print error that something went wrong
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
+            fuelSlot.fillOrBurn();
             double prev = getEnergy();
             transferHeatTo(getBoost());
             if (canOperate()) {
@@ -158,10 +126,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     private boolean isLava(BlockPos pos) {
         World world = getWorld();
         return world != null && world.getFluidState(pos).isTagged(FluidTags.LAVA);
-    }
-
-    private int getFuel(ItemStack stack) {
-        return ForgeHooks.getBurnTime(stack) / 2;
     }
 
     @Override

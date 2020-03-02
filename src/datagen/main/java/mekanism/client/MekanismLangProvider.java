@@ -855,13 +855,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(creative, "Creative " + name);
     }
 
-    private void addFluid(FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO, String name) {
-        add(fluidRO.getStillFluid().getAttributes().getTranslationKey(), name);
-        add(fluidRO.getFlowingFluid().getAttributes().getTranslationKey(), "Flowing " + name);
-        add(fluidRO.getBlock(), name);
-        add(fluidRO.getBucket(), name + " Bucket");
-    }
-
     private void addSlurry(SlurryRegistryObject<Slurry, Slurry> slurryRO, String name) {
         add(slurryRO.getDirtySlurry(), name);
         add(slurryRO.getCleanSlurry(), "Clean " + name);

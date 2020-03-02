@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -45,7 +44,6 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
     /**
      * Gets the InfusionStack from ItemStack conversion, ignoring the size of the item stack.
      */
-    @Nonnull
     private static InfusionStack getPotentialConversion(@Nullable World world, ItemStack itemStack) {
         ItemStackToInfuseTypeRecipe foundRecipe = MekanismRecipeType.INFUSION_CONVERSION.findFirst(world, recipe -> recipe.getInput().testType(itemStack));
         return foundRecipe == null ? InfusionStack.EMPTY : foundRecipe.getOutput(itemStack);

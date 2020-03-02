@@ -5,9 +5,14 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
+import mekanism.common.registration.impl.FluidRegistryObject;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
+import net.minecraft.item.BucketItem;
 import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
+import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
 public abstract class BaseLanguageProvider extends LanguageProvider {
 
@@ -30,6 +35,13 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
 
     protected void add(IHasTranslationKey key, String value) {
         add(key.getTranslationKey(), value);
+    }
+
+    protected void addFluid(FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO, String name) {
+        add(fluidRO.getStillFluid().getAttributes().getTranslationKey(), name);
+        add(fluidRO.getFlowingFluid().getAttributes().getTranslationKey(), "Flowing " + name);
+        add(fluidRO.getBlock(), name);
+        add(fluidRO.getBucket(), name + " Bucket");
     }
 
     @Override

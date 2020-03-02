@@ -18,6 +18,8 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -117,7 +119,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             cachedLiquids.put(sideOrdinal, cachedFluids = new FluidRenderMap<>());
         }
         Model3D model = new Model3D();
-        model.baseBlock = Blocks.WATER;
+        BlockState state = MekanismUtils.getFlowingBlockState(fluid);
+        //TODO: Check air better, given we don't have any position information
+        model.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
         model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
         if (side != null) {
             model.setSideRender(side, false);

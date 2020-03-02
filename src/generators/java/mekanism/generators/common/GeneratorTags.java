@@ -7,5 +7,12 @@ import net.minecraft.util.ResourceLocation;
 
 public class GeneratorTags {
 
-    public static final Tag<Fluid> BIO_ETHANOL = new FluidTags.Wrapper(new ResourceLocation("forge", "bio_ethanol"));
+    public static class Fluids {
+
+        public static final Tag<Fluid> BIOETHANOL = forgeTag("bioethanol");
+
+        private static Tag<Fluid> forgeTag(String name) {
+            return new FluidTags.Wrapper(new ResourceLocation("forge", name));
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package mekanism.common.registries;
 
-import java.util.function.UnaryOperator;
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.FluidDeferredRegister;
@@ -9,12 +8,9 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.item.BucketItem;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
-//TODO: Things only used in MekanismGenerators should be moved to that mod such as fusion fuel, and any conversion recipes like
-// those should then use tags for the input gas rather than direct reference
 public class MekanismFluids {
 
     public static final FluidDeferredRegister FLUIDS = new FluidDeferredRegister(Mekanism.MODID);
@@ -32,6 +28,7 @@ public class MekanismFluids {
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> BRINE = registerLiquidGas("brine", 0xFFFEEF9C);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> DEUTERIUM = registerLiquidChemical(ChemicalConstants.DEUTERIUM);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> TRITIUM = registerLiquidGas("tritium", 0xFF64FF70);
+    //TODO: FluidHandler - move this over mekanism generators
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> FUSION_FUEL = registerLiquidGas("fusion_fuel", 0xFF7E007D);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> LITHIUM = registerLiquidChemical(ChemicalConstants.LITHIUM);
 
@@ -42,7 +39,7 @@ public class MekanismFluids {
           FluidAttributes.builder(new ResourceLocation("block/water_still"), new ResourceLocation("block/water_flow")).color(0xFF0D1455));
 
     private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidGas(String name, int tint) {
-        return registerLiquidChemical(name, fluidAttributes -> fluidAttributes.gaseous().color(tint));
+        return FLUIDS.register(name, fluidAttributes -> fluidAttributes.gaseous().color(tint));
     }
 
     private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(ChemicalConstants constants) {
@@ -50,10 +47,6 @@ public class MekanismFluids {
         int temperature = Math.round(constants.getTemperature());
         int density = Math.round(constants.getDensity());
         //TODO: Support for luminosity?
-        return registerLiquidChemical(constants.getName(), fluidAttributes -> fluidAttributes.color(color).temperature(temperature).density(density).viscosity(density));
-    }
-
-    private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(String name, UnaryOperator<Builder> fluidAttributes) {
-        return FLUIDS.register(name, fluidAttributes.apply(FluidAttributes.builder(Mekanism.rl("block/liquid/liquid"), Mekanism.rl("block/liquid/liquid_flow"))));
+        return FLUIDS.register(constants.getName(), fluidAttributes -> fluidAttributes.color(color).temperature(temperature).density(density).viscosity(density));
     }
 }
