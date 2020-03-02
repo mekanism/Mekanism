@@ -1,9 +1,5 @@
 package mekanism.client.render.obj;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,7 +8,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mekanism.client.model.data.ModelProperties;
+import mekanism.client.render.obj.TransmitterModelConfiguration.IconStatus;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.block.BlockState;
@@ -150,9 +151,10 @@ public class TransmitterBakedModel implements IBakedModel {
                 if (name.endsWith("NONE")) {
                     Direction dir = directionForPiece(name);
                     //We should not have been able to get here if dir was null but check just in case
-                    if (dir != null && configuration.shouldRotate(dir)) {
+                    IconStatus status = configuration.getIconStatus(dir);
+                    if (dir != null && status.getAngle() > 0) {
                         //If the part should be rotated, then we need to use a custom IModelTransform
-                        transform = new TransmitterModelTransform(transform, dir);
+                        transform = new TransmitterModelTransform(transform, dir, status.getAngle());
                     }
                 }
                 part.addQuads(configuration, builder, bakery, spriteGetter, transform, modelLocation);

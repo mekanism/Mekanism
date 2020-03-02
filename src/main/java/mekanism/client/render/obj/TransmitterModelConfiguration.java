@@ -43,7 +43,7 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
     private String adjustTextureName(String name) {
         Direction direction = directionForPiece(name);
         if (direction != null) {
-            if (getIconStatus(direction) > 0) {
+            if (getIconStatus(direction) != IconStatus.NO_SHOW) {
                 name = name.contains("glass") ? "#side_glass" : "#side";
             }
             if (MekanismConfig.client.opaqueTransmitters.get()) {
@@ -62,13 +62,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
         return name;
     }
 
-    public boolean shouldRotate(Direction direction) {
-        return getIconStatus(direction) == 2;
-    }
-
-    public byte getIconStatus(Direction side) {
+    public IconStatus getIconStatus(Direction side) {
         if (modelData instanceof TransmitterModelData.Diversion) {
-            return (byte) 0;
+            return IconStatus.NO_SHOW;
         }
         boolean hasDown = modelData.getData(ModelProperties.DOWN_CONNECTION) != ConnectionType.NONE;
         boolean hasUp = modelData.getData(ModelProperties.UP_CONNECTION) != ConnectionType.NONE;
@@ -100,9 +96,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                 case UP:
                     if (hasNorthSouth && !hasEastWest || !hasNorthSouth && hasEastWest) {
                         if (hasNorth && hasSouth) {
-                            return (byte) 1;
+                            return IconStatus.NO_ROTATION;
                         } else if (hasEast && hasWest) {
-                            return (byte) 2;
+                            return IconStatus.ROTATE_270;
                         }
                     }
                     break;
@@ -110,9 +106,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                 case SOUTH:
                     if (hasUpDown && !hasEastWest || !hasUpDown && hasEastWest) {
                         if (hasUp && hasDown) {
-                            return (byte) 1;
+                            return IconStatus.NO_ROTATION;
                         } else if (hasEast && hasWest) {
-                            return (byte) 2;
+                            return IconStatus.ROTATE_270;
                         }
                     }
                     break;
@@ -120,15 +116,15 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
                 case EAST:
                     if (hasUpDown && !hasNorthSouth || !hasUpDown && hasNorthSouth) {
                         if (hasUp && hasDown) {
-                            return (byte) 1;
+                            return IconStatus.NO_ROTATION;
                         } else if (hasNorth && hasSouth) {
-                            return (byte) 2;
+                            return IconStatus.ROTATE_270;
                         }
                     }
                     break;
             }
         }
-        return (byte) 0;
+        return IconStatus.NO_SHOW;
     }
 
     @Override
@@ -140,5 +136,20 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
     @Override
     public Material resolveTexture(@Nonnull String name) {
         return internal.resolveTexture(adjustTextureName(name));
+    }
+    
+    public static enum IconStatus {
+        NO_ROTATION(0),
+        ROTATE_270(270),
+        NO_SHOW(0);
+        
+        private float angle;
+        private IconStatus(float angle) {
+            this.angle = angle;
+        }
+        
+        public float getAngle() {
+            return angle;
+        }
     }
 }

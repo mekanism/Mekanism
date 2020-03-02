@@ -12,8 +12,8 @@ public class TransmitterModelTransform implements IModelTransform {
     private final boolean isUvLock;
     private final TransformationMatrix matrix;
 
-    public TransmitterModelTransform(IModelTransform internal, Direction dir) {
-        TransformationMatrix matrix = new TransformationMatrix(null, new Quaternion(vecForDirection(dir), 90, true), null, null);
+    public TransmitterModelTransform(IModelTransform internal, Direction dir, float angle) {
+        TransformationMatrix matrix = new TransformationMatrix(null, new Quaternion(vecForDirection(dir), angle, true), null, null);
         this.matrix = internal.getRotation().compose(matrix);
         this.isUvLock = internal.isUvLock();
     }

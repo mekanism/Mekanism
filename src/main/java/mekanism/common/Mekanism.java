@@ -270,7 +270,7 @@ public class Mekanism {
     }
 
     private void serverStarting(FMLServerStartingEvent event) {
-        CommandMek.register();
+        event.getCommandDispatcher().register(CommandMek.register());
         //TODO: Do we care about the alternates of mtp, and mtpop
     }
 
