@@ -34,12 +34,18 @@ public class FuelInventorySlot extends BasicInventorySlot {
         }
         int burnTime = ForgeHooks.getBurnTime(current) / 2;
         if (burnTime > 0) {
-            ItemStack preShrunk = current.copy();
-            if (shrinkStack(1, Action.EXECUTE) != 1) {
-                //TODO: Print error something went wrong
-            }
-            if (isEmpty() && preShrunk.hasContainerItem()) {
-                setStack(preShrunk.getContainerItem());
+            if (current.hasContainerItem()) {
+                if (current.getCount() > 1) {
+                    //If we have a container but have more than a single stack of it somehow just exit
+                    return 0;
+                }
+                //If the item has a container, then replace it with the container
+                setStack(current.getContainerItem());
+            } else {
+                //Otherwise shrink the size of the stack by one
+                if (shrinkStack(1, Action.EXECUTE) != 1) {
+                    //TODO: Print error that something went wrong
+                }
             }
         }
         return burnTime;

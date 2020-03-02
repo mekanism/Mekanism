@@ -177,9 +177,7 @@ public class MekanismTags {
 
         public static final Tag<Fluid> BRINE = forgeTag("brine");
         public static final Tag<Fluid> CHLORINE = forgeTag("chlorine");
-        public static final Tag<Fluid> DEUTERIUM = forgeTag("deuterium");
         public static final Tag<Fluid> ETHENE = forgeTag("ethene");
-        public static final Tag<Fluid> FUSION_FUEL = forgeTag("fusion_fuel");
         public static final Tag<Fluid> HEAVY_WATER = forgeTag("heavy_water");
         public static final Tag<Fluid> HYDROGEN = forgeTag("hydrogen");
         public static final Tag<Fluid> HYDROGEN_CHLORIDE = forgeTag("hydrogen_chloride");
@@ -190,7 +188,6 @@ public class MekanismTags {
         public static final Tag<Fluid> SULFUR_DIOXIDE = forgeTag("sulfur_dioxide");
         public static final Tag<Fluid> SULFUR_TRIOXIDE = forgeTag("sulfur_trioxide");
         public static final Tag<Fluid> SULFURIC_ACID = forgeTag("sulfuric_acid");
-        public static final Tag<Fluid> TRITIUM = forgeTag("tritium");
 
         private static Tag<Fluid> forgeTag(String name) {
             return new FluidTags.Wrapper(new ResourceLocation("forge", name));

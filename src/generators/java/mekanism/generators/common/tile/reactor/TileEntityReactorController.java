@@ -20,12 +20,13 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.FusionReactor;
+import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -78,9 +79,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(deuteriumTank = BasicGasTank.input(MAX_FUEL, gas -> gas == MekanismGases.DEUTERIUM.getGas(), this));
-        builder.addTank(tritiumTank = BasicGasTank.input(MAX_FUEL, gas -> gas == MekanismGases.TRITIUM.getGas(), this));
-        builder.addTank(fuelTank = BasicGasTank.input(MAX_FUEL, gas -> gas == MekanismGases.FUSION_FUEL.getGas(), this));
+        builder.addTank(deuteriumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM), this));
+        builder.addTank(tritiumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM), this));
+        builder.addTank(fuelTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL), this));
         return builder.build();
     }
 
@@ -304,9 +305,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 getReactor().setCaseTemp(dataStream.readDouble());
                 getReactor().setInjectionRate(dataStream.readInt());
                 getReactor().setBurning(dataStream.readBoolean());
-                fuelTank.setStack(MekanismGases.FUSION_FUEL.getGasStack(dataStream.readInt()));
-                deuteriumTank.setStack(MekanismGases.DEUTERIUM.getGasStack(dataStream.readInt()));
-                tritiumTank.setStack(MekanismGases.TRITIUM.getGasStack(dataStream.readInt()));
+                fuelTank.setStack(GeneratorsGases.FUSION_FUEL.getGasStack(dataStream.readInt()));
+                deuteriumTank.setStack(GeneratorsGases.DEUTERIUM.getGasStack(dataStream.readInt()));
+                tritiumTank.setStack(GeneratorsGases.TRITIUM.getGasStack(dataStream.readInt()));
                 waterTank.setStack(dataStream.readFluidStack());
                 steamTank.setStack(dataStream.readFluidStack());
             } else if (getReactor() != null && world != null) {

@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "mekanism:chemical_infusing/fusion_fuel"
+      "mekanismgenerators:chemical_infusing/fusion_fuel"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "mekanism:chemical_infusing/fusion_fuel"
+        "recipe": "mekanismgenerators:chemical_infusing/fusion_fuel"
       }
     }
   },

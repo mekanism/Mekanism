@@ -2,8 +2,17 @@ package mekanism.generators.common;
 
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.datagen.recipe.RecipeCriterion;
+import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.MetallurgicInfuserRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
+import mekanism.api.providers.IFluidProvider;
+import mekanism.api.providers.IGasProvider;
+import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.InfusionIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.BaseRecipeProvider;
@@ -14,14 +23,19 @@ import mekanism.common.recipe.RecipePattern.TripleLine;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.registries.GeneratorsFluids;
+import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Items;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
 @ParametersAreNonnullByDefault
@@ -44,6 +58,60 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         addGeneratorRecipes(consumer);
         addReactorRecipes(consumer);
         addTurbineRecipes(consumer);
+        addChemicalInfuserRecipes(consumer);
+        addElectrolyticSeparatorRecipes(consumer);
+        addRotaryCondensentratorRecipes(consumer);
+        addSolarNeutronActivatorRecipes(consumer);
+    }
+
+    private void addElectrolyticSeparatorRecipes(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "separator/";
+        //Heavy water
+        ElectrolysisRecipeBuilder.separating(
+              FluidStackIngredient.from(MekanismTags.Fluids.HEAVY_WATER, 2),
+              GeneratorsGases.DEUTERIUM.getGasStack(2),
+              MekanismGases.OXYGEN.getGasStack(1)
+        ).energyMultiplier(2)
+              .addCriterion(Criterion.HAS_ELECTROLYTIC_SEPARATOR)
+              .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
+    }
+
+    private void addRotaryCondensentratorRecipes(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "rotary/";
+        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.DEUTERIUM, GeneratorsFluids.DEUTERIUM, GeneratorTags.Fluids.DEUTERIUM, GeneratorTags.Gases.DEUTERIUM);
+        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL, GeneratorTags.Fluids.FUSION_FUEL, GeneratorTags.Gases.FUSION_FUEL);
+        addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Gases.TRITIUM);
+    }
+
+    private void addRotaryCondensentratorRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput,
+          Tag<Fluid> fluidInput, Tag<Gas> gasInput) {
+        RotaryRecipeBuilder.rotary(
+              FluidStackIngredient.from(fluidInput, 1),
+              GasStackIngredient.from(gasInput, 1),
+              gas.getGasStack(1),
+              fluidOutput.getFluidStack(1)
+        ).addCriterion(Criterion.HAS_ROTARY_CONDENSENTRATOR)
+              .build(consumer, MekanismGenerators.rl(basePath + gas.getName()));
+    }
+
+    private void addChemicalInfuserRecipes(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "chemical_infusing/";
+        //DT Fuel
+        ChemicalInfuserRecipeBuilder.chemicalInfusing(
+              GasStackIngredient.from(GeneratorsGases.DEUTERIUM, 1),
+              GasStackIngredient.from(GeneratorsGases.TRITIUM, 1),
+              GeneratorsGases.FUSION_FUEL.getGasStack(1)
+        ).addCriterion(Criterion.HAS_CHEMICAL_INFUSER)
+              .build(consumer, MekanismGenerators.rl(basePath + "fusion_fuel"));
+    }
+
+    private void addSolarNeutronActivatorRecipes(Consumer<IFinishedRecipe> consumer) {
+        String basePath = "activating/";
+        GasToGasRecipeBuilder.activating(
+              GasStackIngredient.from(MekanismGases.LITHIUM, 1),
+              GeneratorsGases.TRITIUM.getGasStack(1)
+        ).addCriterion(Criterion.HAS_SOLAR_NEUTRON_ACTIVATOR)
+              .build(consumer, MekanismGenerators.rl(basePath + "tritium"));
     }
 
     private void addGeneratorRecipes(Consumer<IFinishedRecipe> consumer) {

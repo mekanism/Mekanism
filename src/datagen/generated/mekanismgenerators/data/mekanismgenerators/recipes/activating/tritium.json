@@ -5,7 +5,7 @@
     "gas": "mekanism:lithium"
   },
   "output": {
-    "gas": "mekanism:tritium",
+    "gas": "mekanismgenerators:tritium",
     "amount": 1
   }
 }

@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "mekanism:rotary/deuterium"
+      "mekanismgenerators:separator/heavy_water"
     ]
   },
   "criteria": {
-    "has_rotary_condensentrator": {
+    "has_electrolytic_separator": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "mekanism:rotary_condensentrator"
+            "item": "mekanism:electrolytic_separator"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "mekanism:rotary/deuterium"
+        "recipe": "mekanismgenerators:separator/heavy_water"
       }
     }
   },
   "requirements": [
     [
-      "has_rotary_condensentrator",
+      "has_electrolytic_separator",
       "has_the_recipe"
     ]
   ]

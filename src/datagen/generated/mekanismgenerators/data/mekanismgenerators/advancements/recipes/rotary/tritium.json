@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "mekanism:activating/tritium"
+      "mekanismgenerators:rotary/tritium"
     ]
   },
   "criteria": {
-    "has_solar_neutron_activator": {
+    "has_rotary_condensentrator": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "mekanism:solar_neutron_activator"
+            "item": "mekanism:rotary_condensentrator"
           }
         ]
       }
@@ -19,13 +19,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "mekanism:activating/tritium"
+        "recipe": "mekanismgenerators:rotary/tritium"
       }
     }
   },
   "requirements": [
     [
-      "has_solar_neutron_activator",
+      "has_rotary_condensentrator",
       "has_the_recipe"
     ]
   ]

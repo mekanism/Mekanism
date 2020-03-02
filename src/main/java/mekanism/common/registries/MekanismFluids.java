@@ -25,11 +25,8 @@ public class MekanismFluids {
     //Internal gases
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> ETHENE = registerLiquidChemical(ChemicalConstants.ETHENE);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SODIUM = registerLiquidChemical(ChemicalConstants.SODIUM);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> BRINE = registerLiquidGas("brine", 0xFFFEEF9C);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> DEUTERIUM = registerLiquidChemical(ChemicalConstants.DEUTERIUM);
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> TRITIUM = registerLiquidGas("tritium", 0xFF64FF70);
-    //TODO: FluidHandler - move this over mekanism generators
-    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> FUSION_FUEL = registerLiquidGas("fusion_fuel", 0xFF7E007D);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> BRINE = FLUIDS.register("brine",
+          fluidAttributes -> fluidAttributes.gaseous().color(0xFFFEEF9C));
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> LITHIUM = registerLiquidChemical(ChemicalConstants.LITHIUM);
 
     //TODO: Why do we have a liquid steam anyways really
@@ -37,10 +34,6 @@ public class MekanismFluids {
           FluidAttributes.builder(Mekanism.rl("block/liquid/liquid_steam"), Mekanism.rl("block/liquid/liquid_steam_flow")).gaseous());
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HEAVY_WATER = FLUIDS.register("heavy_water",
           FluidAttributes.builder(new ResourceLocation("block/water_still"), new ResourceLocation("block/water_flow")).color(0xFF0D1455));
-
-    private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidGas(String name, int tint) {
-        return FLUIDS.register(name, fluidAttributes -> fluidAttributes.gaseous().color(tint));
-    }
 
     private static FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> registerLiquidChemical(ChemicalConstants constants) {
         int color = constants.getColor();

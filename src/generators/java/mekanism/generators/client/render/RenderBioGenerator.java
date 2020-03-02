@@ -43,6 +43,8 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
             FluidStack fluid = tile.bioFuelTank.getFluid();
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
             GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
+            //TODO: FIXME, you can see through the back. Might have to make the main "model" into json and then just render the fluid as a TER
+            // Note: This issue is much less noticeable now that we have a proper fluid that we are using for biofuel
             MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix, renderer,
                   MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), MekanismRenderer.getColorARGB(fluid, fluidScale));
             MekanismRenderer.disableGlow(glowInfo);

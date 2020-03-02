@@ -20,11 +20,11 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.registries.MekanismFluids;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
+import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.tile.reactor.TileEntityReactorBlock;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.Block;
@@ -160,7 +160,7 @@ public class FusionReactor {
         amountToInject -= amountToInject % 2;
         getDeuteriumTank().extract(amountToInject / 2, Action.EXECUTE, AutomationType.INTERNAL);
         getTritiumTank().extract(amountToInject / 2, Action.EXECUTE, AutomationType.INTERNAL);
-        getFuelTank().insert(MekanismGases.FUSION_FUEL.getGasStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
+        getFuelTank().insert(GeneratorsGases.FUSION_FUEL.getGasStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     public int burnFuel() {

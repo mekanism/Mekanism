@@ -6,7 +6,7 @@
   },
   "energyMultiplier": 2.0,
   "leftGasOutput": {
-    "gas": "mekanism:deuterium",
+    "gas": "mekanismgenerators:deuterium",
     "amount": 2
   },
   "rightGasOutput": {

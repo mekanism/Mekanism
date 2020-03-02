@@ -257,9 +257,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addFluids() {
         addToTag(MekanismTags.Fluids.BRINE, MekanismFluids.BRINE);
         addToTag(MekanismTags.Fluids.CHLORINE, MekanismFluids.CHLORINE);
-        addToTag(MekanismTags.Fluids.DEUTERIUM, MekanismFluids.DEUTERIUM);
         addToTag(MekanismTags.Fluids.ETHENE, MekanismFluids.ETHENE);
-        addToTag(MekanismTags.Fluids.FUSION_FUEL, MekanismFluids.FUSION_FUEL);
         addToTag(MekanismTags.Fluids.HEAVY_WATER, MekanismFluids.HEAVY_WATER);
         addToTag(MekanismTags.Fluids.HYDROGEN, MekanismFluids.HYDROGEN);
         addToTag(MekanismTags.Fluids.HYDROGEN_CHLORIDE, MekanismFluids.HYDROGEN_CHLORIDE);
@@ -270,7 +268,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.SULFUR_DIOXIDE, MekanismFluids.SULFUR_DIOXIDE);
         addToTag(MekanismTags.Fluids.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE);
         addToTag(MekanismTags.Fluids.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID);
-        addToTag(MekanismTags.Fluids.TRITIUM, MekanismFluids.TRITIUM);
     }
 
     private void addSlurryTags(SlurryRegistryObject<?, ?>... slurryRegistryObjects) {

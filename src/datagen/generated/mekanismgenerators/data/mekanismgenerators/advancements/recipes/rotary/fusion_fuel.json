@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "mekanism:rotary/tritium"
+      "mekanismgenerators:rotary/fusion_fuel"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "mekanism:rotary/tritium"
+        "recipe": "mekanismgenerators:rotary/fusion_fuel"
       }
     }
   },

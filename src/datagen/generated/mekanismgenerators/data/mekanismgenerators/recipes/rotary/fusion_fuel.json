@@ -2,18 +2,18 @@
   "type": "mekanism:rotary",
   "fluidInput": {
     "amount": 1,
-    "tag": "forge:tritium"
+    "tag": "forge:fusion_fuel"
   },
   "gasOutput": {
-    "gas": "mekanism:tritium",
+    "gas": "mekanismgenerators:fusion_fuel",
     "amount": 1
   },
   "gasInput": {
     "amount": 1,
-    "gas": "mekanism:tritium"
+    "tag": "mekanism:fusion_fuel"
   },
   "fluidOutput": {
-    "fluid": "mekanism:tritium",
+    "fluid": "mekanismgenerators:fusion_fuel",
     "amount": 1
   }
 }

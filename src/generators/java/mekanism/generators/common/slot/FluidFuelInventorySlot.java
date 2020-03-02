@@ -77,8 +77,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 if (fuel > 0 && fuel <= needed) {
                     boolean hasContainer = current.hasContainerItem();
                     if (hasContainer && current.getCount() > 1) {
-                        //If we have a container but have more than a single stack of it somehow
-                        // just exit
+                        //If we have a container but have more than a single stack of it somehow just exit
                         return;
                     }
                     fluidTank.insert(fuelCreator.apply(fuel), Action.EXECUTE, AutomationType.INTERNAL);
