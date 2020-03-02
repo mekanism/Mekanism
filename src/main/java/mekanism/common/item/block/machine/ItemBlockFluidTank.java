@@ -305,13 +305,8 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(() -> {
-            FluidTankTier tier = getTier(stack);
-            return tier == null ? getBlock().getTier().getOutput() : tier.getOutput();
-        }, () -> {
-            FluidTankTier tier = getTier(stack);
-            return tier == null ? getBlock().getTier().getStorage() : tier.getStorage();
-        }));
+        FluidTankTier tier = getTier(stack);
+        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(tier == null ? getBlock().getTier() : tier));
     }
 
     @Override

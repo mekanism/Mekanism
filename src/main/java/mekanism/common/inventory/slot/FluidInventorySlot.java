@@ -328,7 +328,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
         FluidStack simulatedRemainder = fluidTank.insert(fluidToTransfer, Action.SIMULATE, AutomationType.INTERNAL);
         int remainder = simulatedRemainder.getAmount();
         int toTransfer = fluidToTransfer.getAmount();
-        if (remainder < toTransfer) {
+        if (remainder == toTransfer) {
             //If we cannot actually fill our fluid handler then just exit early
             return false;
         }
