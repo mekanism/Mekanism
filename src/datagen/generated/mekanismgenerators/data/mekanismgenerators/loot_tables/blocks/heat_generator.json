@@ -22,8 +22,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "lavaTank",
-                  "target": "mekData.lavaTank",
+                  "source": "FluidTanks",
+                  "target": "mekData.FluidTanks",
                   "op": "replace"
                 },
                 {

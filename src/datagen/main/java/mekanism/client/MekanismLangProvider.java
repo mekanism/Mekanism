@@ -384,6 +384,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.VOLUME, "Volume: %s");
         add(MekanismLang.NO_FLUID, "No fluid");
         add(MekanismLang.GAS, "Gas: %s");
+        add(MekanismLang.INFUSE_TYPE, "Infuse Type: %s");
         add(MekanismLang.UNIT, "Unit: %s");
         add(MekanismLang.USING, "Using: %s/t");
         add(MekanismLang.NEEDED, "Needed: %s");

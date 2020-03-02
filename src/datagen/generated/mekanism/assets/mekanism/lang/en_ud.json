@@ -502,6 +502,7 @@
   "gui.mekanism.fuel": "%s :\uA781\u01DDn\u2132",
   "gui.mekanism.gas": "%s :s\u0250\u2141",
   "gui.mekanism.infinite": "\u01DD\u0287\u1D09u\u1D09\u025FuI",
+  "gui.mekanism.infuse_type": "%s :\u01DDd\u028E\u27D8 \u01DDsn\u025FuI",
   "gui.mekanism.max": "%s :x\u0250W",
   "gui.mekanism.max_output": "\u0287/%s :\u0287nd\u0287nO x\u0250W",
   "gui.mekanism.min": "%s :u\u1D09W",
