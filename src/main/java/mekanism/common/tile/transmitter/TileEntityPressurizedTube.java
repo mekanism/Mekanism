@@ -49,8 +49,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Nonnull
     private GasStack lastWrite = GasStack.EMPTY;
     private ProxyGasHandler readOnlyHandler;
-    private Map<Direction, ProxyGasHandler> gasHandlers;
-    private List<IChemicalTank<Gas, GasStack>> tanks;
+    private final Map<Direction, ProxyGasHandler> gasHandlers;
+    private final List<IChemicalTank<Gas, GasStack>> tanks;
     public BasicGasTank buffer;
 
     public TileEntityPressurizedTube(IBlockProvider blockProvider) {
@@ -101,9 +101,10 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
                             // second tank but just asking to drain a specific amount
                             received = container.extractGas(new GasStack(bufferWithFallback, getAvailablePull()), Action.SIMULATE);
                         }
-                        if (received.getAmount() > 0 && takeGas(received, Action.SIMULATE).isEmpty()) {
+                        if (!received.isEmpty() && takeGas(received, Action.SIMULATE).isEmpty()) {
                             //If we received some gas and are able to insert it all
-                            container.extractGas(takeGas(received, Action.EXECUTE), Action.EXECUTE);
+                            GasStack remainder = takeGas(received, Action.EXECUTE);
+                            container.extractGas(new GasStack(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
                         }
                     }
                 }
@@ -364,8 +365,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.GAS_HANDLER_CAPABILITY) {
             List<? extends IChemicalTank<Gas, GasStack>> gasTanks = getGasTanks(side);
-            //Don't return an item handler if we don't actually even have any slots for that side
-            //TODO: Should we actually return the item handler regardless??? And then just everything fails?
+            //Don't return a gas handler if we don't actually even have any tanks for that side
+            //TODO: Should we actually return the gas handler regardless??? And then just everything fails?
             LazyOptional<IGasHandler> lazyGasHandler = gasTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getGasHandler(side));
             return Capabilities.GAS_HANDLER_CAPABILITY.orEmpty(capability, lazyGasHandler);
         }

@@ -125,7 +125,7 @@ public interface ITankManager {
                             int simulatedInserted = fluidHandlerItem.fill(fluidInTank, FluidAction.SIMULATE);
                             if (simulatedInserted > 0) {
                                 //We are able to fit at least some of the fluid from our tank into the item
-                                FluidStack extractedFluid = fluidTank.extract(simulatedInserted, Action.EXECUTE, AutomationType.INTERNAL);
+                                FluidStack extractedFluid = fluidTank.extract(simulatedInserted, Action.EXECUTE, AutomationType.MANUAL);
                                 if (!extractedFluid.isEmpty()) {
                                     //If we were able to actually extract it from our tank, then insert it into the item
                                     if (fluidHandlerItem.fill(extractedFluid, FluidAction.EXECUTE) != extractedFluid.getAmount()) {
@@ -142,7 +142,7 @@ public interface ITankManager {
                         Optional<IFluidHandlerItem> fluidCapability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
                         if (fluidCapability.isPresent()) {
                             IFluidHandlerItem fluidHandlerItem = fluidCapability.get();
-                            FluidStack simulatedRemainder = fluidTank.insert(storedFluid, Action.SIMULATE, AutomationType.INTERNAL);
+                            FluidStack simulatedRemainder = fluidTank.insert(storedFluid, Action.SIMULATE, AutomationType.MANUAL);
                             int fluidInItemAmount = storedFluid.getAmount();
                             int remainder = simulatedRemainder.getAmount();
                             if (remainder < fluidInItemAmount) {

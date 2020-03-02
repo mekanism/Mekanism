@@ -2,7 +2,6 @@ package mekanism.common.capabilities.fluid;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -23,20 +22,13 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
         return new RateLimitFluidHandler(rate, capacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue);
     }
 
-    public static RateLimitFluidHandler create(IntSupplier rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
-          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator) {
-        //TODO: Validate capacity and rate are positive?
-        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
-        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
-        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new RateLimitFluidHandler(rate, capacity, canExtract, canInsert, validator);
-    }
-
     private IExtendedFluidTank tank;
 
     private RateLimitFluidHandler(IntSupplier rate, IntSupplier capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> isValid) {
         tank = new RateLimitFluidTank(rate, capacity, canExtract, canInsert, isValid, this);
+        //TODO: FluidHandler - Fix creative tank not converting extraction to simulation
+        //TODO: FluidHandler - Rate limit the filling from gas tank slot and fluid tanks lot
     }
 
     @Override

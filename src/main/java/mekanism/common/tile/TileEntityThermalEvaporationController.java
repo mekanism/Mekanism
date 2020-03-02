@@ -50,6 +50,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager,
@@ -546,6 +547,10 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         //TODO: Should this be disabled via the inventory slots instead. (Then we can't access the items when opening the controller)
         if (!getActive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return true;
+        }
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            //Never allow the fluid handler cap to be enabled here even though internally we handle fluid
             return true;
         }
         return super.isCapabilityDisabled(capability, side);

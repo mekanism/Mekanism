@@ -2,11 +2,13 @@ package mekanism.common.content.tank;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.ContainerEditMode;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -33,9 +35,11 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 
     @Nonnull
     private List<IInventorySlot> inventorySlots;
+    public List<IExtendedFluidTank> fluidTanks;
 
     public SynchronizedTankData(TileEntityDynamicTank tile) {
         fluidTank = new DynamicFluidTank(tile);
+        fluidTanks = Collections.singletonList(fluidTank);
         inventorySlots = createBaseInventorySlots();
     }
 

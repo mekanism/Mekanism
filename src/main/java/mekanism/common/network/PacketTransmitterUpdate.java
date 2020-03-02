@@ -115,7 +115,7 @@ public class PacketTransmitterUpdate {
                 } else if (message.packetType == PacketType.FLUID) {
                     if (transmissionType == TransmissionType.FLUID) {
                         FluidNetwork net = (FluidNetwork) transmitter.getTransmitterNetwork();
-                        net.buffer = message.fluidStack;
+                        net.fluidTank.setStack(message.fluidStack);
                         net.didTransfer = message.didFluidTransfer;
                     }
                 }

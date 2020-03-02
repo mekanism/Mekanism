@@ -52,7 +52,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (pipe.getTransmitter().hasTransmitterNetwork()) {
             FluidNetwork network = pipe.getTransmitter().getTransmitterNetwork();
             targetScale = network.fluidScale;
-            fluidStack = network.buffer;
+            fluidStack = network.fluidTank.getFluid();
         } else {
             targetScale = (float) pipe.buffer.getFluidAmount() / (float) pipe.buffer.getCapacity();
             fluidStack = pipe.getBuffer();

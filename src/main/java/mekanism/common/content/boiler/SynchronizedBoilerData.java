@@ -3,10 +3,13 @@ package mekanism.common.content.boiler;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
@@ -43,7 +46,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public double heatToAbsorb;
 
-    public double heatCapacity = 1000;
+    public double heatCapacity = 1_000;
 
     public int superheatingElements;
 
