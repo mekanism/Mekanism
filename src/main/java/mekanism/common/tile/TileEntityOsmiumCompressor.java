@@ -9,7 +9,7 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachine {
 
     public TileEntityOsmiumCompressor() {
-        super(MekanismBlocks.OSMIUM_COMPRESSOR, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super(MekanismBlocks.OSMIUM_COMPRESSOR, BASE_TICKS_REQUIRED);
     }
 
     @Nonnull

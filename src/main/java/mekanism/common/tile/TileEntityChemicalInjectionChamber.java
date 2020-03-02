@@ -13,7 +13,7 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine {
 
     public TileEntityChemicalInjectionChamber() {
-        super(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, BASE_TICKS_REQUIRED);
         configComponent.addSupported(TransmissionType.GAS);
         ConfigInfo gasConfig = configComponent.getConfig(TransmissionType.GAS);
         if (gasConfig != null) {

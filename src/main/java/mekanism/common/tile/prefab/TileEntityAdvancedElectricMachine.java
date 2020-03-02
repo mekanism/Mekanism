@@ -42,16 +42,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy",
                                                          "getEnergyNeeded"};
     public static final int BASE_TICKS_REQUIRED = 200;
-    public static final int BASE_GAS_PER_TICK = 1;
     public static final int MAX_GAS = 210;
-    /**
-     * How much secondary energy (fuel) this machine uses per tick, not including upgrades.
-     */
-    public int BASE_SECONDARY_ENERGY_PER_TICK;
+    public static final int BASE_GAS_PER_TICK = 1;
+    
     /**
      * How much secondary energy this machine uses per tick, including upgrades.
      */
-    public double secondaryEnergyPerTick;
+    public double gasUsage;
     private int gasUsageThisTick;
     public BasicGasTank gasTank;
 
@@ -71,7 +68,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
      * @param ticksRequired    - how many ticks it takes to smelt an item.
      * @param secondaryPerTick - how much secondary energy (fuel) this machine uses per tick.
      */
-    public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, int ticksRequired, int secondaryPerTick) {
+    public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
         super(blockProvider, ticksRequired);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
 
@@ -95,8 +92,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
             energyConfig.setCanEject(false);
         }
 
-        BASE_SECONDARY_ENERGY_PER_TICK = secondaryPerTick;
-        secondaryEnergyPerTick = secondaryPerTick;
+        gasUsage = BASE_GAS_PER_TICK;
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(TransmissionType.ITEM, itemConfig);
 
@@ -135,7 +131,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
             secondarySlot.fillTankOrConvert();
             //TODO: Is there some better way to do this rather than storing it and then doing it like this?
             // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
-            gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(secondaryEnergyPerTick) : (int) Math.ceil(secondaryEnergyPerTick);
+            gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(gasUsage) : (int) Math.ceil(gasUsage);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
@@ -183,7 +179,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED || (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS))) {
-            secondaryEnergyPerTick = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_SECONDARY_ENERGY_PER_TICK);
+            gasUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_GAS_PER_TICK);
         }
     }
 

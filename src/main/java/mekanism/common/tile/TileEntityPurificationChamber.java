@@ -9,7 +9,7 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine {
 
     public TileEntityPurificationChamber() {
-        super(MekanismBlocks.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED, BASE_GAS_PER_TICK);
+        super(MekanismBlocks.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED);
     }
 
     @Nonnull

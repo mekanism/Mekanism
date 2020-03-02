@@ -94,7 +94,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
             energySlot.discharge(this);
             gasInputSlot.fillTankOrConvert();
             outputSlot.drainTank();
-            injectUsageThisTick = Math.max(BASE_INJECT_USAGE, StatUtils.inversePoisson(injectUsage));
+            injectUsageThisTick = StatUtils.inversePoisson(injectUsage);
             cachedRecipe = getUpdatedCache(0);
             if (cachedRecipe != null) {
                 cachedRecipe.process();
