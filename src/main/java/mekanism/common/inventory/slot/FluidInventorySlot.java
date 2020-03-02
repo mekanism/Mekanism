@@ -182,12 +182,20 @@ public class FluidInventorySlot extends BasicInventorySlot {
     }
 
     protected final IExtendedFluidTank fluidTank;
+    private boolean isDraining;
 
     protected FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
           Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
         setSlotType(ContainerSlotType.EXTRA);
         this.fluidTank = fluidTank;
+    }
+
+    @Override
+    public void setStack(ItemStack stack) {
+        super.setStack(stack);
+        //Reset the cache of if we are currently draining
+        isDraining = false;
     }
 
     public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode) {
@@ -205,15 +213,15 @@ public class FluidInventorySlot extends BasicInventorySlot {
                         FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                         if (fluidInTank.isEmpty()) {
                             hasEmpty = true;
-                        } else if (fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
-                            //If we support either mode and our container is not empty, then drain the item into the tank
+                        } else if (!isDraining && fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
+                            //If we support either mode and our container is not empty or currently being filled, then drain the item into the tank
                             fillTank(outputSlot);
                             return;
                         }
                     }
                     //If we have no valid fluids/can't fill the tank with it, we return if there is at least
                     // one empty tank in the item so that we can then drain into it
-                    if (hasEmpty) {
+                    if (hasEmpty || isDraining) {
                         //If we have an empty container and support either mode, then fill the container
                         drainTank(outputSlot);
                     }
@@ -303,8 +311,22 @@ public class FluidInventorySlot extends BasicInventorySlot {
                     //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item
                     // and it does not actually matter that we are directly executing on the item
                     int toDrain = fluidHandlerItem.fill(fluidInTank, FluidAction.EXECUTE);
-                    //FluidStack toDrain = new FluidStack(fluidInTank, fluidHandlerItem.fill(fluidInTank, FluidAction.EXECUTE));
-                    if (moveItem(outputSlot, fluidHandlerItem.getContainer())) {
+                    boolean moveHandled = false;
+                    if (getCount() == 1) {
+                        Optional<IFluidHandlerItem> containerCap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(fluidHandlerItem.getContainer()));
+                        if (containerCap.isPresent() && containerCap.get().fill(fluidInTank, FluidAction.SIMULATE) > 0) {
+                            //If we have a single item in the input slot, and we can continue to fill it after
+                            // our current fill, then mark that we don't want to move it to the output slot yet
+                            // Additionally we replace our input item with its container
+                            setStack(fluidHandlerItem.getContainer());
+                            moveHandled = true;
+                            //Mark that we are currently draining
+                            isDraining = true;
+                        }
+                    }
+                    //If we already handled the move or can move it to the output slot
+                    // then actually drain our tank
+                    if (moveHandled || moveItem(outputSlot, fluidHandlerItem.getContainer())) {
                         //Actually remove the fluid from our handler
                         if (fluidTank.shrinkStack(toDrain, Action.EXECUTE) != toDrain) {
                             //TODO: Print warning/error
@@ -348,6 +370,18 @@ public class FluidInventorySlot extends BasicInventorySlot {
             //TODO: Verify this is true, because the filling doesn't bother exiting early maybe we want to make it do so though
             return false;
         }
+        if (getCount() == 1) {
+            Optional<IFluidHandlerItem> containerCap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(fluidHandlerItem.getContainer()));
+            if (containerCap.isPresent() && !containerCap.get().drain(Integer.MAX_VALUE, FluidAction.SIMULATE).isEmpty()) {
+                //If we have a single item in the input slot, and we can continue to drain from it
+                // after our current drain, then we allow for draining and actually fill our handler
+                // Additionally we replace our input item with its container
+                setStack(fluidHandlerItem.getContainer());
+                fluidTank.insert(drained, Action.EXECUTE, AutomationType.INTERNAL);
+                return true;
+            }
+        }
+        //Otherwise we try to move the item to the output and then actually fill it
         if (moveItem(outputSlot, fluidHandlerItem.getContainer())) {
             //Actually fill our handler with the fluid
             fluidTank.insert(drained, Action.EXECUTE, AutomationType.INTERNAL);
