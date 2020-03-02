@@ -277,6 +277,17 @@ public class BasicFluidTank implements IExtendedFluidTank {
      * instead of having to make a copy.
      */
     @Override
+    public boolean isFluidEqual(FluidStack other) {
+        return stored.isFluidEqual(other);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getFluid()}, and we can optimize out the copying, and can also directly modify our stack
+     * instead of having to make a copy.
+     */
+    @Override
     public int getFluidAmount() {
         return stored.getAmount();
     }

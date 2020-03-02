@@ -5,12 +5,14 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -31,7 +33,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 //TODO: Allow reactor controller inventory slot to be interacted with via the port again
@@ -101,12 +102,12 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
         if (!isRemote()) {
             CableUtils.emit(this);
             if (getActive() && getReactor() != null && !getReactor().getSteamTank().isEmpty()) {
-                IFluidTank tank = getReactor().getSteamTank();
+                IExtendedFluidTank tank = getReactor().getSteamTank();
                 EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
                     if (!(tile instanceof TileEntityReactorPort)) {
                         CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                             if (PipeUtils.canFill(handler, tank.getFluid())) {
-                                tank.drain(handler.fill(tank.getFluid(), FluidAction.EXECUTE), FluidAction.EXECUTE);
+                                tank.extract(handler.fill(tank.getFluid(), FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
                             }
                         });
                     }

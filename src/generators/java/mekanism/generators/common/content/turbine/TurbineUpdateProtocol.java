@@ -3,6 +3,7 @@ package mekanism.generators.common.content.turbine;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.multiblock.MultiblockCache;
@@ -22,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidStack;
 
 public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineData> {
 
@@ -204,8 +204,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     protected void onFormed() {
         super.onFormed();
         if (!structureFound.fluidTank.isEmpty()) {
-            FluidStack fluid = structureFound.fluidTank.getFluid();
-            structureFound.fluidTank.setStack(new FluidStack(fluid, Math.min(fluid.getAmount(), structureFound.getFluidCapacity())));
+            structureFound.fluidTank.setStackSize(Math.min(structureFound.fluidTank.getFluidAmount(), structureFound.getFluidCapacity()), Action.EXECUTE);
         }
         structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
     }

@@ -23,9 +23,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
      * @throws RuntimeException if this tank is called in a way that it was not expecting.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setStack(FluidStack stack);//TODO: FluidHandler - evaluate direct calls to this
-    //TODO: FluidHandler - Also remove calls to getFluid().setStackSize
-    //TODO: FluidHandler - Add helper method for checking "isFluidEqual"
+    void setStack(FluidStack stack);
 
     /**
      * <p>
@@ -113,8 +111,8 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     /**
      * Convenience method for modifying the size of the stored stack.
      *
-     * If there is a stack stored in this tank, set the size of it to the given amount. Capping at this fluid tank's limit. If the amount is less than or equal to
-     * zero, then this instead sets the stack to the empty stack.
+     * If there is a stack stored in this tank, set the size of it to the given amount. Capping at this fluid tank's limit. If the amount is less than or equal to zero,
+     * then this instead sets the stack to the empty stack.
      *
      * @param amount The desired size to set the stack to.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
@@ -148,8 +146,8 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     /**
      * Convenience method for growing the size of the stored stack.
      *
-     * If there is a stack stored in this tank, increase its size by the given amount. Capping at this fluid tank's limit. If the stack shrinks to an amount of less
-     * than or equal to zero, then this instead sets the stack to the empty stack.
+     * If there is a stack stored in this tank, increase its size by the given amount. Capping at this fluid tank's limit. If the stack shrinks to an amount of less than
+     * or equal to zero, then this instead sets the stack to the empty stack.
      *
      * @param amount The desired size to set the stack to.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
@@ -202,6 +200,19 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     }
 
     /**
+     * Convenience method for checking if this tank's contents are of an equal type to a given fluid stack's.
+     *
+     * @param other The stack to compare to.
+     *
+     * @return True if the tank's contents are equal, false otherwise.
+     *
+     * @implNote If your implementation of {@link #getFluid()} returns a copy, this should be overridden to directly check against the internal stack.
+     */
+    default boolean isFluidEqual(FluidStack other) {
+        return getFluid().isFluidEqual(other);
+    }
+
+    /**
      * Gets the amount of fluid needed by this {@link IExtendedFluidTank} to reach a filled state.
      *
      * @return Amount of fluid needed
@@ -219,7 +230,6 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
         return nbt;
     }
 
-    //TODO: FluidHandler - Look for usages of these deprecated variants
     /**
      * {@inheritDoc}
      *

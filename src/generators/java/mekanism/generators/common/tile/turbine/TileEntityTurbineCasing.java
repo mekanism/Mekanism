@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.turbine;
 
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -60,8 +61,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 flowRate = rate / origRate;
                 setEnergy(getEnergy() + (int) rate * energyMultiplier);
 
-                FluidStack fluid = structure.fluidTank.getFluid();
-                structure.fluidTank.setStack(new FluidStack(fluid, (int) (fluid.getAmount() - rate)));
+                if (!structure.fluidTank.isEmpty()) {
+                    structure.fluidTank.shrinkStack((int) rate, Action.EXECUTE);
+                }
                 structure.clientFlow = (int) rate;
                 structure.ventTank.setStack(new FluidStack(Fluids.WATER, Math.min((int) rate, structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
             } else {
@@ -69,9 +71,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             }
 
             if (structure.dumpMode == GasMode.DUMPING && !structure.fluidTank.isEmpty()) {
-                FluidStack fluid = structure.fluidTank.getFluid();
-                int amount = fluid.getAmount();
-                structure.fluidTank.setStack(new FluidStack(fluid, amount - Math.min(amount, Math.max(amount / 50, structure.lastSteamInput * 2))));
+                int amount = structure.fluidTank.getFluidAmount();
+                structure.fluidTank.shrinkStack(Math.min(amount, Math.max(amount / 50, structure.lastSteamInput * 2)), Action.EXECUTE);
             }
 
             float newRotation = (float) flowRate;

@@ -3,13 +3,10 @@ package mekanism.common.content.boiler;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
@@ -82,7 +79,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             return true;
         }
         if (!waterTank.isEmpty()) {
-            if (!waterTank.getFluid().isFluidEqual(prevWater) || (waterTank.getFluidAmount() != prevWater.getAmount())) {
+            if (!waterTank.isFluidEqual(prevWater) || (waterTank.getFluidAmount() != prevWater.getAmount())) {
                 return true;
             }
         }
@@ -90,7 +87,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
             return true;
         }
         if (!steamTank.isEmpty()) {
-            return !steamTank.getFluid().isFluidEqual(prevSteam) || steamTank.getFluidAmount() != prevSteam.getAmount();
+            return !steamTank.isFluidEqual(prevSteam) || steamTank.getFluidAmount() != prevSteam.getAmount();
         }
         return false;
     }

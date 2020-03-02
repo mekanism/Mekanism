@@ -36,8 +36,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class FusionReactor {
 
@@ -184,8 +182,8 @@ public class FusionReactor {
             int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
             waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getNeeded()));
             if (waterToVaporize > 0) {
-                getWaterTank().drain(waterToVaporize, FluidAction.EXECUTE);
-                getSteamTank().fill(MekanismFluids.STEAM.getFluidStack(waterToVaporize), FluidAction.EXECUTE);
+                getWaterTank().extract(waterToVaporize, Action.EXECUTE, AutomationType.INTERNAL);
+                getSteamTank().insert(MekanismFluids.STEAM.getFluidStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
             }
 
             caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
@@ -374,13 +372,11 @@ public class FusionReactor {
         int capRate = Math.min(Math.max(1, rate), MAX_INJECTION);
         capRate -= capRate % 2;
         controller.updateMaxCapacities(capRate);
-        FluidStack waterTankFluid = controller.waterTank.getFluid();
-        if (!waterTankFluid.isEmpty()) {
-            waterTankFluid.setAmount(Math.min(waterTankFluid.getAmount(), controller.waterTank.getCapacity()));
+        if (!controller.waterTank.isEmpty()) {
+            controller.waterTank.setStackSize(Math.min(controller.waterTank.getFluidAmount(), controller.waterTank.getCapacity()), Action.EXECUTE);
         }
-        FluidStack steamTankFluid = controller.steamTank.getFluid();
-        if (!steamTankFluid.isEmpty()) {
-            steamTankFluid.setAmount(Math.min(steamTankFluid.getAmount(), controller.steamTank.getCapacity()));
+        if (!controller.steamTank.isEmpty()) {
+            controller.steamTank.setStackSize(Math.min(controller.steamTank.getFluidAmount(), controller.steamTank.getCapacity()), Action.EXECUTE);
         }
     }
 

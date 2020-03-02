@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.TileNetworkList;
@@ -96,13 +97,13 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
                         int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
                         amountToBoil = Math.min(amountToBoil, (structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK) - steamAmount);
-                        FluidStack water = structure.waterTank.getFluid();
-                        structure.waterTank.setStack(new FluidStack(water, water.getAmount() - amountToBoil));
+                        if (!structure.waterTank.isEmpty()) {
+                            structure.waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
+                        }
                         if (structure.steamTank.isEmpty()) {
                             structure.steamTank.setStack(MekanismFluids.STEAM.getFluidStack(amountToBoil));
                         } else {
-                            FluidStack steam = structure.steamTank.getFluid();
-                            structure.steamTank.setStack(new FluidStack(steam, steam.getAmount() + amountToBoil));
+                            structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
                         }
 
                         structure.temperature -= (amountToBoil * SynchronizedBoilerData.getHeatEnthalpy()) / structure.locations.size();

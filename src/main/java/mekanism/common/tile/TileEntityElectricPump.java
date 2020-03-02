@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -139,7 +141,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos.up());
                 CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
                     FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
-                    fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), FluidAction.EXECUTE);
+                    fluidTank.extract(handler.fill(toDrain, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
                 });
             }
         }
@@ -239,7 +241,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         if (addRecurring) {
             recurringNodes.add(pos);
         }
-        fluidTank.fill(fluidStack, FluidAction.EXECUTE);
+        fluidTank.insert(fluidStack, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private boolean validFluid(@Nonnull FluidStack fluidStack, boolean recheckSize) {
@@ -247,10 +249,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             if (fluidTank.isEmpty()) {
                 return true;
             }
-            if (fluidTank.getFluid().isFluidEqual(fluidStack)) {
+            if (fluidTank.isFluidEqual(fluidStack)) {
                 return !recheckSize || fluidStack.getAmount() <= fluidTank.getNeeded();
             }
-            return false;
         }
         return false;
     }

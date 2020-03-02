@@ -102,7 +102,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        //TODO: FluidHandler - verify this is the correct side
         builder.addTank(fluidTank = BasicFluidTank.input(24_000, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this), RelativeSide.FRONT);
         return builder.build();
     }

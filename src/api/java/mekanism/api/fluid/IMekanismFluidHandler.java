@@ -8,7 +8,6 @@ import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -46,12 +45,12 @@ public interface IMekanismFluidHandler extends ISidedFluidHandler {
     void onContentsChanged();
 
     /**
-     * Returns the {@link IFluidTank} that has the given index from the list of tanks on the given side.
+     * Returns the {@link IExtendedFluidTank} that has the given index from the list of tanks on the given side.
      *
      * @param tank The index of the tank to retrieve.
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The {@link IFluidTank} that has the given index from the list of tanks on the given side.
+     * @return The {@link IExtendedFluidTank} that has the given index from the list of tanks on the given side.
      */
     @Nullable
     default IExtendedFluidTank getFluidTank(int tank, @Nullable Direction side) {

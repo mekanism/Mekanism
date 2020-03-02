@@ -6,7 +6,9 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CapabilityUtils;
@@ -35,7 +37,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements ICo
                         CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                             FluidStack fluid = structure.steamTank.getFluid();
                             if (PipeUtils.canFill(handler, fluid)) {
-                                structure.steamTank.setStack(new FluidStack(fluid, fluid.getAmount() - handler.fill(fluid, FluidAction.EXECUTE)));
+                                structure.steamTank.extract(handler.fill(fluid, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
                             }
                         });
                     }

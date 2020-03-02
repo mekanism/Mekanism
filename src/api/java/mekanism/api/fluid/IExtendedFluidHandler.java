@@ -114,7 +114,6 @@ public interface IExtendedFluidHandler extends IFluidHandler {
         return ExtendedFluidHandlerUtils.extract(stack, action, this::getTanks, this::getFluidInTank, this::extractFluid);
     }
 
-    //TODO: FluidHandler - Look for usages of these deprecated variants
     /**
      * {@inheritDoc}
      *

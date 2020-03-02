@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.IInventorySlot;
@@ -231,8 +232,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                             itemStack.shrink(1);
                         }
                         if (removeFluid) {
-                            FluidStack fluid = structure.fluidTank.getFluid();
-                            structure.fluidTank.setStack(new FluidStack(fluid, fluid.getAmount() - filled));
+                            structure.fluidTank.shrinkStack(filled, Action.EXECUTE);
                         }
                         return true;
                     }
@@ -265,8 +265,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                         if (structure.fluidTank.isEmpty()) {
                             structure.fluidTank.setStack(drained);
                         } else {
-                            FluidStack fluid = structure.fluidTank.getFluid();
-                            structure.fluidTank.setStack(new FluidStack(fluid, fluid.getAmount() + drained.getAmount()));
+                            structure.fluidTank.growStack(drained.getAmount(), Action.EXECUTE);
                         }
                         return true;
                     }

@@ -19,7 +19,6 @@ import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -67,8 +66,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
         ItemStack fuelStack = fuelSlot.getStack();
         if (!fuelStack.isEmpty()) {
             energySlot.charge(this);
-            //TODO: FluidHandler - Evaluate usage of this, and other places as if t is rate limited this won't return the actual amount of fluid in it
-            // and in some places we may care about that
+            //TODO: FluidHandler - Evaluate usage of getFluidContained, as if it is rate limited this won't return the actual amount of fluid it has contained
+            // and some places we may care about that
             FluidStack fluidStack = FluidUtil.getFluidContained(fuelStack).orElse(FluidStack.EMPTY);
             if (fluidStack.isEmpty()) {
                 int fuel = getFuel(fuelStack);
@@ -196,7 +195,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator implements IFlui
 
     @Override
     public IFluidTank[] getTankInfo(Direction from) {
-        return PipeUtils.EMPTY;
+        return  new IFluidTank[]{};
     }
 
     @Override

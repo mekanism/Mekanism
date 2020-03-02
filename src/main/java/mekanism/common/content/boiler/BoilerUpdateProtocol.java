@@ -3,6 +3,7 @@ package mekanism.common.content.boiler;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Set;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.basic.BlockBoilerCasing;
@@ -18,7 +19,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidStack;
 
 public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData> {
 
@@ -183,12 +183,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     protected void onFormed() {
         super.onFormed();
         if (!structureFound.waterTank.isEmpty()) {
-            FluidStack water = structureFound.waterTank.getFluid();
-            structureFound.waterTank.setStack(new FluidStack(water, Math.min(water.getAmount(), structureFound.waterVolume * WATER_PER_TANK)));
+            structureFound.waterTank.setStackSize(Math.min(structureFound.waterTank.getFluidAmount(), structureFound.waterVolume * WATER_PER_TANK), Action.EXECUTE);
         }
         if (!structureFound.steamTank.isEmpty()) {
-            FluidStack steam = structureFound.steamTank.getFluid();
-            structureFound.steamTank.setStack(new FluidStack(steam, Math.min(steam.getAmount(), structureFound.steamVolume * STEAM_PER_TANK)));
+            structureFound.steamTank.setStackSize(Math.min(structureFound.steamTank.getFluidAmount(), structureFound.steamVolume * STEAM_PER_TANK), Action.EXECUTE);
         }
     }
 

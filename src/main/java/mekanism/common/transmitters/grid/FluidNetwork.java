@@ -76,7 +76,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         } else if (!net.fluidTank.isEmpty()) {
             if (fluidTank.isEmpty()) {
                 fluidTank.setStack(net.getBuffer());
-            } else if (fluidTank.getFluid().isFluidEqual(net.fluidTank.getFluid())) {
+            } else if (fluidTank.isFluidEqual(net.fluidTank.getFluid())) {
                 int amount = net.fluidTank.getFluidAmount();
                 if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
                     //TODO: Print warning/error
@@ -107,7 +107,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             return;
         }
         //TODO better multiple buffer impl
-        if (fluidTank.getFluid().isFluidEqual(fluid)) {
+        if (fluidTank.isFluidEqual(fluid)) {
             int amount = fluid.getAmount();
             if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
                 //TODO: Print warning/error
@@ -159,7 +159,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     }
 
     public FluidStack emit(@Nonnull FluidStack stack, Action action) {
-        if (stack.isEmpty() || (!fluidTank.isEmpty() && !fluidTank.getFluid().isFluidEqual(stack))) {
+        if (stack.isEmpty() || (!fluidTank.isEmpty() && !fluidTank.isFluidEqual(stack))) {
             return stack;
         }
         int toAdd = Math.min(fluidTank.getNeeded(), stack.getAmount());
@@ -252,12 +252,12 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public boolean isCompatibleWith(FluidNetwork other) {
-        return super.isCompatibleWith(other) && (this.fluidTank.isEmpty() || other.fluidTank.isEmpty() || this.fluidTank.getFluid().isFluidEqual(other.fluidTank.getFluid()));
+        return super.isCompatibleWith(other) && (this.fluidTank.isEmpty() || other.fluidTank.isEmpty() || this.fluidTank.isFluidEqual(other.fluidTank.getFluid()));
     }
 
     @Override
     public boolean compatibleWithBuffer(@Nonnull FluidStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.fluidTank.isEmpty() || buffer.isEmpty() || this.fluidTank.getFluid().isFluidEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (this.fluidTank.isEmpty() || buffer.isEmpty() || this.fluidTank.isFluidEqual(buffer));
     }
 
     @Override

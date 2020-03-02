@@ -7,6 +7,7 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.RelativeSide;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
@@ -92,7 +93,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
                     IFluidHandlerItem handler = fluidHandlerItem.get();
                     FluidStack fluidStack = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
                     if (!fluidStack.isEmpty() && fluidStack.getFluid().isIn(FluidTags.LAVA)) {
-                        lavaTank.fill(handler.drain(lavaTank.getNeeded(), FluidAction.EXECUTE), FluidAction.EXECUTE);
+                        lavaTank.insert(handler.drain(lavaTank.getNeeded(), FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
                     }
                     //TODO: FluidHandler - Check if we want to be doing this when ret is empty
                     fuelSlot.setStack(handler.getContainer());
@@ -101,7 +102,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
                     if (fuel > 0) {
                         int fuelNeeded = lavaTank.getNeeded();
                         if (fuel <= fuelNeeded) {
-                            lavaTank.fill(new FluidStack(Fluids.LAVA, fuel), FluidAction.EXECUTE);
+                            lavaTank.insert(new FluidStack(Fluids.LAVA, fuel), Action.EXECUTE, AutomationType.INTERNAL);
                             ItemStack containerItem = fuelStack.getItem().getContainerItem(fuelStack);
                             if (!containerItem.isEmpty()) {
                                 fuelSlot.setStack(containerItem);
@@ -119,7 +120,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
             transferHeatTo(getBoost());
             if (canOperate()) {
                 setActive(true);
-                lavaTank.drain(10, FluidAction.EXECUTE);
+                lavaTank.extract(10, Action.EXECUTE, AutomationType.INTERNAL);
                 transferHeatTo(MekanismGeneratorsConfig.generators.heatGeneration.get());
             } else {
                 setActive(false);

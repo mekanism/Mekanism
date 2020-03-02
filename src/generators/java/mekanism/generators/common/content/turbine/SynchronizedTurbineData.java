@@ -76,9 +76,6 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
         if ((fluidTank.isEmpty() && !prevFluid.isEmpty()) || (!fluidTank.isEmpty() && prevFluid.isEmpty())) {
             return true;
         }
-        if (!fluidTank.isEmpty()) {
-            return !fluidTank.getFluid().isFluidEqual(prevFluid) || fluidTank.getFluidAmount() != prevFluid.getAmount();
-        }
-        return false;
+        return !fluidTank.isEmpty() && (!fluidTank.isFluidEqual(prevFluid) || fluidTank.getFluidAmount() != prevFluid.getAmount());
     }
 }

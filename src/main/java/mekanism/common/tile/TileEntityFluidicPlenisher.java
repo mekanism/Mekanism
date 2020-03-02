@@ -6,9 +6,11 @@ import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -38,7 +40,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable {
 
@@ -109,7 +110,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                                 //TODO: Set fluid state??
                                 world.setBlockState(below, MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
                                 setEnergy(getEnergy() - getEnergyPerTick());
-                                fluidTank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
+                                fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                             }
                         }
                     }
@@ -141,10 +142,9 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         Set<BlockPos> toRemove = new ObjectOpenHashSet<>();
         for (BlockPos coordPos : activeNodes) {
             if (MekanismUtils.isBlockLoaded(world, coordPos)) {
-                FluidStack fluid = fluidTank.getFluid();
-                if (canReplace(coordPos, true, false) && !fluid.isEmpty()) {
-                    world.setBlockState(coordPos, MekanismUtils.getFlowingBlockState(fluid));
-                    fluidTank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
+                if (canReplace(coordPos, true, false) && !fluidTank.isEmpty()) {
+                    world.setBlockState(coordPos, MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
+                    fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                 }
 
                 for (Direction dir : dirs) {
