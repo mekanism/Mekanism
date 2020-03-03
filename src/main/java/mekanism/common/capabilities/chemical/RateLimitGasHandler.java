@@ -7,6 +7,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
@@ -65,8 +66,9 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         }
 
         @Override
-        protected int getRate() {
-            return rate.getAsInt();
+        protected int getRate(@Nullable AutomationType automationType) {
+            //Allow unknown or manual interaction to bypass rate limit for the item
+            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsInt();
         }
 
         @Override

@@ -7,6 +7,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
@@ -36,7 +37,6 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
     private RateLimitFluidHandler(Function<IMekanismFluidHandler, IExtendedFluidTank> tankProvider) {
         tank = tankProvider.apply(this);
-        //TODO: FluidHandler - "Fix" Rate limit of fluid tank/bypass it so that we can use bucket mode for low rate tanks
         //TODO: FluidHandler - Rate limit the filling from gas tank slot and fluid tanks lot
     }
 
@@ -56,8 +56,9 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
         }
 
         @Override
-        protected int getRate() {
-            return rate.getAsInt();
+        protected int getRate(@Nullable AutomationType automationType) {
+            //Allow unknown or manual interaction to bypass rate limit for the item
+            return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsInt();
         }
     }
 

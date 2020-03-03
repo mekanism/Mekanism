@@ -25,6 +25,7 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.block.Block;
@@ -92,25 +93,13 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        boolean hasFluid = false;
-        Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
-        if (capability.isPresent()) {
-            IFluidHandlerItem fluidHandlerItem = capability.get();
-            if (fluidHandlerItem.getTanks() > 0) {
-                //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                FluidStack fluidStack = fluidHandlerItem.getFluidInTank(0);
-                if (!fluidStack.isEmpty()) {
-                    if (fluidStack.getAmount() == Integer.MAX_VALUE) {
-                        tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
-                    } else {
-                        tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
-                    }
-                    hasFluid = true;
-                }
-            }
-        }
-        if (!hasFluid) {
+        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
+        if (fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
+        } else if (fluidStack.getAmount() == Integer.MAX_VALUE) {
+            tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
+        } else {
+            tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
         }
         FluidTankTier tier = getTier(stack);
         if (tier != null) {

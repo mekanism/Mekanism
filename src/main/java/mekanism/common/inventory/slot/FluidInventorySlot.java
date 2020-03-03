@@ -56,9 +56,12 @@ public class FluidInventorySlot extends BasicInventorySlot {
                         return true;
                     }
                 }
-                //If we have no valid fluids/can't fill the tank with it, we return if there is at least
-                // one empty tank in the item so that we can then drain into it
-                return hasEmpty;
+                //If we have no valid fluids/can't fill the tank with it
+                if (fluidTank.isEmpty()) {
+                    //we return if there is at least one empty tank in the item so that we can then drain into it
+                    return hasEmpty;
+                }
+                return fluidHandlerItem.fill(fluidTank.getFluid(), FluidAction.SIMULATE) > 0;
             }
             return false;
         }, stack -> FluidUtil.getFluidHandler(stack).isPresent(), inventory, x, y);
@@ -183,6 +186,7 @@ public class FluidInventorySlot extends BasicInventorySlot {
 
     protected final IExtendedFluidTank fluidTank;
     private boolean isDraining;
+    private boolean isFilling;
 
     protected FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
           Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
@@ -194,8 +198,9 @@ public class FluidInventorySlot extends BasicInventorySlot {
     @Override
     public void setStack(ItemStack stack) {
         super.setStack(stack);
-        //Reset the cache of if we are currently draining
+        //Reset the cache of if we are currently draining or filling
         isDraining = false;
+        isFilling = false;
     }
 
     public void handleTank(IInventorySlot outputSlot, ContainerEditMode editMode) {
@@ -219,10 +224,14 @@ public class FluidInventorySlot extends BasicInventorySlot {
                             return;
                         }
                     }
+                    if (isFilling) {
+                        //if we were filling, but can no longer fill the tank, attempt to move the item to the output slot
+                        moveItem(outputSlot, current);
+                    }
                     //If we have no valid fluids/can't fill the tank with it, we return if there is at least
                     // one empty tank in the item so that we can then drain into it
-                    if (hasEmpty || isDraining) {
-                        //If we have an empty container and support either mode, then fill the container
+                    else if (fluidTank.isEmpty() && hasEmpty || isDraining || fluidHandlerItem.fill(fluidTank.getFluid(), FluidAction.SIMULATE) > 0) {
+                        //we return if there is at least one empty tank in the item so that we can then drain into it
                         drainTank(outputSlot);
                     }
                 }
@@ -378,6 +387,8 @@ public class FluidInventorySlot extends BasicInventorySlot {
                 // Additionally we replace our input item with its container
                 setStack(fluidHandlerItem.getContainer());
                 fluidTank.insert(drained, Action.EXECUTE, AutomationType.INTERNAL);
+                //Mark that we are currently filling
+                isFilling = true;
                 return true;
             }
         }
