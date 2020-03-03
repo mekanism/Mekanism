@@ -1,6 +1,8 @@
 package mekanism.common.capabilities.fluid;
 
 import java.util.Objects;
+import java.util.function.IntSupplier;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
@@ -21,11 +23,19 @@ public class FluidTankFluidTank extends BasicFluidTank {
 
     private TileEntityFluidTank tile;
     private boolean isCreative;
+    private IntSupplier rate;
 
     private FluidTankFluidTank(TileEntityFluidTank tile) {
         super(tile.tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, tile);
         this.tile = tile;
+        rate = tile.tier::getOutput;
         isCreative = tile.tier == FluidTankTier.CREATIVE;
+    }
+
+    @Override
+    protected int getRate(@Nullable AutomationType automationType) {
+        //Only limit the internal rate so as to change the speed at which this can be filled from an item
+        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getRate(automationType);
     }
 
     //TODO: FluidHandler - Add proper handling to growStack, that then tries to use insertion into above tanks
@@ -49,7 +59,8 @@ public class FluidTankFluidTank extends BasicFluidTank {
             if (!tile.getActive()) {
                 TileEntityFluidTank tileAbove = MekanismUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
                 if (tileAbove != null) {
-                    remainder = tileAbove.fluidTank.insert(remainder, action, AutomationType.INTERNAL);
+                    //Note: We do external so that it is not limited by the internal rate limits
+                    remainder = tileAbove.fluidTank.insert(remainder, action, AutomationType.EXTERNAL);
                 }
             }
         }

@@ -1,6 +1,7 @@
 package mekanism.common.capabilities.chemical;
 
 import java.util.Objects;
+import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -21,10 +22,18 @@ public class GasTankGasTank extends BasicGasTank {
     }
 
     private boolean isCreative;
+    private IntSupplier rate;
 
     private GasTankGasTank(GasTankTier tier, @Nullable IMekanismGasHandler gasHandler) {
         super(tier.getStorage(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, gasHandler);
         isCreative = tier == GasTankTier.CREATIVE;
+        rate = tier::getOutput;
+    }
+
+    @Override
+    protected int getRate(@Nullable AutomationType automationType) {
+        //Only limit the internal rate so as to change the speed at which this can be filled from an item
+        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getRate(automationType);
     }
 
     @Override

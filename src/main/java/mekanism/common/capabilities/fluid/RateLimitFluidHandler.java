@@ -37,7 +37,6 @@ public class RateLimitFluidHandler extends ItemStackMekanismFluidHandler {
 
     private RateLimitFluidHandler(Function<IMekanismFluidHandler, IExtendedFluidTank> tankProvider) {
         tank = tankProvider.apply(this);
-        //TODO: FluidHandler - Rate limit the filling from gas tank slot and fluid tanks lot
     }
 
     @Override

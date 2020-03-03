@@ -226,7 +226,9 @@ public class FluidInventorySlot extends BasicInventorySlot {
                     }
                     if (isFilling) {
                         //if we were filling, but can no longer fill the tank, attempt to move the item to the output slot
-                        moveItem(outputSlot, current);
+                        if (moveItem(outputSlot, current)) {
+                            isFilling = false;
+                        }
                     }
                     //If we have no valid fluids/can't fill the tank with it, we return if there is at least
                     // one empty tank in the item so that we can then drain into it
@@ -320,7 +322,6 @@ public class FluidInventorySlot extends BasicInventorySlot {
                     //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item
                     // and it does not actually matter that we are directly executing on the item
                     int toDrain = fluidHandlerItem.fill(fluidInTank, FluidAction.EXECUTE);
-                    boolean moveHandled = false;
                     if (getCount() == 1) {
                         Optional<IFluidHandlerItem> containerCap = MekanismUtils.toOptional(FluidUtil.getFluidHandler(fluidHandlerItem.getContainer()));
                         if (containerCap.isPresent() && containerCap.get().fill(fluidInTank, FluidAction.SIMULATE) > 0) {
@@ -328,18 +329,23 @@ public class FluidInventorySlot extends BasicInventorySlot {
                             // our current fill, then mark that we don't want to move it to the output slot yet
                             // Additionally we replace our input item with its container
                             setStack(fluidHandlerItem.getContainer());
-                            moveHandled = true;
                             //Mark that we are currently draining
                             isDraining = true;
+                            //Actually remove the fluid from our handler
+                            if (fluidTank.shrinkStack(toDrain, Action.EXECUTE) != toDrain) {
+                                //TODO: Print warning/error
+                            }
+                            return;
                         }
                     }
-                    //If we already handled the move or can move it to the output slot
-                    // then actually drain our tank
-                    if (moveHandled || moveItem(outputSlot, fluidHandlerItem.getContainer())) {
+                    //If we can move it to the output slot then actually drain our tank
+                    if (moveItem(outputSlot, fluidHandlerItem.getContainer())) {
                         //Actually remove the fluid from our handler
                         if (fluidTank.shrinkStack(toDrain, Action.EXECUTE) != toDrain) {
                             //TODO: Print warning/error
                         }
+                        //Mark we are no longer draining (as we have moved the item to the output slot)
+                        isDraining = false;
                     }
                 }
             }
