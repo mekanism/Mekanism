@@ -126,7 +126,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputFluidTank = BasicFluidTank.create(10_000, this));
+        builder.addTank(inputFluidTank = BasicFluidTank.input(10_000, fluid -> containsRecipe(recipe -> recipe.getInputFluid().testType(fluid)), this));
         return builder.build();
     }
 
