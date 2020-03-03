@@ -16,13 +16,11 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiFilter<TILE, CONTAINER> {
@@ -79,14 +77,14 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
             boolean doNull = false;
             ItemStack stack = minecraft.player.inventory.getItemStack();
             ItemStack toUse = ItemStack.EMPTY;
-            if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            if (!stack.isEmpty() && !hasShiftDown()) {
                 if (stack.getItem() instanceof BlockItem) {
                     if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                         toUse = stack.copy();
                         toUse.setCount(1);
                     }
                 }
-            } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            } else if (stack.isEmpty() && hasShiftDown()) {
                 doNull = true;
             }
             if (!toUse.isEmpty() || doNull) {

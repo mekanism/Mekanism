@@ -28,12 +28,10 @@ import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTileContainer<TileEntityFactory<?>>> {
 
@@ -95,7 +93,7 @@ public class GuiFactory extends GuiMekanismTile<TileEntityFactory<?>, MekanismTi
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (tile.hasSecondaryResourceBar()) {
-            if (button == 0 || InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            if (button == 0 || hasShiftDown()) {
                 double xAxis = mouseX - getGuiLeft();
                 double yAxis = mouseY - getGuiTop();
                 //TODO: Hovering over the secondary bar??

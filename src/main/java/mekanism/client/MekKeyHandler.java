@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
+import org.lwjgl.glfw.GLFW;
 
 public abstract class MekKeyHandler {
 
@@ -37,18 +38,19 @@ public abstract class MekKeyHandler {
 
     public static boolean getIsKeyPressed(KeyBinding keyBinding) {
         try {
-            int keyCode = keyBinding.getKey().getKeyCode();
-            long windowHandle = Minecraft.getInstance().getMainWindow().getHandle();
-            //GLFW.glfwGetMouseButton(windowHandle, )
-            //TODO: Fix this
-            return keyCode < 0 ? false/* Mouse.isButtonDown(keyCode + 100)*/ : InputMappings.isKeyDown(windowHandle, keyCode);
-        } catch (Exception e) {
-            return false;
+            InputMappings.Input key = keyBinding.getKey();
+            int keyCode = key.getKeyCode();
+            if (keyCode != InputMappings.INPUT_INVALID.getKeyCode()) {
+                long windowHandle = Minecraft.getInstance().getMainWindow().getHandle();
+                if (key.getType() == InputMappings.Type.KEYSYM) {
+                    return InputMappings.isKeyDown(windowHandle, keyCode);
+                } else if (key.getType() == InputMappings.Type.MOUSE) {
+                    return GLFW.glfwGetMouseButton(windowHandle, keyCode) == GLFW.GLFW_PRESS;
+                }
+            }
+        } catch (Exception ignored) {
         }
-    }
-
-    public KeyBinding[] getKeyBindings() {
-        return keyBindings;
+        return false;
     }
 
     public void keyTick() {
@@ -56,14 +58,12 @@ public abstract class MekKeyHandler {
             KeyBinding keyBinding = keyBindings[i];
             boolean state = keyBinding.isKeyDown();
             boolean lastState = keyDown.get(i);
-
             if (state != lastState || (state && repeatings.get(i))) {
                 if (state) {
                     keyDown(keyBinding, state == lastState);
                 } else {
                     keyUp(keyBinding);
                 }
-
                 keyDown.set(i, state);
             }
         }
@@ -75,7 +75,7 @@ public abstract class MekKeyHandler {
 
     public static class Builder {
 
-        private List<KeyBinding> bindings = new ArrayList<>(4);
+        private List<KeyBinding> bindings = new ArrayList<>(3);
         private BitSet repeatFlags = new BitSet();
 
         /**

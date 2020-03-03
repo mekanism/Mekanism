@@ -10,10 +10,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.network.PacketConfigurationUpdate;
 import mekanism.common.network.PacketConfigurationUpdate.ConfigurationPacket;
 import mekanism.common.tile.component.config.DataType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.tileentity.TileEntity;
-import org.lwjgl.glfw.GLFW;
 
 public class SideDataButton extends MekanismButton {
 
@@ -23,8 +21,7 @@ public class SideDataButton extends MekanismButton {
     public SideDataButton(IGuiWrapper gui, int x, int y, int slotPosMapIndex, Supplier<DataType> dataTypeSupplier, Supplier<EnumColor> colorSupplier,
           TileEntity tile, Supplier<TransmissionType> transmissionType, ConfigurationPacket packetType, IHoverable onHover) {
         super(gui, x, y, 14, 14, "",
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile),
-                    InputMappings.isKeyDown(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, slotPosMapIndex, transmissionType.get())),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile), Screen.hasShiftDown() ? 2 : 0, slotPosMapIndex, transmissionType.get())),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(packetType, Coord4D.get(tile), 1, slotPosMapIndex, transmissionType.get())),
               onHover);
         this.dataTypeSupplier = dataTypeSupplier;

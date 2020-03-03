@@ -22,7 +22,6 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
@@ -84,8 +83,7 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 72, 10, getButtonLocation("fuzzy"),
               () -> filter.fuzzyMode = !filter.fuzzyMode, getOnHover(MekanismLang.FUZZY_MODE)));
         addButton(new ColorButton(this, getGuiLeft() + 12, getGuiTop() + 44, 16, 16, () -> filter.color,
-              () -> filter.color = InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? null : TransporterUtils.increment(filter.color),
-              () -> filter.color = TransporterUtils.decrement(filter.color)));
+              () -> filter.color = hasShiftDown() ? null : TransporterUtils.increment(filter.color), () -> filter.color = TransporterUtils.decrement(filter.color)));
         addButton(new MekanismImageButton(this, getGuiLeft() + 128, getGuiTop() + 44, 11, 14, getButtonLocation("silk_touch"),
               () -> filter.sizeMode = !filter.sizeMode,
               (onHover, xAxis, yAxis) -> {
@@ -179,10 +177,10 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0 && overTypeInput(mouseX - getGuiLeft(), mouseY - getGuiTop())) {
             ItemStack stack = minecraft.player.inventory.getItemStack();
-            if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            if (!stack.isEmpty() && !hasShiftDown()) {
                 filter.setItemStack(stack.copy());
                 filter.getItemStack().setCount(1);
-            } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+            } else if (stack.isEmpty() && hasShiftDown()) {
                 filter.setItemStack(ItemStack.EMPTY);
             }
             SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

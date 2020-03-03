@@ -25,10 +25,8 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, EmptyTileContainer<TileEntityMekanism>> {
 
@@ -69,7 +67,7 @@ public class GuiTransporterConfig extends GuiMekanismTile<TileEntityMekanism, Em
               getOnHover(MekanismLang.STRICT_INPUT)));
         addButton(new ColorButton(this, getGuiLeft() + 122, getGuiTop() + 49, 16, 16, () -> getTile().getEjector().getOutputColor(),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile),
-                    InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0, 0, null)),
+                    hasShiftDown() ? 2 : 0, 0, null)),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT_COLOR, Coord4D.get(tile), 1, 0, null))));
         for (GuiPos guiPos : slotPosList) {
             addButton(new SideDataButton(this, getGuiLeft() + guiPos.xPos, getGuiTop() + guiPos.yPos, guiPos.relativeSide.ordinal(),

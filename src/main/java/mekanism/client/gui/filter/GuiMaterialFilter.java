@@ -9,13 +9,11 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>, CONTAINER extends
       FilterContainer<FILTER, TILE>> extends GuiTypeFilter<FILTER, TILE, CONTAINER> {
@@ -45,14 +43,14 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
 
     protected void materialMouseClicked() {
         ItemStack stack = minecraft.player.inventory.getItemStack();
-        if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        if (!stack.isEmpty() && !hasShiftDown()) {
             if (stack.getItem() instanceof BlockItem) {
                 if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                     filter.setMaterialItem(stack.copy());
                     filter.getMaterialItem().setCount(1);
                 }
             }
-        } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+        } else if (stack.isEmpty() && hasShiftDown()) {
             filter.setMaterialItem(ItemStack.EMPTY);
         }
         SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

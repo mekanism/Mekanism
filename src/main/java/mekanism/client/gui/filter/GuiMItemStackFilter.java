@@ -18,13 +18,11 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, TileEntityDigitalMiner, DMItemStackFilterContainer> {
 
@@ -83,14 +81,14 @@ public class GuiMItemStackFilter extends GuiItemStackFilter<MItemStackFilter, Ti
             double yAxis = mouseY - getGuiTop();
             if (overTypeInput(xAxis, yAxis)) {
                 ItemStack stack = minecraft.player.inventory.getItemStack();
-                if (!stack.isEmpty() && !InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                if (!stack.isEmpty() && !hasShiftDown()) {
                     if (stack.getItem() instanceof BlockItem) {
                         if (Block.getBlockFromItem(stack.getItem()) != Blocks.BEDROCK) {
                             filter.setItemStack(stack.copy());
                             filter.getItemStack().setCount(1);
                         }
                     }
-                } else if (stack.isEmpty() && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                } else if (stack.isEmpty() && hasShiftDown()) {
                     filter.setItemStack(ItemStack.EMPTY);
                 }
                 SoundHandler.playSound(SoundEvents.UI_BUTTON_CLICK);

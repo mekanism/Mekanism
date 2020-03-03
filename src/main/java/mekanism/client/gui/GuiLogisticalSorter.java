@@ -26,11 +26,9 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, TileEntityLogisticalSorter, EmptyTileContainer<TileEntityLogisticalSorter>> {
 
@@ -58,8 +56,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<TransporterFilter<?>, T
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(1))),
               getOnHover(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION)));
         addButton(new ColorButton(this, getGuiLeft() + 13, getGuiTop() + 137, 16, 16, () -> tile.color,
-              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(),
-                    GLFW.GLFW_KEY_LEFT_SHIFT) ? 2 : 0))),
+              () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, hasShiftDown() ? 2 : 0))),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(0, 1)))));
     }
 

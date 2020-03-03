@@ -159,6 +159,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         //Register our custom model loader for transmitters
+        Mekanism.logger.debug("Registering transmitter model loader.");
         ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
 
         //Register entity rendering handlers

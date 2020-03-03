@@ -10,10 +10,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ITankManager;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.PacketDropperUse;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
 
@@ -35,7 +34,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> {
                     if (tank != null) {
                         int index = Arrays.asList(((ITankManager) tile).getManagedTanks()).indexOf(tank);
                         if (index != -1) {
-                            if (button == 0 && InputMappings.isKeyDown(minecraft.getMainWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                            if (button == 0 && Screen.hasShiftDown()) {
                                 button = 2;
                             }
                             Mekanism.packetHandler.sendToServer(new PacketDropperUse(Coord4D.get(tile), button, index));
