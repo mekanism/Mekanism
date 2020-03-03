@@ -1,11 +1,12 @@
 package mekanism.common.config.value;
 
+import mekanism.api.functions.FloatSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 //TODO: Once https://github.com/MinecraftForge/MinecraftForge/pull/6464 is merged make this extend CachedPrimitiveValue<Float>
 // and make it so that our get is cleaner
-public class CachedFloatValue extends CachedPrimitiveValue<Double> {
+public class CachedFloatValue extends CachedPrimitiveValue<Double> implements FloatSupplier {
 
     private float cachedValue;
 
@@ -37,6 +38,11 @@ public class CachedFloatValue extends CachedPrimitiveValue<Double> {
             resolved = true;
         }
         return cachedValue;
+    }
+
+    @Override
+    public float getAsFloat() {
+        return get();
     }
 
     public void set(float value) {

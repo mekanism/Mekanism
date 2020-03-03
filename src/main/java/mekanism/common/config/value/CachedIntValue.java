@@ -1,9 +1,10 @@
 package mekanism.common.config.value;
 
+import java.util.function.IntSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class CachedIntValue extends CachedPrimitiveValue<Integer> {
+public class CachedIntValue extends CachedPrimitiveValue<Integer> implements IntSupplier {
 
     private int cachedValue;
 
@@ -22,6 +23,11 @@ public class CachedIntValue extends CachedPrimitiveValue<Integer> {
             resolved = true;
         }
         return cachedValue;
+    }
+
+    @Override
+    public int getAsInt() {
+        return get();
     }
 
     public void set(int value) {

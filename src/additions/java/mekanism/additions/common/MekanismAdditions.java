@@ -1,9 +1,11 @@
 package mekanism.additions.common;
 
-import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.additions.client.AdditionsClient;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
+import mekanism.additions.common.entity.SpawnHelper;
+import mekanism.additions.common.item.AdditionsSpawnEggItem;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
@@ -13,21 +15,20 @@ import mekanism.common.Mekanism;
 import mekanism.common.Version;
 import mekanism.common.base.IModule;
 import mekanism.common.config.MekanismModConfig;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.monster.MonsterEntity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.SpawnListEntry;
-import net.minecraft.world.gen.Heightmap;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -37,12 +38,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(MekanismAdditions.MODID)
 public class MekanismAdditions implements IModule {
 
     public static final String MODID = "mekanismadditions";
+
+    //COPY of ZombieEntity BABY_SPEED_BOOST_ID and BABY_SPEED_BOOST
+    public static final UUID babySpeedBoostUUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
+    public static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, Operation.MULTIPLY_BASE);
 
     public static MekanismAdditions instance;
 
@@ -100,31 +104,21 @@ public class MekanismAdditions implements IModule {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        //Set up VoiceServerManager
-        if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
-            //TODO: Will we need to move the voice server enabled config option to common once we get around to porting the voice server
-            voiceManager = new VoiceServerManager();
-        }
-        //Add baby skeleton to spawn table
-        if (MekanismAdditionsConfig.common.spawnBabySkeletons.get()) {
-            SpawnListEntry spawnListEntry = new SpawnListEntry(AdditionsEntityTypes.BABY_SKELETON.get(), MekanismAdditionsConfig.common.babySkeletonWeight.get(),
-                  MekanismAdditionsConfig.common.babySkeletonMinSize.get(), MekanismAdditionsConfig.common.babySkeletonMaxSize.get());
-            List<? extends String> blackListedBiomes = MekanismAdditionsConfig.common.babySkeletonBlackList.get();
-            for (Biome biome : ForgeRegistries.BIOMES) {
-                if (!blackListedBiomes.contains(biome.getRegistryName().toString())) {
-                    List<SpawnListEntry> monsterSpawns = biome.getSpawns(EntityClassification.MONSTER);
-                    if (monsterSpawns.stream().anyMatch(monsterSpawn -> monsterSpawn.entityType == EntityType.SKELETON)) {
-                        //If skeletons can spawn in this biome add the baby skeleton to be able to spawn in it
-                        monsterSpawns.add(spawnListEntry);
-                    }
-                }
-            }
-        }
-        //Register spawn controls with baby skeleton
-        EntitySpawnPlacementRegistry.register(AdditionsEntityTypes.BABY_SKELETON.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MonsterEntity::canMonsterSpawnInLight);
+        SpawnHelper.addSpawns();
+        registerSpawnEggDelayed(AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, AdditionsItems.BABY_SKELETON_SPAWN_EGG,
+              AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
+        //Add parrot sound imitations for baby mobs
+        //Note: There is no imitation sound for endermen
+        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_CREEPER.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_CREEPER);
+        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_SKELETON);
+        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_STRAY.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_STRAY);
+        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.getEntityType(), SoundEvents.ENTITY_PARROT_IMITATE_WITHER_SKELETON);
+        Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
+    }
 
-        //TODO: Remove this when we can, for now just lazy add the dispense behavior
-        DispenserBlock.registerDispenseBehavior(AdditionsItems.BABY_SKELETON_SPAWN_EGG, new DefaultDispenseItemBehavior() {
+    @SafeVarargs
+    private static void registerSpawnEggDelayed(ItemRegistryObject<AdditionsSpawnEggItem>... spawnEggs) {
+        DefaultDispenseItemBehavior dispenseBehavior = new DefaultDispenseItemBehavior() {
             @Nonnull
             @Override
             public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
@@ -134,9 +128,12 @@ public class MekanismAdditions implements IModule {
                 stack.shrink(1);
                 return stack;
             }
-        });
-
-        Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
+        };
+        //TODO: Remove this when we can, for now just lazy add the dispense behavior, and middle clicking
+        for (ItemRegistryObject<AdditionsSpawnEggItem> spawnEgg : spawnEggs) {
+            spawnEgg.getItem().addToEggLookup();
+            DispenserBlock.registerDispenseBehavior(spawnEgg, dispenseBehavior);
+        }
     }
 
     private void serverStarting(FMLServerStartingEvent event) {

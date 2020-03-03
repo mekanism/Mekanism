@@ -1,9 +1,10 @@
 package mekanism.common.config.value;
 
+import java.util.function.LongSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class CachedLongValue extends CachedPrimitiveValue<Long> {
+public class CachedLongValue extends CachedPrimitiveValue<Long> implements LongSupplier {
 
     private long cachedValue;
 
@@ -22,6 +23,11 @@ public class CachedLongValue extends CachedPrimitiveValue<Long> {
             resolved = true;
         }
         return cachedValue;
+    }
+
+    @Override
+    public long getAsLong() {
+        return get();
     }
 
     public void set(long value) {

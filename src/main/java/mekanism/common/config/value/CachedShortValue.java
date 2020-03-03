@@ -1,9 +1,10 @@
 package mekanism.common.config.value;
 
+import mekanism.api.functions.ShortSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class CachedShortValue extends CachedPrimitiveValue<Short> {
+public class CachedShortValue extends CachedPrimitiveValue<Short> implements ShortSupplier {
 
     private short cachedValue;
 
@@ -22,6 +23,11 @@ public class CachedShortValue extends CachedPrimitiveValue<Short> {
             resolved = true;
         }
         return cachedValue;
+    }
+
+    @Override
+    public short getAsShort() {
+        return get();
     }
 
     public void set(short value) {

@@ -180,6 +180,7 @@ minecraft {
     mappings channel: "snapshot", version: "${mappings_version}"
 
     accessTransformers(file('src/main/resources/META-INF/accesstransformer.cfg'),
+            file('src/additions/resources/META-INF/accesstransformer.cfg'),
             file('src/tools/resources/META-INF/accesstransformer.cfg'))
 
     runs {

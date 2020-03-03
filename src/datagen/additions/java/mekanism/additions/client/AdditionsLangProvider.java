@@ -29,7 +29,11 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addItems() {
+        add(AdditionsItems.BABY_CREEPER_SPAWN_EGG, "Baby Creeper Spawn Egg");
+        add(AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, "Baby Enderman Spawn Egg");
         add(AdditionsItems.BABY_SKELETON_SPAWN_EGG, "Baby Skeleton Spawn Egg");
+        add(AdditionsItems.BABY_STRAY_SPAWN_EGG, "Baby Stray Spawn Egg");
+        add(AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG, "Baby Wither Skeleton Spawn Egg");
         add(AdditionsItems.WALKIE_TALKIE, "Walkie-Talkie");
         addBalloons(AdditionsItems.BLACK_BALLOON, AdditionsItems.RED_BALLOON, AdditionsItems.GREEN_BALLOON, AdditionsItems.BROWN_BALLOON, AdditionsItems.BLUE_BALLOON,
               AdditionsItems.PURPLE_BALLOON, AdditionsItems.CYAN_BALLOON, AdditionsItems.LIGHT_GRAY_BALLOON, AdditionsItems.GRAY_BALLOON, AdditionsItems.PINK_BALLOON,
@@ -106,7 +110,11 @@ public class AdditionsLangProvider extends BaseLanguageProvider {
     }
 
     private void addEntities() {
+        add(AdditionsEntityTypes.BABY_CREEPER, "Baby Creeper");
+        add(AdditionsEntityTypes.BABY_ENDERMAN, "Baby Enderman");
         add(AdditionsEntityTypes.BABY_SKELETON, "Baby Skeleton");
+        add(AdditionsEntityTypes.BABY_STRAY, "Baby Stray");
+        add(AdditionsEntityTypes.BABY_WITHER_SKELETON, "Baby Wither Skeleton");
         add(AdditionsEntityTypes.BALLOON, "Balloon");
         add(AdditionsEntityTypes.OBSIDIAN_TNT, "Obsidian TNT");
     }

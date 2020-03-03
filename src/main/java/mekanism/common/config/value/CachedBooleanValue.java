@@ -1,9 +1,10 @@
 package mekanism.common.config.value;
 
+import java.util.function.BooleanSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class CachedBooleanValue extends CachedPrimitiveValue<Boolean> {
+public class CachedBooleanValue extends CachedPrimitiveValue<Boolean> implements BooleanSupplier {
 
     private boolean cachedValue;
 
@@ -22,6 +23,11 @@ public class CachedBooleanValue extends CachedPrimitiveValue<Boolean> {
             resolved = true;
         }
         return cachedValue;
+    }
+
+    @Override
+    public boolean getAsBoolean() {
+        return get();
     }
 
     public void set(boolean value) {

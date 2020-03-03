@@ -1,9 +1,10 @@
 package mekanism.common.config.value;
 
+import mekanism.api.functions.ByteSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class CachedByteValue extends CachedPrimitiveValue<Byte> {
+public class CachedByteValue extends CachedPrimitiveValue<Byte> implements ByteSupplier {
 
     private byte cachedValue;
 
@@ -22,6 +23,11 @@ public class CachedByteValue extends CachedPrimitiveValue<Byte> {
             resolved = true;
         }
         return cachedValue;
+    }
+
+    @Override
+    public byte getAsByte() {
+        return get();
     }
 
     public void set(byte value) {

@@ -1,8 +1,10 @@
 package mekanism.additions.common;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
@@ -57,5 +59,16 @@ public class AdditionsTags {
         private static Tag<Block> tag(String name) {
             return new BlockTags.Wrapper(MekanismAdditions.rl(name));
         }
+    }
+
+    public static class Entities {
+
+        public static final Tag<EntityType<?>> CREEPERS = forgeTag("creepers");
+        public static final Tag<EntityType<?>> ENDERMEN = forgeTag("endermen");
+
+        private static Tag<EntityType<?>> forgeTag(String name) {
+            return new EntityTypeTags.Wrapper(new ResourceLocation("forge", name));
+        }
+
     }
 }

@@ -1,8 +1,10 @@
 package mekanism.additions.client;
 
+import mekanism.additions.client.render.entity.RenderBabyCreeper;
 import mekanism.additions.client.render.entity.RenderBalloon;
 import mekanism.additions.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.item.AdditionsSpawnEggItem;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
@@ -10,8 +12,13 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.block.IColoredBlock;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.color.ItemColors;
+import net.minecraft.client.renderer.entity.EndermanRenderer;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
+import net.minecraft.client.renderer.entity.StrayRenderer;
+import net.minecraft.client.renderer.entity.WitherSkeletonRenderer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,7 +37,11 @@ public class AdditionsClientRegistration {
         //Register entity rendering handlers
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.OBSIDIAN_TNT, RenderObsidianTNTPrimed::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BALLOON, RenderBalloon::new);
+        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_CREEPER, RenderBabyCreeper::new);
+        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_ENDERMAN, EndermanRenderer::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_SKELETON, SkeletonRenderer::new);
+        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_STRAY, StrayRenderer::new);
+        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_WITHER_SKELETON, WitherSkeletonRenderer::new);
     }
 
     @SubscribeEvent
@@ -117,5 +128,15 @@ public class AdditionsClientRegistration {
               AdditionsItems.PURPLE_BALLOON, AdditionsItems.CYAN_BALLOON, AdditionsItems.LIGHT_GRAY_BALLOON, AdditionsItems.GRAY_BALLOON, AdditionsItems.PINK_BALLOON,
               AdditionsItems.LIME_BALLOON, AdditionsItems.YELLOW_BALLOON, AdditionsItems.LIGHT_BLUE_BALLOON, AdditionsItems.MAGENTA_BALLOON, AdditionsItems.ORANGE_BALLOON,
               AdditionsItems.WHITE_BALLOON);
+        registerSpawnEggColorHandler(event.getItemColors(), AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG,
+              AdditionsItems.BABY_SKELETON_SPAWN_EGG, AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
+    }
+
+    @SafeVarargs
+    private static void registerSpawnEggColorHandler(ItemColors colors, ItemRegistryObject<AdditionsSpawnEggItem>... spawnEggs) {
+        for (ItemRegistryObject<AdditionsSpawnEggItem> spawnEgg : spawnEggs) {
+            AdditionsSpawnEggItem egg = spawnEgg.getItem();
+            colors.register((stack, tintIndex) -> egg.getColor(tintIndex), egg);
+        }
     }
 }

@@ -3,9 +3,10 @@ package mekanism.additions.common.config;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.common.config.BaseMekanismConfig;
+import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedConfigValue;
-import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.config.value.CachedDoubleValue;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -15,47 +16,21 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
 
     private final ForgeConfigSpec configSpec;
 
-    public final CachedBooleanValue spawnBabySkeletons;
-    public final CachedIntValue babySkeletonWeight;
-    public final CachedIntValue babySkeletonMinSize;
-    public final CachedIntValue babySkeletonMaxSize;
-    public final CachedConfigValue<List<? extends String>> babySkeletonBlackList;
+    public final SpawnConfig babyCreeper;
+    public final SpawnConfig babyEnderman;
+    public final SpawnConfig babySkeleton;
+    public final SpawnConfig babyStray;
+    public final SpawnConfig babyWitherSkeleton;
 
     AdditionsCommonConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
         builder.comment("Mekanism Additions Common Config. This config is not sync'd between server and client.").push("additions-common");
-        builder.comment("Config options regarding baby skeletons.").push("baby-skeletons");
-        spawnBabySkeletons = CachedBooleanValue.wrap(this, builder.comment("Enable the spawning of baby skeletons. Think baby zombies but skeletons.")
-              .worldRestart()
-              .define("shouldSpawn", true));
-        babySkeletonWeight = CachedIntValue.wrap(this, builder.comment("The weight that a baby skeleton spawns.")
-              .worldRestart()
-              .defineInRange("weight", 40, 1, 100));
-        babySkeletonMinSize = CachedIntValue.wrap(this, builder.comment("The minimum group size of how many baby skeletons can spawn.")
-              .worldRestart()
-              .defineInRange("minSize", 1, 1, Integer.MAX_VALUE - 1));
-        babySkeletonMaxSize = CachedIntValue.wrap(this, builder.comment("The maximum group size of how many baby skeletons can spawn.")
-              .worldRestart()
-              .define("maxSize", 3, value -> {
-                  if (value instanceof Integer) {
-                      int val = (int) value;
-                      int minSize = babySkeletonMinSize.get();
-                      return minSize <= val && val - minSize <= Integer.MAX_VALUE - 1;
-                  }
-                  return false;
-              }));
-        babySkeletonBlackList = CachedConfigValue.wrap(this, builder.comment("The list of biome ids that baby skeletons will not spawn in even if normal skeletons can spawn in.")
-              .worldRestart()
-              .defineList("biomeBlackList", new ArrayList<>(), o -> {
-                  if (o instanceof String) {
-                      String string = ((String) o).toLowerCase();
-                      if (ResourceLocation.isResouceNameValid(string)) {
-                          ResourceLocation biome = new ResourceLocation(string);
-                          return ForgeRegistries.BIOMES.containsKey(biome);
-                      }
-                  }
-                  return false;
-              }));
+        builder.comment("Config options regarding spawning of entities.").push("spawning");
+        babyCreeper = new SpawnConfig(this, builder, "baby creepers");
+        babyEnderman = new SpawnConfig(this, builder, "baby endermen");
+        babySkeleton = new SpawnConfig(this, builder, "baby skeletons");
+        babyStray = new SpawnConfig(this, builder, "baby strays");
+        babyWitherSkeleton = new SpawnConfig(this, builder, "baby wither skeletons");
         builder.pop(2);
         configSpec = builder.build();
     }
@@ -73,5 +48,43 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
     @Override
     public Type getConfigType() {
         return Type.COMMON;
+    }
+
+    public static class SpawnConfig {
+
+        public final CachedBooleanValue shouldSpawn;
+        public final CachedDoubleValue weightPercentage;
+        public final CachedDoubleValue minSizePercentage;
+        public final CachedDoubleValue maxSizePercentage;
+        public final CachedConfigValue<List<? extends String>> biomeBlackList;
+
+        private SpawnConfig(IMekanismConfig config, ForgeConfigSpec.Builder builder, String name) {
+            builder.comment("Config options regarding " + name + ".").push(name.replaceAll(" ", "-"));
+            this.shouldSpawn = CachedBooleanValue.wrap(config, builder.comment("Enable the spawning of " + name + ". Think baby zombies.")
+                  .worldRestart()
+                  .define("shouldSpawn", true));
+            this.weightPercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for weight of " + name + " spawns, compared to the adult mob.")
+                  .worldRestart()
+                  .defineInRange("weightPercentage", 0.5, 0, 100));
+            this.minSizePercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for minimum group size of " + name + " spawns, compared to the adult mob.")
+                  .worldRestart()
+                  .defineInRange("minSizePercentage", 0.5, 0, 100));
+            this.maxSizePercentage = CachedDoubleValue.wrap(config, builder.comment("The multiplier for maximum group size of " + name + " spawns, compared to the adult mob.")
+                  .worldRestart()
+                  .defineInRange("maxSizePercentage", 0.5, 0, 100));
+            this.biomeBlackList = CachedConfigValue.wrap(config, builder.comment("The list of biome ids that " + name + " will not spawn in even if the normal mob variant can spawn.")
+                  .worldRestart()
+                  .defineList("biomeBlackList", new ArrayList<>(), o -> {
+                      if (o instanceof String) {
+                          String string = ((String) o).toLowerCase();
+                          if (ResourceLocation.isResouceNameValid(string)) {
+                              ResourceLocation biome = new ResourceLocation(string);
+                              return ForgeRegistries.BIOMES.containsKey(biome);
+                          }
+                      }
+                      return false;
+                  }));
+            builder.pop();
+        }
     }
 }

@@ -1,13 +1,12 @@
 package mekanism.additions.common.registries;
 
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.item.BabySkeletonSpawnEggItem;
+import mekanism.additions.common.item.AdditionsSpawnEggItem;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.api.text.EnumColor;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
-import net.minecraft.item.SpawnEggItem;
 
 public class AdditionsItems {
 
@@ -15,7 +14,11 @@ public class AdditionsItems {
 
     //TODO: FIXME We are required to use a custom item as we cannot use the base SpawnEggItem due to needing something like
     // https://github.com/MinecraftForge/MinecraftForge/pull/6299 to allow for lazy initialization
-    public static final ItemRegistryObject<SpawnEggItem> BABY_SKELETON_SPAWN_EGG = ITEMS.register("baby_skeleton_spawn_egg", BabySkeletonSpawnEggItem::new);
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_CREEPER_SPAWN_EGG = ITEMS.register("baby_creeper_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_CREEPER, 0x31E02F, 0x1E1E1E));
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_ENDERMAN_SPAWN_EGG = ITEMS.register("baby_enderman_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_ENDERMAN, 0x242424, 0x1E1E1E));
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_SKELETON_SPAWN_EGG = ITEMS.register("baby_skeleton_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_SKELETON, 0xFFFFFF, 0x800080));
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_STRAY_SPAWN_EGG = ITEMS.register("baby_stray_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_STRAY, 0x7B9394, 0xF2FAFA));
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_WITHER_SKELETON_SPAWN_EGG = ITEMS.register("baby_wither_skeleton_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_WITHER_SKELETON, 0x303030, 0x525454));
     public static final ItemRegistryObject<ItemWalkieTalkie> WALKIE_TALKIE = ITEMS.register("walkie_talkie", ItemWalkieTalkie::new);
 
     public static final ItemRegistryObject<ItemBalloon> BLACK_BALLOON = registerBalloon(EnumColor.BLACK);

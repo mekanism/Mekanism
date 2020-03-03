@@ -1,29 +1,24 @@
-package mekanism.additions.common.entity;
+package mekanism.additions.common.entity.baby;
 
-import java.util.UUID;
 import javax.annotation.Nonnull;
+import mekanism.additions.common.MekanismAdditions;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.world.World;
 
-public class EntityBabySkeleton extends SkeletonEntity {
+public class EntityBabyCreeper extends CreeperEntity {
 
-    private static final UUID babySpeedBoostUUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
-    private static final AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, Operation.MULTIPLY_BASE);
+    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.createKey(EntityBabyCreeper.class, DataSerializers.BOOLEAN);
 
-    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.createKey(EntityBabySkeleton.class, DataSerializers.BOOLEAN);
-
-    public EntityBabySkeleton(EntityType<EntityBabySkeleton> type, World world) {
+    public EntityBabyCreeper(EntityType<EntityBabyCreeper> type, World world) {
         super(type, world);
         setChild(true);
     }
@@ -42,10 +37,10 @@ public class EntityBabySkeleton extends SkeletonEntity {
     public void setChild(boolean child) {
         getDataManager().set(IS_CHILD, child);
         if (world != null && !world.isRemote) {
-            IAttributeInstance iattributeinstance = this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
-            iattributeinstance.removeModifier(babySpeedBoostModifier);
+            IAttributeInstance attributeInstance = this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+            attributeInstance.removeModifier(MekanismAdditions.babySpeedBoostModifier);
             if (child) {
-                iattributeinstance.applyModifier(babySpeedBoostModifier);
+                attributeInstance.applyModifier(MekanismAdditions.babySpeedBoostModifier);
             }
         }
     }
@@ -73,6 +68,6 @@ public class EntityBabySkeleton extends SkeletonEntity {
 
     @Override
     protected float getStandingEyeHeight(Pose pose, EntitySize size) {
-        return this.isChild() ? 0.93F : super.getStandingEyeHeight(pose, size);
+        return this.isChild() ? 0.77F : super.getStandingEyeHeight(pose, size);
     }
 }
