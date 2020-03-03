@@ -9,7 +9,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -22,11 +21,9 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -145,17 +142,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         addSlots(builder);
+        //Add the energy slot after adding the other slots so that it has lowest priority in shift clicking
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 7, 13));
         return builder.build();
     }
 
-    protected void addSlots(InventorySlotHelper builder) {
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 7, 13));
-        //TODO: Remove these two slots, the only reason I am not doing so right now is it will cause loading the inventory to break
-        // and there is no reason to cause the inventory to break before we end up restructuring how it is saved slightly and will
-        // cause it to break anyways
-        builder.addSlot(TypeChangeInventorySlot.create(this));
-        builder.addSlot(TypeChangeInventorySlot.create(this));
-    }
+    protected abstract void addSlots(InventorySlotHelper builder);
 
     @Nullable
     protected IInventorySlot getExtraSlot() {
@@ -197,12 +189,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             setActive(isActive);
             lastUsage = prev - getEnergy();
         }
-    }
-
-    //TODO: Move references of checking type against infusion to instanceof the infusing factory
-    @Nonnull
-    public FactoryType getFactoryType() {
-        return type;
     }
 
     @Override
@@ -467,25 +453,5 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         container.track(SyncableDouble.create(() -> lastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(() -> sorting, value -> sorting = value));
         container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
-    }
-
-    //TODO: Remove this
-    @Deprecated
-    private static class TypeChangeInventorySlot extends BasicInventorySlot {
-
-        @Nonnull
-        public static TypeChangeInventorySlot create(@Nullable IMekanismInventory inventory) {
-            return new TypeChangeInventorySlot(inventory);
-        }
-
-        private TypeChangeInventorySlot(@Nullable IMekanismInventory inventory) {
-            super(alwaysFalse, alwaysFalse, alwaysTrue, inventory, 0, 0);
-        }
-
-        @Nullable
-        @Override
-        public InventoryContainerSlot createContainerSlot() {
-            return null;
-        }
     }
 }

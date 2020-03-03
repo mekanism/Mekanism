@@ -122,7 +122,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 152, 76));
         builder.addSlot(formulaSlot = FormulaInventorySlot.at(this, 6, 26));
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
@@ -161,7 +160,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 craftingGridSlots.add(craftingSlot);
             }
         }
-
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 2; slotX++) {
                 OutputInventorySlot outputSlot = OutputInventorySlot.at(this, 116 + slotX * 18, 17 + slotY * 18);
@@ -169,6 +167,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 outputSlots.add(outputSlot);
             }
         }
+        //Add the energy slot after adding the other slots so that it has lowest priority in shift clicking
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 152, 76));
         return builder.build();
     }
 

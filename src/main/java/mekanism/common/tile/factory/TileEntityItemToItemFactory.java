@@ -26,7 +26,6 @@ public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe>
 
     @Override
     protected void addSlots(InventorySlotHelper builder) {
-        super.addSlots(builder);
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
         processInfoSlots = new ProcessInfo[tier.processes];

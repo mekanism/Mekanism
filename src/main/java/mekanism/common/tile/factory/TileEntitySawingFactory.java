@@ -37,7 +37,6 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
 
     @Override
     protected void addSlots(InventorySlotHelper builder) {
-        super.addSlots(builder);
         inputHandlers = new IInputHandler[tier.processes];
         outputHandlers = new IOutputHandler[tier.processes];
         processInfoSlots = new ProcessInfo[tier.processes];
