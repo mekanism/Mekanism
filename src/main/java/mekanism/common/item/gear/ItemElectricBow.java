@@ -24,6 +24,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
@@ -39,6 +40,16 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
     public ItemElectricBow(Properties properties) {
         //TODO: Config max energy, damage, etc
         super(120_000, properties.setNoRepair());
+        addPropertyOverride(new ResourceLocation("pull"), (stack, world, entity) -> {
+            if (entity == null) {
+                return 0.0F;
+            } else {
+                return !(entity.getActiveItemStack().getItem() instanceof ItemElectricBow) ? 0.0F : (float)(stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F;
+            }
+         });
+         addPropertyOverride(new ResourceLocation("pulling"), (stack, world, entity) -> {
+             return entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1.0F : 0.0F;
+         }); 
     }
 
     @Override
