@@ -49,8 +49,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-//TODO: COFH IToolHammer
-//@Interface(iface = "cofh.api.item.IToolHammer", modid = MekanismHooks.COFH_API_MOD_ID)
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItemNetwork, IItemHUDProvider {
 
     public final int ENERGY_PER_CONFIGURE = 400;
@@ -197,27 +195,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
         return getState(stack) == ConfiguratorMode.WRENCH;
     }
-
-    /*cofh IToolHammer */
-    //TODO: COFH IToolHammer
-    /*@Override
-    public boolean isUsable(ItemStack stack, LivingEntity user, BlockPos pos) {
-        return getState(stack) == ConfiguratorMode.WRENCH;
-    }
-
-    @Override
-    public boolean isUsable(ItemStack stack, LivingEntity user, Entity entity) {
-        return getState(stack) == ConfiguratorMode.WRENCH;
-    }
-
-    @Override
-    public void toolUsed(ItemStack item, LivingEntity user, BlockPos pos) {
-    }
-
-    @Override
-    public void toolUsed(ItemStack item, LivingEntity user, Entity entity) {
-    }*/
-    /*end cofh IToolHammer */
 
     @Override
     public void handlePacketData(IWorld world, ItemStack stack, PacketBuffer dataStream) {

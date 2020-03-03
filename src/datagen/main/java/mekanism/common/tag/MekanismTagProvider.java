@@ -25,6 +25,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     @Override
     protected void registerTags() {
         addBoxBlacklist();
+        addToTag(MekanismTags.Items.WRENCHES, MekanismItems.CONFIGURATOR);
         addToTag(MekanismTags.Items.BATTERIES, MekanismItems.ENERGY_TABLET);
         addRods();
         addFuels();

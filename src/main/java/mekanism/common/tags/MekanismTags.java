@@ -20,6 +20,8 @@ public class MekanismTags {
 
     public static class Items {
 
+        public static final Tag<Item> WRENCHES = forgeTag("wrenches");
+
         public static final Tag<Item> BATTERIES = forgeTag("batteries");
 
         public static final Tag<Item> RODS_PLASTIC = forgeTag("rods/plastic");

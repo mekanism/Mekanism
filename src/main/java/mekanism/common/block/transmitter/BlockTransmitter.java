@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.IMekWrench;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe;
 import mekanism.common.util.MekanismUtils;
@@ -43,7 +42,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
         if (stack.isEmpty()) {
             return ActionResultType.PASS;
         }
-        IMekWrench wrenchHandler = Wrenches.getHandler(stack);
+        IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
         if (wrenchHandler != null) {
             if (wrenchHandler.canUseWrench(stack, player, hit.getPos()) && player.isShiftKeyDown()) {
                 if (!world.isRemote) {

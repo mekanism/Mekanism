@@ -65,7 +65,6 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -443,7 +442,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
         ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty()) {
-            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
+            IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
             if (wrenchHandler != null) {
                 if (wrenchHandler.canUseWrench(stack, player, rayTrace.getPos())) {
                     if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {

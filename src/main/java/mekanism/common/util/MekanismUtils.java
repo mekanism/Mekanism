@@ -26,8 +26,10 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.integration.ic2.IC2Integration;
+import mekanism.common.integration.GenericWrench;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.GasTankTier;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -831,36 +833,18 @@ public final class MekanismUtils {
         return theClass != null && theClass.isInstance(obj);
     }
 
-    public static boolean isCoFHHammer(Item tool) {
-        return existsAndInstance(tool, "cofh.api.item.IToolHammer");
-    }
-
     /**
-     * Whether or not the player has a usable wrench for a block at the coordinates given.
-     *
-     * @param player - the player using the wrench
-     * @param pos    - the coordinate of the block being wrenched
-     *
-     * @return if the player can use the wrench
-     *
-     * @deprecated use {@link mekanism.common.integration.wrenches.Wrenches#getHandler(ItemStack)}
+     * Gets the wrench if the item is an IMekWrench, or a generic implementation if the item is in the forge wrenches tag
      */
-    @Deprecated
-    public static boolean hasUsableWrench(PlayerEntity player, BlockPos pos) {
-        ItemStack tool = player.inventory.getCurrentItem();
-        if (tool.isEmpty()) {
-            return false;
+    @Nullable
+    public static IMekWrench getWrench(ItemStack it) {
+        Item item = it.getItem();
+        if (item instanceof IMekWrench) {
+            return (IMekWrench) item;
+        } else if (item.isIn(MekanismTags.Items.WRENCHES)) {
+            return GenericWrench.INSTANCE;
         }
-        if (tool.getItem() instanceof IMekWrench && ((IMekWrench) tool.getItem()).canUseWrench(tool, player, pos)) {
-            return true;
-        }
-        try {
-            if (isCoFHHammer(tool.getItem())) { // TODO Implement CoFH Hammer && ((IToolHammer)tool.getItem()).isUsable(tool, player, pos))
-                return true;
-            }
-        } catch (Throwable ignored) {
-        }
-        return false;
+        return null;
     }
 
     @Nonnull

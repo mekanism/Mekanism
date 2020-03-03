@@ -26,7 +26,6 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.wrenches.Wrenches;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -198,7 +197,7 @@ public class BlockLogisticalSorter extends BlockMekanism implements IHasModel, I
         }
         ItemStack stack = player.getHeldItem(hand);
         if (!stack.isEmpty()) {
-            IMekWrench wrenchHandler = Wrenches.getHandler(stack);
+            IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
             if (wrenchHandler != null) {
                 if (wrenchHandler.canUseWrench(stack, player, hit.getPos())) {
                     if (SecurityUtils.canAccess(player, tile)) {
