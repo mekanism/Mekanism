@@ -89,7 +89,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
         if (!canHandleFluid() || structure == null) {
             return Collections.emptyList();
         }
-        return structure.fluidTanks;
+        return structure.getFluidTanks(side);
     }
 
     @Override

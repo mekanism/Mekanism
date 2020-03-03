@@ -3,10 +3,15 @@ package mekanism.common.content.boiler;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
@@ -17,7 +22,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
-public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer {
+public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer, IMekanismFluidHandler {
 
     public static Object2BooleanMap<String> clientHotMap = new Object2BooleanOpenHashMap<>();
 
@@ -54,12 +59,23 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public Coord4D upperRenderLocation;
 
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
+    private List<IExtendedFluidTank> fluidTanks;
 
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
         waterTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK,
               fluid -> fluid.getFluid().isIn(FluidTags.WATER));
         steamTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK,
               fluid -> fluid.getFluid().isIn(MekanismTags.Fluids.STEAM));
+        fluidTanks = Arrays.asList(waterTank, steamTank);
+    }
+
+    public void setTankData(@Nonnull List<IExtendedFluidTank> toCopy) {
+        for (int i = 0; i < toCopy.size(); i++) {
+            if (i < fluidTanks.size()) {
+                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
+                fluidTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
+            }
+        }
     }
 
     /**
@@ -125,5 +141,11 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
         temperature += heatToAbsorb / locations.size();
         heatToAbsorb = 0;
         return temperature;
+    }
+
+    @Nonnull
+    @Override
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        return fluidTanks;
     }
 }

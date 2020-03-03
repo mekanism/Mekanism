@@ -63,8 +63,7 @@ public class SynchronizedMatrixData extends SynchronizedData<SynchronizedMatrixD
     public void setInventoryData(@Nonnull List<IInventorySlot> toCopy) {
         for (int i = 0; i < toCopy.size(); i++) {
             if (i < inventorySlots.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there
-                // is a problem with the types somehow
+                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
                 inventorySlots.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
             }
         }

@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.base.ContainerEditMode;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -19,7 +20,7 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
-public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData> {
+public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData> implements IMekanismFluidHandler {
 
     public DynamicFluidTank fluidTank;
 
@@ -35,7 +36,7 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 
     @Nonnull
     private List<IInventorySlot> inventorySlots;
-    public List<IExtendedFluidTank> fluidTanks;
+    private List<IExtendedFluidTank> fluidTanks;
 
     public SynchronizedTankData(TileEntityDynamicTank tile) {
         fluidTank = new DynamicFluidTank(tile);
@@ -61,9 +62,17 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
     public void setInventoryData(@Nonnull List<IInventorySlot> toCopy) {
         for (int i = 0; i < toCopy.size(); i++) {
             if (i < inventorySlots.size()) {
-                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there
-                // is a problem with the types somehow
+                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
                 inventorySlots.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
+            }
+        }
+    }
+
+    public void setTankData(@Nonnull List<IExtendedFluidTank> toCopy) {
+        for (int i = 0; i < toCopy.size(); i++) {
+            if (i < fluidTanks.size()) {
+                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
+                fluidTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
             }
         }
     }
@@ -80,6 +89,12 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
         boolean stageChanged = currentStage != prevFluidStage;
         prevFluidStage = currentStage;
         return !fluidTank.getFluid().isFluidEqual(prevFluid) || stageChanged;
+    }
+
+    @Nonnull
+    @Override
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        return fluidTanks;
     }
 
     public static class ValveData {

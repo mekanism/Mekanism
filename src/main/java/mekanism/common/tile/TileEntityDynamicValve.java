@@ -33,7 +33,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
         if (!canHandleFluid() || structure == null) {
             return Collections.emptyList();
         }
-        return structure.fluidTanks;
+        return structure.getFluidTanks(side);
     }
 
     @Override

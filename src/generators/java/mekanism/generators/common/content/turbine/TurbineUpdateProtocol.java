@@ -11,6 +11,7 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.block.turbine.BlockTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityElectromagneticCoil;
@@ -191,11 +192,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTurbineData> cache, MultiblockCache<SynchronizedTurbineData> merge) {
         TurbineCache turbineCache = (TurbineCache) cache;
         TurbineCache mergeCache = (TurbineCache) merge;
-        if (turbineCache.fluid.isEmpty()) {
-            turbineCache.fluid = mergeCache.fluid;
-        } else if (!mergeCache.fluid.isEmpty() && turbineCache.fluid.isFluidEqual(mergeCache.fluid)) {
-            turbineCache.fluid.setAmount(turbineCache.fluid.getAmount() + mergeCache.fluid.getAmount());
-        }
+        StorageUtils.mergeTanks(turbineCache.getFluidTanks(null).get(0), mergeCache.getFluidTanks(null).get(0));
         turbineCache.electricity += mergeCache.electricity;
         turbineCache.dumpMode = mergeCache.dumpMode;
     }

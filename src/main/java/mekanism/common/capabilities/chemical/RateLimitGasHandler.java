@@ -53,27 +53,20 @@ public class RateLimitGasHandler extends ItemStackMekanismGasHandler {
         return Collections.singletonList(tank);
     }
 
-    private static class RateLimitGasTank extends BasicGasTank {
+    private static class RateLimitGasTank extends VariableCapacityGasTank {
 
         private final IntSupplier rate;
-        private final IntSupplier capacity;
 
         private RateLimitGasTank(IntSupplier rate, IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,
               BiPredicate<@NonNull Gas, @NonNull AutomationType> canInsert, Predicate<@NonNull Gas> isValid, IMekanismGasHandler gasHandler) {
-            super(capacity.getAsInt(), canExtract, canInsert, isValid, gasHandler);
+            super(capacity, canExtract, canInsert, isValid, gasHandler);
             this.rate = rate;
-            this.capacity = capacity;
         }
 
         @Override
         protected int getRate(@Nullable AutomationType automationType) {
             //Allow unknown or manual interaction to bypass rate limit for the item
             return automationType == null || automationType == AutomationType.MANUAL ? super.getRate(automationType) : rate.getAsInt();
-        }
-
-        @Override
-        public int getCapacity() {
-            return capacity.getAsInt();
         }
     }
 

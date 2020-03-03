@@ -2,7 +2,9 @@ package mekanism.common.util;
 
 import java.util.Collections;
 import javax.annotation.Nonnull;
+import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -18,5 +20,13 @@ public class StorageUtils {
         BasicFluidTank tank = BasicFluidTank.create(Integer.MAX_VALUE, null);
         DataHandlerUtils.readTanks(Collections.singletonList(tank), ItemDataUtils.getList(stack, "FluidTanks"));
         return tank.getFluid();
+    }
+
+    public static void mergeTanks(IExtendedFluidTank tank, IExtendedFluidTank mergeTank) {
+        if (tank.isEmpty()) {
+            tank.setStack(mergeTank.getFluid());
+        } else if (!mergeTank.isEmpty() && tank.isFluidEqual(mergeTank.getFluid())) {
+            mergeTank.growStack(tank.getFluidAmount(), Action.EXECUTE);
+        }
     }
 }

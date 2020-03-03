@@ -13,6 +13,7 @@ import mekanism.common.tile.TileEntityDynamicTank;
 import mekanism.common.tile.TileEntityDynamicValve;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -50,11 +51,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTankData> cache, MultiblockCache<SynchronizedTankData> merge) {
         TankCache tankCache = (TankCache) cache;
         TankCache mergeCache = (TankCache) merge;
-        if (tankCache.fluid.isEmpty()) {
-            tankCache.fluid = mergeCache.fluid;
-        } else if (!mergeCache.fluid.isEmpty() && tankCache.fluid.isFluidEqual(mergeCache.fluid)) {
-            tankCache.fluid.setAmount(tankCache.fluid.getAmount() + mergeCache.fluid.getAmount());
-        }
+        StorageUtils.mergeTanks(tankCache.getFluidTanks(null).get(0), mergeCache.getFluidTanks(null).get(0));
         tankCache.editMode = mergeCache.editMode;
         List<ItemStack> rejects = StackUtils.getMergeRejects(tankCache.getInventorySlots(null), mergeCache.getInventorySlots(null));
         if (!rejects.isEmpty()) {

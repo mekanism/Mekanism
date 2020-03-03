@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.Mekanism;
 import mekanism.common.block.basic.BlockBoilerCasing;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -16,6 +17,7 @@ import mekanism.common.tile.TileEntityBoilerValve;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.TileEntitySuperheatingElement;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -166,16 +168,10 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedBoilerData> cache, MultiblockCache<SynchronizedBoilerData> merge) {
         BoilerCache boilerCache = (BoilerCache) cache;
         BoilerCache mergeCache = (BoilerCache) merge;
-        if (boilerCache.water.isEmpty()) {
-            boilerCache.water = mergeCache.water;
-        } else if (!mergeCache.water.isEmpty() && boilerCache.water.isFluidEqual(mergeCache.water)) {
-            boilerCache.water.setAmount(boilerCache.water.getAmount() + mergeCache.water.getAmount());
-        }
-        if (boilerCache.steam.isEmpty()) {
-            boilerCache.steam = mergeCache.steam;
-        } else if (!mergeCache.steam.isEmpty() && boilerCache.steam.isFluidEqual(mergeCache.steam)) {
-            boilerCache.steam.setAmount(boilerCache.steam.getAmount() + mergeCache.steam.getAmount());
-        }
+        List<IExtendedFluidTank> boilerCacheTanks = boilerCache.getFluidTanks(null);
+        List<IExtendedFluidTank> mergeCacheTanks = mergeCache.getFluidTanks(null);
+        StorageUtils.mergeTanks(boilerCacheTanks.get(0), mergeCacheTanks.get(0));
+        StorageUtils.mergeTanks(boilerCacheTanks.get(1), mergeCacheTanks.get(1));
         boilerCache.temperature = Math.max(boilerCache.temperature, mergeCache.temperature);
     }
 

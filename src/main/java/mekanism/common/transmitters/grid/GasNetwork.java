@@ -23,6 +23,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.GasUtils;
@@ -45,7 +46,7 @@ import net.minecraftforge.eventbus.api.Event;
 public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
 
     private final List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
-    public final NetworkGasTank gasTank;
+    public final VariableCapacityGasTank gasTank;
 
     private int transferDelay = 0;
 
@@ -57,7 +58,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     private int prevTransferAmount;
 
     public GasNetwork() {
-        gasTank = new NetworkGasTank();
+        gasTank = VariableCapacityGasTank.create(this::getCapacity, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrueBi, BasicGasTank.alwaysTrue, this);
         gasTanks = Collections.singletonList(gasTank);
     }
 
@@ -292,44 +293,6 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     @Override
     public void onContentsChanged() {
         //TODO: Do we want to mark the network as dirty
-    }
-
-    public class NetworkGasTank extends BasicGasTank {
-
-        protected NetworkGasTank() {
-            super(GasNetwork.this.getCapacity(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, GasNetwork.this);
-        }
-
-        @Override
-        public int getCapacity() {
-            return GasNetwork.this.getCapacity();
-        }
-
-        @Override
-        public int setStackSize(int amount, @Nonnull Action action) {
-            if (isEmpty()) {
-                return 0;
-            } else if (amount <= 0) {
-                if (action.execute()) {
-                    setStack(getEmptyStack());
-                }
-                return 0;
-            }
-            int maxStackSize = getCapacity();
-            //Our capacity should never actually be zero, and given we fake it being zero
-            // until we finish building the network, we need to override this method to bypass the upper limit check
-            // when our upper limit is zero
-            if (maxStackSize > 0 && amount > maxStackSize) {
-                amount = maxStackSize;
-            }
-            if (getStored() == amount || action.simulate()) {
-                //If our size is not changing or we are only simulating the change, don't do anything
-                return amount;
-            }
-            stored.setAmount(amount);
-            onContentsChanged();
-            return amount;
-        }
     }
 
     public static class GasTransferEvent extends Event {

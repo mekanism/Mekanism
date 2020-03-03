@@ -19,6 +19,7 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.target.FluidHandlerTarget;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
@@ -36,7 +37,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack> implements IMekanismFluidHandler {
 
     private final List<IExtendedFluidTank> fluidTanks;
-    public final NetworkFluidTank fluidTank;
+    public final VariableCapacityFluidTank fluidTank;
 
     private int transferDelay = 0;
 
@@ -48,7 +49,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     private int prevTransferAmount = 0;
 
     public FluidNetwork() {
-        fluidTank = new NetworkFluidTank();
+        fluidTank = VariableCapacityFluidTank.create(this::getCapacity, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
         fluidTanks = Collections.singletonList(fluidTank);
     }
 
@@ -274,44 +275,6 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Override
     public void onContentsChanged() {
         //TODO: Do we want to mark the network as dirty
-    }
-
-    public class NetworkFluidTank extends BasicFluidTank {
-
-        protected NetworkFluidTank() {
-            super(FluidNetwork.this.getCapacity(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, FluidNetwork.this);
-        }
-
-        @Override
-        public int getCapacity() {
-            return FluidNetwork.this.getCapacity();
-        }
-
-        @Override
-        public int setStackSize(int amount, @Nonnull Action action) {
-            if (isEmpty()) {
-                return 0;
-            } else if (amount <= 0) {
-                if (action.execute()) {
-                    setStack(FluidStack.EMPTY);
-                }
-                return 0;
-            }
-            int maxStackSize = getCapacity();
-            //Our capacity should never actually be zero, and given we fake it being zero
-            // until we finish building the network, we need to override this method to bypass the upper limit check
-            // when our upper limit is zero
-            if (maxStackSize > 0 && amount > maxStackSize) {
-                amount = maxStackSize;
-            }
-            if (getFluidAmount() == amount || action.simulate()) {
-                //If our size is not changing or we are only simulating the change, don't do anything
-                return amount;
-            }
-            stored.setAmount(amount);
-            onContentsChanged();
-            return amount;
-        }
     }
 
     public static class FluidTransferEvent extends Event {
