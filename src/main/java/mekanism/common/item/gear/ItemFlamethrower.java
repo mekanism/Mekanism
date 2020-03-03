@@ -24,6 +24,7 @@ import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -120,6 +121,30 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
               BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getGas()));
     }
 
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+        boolean hasGas = false;
+        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
+            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                IGasHandler gasHandlerItem = capability.get();
+                if (gasHandlerItem.getGasTankCount() > 0) {
+                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                    GasStack storedGas = gasHandlerItem.getGasInTank(0);
+                    if (!storedGas.isEmpty()) {
+                        list.add(MekanismLang.FLAMETHROWER_STORED.translate(storedGas.getAmount()));
+                        hasGas = true;
+                    }
+                }
+            }
+        }
+        if (!hasGas) {
+            list.add(MekanismLang.FLAMETHROWER_STORED.translate(MekanismLang.NO_GAS.translate()));
+        }
+        list.add(MekanismLang.MODE.translate(getMode(stack)));
+    }
+
     public enum FlamethrowerMode implements IIncrementalEnum<FlamethrowerMode>, IHasTextComponent {
         COMBAT(MekanismLang.FLAMETHROWER_COMBAT, EnumColor.YELLOW),
         HEAT(MekanismLang.FLAMETHROWER_HEAT, EnumColor.ORANGE),
@@ -149,29 +174,5 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }
-    }
-
-    @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
-        boolean hasGas = false;
-        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getGasTankCount() > 0) {
-                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
-                    GasStack storedGas = gasHandlerItem.getGasInTank(0);
-                    if (!storedGas.isEmpty()) {
-                        list.add(MekanismLang.FLAMETHROWER_STORED.translate(storedGas.getAmount()));
-                        hasGas = true;
-                    }
-                }
-            }
-        }
-        if (!hasGas) {
-            list.add(MekanismLang.FLAMETHROWER_STORED.translate(MekanismLang.NO_GAS.translate()));
-        }
-        list.add(MekanismLang.MODE.translate(getMode(stack)));
     }
 }

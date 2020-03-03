@@ -99,7 +99,7 @@ public class RenderTickHandler {
                     for (EquipmentSlotType slotType : EquipmentSlotType.values()) {
                         ItemStack stack = player.getItemStackFromSlot(slotType);
                         if (stack.getItem() instanceof IItemHUDProvider) {
-                            ((IItemHUDProvider) stack.getItem()).addHUDStrings(renderStrings, stack);
+                            ((IItemHUDProvider) stack.getItem()).addHUDStrings(renderStrings, stack, slotType);
                         }
                     }
 

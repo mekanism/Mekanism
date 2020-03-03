@@ -470,6 +470,13 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return multiMap;
     }
 
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+        Mode mode = getMode(stack);
+        list.add(MekanismLang.MODE.translate(EnumColor.INDIGO, mode));
+        list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, mode.getEfficiency()));
+    }
+
     public enum Mode implements IDisableableEnum<Mode>, IHasTranslationKey {
         NORMAL(MekanismLang.DISASSEMBLER_NORMAL, 20, 3, () -> true),
         SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, 1, MekanismConfig.general.disassemblerSlowMode::get),
@@ -524,12 +531,5 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         public boolean isEnabled() {
             return checkEnabled.get();
         }
-    }
-
-    @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
-        Mode mode = getMode(stack);
-        list.add(MekanismLang.MODE.translate(EnumColor.INDIGO, mode));
-        list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, mode.getEfficiency()));
     }
 }

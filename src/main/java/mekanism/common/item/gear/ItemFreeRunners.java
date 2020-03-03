@@ -134,6 +134,13 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpeci
         setMode(itemStack, getMode(itemStack).getNext());
     }
 
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+        if (slotType == getEquipmentSlot()) {
+            list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
+        }
+    }
+
     public enum FreeRunnerMode implements IIncrementalEnum<FreeRunnerMode>, IHasTextComponent {
         NORMAL(MekanismLang.FREE_RUNNER_NORMAL, EnumColor.DARK_GREEN),
         DISABLED(MekanismLang.FREE_RUNNER_DISABLED, EnumColor.DARK_RED);
@@ -202,10 +209,5 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpeci
         public float getToughness() {
             return 0;
         }
-    }
-
-    @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
-        list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 }

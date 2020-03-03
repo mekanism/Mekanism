@@ -92,6 +92,23 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider {
         return 0;
     }
 
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+        if (slotType == getEquipmentSlot()) {
+            ItemJetpack jetpack = (ItemJetpack) stack.getItem();
+            list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
+            GasStack stored = GasStack.EMPTY;
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                IGasHandler gasHandlerItem = capability.get();
+                if (gasHandlerItem.getGasTankCount() > 0) {
+                    stored = gasHandlerItem.getGasInTank(0);
+                }
+            }
+            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, stored.getAmount()));
+        }
+    }
+
     public enum JetpackMode implements IIncrementalEnum<JetpackMode>, IHasTextComponent {
         NORMAL(MekanismLang.JETPACK_NORMAL, EnumColor.DARK_GREEN),
         HOVER(MekanismLang.JETPACK_HOVER, EnumColor.DARK_AQUA),
@@ -161,20 +178,5 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider {
         public float getToughness() {
             return 0;
         }
-    }
-
-    @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
-        ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-        list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
-        GasStack stored = GasStack.EMPTY;
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem.getGasTankCount() > 0) {
-                stored = gasHandlerItem.getGasInTank(0);
-            }
-        }
-        list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, stored.getAmount()));
     }
 }

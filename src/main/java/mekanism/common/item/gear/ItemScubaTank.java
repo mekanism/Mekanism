@@ -79,6 +79,23 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider {
         ItemDataUtils.setBoolean(stack, "flowing", flowing);
     }
 
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+        if (slotType == getEquipmentSlot()) {
+            ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
+            list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getFlowing(stack), true)));
+            GasStack stored = GasStack.EMPTY;
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                IGasHandler gasHandlerItem = capability.get();
+                if (gasHandlerItem.getGasTankCount() > 0) {
+                    stored = gasHandlerItem.getGasInTank(0);
+                }
+            }
+            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.OXYGEN, stored.getAmount()));
+        }
+    }
+
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     protected static class ScubaTankMaterial implements IArmorMaterial {
@@ -117,20 +134,5 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider {
         public float getToughness() {
             return 0;
         }
-    }
-
-    @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
-        ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
-        list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getFlowing(stack), true)));
-        GasStack stored = GasStack.EMPTY;
-        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-        if (capability.isPresent()) {
-            IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem.getGasTankCount() > 0) {
-                stored = gasHandlerItem.getGasInTank(0);
-            }
-        }
-        list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.OXYGEN, stored.getAmount()));
     }
 }

@@ -33,6 +33,7 @@ import mekanism.common.util.SecurityUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.network.PacketBuffer;
@@ -225,6 +226,11 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
         }
     }
 
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getState(stack)));
+    }
+
     @ParametersAreNonnullByDefault
     @MethodsReturnNonnullByDefault
     @FieldsAreNonnullByDefault
@@ -296,10 +302,5 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }
-    }
-
-    @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
-        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getState(stack)));
     }
 }
