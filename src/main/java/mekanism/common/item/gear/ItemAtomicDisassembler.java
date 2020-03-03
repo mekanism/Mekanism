@@ -1,7 +1,5 @@
 package mekanism.common.item.gear;
 
-import com.google.common.collect.Multimap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +8,8 @@ import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -18,6 +18,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.ItemDataUtils;
@@ -65,7 +66,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event.Result;
 
-public class ItemAtomicDisassembler extends ItemEnergized {
+public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider {
 
     public ItemAtomicDisassembler(Properties properties) {
         //TODO: Set some tool types?
@@ -523,5 +524,12 @@ public class ItemAtomicDisassembler extends ItemEnergized {
         public boolean isEnabled() {
             return checkEnabled.get();
         }
+    }
+
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
+        Mode mode = getMode(stack);
+        list.add(MekanismLang.MODE.translate(EnumColor.INDIGO, mode));
+        list.add(MekanismLang.DISASSEMBLER_EFFICIENCY.translate(EnumColor.INDIGO, mode.getEfficiency()));
     }
 }

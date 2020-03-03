@@ -73,6 +73,11 @@ public enum MekanismLang implements ILangEntry {
     INVALID("tooltip", "invalid"),
     HAS_INVENTORY("tooltip", "inventory"),
     NO_GAS("tooltip", "no_gas"),
+    FREE_RUNNERS_MODE("tooltip", "mode.free_runners"),
+    JETPACK_MODE("tooltip", "mode.jetpack"),
+    SCUBA_TANK_MODE("tooltip", "mode.scuba_tank"),
+    FLAMETHROWER_STORED("tooltip", "stored.flamethrower"),
+    JETPACK_STORED("tooltip", "stored.jetpack"),
     //Gui stuff
     MIN("gui", "min"),
     MAX("gui", "max"),

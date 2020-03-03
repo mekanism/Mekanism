@@ -1,20 +1,27 @@
 package mekanism.common.item.gear;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -28,7 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemScubaTank extends ItemGasArmor {
+public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider {
 
     public static final ScubaTankMaterial SCUBA_TANK_MATERIAL = new ScubaTankMaterial();
 
@@ -110,5 +117,20 @@ public class ItemScubaTank extends ItemGasArmor {
         public float getToughness() {
             return 0;
         }
+    }
+
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
+        ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
+        list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getFlowing(stack), true)));
+        GasStack stored = GasStack.EMPTY;
+        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem.getGasTankCount() > 0) {
+                stored = gasHandlerItem.getGasInTank(0);
+            }
+        }
+        list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismGases.OXYGEN, stored.getAmount()));
     }
 }

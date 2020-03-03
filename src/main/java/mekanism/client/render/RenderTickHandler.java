@@ -1,27 +1,22 @@
 package mekanism.client.render;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
-import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.common.ColorRGBA;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
-import mekanism.common.item.gear.ItemJetpack;
-import mekanism.common.item.gear.ItemScubaTank;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -43,6 +38,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class RenderTickHandler {
 
+    private static double HUD_SCALE = 0.6;
+    
     public static int modeSwitchTimer = 0;
     public Random rand = new Random();
     public Minecraft minecraft = Minecraft.getInstance();
@@ -95,37 +92,28 @@ public class RenderTickHandler {
 
                 modeSwitchTimer = Math.max(modeSwitchTimer - 1, 0);
 
-                if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && !player.getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()) {
-                    ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
-
+                if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && MekanismConfig.client.enableHUD.get()) {
                     int y = minecraft.getMainWindow().getScaledHeight();
                     boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
-
-                    if (stack.getItem() instanceof ItemJetpack) {
-                        ItemJetpack jetpack = (ItemJetpack) stack.getItem();
-                        drawString(MekanismLang.MODE.translate(jetpack.getMode(stack)), alignLeft, y - 20, 0xc8c8c8);
-                        GasStack stored = GasStack.EMPTY;
-                        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-                        if (capability.isPresent()) {
-                            IGasHandler gasHandlerItem = capability.get();
-                            if (gasHandlerItem.getGasTankCount() > 0) {
-                                stored = gasHandlerItem.getGasInTank(0);
-                            }
+                    
+                    List<ITextComponent> renderStrings = new ArrayList<>();
+                    
+                    for (EquipmentSlotType slotType : EquipmentSlotType.values()) {
+                        ItemStack stack = player.getItemStackFromSlot(slotType);
+                        
+                        if (stack.getItem() instanceof IItemHUDProvider) {
+                            ((IItemHUDProvider) stack.getItem()).addHUDStrings(renderStrings, stack);
                         }
-                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.HYDROGEN, stored), alignLeft, y - 11, 0xc8c8c8);
-                    } else if (stack.getItem() instanceof ItemScubaTank) {
-                        ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
-                        drawString(MekanismLang.MODE.translate(OnOff.of(scubaTank.getFlowing(stack), true)), alignLeft, y - 20, 0xc8c8c8);
-                        GasStack stored = GasStack.EMPTY;
-                        Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
-                        if (capability.isPresent()) {
-                            IGasHandler gasHandlerItem = capability.get();
-                            if (gasHandlerItem.getGasTankCount() > 0) {
-                                stored = gasHandlerItem.getGasInTank(0);
-                            }
-                        }
-                        drawString(MekanismLang.GENERIC_STORED.translate(MekanismGases.OXYGEN, stored), alignLeft, y - 11, 0xc8c8c8);
                     }
+                    
+                    RenderSystem.pushMatrix();
+                    RenderSystem.scaled(HUD_SCALE, HUD_SCALE, HUD_SCALE);
+                    int start = 2 + renderStrings.size() * 9;
+                    for (ITextComponent text : renderStrings) {
+                        drawString(text, alignLeft, (int)(y*(1/HUD_SCALE)) - start, 0xc8c8c8);
+                        start -= 9;
+                    }
+                    RenderSystem.popMatrix();
                 }
 
                 // Traverse a copy of jetpack state and do animations

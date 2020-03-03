@@ -18,6 +18,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.RateLimitGasHandler;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
@@ -35,7 +36,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemFlamethrower extends Item {
+public class ItemFlamethrower extends Item implements IItemHUDProvider {
 
     private final int TRANSFER_RATE = 16;
 
@@ -148,5 +149,29 @@ public class ItemFlamethrower extends Item {
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }
+    }
+
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
+        boolean hasGas = false;
+        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
+            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
+            Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
+            if (capability.isPresent()) {
+                IGasHandler gasHandlerItem = capability.get();
+                if (gasHandlerItem.getGasTankCount() > 0) {
+                    //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                    GasStack storedGas = gasHandlerItem.getGasInTank(0);
+                    if (!storedGas.isEmpty()) {
+                        list.add(MekanismLang.FLAMETHROWER_STORED.translate(storedGas.getAmount()));
+                        hasGas = true;
+                    }
+                }
+            }
+        }
+        if (!hasGas) {
+            list.add(MekanismLang.FLAMETHROWER_STORED.translate(MekanismLang.NO_GAS.translate()));
+        }
+        list.add(MekanismLang.MODE.translate(getMode(stack)));
     }
 }

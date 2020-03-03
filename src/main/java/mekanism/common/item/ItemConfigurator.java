@@ -50,7 +50,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 //TODO: COFH IToolHammer
 //@Interface(iface = "cofh.api.item.IToolHammer", modid = MekanismHooks.COFH_API_MOD_ID)
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItemNetwork {
+public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItemNetwork, IItemHUDProvider {
 
     public final int ENERGY_PER_CONFIGURE = 400;
     public final int ENERGY_PER_ITEM_DUMP = 8;
@@ -296,5 +296,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
             //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
             return MODES[Math.floorMod(index, MODES.length)];
         }
+    }
+
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
+        list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getState(stack)));
     }
 }

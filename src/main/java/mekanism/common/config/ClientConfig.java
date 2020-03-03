@@ -21,6 +21,7 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedBooleanValue allowConfiguratorModeScroll;
     public final CachedBooleanValue enableMultiblockFormationParticles;
     public final CachedBooleanValue alignHUDLeft;
+    public final CachedBooleanValue enableHUD;
 
     ClientConfig() {
         //TODO: Should this stuff be moved from constructor to an init method defined in IMekanismConfig
@@ -50,6 +51,8 @@ public class ClientConfig extends BaseMekanismConfig {
               .define("enableMultiblockFormationParticles", true));
         alignHUDLeft = CachedBooleanValue.wrap(this, builder.comment("Align HUD with left (if true) or right (if false)")
               .define("alignHUDLeft", true));
+        enableHUD = CachedBooleanValue.wrap(this, builder.comment("Enable item information HUD during gameplay")
+              .define("enableHUD", true));
         builder.pop();
         configSpec = builder.build();
     }

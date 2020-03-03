@@ -17,6 +17,7 @@ import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
+import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.util.ITooltipFlag;
@@ -38,7 +39,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpecialGear {
+public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpecialGear, IItemHUDProvider {
 
     public static final FreeRunnerMaterial FREE_RUNNER_MATERIAL = new FreeRunnerMaterial();
 
@@ -201,5 +202,10 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpeci
         public float getToughness() {
             return 0;
         }
+    }
+
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
+        list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
     }
 }

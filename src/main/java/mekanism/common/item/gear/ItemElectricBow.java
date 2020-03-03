@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IItemNetwork;
+import mekanism.common.item.IItemHUDProvider;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
@@ -33,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.ForgeEventFactory;
 
 //TODO: UPDATE to more closely match logic of BowItem. Maybe even extend BowItem and then implement IItemEnergized instead
-public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
+public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IItemHUDProvider {
 
     public ItemElectricBow(Properties properties) {
         //TODO: Config max energy, damage, etc
@@ -169,5 +170,10 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork {
             boolean state = dataStream.readBoolean();
             setFireState(stack, state);
         }
+    }
+
+    @Override
+    public void addHUDStrings(List<ITextComponent> list, ItemStack stack) {
+        list.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack))));
     }
 }

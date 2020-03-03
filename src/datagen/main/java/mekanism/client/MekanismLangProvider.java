@@ -370,6 +370,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.INVALID, "(Invalid)");
         add(MekanismLang.HAS_INVENTORY, "Inventory: %s");
         add(MekanismLang.NO_GAS, "No gas stored.");
+        add(MekanismLang.FREE_RUNNERS_MODE, "Runners Mode: %s");
+        add(MekanismLang.JETPACK_MODE, "Jetpack Mode: %s");
+        add(MekanismLang.SCUBA_TANK_MODE, "Scuba Tank: %s");
+        add(MekanismLang.FLAMETHROWER_STORED, "Flamethrower: %s");
+        add(MekanismLang.JETPACK_STORED, "Jetpack Fuel: %s");
         //Gui stuff
         add(MekanismLang.MIN, "Min: %s");
         add(MekanismLang.MAX, "Max: %s");
