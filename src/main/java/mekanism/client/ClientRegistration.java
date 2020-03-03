@@ -1,7 +1,7 @@
 package mekanism.client;
 
-import it.unimi.dsi.fastutil.floats.Float2ObjectFunction;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.text.EnumColor;
@@ -127,15 +127,13 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
+import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.DrownedModel;
-import net.minecraft.client.renderer.entity.model.GiantModel;
-import net.minecraft.client.renderer.entity.model.SkeletonModel;
-import net.minecraft.client.renderer.entity.model.ZombieModel;
-import net.minecraft.client.renderer.entity.model.ZombieVillagerModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
@@ -151,7 +149,6 @@ import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -429,35 +426,29 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void loadComplete(FMLLoadCompleteEvent evt) {
-        // ClientSetup is too early to do this
-        DeferredWorkQueue.runLater(() -> {
-            //Add our own custom armor layer to everything that has an armor layer
-            //TODO: See if this can be done better so that it supports modded mobs
-            // Maybe loop all of the renderers and if they are a LivingRenderer that has an armorLayer add one
-            EntityRendererManager entityRenderManager = Minecraft.getInstance().getRenderManager();
-            Map<String, PlayerRenderer> skinMap = entityRenderManager.getSkinMap();
-            addCustomArmorLayer(skinMap.get("default"), BipedModel::new);
-            addCustomArmorLayer(skinMap.get("slim"), BipedModel::new);
-            addCustomArmorLayer(entityRenderManager, EntityType.ARMOR_STAND, BipedModel::new);
-            addCustomArmorLayer(entityRenderManager, EntityType.DROWNED, size -> new DrownedModel<>(size, true));
-            addCustomArmorLayer(entityRenderManager, EntityType.HUSK, size -> new ZombieModel<>(size, true));
-            addCustomArmorLayer(entityRenderManager, EntityType.ZOMBIE, size -> new ZombieModel<>(size, true));
-            addCustomArmorLayer(entityRenderManager, EntityType.ZOMBIE_PIGMAN, size -> new ZombieModel<>(size, true));
-            addCustomArmorLayer(entityRenderManager, EntityType.GIANT, size -> new GiantModel(size, true));
-            addCustomArmorLayer(entityRenderManager, EntityType.ZOMBIE_VILLAGER, size -> new ZombieVillagerModel<>(size, true));
-            addCustomArmorLayer(entityRenderManager, EntityType.SKELETON, size -> new SkeletonModel<>(size, true));
-            addCustomArmorLayer(entityRenderManager, EntityType.STRAY, size -> new SkeletonModel<>(size, true));
-            addCustomArmorLayer(entityRenderManager, EntityType.WITHER_SKELETON, size -> new SkeletonModel<>(size, true));
-        });
+        EntityRendererManager entityRenderManager = Minecraft.getInstance().getRenderManager();
+        //Add our own custom armor layer to the various player renderers
+        for (Entry<String, PlayerRenderer> entry : entityRenderManager.getSkinMap().entrySet()) {
+            addCustomArmorLayer(entry.getValue());
+        }
+        //Add our own custom armor layer to everything that has an armor layer
+        //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them
+        for (Entry<EntityType<?>, EntityRenderer<?>> entry : entityRenderManager.renderers.entrySet()) {
+            EntityRenderer<?> renderer = entry.getValue();
+            if (renderer instanceof LivingRenderer<?, ?>) {
+                addCustomArmorLayer((LivingRenderer) renderer);
+            }
+        }
     }
 
-    private static <T extends LivingEntity, A extends BipedModel<T>> void addCustomArmorLayer(EntityRendererManager entityRenderManager, EntityType<T> type,
-          Float2ObjectFunction<A> modelCreator) {
-        addCustomArmorLayer((LivingRenderer<T, ? extends BipedModel<T>>) entityRenderManager.renderers.get(type), modelCreator);
-    }
-
-    private static <T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> void addCustomArmorLayer(LivingRenderer<T, M> renderer,
-          Float2ObjectFunction<A> modelCreator) {
-        renderer.addLayer(new MekanismArmorLayer<>(renderer, modelCreator.get(0.5F), modelCreator.get(1.0F)));
+    private static <T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> void addCustomArmorLayer(LivingRenderer<T, M> renderer) {
+        for (LayerRenderer<T, M> layerRenderer : renderer.layerRenderers) {
+            //Only allow an exact match, so we don't add to modded entities that only have a modded extended armor layer
+            if (layerRenderer.getClass() == BipedArmorLayer.class) {
+                BipedArmorLayer<T, M, A> bipedArmorLayer = (BipedArmorLayer<T, M, A>) layerRenderer;
+                renderer.addLayer(new MekanismArmorLayer<>(renderer, bipedArmorLayer.modelLeggings, bipedArmorLayer.modelArmor));
+                break;
+            }
+        }
     }
 }
