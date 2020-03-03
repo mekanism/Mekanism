@@ -20,8 +20,6 @@ import mekanism.generators.common.registries.GeneratorsSounds;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -56,19 +54,13 @@ public class MekanismGenerators implements IModule {
         GeneratorsSounds.SOUND_EVENTS.register(modEventBus);
         GeneratorsContainerTypes.CONTAINER_TYPES.register(modEventBus);
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
-        //Delay adding the deferred registers for gases until after their registries are actually assigned
-        modEventBus.addListener(EventPriority.LOW, this::addCustomRegistryDeferredRegisters);
+        GeneratorsGases.GASES.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer().getModInfo().getVersion());
     }
 
     public static ResourceLocation rl(String path) {
         return new ResourceLocation(MekanismGenerators.MODID, path);
-    }
-
-    private void addCustomRegistryDeferredRegisters(RegistryEvent.NewRegistry event) {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        GeneratorsGases.GASES.register(modEventBus);
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

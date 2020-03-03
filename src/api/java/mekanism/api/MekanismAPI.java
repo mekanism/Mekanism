@@ -29,9 +29,10 @@ public class MekanismAPI {
 
     public static Logger logger = LogManager.getLogger(MEKANISM_MODID + "_api");
 
-    //TODO: Override these? And make it so that they return empty if there is no instance??
-    public static IForgeRegistry<Gas> GAS_REGISTRY;
-    public static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY;
+    //Static init both of our registries so that we don't have to deal with any race conditions while trying to use these
+    // via deferred registers
+    public static IForgeRegistry<Gas> GAS_REGISTRY = new RegistryBuilder<Gas>().setName(new ResourceLocation(MEKANISM_MODID, "gas")).setType(Gas.class).create();
+    public static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY = new RegistryBuilder<InfuseType>().setName(new ResourceLocation(MEKANISM_MODID, "infuse_type")).setType(InfuseType.class).create();
 
     /**
      * Mekanism debug mode
@@ -42,12 +43,6 @@ public class MekanismAPI {
     public static final Gas EMPTY_GAS = new EmptyGas();
     @Nonnull
     public static final InfuseType EMPTY_INFUSE_TYPE = new EmptyInfuseType();
-
-    @SubscribeEvent
-    public static void buildRegistry(RegistryEvent.NewRegistry event) {
-        GAS_REGISTRY = new RegistryBuilder<Gas>().setName(new ResourceLocation(MEKANISM_MODID, "gas")).setType(Gas.class).create();
-        INFUSE_TYPE_REGISTRY = new RegistryBuilder<InfuseType>().setName(new ResourceLocation(MEKANISM_MODID, "infuse_type")).setType(InfuseType.class).create();
-    }
 
     @SubscribeEvent
     public static void registerGases(RegistryEvent.Register<Gas> event) {
