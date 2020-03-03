@@ -46,7 +46,7 @@ public class EntityBabyStray extends StrayEntity {
     public void setChild(boolean child) {
         getDataManager().set(IS_CHILD, child);
         if (world != null && !world.isRemote) {
-            IAttributeInstance attributeInstance = this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+            IAttributeInstance attributeInstance = getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
             attributeInstance.removeModifier(MekanismAdditions.babySpeedBoostModifier);
             if (child) {
                 attributeInstance.applyModifier(MekanismAdditions.babySpeedBoostModifier);
@@ -57,7 +57,7 @@ public class EntityBabyStray extends StrayEntity {
     @Override
     public void notifyDataManagerChange(@Nonnull DataParameter<?> key) {
         if (IS_CHILD.equals(key)) {
-            this.recalculateSize();
+            recalculateSize();
         }
         super.notifyDataManagerChange(key);
     }
@@ -72,7 +72,7 @@ public class EntityBabyStray extends StrayEntity {
 
     @Override
     public double getYOffset() {
-        return this.isChild() ? 0.0D : super.getYOffset();
+        return isChild() ? 0.0D : super.getYOffset();
     }
 
     @Override

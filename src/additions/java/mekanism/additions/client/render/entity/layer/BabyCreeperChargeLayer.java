@@ -1,4 +1,4 @@
-package mekanism.additions.client.render.entity;
+package mekanism.additions.client.render.entity.layer;
 
 import javax.annotation.Nonnull;
 import mekanism.additions.client.model.ModelBabyCreeper;

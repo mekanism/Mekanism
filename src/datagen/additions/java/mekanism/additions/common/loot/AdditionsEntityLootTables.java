@@ -82,7 +82,8 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
                     .rolls(ConstantRange.of(1))
                     .addEntry(ItemLootEntry.builder(Blocks.WITHER_SKELETON_SKULL))
                     .acceptCondition(KilledByPlayer.builder())
-                    .acceptCondition(RandomChanceWithLooting.builder(0.025F, 0.01F))
+                    //Double vanilla's skull drop chance due to being "younger and less brittle"
+                    .acceptCondition(RandomChanceWithLooting.builder(0.05F, 0.01F))
               )
         );
     }

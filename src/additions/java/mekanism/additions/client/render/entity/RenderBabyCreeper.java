@@ -3,12 +3,16 @@ package mekanism.additions.client.render.entity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.additions.client.model.ModelBabyCreeper;
+import mekanism.additions.client.render.entity.layer.BabyCreeperChargeLayer;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
+/**
+ * Copy of vanilla's creeper render, modified to use our own model/layer that is properly scaled
+ */
 public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, ModelBabyCreeper> {
 
     private static final ResourceLocation CREEPER_TEXTURES = new ResourceLocation("textures/entity/creeper/creeper.png");

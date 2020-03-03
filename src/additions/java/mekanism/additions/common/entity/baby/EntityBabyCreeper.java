@@ -12,9 +12,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 
-//TODO: Decide if we want this to have a different explosion strength than an adult creeper
 public class EntityBabyCreeper extends CreeperEntity {
 
     private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.createKey(EntityBabyCreeper.class, DataSerializers.BOOLEAN);
@@ -38,7 +39,7 @@ public class EntityBabyCreeper extends CreeperEntity {
     public void setChild(boolean child) {
         getDataManager().set(IS_CHILD, child);
         if (world != null && !world.isRemote) {
-            IAttributeInstance attributeInstance = this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+            IAttributeInstance attributeInstance = getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
             attributeInstance.removeModifier(MekanismAdditions.babySpeedBoostModifier);
             if (child) {
                 attributeInstance.applyModifier(MekanismAdditions.babySpeedBoostModifier);
@@ -49,7 +50,7 @@ public class EntityBabyCreeper extends CreeperEntity {
     @Override
     public void notifyDataManagerChange(@Nonnull DataParameter<?> key) {
         if (IS_CHILD.equals(key)) {
-            this.recalculateSize();
+            recalculateSize();
         }
         super.notifyDataManagerChange(key);
     }
@@ -63,12 +64,22 @@ public class EntityBabyCreeper extends CreeperEntity {
     }
 
     @Override
-    public double getYOffset() {
-        return this.isChild() ? 0.0D : super.getYOffset();
+    protected float getStandingEyeHeight(Pose pose, EntitySize size) {
+        return isChild() ? 0.77F : super.getStandingEyeHeight(pose, size);
     }
 
+    /**
+     * Modify vanilla's explode method to half the explosion strength of baby creepers, and charged baby creepers
+     */
     @Override
-    protected float getStandingEyeHeight(Pose pose, EntitySize size) {
-        return this.isChild() ? 0.77F : super.getStandingEyeHeight(pose, size);
+    protected void explode() {
+        if (!world.isRemote) {
+            Explosion.Mode mode = ForgeEventFactory.getMobGriefingEvent(world, this) ? Explosion.Mode.DESTROY : Explosion.Mode.NONE;
+            float f = isCharged() ? 1 : 0.5F;
+            dead = true;
+            world.createExplosion(this, getPosX(), getPosY(), getPosZ(), (float) explosionRadius * f, mode);
+            remove();
+            spawnLingeringCloud();
+        }
     }
 }

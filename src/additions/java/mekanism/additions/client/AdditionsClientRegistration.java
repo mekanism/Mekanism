@@ -1,6 +1,7 @@
 package mekanism.additions.client;
 
 import mekanism.additions.client.render.entity.RenderBabyCreeper;
+import mekanism.additions.client.render.entity.RenderBabyEnderman;
 import mekanism.additions.client.render.entity.RenderBalloon;
 import mekanism.additions.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.additions.common.MekanismAdditions;
@@ -15,7 +16,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.client.renderer.entity.EndermanRenderer;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
 import net.minecraft.client.renderer.entity.StrayRenderer;
 import net.minecraft.client.renderer.entity.WitherSkeletonRenderer;
@@ -38,7 +38,7 @@ public class AdditionsClientRegistration {
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.OBSIDIAN_TNT, RenderObsidianTNTPrimed::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BALLOON, RenderBalloon::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_CREEPER, RenderBabyCreeper::new);
-        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_ENDERMAN, EndermanRenderer::new);
+        ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_ENDERMAN, RenderBabyEnderman::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_SKELETON, SkeletonRenderer::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_STRAY, StrayRenderer::new);
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.BABY_WITHER_SKELETON, WitherSkeletonRenderer::new);
