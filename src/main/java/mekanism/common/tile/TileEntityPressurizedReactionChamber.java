@@ -47,8 +47,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine<PressurizedReactionRecipe> implements ITankManager {
 
-    private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded",
-                                                         "getFluidStored", "getGasStored"};
     private static final int MAX_GAS = 10_000;
     public BasicFluidTank inputFluidTank;
     public BasicGasTank inputGasTank;
@@ -198,38 +196,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{getOperatingTicks()};
-            case 2:
-                return new Object[]{getActive()};
-            case 3:
-                return new Object[]{getDirection()};
-            case 4:
-                //TODO: Decide if we should try to get the cached recipe if it is null
-                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
-            case 5:
-                return new Object[]{getMaxEnergy()};
-            case 6:
-                return new Object[]{getNeededEnergy()};
-            case 7:
-                return new Object[]{inputFluidTank.getFluidAmount()};
-            case 8:
-                return new Object[]{inputGasTank.getStored()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Override

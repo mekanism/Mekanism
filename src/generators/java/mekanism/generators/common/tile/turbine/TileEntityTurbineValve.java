@@ -9,20 +9,17 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IEnergyWrapper, IComputerIntegration {
+public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IEnergyWrapper {
 
-    private static final String[] methods = new String[]{"isFormed", "getSteam", "getFlowRate", "getMaxFlow", "getSteamInput"};
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
 
     public TileEntityTurbineValve() {
@@ -90,35 +87,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             return Collections.emptyList();
         }
         return structure.getFluidTanks(side);
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        if (method == 0) {
-            return new Object[]{structure != null};
-        } else {
-            if (structure == null) {
-                return new Object[]{"Unformed"};
-            }
-            switch (method) {
-                case 1:
-                    return new Object[]{structure.fluidTank.getFluidAmount()};
-                case 2:
-                    return new Object[]{structure.clientFlow};
-                case 3:
-                    double rate = structure.lowerVolume * (structure.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
-                    rate = Math.min(rate, structure.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-                    return new Object[]{rate};
-                case 4:
-                    return new Object[]{structure.lastSteamInput};
-            }
-        }
-        throw new NoSuchMethodException();
     }
 
     @Nonnull

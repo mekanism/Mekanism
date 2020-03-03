@@ -19,7 +19,6 @@ import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -45,10 +44,9 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, ISpecialConfigData,
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ISideConfiguration, ISpecialConfigData,
       ITileCachedRecipeHolder<RECIPE> {
 
-    private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
     private final CachedRecipe<RECIPE>[] cachedRecipes;
     private boolean[] activeStates;
     protected ProcessInfo[] processInfoSlots;
@@ -323,51 +321,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             nbtTags.putInt("progress" + i, getProgress(i));
         }
         return nbtTags;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                if (arguments[0] == null) {
-                    return new Object[]{"Please provide a target operation."};
-                }
-                if (!(arguments[0] instanceof Double) && !(arguments[0] instanceof Integer)) {
-                    return new Object[]{"Invalid characters."};
-                }
-                if ((Integer) arguments[0] < 0 || (Integer) arguments[0] > progress.length) {
-                    return new Object[]{"No such operation found."};
-                }
-                return new Object[]{getProgress((Integer) arguments[0])};
-            case 2:
-                return new Object[]{getDirection()};
-            case 3:
-                if (arguments[0] == null) {
-                    return new Object[]{"Please provide a target operation."};
-                }
-                if (!(arguments[0] instanceof Double) && !(arguments[0] instanceof Integer)) {
-                    return new Object[]{"Invalid characters."};
-                }
-                if ((Integer) arguments[0] < 0 || (Integer) arguments[0] > cachedRecipes.length) {
-                    return new Object[]{"No such operation found."};
-                }
-                CachedRecipe<RECIPE> cachedRecipe = cachedRecipes[(Integer) arguments[0]];
-                //TODO: Decide if we should try to get the cached recipe if it is null
-                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
-            case 4:
-                return new Object[]{getMaxEnergy()};
-            case 5:
-                return new Object[]{getNeededEnergy()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Override

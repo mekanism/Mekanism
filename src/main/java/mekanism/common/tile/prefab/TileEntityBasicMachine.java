@@ -8,7 +8,6 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
@@ -17,8 +16,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> extends TileEntityOperationalMachine<RECIPE> implements IComputerIntegration,
-      ISideConfiguration, IConfigCardAccess {
+public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> extends TileEntityOperationalMachine<RECIPE> implements ISideConfiguration, IConfigCardAccess {
 
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;

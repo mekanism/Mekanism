@@ -25,7 +25,6 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
     /**
      * The maximum amount of gas this block can store.
      */
@@ -124,31 +123,6 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @Override
     public boolean canOperate() {
         return (!fuelTank.isEmpty() || burnTicks > 0) && MekanismUtils.canFunction(this);
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{output};
-            case 2:
-                return new Object[]{getMaxEnergy()};
-            case 3:
-                return new Object[]{getNeededEnergy()};
-            case 4:
-                return new Object[]{fuelTank.getStored()};
-            case 5:
-                return new Object[]{fuelTank.getNeeded()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     public double getGenerationRate() {

@@ -20,7 +20,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -44,9 +43,8 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IComputerIntegration, IChunkLoader, IFrequencyHandler {
+public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader, IFrequencyHandler {
 
-    private static final String[] methods = new String[]{"getEnergy", "canTeleport", "getMaxEnergy", "teleport", "setFrequency"};
     public AxisAlignedBB teleportBounds = null;
 
     public Set<UUID> didTeleport = new ObjectOpenHashSet<>();
@@ -447,36 +445,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements ICompute
             }
         }
         return data;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{canTeleport()};
-            case 2:
-                return new Object[]{getMaxEnergy()};
-            case 3:
-                teleport();
-                return new Object[]{"Attempted to teleport."};
-            case 4:
-                if (!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean)) {
-                    return new Object[]{"Invalid parameters."};
-                }
-                String freq = ((String) arguments[0]).trim();
-                boolean isPublic = (Boolean) arguments[1];
-                setFrequency(freq, isPublic);
-                return new Object[]{"Frequency set."};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Nonnull

@@ -20,7 +20,6 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -41,9 +40,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 
-public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IComputerIntegration, IConfigurable {
+public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable {
 
-    private static final String[] methods = new String[]{"reset"};
     private static EnumSet<Direction> dirs = EnumSet.complementOf(EnumSet.of(Direction.UP));
     private Set<BlockPos> activeNodes = new ObjectLinkedOpenHashSet<>();
     private Set<BlockPos> usedNodes = new ObjectOpenHashSet<>();
@@ -248,22 +246,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        if (method == 0) {
-            activeNodes.clear();
-            usedNodes.clear();
-            finishedCalc = false;
-            return new Object[]{"Plenisher calculation reset."};
-        }
-        throw new NoSuchMethodException();
     }
 
     @Override

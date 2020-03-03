@@ -18,7 +18,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -38,10 +37,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage, IComputerIntegration {
+public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage {
 
     public static final double MAX_ENERGY = 5E9;
-    private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy"};
     public double collectedEnergy = 0;
     private double lastFired = 0;
     public double minThreshold = 0;
@@ -269,23 +267,6 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     @Override
     public double getMaxEnergy() {
         return MAX_ENERGY;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{getMaxEnergy()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Nonnull

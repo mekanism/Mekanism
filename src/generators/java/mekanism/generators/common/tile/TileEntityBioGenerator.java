@@ -21,7 +21,6 @@ import net.minecraft.network.PacketBuffer;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
 
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getBioFuel", "getBioFuelNeeded"};
     private static final int MAX_FLUID = 24_000;
 
     public BasicFluidTank bioFuelTank;
@@ -89,30 +88,5 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         //Note: We still have to sync bio fuel as it is used in rendering the tile
         data.add(bioFuelTank.getFluid());
         return data;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{output};
-            case 2:
-                return new Object[]{getBaseStorage()};
-            case 3:
-                return new Object[]{getBaseStorage() - getEnergy()};
-            case 4:
-                return new Object[]{bioFuelTank.getFluidAmount()};
-            case 5:
-                return new Object[]{bioFuelTank.getNeeded()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 }

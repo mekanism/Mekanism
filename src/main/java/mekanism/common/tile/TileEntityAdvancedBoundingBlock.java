@@ -9,7 +9,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,7 +17,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IStrictEnergyAcceptor, IComputerIntegration, ISpecialConfigData, IUpgradeTile {
+public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IStrictEnergyAcceptor, ISpecialConfigData, IUpgradeTile {
 
     public TileEntityAdvancedBoundingBlock() {
         super(MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK.getTileEntityType());
@@ -75,24 +74,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv != null) {
             inv.onNoPower();
         }
-    }
-
-    @Override
-    public String[] getMethods() {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return new String[]{};
-        }
-        return inv.getMethods();
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        IAdvancedBoundingBlock inv = getInv();
-        if (inv == null) {
-            return new Object[]{};
-        }
-        return inv.invoke(method, arguments);
     }
 
     @Override

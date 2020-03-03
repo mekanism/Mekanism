@@ -37,7 +37,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator implements IHeatTransfer {
 
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
     private static final int MAX_FLUID = 24_000;
     /**
      * The FluidTank for this generator.
@@ -127,31 +126,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     private boolean isLava(BlockPos pos) {
         World world = getWorld();
         return world != null && world.getFluidState(pos).isTagged(FluidTags.LAVA);
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{output};
-            case 2:
-                return new Object[]{getBaseStorage()};
-            case 3:
-                return new Object[]{getBaseStorage() - getEnergy()};
-            case 4:
-                return new Object[]{lavaTank.getFluidAmount()};
-            case 5:
-                return new Object[]{lavaTank.getNeeded()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Override

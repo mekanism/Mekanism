@@ -23,7 +23,6 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -49,9 +48,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileEntityGasTank extends TileEntityMekanism implements ISideConfiguration, IComputerIntegration, ISustainedData {
-
-    private static final String[] methods = new String[]{"getMaxGas", "getStoredGas", "getGas"};
+public class TileEntityGasTank extends TileEntityMekanism implements ISideConfiguration, ISustainedData {
     /**
      * The type of gas stored in this tank.
      */
@@ -210,25 +207,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
     @Override
     public Direction getOrientation() {
         return getDirection();
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{gasTank.getCapacity()};
-            case 1:
-                return new Object[]{gasTank.getStored()};
-            case 2:
-                return new Object[]{gasTank.getStack()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Override

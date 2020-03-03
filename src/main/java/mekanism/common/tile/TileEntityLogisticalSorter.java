@@ -1,7 +1,6 @@
 package mekanism.common.tile;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
@@ -20,11 +19,9 @@ import mekanism.common.content.transporter.Finder;
 import mekanism.common.content.transporter.InvStack;
 import mekanism.common.content.transporter.StackSearcher;
 import mekanism.common.content.transporter.TItemStackFilter;
-import mekanism.common.content.transporter.TTagFilter;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterFilter;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.InternalInventorySlot;
@@ -35,9 +32,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -49,8 +44,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, IComputerIntegration,
-      ITileFilterHolder<TransporterFilter<?>> {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>> {
 
     private HashList<TransporterFilter<?>> filters = new HashList<>();
     public EnumColor color;
@@ -59,7 +53,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public boolean singleItem;
     public int rrIndex = 0;
     public int delayTicks;
-    public String[] methods = {"setDefaultColor", "setRoundRobin", "setAutoEject", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "setSingleItem"};
 
     public TileEntityLogisticalSorter() {
         super(MekanismBlocks.LOGISTICAL_SORTER);
@@ -417,101 +410,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         remap.put("singleItem", "singleItem");
         remap.put("filters", "filters");
         return remap;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        if (arguments.length > 0) {
-            if (method == 0) {
-                if (!(arguments[0] instanceof String)) {
-                    return new Object[]{"Invalid parameters."};
-                }
-                color = EnumColor.getFromDyeName((String) arguments[0]);
-                if (color == null) {
-                    return new Object[]{"Default color set to null"};
-                }
-                return new Object[]{"Default color set to " + color.getDyeName()};
-            } else if (method == 1) {
-                if (!(arguments[0] instanceof Boolean)) {
-                    return new Object[]{"Invalid parameters."};
-                }
-                roundRobin = (Boolean) arguments[0];
-                return new Object[]{"Round-robin mode set to " + roundRobin};
-            } else if (method == 2) {
-                if (!(arguments[0] instanceof Boolean)) {
-                    return new Object[]{"Invalid parameters."};
-                }
-                autoEject = (Boolean) arguments[0];
-                return new Object[]{"Auto-eject mode set to " + autoEject};
-            } else if (method == 3) {
-                if (arguments.length != 5 || !(arguments[0] instanceof String) || !(arguments[1] instanceof String) || !(arguments[2] instanceof Boolean) ||
-                    !(arguments[3] instanceof Double) || !(arguments[4] instanceof Double)) {
-                    return new Object[]{"Invalid parameters."};
-                }
-                TItemStackFilter filter = new TItemStackFilter();
-                filter.setItemStack(new ItemStack(ItemRegistryUtils.getByName((String) arguments[0])));
-                filter.color = EnumColor.getFromDyeName((String) arguments[1]);
-                filter.sizeMode = (Boolean) arguments[2];
-                filter.min = ((Double) arguments[3]).intValue();
-                filter.max = ((Double) arguments[4]).intValue();
-                filters.add(filter);
-                return new Object[]{"Added filter."};
-            } else if (method == 4) {
-                if (arguments.length != 1 || !(arguments[0] instanceof String)) {
-                    return new Object[]{"Invalid parameters."};
-                }
-                ItemStack stack = new ItemStack(ItemRegistryUtils.getByName((String) arguments[0]));
-                Iterator<TransporterFilter<?>> iter = filters.iterator();
-                while (iter.hasNext()) {
-                    TransporterFilter<?> filter = iter.next();
-                    if (filter instanceof TItemStackFilter) {
-                        if (StackUtils.equalsWildcard(((TItemStackFilter) filter).getItemStack(), stack)) {
-                            iter.remove();
-                            return new Object[]{"Removed filter."};
-                        }
-                    }
-                }
-                return new Object[]{"Couldn't find filter."};
-            } else if (method == 5) {
-                if (arguments.length != 2 || !(arguments[0] instanceof String) || !(arguments[1] instanceof String)) {
-                    return new Object[]{"Invalid parameters."};
-                }
-                TTagFilter filter = new TTagFilter();
-                filter.setTagName((String) arguments[0]);
-                filter.color = EnumColor.getFromDyeName((String) arguments[1]);
-                filters.add(filter);
-                return new Object[]{"Added filter."};
-            } else if (method == 6) {
-                if (arguments.length != 1 || !(arguments[0] instanceof String)) {
-                    return new Object[]{"Invalid parameters."};
-                }
-                String ore = (String) arguments[0];
-                Iterator<TransporterFilter<?>> iter = filters.iterator();
-                while (iter.hasNext()) {
-                    TransporterFilter<?> filter = iter.next();
-                    if (filter instanceof TTagFilter) {
-                        if (((TTagFilter) filter).getTagName().equals(ore)) {
-                            iter.remove();
-                            return new Object[]{"Removed filter."};
-                        }
-                    }
-                }
-                return new Object[]{"Couldn't find filter."};
-            } else if (method == 7) {
-                if (!(arguments[0] instanceof Boolean)) {
-                    return new Object[]{"Invalid parameters."};
-                }
-                singleItem = (Boolean) arguments[0];
-                return new Object[]{"Single-item mode set to " + singleItem};
-            }
-        }
-        sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
-        return null;
     }
 
     @Nonnull

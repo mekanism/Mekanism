@@ -9,7 +9,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -25,9 +24,8 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer, IComputerIntegration {
+public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer {
 
-    private static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getTemperature", "setEnergyUsage"};
     public double energyUsage = 100;
     private double temperature;
     public double heatToAbsorb = 0;
@@ -173,33 +171,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public boolean lightUpdate() {
         return true;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{getMaxEnergy()};
-            case 2:
-                return new Object[]{temperature};
-            case 3:
-                if (arguments.length == 1) {
-                    if (arguments[0] instanceof Double) {
-                        energyUsage = (Double) arguments[0];
-                        return new Object[]{"Set energy usage."};
-                    }
-                }
-                return new Object[]{"Invalid parameters."};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Override

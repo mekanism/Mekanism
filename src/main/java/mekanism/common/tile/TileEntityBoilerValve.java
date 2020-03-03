@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
@@ -19,9 +18,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class TileEntityBoilerValve extends TileEntityBoilerCasing implements IComputerIntegration {
-
-    private static final String[] methods = new String[]{"isFormed", "getSteam", "getWater", "getBoilRate", "getMaxBoilRate", "getTemp"};
+public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     public TileEntityBoilerValve() {
         super(MekanismBlocks.BOILER_VALVE);
@@ -73,35 +70,6 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing implements ICo
             return Collections.singletonList(structure.steamTank);
         }
         return Collections.singletonList(structure.waterTank);
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        if (method == 0) {
-            return new Object[]{structure != null};
-        } else {
-            if (structure == null) {
-                return new Object[]{"Unformed"};
-            }
-            switch (method) {
-                case 1:
-                    return new Object[]{structure.steamTank.getFluidAmount()};
-                case 2:
-                    return new Object[]{structure.waterTank.getFluidAmount()};
-                case 3:
-                    return new Object[]{structure.lastBoilRate};
-                case 4:
-                    return new Object[]{structure.lastMaxBoil};
-                case 5:
-                    return new Object[]{structure.temperature};
-            }
-        }
-        throw new NoSuchMethodException();
     }
 
     @Override

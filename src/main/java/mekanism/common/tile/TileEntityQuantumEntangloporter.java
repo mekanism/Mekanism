@@ -32,7 +32,6 @@ import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -58,9 +57,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFrequencyHandler, IHeatTransfer, ISustainedData,
-      IComputerIntegration, IChunkLoader {
+      IChunkLoader {
 
-    private static final String[] methods = new String[]{"setFrequency"};
     public InventoryFrequency frequency;
     public double heatToAbsorb = 0;
     //TODO: These seem to be used, do we want to have some sort of stats thing for the quantum entangloporter
@@ -483,25 +481,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
             return side != null && !hasFrequency();
         }
         return super.isCapabilityDisabled(capability, side);
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        if (method == 0) {
-            if (!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean)) {
-                return new Object[]{"Invalid parameters."};
-            }
-            String freq = ((String) arguments[0]).trim();
-            boolean isPublic = (Boolean) arguments[1];
-            setFrequency(freq, isPublic);
-            return new Object[]{"Frequency set."};
-        }
-        throw new NoSuchMethodException();
     }
 
     @Override

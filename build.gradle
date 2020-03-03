@@ -134,10 +134,6 @@ repositories {
         url 'https://files.minecraftforge.net/maven'
     }
     maven {
-        name 'amadornes'
-        url 'https://maven.amadornes.com/'
-    }
-    maven {
         name 'prog'
         url 'http://dvs1.progwml6.com/files/maven'
     }
@@ -146,28 +142,12 @@ repositories {
         url 'https://minecraft.curseforge.com/api/maven/'
     }
     maven {
-        name 'opencomputers'
-        url 'http://maven.cil.li/'
-    }
-    maven {
-        name 'hwyla'
-        url 'https://tehnut.info/maven'
-    }
-    maven {
         name 'tterrag'
         url 'https://maven.tterrag.com/'
     }
     maven {
-        name 'ic2'
-        url 'http://maven.ic2.player.to'
-    }
-    maven {
         name 'BlameJared - Crafttweaker'
         url 'https://maven.blamejared.com/'
-    }
-    maven {
-        name 'thiakil'
-        url 'https://maven.thiakil.com'
     }
 }
 
@@ -302,18 +282,6 @@ dependencies {
     //datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_api_id}")
     //datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty:${biomesoplenty_id}")
     datagenmainCompile fg.deobf("curse.maven:i-like-wood:${ilikewood_id}")
-
-    // Not updated yet
-    /*deobfCompile "MCMultiPart2:MCMultiPart:${mcmp_version}"
-    compileOnly "inventory-tweaks:InventoryTweaks:${invtweak_version}:api"
-    compileOnly "li.cil.oc:OpenComputers:MC${minecraft_version}-${opencomputers_version}:api"
-    compileOnly "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}:api"
-    runtime "team.chisel.ctm:CTM:MC${minecraft_version}-${ctm_version}"
-    compileOnly "net.industrial-craft:industrialcraft-2:${ic2_version}:api"
-    compileOnly "dan200.computercraft:ComputerCraft:${computercraft_version}:api"
-    compileOnly("appeng:appliedenergistics2:${ae2_version}:api") {
-        exclude module: "jei_1.12.2"
-    }*/
 }
 
 def version_properties = ["version": mod_version, "mc_version": minecraft_version, "forge_version": min_forge_version, "loader_version": loader_version]

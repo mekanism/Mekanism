@@ -22,7 +22,6 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InfusionInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -43,11 +42,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<MetallurgicInfuserRecipe> implements IComputerIntegration, ISideConfiguration,
-      IConfigCardAccess {
-
-    private static final String[] methods = new String[]{"getEnergy", "getProgress", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded", "getInfuse",
-                                                         "getInfuseNeeded"};
+public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<MetallurgicInfuserRecipe> implements ISideConfiguration, IConfigCardAccess {
 
     public static final int MAX_INFUSE = 1_000;
     public BasicInfusionTank infusionTank;
@@ -181,36 +176,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             }
         } else {
             super.handlePacketData(dataStream);
-        }
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{getOperatingTicks()};
-            case 2:
-                return new Object[]{getDirection()};
-            case 3:
-                //TODO: Decide if we should try to get the cached recipe if it is null
-                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
-            case 4:
-                return new Object[]{getMaxEnergy()};
-            case 5:
-                return new Object[]{getNeededEnergy()};
-            case 6:
-                return new Object[]{infusionTank};
-            case 7:
-                return new Object[]{infusionTank.getNeeded()};
-            default:
-                throw new NoSuchMethodException();
         }
     }
 

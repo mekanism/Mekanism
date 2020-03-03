@@ -38,8 +38,6 @@ import net.minecraft.item.ItemStack;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicMachine<ItemStackGasToItemStackRecipe> {
 
-    private static final String[] methods = new String[]{"getEnergy", "getSecondaryStored", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy",
-                                                         "getEnergyNeeded"};
     public static final int BASE_TICKS_REQUIRED = 200;
     public static final int MAX_GAS = 210;
     public static final int BASE_GAS_PER_TICK = 1;
@@ -175,36 +173,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED || (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS))) {
             gasUsage = MekanismUtils.getSecondaryEnergyPerTickMean(this, BASE_GAS_PER_TICK);
-        }
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{gasTank.getStored()};
-            case 2:
-                return new Object[]{getOperatingTicks()};
-            case 3:
-                return new Object[]{getActive()};
-            case 4:
-                return new Object[]{getDirection()};
-            case 5:
-                //TODO: Decide if we should try to get the cached recipe if it is null
-                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
-            case 6:
-                return new Object[]{getMaxEnergy()};
-            case 7:
-                return new Object[]{getNeededEnergy()};
-            default:
-                throw new NoSuchMethodException();
         }
     }
 

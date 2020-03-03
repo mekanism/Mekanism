@@ -23,7 +23,6 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -56,9 +55,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable, ITankManager, IComputerIntegration {
+public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable, ITankManager {
 
-    private static final String[] methods = new String[]{"reset"};
     /**
      * This pump's tank
      */
@@ -339,20 +337,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public Object[] getManagedTanks() {
         return new Object[]{fluidTank};
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        if (method == 0) {
-            reset();
-            return new Object[]{"Pump calculation reset."};
-        }
-        throw new NoSuchMethodException();
     }
 
     @Override

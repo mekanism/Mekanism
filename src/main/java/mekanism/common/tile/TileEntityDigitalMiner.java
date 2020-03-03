@@ -36,8 +36,6 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.miner.MItemStackFilter;
-import mekanism.common.content.miner.MTagFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
@@ -61,7 +59,6 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
-import mekanism.common.util.ItemRegistryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
 import mekanism.common.util.StackUtils;
@@ -69,9 +66,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BushBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -135,7 +130,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     public boolean clientRendering = false;
 
     public TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
-    public String[] methods = {"setRadius", "setMin", "setMax", "addFilter", "removeFilter", "addOreFilter", "removeOreFilter", "reset", "start", "stop", "getToMine"};
 
     private List<IInventorySlot> mainSlots;
     private EnergyInventorySlot energySlot;
@@ -700,93 +694,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     @Override
     public void onNoPower() {
         numPowering--;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        if (method == 0) {
-            if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
-                return new Object[]{"Invalid parameters."};
-            }
-            setRadius(Math.min(((Double) arguments[0]).intValue(), MekanismConfig.general.digitalMinerMaxRadius.get()));
-        } else if (method == 1) {
-            if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
-                return new Object[]{"Invalid parameters."};
-            }
-            minY = ((Double) arguments[0]).intValue();
-        } else if (method == 2) {
-            if (arguments.length != 1 || !(arguments[0] instanceof Double)) {
-                return new Object[]{"Invalid parameters."};
-            }
-            maxY = ((Double) arguments[0]).intValue();
-        } else if (method == 3) {
-            if (arguments.length < 1 || !(arguments[0] instanceof String)) {
-                return new Object[]{"Invalid parameters."};
-            }
-            Item item = ItemRegistryUtils.getByName((String) arguments[0]);
-            if (item != Items.AIR) {
-                filters.add(new MItemStackFilter(new ItemStack(item)));
-            }
-            return new Object[]{"Added filter."};
-        } else if (method == 4) {
-            if (arguments.length < 1 || !(arguments[0] instanceof Double)) {
-                return new Object[]{"Invalid parameters."};
-            }
-            int id = ((Double) arguments[0]).intValue();
-            Iterator<MinerFilter<?>> iter = filters.iterator();
-            while (iter.hasNext()) {
-                MinerFilter<?> filter = iter.next();
-                if (filter instanceof MItemStackFilter) {
-                    if (MekanismUtils.getID(((MItemStackFilter) filter).getItemStack()) == id) {
-                        iter.remove();
-                        return new Object[]{"Removed filter."};
-                    }
-                }
-            }
-            return new Object[]{"Couldn't find filter."};
-        } else if (method == 5) {
-            if (arguments.length < 1 || !(arguments[0] instanceof String)) {
-                return new Object[]{"Invalid parameters."};
-            }
-            String ore = (String) arguments[0];
-            MTagFilter filter = new MTagFilter();
-            filter.setTagName(ore);
-            filters.add(filter);
-            return new Object[]{"Added filter."};
-        } else if (method == 6) {
-            if (arguments.length < 1 || !(arguments[0] instanceof String)) {
-                return new Object[]{"Invalid parameters."};
-            }
-            String ore = (String) arguments[0];
-            Iterator<MinerFilter<?>> iter = filters.iterator();
-            while (iter.hasNext()) {
-                MinerFilter<?> filter = iter.next();
-                if (filter instanceof MTagFilter) {
-                    if (((MTagFilter) filter).getTagName().equals(ore)) {
-                        iter.remove();
-                        return new Object[]{"Removed filter."};
-                    }
-                }
-            }
-            return new Object[]{"Couldn't find filter."};
-        } else if (method == 7) {
-            reset();
-            return new Object[]{"Reset miner."};
-        } else if (method == 8) {
-            start();
-            return new Object[]{"Started miner."};
-        } else if (method == 9) {
-            stop();
-            return new Object[]{"Stopped miner."};
-        } else if (method == 10) {
-            return new Object[]{searcher != null ? searcher.found : 0};
-        }
-        return null;
     }
 
     @Override

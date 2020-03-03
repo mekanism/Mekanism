@@ -12,7 +12,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
@@ -27,9 +26,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage, IComputerIntegration {
-
-    public static final String[] methods = new String[]{"getEnergy", "getMaxEnergy", "getInput", "getOutput", "getTransferCap"};
+public class TileEntityInductionCasing extends TileEntityMultiblock<SynchronizedMatrixData> implements IStrictEnergyStorage {
 
     public TileEntityInductionCasing() {
         this(MekanismBlocks.INDUCTION_CASING);
@@ -151,32 +148,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     public int getProviderCount() {
         return structure != null ? structure.getProviderCount() : 0;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        if (structure == null) {
-            return new Object[]{"Unformed."};
-        }
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{getMaxEnergy()};
-            case 2:
-                return new Object[]{structure.getLastInput()};
-            case 3:
-                return new Object[]{structure.getLastOutput()};
-            case 4:
-                return new Object[]{structure.getTransferCap()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Nonnull

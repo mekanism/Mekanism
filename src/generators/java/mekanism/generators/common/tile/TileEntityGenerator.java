@@ -2,14 +2,13 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 
-public abstract class TileEntityGenerator extends TileEntityMekanism implements IComputerIntegration {
+public abstract class TileEntityGenerator extends TileEntityMekanism {
 
     /**
      * Output per tick this generator can transfer.

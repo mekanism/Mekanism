@@ -19,7 +19,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     public static final float SPEED = 32F;
     public static final float SPEED_SCALED = 256F / SPEED;
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getMultiplier"};
 
     private double angle;
     private float currentMultiplier;
@@ -96,29 +95,6 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             return toGen / minG;
         }
         return 0;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{output};
-            case 2:
-                return new Object[]{getBaseStorage()};
-            case 3:
-                return new Object[]{getBaseStorage() - getEnergy()};
-            case 4:
-                return new Object[]{getMultiplier()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Override

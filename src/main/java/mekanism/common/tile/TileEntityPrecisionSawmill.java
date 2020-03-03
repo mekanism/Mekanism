@@ -33,8 +33,6 @@ import net.minecraft.item.ItemStack;
 
 public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRecipe> {
 
-    private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded"};
-
     private final IOutputHandler<@NonNull ChanceOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
@@ -126,34 +124,6 @@ public class TileEntityPrecisionSawmill extends TileEntityBasicMachine<SawmillRe
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{getOperatingTicks()};
-            case 2:
-                return new Object[]{getActive()};
-            case 3:
-                return new Object[]{getDirection()};
-            case 4:
-                //TODO: Decide if we should try to get the cached recipe if it is null
-                return new Object[]{cachedRecipe != null && cachedRecipe.canFunction()};
-            case 5:
-                return new Object[]{getMaxEnergy()};
-            case 6:
-                return new Object[]{getNeededEnergy()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Nonnull

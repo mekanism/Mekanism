@@ -26,7 +26,6 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -49,10 +48,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements IComputerIntegration, ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe> {
+public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe> {
 
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen",
-                                                         "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
     /**
      * This separator's water slot.
      */
@@ -245,39 +242,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         nbtTags.putInt("dumpLeft", dumpLeft.ordinal());
         nbtTags.putInt("dumpRight", dumpRight.ordinal());
         return nbtTags;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{output};
-            case 2:
-                return new Object[]{getBaseStorage()};
-            case 3:
-                return new Object[]{getBaseStorage() - getEnergy()};
-            case 4:
-                return new Object[]{fluidTank.getFluidAmount()};
-            case 5:
-                return new Object[]{fluidTank.getNeeded()};
-            case 6:
-                return new Object[]{leftTank.getStored()};
-            case 7:
-                return new Object[]{leftTank.getNeeded()};
-            case 8:
-                return new Object[]{rightTank.getStored()};
-            case 9:
-                return new Object[]{rightTank.getNeeded()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Override

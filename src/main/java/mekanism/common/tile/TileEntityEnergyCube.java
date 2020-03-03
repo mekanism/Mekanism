@@ -13,7 +13,6 @@ import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tier.EnergyCubeTier;
@@ -33,9 +32,8 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityEnergyCube extends TileEntityMekanism implements IComputerIntegration, ISideConfiguration, IConfigCardAccess {
+public class TileEntityEnergyCube extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded"};
     /**
      * This Energy Cube's tier.
      */
@@ -132,27 +130,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ICompute
     @Override
     public double getMaxEnergy() {
         return tier.getMaxEnergy();
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{tier.getOutput()};
-            case 2:
-                return new Object[]{getMaxEnergy()};
-            case 3:
-                return new Object[]{(getNeededEnergy())};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Override

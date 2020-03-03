@@ -19,8 +19,6 @@ import net.minecraft.world.biome.Biome.RainType;
 
 public class TileEntitySolarGenerator extends TileEntityGenerator {
 
-    private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getSeesSun"};
-
     private boolean seesSun;
     private boolean needsRainCheck = true;
     private double peakOutput;
@@ -143,29 +141,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         f1 = (float) ((double) f1 * (1.0D - (double) (world.getRainStrength(partialTicks) * 5.0F) / 16.0D));
         f1 = (float) ((double) f1 * (1.0D - (double) (world.getThunderStrength(partialTicks) * 5.0F) / 16.0D));
         return f1 * 0.8F + 0.2F;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] arguments) throws NoSuchMethodException {
-        switch (method) {
-            case 0:
-                return new Object[]{getEnergy()};
-            case 1:
-                return new Object[]{output};
-            case 2:
-                return new Object[]{getBaseStorage()};
-            case 3:
-                return new Object[]{getBaseStorage() - getEnergy()};
-            case 4:
-                return new Object[]{seesSun};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     @Override

@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
@@ -17,9 +16,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 //TODO: Try to move some of this logic to TileEntityMultiblock?
-public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implements IComputerIntegration {
+public class TileEntityThermalEvaporationBlock extends TileEntityMekanism {
 
-    private static final String[] methods = new String[]{"getTemperature", "getHeight", "isFormed", "getInput", "getOutput"};
     public Coord4D master;
     public boolean attempted;
 
@@ -93,33 +91,6 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism implem
             return MekanismUtils.getTileEntity(TileEntityThermalEvaporationController.class, getWorld(), master.getPos());
         }
         return null;
-    }
-
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    @Override
-    public Object[] invoke(int method, Object[] args) throws NoSuchMethodException {
-        TileEntityThermalEvaporationController controller = getController();
-        if (controller == null) {
-            return new Object[]{"Unformed."};
-        }
-        switch (method) {
-            case 0:
-                return new Object[]{controller.getTemperature()};
-            case 1:
-                return new Object[]{controller.height};
-            case 2:
-                return new Object[]{controller.getActive()};
-            case 3:
-                return new Object[]{controller.inputTank.getFluidAmount()};
-            case 4:
-                return new Object[]{controller.outputTank.getFluidAmount()};
-            default:
-                throw new NoSuchMethodException();
-        }
     }
 
     public class ControllerFinder {
