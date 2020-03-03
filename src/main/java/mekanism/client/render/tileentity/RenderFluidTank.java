@@ -12,6 +12,8 @@ import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -74,7 +76,9 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             return cachedValveFluids.get(fluid).get(stage);
         }
         Model3D model = new Model3D();
-        model.baseBlock = Blocks.WATER;
+        BlockState state = MekanismUtils.getFlowingBlockState(fluid);
+        //TODO: Check air better, given we don't have any position information
+        model.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
         MekanismRenderer.prepFlowing(model, fluid);
         if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
             model.minX = 0.3125 + .01;
@@ -100,7 +104,9 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             return cachedCenterFluids.get(fluid).get(stage);
         }
         Model3D model = new Model3D();
-        model.baseBlock = Blocks.WATER;
+        BlockState state = MekanismUtils.getFlowingBlockState(fluid);
+        //TODO: Check air better, given we don't have any position information
+        model.baseBlock = state.isAir() ? Blocks.WATER : state.getBlock();
         model.setTexture(MekanismRenderer.getFluidTexture(fluid, FluidType.STILL));
         if (fluid.getFluid().getAttributes().getStillTexture(fluid) != null) {
             model.minX = 0.125 + .01;

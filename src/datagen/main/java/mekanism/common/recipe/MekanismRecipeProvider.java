@@ -12,7 +12,6 @@ import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidGasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidToFluidRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackGasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackGasToItemStackRecipeBuilder;
@@ -148,7 +147,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         SpecialRecipeBuilder.build(consumer, MekanismRecipeSerializers.BIN_EXTRACT);
         //Mod compat recipes
         compatRecipeProviders.forEach(compatRecipeProvider -> compatRecipeProvider.registerRecipes(consumer));
-        addSolarNeutronActivatorRecipes(consumer);
         addBinRecipes(consumer);
         addChemicalInfuserRecipes(consumer);
         addCombinerRecipes(consumer);
@@ -180,15 +178,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addTransmitterRecipes(consumer);
         addUpgradeRecipes(consumer);
         addMiscRecipes(consumer);
-    }
-
-    private void addSolarNeutronActivatorRecipes(Consumer<IFinishedRecipe> consumer) {
-        String basePath = "activating/";
-        GasToGasRecipeBuilder.activating(
-              GasStackIngredient.from(MekanismGases.LITHIUM, 1),
-              MekanismGases.TRITIUM.getGasStack(1)
-        ).addCriterion(Criterion.HAS_SOLAR_NEUTRON_ACTIVATOR)
-              .build(consumer, Mekanism.rl(basePath + "tritium"));
     }
 
     private void addBinRecipes(Consumer<IFinishedRecipe> consumer) {
@@ -225,13 +214,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
     private void addChemicalInfuserRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "chemical_infusing/";
-        //DT Fuel
-        ChemicalInfuserRecipeBuilder.chemicalInfusing(
-              GasStackIngredient.from(MekanismGases.DEUTERIUM, 1),
-              GasStackIngredient.from(MekanismGases.TRITIUM, 1),
-              MekanismGases.FUSION_FUEL.getGasStack(1)
-        ).addCriterion(Criterion.HAS_CHEMICAL_INFUSER)
-              .build(consumer, Mekanism.rl(basePath + "fusion_fuel"));
         //Hydrogen Chloride
         ChemicalInfuserRecipeBuilder.chemicalInfusing(
               GasStackIngredient.from(MekanismGases.HYDROGEN, 1),
@@ -1878,9 +1860,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         String basePath = "rotary/";
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.BRINE, MekanismFluids.BRINE, MekanismTags.Fluids.BRINE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.CHLORINE, MekanismFluids.CHLORINE, MekanismTags.Fluids.CHLORINE);
-        addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.DEUTERIUM, MekanismFluids.DEUTERIUM, MekanismTags.Fluids.DEUTERIUM);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.ETHENE, MekanismFluids.ETHENE, MekanismTags.Fluids.ETHENE);
-        addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.FUSION_FUEL, MekanismFluids.FUSION_FUEL, MekanismTags.Fluids.FUSION_FUEL);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.HYDROGEN, MekanismFluids.HYDROGEN, MekanismTags.Fluids.HYDROGEN);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.HYDROGEN_CHLORIDE, MekanismFluids.HYDROGEN_CHLORIDE, MekanismTags.Fluids.HYDROGEN_CHLORIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.LITHIUM, MekanismFluids.LITHIUM, MekanismTags.Fluids.LITHIUM);
@@ -1890,7 +1870,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFUR_DIOXIDE, MekanismFluids.SULFUR_DIOXIDE, MekanismTags.Fluids.SULFUR_DIOXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE, MekanismTags.Fluids.SULFUR_TRIOXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID, MekanismTags.Fluids.SULFURIC_ACID);
-        addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.TRITIUM, MekanismFluids.TRITIUM, MekanismTags.Fluids.TRITIUM);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.WATER_VAPOR, new IFluidProvider() {
             @Nonnull
             @Override
@@ -2073,14 +2052,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               MekanismGases.CHLORINE.getGasStack(1)
         ).addCriterion(Criterion.HAS_ELECTROLYTIC_SEPARATOR)
               .build(consumer, Mekanism.rl(basePath + "brine"));
-        //Heavy water
-        ElectrolysisRecipeBuilder.separating(
-              FluidStackIngredient.from(MekanismTags.Fluids.HEAVY_WATER, 2),
-              MekanismGases.DEUTERIUM.getGasStack(2),
-              MekanismGases.OXYGEN.getGasStack(1)
-        ).energyMultiplier(2)
-              .addCriterion(Criterion.HAS_ELECTROLYTIC_SEPARATOR)
-              .build(consumer, Mekanism.rl(basePath + "heavy_water"));
         //Water
         ElectrolysisRecipeBuilder.separating(
               FluidStackIngredient.from(FluidTags.WATER, 2),

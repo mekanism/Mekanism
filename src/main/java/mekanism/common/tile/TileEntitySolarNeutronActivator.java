@@ -8,7 +8,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.GasToGasCachedRecipe;
@@ -39,7 +38,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 
-public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IGasHandler, IActiveState, ITankManager,
+public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IActiveState, ITankManager,
       ITileCachedRecipeHolder<GasToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
@@ -70,7 +69,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this), RelativeSide.BOTTOM);
+        builder.addTank(inputTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), this), RelativeSide.BOTTOM);
         builder.addTank(outputTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.FRONT);
         return builder.build();
     }
@@ -117,10 +116,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
                 Mekanism.packetHandler.sendUpdatePacket(this);
             }
         }
-    }
-
-    private boolean isValidGas(@Nonnull Gas gas) {
-        return containsRecipe(recipe -> recipe.getInput().testType(gas));
     }
 
     @Nonnull
@@ -189,7 +184,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public Object[] getTanks() {
+    public Object[] getManagedTanks() {
         return new Object[]{inputTank, outputTank};
     }
 

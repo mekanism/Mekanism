@@ -8,13 +8,12 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class OutputHelper {
@@ -35,17 +34,17 @@ public class OutputHelper {
         };
     }
 
-    public static IOutputHandler<@NonNull FluidStack> getOutputHandler(@Nonnull IFluidHandler fluidHandler) {
+    public static IOutputHandler<@NonNull FluidStack> getOutputHandler(@Nonnull IExtendedFluidTank fluidTank) {
         return new IOutputHandler<@NonNull FluidStack>() {
 
             @Override
             public void handleOutput(@NonNull FluidStack toOutput, int operations) {
-                OutputHelper.handleOutput(fluidHandler, toOutput, operations);
+                OutputHelper.handleOutput(fluidTank, toOutput, operations);
             }
 
             @Override
             public int operationsRoomFor(@NonNull FluidStack toOutput, int currentMax) {
-                return OutputHelper.operationsRoomFor(fluidHandler, toOutput, currentMax);
+                return OutputHelper.operationsRoomFor(fluidTank, toOutput, currentMax);
             }
         };
     }
@@ -137,12 +136,12 @@ public class OutputHelper {
         tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static void handleOutput(@Nonnull IFluidHandler fluidHandler, @NonNull FluidStack toOutput, int operations) {
+    private static void handleOutput(@Nonnull IExtendedFluidTank fluidTank, @NonNull FluidStack toOutput, int operations) {
         if (operations == 0) {
             //This should not happen
             return;
         }
-        fluidHandler.fill(new FluidStack(toOutput, toOutput.getAmount() * operations), FluidAction.EXECUTE);
+        fluidTank.insert(new FluidStack(toOutput, toOutput.getAmount() * operations), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private static void handleOutput(@Nonnull IInventorySlot inventorySlot, @NonNull ItemStack toOutput, int operations) {
@@ -173,7 +172,7 @@ public class OutputHelper {
         return Math.min(amountUsed / toOutput.getAmount(), currentMax);
     }
 
-    private static int operationsRoomFor(@Nonnull IFluidHandler fluidHandler, @NonNull FluidStack toOutput, int currentMax) {
+    private static int operationsRoomFor(@Nonnull IExtendedFluidTank fluidTank, @NonNull FluidStack toOutput, int currentMax) {
         if (currentMax <= 0 || toOutput.isEmpty()) {
             //Short circuit that if we already can't perform any outputs or the output is empty treat it as being able to fit all
             return currentMax;
@@ -181,7 +180,8 @@ public class OutputHelper {
         //Copy the stack and make it be max size
         FluidStack maxOutput = new FluidStack(toOutput, Integer.MAX_VALUE);
         //Then simulate filling the fluid tank so we can see how much actually can fit
-        int amountUsed = fluidHandler.fill(maxOutput, FluidAction.SIMULATE);
+        FluidStack remainder = fluidTank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
+        int amountUsed = maxOutput.getAmount() - remainder.getAmount();
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
         return Math.min(amountUsed / toOutput.getAmount(), currentMax);
     }

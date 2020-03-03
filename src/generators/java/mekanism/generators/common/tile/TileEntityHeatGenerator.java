@@ -1,7 +1,5 @@
 package mekanism.generators.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -9,30 +7,24 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.RelativeSide;
-import mekanism.api.sustained.ISustainedData;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
+import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.FluidContainerUtils.FluidChecker;
 import mekanism.common.util.HeatUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -42,18 +34,15 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityHeatGenerator extends TileEntityGenerator implements IFluidHandlerWrapper, ISustainedData, IHeatTransfer {
+public class TileEntityHeatGenerator extends TileEntityGenerator implements IHeatTransfer {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getFuel", "getFuelNeeded"};
+    private static final int MAX_FLUID = 24_000;
     /**
      * The FluidTank for this generator.
      */
-    public FluidTank lavaTank = new FluidTank(24_000);
+    public BasicFluidTank lavaTank;
     private double temperature = 0;
     private double thermalEfficiency = 0.5D;
     private double invHeatCapacity = 1;
@@ -62,7 +51,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
 
-    private FuelInventorySlot fuelSlot;
+    private FluidFuelInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
 
     public TileEntityHeatGenerator() {
@@ -71,11 +60,21 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
 
     @Nonnull
     @Override
+    protected IFluidTankHolder getInitialFluidTanks() {
+        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        builder.addTank(lavaTank = BasicFluidTank.create(MAX_FLUID, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA), this), RelativeSide.LEFT,
+              RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        //TODO: See if this can be cleaned up/optimized
-        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(this::getFuel, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA), this, 17, 35),
-              RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        //Divide the burn time by 20 as that is the ratio of how much a bucket of lava would burn for
+        // Eventually we may want to grab the 20 dynamically in case some mod is changing the burn time of a lava bucket
+        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> ForgeHooks.getBurnTime(stack) / 20, size -> new FluidStack(Fluids.LAVA, size),
+              this, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.charge(this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
@@ -85,35 +84,12 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         super.onUpdate();
         if (!isRemote()) {
             energySlot.charge(this);
-            ItemStack fuelStack = fuelSlot.getStack();
-            if (!fuelStack.isEmpty()) {
-                //TODO: Do we want to at some point try to move this logic into the FuelSlot itself?
-                if (FluidContainerUtils.isFluidContainer(fuelStack)) {
-                    lavaTank.fill(FluidContainerUtils.extractFluid(lavaTank, fuelSlot, FluidChecker.check(Fluids.LAVA)), FluidAction.EXECUTE);
-                } else {
-                    int fuel = getFuel(fuelStack);
-                    if (fuel > 0) {
-                        int fuelNeeded = lavaTank.getSpace();
-                        if (fuel <= fuelNeeded) {
-                            lavaTank.fill(new FluidStack(Fluids.LAVA, fuel), FluidAction.EXECUTE);
-                            ItemStack containerItem = fuelStack.getItem().getContainerItem(fuelStack);
-                            if (!containerItem.isEmpty()) {
-                                fuelSlot.setStack(containerItem);
-                            } else {
-                                if (fuelSlot.shrinkStack(1, Action.EXECUTE) != 1) {
-                                    //TODO: Print error that something went wrong
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
+            fuelSlot.fillOrBurn();
             double prev = getEnergy();
             transferHeatTo(getBoost());
             if (canOperate()) {
                 setActive(true);
-                lavaTank.drain(10, FluidAction.EXECUTE);
+                lavaTank.extract(10, Action.EXECUTE, AutomationType.INTERNAL);
                 transferHeatTo(MekanismGeneratorsConfig.generators.heatGeneration.get());
             } else {
                 setActive(false);
@@ -130,24 +106,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     @Override
     public boolean canOperate() {
         return getEnergy() < getBaseStorage() && lavaTank.getFluidAmount() >= 10 && MekanismUtils.canFunction(this);
-    }
-
-    @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        if (nbtTags.contains("lavaTank")) {
-            lavaTank.readFromNBT(nbtTags.getCompound("lavaTank"));
-        }
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        if (!lavaTank.isEmpty()) {
-            nbtTags.put("lavaTank", lavaTank.writeToNBT(new CompoundNBT()));
-        }
-        return nbtTags;
     }
 
     private double getBoost() {
@@ -171,10 +129,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         return world != null && world.getFluidState(pos).isTagged(FluidTags.LAVA);
     }
 
-    private int getFuel(ItemStack stack) {
-        return ForgeHooks.getBurnTime(stack) / 2;
-    }
-
     @Override
     public String[] getMethods() {
         return methods;
@@ -194,52 +148,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
             case 4:
                 return new Object[]{lavaTank.getFluidAmount()};
             case 5:
-                return new Object[]{lavaTank.getSpace()};
+                return new Object[]{lavaTank.getNeeded()};
             default:
                 throw new NoSuchMethodException();
         }
-    }
-
-    @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        return lavaTank.fill(resource, fluidAction);
-    }
-
-    @Override
-    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return fluid.getFluid().equals(Fluids.LAVA) && from != getDirection();
-    }
-
-    @Override
-    public IFluidTank[] getTankInfo(Direction from) {
-        if (from == getDirection()) {
-            return PipeUtils.EMPTY;
-        }
-        return new IFluidTank[]{lavaTank};
-    }
-
-    @Override
-    public IFluidTank[] getAllTanks() {
-        return getTankInfo(null);
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        if (!lavaTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "lavaTank", lavaTank.getFluid().writeToNBT(new CompoundNBT()));
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        lavaTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "lavaTank")));
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("lavaTank", "lavaTank");
-        return remap;
     }
 
     @Override
@@ -278,7 +190,6 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
     public double applyTemperatureChange() {
         temperature += invHeatCapacity * heatToAbsorb;
         heatToAbsorb = 0;
-
         return temperature;
     }
 
@@ -295,14 +206,21 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         return null;
     }
 
+    @Override
+    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
+        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY && side == Direction.DOWN) {
+            return true;
+        }
+        return super.isCapabilityDisabled(capability, side);
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY && side == Direction.DOWN) {
+        if (isCapabilityDisabled(capability, side)) {
+            return LazyOptional.empty();
+        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY && side != getDirection()) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
         }
         return super.getCapability(capability, side);
     }
@@ -330,6 +248,5 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IFlu
         container.track(SyncableDouble.create(this::getProducingEnergy, value -> producingEnergy = value));
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
-        container.track(SyncableFluidStack.create(lavaTank));
     }
 }

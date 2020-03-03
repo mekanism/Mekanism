@@ -45,7 +45,7 @@ import net.minecraftforge.eventbus.api.Event;
 public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack> implements IMekanismGasHandler {
 
     private final List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
-    public final NetworkTank gasTank;
+    public final NetworkGasTank gasTank;
 
     private int transferDelay = 0;
 
@@ -57,7 +57,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
     private int prevTransferAmount;
 
     public GasNetwork() {
-        gasTank = new NetworkTank();
+        gasTank = new NetworkGasTank();
         gasTanks = Collections.singletonList(gasTank);
     }
 
@@ -294,9 +294,9 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         //TODO: Do we want to mark the network as dirty
     }
 
-    public class NetworkTank extends BasicGasTank {
+    public class NetworkGasTank extends BasicGasTank {
 
-        protected NetworkTank() {
+        protected NetworkGasTank() {
             super(GasNetwork.this.getCapacity(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, GasNetwork.this);
         }
 

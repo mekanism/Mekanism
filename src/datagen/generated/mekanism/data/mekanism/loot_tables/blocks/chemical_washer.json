@@ -27,11 +27,6 @@
                   "op": "replace"
                 },
                 {
-                  "source": "leftTank",
-                  "target": "mekData.fluidTank",
-                  "op": "replace"
-                },
-                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"
@@ -39,6 +34,11 @@
                 {
                   "source": "GasTanks",
                   "target": "mekData.GasTanks",
+                  "op": "replace"
+                },
+                {
+                  "source": "FluidTanks",
+                  "target": "mekData.FluidTanks",
                   "op": "replace"
                 },
                 {

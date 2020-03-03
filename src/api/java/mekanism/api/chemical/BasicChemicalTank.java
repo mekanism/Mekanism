@@ -165,7 +165,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             return 0;
         } else if (amount <= 0) {
             if (action.execute()) {
-                setStack(getEmptyStack());
+                setEmpty();
             }
             return 0;
         }

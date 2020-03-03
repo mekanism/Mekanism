@@ -2,18 +2,20 @@ package mekanism.common.content.tank;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.base.ContainerEditMode;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityDynamicTank;
-import mekanism.common.util.FluidContainerUtils.ContainerEditMode;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -33,16 +35,18 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
 
     @Nonnull
     private List<IInventorySlot> inventorySlots;
+    public List<IExtendedFluidTank> fluidTanks;
 
     public SynchronizedTankData(TileEntityDynamicTank tile) {
         fluidTank = new DynamicFluidTank(tile);
+        fluidTanks = Collections.singletonList(fluidTank);
         inventorySlots = createBaseInventorySlots();
     }
 
     private List<IInventorySlot> createBaseInventorySlots() {
         List<IInventorySlot> inventorySlots = new ArrayList<>();
         FluidInventorySlot input;
-        inventorySlots.add(input = FluidInventorySlot.input(fluidTank, fluid -> true, this, 146, 20));
+        inventorySlots.add(input = FluidInventorySlot.input(fluidTank, this, 146, 20));
         inventorySlots.add(OutputInventorySlot.at(this, 146, 51));
         input.setSlotType(ContainerSlotType.INPUT);
         return inventorySlots;

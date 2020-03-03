@@ -37,8 +37,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                         return false;
                     }
                 }
-                //Only allow extraction if our item is out of chemical
-                return true;
+                //Only allow extraction if our item is out of chemical, and doesn't have a valid conversion for it
             }
             //Always allow extraction if something went horribly wrong and we are not a chemical item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
@@ -120,11 +119,6 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     protected final Supplier<World> worldSupplier;
     protected final IChemicalTank<CHEMICAL, STACK> chemicalTank;
 
-    protected ChemicalInventorySlot(IChemicalTank<CHEMICAL, STACK> chemicalTank, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
-          Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
-        this(chemicalTank, () -> null, canExtract, canInsert, validator, inventory, x, y);
-    }
-
     protected ChemicalInventorySlot(IChemicalTank<CHEMICAL, STACK> chemicalTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IMekanismInventory inventory, int x, int y) {
         super(canExtract, canInsert, validator, inventory, x, y);
@@ -159,7 +153,6 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                         if (shrinkStack(amountUsed, Action.EXECUTE) != amountUsed) {
                             //TODO: Print warning/error
                         }
-                        onContentsChanged();
                     }
                 }
             }

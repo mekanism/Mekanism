@@ -6,11 +6,10 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public class InputHelper {
 
@@ -120,12 +119,12 @@ public class InputHelper {
         };
     }
 
-    public static IInputHandler<@NonNull FluidStack> getInputHandler(@Nonnull IFluidHandler fluidHandler, int tank) {
+    public static IInputHandler<@NonNull FluidStack> getInputHandler(@Nonnull IExtendedFluidTank fluidTank) {
         return new IInputHandler<@NonNull FluidStack>() {
 
             @Override
             public @NonNull FluidStack getInput() {
-                return fluidHandler.getFluidInTank(tank);
+                return fluidTank.getFluid();
             }
 
             @Override
@@ -149,11 +148,12 @@ public class InputHelper {
                     return;
                 }
                 FluidStack inputFluid = getInput();
-                if (inputFluid.isEmpty()) {
-                    //Something went wrong, this if should never really be true if we got to finishProcessing
-                    return;
+                if (!inputFluid.isEmpty()) {
+                    int amount = recipeInput.getAmount() * operations;
+                    if (fluidTank.shrinkStack(amount, Action.EXECUTE) != amount) {
+                        //TODO: Print error/warning that something went wrong
+                    }
                 }
-                fluidHandler.drain(new FluidStack(recipeInput, recipeInput.getAmount() * operations), FluidAction.EXECUTE);
             }
 
             @Override

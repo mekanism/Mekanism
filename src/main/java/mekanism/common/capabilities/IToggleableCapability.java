@@ -12,8 +12,7 @@ import net.minecraftforge.common.util.LazyOptional;
  * enabled.
  */
 public interface IToggleableCapability extends ICapabilityProvider {
-    //TODO: Decide if this should be used in all mekanism tiles??
-    // Benefits would be that extending can easily make it so things can be disabled in the future
+    //TODO: Do we want this to use RelativeSide rather than Direction?
 
     /**
      * Checks if a given capability is disabled for this provider on the given side. If false is returned it makes makes no guarantees that the capability is provided.

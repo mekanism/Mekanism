@@ -12,6 +12,8 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.TransmissionType;
@@ -39,8 +41,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class TileComponentEjector implements ITileComponent {
 
@@ -110,11 +110,10 @@ public class TileComponentEjector implements ITileComponent {
         }
     }
 
-    private void ejectFluid(Set<Direction> outputSides, FluidTank tank) {
+    private void ejectFluid(Set<Direction> outputSides, IExtendedFluidTank tank) {
         if (!tank.isEmpty()) {
             FluidStack toEmit = new FluidStack(tank.getFluid(), Math.min(FLUID_OUTPUT, tank.getFluidAmount()));
-            int emit = PipeUtils.emit(outputSides, toEmit, tile);
-            tank.drain(emit, FluidAction.EXECUTE);
+            tank.extract(PipeUtils.emit(outputSides, toEmit, tile), Action.EXECUTE, AutomationType.INTERNAL);
         }
     }
 

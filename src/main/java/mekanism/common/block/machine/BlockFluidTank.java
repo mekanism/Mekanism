@@ -3,12 +3,14 @@ package mekanism.common.block.machine;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.block.IColoredBlock;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.MekanismLang;
@@ -163,42 +165,40 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
                             player.dropItem(container, false, true);
                             itemStack.shrink(1);
                         }
-                        //Note: if our FluidTank is creative it has a special FluidTank impl that will not actually drain it
-                        tile.fluidTank.drain(filled, FluidAction.EXECUTE);
+                        tile.fluidTank.extract(filled, Action.EXECUTE, AutomationType.MANUAL);
                         return true;
                     }
                 }
-            } else if (tile.fluidTank.isEmpty() || tile.fluidTank.getFluid().isFluidEqual(fluidInItem)) {
-                boolean filled = false;
-                int needed = tile.getCurrentNeeded();
-                FluidStack drained = handler.drain(needed, player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
-                ItemStack container = handler.getContainer();
-                if (!drained.isEmpty()) {
-                    if (player.isCreative()) {
-                        filled = true;
-                    } else if (!container.isEmpty()) {
-                        if (container.getCount() == 1) {
-                            player.setHeldItem(hand, container);
+            } else {
+                FluidStack simulatedRemainder = tile.fluidTank.insert(fluidInItem, Action.SIMULATE, AutomationType.MANUAL);
+                int remainder = simulatedRemainder.getAmount();
+                int storedAmount = fluidInItem.getAmount();
+                if (remainder < storedAmount) {
+                    boolean filled = false;
+                    FluidStack drained = handler.drain(new FluidStack(fluidInItem, storedAmount - remainder), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
+                    if (!drained.isEmpty()) {
+                        ItemStack container = handler.getContainer();
+                        if (player.isCreative()) {
                             filled = true;
-                        } else if (player.inventory.addItemStackToInventory(container)) {
+                        } else if (!container.isEmpty()) {
+                            if (container.getCount() == 1) {
+                                player.setHeldItem(hand, container);
+                                filled = true;
+                            } else if (player.inventory.addItemStackToInventory(container)) {
+                                itemStack.shrink(1);
+                                filled = true;
+                            }
+                        } else {
                             itemStack.shrink(1);
+                            if (itemStack.isEmpty()) {
+                                player.setHeldItem(hand, ItemStack.EMPTY);
+                            }
                             filled = true;
                         }
-                    } else {
-                        itemStack.shrink(1);
-                        if (itemStack.isEmpty()) {
-                            player.setHeldItem(hand, ItemStack.EMPTY);
+                        if (filled) {
+                            tile.fluidTank.insert(drained, Action.EXECUTE, AutomationType.MANUAL);
+                            return true;
                         }
-                        filled = true;
-                    }
-                    if (filled) {
-                        int toFill = Math.min(tile.fluidTank.getSpace(), drained.getAmount());
-                        //Note: if our FluidTank is creative it has a special FluidTank impl that will properly handle modifying the contents
-                        tile.fluidTank.fill(new FluidStack(drained, toFill), FluidAction.EXECUTE);
-                        if (drained.getAmount() - toFill > 0) {
-                            tile.pushUp(new FluidStack(fluidInItem, drained.getAmount() - toFill), FluidAction.EXECUTE);
-                        }
-                        return true;
                     }
                 }
             }

@@ -250,7 +250,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     }
 
     @Override
-    public boolean handleInventory() {
+    public boolean persistInventory() {
         return false;
     }
 

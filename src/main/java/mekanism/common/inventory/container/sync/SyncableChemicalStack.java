@@ -51,7 +51,7 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
             //Make sure to copy it in case our infusion stack object is the same object so would be getting modified
             // only do so though if it is dirty, as we don't need to spam object creation
             this.lastKnownValue = value.copy();
-            return !sameType ? DirtyType.DIRTY : DirtyType.SIZE;
+            return sameType ? DirtyType.SIZE : DirtyType.DIRTY;
         }
         return DirtyType.CLEAN;
     }

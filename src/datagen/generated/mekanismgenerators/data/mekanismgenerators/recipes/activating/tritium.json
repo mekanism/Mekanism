@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:activating",
+  "input": {
+    "amount": 1,
+    "gas": "mekanism:lithium"
+  },
+  "output": {
+    "gas": "mekanismgenerators:tritium",
+    "amount": 1
+  }
+}

@@ -7,7 +7,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.lang.BaseLanguageProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -15,11 +14,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
-import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.BucketItem;
-import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
-import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
 public class MekanismLangProvider extends BaseLanguageProvider {
 
@@ -233,9 +228,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addFluid(MekanismFluids.ETHENE, "Liquid Ethylene");
         addFluid(MekanismFluids.SODIUM, "Liquid Sodium");
         addFluid(MekanismFluids.BRINE, "Brine");
-        addFluid(MekanismFluids.DEUTERIUM, "Liquid Deuterium");
-        addFluid(MekanismFluids.TRITIUM, "Liquid Tritium");
-        addFluid(MekanismFluids.FUSION_FUEL, "Liquid D-T Fuel");
         addFluid(MekanismFluids.LITHIUM, "Liquid Lithium");
         addFluid(MekanismFluids.STEAM, "Liquid Steam");
         addFluid(MekanismFluids.HEAVY_WATER, "Heavy Water");
@@ -259,9 +251,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.ETHENE, "Ethylene");
         add(MekanismGases.SODIUM, "Sodium");
         add(MekanismGases.BRINE, "Gaseous Brine");
-        add(MekanismGases.DEUTERIUM, "Deuterium");
-        add(MekanismGases.TRITIUM, "Tritium");
-        add(MekanismGases.FUSION_FUEL, "D-T Fuel");
         add(MekanismGases.LITHIUM, "Lithium");
         add(MekanismGases.LIQUID_OSMIUM, "Liquid Osmium");
         //Slurry
@@ -389,6 +378,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.VOLUME, "Volume: %s");
         add(MekanismLang.NO_FLUID, "No fluid");
         add(MekanismLang.GAS, "Gas: %s");
+        add(MekanismLang.INFUSE_TYPE, "Infuse Type: %s");
         add(MekanismLang.UNIT, "Unit: %s");
         add(MekanismLang.USING, "Using: %s/t");
         add(MekanismLang.NEEDED, "Needed: %s");
@@ -857,13 +847,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, IItemProvider creative, String name) {
         addTiered(basic, advanced, elite, ultimate, name);
         add(creative, "Creative " + name);
-    }
-
-    private void addFluid(FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO, String name) {
-        add(fluidRO.getStillFluid().getAttributes().getTranslationKey(), name);
-        add(fluidRO.getFlowingFluid().getAttributes().getTranslationKey(), "Flowing " + name);
-        add(fluidRO.getBlock(), name);
-        add(fluidRO.getBucket(), name + " Bucket");
     }
 
     private void addSlurry(SlurryRegistryObject<Slurry, Slurry> slurryRO, String name) {

@@ -8,7 +8,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalInfuserCachedRecipe;
@@ -34,7 +33,7 @@ import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 
-public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGasHandler, ITankManager, ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
+public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<ChemicalInfuserRecipe> {
 
     public static final int MAX_GAS = 10_000;
     public BasicGasTank leftTank;
@@ -72,6 +71,10 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         return builder.build();
     }
 
+    private boolean isValidGas(@Nonnull Gas gas) {
+        return containsRecipe(recipe -> recipe.getLeftInput().testType(gas) || recipe.getRightInput().testType(gas));
+    }
+
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
@@ -88,10 +91,6 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
         outputSlot.setSlotType(ContainerSlotType.OUTPUT);
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
-    }
-
-    public boolean isValidGas(@Nonnull Gas gas) {
-        return containsRecipe(recipe -> recipe.getLeftInput().testType(gas) || recipe.getRightInput().testType(gas));
     }
 
     @Override
@@ -156,7 +155,7 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements IGa
     }
 
     @Override
-    public Object[] getTanks() {
+    public Object[] getManagedTanks() {
         return new Object[]{leftTank, rightTank, centerTank};
     }
 

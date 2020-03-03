@@ -1,6 +1,7 @@
 package mekanism.common.content.tank;
 
 import java.util.List;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.block.basic.BlockDynamicTank;
@@ -15,7 +16,6 @@ import mekanism.common.util.StackUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fluids.FluidStack;
 
 public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
 
@@ -67,8 +67,7 @@ public class TankUpdateProtocol extends UpdateProtocol<SynchronizedTankData> {
     protected void onFormed() {
         super.onFormed();
         if (!structureFound.fluidTank.isEmpty()) {
-            FluidStack fluid = structureFound.fluidTank.getFluid();
-            structureFound.fluidTank.setFluid(new FluidStack(fluid, Math.min(fluid.getAmount(), structureFound.volume * FLUID_PER_TANK)));
+            structureFound.fluidTank.setStackSize(Math.min(structureFound.fluidTank.getFluidAmount(), structureFound.volume * FLUID_PER_TANK), Action.EXECUTE);
         }
     }
 

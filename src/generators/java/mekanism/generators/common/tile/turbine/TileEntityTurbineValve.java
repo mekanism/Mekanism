@@ -1,32 +1,26 @@
 package mekanism.generators.common.tile.turbine;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
-import mekanism.common.base.FluidHandlerWrapper;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.base.IEnergyWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityWrapperManager;
 import mekanism.common.integration.computer.IComputerIntegration;
 import mekanism.common.integration.forgeenergy.ForgeEnergyIntegration;
-import mekanism.common.registries.MekanismFluids;
-import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IFluidHandlerWrapper, IEnergyWrapper, IComputerIntegration {
+public class TileEntityTurbineValve extends TileEntityTurbineCasing implements IEnergyWrapper, IComputerIntegration {
 
     private static final String[] methods = new String[]{"isFormed", "getSteam", "getFlowRate", "getMaxFlow", "getSteamInput"};
     private CapabilityWrapperManager<IEnergyWrapper, ForgeEnergyIntegration> forgeEnergyManager = new CapabilityWrapperManager<>(IEnergyWrapper.class, ForgeEnergyIntegration.class);
@@ -78,33 +72,24 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public IFluidTank[] getTankInfo(Direction from) {
-        return ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) ? new IFluidTank[]{structure.fluidTank} : PipeUtils.EMPTY;
+    public boolean canHandleFluid() {
+        //Mark that we can handle fluid
+        return true;
     }
 
     @Override
-    public IFluidTank[] getAllTanks() {
-        return getTankInfo(null);
+    public boolean persistFluid() {
+        //But that we do not handle fluid when it comes to syncing it/saving this tile to disk
+        return false;
     }
 
+    @Nonnull
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        if (structure == null) {
-            return 0;
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        if (!canHandleFluid() || structure == null) {
+            return Collections.emptyList();
         }
-        int filled = structure.fluidTank.fill(resource, fluidAction);
-        if (fluidAction.execute()) {
-            structure.newSteamInput += filled;
-        }
-        if (filled < structure.getFluidCapacity() && structure.dumpMode != GasMode.IDLE) {
-            filled = Math.min(structure.getFluidCapacity(), resource.getAmount());
-        }
-        return filled;
-    }
-
-    @Override
-    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        return MekanismFluids.STEAM.fluidMatches(fluid) && ((!isRemote() && structure != null) || (isRemote() && clientHasStructure));
+        return structure.fluidTanks;
     }
 
     @Override
@@ -145,9 +130,6 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
             }
             if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
                 return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-            }
-            if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-                return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
             }
             if (capability == CapabilityEnergy.ENERGY) {
                 return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, getDirection())));

@@ -12,10 +12,11 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.RateLimitGasHandler;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.registries.GeneratorsGases;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -84,13 +85,13 @@ public class ItemHohlraum extends Item {
     public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemGroup(group, items);
         if (isInGroup(group)) {
-            items.add(GasUtils.getFilledVariant(new ItemStack(this), MAX_GAS, MekanismGases.FUSION_FUEL));
+            items.add(GasUtils.getFilledVariant(new ItemStack(this), MAX_GAS, GeneratorsGases.FUSION_FUEL));
         }
     }
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> MAX_GAS, BasicGasTank.manualOnly, BasicGasTank.alwaysTrueBi,
-              gas -> gas == MekanismGases.FUSION_FUEL.getGas()));
+              gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
     }
 }

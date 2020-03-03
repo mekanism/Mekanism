@@ -6,7 +6,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.common.FuelHandler;
 import mekanism.common.FuelHandler.FuelGas;
@@ -24,7 +23,7 @@ import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 
-public class TileEntityGasGenerator extends TileEntityGenerator implements IGasHandler {
+public class TileEntityGasGenerator extends TileEntityGenerator {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getGas", "getGasNeeded"};
     /**

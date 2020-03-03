@@ -2,11 +2,20 @@ package mekanism.generators.common.content.turbine;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.inventory.AutomationType;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.fluid.MultiblockFluidTank;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
+import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import net.minecraft.tags.FluidTags;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbineData> {
@@ -14,7 +23,11 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static Object2FloatMap<String> clientRotationMap = new Object2FloatOpenHashMap<>();
 
-    public TurbineFluidTank fluidTank;
+    public MultiblockFluidTank<TileEntityTurbineCasing> fluidTank;
+    public List<IExtendedFluidTank> fluidTanks;
+
+    public IExtendedFluidTank ventTank;
+    public List<IExtendedFluidTank> ventTanks;
 
     @Nonnull
     public FluidStack prevFluid = FluidStack.EMPTY;
@@ -35,14 +48,16 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
     public int lastSteamInput;
     public int newSteamInput;
 
-    public int flowRemaining;
-
     public int clientDispersers;
     public int clientFlow;
     public float clientRotation;
 
     public SynchronizedTurbineData(TileEntityTurbineCasing tile) {
-        fluidTank = new TurbineFluidTank(tile);
+        fluidTanks = Collections.singletonList(fluidTank = new TurbineFluidTank(tile));
+        ventTank = VariableCapacityFluidTank.create(() -> tile.structure == null ? 1_000 : tile.structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get(),
+              (stack, automationType) -> automationType != AutomationType.EXTERNAL || tile.structure != null, BasicFluidTank.internalOnly,
+              fluid -> fluid.getFluid().isIn(FluidTags.WATER), null);
+        ventTanks = Collections.singletonList(ventTank);
     }
 
     public int getDispersers() {
@@ -61,9 +76,6 @@ public class SynchronizedTurbineData extends SynchronizedData<SynchronizedTurbin
         if ((fluidTank.isEmpty() && !prevFluid.isEmpty()) || (!fluidTank.isEmpty() && prevFluid.isEmpty())) {
             return true;
         }
-        if (!fluidTank.isEmpty()) {
-            return !fluidTank.getFluid().isFluidEqual(prevFluid) || fluidTank.getFluidAmount() != prevFluid.getAmount();
-        }
-        return false;
+        return !fluidTank.isEmpty() && (!fluidTank.isFluidEqual(prevFluid) || fluidTank.getFluidAmount() != prevFluid.getAmount());
     }
 }

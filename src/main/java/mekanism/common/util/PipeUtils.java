@@ -11,14 +11,11 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 public final class PipeUtils {
-
-    public static final IFluidTank[] EMPTY = new IFluidTank[]{};
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
         if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {
@@ -78,12 +75,6 @@ public final class PipeUtils {
     }
 
     public static boolean canFill(IFluidHandler handler, @Nonnull FluidStack stack) {
-        //TODO: Check this
         return handler.fill(stack, FluidAction.SIMULATE) > 0;
-    }
-
-    public static boolean canDrain(IFluidHandler handler, @Nonnull FluidStack stack) {
-        //TODO: Check this
-        return !handler.drain(stack, FluidAction.SIMULATE).isEmpty();
     }
 }

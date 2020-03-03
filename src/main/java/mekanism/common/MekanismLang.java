@@ -92,6 +92,7 @@ public enum MekanismLang implements ILangEntry {
     VOLUME("gui", "volume"),
     NO_FLUID("gui", "no_fluid"),
     GAS("gui", "gas"),
+    INFUSE_TYPE("gui", "infuse_type"),
     UNIT("gui", "unit"),
     USING("gui", "using"),
     NEEDED("gui", "needed"),

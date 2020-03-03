@@ -42,7 +42,8 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Override
     protected IChemicalTankHolder<InfuseType, InfusionStack> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
-        builder.addTank(infusionTank = BasicInfusionTank.input(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes, this::isValidInfusion, this));
+        builder.addTank(infusionTank = BasicInfusionTank.input(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes,
+              type ->  containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this));
         return builder.build();
     }
 
@@ -110,10 +111,6 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
             updateCachedRecipe(newCachedRecipe, process);
         }
         return true;
-    }
-
-    private boolean isValidInfusion(@Nonnull InfuseType type) {
-        return containsRecipe(recipe -> recipe.getInfusionInput().testType(type));
     }
 
     @Override

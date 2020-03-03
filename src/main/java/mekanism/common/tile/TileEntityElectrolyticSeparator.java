@@ -1,8 +1,6 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.EnumSet;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -13,7 +11,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
@@ -21,12 +18,12 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.api.sustained.ISustainedData;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.IComputerIntegration;
@@ -34,7 +31,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
@@ -44,31 +40,23 @@ import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements IFluidHandlerWrapper, IComputerIntegration, ISustainedData, IGasHandler,
-      ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe> {
+public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements IComputerIntegration, ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe> {
 
     private static final String[] methods = new String[]{"getEnergy", "getOutput", "getMaxEnergy", "getEnergyNeeded", "getWater", "getWaterNeeded", "getHydrogen",
                                                          "getHydrogenNeeded", "getOxygen", "getOxygenNeeded"};
     /**
      * This separator's water slot.
      */
-    public FluidTank fluidTank;
+    public BasicFluidTank fluidTank;
     /**
      * The maximum amount of gas this block can store.
      */
@@ -106,14 +94,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
 
     public TileEntityElectrolyticSeparator() {
         super(MekanismBlocks.ELECTROLYTIC_SEPARATOR);
-
-        inputHandler = InputHelper.getInputHandler(fluidTank, 0);
+        inputHandler = InputHelper.getInputHandler(fluidTank);
         outputHandler = OutputHelper.getOutputHandler(leftTank, rightTank);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        fluidTank = new FluidTank(24_000);
+    protected IFluidTankHolder getInitialFluidTanks() {
+        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        builder.addTank(fluidTank = BasicFluidTank.input(24_000, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this), RelativeSide.FRONT);
+        return builder.build();
     }
 
     @Nonnull
@@ -129,12 +119,10 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this, 26, 35),
-              RelativeSide.FRONT);
+        builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 26, 35), RelativeSide.FRONT);
         builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, this, 59, 52), RelativeSide.LEFT);
         builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, this, 101, 52), RelativeSide.RIGHT);
-        //TODO: Make accessible for automation
-        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.discharge(this, 143, 35), RelativeSide.BACK);
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         leftOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
         rightOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -238,17 +226,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
             } else if (type == 1) {
                 dumpRight = dumpRight.getNext();
             }
-            return;
+        } else {
+            super.handlePacketData(dataStream);
         }
-        super.handlePacketData(dataStream);
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("fluidTank")) {
-            fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
-        }
         dumpLeft = GasMode.byIndexStatic(nbtTags.getInt("dumpLeft"));
         dumpRight = GasMode.byIndexStatic(nbtTags.getInt("dumpRight"));
     }
@@ -257,9 +242,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (!fluidTank.isEmpty()) {
-            nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
-        }
         nbtTags.putInt("dumpLeft", dumpLeft.ordinal());
         nbtTags.putInt("dumpRight", dumpRight.ordinal());
         return nbtTags;
@@ -284,7 +266,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
             case 4:
                 return new Object[]{fluidTank.getFluidAmount()};
             case 5:
-                return new Object[]{fluidTank.getSpace()};
+                return new Object[]{fluidTank.getNeeded()};
             case 6:
                 return new Object[]{leftTank.getStored()};
             case 7:
@@ -299,63 +281,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     }
 
     @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        if (!fluidTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "fluidTank", fluidTank.getFluid().writeToNBT(new CompoundNBT()));
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        fluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "fluidTank")));
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("fluidTank", "fluidTank");
-        return remap;
-    }
-
-    @Override
-    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        FluidStack currentFluid = fluidTank.getFluid();
-        if (currentFluid.isEmpty()) {
-            //If we don't have a fluid currently stored, then check if the fluid wanting to be input is valid for this machine
-            return containsRecipe(recipe -> recipe.getInput().testType(fluid));
-        }
-        //Otherwise return true if the fluid is the same as the one we already have stored
-        return currentFluid.isFluidEqual(fluid);
-    }
-
-    @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        return fluidTank.fill(resource, fluidAction);
-    }
-
-    @Override
-    public IFluidTank[] getTankInfo(Direction from) {
-        return new IFluidTank[]{fluidTank};
-    }
-
-    @Override
-    public IFluidTank[] getAllTanks() {
-        return getTankInfo(null);
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //TODO: Make this just check the specific sides I think it is a shorter list?
@@ -365,7 +290,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     }
 
     @Override
-    public Object[] getTanks() {
+    public Object[] getManagedTanks() {
         return new Object[]{fluidTank, leftTank, rightTank};
     }
 
@@ -387,7 +312,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFluidStack.create(fluidTank));
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpLeft, value -> dumpLeft = value));
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpRight, value -> dumpRight = value));
         container.track(SyncableDouble.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));

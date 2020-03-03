@@ -1,7 +1,5 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -10,7 +8,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
@@ -18,17 +15,15 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.api.sustained.ISustainedData;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
+import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -41,31 +36,21 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.GasSlotInfo;
-import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityBasicMachine;
-import mekanism.common.util.FluidContainerUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine<PressurizedReactionRecipe> implements IFluidHandlerWrapper, IGasHandler, ISustainedData,
-      ITankManager {
+public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine<PressurizedReactionRecipe> implements ITankManager {
 
     private static final String[] methods = new String[]{"getEnergy", "getProgress", "isActive", "facing", "canOperate", "getMaxEnergy", "getEnergyNeeded",
                                                          "getFluidStored", "getGasStored"};
     private static final int MAX_GAS = 10_000;
-    public FluidTank inputFluidTank;
+    public BasicFluidTank inputFluidTank;
     public BasicGasTank inputGasTank;
     public BasicGasTank outputGasTank;
 
@@ -123,14 +108,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         ejectorComponent.setOutputData(TransmissionType.GAS, gasConfig);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
-        fluidInputHandler = InputHelper.getInputHandler(inputFluidTank, 0);
+        fluidInputHandler = InputHelper.getInputHandler(inputFluidTank);
         gasInputHandler = InputHelper.getInputHandler(inputGasTank);
         outputHandler = OutputHelper.getOutputHandler(outputGasTank, outputSlot);
-    }
-
-    @Override
-    protected void presetVariables() {
-        inputFluidTank = new FluidTank(10_000);
     }
 
     @Nonnull
@@ -139,6 +119,14 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputGasTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getInputGas().testType(gas)), this));
         builder.addTank(outputGasTank = BasicGasTank.output(MAX_GAS, this));
+        return builder.build();
+    }
+
+    @Nonnull
+    @Override
+    protected IFluidTankHolder getInitialFluidTanks() {
+        FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addTank(inputFluidTank = BasicFluidTank.input(10_000, fluid -> containsRecipe(recipe -> recipe.getInputFluid().testType(fluid)), this));
         return builder.build();
     }
 
@@ -213,20 +201,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-        inputFluidTank.readFromNBT(nbtTags.getCompound("inputFluidTank"));
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.put("inputFluidTank", inputFluidTank.writeToNBT(new CompoundNBT()));
-        return nbtTags;
-    }
-
-    @Override
     public String[] getMethods() {
         return methods;
     }
@@ -259,78 +233,12 @@ public class TileEntityPressurizedReactionChamber extends TileEntityBasicMachine
     }
 
     @Override
-    public int fill(Direction from, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        return inputFluidTank.fill(resource, fluidAction);
-    }
-
-    @Override
-    public boolean canFill(Direction from, @Nonnull FluidStack fluid) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
-        if (slotInfo instanceof FluidSlotInfo) {
-            FluidSlotInfo fluidSlotInfo = (FluidSlotInfo) slotInfo;
-            return fluidSlotInfo.canInput() && fluidSlotInfo.hasTank(inputFluidTank) && FluidContainerUtils.canFill(inputFluidTank.getFluid(), fluid);
-        }
-        return false;
-    }
-
-    @Override
-    public IFluidTank[] getTankInfo(Direction from) {
-        ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.FLUID, from);
-        if (slotInfo instanceof FluidSlotInfo) {
-            return ((FluidSlotInfo) slotInfo).getTankInfo();
-        }
-        return new IFluidTank[0];
-    }
-
-    @Override
-    public IFluidTank[] getAllTanks() {
-        return new IFluidTank[]{inputFluidTank};
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
-        }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        if (!inputFluidTank.isEmpty()) {
-            ItemDataUtils.setCompound(itemStack, "inputFluidTank", inputFluidTank.getFluid().writeToNBT(new CompoundNBT()));
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        inputFluidTank.setFluid(FluidStack.loadFluidStackFromNBT(ItemDataUtils.getCompound(itemStack, "inputFluidTank")));
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("inputFluidTank", "inputFluidTank");
-        return remap;
-    }
-
-    @Override
-    public Object[] getTanks() {
+    public Object[] getManagedTanks() {
         return new Object[]{inputFluidTank, inputGasTank, outputGasTank};
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableFluidStack.create(inputFluidTank));
     }
 }

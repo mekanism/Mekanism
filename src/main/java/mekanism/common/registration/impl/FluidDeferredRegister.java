@@ -1,5 +1,7 @@
 package mekanism.common.registration.impl;
 
+import java.util.function.UnaryOperator;
+import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
@@ -10,6 +12,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
@@ -30,6 +33,10 @@ public class FluidDeferredRegister {
         blockRegister = new DeferredRegister<>(ForgeRegistries.BLOCKS, modid);
         fluidRegister = new DeferredRegister<>(ForgeRegistries.FLUIDS, modid);
         itemRegister = new DeferredRegister<>(ForgeRegistries.ITEMS, modid);
+    }
+
+    public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> register(String name, UnaryOperator<Builder> fluidAttributes) {
+        return register(name, fluidAttributes.apply(FluidAttributes.builder(Mekanism.rl("block/liquid/liquid"), Mekanism.rl("block/liquid/liquid_flow"))));
     }
 
     public FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> register(String name, FluidAttributes.Builder builder) {

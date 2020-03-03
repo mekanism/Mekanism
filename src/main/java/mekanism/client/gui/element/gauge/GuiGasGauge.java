@@ -1,7 +1,8 @@
 package mekanism.client.gui.element.gauge;
 
-import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -10,7 +11,7 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiGasGauge extends GuiTankGauge<Gas, BasicGasTank> {
+public class GuiGasGauge extends GuiTankGauge<Gas, IChemicalTank<Gas, GasStack>> {
 
     public GuiGasGauge(IGasInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y, handler);
@@ -33,7 +34,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, BasicGasTank> {
             return height - 2;
         }
         //TODO: Can capacity ever be zero when tank is not empty?
-        BasicGasTank tank = infoHandler.getTank();
+        IChemicalTank<Gas, GasStack> tank = infoHandler.getTank();
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
@@ -53,7 +54,7 @@ public class GuiGasGauge extends GuiTankGauge<Gas, BasicGasTank> {
         if (dummy) {
             return TextComponentUtil.build(dummyType);
         }
-        BasicGasTank tank = infoHandler.getTank();
+        IChemicalTank<Gas, GasStack> tank = infoHandler.getTank();
         if (tank == null || tank.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         }
@@ -73,6 +74,6 @@ public class GuiGasGauge extends GuiTankGauge<Gas, BasicGasTank> {
         }
     }
 
-    public interface IGasInfoHandler extends ITankInfoHandler<BasicGasTank> {
+    public interface IGasInfoHandler extends ITankInfoHandler<IChemicalTank<Gas, GasStack>> {
     }
 }

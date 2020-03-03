@@ -117,6 +117,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+        if (side == null) {
+            //Allow internal queries to view/see both all slots, we only limit the slots that can be seen
+            // to either input or output if we are querying this with a specific side (as then we are
+            // in the world)
+            return super.getInventorySlots(null);
+        }
         if (!hasInventory() || structure == null) {
             //TODO: Previously we had a check like !isRemote() ? structure == null : !clientHasStructure
             // Do we still need this if we ever actually needed it?

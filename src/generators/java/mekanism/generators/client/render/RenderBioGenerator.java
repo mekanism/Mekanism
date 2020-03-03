@@ -8,17 +8,19 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.generators.client.model.ModelBioGenerator;
+import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
+import net.minecraftforge.fluids.FluidStack;
 
 public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerator> {
 
@@ -36,12 +38,15 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
 
     @Override
     public void render(@Nonnull TileEntityBioGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
-        if (tile.getBioFuelStored() > 0) {
+        if (!tile.bioFuelTank.isEmpty()) {
             matrix.push();
-            GlowInfo glowInfo = MekanismRenderer.enableGlow();
+            FluidStack fluid = tile.bioFuelTank.getFluid();
+            float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
+            GlowInfo glowInfo = MekanismRenderer.enableGlow(fluid);
             //TODO: FIXME, you can see through the back. Might have to make the main "model" into json and then just render the fluid as a TER
-            MekanismRenderer.renderObject(getModel(tile.getDirection(), tile.getScaledFuelLevel(stages - 1)), matrix, renderer,
-                  MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), -1);
+            // Note: This issue is much less noticeable now that we have a proper fluid that we are using for biofuel
+            MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix, renderer,
+                  MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE), MekanismRenderer.getColorARGB(fluid, fluidScale));
             MekanismRenderer.disableGlow(glowInfo);
             matrix.pop();
         }
@@ -59,8 +64,8 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
             return energyDisplays.get(side).get(stage);
         }
         Model3D model = new Model3D();
-        model.baseBlock = Blocks.WATER;
-        model.setTexture(MekanismRenderer.energyIcon);
+        model.baseBlock = GeneratorsFluids.BIOETHANOL.getBlock();
+        model.setTexture(MekanismRenderer.getFluidTexture(GeneratorsFluids.BIOETHANOL.getFluidStack(1), FluidType.STILL));
         switch (side) {
             case NORTH:
                 model.minZ = 0.5;

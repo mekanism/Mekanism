@@ -185,7 +185,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
             return 0;
         } else if (amount <= 0) {
             if (action.execute()) {
-                setStack(getEmptyStack());
+                setEmpty();
             }
             return 0;
         }

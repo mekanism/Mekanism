@@ -20,6 +20,7 @@ public enum ChemicalConstants {
     ETHENE("ethene", 0xFFEACCF9, 169.45F, 577),
     //Note: it is a solid at room temperature
     SODIUM("sodium", 0xFFE9FEF4, 370.944F, 927),
+    //TODO: Move this reference into MekanismGenerators at some point
     DEUTERIUM("deuterium", 0xFFFF3232, 23.7F, 162.4F),
     //Note: it is a solid at room temperature
     LITHIUM("lithium", 0xFFEBA400, 453.65F, 512);

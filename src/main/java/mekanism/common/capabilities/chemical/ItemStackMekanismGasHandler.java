@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -28,7 +28,7 @@ public abstract class ItemStackMekanismGasHandler extends ItemStackMekanismChemi
     protected void load() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ChemicalUtils.readChemicalTanks(getGasTanks(null), ItemDataUtils.getList(stack, "GasTanks"));
+            DataHandlerUtils.readTanks(getGasTanks(null), ItemDataUtils.getList(stack, "GasTanks"));
         }
     }
 
@@ -42,7 +42,7 @@ public abstract class ItemStackMekanismGasHandler extends ItemStackMekanismChemi
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, "GasTanks", ChemicalUtils.writeChemicalTanks(getGasTanks(null)));
+            ItemDataUtils.setList(stack, "GasTanks", DataHandlerUtils.writeTanks(getGasTanks(null)));
         }
     }
 

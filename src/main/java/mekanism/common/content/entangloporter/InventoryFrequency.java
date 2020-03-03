@@ -12,28 +12,31 @@ import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.inventory.slot.EntangloporterInventorySlot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismGasHandler {
+public class InventoryFrequency extends Frequency implements IMekanismInventory, IMekanismGasHandler, IMekanismFluidHandler {
 
     public static final String ENTANGLOPORTER = "Entangloporter";
 
     public double storedEnergy;
-    public FluidTank storedFluid;
+    public BasicFluidTank storedFluid;
     public BasicGasTank storedGas;
     public double temperature;
     private IInventorySlot storedItem;
 
     public List<IInventorySlot> inventorySlots;
     public List<? extends IChemicalTank<Gas, GasStack>> gasTanks;
+    public List<IExtendedFluidTank> fluidTanks;
 
     public InventoryFrequency(String n, UUID uuid) {
         super(n, uuid);
@@ -49,7 +52,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     private void presetVariables() {
-        storedFluid = new FluidTank(MekanismConfig.general.quantumEntangloporterFluidBuffer.get());
+        storedFluid = BasicFluidTank.create(MekanismConfig.general.quantumEntangloporterFluidBuffer.get(), this);
+        fluidTanks = Collections.singletonList(storedFluid);
         storedGas = BasicGasTank.create(MekanismConfig.general.quantumEntangloporterGasBuffer.get(), this);
         gasTanks = Collections.singletonList(storedGas);
         storedItem = EntangloporterInventorySlot.create(this);
@@ -60,9 +64,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.putDouble("storedEnergy", storedEnergy);
-        if (!storedFluid.isEmpty()) {
-            nbtTags.put("storedFluid", storedFluid.writeToNBT(new CompoundNBT()));
-        }
+        nbtTags.put("storedFluid", storedFluid.serializeNBT());
         nbtTags.put("storedGas", storedGas.serializeNBT());
         nbtTags.put("storedItem", storedItem.serializeNBT());
         nbtTags.putDouble("temperature", temperature);
@@ -73,9 +75,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         super.read(nbtTags);
         presetVariables();
         storedEnergy = nbtTags.getDouble("storedEnergy");
-        if (nbtTags.contains("storedFluid")) {
-            storedFluid.readFromNBT(nbtTags.getCompound("storedFluid"));
-        }
+        storedFluid.deserializeNBT(nbtTags.getCompound("storedFluid"));
         storedGas.deserializeNBT(nbtTags.getCompound("storedGas"));
         storedItem.deserializeNBT(nbtTags.getCompound("storedItem"));
         temperature = nbtTags.getDouble("temperature");
@@ -96,7 +96,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         super.read(dataStream);
         presetVariables();
         storedEnergy = dataStream.readDouble();
-        storedFluid.setFluid(dataStream.readFluidStack());
+        storedFluid.setStack(dataStream.readFluidStack());
         storedGas.setStack(ChemicalUtils.readGasStack(dataStream));
         storedItem.deserializeNBT(dataStream.readCompoundTag());
         temperature = dataStream.readDouble();
@@ -112,6 +112,12 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
         return gasTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        return fluidTanks;
     }
 
     @Override

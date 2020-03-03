@@ -32,6 +32,7 @@ import mekanism.generators.client.render.item.RenderWindGeneratorItem;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
+import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -63,6 +64,9 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(GeneratorsTileEntityTypes.WIND_GENERATOR, RenderWindGenerator::new);
         //Block render layers
         ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), GeneratorsBlocks.LASER_FOCUS_MATRIX, GeneratorsBlocks.REACTOR_GLASS);
+        //Fluids (translucent)
+        ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), GeneratorsFluids.BIOETHANOL, GeneratorsFluids.DEUTERIUM, GeneratorsFluids.FUSION_FUEL,
+              GeneratorsFluids.TRITIUM);
     }
 
     @SubscribeEvent

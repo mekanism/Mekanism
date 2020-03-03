@@ -9,7 +9,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.chemical.RateLimitGasHandler;
+import mekanism.common.capabilities.fluid.RateLimitFluidHandler;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -57,7 +59,7 @@ public class ItemGaugeDropper extends Item {
                     gasRatio = gasHandlerItem.getGasInTank(0).getAmount() / (double) gasHandlerItem.getGasTankCapacity(0);
                 }
             }
-            FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+            FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
             double fluidRatio = fluidStack.getAmount() / (double) CAPACITY;
             return 1D - Math.max(gasRatio, fluidRatio);
         }
@@ -100,7 +102,7 @@ public class ItemGaugeDropper extends Item {
                 gasStack = gasHandlerItem.getGasInTank(0);
             }
         }
-        FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (gasStack.isEmpty() && fluidStack.isEmpty()) {
             tooltip.add(MekanismLang.EMPTY.translate());
         } else if (!gasStack.isEmpty()) {
@@ -112,8 +114,6 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        //TODO: Fix FluidItemWrapper capacity??
-        //return new FluidHandlerItemStack(stack, CAPACITY);
-        return new ItemCapabilityWrapper(stack, /*new FluidItemWrapper(),*/ RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> CAPACITY));
+        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(() -> TRANSFER_RATE, () -> CAPACITY), RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> CAPACITY));
     }
 }

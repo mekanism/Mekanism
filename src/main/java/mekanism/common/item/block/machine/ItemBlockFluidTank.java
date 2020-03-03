@@ -1,26 +1,29 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
-import mekanism.api.tier.BaseTier;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.FluidItemWrapper;
-import mekanism.common.base.IFluidItemWrapper;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.block.machine.BlockFluidTank;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
+import mekanism.common.capabilities.fluid.RateLimitFluidHandler;
 import mekanism.common.item.IItemSustainedInventory;
-import mekanism.common.item.IItemSustainedTank;
 import mekanism.common.item.ITieredItem;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
@@ -61,11 +64,13 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
-public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank> implements IItemSustainedInventory, IItemSustainedTank, IFluidItemWrapper, ISecurityItem,
-      IItemNetwork, ITieredItem<FluidTankTier> {
+public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank> implements IItemSustainedInventory, ISecurityItem, IItemNetwork,
+      ITieredItem<FluidTankTier> {
 
     public ItemBlockFluidTank(BlockFluidTank block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::fluidTank));
@@ -87,15 +92,24 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        FluidStack fluidStack = getFluidStack(stack);
-        if (!fluidStack.isEmpty()) {
-            int amount = fluidStack.getAmount();
-            if (amount == Integer.MAX_VALUE) {
-                tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
-            } else {
-                tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
+        boolean hasFluid = false;
+        Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
+        if (capability.isPresent()) {
+            IFluidHandlerItem fluidHandlerItem = capability.get();
+            if (fluidHandlerItem.getTanks() > 0) {
+                //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                FluidStack fluidStack = fluidHandlerItem.getFluidInTank(0);
+                if (!fluidStack.isEmpty()) {
+                    if (fluidStack.getAmount() == Integer.MAX_VALUE) {
+                        tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
+                    } else {
+                        tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
+                    }
+                    hasFluid = true;
+                }
             }
-        } else {
+        }
+        if (!hasFluid) {
             tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
         }
         FluidTankTier tier = getTier(stack);
@@ -149,6 +163,22 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                     if (!world.isBlockModifiable(player, pos)) {
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
+                    Optional<IFluidHandlerItem> capability = MekanismUtils.toOptional(FluidUtil.getFluidHandler(stack));
+                    if (!capability.isPresent()) {
+                        //If something went wrong and we don't have a fluid handler on our tank, then fail
+                        return new ActionResult<>(ActionResultType.FAIL, stack);
+                    }
+                    IFluidHandlerItem fluidHandlerItem = capability.get();
+                    if (!(fluidHandlerItem instanceof IMekanismFluidHandler)) {
+                        //TODO: Decide if we want to support someone replacing our fluid handler with another?
+                        //If it isn't one of our fluid handlers fail
+                        return new ActionResult<>(ActionResultType.FAIL, stack);
+                    }
+                    IExtendedFluidTank fluidTank = ((IMekanismFluidHandler) fluidHandlerItem).getFluidTank(0, null);
+                    if (fluidTank == null) {
+                        //If something went wrong and we don't have a fluid tank fail
+                        return new ActionResult<>(ActionResultType.FAIL, stack);
+                    }
                     if (!player.isShiftKeyDown()) {
                         if (!player.canPlayerEdit(pos, result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
@@ -161,62 +191,55 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                             // This is semi similar to the code in TileEntityElectricPump
                             Fluid fluid = fluidState.getFluid();
                             FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
-                            FluidStack stored = getFluidStack(stack);
-                            int capacity = getCapacity(stack);
                             //Note: we get the block state from the world and not the fluid state
                             // so that we can get the proper block in case it is fluid logged
                             BlockState blockState = world.getBlockState(pos);
                             Block block = blockState.getBlock();
                             if (block instanceof IFluidBlock) {
                                 fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);
-                                if (!validFluid(stored, fluidStack, capacity)) {
+                                if (!validFluid(fluidTank, fluidStack)) {
                                     //If the fluid is not valid, pass on doing anything
                                     return new ActionResult<>(ActionResultType.PASS, stack);
                                 }
                                 //Actually drain it
                                 fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
-                            } else if (block instanceof IBucketPickupHandler && validFluid(stored, fluidStack, capacity)) {
+                            } else if (block instanceof IBucketPickupHandler && validFluid(fluidTank, fluidStack)) {
                                 //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
                                 // otherwise we assume the type from the fluid state is correct
                                 fluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
                                 //Update the fluid stack in case something somehow changed about the type
                                 // making sure that we replace to heavy water if we got heavy water
                                 fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
-                                if (!validFluid(stored, fluidStack, capacity)) {
+                                if (!validFluid(fluidTank, fluidStack)) {
                                     Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
                                           fluidState.getFluid(), pos, world, fluid);
                                     return new ActionResult<>(ActionResultType.FAIL, stack);
                                 }
                             }
-                            if (!fluidStack.isEmpty() && (stored.isEmpty() || stored.isFluidEqual(fluidStack))) {
-                                int needed = getCapacity(stack) - stored.getAmount();
-                                if (fluidStack.getAmount() > needed) {
-                                    return new ActionResult<>(ActionResultType.FAIL, stack);
-                                }
-                                if (stored.isEmpty()) {
-                                    setFluidStack(fluidStack, stack);
+                            if (validFluid(fluidTank, fluidStack)) {
+                                if (fluidTank.isEmpty()) {
+                                    fluidTank.setStack(fluidStack);
                                 } else {
-                                    FluidStack newStack = getFluidStack(stack);
-                                    newStack.setAmount(newStack.getAmount() + fluidStack.getAmount());
-                                    setFluidStack(newStack, stack);
+                                    //Grow the stack
+                                    if (fluidTank.growStack(fluidStack.getAmount(), Action.EXECUTE) != fluidStack.getAmount()) {
+                                        //TODO: Print warning/error
+                                    }
                                 }
                                 return new ActionResult<>(ActionResultType.SUCCESS, stack);
+                            } else {
+                                return new ActionResult<>(ActionResultType.FAIL, stack);
                             }
                         }
                     } else {
-                        FluidStack stored = getFluidStack(stack);
-                        if (stored.getAmount() < FluidAttributes.BUCKET_VOLUME) {
+                        if (fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).getAmount() < FluidAttributes.BUCKET_VOLUME
+                            || !player.canPlayerEdit(pos.offset(result.getFace()), result.getFace(), stack)) {
                             return new ActionResult<>(ActionResultType.FAIL, stack);
                         }
-                        if (!player.canPlayerEdit(pos.offset(result.getFace()), result.getFace(), stack)) {
-                            return new ActionResult<>(ActionResultType.FAIL, stack);
-                        }
-                        FluidStack fluidStack = getFluidStack(stack);
-                        if (!fluidStack.isEmpty() && tryPlaceContainedLiquid(player, world, pos, fluidStack, result.getFace())) {
+                        if (tryPlaceContainedLiquid(player, world, pos, fluidHandlerItem.getFluidInTank(0), result.getFace())) {
                             if (!player.isCreative()) {
-                                FluidStack newStack = stored.copy();
-                                newStack.setAmount(newStack.getAmount() - FluidAttributes.BUCKET_VOLUME);
-                                setFluidStack(newStack.getAmount() > 0 ? newStack : FluidStack.EMPTY, stack);
+                                if (fluidTank.shrinkStack(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE) != FluidAttributes.BUCKET_VOLUME) {
+                                    //TODO: Print warning/error
+                                }
                             }
                             return new ActionResult<>(ActionResultType.SUCCESS, stack);
                         }
@@ -256,9 +279,8 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
                 world.setBlockState(pos, fluid.getDefaultState().getBlockState(), 11);
             }
             return true;
-        } else {
-            return side != null && tryPlaceContainedLiquid(player, world, pos.offset(side), fluidStack, null);
         }
+        return side != null && tryPlaceContainedLiquid(player, world, pos.offset(side), fluidStack, null);
     }
 
     private void playEmptySound(@Nullable PlayerEntity player, IWorld worldIn, BlockPos pos, @Nonnull FluidStack fluidStack) {
@@ -269,17 +291,8 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         worldIn.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
 
-    private boolean validFluid(@Nonnull FluidStack stored, @Nonnull FluidStack fluidStack, int capacity) {
-        if (!fluidStack.isEmpty() && (stored.isEmpty() || stored.isFluidEqual(fluidStack))) {
-            if (stored.isEmpty()) {
-                return true;
-            }
-            if (stored.isFluidEqual(fluidStack)) {
-                return stored.getAmount() + fluidStack.getAmount() <= capacity;
-            }
-            return false;
-        }
-        return false;
+    private boolean validFluid(@Nonnull IExtendedFluidTank fluidTank, @Nonnull FluidStack fluidStack) {
+        return !fluidStack.isEmpty() && fluidTank.insert(fluidStack, Action.SIMULATE, AutomationType.MANUAL).isEmpty();
     }
 
     public void setBucketMode(ItemStack itemStack, boolean bucketMode) {
@@ -290,62 +303,10 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
         return ItemDataUtils.getBoolean(itemStack, "bucketMode");
     }
 
-    @Nonnull
-    @Override
-    public FluidStack getFluid(ItemStack container) {
-        return getFluidStack(container);
-    }
-
-    @Override
-    public int getCapacity(ItemStack container) {
-        FluidTankTier tier = getTier(container);
-        return tier == null ? 0 : tier.getStorage();
-    }
-
-    @Override
-    public int fill(ItemStack container, @Nonnull FluidStack resource, FluidAction fluidAction) {
-        if (resource.isEmpty()) {
-            return 0;
-        }
-        if (getBaseTier(container) == BaseTier.CREATIVE) {
-            setFluidStack(new FluidStack(resource, Integer.MAX_VALUE), container);
-            return resource.getAmount();
-        }
-        FluidStack stored = getFluidStack(container);
-        int toFill;
-        if (!stored.isEmpty() && stored.getFluid() != resource.getFluid()) {
-            return 0;
-        }
-        if (stored.isEmpty()) {
-            toFill = Math.min(resource.getAmount(), getCapacity(container));
-        } else {
-            toFill = Math.min(resource.getAmount(), getCapacity(container) - stored.getAmount());
-        }
-        if (fluidAction.execute()) {
-            int fillAmount = toFill + stored.getAmount();
-            setFluidStack(new FluidStack(resource, fillAmount), container);
-        }
-        return toFill;
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(ItemStack container, int maxDrain, FluidAction fluidAction) {
-        FluidStack stored = getFluidStack(container);
-        if (stored.isEmpty()) {
-            return FluidStack.EMPTY;
-        }
-        FluidStack toDrain = new FluidStack(stored, Math.min(stored.getAmount(), maxDrain));
-        if (fluidAction.execute() && getBaseTier(container) != BaseTier.CREATIVE) {
-            stored.setAmount(stored.getAmount() - toDrain.getAmount());
-            setFluidStack(stored.getAmount() > 0 ? stored : FluidStack.EMPTY, container);
-        }
-        return toDrain;
-    }
-
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, new FluidItemWrapper());
+        FluidTankTier tier = getTier(stack);
+        return new ItemCapabilityWrapper(stack, RateLimitFluidHandler.create(tier == null ? getBlock().getTier() : tier));
     }
 
     @Override

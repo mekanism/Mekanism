@@ -4,14 +4,21 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.target.FluidHandlerTarget;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
@@ -25,27 +32,28 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack> {
+public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, FluidStack> implements IMekanismFluidHandler {
 
-    public int transferDelay = 0;
+    private final List<IExtendedFluidTank> fluidTanks;
+    public final NetworkFluidTank fluidTank;
+
+    private int transferDelay = 0;
 
     public boolean didTransfer;
-    public boolean prevTransfer;
+    private boolean prevTransfer;
 
     public float fluidScale;
-
-    @Nonnull
-    public FluidStack buffer = FluidStack.EMPTY;
-    public int prevStored;
-
-    public int prevTransferAmount = 0;
+    private int prevStored;
+    private int prevTransferAmount = 0;
 
     public FluidNetwork() {
+        fluidTank = new NetworkFluidTank();
+        fluidTanks = Collections.singletonList(fluidTank);
     }
 
     public FluidNetwork(Collection<FluidNetwork> networks) {
+        this();
         for (FluidNetwork net : networks) {
             if (net != null) {
                 adoptTransmittersAndAcceptorsFrom(net);
@@ -58,15 +66,25 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public void adoptTransmittersAndAcceptorsFrom(FluidNetwork net) {
-        if (!net.buffer.isEmpty()) {
-            if (buffer.isEmpty()) {
-                buffer = net.buffer.copy();
-            } else if (buffer.getFluid() == net.buffer.getFluid()) {
-                buffer.setAmount(buffer.getAmount() + net.buffer.getAmount());
-            } else if (net.buffer.getAmount() > buffer.getAmount()) {
-                buffer = net.buffer.copy();
+        if (isRemote()) {
+            if (!net.fluidTank.isEmpty() && net.fluidScale > fluidScale) {
+                fluidScale = net.fluidScale;
+                fluidTank.setStack(net.getBuffer());
+                net.fluidScale = 0;
+                net.fluidTank.setEmpty();
             }
-            net.buffer = FluidStack.EMPTY;
+        } else if (!net.fluidTank.isEmpty()) {
+            if (fluidTank.isEmpty()) {
+                fluidTank.setStack(net.getBuffer());
+            } else if (fluidTank.isFluidEqual(net.fluidTank.getFluid())) {
+                int amount = net.fluidTank.getFluidAmount();
+                if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
+                    //TODO: Print warning/error
+                }
+            } else if (net.fluidTank.getFluidAmount() > fluidTank.getFluidAmount()) {
+                fluidTank.setStack(net.getBuffer());
+            }
+            net.fluidTank.setEmpty();
         }
         super.adoptTransmittersAndAcceptorsFrom(net);
     }
@@ -74,7 +92,7 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
     @Nonnull
     @Override
     public FluidStack getBuffer() {
-        return buffer;
+        return fluidTank.getFluid().copy();
     }
 
     @Override
@@ -83,28 +101,31 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         if (fluid.isEmpty()) {
             return;
         }
-        if (buffer.isEmpty()) {
-            buffer = fluid.copy();
+        if (fluidTank.isEmpty()) {
+            fluidTank.setStack(fluid.copy());
             fluid.setAmount(0);
             return;
         }
-
         //TODO better multiple buffer impl
-        if (buffer.isFluidEqual(fluid)) {
-            buffer.setAmount(buffer.getAmount() + fluid.getAmount());
+        if (fluidTank.isFluidEqual(fluid)) {
+            int amount = fluid.getAmount();
+            if (fluidTank.growStack(amount, Action.EXECUTE) != amount) {
+                //TODO: Print warning/error
+            }
         }
         fluid.setAmount(0);
     }
 
     @Override
     public void clampBuffer() {
-        if (buffer.getAmount() > getCapacity()) {
-            buffer.setAmount(getCapacity());
+        if (!fluidTank.isEmpty()) {
+            int capacity = getCapacity();
+            if (fluidTank.getFluidAmount() > capacity) {
+                if (fluidTank.setStackSize(capacity, Action.EXECUTE) != capacity) {
+                    //TODO: Print warning/error
+                }
+            }
         }
-    }
-
-    public int getFluidNeeded() {
-        return getCapacity() - buffer.getAmount();
     }
 
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
@@ -137,20 +158,22 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, fluidToSend.getAmount(), fluidToSend);
     }
 
-    public int emit(@Nonnull FluidStack fluidToSend, FluidAction fluidAction) {
-        if (fluidToSend.isEmpty() || (!buffer.isEmpty() && !buffer.isFluidEqual(fluidToSend))) {
-            return 0;
+    public FluidStack emit(@Nonnull FluidStack stack, Action action) {
+        if (stack.isEmpty() || (!fluidTank.isEmpty() && !fluidTank.isFluidEqual(stack))) {
+            return stack;
         }
-        int toUse = Math.min(getFluidNeeded(), fluidToSend.getAmount());
-        if (fluidAction.execute()) {
-            if (buffer.isEmpty()) {
-                buffer = fluidToSend.copy();
-                buffer.setAmount(toUse);
+        int toAdd = Math.min(fluidTank.getNeeded(), stack.getAmount());
+        if (action.execute()) {
+            if (fluidTank.isEmpty()) {
+                fluidTank.setStack(new FluidStack(stack, toAdd));
             } else {
-                buffer.grow(toUse);
+                //Otherwise try to grow the stack
+                if (fluidTank.growStack(toAdd, Action.EXECUTE) != toAdd) {
+                    //TODO: Print warning/error
+                }
             }
         }
-        return toUse;
+        return new FluidStack(stack, stack.getAmount() - toAdd);
     }
 
     @Override
@@ -163,27 +186,24 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
             } else {
                 transferDelay--;
             }
-            int stored = buffer.getAmount();
+            int stored = fluidTank.getFluidAmount();
             if (stored != prevStored) {
                 needsUpdate = true;
             }
             prevStored = stored;
             if (didTransfer != prevTransfer || needsUpdate) {
-                MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, buffer, didTransfer));
+                MinecraftForge.EVENT_BUS.post(new FluidTransferEvent(this, getBuffer(), didTransfer));
                 needsUpdate = false;
             }
             prevTransfer = didTransfer;
-            if (!buffer.isEmpty()) {
-                prevTransferAmount = tickEmit(buffer);
+            if (!fluidTank.isEmpty()) {
+                prevTransferAmount = tickEmit(fluidTank.getFluid());
                 if (prevTransferAmount > 0) {
                     didTransfer = true;
                     transferDelay = 2;
                 }
-                if (!buffer.isEmpty()) {
-                    buffer.setAmount(buffer.getAmount() - prevTransferAmount);
-                    if (buffer.getAmount() <= 0) {
-                        buffer = FluidStack.EMPTY;
-                    }
+                if (fluidTank.shrinkStack(prevTransferAmount, Action.EXECUTE) != prevTransferAmount) {
+                    //TODO: Print warning/error
                 }
             }
         }
@@ -198,13 +218,13 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
         } else if (!didTransfer && fluidScale > 0) {
             fluidScale = getScale();
             if (fluidScale == 0) {
-                buffer = FluidStack.EMPTY;
+                fluidTank.setEmpty();
             }
         }
     }
 
     public float getScale() {
-        return Math.min(1, buffer.isEmpty() || getCapacity() == 0 ? 0 : (float) buffer.getAmount() / getCapacity());
+        return Math.min(1, fluidTank.isEmpty() || getCapacity() == 0 ? 0 : (float) fluidTank.getFluidAmount() / getCapacity());
     }
 
     @Override
@@ -214,15 +234,15 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public ITextComponent getNeededInfo() {
-        return MekanismLang.FLUID_NETWORK_NEEDED.translate((float) getFluidNeeded() / 1_000F);
+        return MekanismLang.FLUID_NETWORK_NEEDED.translate((float) fluidTank.getNeeded() / 1_000F);
     }
 
     @Override
     public ITextComponent getStoredInfo() {
-        if (buffer.isEmpty()) {
+        if (fluidTank.isEmpty()) {
             return MekanismLang.NONE.translate();
         }
-        return MekanismLang.NETWORK_MB_STORED.translate(buffer, buffer.getAmount());
+        return MekanismLang.NETWORK_MB_STORED.translate(fluidTank.getFluid(), fluidTank.getFluidAmount());
     }
 
     @Override
@@ -232,17 +252,66 @@ public class FluidNetwork extends DynamicNetwork<IFluidHandler, FluidNetwork, Fl
 
     @Override
     public boolean isCompatibleWith(FluidNetwork other) {
-        return super.isCompatibleWith(other) && (this.buffer.isEmpty() || other.buffer.isEmpty() || this.buffer.isFluidEqual(other.buffer));
+        return super.isCompatibleWith(other) && (this.fluidTank.isEmpty() || other.fluidTank.isEmpty() || this.fluidTank.isFluidEqual(other.fluidTank.getFluid()));
     }
 
     @Override
     public boolean compatibleWithBuffer(@Nonnull FluidStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.buffer.isEmpty() || buffer.isEmpty() || this.buffer.isFluidEqual(buffer));
+        return super.compatibleWithBuffer(buffer) && (this.fluidTank.isEmpty() || buffer.isEmpty() || this.fluidTank.isFluidEqual(buffer));
     }
 
     @Override
     public ITextComponent getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmitters.size(), possibleAcceptors.size());
+    }
+
+    @Nonnull
+    @Override
+    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+        return fluidTanks;
+    }
+
+    @Override
+    public void onContentsChanged() {
+        //TODO: Do we want to mark the network as dirty
+    }
+
+    public class NetworkFluidTank extends BasicFluidTank {
+
+        protected NetworkFluidTank() {
+            super(FluidNetwork.this.getCapacity(), alwaysTrueBi, alwaysTrueBi, alwaysTrue, FluidNetwork.this);
+        }
+
+        @Override
+        public int getCapacity() {
+            return FluidNetwork.this.getCapacity();
+        }
+
+        @Override
+        public int setStackSize(int amount, @Nonnull Action action) {
+            if (isEmpty()) {
+                return 0;
+            } else if (amount <= 0) {
+                if (action.execute()) {
+                    setStack(FluidStack.EMPTY);
+                }
+                return 0;
+            }
+            int maxStackSize = getCapacity();
+            //Our capacity should never actually be zero, and given we fake it being zero
+            // until we finish building the network, we need to override this method to bypass the upper limit check
+            // when our upper limit is zero
+            if (maxStackSize > 0 && amount > maxStackSize) {
+                amount = maxStackSize;
+            }
+            if (getFluidAmount() == amount || action.simulate()) {
+                //If our size is not changing or we are only simulating the change, don't do anything
+                return amount;
+            }
+            stored.setAmount(amount);
+            onContentsChanged();
+            return amount;
+        }
     }
 
     public static class FluidTransferEvent extends Event {

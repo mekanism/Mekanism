@@ -22,8 +22,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "bioFuelStored",
-                  "target": "mekData.fluidStored",
+                  "source": "FluidTanks",
+                  "target": "mekData.FluidTanks",
                   "op": "replace"
                 },
                 {

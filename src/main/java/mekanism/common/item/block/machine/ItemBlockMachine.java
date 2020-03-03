@@ -14,13 +14,13 @@ import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
-import mekanism.common.item.IItemSustainedTank;
 import mekanism.common.item.block.ItemBlockAdvancedTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
+import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
@@ -38,7 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 
-public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockMachine<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, IItemSustainedTank {
+public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockMachine<?, ?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockMachine(BlockMachine<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
@@ -57,11 +57,10 @@ public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockMachine<?, ?
             tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         }
         tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
-        if (hasTank(stack)) {
-            FluidStack fluidStack = getFluidStack(stack);
-            if (!fluidStack.isEmpty()) {
-                tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
-            }
+        //TODO: Should we make this support "multiple" tanks
+        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
+        if (!fluidStack.isEmpty()) {
+            tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, fluidStack.getAmount()));
         }
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
         if (ItemDataUtils.hasData(stack, "upgrades")) {

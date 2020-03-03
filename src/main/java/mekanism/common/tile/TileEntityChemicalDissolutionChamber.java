@@ -8,7 +8,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackGasToGasCachedRecipe;
@@ -37,7 +36,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> implements IGasHandler, ITankManager {
+public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalMachine<ItemStackGasToGasRecipe> implements ITankManager {
 
     public static final int MAX_GAS = 10_000;
     public static final int BASE_INJECT_USAGE = 1;
@@ -68,7 +67,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(injectTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this), RelativeSide.LEFT);
+        builder.addTank(injectTank = BasicGasTank.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this), RelativeSide.LEFT);
         builder.addTank(outputTank = BasicGasTank.ejectOutput(MAX_GAS, this), RelativeSide.RIGHT);
         return builder.build();
     }
@@ -141,10 +140,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
 
-    private boolean isValidGas(@Nonnull Gas gas) {
-        return containsRecipe(recipe -> recipe.getGasInput().testType(gas));
-    }
-
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
@@ -167,7 +162,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     }
 
     @Override
-    public Object[] getTanks() {
+    public Object[] getManagedTanks() {
         return new Object[]{injectTank, outputTank};
     }
 }

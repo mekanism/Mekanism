@@ -12,6 +12,11 @@
               "source": "block_entity",
               "ops": [
                 {
+                  "source": "FluidTanks",
+                  "target": "mekData.FluidTanks",
+                  "op": "replace"
+                },
+                {
                   "source": "Items",
                   "target": "mekData.Items",
                   "op": "replace"

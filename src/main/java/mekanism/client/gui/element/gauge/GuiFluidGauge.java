@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -9,9 +10,8 @@ import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
+public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> {
 
     public GuiFluidGauge(IFluidInfoHandler handler, GaugeType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y, handler);
@@ -35,7 +35,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
         if (dummy) {
             return height - 2;
         }
-        FluidTank tank = infoHandler.getTank();
+        IExtendedFluidTank tank = infoHandler.getTank();
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
@@ -59,7 +59,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
         if (dummy) {
             return TextComponentUtil.build(dummyType);
         }
-        FluidTank tank = infoHandler.getTank();
+        IExtendedFluidTank tank = infoHandler.getTank();
         if (tank == null || tank.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         }
@@ -76,7 +76,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, FluidTank> {
         MekanismRenderer.color(dummy || infoHandler.getTank() == null ? dummyType : infoHandler.getTank().getFluid());
     }
 
-    public interface IFluidInfoHandler extends ITankInfoHandler<FluidTank> {
+    public interface IFluidInfoHandler extends ITankInfoHandler<IExtendedFluidTank> {
 
     }
 }

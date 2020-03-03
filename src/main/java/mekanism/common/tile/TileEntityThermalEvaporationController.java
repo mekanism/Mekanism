@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.TileNetworkList;
@@ -20,6 +21,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
+import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
@@ -28,7 +33,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloat;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -46,7 +50,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityThermalEvaporationController extends TileEntityThermalEvaporationBlock implements IActiveState, ITankManager,
@@ -55,8 +59,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     private static final int MAX_OUTPUT = 10_000;
     private static final int MAX_HEIGHT = 18;
 
-    public FluidTank inputTank;
-    public FluidTank outputTank;
+    public BasicFluidTank inputTank;
+    public BasicFluidTank outputTank;
 
     private Set<Coord4D> tankParts = new ObjectOpenHashSet<>();
     private IEvaporationSolar[] solars = new IEvaporationSolar[4];
@@ -70,6 +74,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public float lastGain;
 
+    private int inputCapacity;
     public int height;
 
     private boolean clientStructured;
@@ -95,14 +100,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
 
     public TileEntityThermalEvaporationController() {
         super(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
-        inputHandler = InputHelper.getInputHandler(inputTank, 0);
+        inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        inputTank = new FluidTank(0);
-        outputTank = new FluidTank(MAX_OUTPUT);
+    protected IFluidTankHolder getInitialFluidTanks() {
+        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        builder.addTank(inputTank = VariableCapacityFluidTank.input(this::getMaxFluid, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this));
+        builder.addTank(outputTank = BasicFluidTank.output(MAX_OUTPUT, this));
+        return builder.build();
     }
 
     @Nonnull
@@ -110,7 +118,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     protected IInventorySlotHolder getInitialInventory() {
         //TODO: Make the inventory be accessible via the valves instead
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputInputSlot = FluidInventorySlot.fill(inputTank, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid)), this, 28, 20));
+        builder.addSlot(inputInputSlot = FluidInventorySlot.fill(inputTank, this, 28, 20));
         builder.addSlot(outputInputSlot = OutputInventorySlot.at(this, 28, 51));
         builder.addSlot(inputOutputSlot = FluidInventorySlot.drain(outputTank, this, 132, 20));
         builder.addSlot(outputOutputSlot = OutputInventorySlot.at(this, 132, 51));
@@ -177,9 +185,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             boolean active = buildStructure();
             setActive(active);
             if (active) {
-                inputTank.setCapacity(getMaxFluid());
+                updateMaxFluid();
                 if (!inputTank.isEmpty()) {
-                    inputTank.getFluid().setAmount(Math.min(inputTank.getFluidAmount(), getMaxFluid()));
+                    inputTank.setStackSize(Math.min(inputTank.getFluidAmount(), getMaxFluid()), Action.EXECUTE);
                 }
             } else {
                 clearStructure();
@@ -346,8 +354,12 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return true;
     }
 
+    private void updateMaxFluid() {
+        inputCapacity = height * 4 * TankUpdateProtocol.FLUID_PER_TANK;
+    }
+
     public int getMaxFluid() {
-        return height * 4 * TankUpdateProtocol.FLUID_PER_TANK;
+        return inputCapacity;
     }
 
     private int getCorner(int x, int z) {
@@ -419,10 +431,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         return false;
     }
 
-    public int getScaledTempLevel(int i) {
-        return (int) (i * Math.min(1, getTemperature() / MekanismConfig.general.evaporationMaxTemp.get()));
-    }
-
     public Coord4D getRenderLocation() {
         Direction right = getRightSide();
         Coord4D renderLocation = Coord4D.get(this).offset(right);
@@ -447,9 +455,9 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {
-            inputTank.setCapacity(getMaxFluid());
-            inputTank.setFluid(dataStream.readFluidStack());
+            inputTank.setStack(dataStream.readFluidStack());
             height = dataStream.readInt();
+            updateMaxFluid();
             isLeftOnFace = dataStream.readBoolean();
             renderY = dataStream.readInt();
             //Note: we send the active state over the network as when we are force syncing it we may not have the accurate block state
@@ -483,8 +491,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        inputTank.readFromNBT(nbtTags.getCompound("waterTank"));
-        outputTank.readFromNBT(nbtTags.getCompound("brineTank"));
         temperature = nbtTags.getFloat("temperature");
     }
 
@@ -492,8 +498,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.put("waterTank", inputTank.writeToNBT(new CompoundNBT()));
-        nbtTags.put("brineTank", outputTank.writeToNBT(new CompoundNBT()));
         nbtTags.putFloat("temperature", temperature);
         return nbtTags;
     }
@@ -535,7 +539,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public Object[] getTanks() {
+    public Object[] getManagedTanks() {
         return new Object[]{inputTank, outputTank};
     }
 
@@ -545,14 +549,17 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         if (!getActive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return true;
         }
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+            //Never allow the fluid handler cap to be enabled here even though internally we handle fluid
+            return true;
+        }
         return super.isCapabilityDisabled(capability, side);
     }
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFluidStack.create(inputTank));
-        container.track(SyncableFluidStack.create(outputTank));
+        //TODO: Look to see if we have to sync the max fluid via here. Probably not due to it being synced manually
         container.track(SyncableInt.create(() -> height, value -> height = value));
         container.track(SyncableBoolean.create(() -> controllerConflict, value -> controllerConflict = value));
         container.track(SyncableFloat.create(this::getTemperature, value -> temperature = value));

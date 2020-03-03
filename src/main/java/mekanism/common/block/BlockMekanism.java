@@ -3,13 +3,12 @@ package mekanism.common.block;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
-import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.sustained.ISustainedInventory;
-import mekanism.api.sustained.ISustainedTank;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
@@ -43,7 +42,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Special handling for block drops that need TileEntity data
@@ -86,23 +84,18 @@ public abstract class BlockMekanism extends Block {
         }
         if (tile.handlesGas()) {
             //TODO: Do this better
-            ItemDataUtils.setList(itemStack, "GasTanks", ChemicalUtils.writeChemicalTanks(tile.getGasTanks(null)));
+            ItemDataUtils.setList(itemStack, "GasTanks", DataHandlerUtils.writeTanks(tile.getGasTanks(null)));
         }
         if (tile.handlesInfusion()) {
             //TODO: Do this better
-            ItemDataUtils.setList(itemStack, "InfusionTanks", ChemicalUtils.writeChemicalTanks(tile.getInfusionTanks(null)));
+            ItemDataUtils.setList(itemStack, "InfusionTanks", DataHandlerUtils.writeTanks(tile.getInfusionTanks(null)));
         }
-        if (item instanceof ISustainedInventory && tile.handleInventory() && tile.getSlots() > 0) {
+        if (tile.handlesFluid()) {
+            //TODO: Do this better
+            ItemDataUtils.setList(itemStack, "FluidTanks", DataHandlerUtils.writeTanks(tile.getFluidTanks(null)));
+        }
+        if (item instanceof ISustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
-        }
-        if (item instanceof ISustainedTank && tile instanceof ISustainedTank) {
-            FluidStack fluidStack = ((ISustainedTank) tile).getFluidStack();
-            if (!fluidStack.isEmpty()) {
-                ISustainedTank sustainedTank = (ISustainedTank) item;
-                if (sustainedTank.hasTank(itemStack)) {
-                    sustainedTank.setFluidStack(fluidStack, itemStack);
-                }
-            }
         }
         if (item instanceof IEnergizedItem && tile.isElectric() && !(tile instanceof TileEntityMultiblock<?>)) {
             ((IEnergizedItem) item).setEnergy(itemStack, tile.getEnergy());
@@ -205,6 +198,9 @@ public abstract class BlockMekanism extends Block {
         if (tile.handlesInfusion()) {
             tile.loadInfusion(ItemDataUtils.getList(stack, "InfusionTanks"));
         }
+        if (tile.handlesFluid()) {
+            tile.loadFluid(ItemDataUtils.getList(stack, "FluidTanks"));
+        }
         if (tile instanceof ISustainedData && stack.hasTag()) {
             ((ISustainedData) tile).readSustainedData(stack);
         }
@@ -213,13 +209,7 @@ public abstract class BlockMekanism extends Block {
                 tile.setControlType(RedstoneControl.byIndexStatic(ItemDataUtils.getInt(stack, "controlType")));
             }
         }
-        if (item instanceof ISustainedTank && tile instanceof ISustainedTank && ((ISustainedTank) item).hasTank(stack)) {
-            FluidStack fluid = ((ISustainedTank) item).getFluidStack(stack);
-            if (!fluid.isEmpty()) {
-                ((ISustainedTank) tile).setFluidStack(fluid);
-            }
-        }
-        if (item instanceof ISustainedInventory && tile.handleInventory()) {
+        if (item instanceof ISustainedInventory && tile.persistInventory()) {
             tile.setInventory(((ISustainedInventory) item).getInventory(stack));
         }
         //The variant of it that was in BlockBasic

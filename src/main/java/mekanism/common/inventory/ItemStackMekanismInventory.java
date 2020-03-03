@@ -3,12 +3,11 @@ package mekanism.common.inventory;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.item.IItemSustainedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 
 /**
@@ -24,16 +23,7 @@ public abstract class ItemStackMekanismInventory implements IMekanismInventory {
         this.stack = stack;
         this.slots = getInitialInventory();
         if (!stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory) {
-            ListNBT inventory = ((IItemSustainedInventory) stack.getItem()).getInventory(stack);
-            int size = slots.size();
-            for (int slot = 0; slot < inventory.size(); slot++) {
-                CompoundNBT tagCompound = inventory.getCompound(slot);
-                byte slotID = tagCompound.getByte("Slot");
-                if (slotID >= 0 && slotID < size) {
-                    //TODO: Re-evaluate the slot id stuff
-                    slots.get(slotID).deserializeNBT(tagCompound);
-                }
-            }
+            DataHandlerUtils.readSlots(getInventorySlots(null), ((IItemSustainedInventory) stack.getItem()).getInventory(stack));
         }
     }
 
@@ -48,17 +38,7 @@ public abstract class ItemStackMekanismInventory implements IMekanismInventory {
     @Override
     public void onContentsChanged() {
         if (!stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory) {
-            ListNBT tagList = new ListNBT();
-            for (int slot = 0; slot < slots.size(); slot++) {
-                IInventorySlot inventorySlot = slots.get(slot);
-                CompoundNBT tagCompound = inventorySlot.serializeNBT();
-                if (!tagCompound.isEmpty()) {
-                    //TODO: Re-evaluate how the slot works like this
-                    tagCompound.putByte("Slot", (byte) slot);
-                    tagList.add(tagCompound);
-                }
-            }
-            ((IItemSustainedInventory) stack.getItem()).setInventory(tagList, stack);
+            ((IItemSustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeSlots(getInventorySlots(null)), stack);
         }
     }
 }

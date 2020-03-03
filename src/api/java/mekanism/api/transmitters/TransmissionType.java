@@ -4,6 +4,7 @@ import mekanism.api.text.APILang;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.tileentity.TileEntity;
 
+//TODO: Decide if we wan to add a transmission type for infusion
 public enum TransmissionType implements IHasTranslationKey {
     ENERGY("EnergyNetwork", "energy", APILang.TRANSMISSION_TYPE_ENERGY),
     FLUID("FluidNetwork", "fluids", APILang.TRANSMISSION_TYPE_FLUID),

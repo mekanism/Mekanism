@@ -127,12 +127,7 @@ public class ItemBlockGasTank extends ItemBlockAdvancedTooltip<BlockGasTank> imp
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> {
-            GasTankTier tier = getTier(stack);
-            return tier == null ? getBlock().getTier().getOutput() : tier.getOutput();
-        }, () -> {
-            GasTankTier tier = getTier(stack);
-            return tier == null ? getBlock().getTier().getStorage() : tier.getStorage();
-        }));
+        GasTankTier tier = getTier(stack);
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(tier == null ? getBlock().getTier() : tier));
     }
 }

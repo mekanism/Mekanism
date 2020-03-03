@@ -32,13 +32,13 @@
                   "op": "replace"
                 },
                 {
-                  "source": "Items",
-                  "target": "mekData.Items",
+                  "source": "FluidTanks",
+                  "target": "mekData.FluidTanks",
                   "op": "replace"
                 },
                 {
-                  "source": "fluidTank",
-                  "target": "mekData.fluidTank",
+                  "source": "Items",
+                  "target": "mekData.Items",
                   "op": "replace"
                 },
                 {

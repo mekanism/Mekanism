@@ -46,10 +46,6 @@ public class TileComponentConfig implements ITileComponent {
         return RelativeSide.fromDirections(tile.getDirection(), direction);
     }
 
-    public void readFrom(TileComponentConfig config) {
-        configInfo = config.configInfo;
-    }
-
     public List<TransmissionType> getTransmissions() {
         return transmissionTypes;
     }

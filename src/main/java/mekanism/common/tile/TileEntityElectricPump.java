@@ -7,23 +7,23 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.sustained.ISustainedTank;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.base.FluidHandlerWrapper;
-import mekanism.common.base.IFluidHandlerWrapper;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.IComputerIntegration;
-import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -32,9 +32,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidContainerUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -56,18 +54,15 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-public class TileEntityElectricPump extends TileEntityMekanism implements IFluidHandlerWrapper, ISustainedTank, IConfigurable, ITankManager, IComputerIntegration {
+public class TileEntityElectricPump extends TileEntityMekanism implements IConfigurable, ITankManager, IComputerIntegration {
 
     private static final String[] methods = new String[]{"reset"};
     /**
      * This pump's tank
      */
-    public FluidTank fluidTank;
+    public BasicFluidTank fluidTank;
     /**
      * The type of fluid this pump is pumping
      */
@@ -96,9 +91,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         super(MekanismBlocks.ELECTRIC_PUMP);
     }
 
+    @Nonnull
     @Override
-    protected void presetVariables() {
-        fluidTank = new FluidTank(10_000);
+    protected IFluidTankHolder getInitialFluidTanks() {
+        FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
+        builder.addTank(fluidTank = BasicFluidTank.create(10_000, this), RelativeSide.TOP);
+        return builder.build();
     }
 
     @Nonnull
@@ -123,7 +121,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 if ((operatingTicks + 1) < ticksRequired) {
                     operatingTicks++;
                 } else {
-                    if (fluidTank.isEmpty() || FluidAttributes.BUCKET_VOLUME <= fluidTank.getSpace()) {
+                    if (fluidTank.isEmpty() || FluidAttributes.BUCKET_VOLUME <= fluidTank.getNeeded()) {
                         if (!suck()) {
                             suckedLastOperation = false;
                             reset();
@@ -143,7 +141,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
                 TileEntity tile = MekanismUtils.getTileEntity(world, pos.up());
                 CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
                     FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
-                    fluidTank.drain(handler.fill(toDrain, FluidAction.EXECUTE), FluidAction.EXECUTE);
+                    fluidTank.extract(handler.fill(toDrain, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
                 });
             }
         }
@@ -243,7 +241,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         if (addRecurring) {
             recurringNodes.add(pos);
         }
-        fluidTank.fill(fluidStack, FluidAction.EXECUTE);
+        fluidTank.insert(fluidStack, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private boolean validFluid(@Nonnull FluidStack fluidStack, boolean recheckSize) {
@@ -251,10 +249,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
             if (fluidTank.isEmpty()) {
                 return true;
             }
-            if (fluidTank.getFluid().isFluidEqual(fluidStack)) {
-                return !recheckSize || fluidStack.getAmount() <= fluidTank.getSpace();
+            if (fluidTank.isFluidEqual(fluidStack)) {
+                return !recheckSize || fluidStack.getAmount() <= fluidTank.getNeeded();
             }
-            return false;
         }
         return false;
     }
@@ -265,7 +262,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     private boolean shouldTake(@Nonnull Fluid fluid) {
-        return fluid == Fluids.WATER || fluid == MekanismFluids.HEAVY_WATER.getStillFluid() ? MekanismConfig.general.pumpWaterSources.get() : Boolean.valueOf(true);
+        return fluid != Fluids.WATER && fluid != MekanismFluids.HEAVY_WATER.getStillFluid() || MekanismConfig.general.pumpWaterSources.get();
     }
 
     @Nonnull
@@ -276,9 +273,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         nbtTags.putBoolean("suckedLastOperation", suckedLastOperation);
         if (!activeType.isEmpty()) {
             nbtTags.put("activeType", activeType.writeToNBT(new CompoundNBT()));
-        }
-        if (!fluidTank.isEmpty()) {
-            nbtTags.put("fluidTank", fluidTank.writeToNBT(new CompoundNBT()));
         }
         ListNBT recurringList = new ListNBT();
         for (BlockPos nodePos : recurringNodes) {
@@ -302,9 +296,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         if (nbtTags.contains("activeType")) {
             activeType = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("activeType"));
         }
-        if (nbtTags.contains("fluidTank")) {
-            fluidTank.readFromNBT(nbtTags.getCompound("fluidTank"));
-        }
         if (nbtTags.contains("recurringNodes")) {
             ListNBT tagList = nbtTags.getList("recurringNodes", NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
@@ -317,46 +308,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     public boolean canReceiveEnergy(Direction side) {
         return getOppositeDirection() == side;
-    }
-
-    @Override
-    public IFluidTank[] getTankInfo(Direction direction) {
-        if (direction == Direction.UP) {
-            return new IFluidTank[]{fluidTank};
-        }
-        return PipeUtils.EMPTY;
-    }
-
-    @Override
-    public IFluidTank[] getAllTanks() {
-        return getTankInfo(Direction.UP);
-    }
-
-    @Override
-    public void setFluidStack(@Nonnull FluidStack fluidStack, Object... data) {
-        fluidTank.setFluid(fluidStack);
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack getFluidStack(Object... data) {
-        return fluidTank.getFluid();
-    }
-
-    @Override
-    public boolean hasTank(Object... data) {
-        return true;
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack drain(Direction from, int maxDrain, FluidAction fluidAction) {
-        return fluidTank.drain(maxDrain, fluidAction);
-    }
-
-    @Override
-    public boolean canDrain(Direction from, @Nonnull FluidStack fluid) {
-        return from == Direction.byIndex(1) && FluidContainerUtils.canDrain(fluidTank.getFluid(), fluid);
     }
 
     @Override
@@ -377,9 +328,6 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> new FluidHandlerWrapper(this, side)));
-        }
         return super.getCapability(capability, side);
     }
 
@@ -389,7 +337,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     }
 
     @Override
-    public Object[] getTanks() {
+    public Object[] getManagedTanks() {
         return new Object[]{fluidTank};
     }
 
@@ -423,11 +371,5 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IFluid
     @Override
     public List<ITextComponent> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
-    }
-
-    @Override
-    public void addContainerTrackers(MekanismContainer container) {
-        super.addContainerTrackers(container);
-        container.track(SyncableFluidStack.create(fluidTank));
     }
 }
