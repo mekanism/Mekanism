@@ -43,7 +43,7 @@ public class ItemBlockMachine extends ItemBlockAdvancedTooltip<BlockMachine<?, ?
     public ItemBlockMachine(BlockMachine<?, ?> block) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
     }
-    
+
     public ItemBlockMachine(BlockMachine<?, ?> block, Supplier<Callable<ItemStackTileEntityRenderer>> renderer) {
         super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(renderer));
     }

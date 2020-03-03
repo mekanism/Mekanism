@@ -43,7 +43,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     public static final int BASE_TICKS_REQUIRED = 200;
     public static final int MAX_GAS = 210;
     public static final int BASE_GAS_PER_TICK = 1;
-    
+
     /**
      * How much secondary energy this machine uses per tick, including upgrades.
      */

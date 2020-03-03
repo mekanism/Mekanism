@@ -73,8 +73,8 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * @param tank  Tank to query.
      * @param stack Stack to test with for validity
      *
-     * @return true if the tank can accept the {@link STACK}, not considering the current state of the tank. false if the tank can never support the given {@link
-     * STACK} in any situation.
+     * @return true if the tank can accept the {@link STACK}, not considering the current state of the tank. false if the tank can never support the given {@link STACK}
+     * in any situation.
      */
     boolean isChemicalValid(int tank, STACK stack);
 
@@ -103,15 +103,15 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * @param amount Amount to extract (may be greater than the current stack's amount or the tank's capacity)
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the
-     * tank should return a new or copied stack.
+     * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
+     * should return a new or copied stack.
      */
     STACK extractChemical(int tank, int amount, Action action);
 
     /**
      * <p>
-     * Inserts a {@link STACK} into this handler, distribution is left <strong>entirely</strong> to the handler. The {@link STACK} <em>should not</em>
-     * be modified in this function!
+     * Inserts a {@link STACK} into this handler, distribution is left <strong>entirely</strong> to the handler. The {@link STACK} <em>should not</em> be modified in this
+     * function!
      * </p>
      * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, FluidAction)}
      *
@@ -132,8 +132,8 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * @param amount Amount to extract (may be greater than the current stack's amount or the tank's capacity)
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the
-     * tank should return a new or copied stack.
+     * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
+     * should return a new or copied stack.
      */
     STACK extractChemical(int amount, Action action);
 
@@ -146,8 +146,8 @@ public interface IChemicalHandlerWrapper<CHEMICAL extends Chemical<CHEMICAL>, ST
      * @param stack  {@link STACK} representing the {@link CHEMICAL} and maximum amount to be drained.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
-     * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the
-     * tank should return a new or copied stack.
+     * @return {@link STACK} extracted from the tank, must be empty if nothing can be extracted. The returned {@link STACK} can be safely modified after, so the tank
+     * should return a new or copied stack.
      */
     STACK extractChemical(STACK stack, Action action);
 }

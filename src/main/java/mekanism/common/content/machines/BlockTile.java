@@ -22,7 +22,7 @@ public class BlockTile<TILE extends TileEntityMekanism> {
     protected SoundEventRegistryObject<SoundEvent> soundRegistrar;
 
     protected VoxelShape[] bounds;
-    
+
     public BlockTile(TileEntityTypeRegistryObject<TILE> tileEntityRegistrar) {
         this.tileEntityRegistrar = tileEntityRegistrar;
     }
@@ -51,15 +51,15 @@ public class BlockTile<TILE extends TileEntityMekanism> {
     public boolean hasCustomShape() {
         return bounds != null;
     }
-    
+
     public INamedContainerProvider getCustomContainer(TILE tileEntity) {
         return customContainerSupplier != null ? customContainerSupplier.apply(tileEntity) : null;
     }
-    
+
     public boolean hasCustomContainer() {
         return customContainerSupplier != null;
     }
-    
+
     public static class BlockTileBuilder<BLOCK extends BlockTile<TILE>, TILE extends TileEntityMekanism, T extends BlockTileBuilder<BLOCK, TILE, T>> {
 
         protected BLOCK holder;
@@ -72,20 +72,20 @@ public class BlockTile<TILE extends TileEntityMekanism> {
             holder.soundRegistrar = soundRegistrar;
             return getThis();
         }
-        
+
         public T withCustomShape(VoxelShape[] shape) {
             holder.bounds = shape;
             return getThis();
         }
-        
+
         public T withCustomContainer(Function<TILE, INamedContainerProvider> customContainerSupplier) {
             holder.customContainerSupplier = customContainerSupplier;
             return getThis();
         }
-        
+
         @SuppressWarnings("unchecked")
         public T getThis() {
-            return (T)this;
+            return (T) this;
         }
 
         public BLOCK build() {

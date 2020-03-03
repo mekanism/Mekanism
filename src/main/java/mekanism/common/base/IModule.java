@@ -32,5 +32,6 @@ public interface IModule {
     /**
      * Called during the first tick after joining a game.
      */
-    default void launchClient() {}
+    default void launchClient() {
+    }
 }

@@ -24,7 +24,7 @@ public class CachedDoubleValue extends CachedPrimitiveValue<Double> implements D
         }
         return cachedValue;
     }
-    
+
     @Override
     public double getAsDouble() {
         return get();

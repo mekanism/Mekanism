@@ -54,7 +54,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machine<TILE>> extends BlockMekanism implements IBlockElectric, ISupportsUpgrades, IHasGui<TILE>, IStateFacing, IStateActive,
-    IHasInventory, IHasSecurity, IHasTileEntity<TILE>, IBlockSound, ISupportsRedstone, ISupportsComparator, IHasDescription {
+      IHasInventory, IHasSecurity, IHasTileEntity<TILE>, IBlockSound, ISupportsRedstone, ISupportsComparator, IHasDescription {
 
     protected MACHINE machineType;
 
@@ -75,7 +75,7 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
 
     @Override
     public double getUsage() {
-        if(machineType.hasUsage()) {
+        if (machineType.hasUsage()) {
             return machineType.getUsage();
         }
         return IBlockElectric.super.getUsage();
@@ -83,7 +83,7 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
 
     @Override
     public double getConfigStorage() {
-        if(machineType.hasConfigStorage()) {
+        if (machineType.hasConfigStorage()) {
             return machineType.getConfigStorage();
         }
         return IBlockElectric.super.getConfigStorage();
@@ -100,7 +100,7 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
     public SoundEvent getSoundEvent() {
         return machineType.getSoundEvent();
     }
-    
+
     @Override
     public boolean hasSound() {
         return machineType.hasSound();
@@ -195,23 +195,24 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
             }
         }
     }
-    
+
     @Nonnull
     @Override
     @Deprecated
     public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context) {
         return machineType.hasCustomShape() ? machineType.getBounds()[getDirection(state).ordinal() - 2] : super.getShape(state, world, pos, context);
     }
-    
+
     @Override
     public INamedContainerProvider getProvider(TILE tile) {
-        if(machineType.hasCustomContainer()) {
+        if (machineType.hasCustomContainer()) {
             return machineType.getCustomContainer(tile);
         }
         return IHasGui.super.getProvider(tile);
     }
-    
+
     public static class BlockMachineModel<TILE extends TileEntityMekanism, MACHINE extends Machine<TILE>> extends BlockMachine<TILE, MACHINE> implements IHasModel, IStateFluidLoggable {
+
         public BlockMachineModel(MACHINE machineType) {
             super(machineType);
         }

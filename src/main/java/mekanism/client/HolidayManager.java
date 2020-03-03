@@ -44,7 +44,7 @@ public final class HolidayManager {
         } catch (Exception ignored) {
         }
     }
-    
+
     public static Holiday getHoliday() {
         return holidaysNotified.isEmpty() ? null : holidaysNotified.get(0);
     }
@@ -119,6 +119,7 @@ public final class HolidayManager {
     }
 
     public static class Christmas extends Holiday {
+
         @Override
         public YearlyDate getDate() {
             return new YearlyDate(12, 25);
@@ -171,17 +172,17 @@ public final class HolidayManager {
             player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"));
         }
     }
-    
+
     public static class May4 extends Holiday {
-        
+
         @Override
         public YearlyDate getDate() {
             return new YearlyDate(5, 4);
         }
-        
+
         @Override
         public void onEvent(PlayerEntity player) {
-            String themedLines = getThemedLines(new EnumColor[] {EnumColor.BLACK, EnumColor.GRAY, EnumColor.BLACK, EnumColor.YELLOW, EnumColor.BLACK}, 15);
+            String themedLines = getThemedLines(new EnumColor[]{EnumColor.BLACK, EnumColor.GRAY, EnumColor.BLACK, EnumColor.YELLOW, EnumColor.BLACK}, 15);
             player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, MekanismLang.GENERIC_SQUARE_BRACKET.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM)));
             player.sendMessage(MekanismLang.MAY_4_LINE_ONE.translateColored(EnumColor.GRAY, EnumColor.DARK_BLUE, player.getName()));
             player.sendMessage(MekanismLang.HOLIDAY_BORDER.translate(themedLines, EnumColor.DARK_BLUE, "[=======]"));

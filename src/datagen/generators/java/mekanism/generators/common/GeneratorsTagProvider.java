@@ -1,6 +1,5 @@
 package mekanism.generators.common;
 
-import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.common.tags.MekanismTags;
 import mekanism.generators.common.registries.GeneratorsBlocks;

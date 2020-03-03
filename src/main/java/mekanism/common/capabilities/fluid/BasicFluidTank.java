@@ -64,7 +64,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
     }
 
     /**
-     * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(FluidStack)} should be used instead.
+     * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(FluidStack)} should be used
+     * instead.
      */
     protected FluidStack stored = FluidStack.EMPTY;
     private final Predicate<@NonNull FluidStack> validator;

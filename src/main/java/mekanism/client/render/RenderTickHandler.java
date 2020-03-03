@@ -1,10 +1,10 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Pos3D;
 import mekanism.common.ColorRGBA;
@@ -39,7 +39,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class RenderTickHandler {
 
     private static double HUD_SCALE = 0.6;
-    
+
     public static int modeSwitchTimer = 0;
     public Random rand = new Random();
     public Minecraft minecraft = Minecraft.getInstance();
@@ -95,22 +95,19 @@ public class RenderTickHandler {
                 if (minecraft.currentScreen == null && !minecraft.gameSettings.hideGUI && !player.isSpectator() && MekanismConfig.client.enableHUD.get()) {
                     int y = minecraft.getMainWindow().getScaledHeight();
                     boolean alignLeft = MekanismConfig.client.alignHUDLeft.get();
-                    
                     List<ITextComponent> renderStrings = new ArrayList<>();
-                    
                     for (EquipmentSlotType slotType : EquipmentSlotType.values()) {
                         ItemStack stack = player.getItemStackFromSlot(slotType);
-                        
                         if (stack.getItem() instanceof IItemHUDProvider) {
                             ((IItemHUDProvider) stack.getItem()).addHUDStrings(renderStrings, stack);
                         }
                     }
-                    
+
                     RenderSystem.pushMatrix();
                     RenderSystem.scaled(HUD_SCALE, HUD_SCALE, HUD_SCALE);
                     int start = 2 + renderStrings.size() * 9;
                     for (ITextComponent text : renderStrings) {
-                        drawString(text, alignLeft, (int)(y*(1/HUD_SCALE)) - start, 0xc8c8c8);
+                        drawString(text, alignLeft, (int) (y * (1 / HUD_SCALE)) - start, 0xc8c8c8);
                         start -= 9;
                     }
                     RenderSystem.popMatrix();

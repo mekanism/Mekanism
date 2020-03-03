@@ -1,10 +1,10 @@
 package mekanism.common.upgrade;
 
 import java.util.List;
+import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.base.ContainerEditMode;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 

@@ -1162,7 +1162,8 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     /**
-     * Lazily get and cache an IExtendedFluidHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null side
+     * Lazily get and cache an IExtendedFluidHandler instance for the given side, and make it be read only if something else is trying to interact with us using the null
+     * side
      */
     protected IExtendedFluidHandler getFluidHandler(@Nullable Direction side) {
         if (!canHandleFluid()) {

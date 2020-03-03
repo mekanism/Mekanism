@@ -137,17 +137,18 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
     public Material resolveTexture(@Nonnull String name) {
         return internal.resolveTexture(adjustTextureName(name));
     }
-    
+
     public static enum IconStatus {
         NO_ROTATION(0),
         ROTATE_270(270),
         NO_SHOW(0);
-        
+
         private float angle;
+
         private IconStatus(float angle) {
             this.angle = angle;
         }
-        
+
         public float getAngle() {
             return angle;
         }

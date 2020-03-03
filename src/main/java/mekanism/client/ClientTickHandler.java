@@ -140,7 +140,7 @@ public class ClientTickHandler {
     public void tickStart() {
         MekanismClient.ticksPassed++;
 
-        if(minecraft.world != null && firstTick) {
+        if (minecraft.world != null && firstTick) {
             MekanismClient.launchClient();
             firstTick = false;
         }

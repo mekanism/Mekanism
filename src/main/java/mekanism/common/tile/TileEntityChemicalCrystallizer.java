@@ -42,7 +42,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine<GasToItemStackRecipe> implements  ISideConfiguration, ITankManager,
+public class TileEntityChemicalCrystallizer extends TileEntityOperationalMachine<GasToItemStackRecipe> implements ISideConfiguration, ITankManager,
       IConfigCardAccess {
 
     public static final int MAX_GAS = 10_000;
