@@ -38,8 +38,6 @@ public class FluidTankFluidTank extends BasicFluidTank {
         return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getRate(automationType);
     }
 
-    //TODO: FluidHandler - Add proper handling to growStack, that then tries to use insertion into above tanks
-    // if there was some amount it was unable to fit in this tank?
     @Override
     public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
         FluidStack remainder;
@@ -65,6 +63,25 @@ public class FluidTankFluidTank extends BasicFluidTank {
             }
         }
         return remainder;
+    }
+
+    @Override
+    public int growStack(int amount, Action action) {
+        int grownAmount = super.growStack(amount, action);
+        if (amount > 0 && grownAmount < amount) {
+            //If we grew our stack less than we tried to and we were actually growing and not shrinking it
+            // try inserting into above tiles
+            if (!tile.getActive()) {
+                TileEntityFluidTank tileAbove = MekanismUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getWorld(), this.tile.getPos().up());
+                if (tileAbove != null) {
+                    int leftOverToInsert = amount - grownAmount;
+                    //Note: We do external so that it is not limited by the internal rate limits
+                    FluidStack remainder = tileAbove.fluidTank.insert(new FluidStack(stored, leftOverToInsert), action, AutomationType.EXTERNAL);
+                    grownAmount += leftOverToInsert - remainder.getAmount();
+                }
+            }
+        }
+        return grownAmount;
     }
 
     @Override
