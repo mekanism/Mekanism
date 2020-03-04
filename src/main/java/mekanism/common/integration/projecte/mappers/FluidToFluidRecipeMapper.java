@@ -37,13 +37,17 @@ public class FluidToFluidRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         FluidToFluidRecipe recipe = (FluidToFluidRecipe) iRecipe;
         for (FluidStack representation : recipe.getInput().getRepresentations()) {
             Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
             ingredientMap.put(NSSFluid.createFluid(representation), representation.getAmount());
             FluidStack recipeOutput = recipe.getOutput(representation);
-            mapper.addConversion(recipeOutput.getAmount(), NSSFluid.createFluid(recipeOutput), ingredientMap);
+            if (!recipeOutput.isEmpty()) {
+                mapper.addConversion(recipeOutput.getAmount(), NSSFluid.createFluid(recipeOutput), ingredientMap);
+                handled = true;
+            }
         }
-        return true;
+        return handled;
     }
 }

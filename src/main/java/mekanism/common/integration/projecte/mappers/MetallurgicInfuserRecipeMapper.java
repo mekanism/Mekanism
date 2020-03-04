@@ -41,6 +41,7 @@ public class MetallurgicInfuserRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         MetallurgicInfuserRecipe recipe = (MetallurgicInfuserRecipe) iRecipe;
         List<@NonNull InfusionStack> infuseTypeRepresentations = recipe.getInfusionInput().getRepresentations();
         List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
@@ -51,9 +52,12 @@ public class MetallurgicInfuserRecipeMapper implements IRecipeTypeMapper {
                 ingredientMap.put(nssInfuseType, infuseTypeRepresentation.getAmount());
                 ingredientMap.put(NSSItem.createItem(itemRepresentation), itemRepresentation.getCount());
                 ItemStack output = recipe.getOutput(infuseTypeRepresentation, itemRepresentation);
-                mapper.addConversion(output.getCount(), NSSItem.createItem(output), ingredientMap);
+                if (!output.isEmpty()) {
+                    mapper.addConversion(output.getCount(), NSSItem.createItem(output), ingredientMap);
+                    handled = true;
+                }
             }
         }
-        return true;
+        return handled;
     }
 }

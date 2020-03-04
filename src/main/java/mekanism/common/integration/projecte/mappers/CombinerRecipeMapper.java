@@ -39,6 +39,7 @@ public class CombinerRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         CombinerRecipe recipe = (CombinerRecipe) iRecipe;
         List<@NonNull ItemStack> mainRepresentations = recipe.getMainInput().getRepresentations();
         List<@NonNull ItemStack> extraRepresentations = recipe.getExtraInput().getRepresentations();
@@ -49,9 +50,12 @@ public class CombinerRecipeMapper implements IRecipeTypeMapper {
                 ingredientMap.put(nssMain, mainRepresentation.getCount());
                 ingredientMap.put(NSSItem.createItem(extraRepresentation), extraRepresentation.getCount());
                 ItemStack recipeOutput = recipe.getOutput(mainRepresentation, extraRepresentation);
-                mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap);
+                if (!recipeOutput.isEmpty()) {
+                    mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap);
+                    handled = true;
+                }
             }
         }
-        return true;
+        return handled;
     }
 }

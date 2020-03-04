@@ -2,6 +2,7 @@ package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
@@ -29,6 +30,9 @@ public class ItemStackToItemStackRecipeSerializer<T extends ItemStackToItemStack
                             JSONUtils.getJsonObject(json, "input");
         ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
         ItemStack output = SerializerHelper.getItemStack(json, "output");
+        if (output.isEmpty()) {
+            throw new JsonSyntaxException("Recipe output must not be empty.");
+        }
         return this.factory.create(recipeId, inputIngredient, output);
     }
 

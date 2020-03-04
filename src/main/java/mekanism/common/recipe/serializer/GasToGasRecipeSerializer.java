@@ -2,6 +2,7 @@ package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
@@ -29,6 +30,9 @@ public class GasToGasRecipeSerializer<T extends GasToGasRecipe> extends ForgeReg
                             JSONUtils.getJsonObject(json, "input");
         GasStackIngredient inputIngredient = GasStackIngredient.deserialize(input);
         GasStack output = SerializerHelper.getGasStack(json, "output");
+        if (output.isEmpty()) {
+            throw new JsonSyntaxException("Recipe output must not be empty.");
+        }
         return this.factory.create(recipeId, inputIngredient, output);
     }
 

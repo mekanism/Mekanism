@@ -40,6 +40,9 @@ public class RotaryRecipeSerializer<T extends RotaryRecipe> extends ForgeRegistr
             fluidInputIngredient = FluidStackIngredient.deserialize(fluidInput);
             gasOutput = SerializerHelper.getGasStack(json, "gasOutput");
             hasFluidToGas = true;
+            if (gasOutput.isEmpty()) {
+                throw new JsonSyntaxException("Rotary recipe gas output cannot be empty if it is defined.");
+            }
         }
         if (json.has("gasInput") || json.has("fluidOutput")) {
             JsonElement gasInput = JSONUtils.isJsonArray(json, "gasInput") ? JSONUtils.getJsonArray(json, "gasInput") :
@@ -47,6 +50,9 @@ public class RotaryRecipeSerializer<T extends RotaryRecipe> extends ForgeRegistr
             gasInputIngredient = GasStackIngredient.deserialize(gasInput);
             fluidOutput = SerializerHelper.getFluidStack(json, "fluidOutput");
             hasGasToFluid = true;
+            if (fluidOutput.isEmpty()) {
+                throw new JsonSyntaxException("Rotary recipe fluid output cannot be empty if it is defined.");
+            }
         }
         if (hasFluidToGas && hasGasToFluid) {
             return this.factory.create(recipeId, fluidInputIngredient, gasInputIngredient, gasOutput, fluidOutput);

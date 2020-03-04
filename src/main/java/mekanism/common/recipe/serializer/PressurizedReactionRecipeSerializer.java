@@ -63,13 +63,22 @@ public class PressurizedReactionRecipeSerializer<T extends PressurizedReactionRe
         GasStack gasOutput = GasStack.EMPTY;
         if (json.has("itemOutput")) {
             itemOutput = SerializerHelper.getItemStack(json, "itemOutput");
+            if (itemOutput.isEmpty()) {
+                throw new JsonSyntaxException("Reaction chamber item output must not be empty, if it is defined.");
+            }
             if (json.has("gasOutput")) {
                 //The gas is optional given we have an output item
                 gasOutput = SerializerHelper.getGasStack(json, "gasOutput");
+                if (gasOutput.isEmpty()) {
+                    throw new JsonSyntaxException("Reaction chamber gas output must not be empty, if it is defined.");
+                }
             }
         } else {
             //If we don't have an output item, we are required to have an output gas
             gasOutput = SerializerHelper.getGasStack(json, "gasOutput");
+            if (gasOutput.isEmpty()) {
+                throw new JsonSyntaxException("Reaction chamber gas output must not be empty, if there is no item output.");
+            }
         }
         return this.factory.create(recipeId, solidIngredient, fluidIngredient, gasIngredient, energyRequired, duration, itemOutput, gasOutput);
     }

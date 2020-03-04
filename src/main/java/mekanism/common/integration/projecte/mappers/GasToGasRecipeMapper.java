@@ -37,13 +37,17 @@ public class GasToGasRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         GasToGasRecipe recipe = (GasToGasRecipe) iRecipe;
         for (GasStack representation : recipe.getInput().getRepresentations()) {
             Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
             ingredientMap.put(NSSGas.createGas(representation), representation.getAmount());
             GasStack recipeOutput = recipe.getOutput(representation);
-            mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
+            if (!recipeOutput.isEmpty()) {
+                mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
+                handled = true;
+            }
         }
-        return true;
+        return handled;
     }
 }

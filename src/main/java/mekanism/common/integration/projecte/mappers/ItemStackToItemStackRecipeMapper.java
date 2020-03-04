@@ -37,13 +37,17 @@ public class ItemStackToItemStackRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         ItemStackToItemStackRecipe recipe = (ItemStackToItemStackRecipe) iRecipe;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
             Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
             ingredientMap.put(NSSItem.createItem(representation), representation.getCount());
             ItemStack recipeOutput = recipe.getOutput(representation);
-            mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap);
+            if (!recipeOutput.isEmpty()) {
+                mapper.addConversion(recipeOutput.getCount(), NSSItem.createItem(recipeOutput), ingredientMap);
+                handled = true;
+            }
         }
-        return true;
+        return handled;
     }
 }

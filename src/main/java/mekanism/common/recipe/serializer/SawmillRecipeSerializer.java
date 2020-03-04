@@ -36,6 +36,9 @@ public class SawmillRecipeSerializer<T extends SawmillRecipe> extends ForgeRegis
             if (json.has("mainOutput")) {
                 //Allow for the main output to be optional if we have a secondary output
                 mainOutput = SerializerHelper.getItemStack(json, "mainOutput");
+                if (mainOutput.isEmpty()) {
+                    throw new JsonSyntaxException("Sawmill main recipe output must not be empty, if it is defined.");
+                }
             }
             //If we have either json element for secondary information, assume we have both and fail if we can't get one of them
             JsonElement chance = json.get("secondaryChance");
@@ -47,9 +50,15 @@ public class SawmillRecipeSerializer<T extends SawmillRecipe> extends ForgeRegis
                 throw new JsonSyntaxException("Expected secondaryChance to be greater than zero, and less than or equal to one.");
             }
             secondaryOutput = SerializerHelper.getItemStack(json, "secondaryOutput");
+            if (secondaryOutput.isEmpty()) {
+                throw new JsonSyntaxException("Sawmill secondary recipe output must not be empty, if there is no main output.");
+            }
         } else {
             //If we don't have a secondary output require a main output
             mainOutput = SerializerHelper.getItemStack(json, "mainOutput");
+            if (mainOutput.isEmpty()) {
+                throw new JsonSyntaxException("Sawmill main recipe output must not be empty, if there is no secondary output.");
+            }
         }
         return this.factory.create(recipeId, inputIngredient, mainOutput, secondaryOutput, secondaryChance);
     }

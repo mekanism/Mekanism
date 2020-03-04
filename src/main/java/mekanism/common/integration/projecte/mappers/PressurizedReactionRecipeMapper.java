@@ -44,6 +44,7 @@ public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         PressurizedReactionRecipe recipe = (PressurizedReactionRecipe) iRecipe;
         List<@NonNull ItemStack> itemRepresentations = recipe.getInputSolid().getRepresentations();
         List<@NonNull FluidStack> fluidRepresentations = recipe.getInputFluid().getRepresentations();
@@ -63,10 +64,14 @@ public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
                     ingredientMap.put(nssGas, gasRepresentation.getAmount());
                     if (itemOutput.isEmpty()) {
                         //We only have a gas output
-                        mapper.addConversion(gasOutput.getAmount(), NSSGas.createGas(gasOutput), ingredientMap);
+                        if (!gasOutput.isEmpty()) {
+                            mapper.addConversion(gasOutput.getAmount(), NSSGas.createGas(gasOutput), ingredientMap);
+                            handled = true;
+                        }
                     } else if (gasOutput.isEmpty()) {
                         //We only have an item output
                         mapper.addConversion(itemOutput.getCount(), NSSItem.createItem(itemOutput), ingredientMap);
+                        handled = true;
                     } else {
                         NormalizedSimpleStack nssItemOutput = NSSItem.createItem(itemOutput);
                         NormalizedSimpleStack nssGasOutput = NSSGas.createGas(gasOutput);
@@ -81,10 +86,11 @@ public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
                         ingredientMap.put(nssGas, gasRepresentation.getAmount());
                         ingredientMap.put(nssItemOutput, -itemOutput.getCount());
                         mapper.addConversion(gasOutput.getAmount(), nssGasOutput, ingredientMap);
+                        handled = true;
                     }
                 }
             }
         }
-        return true;
+        return handled;
     }
 }

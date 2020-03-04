@@ -42,21 +42,25 @@ public class RotaryRecipeMapper implements IRecipeTypeMapper {
         RotaryRecipe recipe = (RotaryRecipe) iRecipe;
         boolean handled = false;
         if (recipe.hasFluidToGas()) {
-            handled = true;
             for (FluidStack representation : recipe.getFluidInput().getRepresentations()) {
                 Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
                 ingredientMap.put(NSSFluid.createFluid(representation), representation.getAmount());
                 GasStack recipeOutput = recipe.getGasOutput(representation);
-                mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
+                if (!recipeOutput.isEmpty()) {
+                    mapper.addConversion(recipeOutput.getAmount(), NSSGas.createGas(recipeOutput), ingredientMap);
+                    handled = true;
+                }
             }
         }
         if (recipe.hasGasToFluid()) {
-            handled = true;
             for (GasStack representation : recipe.getGasInput().getRepresentations()) {
                 Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
                 ingredientMap.put(NSSGas.createGas(representation), representation.getAmount());
                 FluidStack recipeOutput = recipe.getFluidOutput(representation);
-                mapper.addConversion(recipeOutput.getAmount(), NSSFluid.createFluid(recipeOutput), ingredientMap);
+                if (!recipeOutput.isEmpty()) {
+                    mapper.addConversion(recipeOutput.getAmount(), NSSFluid.createFluid(recipeOutput), ingredientMap);
+                    handled = true;
+                }
             }
         }
         return handled;

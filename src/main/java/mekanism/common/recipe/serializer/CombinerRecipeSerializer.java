@@ -2,6 +2,7 @@ package mekanism.common.recipe.serializer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.CombinerRecipe;
@@ -32,6 +33,9 @@ public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeReg
                                  JSONUtils.getJsonObject(json, "extraInput");
         ItemStackIngredient extraIngredient = ItemStackIngredient.deserialize(extraInput);
         ItemStack output = SerializerHelper.getItemStack(json, "output");
+        if (output.isEmpty()) {
+            throw new JsonSyntaxException("Combiner recipe output must not be empty.");
+        }
         return this.factory.create(recipeId, mainIngredient, extraIngredient, output);
     }
 

@@ -41,6 +41,7 @@ public class FluidGasToGasRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         FluidGasToGasRecipe recipe = (FluidGasToGasRecipe) iRecipe;
         List<@NonNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
         List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
@@ -51,9 +52,12 @@ public class FluidGasToGasRecipeMapper implements IRecipeTypeMapper {
                 ingredientMap.put(nssFluid, fluidRepresentation.getAmount());
                 ingredientMap.put(NSSGas.createGas(gasRepresentation), gasRepresentation.getAmount());
                 GasStack output = recipe.getOutput(fluidRepresentation, gasRepresentation);
-                mapper.addConversion(output.getAmount(), NSSGas.createGas(output), ingredientMap);
+                if (!output.isEmpty()) {
+                    mapper.addConversion(output.getAmount(), NSSGas.createGas(output), ingredientMap);
+                    handled = true;
+                }
             }
         }
-        return true;
+        return handled;
     }
 }

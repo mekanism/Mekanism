@@ -39,13 +39,17 @@ public class ItemStackToInfuseTypeRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         ItemStackToInfuseTypeRecipe recipe = (ItemStackToInfuseTypeRecipe) iRecipe;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
             Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
             ingredientMap.put(NSSItem.createItem(representation), representation.getCount());
             InfusionStack recipeOutput = recipe.getOutput(representation);
-            mapper.addConversion(recipeOutput.getAmount(), NSSInfuseType.createInfuseType(recipeOutput), ingredientMap);
+            if (!recipeOutput.isEmpty()) {
+                mapper.addConversion(recipeOutput.getAmount(), NSSInfuseType.createInfuseType(recipeOutput), ingredientMap);
+                handled = true;
+            }
         }
-        return true;
+        return handled;
     }
 }

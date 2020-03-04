@@ -42,6 +42,9 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
                 throw new JsonSyntaxException("Expected energyMultiplier to be at least one.");
             }
         }
+        if (leftGasOutput.isEmpty() || rightGasOutput.isEmpty()) {
+            throw new JsonSyntaxException("Electrolysis recipe outputs must not be empty.");
+        }
         return this.factory.create(recipeId, inputIngredient, energyMultiplier, leftGasOutput, rightGasOutput);
     }
 

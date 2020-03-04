@@ -42,6 +42,7 @@ public class ItemStackGasToItemStackRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         ItemStackGasToItemStackRecipe recipe = (ItemStackGasToItemStackRecipe) iRecipe;
         List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
         List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
@@ -53,9 +54,12 @@ public class ItemStackGasToItemStackRecipeMapper implements IRecipeTypeMapper {
                 ingredientMap.put(nssItem, itemRepresentation.getCount());
                 ingredientMap.put(NSSGas.createGas(gasRepresentation), gasRepresentation.getAmount() * gasMultiplier);
                 ItemStack output = recipe.getOutput(itemRepresentation, gasRepresentation);
-                mapper.addConversion(output.getCount(), NSSItem.createItem(output), ingredientMap);
+                if (!output.isEmpty()) {
+                    mapper.addConversion(output.getCount(), NSSItem.createItem(output), ingredientMap);
+                    handled = true;
+                }
             }
         }
-        return true;
+        return handled;
     }
 }

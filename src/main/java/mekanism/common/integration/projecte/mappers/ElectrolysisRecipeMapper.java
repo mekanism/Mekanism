@@ -42,6 +42,7 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
+        boolean handled = false;
         ElectrolysisRecipe recipe = (ElectrolysisRecipe) iRecipe;
         FluidStackIngredient input = recipe.getInput();
         for (FluidStack representation : input.getRepresentations()) {
@@ -49,19 +50,22 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
             Pair<@NonNull GasStack, @NonNull GasStack> output = recipe.getOutput(representation);
             GasStack leftOutput = output.getLeft();
             GasStack rightOutput = output.getRight();
-            NormalizedSimpleStack nssLeftOutput = NSSGas.createGas(leftOutput);
-            NormalizedSimpleStack nssRightOutput = NSSGas.createGas(rightOutput);
-            //Add trying to calculate left output (using it as if we needed negative of right output)
-            Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
-            ingredientMap.put(nssInput, representation.getAmount());
-            ingredientMap.put(nssRightOutput, -rightOutput.getAmount());
-            mapper.addConversion(leftOutput.getAmount(), nssLeftOutput, ingredientMap);
-            //Add trying to calculate right output (using it as if we needed negative of left output)
-            ingredientMap = new HashMap<>();
-            ingredientMap.put(nssInput, representation.getAmount());
-            ingredientMap.put(nssLeftOutput, -leftOutput.getAmount());
-            mapper.addConversion(rightOutput.getAmount(), nssRightOutput, ingredientMap);
+            if (!leftOutput.isEmpty() && !rightOutput.isEmpty()) {
+                NormalizedSimpleStack nssLeftOutput = NSSGas.createGas(leftOutput);
+                NormalizedSimpleStack nssRightOutput = NSSGas.createGas(rightOutput);
+                //Add trying to calculate left output (using it as if we needed negative of right output)
+                Map<NormalizedSimpleStack, Integer> ingredientMap = new HashMap<>();
+                ingredientMap.put(nssInput, representation.getAmount());
+                ingredientMap.put(nssRightOutput, -rightOutput.getAmount());
+                mapper.addConversion(leftOutput.getAmount(), nssLeftOutput, ingredientMap);
+                //Add trying to calculate right output (using it as if we needed negative of left output)
+                ingredientMap = new HashMap<>();
+                ingredientMap.put(nssInput, representation.getAmount());
+                ingredientMap.put(nssLeftOutput, -leftOutput.getAmount());
+                mapper.addConversion(rightOutput.getAmount(), nssRightOutput, ingredientMap);
+                handled = true;
+            }
         }
-        return true;
+        return handled;
     }
 }

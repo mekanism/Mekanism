@@ -60,6 +60,7 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
             primaryMultiplier = multiplier.getNumerator();
             secondaryMultiplier = multiplier.getDenominator();
         }
+        boolean handled = false;
         for (ItemStack representation : input.getRepresentations()) {
             ChanceOutput output = recipe.getOutput(representation);
             ItemStack mainOutput = output.getMainOutput();
@@ -69,11 +70,15 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
             if (secondaryOutput.isEmpty()) {
                 //We only have a main output
                 ingredientMap.put(nssInput, representation.getCount());
-                mapper.addConversion(mainOutput.getCount(), NSSItem.createItem(mainOutput), ingredientMap);
+                if (!mainOutput.isEmpty()) {
+                    mapper.addConversion(mainOutput.getCount(), NSSItem.createItem(mainOutput), ingredientMap);
+                    handled = true;
+                }
             } else if (mainOutput.isEmpty()) {
                 //We only have a secondary output
                 ingredientMap.put(nssInput, representation.getCount() * primaryMultiplier);
                 mapper.addConversion(secondaryOutput.getCount() * secondaryMultiplier, NSSItem.createItem(secondaryOutput), ingredientMap);
+                handled = true;
             } else {
                 NormalizedSimpleStack nssMainOutput = NSSItem.createItem(mainOutput);
                 NormalizedSimpleStack nssSecondaryOutput = NSSItem.createItem(secondaryOutput);
@@ -87,8 +92,9 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
                 ingredientMap.put(nssInput, representation.getCount() * primaryMultiplier);
                 ingredientMap.put(nssMainOutput, -mainOutput.getCount() * primaryMultiplier);
                 mapper.addConversion(secondaryOutput.getCount() * secondaryMultiplier, nssSecondaryOutput, ingredientMap);
+                handled = true;
             }
         }
-        return true;
+        return handled;
     }
 }
