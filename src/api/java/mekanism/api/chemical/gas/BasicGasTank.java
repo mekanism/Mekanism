@@ -40,6 +40,13 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
         return new BasicGasTank(capacity, manualOnly, alwaysTrueBi, validator, gasHandler);
     }
 
+    public static BasicGasTank input(int capacity, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
+        //TODO: Validate capacity is positive
+        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
+        Objects.requireNonNull(validator, "Gas validity check cannot be null");
+        return new BasicGasTank(capacity, alwaysTrue, canInsert, validator, gasHandler);
+    }
+
     public static BasicGasTank output(int capacity, @Nullable IMekanismGasHandler gasHandler) {
         //TODO: Validate capacity is positive
         return new BasicGasTank(capacity, alwaysTrueBi, internalOnly, alwaysTrue, gasHandler);

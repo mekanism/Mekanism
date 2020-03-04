@@ -5,12 +5,14 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalInfuserCachedRecipe;
+import mekanism.api.recipes.inputs.GasStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -65,14 +67,27 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITa
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(leftTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this), RelativeSide.LEFT);
-        builder.addTank(rightTank = BasicGasTank.input(MAX_GAS, this::isValidGas, this), RelativeSide.RIGHT);
+        builder.addTank(leftTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, rightTank), this::isValidGas, this), RelativeSide.LEFT);
+        builder.addTank(rightTank = BasicGasTank.input(MAX_GAS, gas -> isValidGas(gas, leftTank), this::isValidGas, this), RelativeSide.RIGHT);
         builder.addTank(centerTank = BasicGasTank.output(MAX_GAS, this), RelativeSide.FRONT);
         return builder.build();
     }
 
     private boolean isValidGas(@Nonnull Gas gas) {
         return containsRecipe(recipe -> recipe.getLeftInput().testType(gas) || recipe.getRightInput().testType(gas));
+    }
+
+    private boolean isValidGas(@Nonnull Gas gas, IChemicalTank<Gas, GasStack> otherTank) {
+        if (otherTank.isEmpty()) {
+            //If the other tank is empty, don't limit what can enter our tank based on it
+            return true;
+        }
+        GasStack stack = otherTank.getStack();
+        return containsRecipe(recipe -> {
+            GasStackIngredient leftInput = recipe.getLeftInput();
+            GasStackIngredient rightInput = recipe.getRightInput();
+            return rightInput.testType(gas) && leftInput.testType(stack) || leftInput.testType(gas) && rightInput.testType(stack);
+        });
     }
 
     @Nonnull
