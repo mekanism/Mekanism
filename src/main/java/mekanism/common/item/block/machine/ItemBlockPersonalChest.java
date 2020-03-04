@@ -5,8 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.machine.BlockPersonalChest;
-import mekanism.common.capabilities.ItemCapabilityWrapper;
-import mekanism.common.integration.forgeenergy.ForgeEnergyItemWrapper;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
 import mekanism.common.item.IItemSustainedInventory;
@@ -21,7 +19,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -29,7 +26,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockPersonalChest> implements IItemSustainedInventory, ISecurityItem {
@@ -67,10 +63,5 @@ public class ItemBlockPersonalChest extends ItemBlockAdvancedTooltip<BlockPerson
             }
         }
         return new ActionResult<>(ActionResultType.PASS, stack);
-    }
-
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, new ForgeEnergyItemWrapper());
     }
 }
