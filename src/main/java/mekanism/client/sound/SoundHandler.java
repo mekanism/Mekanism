@@ -1,17 +1,18 @@
 package mekanism.client.sound;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Upgrade;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IUpgradeTile;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -199,7 +200,7 @@ public class SoundHandler {
         // Choose an interval between 60-80 ticks (3-4 seconds) to check for muffling changes. We do this
         // to ensure that not every tile sound tries to run on the same tick and thus create
         // uneven spikes of CPU usage
-        private int checkInterval = 60 + ThreadLocalRandom.current().nextInt(20);
+        private int checkInterval = 20 + ThreadLocalRandom.current().nextInt(20);
 
         TileTickableSound(SoundEvent soundEvent, SoundCategory category, BlockPos pos, float volume) {
             super(soundEvent, category);
@@ -209,7 +210,7 @@ public class SoundHandler {
             this.y = pos.getY() + 0.5F;
             this.z = pos.getZ() + 0.5F;
             //Hold off on setting volume until after we set the position
-            this.volume = this.originalVolume * getMufflingFactor();
+            this.volume = this.originalVolume * getTileVolumeFactor();
             this.repeat = true;
             this.repeatDelay = 0;
         }
@@ -230,29 +231,36 @@ public class SoundHandler {
 
                 if (s == this) {
                     // No filtering done, use the original sound's volume
-                    volume = originalVolume * getMufflingFactor();
+                    volume = originalVolume * getTileVolumeFactor();
                 } else if (s == null) {
                     // Full on mute; go ahead and shutdown
                     donePlaying = true;
                 } else {
                     // Altered sound returned; adjust volume
-                    volume = s.getVolume() * getMufflingFactor();
+                    volume = s.getVolume() * getTileVolumeFactor();
                 }
             }
         }
 
-        private float getMufflingFactor() {
+        private float getTileVolumeFactor() {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
             TileEntity tile = MekanismUtils.getTileEntity(Minecraft.getInstance().world, new BlockPos(getX(), getY(), getZ()));
+            float retVolume = 1.0F;
+
             if (tile instanceof IUpgradeTile) {
                 IUpgradeTile upgradeTile = (IUpgradeTile) tile;
                 if (upgradeTile.supportsUpgrades() && upgradeTile.getComponent().supports(Upgrade.MUFFLING)) {
                     int mufflerCount = upgradeTile.getComponent().getUpgrades(Upgrade.MUFFLING);
-                    return 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
+                    retVolume = 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
                 }
             }
-            return 1.0F;
+
+            if (tile instanceof ITileSound) {
+                retVolume *= ((ITileSound) tile).getVolume();
+            }
+
+            return retVolume;
         }
 
         @Override

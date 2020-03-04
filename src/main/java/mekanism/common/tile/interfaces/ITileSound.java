@@ -12,6 +12,10 @@ public interface ITileSound {
         return 1.0F;
     }
 
+    default float getVolume() {
+        return 1.0F;
+    }
+    
     default SoundCategory getSoundCategory() {
         return SoundCategory.BLOCKS;
     }

@@ -29,7 +29,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     public double energyUsage = 100;
     private double temperature;
     public double heatToAbsorb = 0;
-    //TODO: Figure out sound
     public float soundScale = 1;
     public double lastEnvironmentLoss;
 
@@ -110,6 +109,11 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
             temperature = dataStream.readDouble();
             soundScale = dataStream.readFloat();
         }
+    }
+
+    @Override
+    public float getVolume() {
+        return (float)Math.sqrt(soundScale);
     }
 
     @Override
