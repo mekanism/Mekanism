@@ -505,7 +505,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
         def prevCommit = System.getenv("GIT_PREVIOUS_SUCCESSFUL_COMMIT") ?: System.getenv("GIT_PREVIOUS_COMMIT")
 
         if (currentCommit != null && prevCommit != null) {
-            generatedChangelog = "<pre>"
+            generatedChangelog = ""
             grgit.log {
                 range(prevCommit, currentCommit)
             }.reverse().each { commit ->
@@ -515,10 +515,12 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
                         return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
                     })
+                    if (generatedChangelog != "") {
+                        generatedChangelog += "<br>"
+                    }
                     generatedChangelog += "<a href=\"https://github.com/mekanism/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
                 }
             }
-            generatedChangelog += "</pre>"
             println "Changelog generated"
         }
 
