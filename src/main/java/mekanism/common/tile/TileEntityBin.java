@@ -144,7 +144,7 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     @Override
     public void markDirty() {
         super.markDirty();
-        if (!isRemote()) {
+        if (world != null && !isRemote()) {
             Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
