@@ -8,6 +8,7 @@ import mekanism.client.gui.GuiPortableTeleporter;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonProxy;
+import mekanism.common.HolidayManager;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketPortableTeleporter;

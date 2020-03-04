@@ -2,7 +2,7 @@ package mekanism.common.content.machines;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;
-import mekanism.client.HolidayManager;
+import mekanism.common.HolidayManager;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.SoundEventRegistryObject;

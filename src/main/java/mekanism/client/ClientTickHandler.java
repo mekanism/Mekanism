@@ -13,6 +13,7 @@ import mekanism.api.IClientTicker;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.common.CommonPlayerTickHandler;
+import mekanism.common.HolidayManager;
 import mekanism.common.KeySync;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -166,7 +167,7 @@ public class ClientTickHandler {
 
         if (minecraft.world != null && minecraft.player != null && !Mekanism.proxy.isPaused()) {
             if (!initHoliday || MekanismClient.ticksPassed % 1200 == 0) {
-                HolidayManager.check();
+                HolidayManager.check(Minecraft.getInstance().player);
                 initHoliday = true;
             }
 

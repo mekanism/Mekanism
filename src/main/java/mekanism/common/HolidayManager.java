@@ -1,15 +1,12 @@
-package mekanism.client;
+package mekanism.common;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundEvent;
 
@@ -29,14 +26,14 @@ public final class HolidayManager {
         Mekanism.logger.info("Initialized HolidayManager.");
     }
 
-    public static void check() {
+    public static void check(PlayerEntity player) {
         try {
             YearlyDate date = getDate();
 
             for (Holiday holiday : holidays) {
                 if (!holidaysNotified.contains(holiday)) {
                     if (holiday.getDate().equals(date)) {
-                        holiday.onEvent(Minecraft.getInstance().player);
+                        holiday.onEvent(player);
                         holidaysNotified.add(holiday);
                     }
                 }

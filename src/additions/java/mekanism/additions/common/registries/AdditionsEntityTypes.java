@@ -1,11 +1,11 @@
 package mekanism.additions.common.registries;
 
 import mekanism.additions.common.MekanismAdditions;
+import mekanism.additions.common.entity.EntityBalloon;
+import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
 import mekanism.additions.common.entity.baby.EntityBabySkeleton;
-import mekanism.additions.common.entity.EntityBalloon;
-import mekanism.additions.common.entity.EntityObsidianTNT;
 import mekanism.additions.common.entity.baby.EntityBabyStray;
 import mekanism.additions.common.entity.baby.EntityBabyWitherSkeleton;
 import mekanism.common.registration.impl.EntityTypeDeferredRegister;
