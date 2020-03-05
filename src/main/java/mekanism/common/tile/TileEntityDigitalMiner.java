@@ -201,7 +201,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                             }
 
                             BlockPos coordPos = coord.getPos();
-                            if (!world.isBlockLoaded(coordPos)) {
+                            if (!world.isBlockPresent(coordPos)) {
                                 set.clear(index);
                                 if (set.cardinality() == 0) {
                                     it.remove();
@@ -942,9 +942,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             }
             if (searcher.state == State.SEARCHING) {
                 return searcher.found;
-            } else {
-                return getSize();
             }
+            return getSize();
         }, value -> clientToMine = value));
         container.track(SyncableItemStack.create(() -> missingStack, value -> missingStack = value));
     }

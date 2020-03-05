@@ -980,8 +980,9 @@ public final class MekanismUtils {
     public static boolean isBlockLoaded(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
         if (world == null) {
             return false;
-        }
-        if (world instanceof IWorldReader) {
+        } else if (world instanceof World) {
+            return ((World) world).isBlockPresent(pos);
+        } else if (world instanceof IWorldReader) {
             return ((IWorldReader) world).isBlockLoaded(pos);
         }
         return true;

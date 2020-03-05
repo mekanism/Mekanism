@@ -214,7 +214,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             if (ticksExisted % 20 == 0) {
                 World serverWorld = ServerLifecycleHooks.getCurrentServer().getWorld(homeLocation.dimension);
                 BlockPos homePos = homeLocation.getPos();
-                if (serverWorld.isBlockLoaded(homePos)) {
+                if (serverWorld.isBlockPresent(homePos)) {
                     if (MekanismUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {
                         drop();
                         remove();
