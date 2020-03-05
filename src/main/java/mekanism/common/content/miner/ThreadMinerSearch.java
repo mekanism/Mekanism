@@ -55,7 +55,7 @@ public class ThreadMinerSearch extends Thread {
             state = State.FINISHED;
             return;
         }
-        Coord4D coord = tile.getStartingCoord();
+        BlockPos pos = tile.getStartingPos();
         int diameter = tile.getDiameter();
         int size = tile.getTotalSize();
         Block info;
@@ -66,9 +66,9 @@ public class ThreadMinerSearch extends Thread {
                 //Make sure the miner is still valid and something hasn't gone wrong
                 return;
             }
-            int x = coord.x + i % diameter;
-            int z = coord.z + (i / diameter) % diameter;
-            int y = coord.y + (i / diameter / diameter);
+            int x = pos.getX() + i % diameter;
+            int z = pos.getZ() + (i / diameter) % diameter;
+            int y = pos.getY() + (i / diameter / diameter);
             if (minerPos.getX() == x && minerPos.getY() == y && minerPos.getZ() == z) {
                 //Skip the miner itself
                 continue;

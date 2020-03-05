@@ -48,6 +48,13 @@ public class BasicInventorySlot implements IInventorySlot {
         return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, inventory, x, y);
     }
 
+    public static BasicInventorySlot at(BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert,
+          @Nullable IMekanismInventory inventory, int x, int y) {
+        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
+        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
+        return new BasicInventorySlot(canExtract, canInsert, alwaysTrue, inventory, x, y);
+    }
+
     /**
      * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(ItemStack)} should be used
      * instead.

@@ -2,7 +2,6 @@ package mekanism.common.util;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.block.BlockState;
@@ -15,8 +14,7 @@ import net.minecraft.world.storage.loot.LootParameters;
 
 public final class MinerUtils {
 
-    public static List<ItemStack> getDrops(ServerWorld world, Coord4D coord, boolean silk, BlockPos minerPosition) {
-        BlockPos pos = coord.getPos();
+    public static List<ItemStack> getDrops(ServerWorld world, BlockPos pos, boolean silk, BlockPos minerPosition) {
         BlockState state = world.getBlockState(pos);
         if (state.isAir(world, pos)) {
             return Collections.emptyList();

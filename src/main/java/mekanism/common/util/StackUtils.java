@@ -3,14 +3,19 @@ package mekanism.common.util;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class StackUtils {
@@ -98,16 +103,14 @@ public final class StackUtils {
      * Get state for placement for a generic item, with our fake player
      *
      * @param stack  the item to place
-     * @param world  which universe
      * @param pos    where
      * @param player our fake player, usually
      *
-     * @return the result of {@link Block#getStateForPlacement(BlockItemUseContext)} float, int, net.minecraft.entity.LivingEntity, net.minecraft.util.Hand)}
+     * @return the result of {@link Block#getStateForPlacement(BlockItemUseContext)}, or null if it cannot be placed in that location
      */
-    @Nonnull
-    public static BlockState getStateForPlacement(ItemStack stack, World world, BlockPos pos, PlayerEntity player) {
-        Block blockFromItem = Block.getBlockFromItem(stack.getItem());
-        //TODO: Fix this
-        return blockFromItem.getDefaultState();//.getStateForPlacement(world, pos, Direction.UP, 0, 0, 0, stack.getMetadata(), player, Hand.MAIN_HAND);
+    @Nullable
+    public static BlockState getStateForPlacement(ItemStack stack, BlockPos pos, PlayerEntity player) {
+        return Block.getBlockFromItem(stack.getItem()).getStateForPlacement(new BlockItemUseContext(new ItemUseContext(player, Hand.MAIN_HAND,
+              new BlockRayTraceResult(Vec3d.ZERO, Direction.UP, pos, false))));
     }
 }
