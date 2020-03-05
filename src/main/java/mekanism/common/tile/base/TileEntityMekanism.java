@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -11,6 +10,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
@@ -781,8 +781,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     // As other ones are being handled this is becoming less of a problem, as things like multiblocks are returning no slots accessible for when they are not formed
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
-        //TODO: Disable these caps if it is not electric?
-        if (isElectric() && (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY)) {
+        if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY) {
             return side != null && !canReceiveEnergy(side) && !canOutputEnergy(side);
         }
         return false;

@@ -52,7 +52,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Override
     public boolean canReceiveEnergy(Direction side) {
-        return (structure != null && !getActive());
+        return structure != null && !getActive();
     }
 
     @Override
@@ -96,6 +96,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        if (isCapabilityDisabled(capability, side)) {
+            return LazyOptional.empty();
+        }
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
