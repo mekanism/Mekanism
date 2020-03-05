@@ -7,7 +7,7 @@ import mekanism.api.block.IHasModel;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.IStateFluidLoggable;
-import mekanism.common.content.machines.Machine.FactoryMachine;
+import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.BlockState;
 

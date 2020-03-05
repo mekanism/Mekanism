@@ -3,7 +3,7 @@ package mekanism.common.item.block.machine;
 import javax.annotation.Nonnull;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.block.machine.prefab.BlockMachine;
-import mekanism.common.content.machines.Machine;
+import mekanism.common.content.blocktype.Machine;
 import mekanism.common.item.IItemEnergized;
 import mekanism.common.item.IItemSustainedInventory;
 import mekanism.common.security.ISecurityItem;

@@ -68,7 +68,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             if (ticker % 20 == 0) {
                 // Recalculate the current multiplier once a second
                 currentMultiplier = getMultiplier();
-                setActive(currentMultiplier > 0);
+                setActive(MekanismUtils.canFunction(this) && currentMultiplier > 0);
             }
             if (getActive()) {
                 setEnergy(getEnergy() + (MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier));
@@ -90,7 +90,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             final float maxG = (float) MekanismGeneratorsConfig.generators.windGenerationMax.get();
             final float slope = (maxG - minG) / (maxY - minY);
             final float intercept = minG - slope * minY;
-            final float clampedY = Math.min(maxY, Math.max(minY, (float) (getPos().getY() + 4)));
+            final float clampedY = Math.min(maxY, Math.max(minY, getPos().getY() + 4));
             final float toGen = slope * clampedY + intercept;
             return toGen / minG;
         }

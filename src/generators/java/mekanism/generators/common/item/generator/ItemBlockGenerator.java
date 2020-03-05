@@ -1,6 +1,8 @@
 package mekanism.generators.common.item.generator;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -16,9 +18,9 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
-import mekanism.generators.client.render.item.GeneratorsISTERProvider;
-import mekanism.generators.common.block.BlockHeatGenerator;
+import mekanism.generators.common.block.BlockGenerator;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,10 +31,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemBlockHeatGenerator extends ItemBlockAdvancedTooltip<BlockHeatGenerator> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
+public class ItemBlockGenerator extends ItemBlockAdvancedTooltip<BlockGenerator<?>> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
-    public ItemBlockHeatGenerator(BlockHeatGenerator block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(GeneratorsISTERProvider::heat));
+    public ItemBlockGenerator(BlockGenerator<?> block) {
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+    }
+
+    public ItemBlockGenerator(BlockGenerator<?> block, Supplier<Callable<ItemStackTileEntityRenderer>> renderer) {
+        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(renderer));
     }
 
     @Override
@@ -50,8 +56,8 @@ public class ItemBlockHeatGenerator extends ItemBlockAdvancedTooltip<BlockHeatGe
     @Override
     public double getMaxEnergy(ItemStack itemStack) {
         Item item = itemStack.getItem();
-        if (item instanceof ItemBlockHeatGenerator) {
-            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockHeatGenerator) item).getBlock().getStorage());
+        if (item instanceof ItemBlockGenerator) {
+            return MekanismUtils.getMaxEnergy(itemStack, ((ItemBlockGenerator) item).getBlock().getStorage());
         }
         return 0;
     }

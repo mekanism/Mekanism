@@ -1,7 +1,7 @@
 package mekanism.generators.client.render.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.generators.client.model.ModelBioGenerator;
@@ -19,6 +19,7 @@ public class RenderBioGeneratorItem extends MekanismItemStackRenderer {
     public void renderBlockSpecific(@Nonnull ItemStack stack, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight,
           TransformType transformType) {
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+        matrix.rotate(Vector3f.YP.rotationDegrees(180));
         matrix.translate(0, -1, 0);
         bioGenerator.render(matrix, renderer, light, overlayLight);
     }

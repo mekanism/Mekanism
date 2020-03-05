@@ -1,8 +1,8 @@
 package mekanism.generators.client.render.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.List;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.generators.client.model.ModelWindGenerator;
@@ -37,11 +37,6 @@ public class RenderWindGeneratorItem extends MekanismItemStackRenderer {
             matrix.scale(2, 2, 2);
             matrix.translate(0, -0.4, 0);
         } else {
-            if (transformType == TransformType.GUI) {
-                matrix.rotate(Vector3f.YP.rotationDegrees(90));
-            } else if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                matrix.rotate(Vector3f.YP.rotationDegrees(180));
-            }
             matrix.translate(0, 0.4, 0);
         }
 

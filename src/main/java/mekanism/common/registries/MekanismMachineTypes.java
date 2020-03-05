@@ -5,10 +5,10 @@ import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.machines.BlockShapes;
-import mekanism.common.content.machines.Machine;
-import mekanism.common.content.machines.Machine.FactoryMachine;
-import mekanism.common.content.machines.Machine.MachineBuilder;
+import mekanism.common.content.blocktype.BlockShapes;
+import mekanism.common.content.blocktype.Machine;
+import mekanism.common.content.blocktype.Machine.FactoryMachine;
+import mekanism.common.content.blocktype.Machine.MachineBuilder;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.tile.DigitalMinerContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
@@ -35,7 +35,7 @@ import mekanism.common.tile.TileEntityPurificationChamber;
 import mekanism.common.tile.TileEntityRotaryCondensentrator;
 import mekanism.common.util.text.TextComponentUtil;
 
-public class MekanismMachines {
+public class MekanismMachineTypes {
 
     // Enrichment Chamber
     public static final FactoryMachine<TileEntityEnrichmentChamber> ENRICHMENT_CHAMBER = MachineBuilder

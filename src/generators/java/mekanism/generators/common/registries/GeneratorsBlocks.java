@@ -5,13 +5,9 @@ import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
+import mekanism.generators.client.render.item.GeneratorsISTERProvider;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.block.BlockAdvancedSolarGenerator;
-import mekanism.generators.common.block.BlockBioGenerator;
-import mekanism.generators.common.block.BlockGasBurningGenerator;
-import mekanism.generators.common.block.BlockHeatGenerator;
-import mekanism.generators.common.block.BlockSolarGenerator;
-import mekanism.generators.common.block.BlockWindGenerator;
+import mekanism.generators.common.block.BlockGenerator;
 import mekanism.generators.common.block.reactor.BlockLaserFocusMatrix;
 import mekanism.generators.common.block.reactor.BlockReactorController;
 import mekanism.generators.common.block.reactor.BlockReactorFrame;
@@ -26,14 +22,17 @@ import mekanism.generators.common.block.turbine.BlockTurbineRotor;
 import mekanism.generators.common.block.turbine.BlockTurbineValve;
 import mekanism.generators.common.block.turbine.BlockTurbineVent;
 import mekanism.generators.common.item.generator.ItemBlockAdvancedSolarGenerator;
-import mekanism.generators.common.item.generator.ItemBlockBioGenerator;
-import mekanism.generators.common.item.generator.ItemBlockGasBurningGenerator;
-import mekanism.generators.common.item.generator.ItemBlockHeatGenerator;
-import mekanism.generators.common.item.generator.ItemBlockSolarGenerator;
+import mekanism.generators.common.item.generator.ItemBlockGenerator;
 import mekanism.generators.common.item.generator.ItemBlockTurbineCasing;
 import mekanism.generators.common.item.generator.ItemBlockTurbineValve;
 import mekanism.generators.common.item.generator.ItemBlockTurbineVent;
 import mekanism.generators.common.item.generator.ItemBlockWindGenerator;
+import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.tile.TileEntityBioGenerator;
+import mekanism.generators.common.tile.TileEntityGasGenerator;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import mekanism.generators.common.tile.TileEntitySolarGenerator;
+import mekanism.generators.common.tile.TileEntityWindGenerator;
 import net.minecraft.block.Block;
 
 public class GeneratorsBlocks {
@@ -42,12 +41,12 @@ public class GeneratorsBlocks {
     // A block that can be used to both block Fusion Reactor radiation and assist in the production of Tritium.
     public static BlockDeferredRegister BLOCKS = new BlockDeferredRegister(MekanismGenerators.MODID);
 
-    public static final BlockRegistryObject<BlockHeatGenerator, ItemBlockHeatGenerator> HEAT_GENERATOR = BLOCKS.register("heat_generator", BlockHeatGenerator::new, ItemBlockHeatGenerator::new);
-    public static final BlockRegistryObject<BlockSolarGenerator, ItemBlockSolarGenerator> SOLAR_GENERATOR = BLOCKS.register("solar_generator", BlockSolarGenerator::new, ItemBlockSolarGenerator::new);
-    public static final BlockRegistryObject<BlockGasBurningGenerator, ItemBlockGasBurningGenerator> GAS_BURNING_GENERATOR = BLOCKS.register("gas_burning_generator", BlockGasBurningGenerator::new, ItemBlockGasBurningGenerator::new);
-    public static final BlockRegistryObject<BlockBioGenerator, ItemBlockBioGenerator> BIO_GENERATOR = BLOCKS.register("bio_generator", BlockBioGenerator::new, ItemBlockBioGenerator::new);
-    public static final BlockRegistryObject<BlockAdvancedSolarGenerator, ItemBlockAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = BLOCKS.register("advanced_solar_generator", BlockAdvancedSolarGenerator::new, ItemBlockAdvancedSolarGenerator::new);
-    public static final BlockRegistryObject<BlockWindGenerator, ItemBlockWindGenerator> WIND_GENERATOR = BLOCKS.register("wind_generator", BlockWindGenerator::new, ItemBlockWindGenerator::new);
+    public static final BlockRegistryObject<BlockGenerator<TileEntityHeatGenerator>, ItemBlockGenerator> HEAT_GENERATOR = BLOCKS.register("heat_generator", () -> new BlockGenerator<>(GeneratorsGeneratorTypes.HEAT_GENERATOR), (block) -> new ItemBlockGenerator(block, GeneratorsISTERProvider::heat));
+    public static final BlockRegistryObject<BlockGenerator<TileEntitySolarGenerator>, ItemBlockGenerator> SOLAR_GENERATOR = BLOCKS.register("solar_generator", () -> new BlockGenerator<>(GeneratorsGeneratorTypes.SOLAR_GENERATOR), ItemBlockGenerator::new);
+    public static final BlockRegistryObject<BlockGenerator<TileEntityGasGenerator>, ItemBlockGenerator> GAS_BURNING_GENERATOR = BLOCKS.register("gas_burning_generator", () -> new BlockGenerator<>(GeneratorsGeneratorTypes.GAS_BURNING_GENERATOR), (block) -> new ItemBlockGenerator(block, GeneratorsISTERProvider::gasBurning));
+    public static final BlockRegistryObject<BlockGenerator<TileEntityBioGenerator>, ItemBlockGenerator> BIO_GENERATOR = BLOCKS.register("bio_generator", () -> new BlockGenerator<>(GeneratorsGeneratorTypes.BIO_GENERATOR), (block) -> new ItemBlockGenerator(block, GeneratorsISTERProvider::bio));
+    public static final BlockRegistryObject<BlockGenerator<TileEntityAdvancedSolarGenerator>, ItemBlockAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = BLOCKS.register("advanced_solar_generator", () -> new BlockGenerator<>(GeneratorsGeneratorTypes.ADVANCED_SOLAR_GENERATOR), ItemBlockAdvancedSolarGenerator::new);
+    public static final BlockRegistryObject<BlockGenerator<TileEntityWindGenerator>, ItemBlockWindGenerator> WIND_GENERATOR = BLOCKS.register("wind_generator", () -> new BlockGenerator<>(GeneratorsGeneratorTypes.WIND_GENERATOR), ItemBlockWindGenerator::new);
     public static final BlockRegistryObject<BlockTurbineRotor, ItemBlockTooltip<BlockTurbineRotor>> TURBINE_ROTOR = registerTooltipBlock("turbine_rotor", BlockTurbineRotor::new);
     public static final BlockRegistryObject<BlockRotationalComplex, ItemBlockTooltip<BlockRotationalComplex>> ROTATIONAL_COMPLEX = registerTooltipBlock("rotational_complex", BlockRotationalComplex::new);
     public static final BlockRegistryObject<BlockElectromagneticCoil, ItemBlockTooltip<BlockElectromagneticCoil>> ELECTROMAGNETIC_COIL = registerTooltipBlock("electromagnetic_coil", BlockElectromagneticCoil::new);

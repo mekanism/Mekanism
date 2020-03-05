@@ -1,4 +1,4 @@
-package mekanism.common.content.machines;
+package mekanism.common.content.blocktype;
 
 import java.util.function.Function;
 import javax.annotation.Nonnull;

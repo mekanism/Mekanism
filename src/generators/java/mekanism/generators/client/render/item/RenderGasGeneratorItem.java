@@ -1,7 +1,7 @@
 package mekanism.generators.client.render.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.generators.client.model.ModelGasGenerator;
@@ -20,7 +20,6 @@ public class RenderGasGeneratorItem extends MekanismItemStackRenderer {
           TransformType transformType) {
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.translate(0, -1, 0);
-        matrix.rotate(Vector3f.YP.rotationDegrees(90));
         gasGenerator.render(matrix, renderer, light, overlayLight);
     }
 

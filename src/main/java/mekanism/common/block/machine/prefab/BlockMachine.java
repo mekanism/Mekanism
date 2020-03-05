@@ -23,7 +23,7 @@ import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.machines.Machine;
+import mekanism.common.content.blocktype.Machine;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;

@@ -1,7 +1,7 @@
 package mekanism.generators.client.render.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.generators.client.model.ModelAdvancedSolarGenerator;
@@ -20,7 +20,6 @@ public class RenderAdvancedSolarGeneratorItem extends MekanismItemStackRenderer 
           TransformType transformType) {
         //TODO: Adjust this some, especially in third person we can make this look better
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
-        matrix.rotate(Vector3f.YP.rotationDegrees(90));
         matrix.translate(0, 0.2F, 0);
         //Shrink the size of the model
         matrix.scale(0.352F, 0.352F, 0.352F);
