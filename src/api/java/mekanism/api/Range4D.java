@@ -2,12 +2,10 @@ package mekanism.api;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class Range4D {
 
@@ -29,31 +27,8 @@ public class Range4D {
         this.dimension = dimension;
     }
 
-    public Range4D(Chunk3D chunk) {
-        xMin = chunk.x * 16;
-        yMin = 0;
-        zMin = chunk.z * 16;
-        xMax = xMin + 16;
-        yMax = 255;
-        zMax = zMin + 16;
-        dimension = chunk.dimension;
-    }
-
     public Range4D(Coord4D coord) {
         this(coord.x, coord.y, coord.z, coord.x + 1, coord.y + 1, coord.z + 1, coord.dimension);
-    }
-
-    public static Range4D getChunkRange(PlayerEntity player) {
-        int radius = ServerLifecycleHooks.getCurrentServer().getPlayerList().getViewDistance();
-        return new Range4D(new Chunk3D(player)).expandChunks(radius);
-    }
-
-    public Range4D expandChunks(int chunks) {
-        xMin -= chunks * 16;
-        xMax += chunks * 16;
-        zMin -= chunks * 16;
-        zMax += chunks * 16;
-        return this;
     }
 
     public Range4D expandFromCenter(int radius) {
@@ -64,16 +39,6 @@ public class Range4D {
         return this;
     }
 
-    public Set<Chunk3D> getIntersectingChunks() {
-        Set<Chunk3D> set = new ObjectOpenHashSet<>();
-        for (int chunkX = xMin >> 4; chunkX <= xMax - 1 >> 4; chunkX++) {
-            for (int chunkZ = zMin >> 4; chunkZ <= zMax - 1 >> 4; chunkZ++) {
-                set.add(new Chunk3D(chunkX, chunkZ, dimension));
-            }
-        }
-        return set;
-    }
-
     public Set<ChunkPos> getIntersectingChunkPositions() {
         Set<ChunkPos> set = new ObjectOpenHashSet<>();
         for (int chunkX = xMin >> 4; chunkX <= xMax - 1 >> 4; chunkX++) {
@@ -82,11 +47,6 @@ public class Range4D {
             }
         }
         return set;
-    }
-
-    public boolean intersects(Range4D range) {
-        return (xMax + 0.99999 > range.xMin) && (range.xMax + 0.99999 > xMin) && (yMax + 0.99999 > range.yMin) &&
-               (range.yMax + 0.99999 > yMin) && (zMax + 0.99999 > range.zMin) && (range.zMax + 0.99999 > zMin);
     }
 
     public boolean hasPlayerInRange(ServerPlayerEntity player) {

@@ -90,7 +90,6 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      * @return the Coord4D from the tag compound
      */
     public static Coord4D read(CompoundNBT tag) {
-        //TODO: Store the id as something that doesn't change?
         return new Coord4D(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"), DimensionType.byName(new ResourceLocation(tag.getString("dimension"))));
     }
 

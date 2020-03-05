@@ -109,7 +109,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         drawString(MekanismLang.MINER_AUTO_PULL.translate(OnOff.of(tile.doPull)), 9, 39, 0x00CD00);
         drawString(MekanismLang.MINER_SILK_ENABLED.translate(OnOff.of(tile.silkTouch)), 9, 48, 0x00CD00);
         drawString(MekanismLang.MINER_TO_MINE.translate(), 9, 59, 0x00CD00);
-        drawString(TextComponentUtil.build(tile.clientToMine), 9, 68, 0x00CD00);
+        drawString(TextComponentUtil.build(tile.cachedToMine), 9, 68, 0x00CD00);
 
         if (tile.missingStack.isEmpty()) {
             //TODO: Gui element

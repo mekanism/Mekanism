@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.Chunk3D;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
@@ -17,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -50,15 +50,13 @@ public class ItemSeismicReader extends ItemEnergized {
     @Nonnull
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-        Chunk3D chunk = new Chunk3D(player);
         ItemStack stack = player.getHeldItem(hand);
-
         if (getEnergy(stack) < ENERGY_USAGE && !player.isCreative()) {
             if (!world.isRemote) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NEEDS_ENERGY.translateColored(EnumColor.RED)));
             }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
-        } else if (!MekanismUtils.isChunkVibrated(chunk)) {
+        } else if (!MekanismUtils.isChunkVibrated(new ChunkPos(player.getPosition()), player.dimension)) {
             if (!world.isRemote) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, MekanismLang.NO_VIBRATIONS.translateColored(EnumColor.RED)));
             }

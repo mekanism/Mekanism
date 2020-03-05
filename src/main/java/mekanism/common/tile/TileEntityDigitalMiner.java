@@ -16,7 +16,6 @@ import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.Range4D;
 import mekanism.api.RelativeSide;
@@ -90,7 +89,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock,
       ITileFilterHolder<MinerFilter<?>> {
 
-    public Map<Chunk3D, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
+    public Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
     public Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
@@ -111,7 +110,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     private int delayLength = MekanismConfig.general.digitalMinerTicksPerMine.get();
 
-    public int clientToMine;
+    public int cachedToMine;
 
     public boolean silkTouch;
 
@@ -188,8 +187,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 setEnergy(getEnergy() - getEnergyPerTick());
                 if (delay == 0) {
                     boolean did = false;
-                    for (Iterator<Chunk3D> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
-                        Chunk3D chunk = it.next();
+                    for (Iterator<ChunkPos> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
+                        ChunkPos chunk = it.next();
                         BitSet set = oresToMine.get(chunk);
                         int next = 0;
                         while (!did) {
@@ -242,6 +241,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                         }
                     }
                     delay = getDelay();
+                    //Update the cached to mine value now that we have actually performed a mine
+                    updateCachedToMine();
                 }
             } else if (prevEnergy >= getEnergy()) {
                 setActive(false);
@@ -472,7 +473,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         }
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
-            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(getDiameter(), maxY - minY + 1, getDiameter())), getWorld().getDimension().getType());
+            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(getDiameter(), maxY - minY + 1, getDiameter())));
             searcher.start();
         }
         running = true;
@@ -493,6 +494,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     private void reset() {
         searcher = new ThreadMinerSearch(this);
         running = false;
+        cachedToMine = 0;
         oresToMine.clear();
         replaceMap.clear();
         missingStack = ItemStack.EMPTY;
@@ -509,13 +511,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return false;
     }
 
-    private int getSize() {
-        //TODO: Cache this value, as it gets queried basically every tick when the container is open to check for changes
-        int size = 0;
-        for (Chunk3D chunk : oresToMine.keySet()) {
-            size += oresToMine.get(chunk).cardinality();
-        }
-        return size;
+    private void updateCachedToMine() {
+        cachedToMine = oresToMine.values().stream().mapToInt(BitSet::cardinality).sum();
     }
 
     @Override
@@ -951,15 +948,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         container.track(SyncableBoolean.create(() -> running, value -> running = value));
         container.track(SyncableBoolean.create(() -> silkTouch, value -> silkTouch = value));
         container.track(SyncableEnum.create(State::byIndexStatic, State.IDLE, () -> searcher.state, value -> searcher.state = value));
-        container.track(SyncableInt.create(() -> {
-            if (isRemote()) {
-                return clientToMine;
-            }
-            if (searcher.state == State.SEARCHING) {
-                return searcher.found;
-            }
-            return getSize();
-        }, value -> clientToMine = value));
+        container.track(SyncableInt.create(() -> !isRemote() && searcher.state == State.SEARCHING ? searcher.found : cachedToMine, value -> cachedToMine = value));
         container.track(SyncableItemStack.create(() -> missingStack, value -> missingStack = value));
     }
 

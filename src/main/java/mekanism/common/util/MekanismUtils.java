@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.Upgrade;
@@ -58,6 +57,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
@@ -71,6 +71,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -778,13 +779,8 @@ public final class MekanismUtils {
      *
      * @return if the chunk is being vibrated
      */
-    public static boolean isChunkVibrated(Chunk3D chunk) {
-        for (Coord4D coord : Mekanism.activeVibrators) {
-            if (chunk.equals(new Chunk3D(coord))) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean isChunkVibrated(ChunkPos chunk, DimensionType dimension) {
+        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == dimension && coord.x >> 4 == chunk.x && coord.z >> 4 == chunk.z);
     }
 
     /**
