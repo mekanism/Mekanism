@@ -1,5 +1,6 @@
 package mekanism.common.content.miner;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IFilter;
@@ -28,6 +29,11 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> implements
         MinerFilter<?> filter = getType(dataStream.readInt());
         filter.read(dataStream);
         return filter;
+    }
+
+    public boolean replaceStackMatches(@Nonnull ItemStack stack) {
+        //TODO: Should this be ItemHandlerHelper.canItemStacksStack() instead of isItemEqual
+        return !replaceStack.isEmpty() && !stack.isEmpty() && stack.isItemEqual(replaceStack);
     }
 
     @Nullable

@@ -71,7 +71,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -200,7 +199,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                                 it.remove();
                                 break;
                             }
-
                             if (!world.isBlockPresent(pos) || world.isAirBlock(pos)) {
                                 set.clear(index);
                                 if (set.cardinality() == 0) {
@@ -210,7 +208,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                                 next = index + 1;
                                 continue;
                             }
-
                             boolean hasFilter = false;
                             BlockState state = world.getBlockState(pos);
                             for (MinerFilter<?> filter : filters) {
@@ -349,9 +346,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             return ItemStack.EMPTY;
         }
         for (IInventorySlot slot : mainSlots) {
-            ItemStack stack = slot.getStack();
-            //TODO: Should this be ItemHandlerHelper.canItemStacksStack() instead of isItemEqual
-            if (!stack.isEmpty() && stack.isItemEqual(filter.replaceStack)) {
+            if (filter.replaceStackMatches(slot.getStack())) {
                 if (slot.shrinkStack(1, Action.EXECUTE) != 1) {
                     //TODO: Print error/warning
                 }
@@ -366,16 +361,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             }
         }
         return ItemStack.EMPTY;
-    }
-
-    public NonNullList<ItemStack> copy(List<IInventorySlot> slots) {
-        //TODO: Clean this up/cache it??
-        NonNullList<ItemStack> toReturn = NonNullList.withSize(slots.size(), ItemStack.EMPTY);
-        for (int i = 0; i < slots.size(); i++) {
-            IInventorySlot slot = slots.get(i);
-            toReturn.set(i, !slot.isEmpty() ? slot.getStack().copy() : ItemStack.EMPTY);
-        }
-        return toReturn;
     }
 
     private TransitRequest getEjectItemMap() {
@@ -393,36 +378,69 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return request;
     }
 
-    public boolean canInsert(List<ItemStack> stacks) {
-        if (stacks.isEmpty()) {
+    public boolean canInsert(List<ItemStack> toInsert) {
+        if (toInsert.isEmpty()) {
             return true;
         }
-        NonNullList<ItemStack> testInv = copy(mainSlots);
-        int added = 0;
-
-        stacks:
-        for (ItemStack stack : stacks) {
-            stack = stack.copy();
-            if (stack.isEmpty()) {
+        int slots = mainSlots.size();
+        Int2ObjectMap<ItemCount> cachedStacks = new Int2ObjectOpenHashMap<>();
+        for (ItemStack stackToInsert : toInsert) {
+            if (stackToInsert.isEmpty()) {
                 continue;
             }
-            for (int i = 0; i < testInv.size(); i++) {
-                //TODO: Would be better if we could do this via the slots rather than copying it and then looping it
-                // This way we can obey what the slot believe its limit is/how high to stack
-                ItemStack existingStack = testInv.get(i);
-                if (existingStack.isEmpty()) {
-                    testInv.set(i, stack);
-                    added++;
-                    continue stacks;
-                } else if (ItemHandlerHelper.canItemStacksStack(existingStack, stack) && existingStack.getCount() + stack.getCount() <= stack.getMaxStackSize()) {
-                    existingStack.grow(stack.getCount());
-                    added++;
-                    continue stacks;
+            ItemStack stack = stackToInsert.copy();
+            for (int i = 0; i < slots; i++) {
+                IInventorySlot slot = mainSlots.get(i);
+                //Try to insert the item across all slots until we inserted as much as we want to
+                // We update our copies reference, to the remainder of what fit, so that we can
+                // continue trying the next slots
+                boolean wasEmpty = slot.isEmpty();
+                if (wasEmpty && cachedStacks.containsKey(i)) {
+                    //If we have cached information about the slot and our slot is currently empty so we can't simulate
+                    ItemCount cachedItem = cachedStacks.get(i);
+                    if (ItemHandlerHelper.canItemStacksStack(stack, cachedItem.stack)) {
+                        //If our stack can stack with the item we already put there
+                        // Increase how much we inserted up to the slot's limit for that stack type
+                        // and then replace the reference to our stack with one that is of the adjusted size
+                        int limit = slot.getLimit(stack);
+                        int stackSize = stack.getCount();
+                        int total = stackSize + cachedItem.count;
+                        if (total <= limit) {
+                            //It can all fit, increase the cached amount and break
+                            cachedItem.count = total;
+                            stack = ItemStack.EMPTY;
+                            break;
+                        }
+                        int toAdd = total - limit;
+                        if (toAdd > 0) {
+                            //Otherwise add what can fit and update the stack to be a reference of that
+                            // stack with the proper size
+                            cachedItem.count += toAdd;
+                            stack = StackUtils.size(stack, stackSize - toAdd);
+                        }
+                    }
+                } else {
+                    int stackSize = stack.getCount();
+                    stack = slot.insertItem(stack, Action.SIMULATE, AutomationType.INTERNAL);
+                    int remainderSize = stack.getCount();
+                    if (wasEmpty && remainderSize < stackSize) {
+                        //If the slot was empty, and accepted at least some of the item we are inserting
+                        // then cache the item type that we put into that slot
+                        cachedStacks.put(i, new ItemCount(stackToInsert, stackSize - remainderSize));
+                    }
+                    if (stack.isEmpty()) {
+                        //Once we finished inserting this item, break and move on to the next item
+                        break;
+                    }
                 }
             }
+            if (!stack.isEmpty()) {
+                //If our stack is not empty that means we could not fit it all inside of our inventory
+                // so we return false to being able to insert all the items.
+                return false;
+            }
         }
-        return added == stacks.size();
-
+        return true;
     }
 
     private TileEntity getPullInv() {
@@ -434,6 +452,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     }
 
     private void add(List<ItemStack> stacks) {
+        //TODO: Improve this and the simulated insertion, to try to first complete stacks
+        // before inserting into empty stacks, as this will give better results for various
+        // edge cases that currently fail
         for (ItemStack stack : stacks) {
             for (IInventorySlot slot : mainSlots) {
                 //Try to insert the item across all slots until we inserted it all
@@ -481,7 +502,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     public boolean isReplaceStack(ItemStack stack) {
         for (MinerFilter<?> filter : filters) {
-            if (!filter.replaceStack.isEmpty() && filter.replaceStack.isItemEqual(stack)) {
+            if (filter.replaceStackMatches(stack)) {
                 return true;
             }
         }
@@ -947,5 +968,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         container.track(SyncableInt.create(() -> minY, value -> minY = value));
         container.track(SyncableInt.create(() -> maxY, value -> maxY = value));
         container.track(SyncableBoolean.create(() -> inverse, value -> inverse = value));
+    }
+
+    private static class ItemCount {
+
+        private final ItemStack stack;
+        private int count;
+
+        public ItemCount(ItemStack stack, int count) {
+            this.stack = stack;
+            this.count = count;
+        }
     }
 }

@@ -66,50 +66,41 @@ public class ThreadMinerSearch extends Thread {
                 //Make sure the miner is still valid and something hasn't gone wrong
                 return;
             }
-            int x = pos.getX() + i % diameter;
-            int z = pos.getZ() + (i / diameter) % diameter;
-            int y = pos.getY() + (i / diameter / diameter);
-            if (minerPos.getX() == x && minerPos.getY() == y && minerPos.getZ() == z) {
-                //Skip the miner itself
+            BlockPos testPos = pos.add(i % diameter, i / diameter / diameter, (i / diameter) % diameter);
+            if (minerPos.equals(testPos) || MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
+                //Skip the miner itself, and also skip any bounding blocks
                 continue;
             }
-
-            BlockPos testPos = new BlockPos(x, y, z);
-            if (MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
-                //If it is not loaded or it is a bounding block skip it
-                continue;
-            }
-
             BlockState state = chunkCache.getBlockState(testPos);
-            info = state.getBlock();
-
-            if (info instanceof FlowingFluidBlock || info instanceof IFluidBlock || info.isAir(state, chunkCache, testPos)) {
-                //Skip air and liquids
+            if (state.isAir(chunkCache, testPos) || state.getBlockHardness(chunkCache, testPos) < 0) {
+                //Skip air and unbreakable blocks
                 continue;
             }
-
-            if (state.getBlockHardness(chunkCache, testPos) >= 0) {
-                MinerFilter<?> filterFound = null;
-                if (acceptedItems.containsKey(info)) {
-                    filterFound = acceptedItems.get(info);
-                } else {
-                    ItemStack stack = new ItemStack(info);
-                    if (tile.isReplaceStack(stack)) {
-                        continue;
-                    }
-                    for (MinerFilter<?> filter : filters) {
-                        if (filter.canFilter(state)) {
-                            filterFound = filter;
-                            break;
-                        }
-                    }
-                    acceptedItems.put(info, filterFound);
+            info = state.getBlock();
+            if (info instanceof FlowingFluidBlock || info instanceof IFluidBlock) {
+                //Skip liquids
+                continue;
+            }
+            MinerFilter<?> filterFound = null;
+            if (acceptedItems.containsKey(info)) {
+                filterFound = acceptedItems.get(info);
+            } else {
+                ItemStack stack = new ItemStack(info);
+                if (tile.isReplaceStack(stack)) {
+                    continue;
                 }
-                if (tile.inverse == (filterFound == null)) {
-                    set(i, new Coord4D(x, y, z, dimensionType));
-                    replaceMap.put(i, filterFound);
-                    found++;
+                for (MinerFilter<?> filter : filters) {
+                    if (filter.canFilter(state)) {
+                        filterFound = filter;
+                        break;
+                    }
                 }
+                acceptedItems.put(info, filterFound);
+            }
+            if (tile.inverse == (filterFound == null)) {
+                set(i, new Coord4D(testPos, dimensionType));
+                replaceMap.put(i, filterFound);
+                found++;
             }
         }
 

@@ -60,7 +60,11 @@ public class Coord4D {//TODO: Replace this with GlobalPos
     }
 
     public Coord4D(BlockPos pos, IWorldReader world) {
-        this(pos.getX(), pos.getY(), pos.getZ(), world.getDimension().getType());
+        this(pos, world.getDimension().getType());
+    }
+
+    public Coord4D(BlockPos pos, DimensionType dimension) {
+        this(pos.getX(), pos.getY(), pos.getZ(),dimension);
     }
 
     public Coord4D(BlockRayTraceResult mop, IWorldReader world) {
