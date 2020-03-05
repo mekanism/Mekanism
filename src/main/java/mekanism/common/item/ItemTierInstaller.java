@@ -7,6 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITierUpgradable;
+import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
@@ -81,6 +82,9 @@ public class ItemTierInstaller extends Item {
                             Mekanism.logger.warn("Error upgrading block at position: {} in {}.", pos, world);
                             return ActionResultType.FAIL;
                         } else {
+                            if (tile instanceof ITileDirectional) {
+                                upgradedTile.setFacing(((ITileDirectional) tile).getDirection());
+                            }
                             upgradedTile.parseUpgradeData(upgradeData);
                             Mekanism.packetHandler.sendUpdatePacket(upgradedTile);
                             upgradedTile.markDirty();

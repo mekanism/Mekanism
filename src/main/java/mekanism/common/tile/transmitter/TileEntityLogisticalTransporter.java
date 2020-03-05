@@ -1,11 +1,11 @@
 package mekanism.common.tile.transmitter;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.Coord4D;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
@@ -68,6 +68,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             this.tier = TransporterTier.BASIC;
         }
         transmitterDelegate = new TransporterImpl(this);
+        redstoneReactive = true;
     }
 
     @Override
@@ -112,7 +113,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public boolean handlesRedstone() {
-        return false;
+        return true;
     }
 
     @Override

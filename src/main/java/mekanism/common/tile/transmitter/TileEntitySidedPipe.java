@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
@@ -48,7 +49,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
 
