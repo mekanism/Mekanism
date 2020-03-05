@@ -198,7 +198,7 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             BlockPos offset = getPos().offset(side);
             TileEntity tile = MekanismUtils.getTileEntity(getWorld(), offset);
             if (canConnectMutual(side, tile)) {
-                if (!isRemote() && !getWorld().isBlockLoaded(offset)) {
+                if (!isRemote() && !getWorld().isBlockPresent(offset)) {
                     forceUpdate = true;
                     continue;
                 }

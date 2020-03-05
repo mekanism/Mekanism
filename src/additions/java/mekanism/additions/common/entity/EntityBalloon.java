@@ -148,7 +148,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         if (!world.isRemote) {
             if (latched != null) {
                 BlockPos latchedPos = latched.getPos();
-                if (world.isBlockLoaded(latchedPos) && world.isAirBlock(latchedPos)) {
+                if (world.isBlockPresent(latchedPos) && world.isAirBlock(latchedPos)) {
                     latched = null;
                     dataManager.set(IS_LATCHED, (byte) 0);
                 }

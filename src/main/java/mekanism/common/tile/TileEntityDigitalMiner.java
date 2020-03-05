@@ -12,13 +12,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Chunk3D;
-import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
@@ -64,7 +61,6 @@ import mekanism.common.util.MinerUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.BushBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -72,7 +68,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -92,7 +87,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiveState, ISustainedData, IChunkLoader, IAdvancedBoundingBlock,
       ITileFilterHolder<MinerFilter<?>> {
 
-    public Map<Chunk3D, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
+    public Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
     public Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
@@ -111,25 +106,25 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     public int delay;
 
-    public int delayLength = MekanismConfig.general.digitalMinerTicksPerMine.get();
+    private int delayLength = MekanismConfig.general.digitalMinerTicksPerMine.get();
 
-    public int clientToMine;
+    public int cachedToMine;
 
     public boolean silkTouch;
 
     public boolean running;
 
-    public double prevEnergy;
+    private double prevEnergy;
 
-    public int delayTicks;
+    private int delayTicks;
 
-    public boolean initCalc = false;
+    private boolean initCalc = false;
 
-    public int numPowering;
+    private int numPowering;
 
     public boolean clientRendering = false;
 
-    public TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
+    private TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
 
     private List<IInventorySlot> mainSlots;
     private EnergyInventorySlot energySlot;
@@ -144,8 +139,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     protected IInventorySlotHolder getInitialInventory() {
         mainSlots = new ArrayList<>();
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
-        Predicate<@NonNull ItemStack> canInsert = this::isReplaceStack;
-        Predicate<@NonNull ItemStack> canExtract = canInsert.negate();
+        //Allow insertion manually or internally, or if it is a replace stack
+        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert = (stack, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceStack(stack);
+        //Allow extraction if it is manual or if it is a replace stack
+        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract = (stack, automationType) -> automationType == AutomationType.MANUAL || !isReplaceStack(stack);
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, this, 8 + slotX * 18, 80 + slotY * 18);
@@ -167,7 +164,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             }
         }
 
-        if (!isRemote()) {
+        if (world != null && !isRemote()) {
             if (!initCalc) {
                 if (searcher.state == State.FINISHED) {
                     boolean prevRunning = running;
@@ -188,20 +185,18 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 setEnergy(getEnergy() - getEnergyPerTick());
                 if (delay == 0) {
                     boolean did = false;
-                    for (Iterator<Chunk3D> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
-                        Chunk3D chunk = it.next();
+                    for (Iterator<ChunkPos> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
+                        ChunkPos chunk = it.next();
                         BitSet set = oresToMine.get(chunk);
                         int next = 0;
                         while (!did) {
                             int index = set.nextSetBit(next);
-                            Coord4D coord = getCoordFromIndex(index);
+                            BlockPos pos = getPosFromIndex(index);
                             if (index == -1) {
                                 it.remove();
                                 break;
                             }
-
-                            BlockPos coordPos = coord.getPos();
-                            if (!world.isBlockLoaded(coordPos)) {
+                            if (!world.isBlockPresent(pos) || world.isAirBlock(pos)) {
                                 set.clear(index);
                                 if (set.cardinality() == 0) {
                                     it.remove();
@@ -210,18 +205,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                                 next = index + 1;
                                 continue;
                             }
-                            if (world.isAirBlock(coordPos)) {
-                                set.clear(index);
-                                if (set.cardinality() == 0) {
-                                    it.remove();
-                                    break;
-                                }
-                                next = index + 1;
-                                continue;
-                            }
-
                             boolean hasFilter = false;
-                            BlockState state = world.getBlockState(coordPos);
+                            BlockState state = world.getBlockState(pos);
                             for (MinerFilter<?> filter : filters) {
                                 if (filter.canFilter(state)) {
                                     hasFilter = true;
@@ -229,7 +214,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                                 }
                             }
 
-                            if (inverse == hasFilter || !canMine(coord)) {
+                            if (inverse == hasFilter || !canMine(pos)) {
                                 set.clear(index);
                                 if (set.cardinality() == 0) {
                                     it.remove();
@@ -239,21 +224,23 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                                 continue;
                             }
 
-                            List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, coord, silkTouch, this.pos);
-                            if (canInsert(drops) && setReplace(coord, index)) {
+                            List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, pos, silkTouch, this.pos);
+                            if (canInsert(drops) && setReplace(pos, index)) {
                                 did = true;
                                 add(drops);
                                 set.clear(index);
                                 if (set.cardinality() == 0) {
                                     it.remove();
                                 }
-                                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, coordPos, Block.getStateId(state));
+                                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
                                 missingStack = ItemStack.EMPTY;
                             }
                             break;
                         }
                     }
                     delay = getDelay();
+                    //Update the cached to mine value now that we have actually performed a mine
+                    updateCachedToMine();
                 }
             } else if (prevEnergy >= getEnergy()) {
                 setActive(false);
@@ -304,7 +291,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return radius;
     }
 
-    public void setRadius(int newRadius) {
+    private void setRadius(int newRadius) {
         boolean changed = radius != newRadius;
         radius = newRadius;
         // If the radius changed and we're on the server, go ahead and refresh
@@ -314,24 +301,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         }
     }
 
-    /*
-     * returns false if unsuccessful
+    /**
+     * @return false if unsuccessful
      */
-    public boolean setReplace(Coord4D obj, int index) {
+    private boolean setReplace(BlockPos pos, int index) {
+        if (world == null) {
+            return false;
+        }
         ItemStack stack = getReplace(index);
-        BlockPos pos = obj.getPos();
-        PlayerEntity fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, this.pos).get());
-
-        if (!stack.isEmpty()) {
-            world.setBlockState(pos, StackUtils.getStateForPlacement(stack, world, pos, fakePlayer));
-            BlockState s = world.getBlockState(pos);
-            if (s.getBlock() instanceof BushBlock && !((BushBlock) s.getBlock()).isValidPosition(s, world, pos)) {
-                //TODO Block.spawnDrops fortune 1?? Also make sure to drop the item
-                //s.getBlock().dropBlockAsItem(world, pos, s, 1);
-                world.removeBlock(pos, false);
-            }
-            return true;
-        } else {
+        if (stack.isEmpty()) {
             MinerFilter<?> filter = replaceMap.get(index);
             if (filter == null || filter.replaceStack.isEmpty() || !filter.requireStack) {
                 world.removeBlock(pos, false);
@@ -340,32 +318,40 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             missingStack = filter.replaceStack;
             return false;
         }
+        PlayerEntity fakePlayer = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, this.pos).get());
+        BlockState newState = StackUtils.getStateForPlacement(stack, pos, fakePlayer);
+        if (newState == null || !newState.isValidPosition(world, pos)) {
+            //If the spot is not a valid position for the block, then we return that we were unsuccessful
+            return false;
+        }
+        world.setBlockState(pos, newState);
+        return true;
     }
 
-    private boolean canMine(Coord4D coord) {
-        BlockState state = world.getBlockState(coord.getPos());
-        PlayerEntity dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, pos).get());
-        BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, coord.getPos(), state, dummy);
+    private boolean canMine(BlockPos pos) {
+        if (world == null) {
+            return false;
+        }
+        BlockState state = world.getBlockState(pos);
+        PlayerEntity dummy = Objects.requireNonNull(Mekanism.proxy.getDummyPlayer((ServerWorld) world, getPos()).get());
+        BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
         MinecraftForge.EVENT_BUS.post(event);
         return !event.isCanceled();
     }
 
-    public ItemStack getReplace(int index) {
+    private ItemStack getReplace(int index) {
         MinerFilter<?> filter = replaceMap.get(index);
         if (filter == null || filter.replaceStack.isEmpty()) {
             return ItemStack.EMPTY;
         }
         for (IInventorySlot slot : mainSlots) {
-            ItemStack stack = slot.getStack();
-            //TODO: Should this be ItemHandlerHelper.canItemStacksStack() instead of isItemEqual
-            if (!stack.isEmpty() && stack.isItemEqual(filter.replaceStack)) {
+            if (filter.replaceStackMatches(slot.getStack())) {
                 if (slot.shrinkStack(1, Action.EXECUTE) != 1) {
                     //TODO: Print error/warning
                 }
                 return StackUtils.size(filter.replaceStack, 1);
             }
         }
-
         if (doPull && getPullInv() != null) {
             InvStack stack = InventoryUtils.takeDefinedItem(getPullInv(), Direction.UP, filter.replaceStack.copy(), 1, 1);
             if (stack != null) {
@@ -376,17 +362,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return ItemStack.EMPTY;
     }
 
-    public NonNullList<ItemStack> copy(List<IInventorySlot> slots) {
-        //TODO: Clean this up/cache it??
-        NonNullList<ItemStack> toReturn = NonNullList.withSize(slots.size(), ItemStack.EMPTY);
-        for (int i = 0; i < slots.size(); i++) {
-            IInventorySlot slot = slots.get(i);
-            toReturn.set(i, !slot.isEmpty() ? slot.getStack().copy() : ItemStack.EMPTY);
-        }
-        return toReturn;
-    }
-
-    public TransitRequest getEjectItemMap() {
+    private TransitRequest getEjectItemMap() {
         TransitRequest request = new TransitRequest();
         for (int i = mainSlots.size() - 1; i >= 0; i--) {
             IInventorySlot slot = mainSlots.get(i);
@@ -401,47 +377,83 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return request;
     }
 
-    public boolean canInsert(List<ItemStack> stacks) {
-        if (stacks.isEmpty()) {
+    public boolean canInsert(List<ItemStack> toInsert) {
+        if (toInsert.isEmpty()) {
             return true;
         }
-        NonNullList<ItemStack> testInv = copy(mainSlots);
-        int added = 0;
-
-        stacks:
-        for (ItemStack stack : stacks) {
-            stack = stack.copy();
-            if (stack.isEmpty()) {
+        int slots = mainSlots.size();
+        Int2ObjectMap<ItemCount> cachedStacks = new Int2ObjectOpenHashMap<>();
+        for (ItemStack stackToInsert : toInsert) {
+            if (stackToInsert.isEmpty()) {
                 continue;
             }
-            for (int i = 0; i < testInv.size(); i++) {
-                //TODO: Would be better if we could do this via the slots rather than copying it and then looping it
-                // This way we can obey what the slot believe its limit is/how high to stack
-                ItemStack existingStack = testInv.get(i);
-                if (existingStack.isEmpty()) {
-                    testInv.set(i, stack);
-                    added++;
-                    continue stacks;
-                } else if (ItemHandlerHelper.canItemStacksStack(existingStack, stack) && existingStack.getCount() + stack.getCount() <= stack.getMaxStackSize()) {
-                    existingStack.grow(stack.getCount());
-                    added++;
-                    continue stacks;
+            ItemStack stack = stackToInsert.copy();
+            for (int i = 0; i < slots; i++) {
+                IInventorySlot slot = mainSlots.get(i);
+                //Try to insert the item across all slots until we inserted as much as we want to
+                // We update our copies reference, to the remainder of what fit, so that we can
+                // continue trying the next slots
+                boolean wasEmpty = slot.isEmpty();
+                if (wasEmpty && cachedStacks.containsKey(i)) {
+                    //If we have cached information about the slot and our slot is currently empty so we can't simulate
+                    ItemCount cachedItem = cachedStacks.get(i);
+                    if (ItemHandlerHelper.canItemStacksStack(stack, cachedItem.stack)) {
+                        //If our stack can stack with the item we already put there
+                        // Increase how much we inserted up to the slot's limit for that stack type
+                        // and then replace the reference to our stack with one that is of the adjusted size
+                        int limit = slot.getLimit(stack);
+                        int stackSize = stack.getCount();
+                        int total = stackSize + cachedItem.count;
+                        if (total <= limit) {
+                            //It can all fit, increase the cached amount and break
+                            cachedItem.count = total;
+                            stack = ItemStack.EMPTY;
+                            break;
+                        }
+                        int toAdd = total - limit;
+                        if (toAdd > 0) {
+                            //Otherwise add what can fit and update the stack to be a reference of that
+                            // stack with the proper size
+                            cachedItem.count += toAdd;
+                            stack = StackUtils.size(stack, stackSize - toAdd);
+                        }
+                    }
+                } else {
+                    int stackSize = stack.getCount();
+                    stack = slot.insertItem(stack, Action.SIMULATE, AutomationType.INTERNAL);
+                    int remainderSize = stack.getCount();
+                    if (wasEmpty && remainderSize < stackSize) {
+                        //If the slot was empty, and accepted at least some of the item we are inserting
+                        // then cache the item type that we put into that slot
+                        cachedStacks.put(i, new ItemCount(stackToInsert, stackSize - remainderSize));
+                    }
+                    if (stack.isEmpty()) {
+                        //Once we finished inserting this item, break and move on to the next item
+                        break;
+                    }
                 }
             }
+            if (!stack.isEmpty()) {
+                //If our stack is not empty that means we could not fit it all inside of our inventory
+                // so we return false to being able to insert all the items.
+                return false;
+            }
         }
-        return added == stacks.size();
-
+        return true;
     }
 
-    public TileEntity getPullInv() {
+    private TileEntity getPullInv() {
         return MekanismUtils.getTileEntity(getWorld(), getPos().up(2));
     }
 
-    public TileEntity getEjectInv() {
+    private TileEntity getEjectInv() {
         return MekanismUtils.getTileEntity(world, getPos().up().offset(getOppositeDirection(), 2));
     }
 
-    public void add(List<ItemStack> stacks) {
+    private void add(List<ItemStack> stacks) {
+        //TODO: Improve this and the simulated insertion, to try to first complete stacks
+        // before inserting into empty stacks, as this will give better results for various
+        // edge cases that currently fail
         for (ItemStack stack : stacks) {
             for (IInventorySlot slot : mainSlots) {
                 //Try to insert the item across all slots until we inserted it all
@@ -453,20 +465,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         }
     }
 
-    public void start() {
+    private void start() {
         if (getWorld() == null) {
             return;
         }
         if (searcher.state == State.IDLE) {
-            BlockPos startingPos = getStartingCoord().getPos();
-            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(getDiameter(), maxY - minY + 1, getDiameter())), getWorld().getDimension().getType());
+            BlockPos startingPos = getStartingPos();
+            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(getDiameter(), maxY - minY + 1, getDiameter())));
             searcher.start();
         }
         running = true;
         MekanismUtils.saveChunk(this);
     }
 
-    public void stop() {
+    private void stop() {
         if (searcher.state == State.SEARCHING) {
             searcher.interrupt();
             reset();
@@ -477,9 +489,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         MekanismUtils.saveChunk(this);
     }
 
-    public void reset() {
+    private void reset() {
         searcher = new ThreadMinerSearch(this);
         running = false;
+        cachedToMine = 0;
         oresToMine.clear();
         replaceMap.clear();
         missingStack = ItemStack.EMPTY;
@@ -489,19 +502,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     public boolean isReplaceStack(ItemStack stack) {
         for (MinerFilter<?> filter : filters) {
-            if (!filter.replaceStack.isEmpty() && filter.replaceStack.isItemEqual(stack)) {
+            if (filter.replaceStackMatches(stack)) {
                 return true;
             }
         }
         return false;
     }
 
-    public int getSize() {
-        int size = 0;
-        for (Chunk3D chunk : oresToMine.keySet()) {
-            size += oresToMine.get(chunk).cardinality();
-        }
-        return size;
+    private void updateCachedToMine() {
+        cachedToMine = oresToMine.values().stream().mapToInt(BitSet::cardinality).sum();
     }
 
     @Override
@@ -631,17 +640,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return (radius * 2) + 1;
     }
 
-    public Coord4D getStartingCoord() {
-        return new Coord4D(getPos().getX() - radius, minY, getPos().getZ() - radius, world.getDimension().getType());
+    public BlockPos getStartingPos() {
+        return new BlockPos(getPos().getX() - radius, minY, getPos().getZ() - radius);
     }
 
-    public Coord4D getCoordFromIndex(int index) {
+    private BlockPos getPosFromIndex(int index) {
         int diameter = getDiameter();
-        Coord4D start = getStartingCoord();
-        int x = start.x + index % diameter;
-        int y = start.y + (index / diameter / diameter);
-        int z = start.z + (index / diameter) % diameter;
-        return new Coord4D(x, y, z, world.getDimension().getType());
+        BlockPos start = getStartingPos();
+        return start.add(index % diameter, index / diameter / diameter, (index / diameter) % diameter);
     }
 
     @Override
@@ -657,14 +663,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public void onPlace() {
-        BlockPos pos = getPos();
-        for (int x = -1; x <= +1; x++) {
-            for (int y = 0; y <= +1; y++) {
-                for (int z = -1; z <= +1; z++) {
-                    if (x != 0 || y != 0 || z != 0) {
-                        BlockPos boundingPos = pos.add(x, y, z);
-                        MekanismUtils.makeAdvancedBoundingBlock(world, boundingPos, pos);
-                        world.notifyNeighborsOfStateChange(boundingPos, getBlockType());
+        if (world != null) {
+            BlockPos pos = getPos();
+            for (int x = -1; x <= +1; x++) {
+                for (int y = 0; y <= +1; y++) {
+                    for (int z = -1; z <= +1; z++) {
+                        if (x != 0 || y != 0 || z != 0) {
+                            BlockPos boundingPos = pos.add(x, y, z);
+                            MekanismUtils.makeAdvancedBoundingBlock(world, boundingPos, pos);
+                            world.notifyNeighborsOfStateChange(boundingPos, getBlockType());
+                        }
                     }
                 }
             }
@@ -673,17 +681,19 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public void onBreak() {
-        for (int x = -1; x <= +1; x++) {
-            for (int y = 0; y <= +1; y++) {
-                for (int z = -1; z <= +1; z++) {
-                    world.removeBlock(getPos().add(x, y, z), false);
+        if (world != null) {
+            for (int x = -1; x <= +1; x++) {
+                for (int y = 0; y <= +1; y++) {
+                    for (int z = -1; z <= +1; z++) {
+                        world.removeBlock(getPos().add(x, y, z), false);
+                    }
                 }
             }
         }
     }
 
-    public TileEntity getEjectTile() {
-        return MekanismUtils.getTileEntity(world, getPos().up().offset(getOppositeDirection()));
+    private TileEntity getEjectTile() {
+        return MekanismUtils.getTileEntity(getWorld(), getPos().up().offset(getOppositeDirection()));
     }
 
     @Override
@@ -919,7 +929,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        return new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunkPositions();
+        int chunkXMin = pos.getX() - radius >> 4;
+        int chunkXMax = pos.getX() + radius >> 4;
+        int chunkZMin = pos.getX() - radius >> 4;
+        int chunkZMax = pos.getZ() + radius >> 4;
+        Set<ChunkPos> set = new ObjectOpenHashSet<>();
+        for (int chunkX = chunkXMin; chunkX <= chunkXMax; chunkX++) {
+            for (int chunkZ = chunkZMin; chunkZ <= chunkZMax; chunkZ++) {
+                set.add(new ChunkPos(chunkX, chunkZ));
+            }
+        }
+        return set;
     }
 
     @Override
@@ -936,16 +956,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         container.track(SyncableBoolean.create(() -> running, value -> running = value));
         container.track(SyncableBoolean.create(() -> silkTouch, value -> silkTouch = value));
         container.track(SyncableEnum.create(State::byIndexStatic, State.IDLE, () -> searcher.state, value -> searcher.state = value));
-        container.track(SyncableInt.create(() -> {
-            if (isRemote()) {
-                return clientToMine;
-            }
-            if (searcher.state == State.SEARCHING) {
-                return searcher.found;
-            } else {
-                return getSize();
-            }
-        }, value -> clientToMine = value));
+        container.track(SyncableInt.create(() -> !isRemote() && searcher.state == State.SEARCHING ? searcher.found : cachedToMine, value -> cachedToMine = value));
         container.track(SyncableItemStack.create(() -> missingStack, value -> missingStack = value));
     }
 
@@ -954,5 +965,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         container.track(SyncableInt.create(() -> minY, value -> minY = value));
         container.track(SyncableInt.create(() -> maxY, value -> maxY = value));
         container.track(SyncableBoolean.create(() -> inverse, value -> inverse = value));
+    }
+
+    private static class ItemCount {
+
+        private final ItemStack stack;
+        private int count;
+
+        public ItemCount(ItemStack stack, int count) {
+            this.stack = stack;
+            this.count = count;
+        }
     }
 }

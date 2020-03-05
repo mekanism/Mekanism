@@ -57,7 +57,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -182,7 +181,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return super.onBlockStartBreak(itemStack, pos, player);
     }
 
-    private static List<BlockPos> findPositions(BlockState state, BlockPos location, IWorld world, int maxRange) {
+    private static List<BlockPos> findPositions(BlockState state, BlockPos location, World world, int maxRange) {
         List<BlockPos> found = new ArrayList<>();
         Set<BlockPos> checked = new ObjectOpenHashSet<>();
         found.add(location);
@@ -195,7 +194,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 //We can check contains as mutable
                 if (!checked.contains(pos)) {
                     if (maxRange == -1 || Math.sqrt(location.distanceSq(pos)) <= maxRange) {
-                        if (world.isBlockLoaded(pos) && startBlock == world.getBlockState(pos).getBlock()) {
+                        if (world.isBlockPresent(pos) && startBlock == world.getBlockState(pos).getBlock()) {
                             //Make sure to add it as immutable
                             found.add(pos.toImmutable());
                             if (found.size() > maxCount) {

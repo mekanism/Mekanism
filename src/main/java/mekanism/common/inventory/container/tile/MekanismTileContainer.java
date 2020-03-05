@@ -69,7 +69,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
             if (world == null) {
                 return false;
             }
-            return world.isBlockLoaded(tile.getPos());
+            return world.isBlockPresent(tile.getPos());
         }
         return false;
     }

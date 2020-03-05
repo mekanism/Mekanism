@@ -5,8 +5,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.BitSet;
 import java.util.Map;
-import mekanism.api.Chunk3D;
-import mekanism.api.Coord4D;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.HashList;
 import mekanism.common.MekanismLang;
@@ -19,9 +17,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.Region;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread {
@@ -30,10 +28,9 @@ public class ThreadMinerSearch extends Thread {
 
     public State state = State.IDLE;
 
-    private Map<Chunk3D, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
+    private Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
     private Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private Map<Block, MinerFilter<?>> acceptedItems = new Object2ObjectOpenHashMap<>();
-    private DimensionType dimensionType;
     private Region chunkCache;
 
     public int found = 0;
@@ -42,9 +39,8 @@ public class ThreadMinerSearch extends Thread {
         this.tile = tile;
     }
 
-    public void setChunkCache(Region cache, DimensionType dimensionType) {
+    public void setChunkCache(Region cache) {
         this.chunkCache = cache;
-        this.dimensionType = dimensionType;
     }
 
     @Override
@@ -55,62 +51,51 @@ public class ThreadMinerSearch extends Thread {
             state = State.FINISHED;
             return;
         }
-        Coord4D coord = tile.getStartingCoord();
+        BlockPos pos = tile.getStartingPos();
         int diameter = tile.getDiameter();
         int size = tile.getTotalSize();
         Block info;
         BlockPos minerPos = tile.getPos();
-
         for (int i = 0; i < size; i++) {
             if (tile.isRemoved()) {
                 //Make sure the miner is still valid and something hasn't gone wrong
                 return;
             }
-            int x = coord.x + i % diameter;
-            int z = coord.z + (i / diameter) % diameter;
-            int y = coord.y + (i / diameter / diameter);
-            if (minerPos.getX() == x && minerPos.getY() == y && minerPos.getZ() == z) {
-                //Skip the miner itself
+            BlockPos testPos = pos.add(i % diameter, i / diameter / diameter, (i / diameter) % diameter);
+            if (minerPos.equals(testPos) || MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
+                //Skip the miner itself, and also skip any bounding blocks
                 continue;
             }
-
-            BlockPos testPos = new BlockPos(x, y, z);
-            //TODO: verify that we don't need to check if the block is loaded. Probably got removed given a region is a cache
-            if (/*!chunkCache.isBlockLoaded(testPos) || */MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
-                //If it is not loaded or it is a bounding block skip it
-                continue;
-            }
-
             BlockState state = chunkCache.getBlockState(testPos);
-            info = state.getBlock();
-
-            if (info instanceof FlowingFluidBlock || info instanceof IFluidBlock || info.isAir(state, chunkCache, testPos)) {
-                //Skip air and liquids
+            if (state.isAir(chunkCache, testPos) || state.getBlockHardness(chunkCache, testPos) < 0) {
+                //Skip air and unbreakable blocks
                 continue;
             }
-
-            if (state.getBlockHardness(chunkCache, testPos) >= 0) {
-                MinerFilter<?> filterFound = null;
-                if (acceptedItems.containsKey(info)) {
-                    filterFound = acceptedItems.get(info);
-                } else {
-                    ItemStack stack = new ItemStack(info);
-                    if (tile.isReplaceStack(stack)) {
-                        continue;
-                    }
-                    for (MinerFilter<?> filter : filters) {
-                        if (filter.canFilter(state)) {
-                            filterFound = filter;
-                            break;
-                        }
-                    }
-                    acceptedItems.put(info, filterFound);
+            info = state.getBlock();
+            if (info instanceof FlowingFluidBlock || info instanceof IFluidBlock) {
+                //Skip liquids
+                continue;
+            }
+            MinerFilter<?> filterFound = null;
+            if (acceptedItems.containsKey(info)) {
+                filterFound = acceptedItems.get(info);
+            } else {
+                ItemStack stack = new ItemStack(info);
+                if (tile.isReplaceStack(stack)) {
+                    continue;
                 }
-                if (tile.inverse == (filterFound == null)) {
-                    set(i, new Coord4D(x, y, z, dimensionType));
-                    replaceMap.put(i, filterFound);
-                    found++;
+                for (MinerFilter<?> filter : filters) {
+                    if (filter.canFilter(state)) {
+                        filterFound = filter;
+                        break;
+                    }
                 }
+                acceptedItems.put(info, filterFound);
+            }
+            if (tile.inverse == (filterFound == null)) {
+                set(i, testPos);
+                replaceMap.put(i, filterFound);
+                found++;
             }
         }
 
@@ -118,12 +103,12 @@ public class ThreadMinerSearch extends Thread {
         tile.oresToMine = oresToMine;
         tile.replaceMap = replaceMap;
         chunkCache = null;
-        dimensionType = null;
         MekanismUtils.saveChunk(tile);
+        tile.cachedToMine = found;
     }
 
-    public void set(int i, Coord4D location) {
-        Chunk3D chunk = new Chunk3D(location);
+    public void set(int i, BlockPos pos) {
+        ChunkPos chunk = new ChunkPos(pos);
         oresToMine.computeIfAbsent(chunk, k -> new BitSet());
         oresToMine.get(chunk).set(i);
     }
@@ -131,7 +116,6 @@ public class ThreadMinerSearch extends Thread {
     public void reset() {
         state = State.IDLE;
         chunkCache = null;
-        dimensionType = null;
     }
 
     public enum State implements IHasTextComponent {

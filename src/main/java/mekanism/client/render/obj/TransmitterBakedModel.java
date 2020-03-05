@@ -82,51 +82,49 @@ public class TransmitterBakedModel implements IBakedModel {
         if (side != null) {
             return ImmutableList.of();
         }
-        if (state != null) {
-            if (extraData.hasProperty(ModelProperties.DOWN_CONNECTION) && extraData.hasProperty(ModelProperties.UP_CONNECTION) &&
-                extraData.hasProperty(ModelProperties.NORTH_CONNECTION) && extraData.hasProperty(ModelProperties.SOUTH_CONNECTION) &&
-                extraData.hasProperty(ModelProperties.WEST_CONNECTION) && extraData.hasProperty(ModelProperties.EAST_CONNECTION)) {
-                ConnectionType down = extraData.getData(ModelProperties.DOWN_CONNECTION);
-                ConnectionType up = extraData.getData(ModelProperties.UP_CONNECTION);
-                ConnectionType north = extraData.getData(ModelProperties.NORTH_CONNECTION);
-                ConnectionType south = extraData.getData(ModelProperties.SOUTH_CONNECTION);
-                ConnectionType west = extraData.getData(ModelProperties.WEST_CONNECTION);
-                ConnectionType east = extraData.getData(ModelProperties.EAST_CONNECTION);
+        if (extraData.hasProperty(ModelProperties.DOWN_CONNECTION) && extraData.hasProperty(ModelProperties.UP_CONNECTION) &&
+            extraData.hasProperty(ModelProperties.NORTH_CONNECTION) && extraData.hasProperty(ModelProperties.SOUTH_CONNECTION) &&
+            extraData.hasProperty(ModelProperties.WEST_CONNECTION) && extraData.hasProperty(ModelProperties.EAST_CONNECTION)) {
+            ConnectionType down = extraData.getData(ModelProperties.DOWN_CONNECTION);
+            ConnectionType up = extraData.getData(ModelProperties.UP_CONNECTION);
+            ConnectionType north = extraData.getData(ModelProperties.NORTH_CONNECTION);
+            ConnectionType south = extraData.getData(ModelProperties.SOUTH_CONNECTION);
+            ConnectionType west = extraData.getData(ModelProperties.WEST_CONNECTION);
+            ConnectionType east = extraData.getData(ModelProperties.EAST_CONNECTION);
 
-                RenderType layer = MinecraftForgeClient.getRenderLayer();
-                boolean hasColor = false;
-                if (extraData.hasProperty(ModelProperties.COLOR) && layer == RenderType.getTranslucent()) {
-                    //Only try getting the color property for ones that will have a color
-                    Boolean color = extraData.getData(ModelProperties.COLOR);
-                    hasColor = color != null && color;
-                }
-
-                int hash = 1;
-                hash = hash * 31 + down.ordinal();
-                hash = hash * 31 + up.ordinal();
-                hash = hash * 31 + north.ordinal();
-                hash = hash * 31 + south.ordinal();
-                hash = hash * 31 + west.ordinal();
-                hash = hash * 31 + east.ordinal();
-                if (hasColor) {
-                    hash = hash * 31 + 1;
-                }
-                if (!modelCache.containsKey(hash)) {
-                    List<String> visible = new ArrayList<>();
-                    visible.add(Direction.DOWN.getName() + down.getName().toUpperCase());
-                    visible.add(Direction.UP.getName() + up.getName().toUpperCase());
-                    visible.add(Direction.NORTH.getName() + north.getName().toUpperCase());
-                    visible.add(Direction.SOUTH.getName() + south.getName().toUpperCase());
-                    visible.add(Direction.WEST.getName() + west.getName().toUpperCase());
-                    visible.add(Direction.EAST.getName() + east.getName().toUpperCase());
-                    List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), hasColor).getQuads(state, side, rand, extraData);
-                    modelCache.put(hash, result);
-                    return result;
-                }
-                return modelCache.get(hash);
+            RenderType layer = MinecraftForgeClient.getRenderLayer();
+            boolean hasColor = false;
+            if (extraData.hasProperty(ModelProperties.COLOR) && layer == RenderType.getTranslucent()) {
+                //Only try getting the color property for ones that will have a color
+                Boolean color = extraData.getData(ModelProperties.COLOR);
+                hasColor = color != null && color;
             }
-            //TODO: print error about missing data?
+
+            int hash = 1;
+            hash = hash * 31 + down.ordinal();
+            hash = hash * 31 + up.ordinal();
+            hash = hash * 31 + north.ordinal();
+            hash = hash * 31 + south.ordinal();
+            hash = hash * 31 + west.ordinal();
+            hash = hash * 31 + east.ordinal();
+            if (hasColor) {
+                hash = hash * 31 + 1;
+            }
+            if (!modelCache.containsKey(hash)) {
+                List<String> visible = new ArrayList<>();
+                visible.add(Direction.DOWN.getName() + down.getName().toUpperCase());
+                visible.add(Direction.UP.getName() + up.getName().toUpperCase());
+                visible.add(Direction.NORTH.getName() + north.getName().toUpperCase());
+                visible.add(Direction.SOUTH.getName() + south.getName().toUpperCase());
+                visible.add(Direction.WEST.getName() + west.getName().toUpperCase());
+                visible.add(Direction.EAST.getName() + east.getName().toUpperCase());
+                List<BakedQuad> result = bake(new TransmitterModelConfiguration(owner, visible, extraData), hasColor).getQuads(state, side, rand, extraData);
+                modelCache.put(hash, result);
+                return result;
+            }
+            return modelCache.get(hash);
         }
+        //TODO: print error about missing data?
         return bakedVariant.getQuads(state, side, rand, extraData);
     }
 
