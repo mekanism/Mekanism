@@ -5,20 +5,20 @@ import mekanism.additions.common.item.AdditionsSpawnEggItem;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.api.text.EnumColor;
+import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import net.minecraft.entity.Entity;
 
 public class AdditionsItems {
 
     public static ItemDeferredRegister ITEMS = new ItemDeferredRegister(MekanismAdditions.MODID);
 
-    //TODO: FIXME We are required to use a custom item as we cannot use the base SpawnEggItem due to needing something like
-    // https://github.com/MinecraftForge/MinecraftForge/pull/6299 to allow for lazy initialization
-    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_CREEPER_SPAWN_EGG = ITEMS.register("baby_creeper_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_CREEPER, 0x31E02F, 0x1E1E1E));
-    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_ENDERMAN_SPAWN_EGG = ITEMS.register("baby_enderman_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_ENDERMAN, 0x242424, 0x1E1E1E));
-    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_SKELETON_SPAWN_EGG = ITEMS.register("baby_skeleton_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_SKELETON, 0xFFFFFF, 0x800080));
-    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_STRAY_SPAWN_EGG = ITEMS.register("baby_stray_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_STRAY, 0x7B9394, 0xF2FAFA));
-    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_WITHER_SKELETON_SPAWN_EGG = ITEMS.register("baby_wither_skeleton_spawn_egg", () -> new AdditionsSpawnEggItem(AdditionsEntityTypes.BABY_WITHER_SKELETON, 0x303030, 0x525454));
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_CREEPER_SPAWN_EGG = registerSpawnEgg(AdditionsEntityTypes.BABY_CREEPER, 0x31E02F, 0x1E1E1E);
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_ENDERMAN_SPAWN_EGG = registerSpawnEgg(AdditionsEntityTypes.BABY_ENDERMAN, 0x242424, 0x1E1E1E);
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_SKELETON_SPAWN_EGG = registerSpawnEgg(AdditionsEntityTypes.BABY_SKELETON, 0xFFFFFF, 0x800080);
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_STRAY_SPAWN_EGG = registerSpawnEgg(AdditionsEntityTypes.BABY_STRAY, 0x7B9394, 0xF2FAFA);
+    public static final ItemRegistryObject<AdditionsSpawnEggItem> BABY_WITHER_SKELETON_SPAWN_EGG = registerSpawnEgg(AdditionsEntityTypes.BABY_WITHER_SKELETON, 0x303030, 0x525454);
     public static final ItemRegistryObject<ItemWalkieTalkie> WALKIE_TALKIE = ITEMS.register("walkie_talkie", ItemWalkieTalkie::new);
 
     public static final ItemRegistryObject<ItemBalloon> BLACK_BALLOON = registerBalloon(EnumColor.BLACK);
@@ -40,5 +40,11 @@ public class AdditionsItems {
 
     private static ItemRegistryObject<ItemBalloon> registerBalloon(EnumColor color) {
         return ITEMS.register(color.getRegistryPrefix() + "_balloon", () -> new ItemBalloon(color));
+    }
+
+    private static <ENTITY extends Entity> ItemRegistryObject<AdditionsSpawnEggItem> registerSpawnEgg(EntityTypeRegistryObject<ENTITY> entityTypeProvider,
+          int primaryColor, int secondaryColor) {
+        //Note: We are required to use a custom item as we cannot use the base SpawnEggItem due to the entity type not being initialized yet
+        return ITEMS.register(entityTypeProvider.getInternalRegistryName() + "_spawn_egg", () -> new AdditionsSpawnEggItem(entityTypeProvider, primaryColor, secondaryColor));
     }
 }

@@ -44,7 +44,6 @@ public class AdditionsTagProvider extends BaseTagProvider {
     }
 
     private void addSlabs() {
-        //TODO: Add to a forge's slabs tag by type if one gets added at some point
         addToTags(AdditionsTags.Items.SLABS_PLASTIC, AdditionsTags.Blocks.SLABS_PLASTIC,
               AdditionsBlocks.BLACK_PLASTIC_SLAB, AdditionsBlocks.RED_PLASTIC_SLAB, AdditionsBlocks.GREEN_PLASTIC_SLAB, AdditionsBlocks.BROWN_PLASTIC_SLAB,
               AdditionsBlocks.BLUE_PLASTIC_SLAB, AdditionsBlocks.PURPLE_PLASTIC_SLAB, AdditionsBlocks.CYAN_PLASTIC_SLAB, AdditionsBlocks.LIGHT_GRAY_PLASTIC_SLAB,
@@ -55,7 +54,6 @@ public class AdditionsTagProvider extends BaseTagProvider {
     }
 
     private void addStairs() {
-        //TODO: Add to a forge's stairs tag by type if one gets added at some point
         addToTags(AdditionsTags.Items.STAIRS_PLASTIC, AdditionsTags.Blocks.STAIRS_PLASTIC,
               AdditionsBlocks.BLACK_PLASTIC_STAIRS, AdditionsBlocks.RED_PLASTIC_STAIRS, AdditionsBlocks.GREEN_PLASTIC_STAIRS, AdditionsBlocks.BROWN_PLASTIC_STAIRS,
               AdditionsBlocks.BLUE_PLASTIC_STAIRS, AdditionsBlocks.PURPLE_PLASTIC_STAIRS, AdditionsBlocks.CYAN_PLASTIC_STAIRS, AdditionsBlocks.LIGHT_GRAY_PLASTIC_STAIRS,
