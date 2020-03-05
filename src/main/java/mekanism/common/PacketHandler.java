@@ -7,9 +7,10 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import mekanism.api.Range4D;
+import mekanism.api.Range3D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils;
+import mekanism.api.transmitters.DynamicNetwork;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketClearRecipeCache;
@@ -55,6 +56,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -289,13 +291,25 @@ public class PacketHandler {
         }
     }
 
-    //TODO: change Network stuff over to using this
-    public <MSG> void sendToReceivers(MSG message, Range4D range) {
+    public <MSG> void sendToReceivers(MSG message, DynamicNetwork<?, ?, ?> network) {
+        //TODO: Create a method in DynamicNetwork to get all players that are "tracking" the network
+        // Also evaluate moving various network packet things over to using this at that point
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         if (server != null) {
-            for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
-                if (range.hasPlayerInRange(player)) {
-                    sendTo(message, player);
+            Range3D range = network.getPacketRange();
+            PlayerList playerList = server.getPlayerList();
+            //Ignore height for partial Cubic chunks support as range comparision gets used ignoring player height normally anyways
+            int radius = playerList.getViewDistance() * 16;
+            for (ServerPlayerEntity player : playerList.getPlayers()) {
+                if (range.dimension == player.dimension) {
+                    BlockPos playerPosition = player.getPosition();
+                    int playerX = playerPosition.getX();
+                    int playerZ = playerPosition.getZ();
+                    //playerX/Z + radius is the max, so to stay in line with how it was before, it has an extra + 1 added to it
+                    if (playerX + radius + 1.99999 > range.xMin && range.xMax + 0.99999 > playerX - radius &&
+                           playerZ + radius + 1.99999 > range.zMin && range.zMax + 0.99999 > playerZ - radius) {
+                        sendTo(message, player);
+                    }
                 }
             }
         }

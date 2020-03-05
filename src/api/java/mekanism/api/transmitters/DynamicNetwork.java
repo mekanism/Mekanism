@@ -12,7 +12,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IClientTicker;
-import mekanism.api.Range4D;
+import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -36,7 +36,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     protected Set<Coord4D> possibleAcceptors = new ObjectOpenHashSet<>();
     protected Map<Coord4D, EnumSet<Direction>> acceptorDirections = new Object2ObjectOpenHashMap<>();
     protected Map<IGridTransmitter<ACCEPTOR, NETWORK, BUFFER>, EnumSet<Direction>> changedAcceptors = new Object2ObjectOpenHashMap<>();
-    protected Range4D packetRange = null;
+    protected Range3D packetRange = null;
     protected int capacity = 0;
     protected double doubleCapacity = 0;
     protected boolean needsUpdate = false;
@@ -186,26 +186,21 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         }
     }
 
-    public Range4D getPacketRange() {
+    public Range3D getPacketRange() {
         return packetRange == null ? genPacketRange() : packetRange;
     }
 
-    protected Range4D genPacketRange() {
+    private Range3D genPacketRange() {
         if (getSize() == 0) {
             deregister();
             return null;
         }
-
         IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> initTransmitter = transmitters.iterator().next();
         Coord4D initCoord = initTransmitter.coord();
-
         int minX = initCoord.x;
-        int minY = initCoord.y;
         int minZ = initCoord.z;
         int maxX = initCoord.x;
-        int maxY = initCoord.y;
         int maxZ = initCoord.z;
-
         for (IGridTransmitter<ACCEPTOR, NETWORK, BUFFER> transmitter : transmitters) {
             Coord4D coord = transmitter.coord();
             if (coord.x < minX) {
@@ -213,18 +208,13 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
             } else if (coord.x > maxX) {
                 maxX = coord.x;
             }
-            if (coord.y < minY) {
-                minY = coord.y;
-            } else if (coord.y > maxY) {
-                maxY = coord.y;
-            }
             if (coord.z < minZ) {
                 minZ = coord.z;
-            } else if (coord.x > maxZ) {
+            } else if (coord.z > maxZ) {
                 maxZ = coord.z;
             }
         }
-        return new Range4D(minX, minY, minZ, maxX, maxY, maxZ, initTransmitter.world().getDimension().getType());
+        return new Range3D(minX, minZ, maxX, maxZ, initTransmitter.world().getDimension().getType());
     }
 
     public void register() {

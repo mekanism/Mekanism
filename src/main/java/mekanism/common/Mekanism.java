@@ -353,8 +353,7 @@ public class Mekanism {
 
     private void onEnergyTransferred(EnergyTransferEvent event) {
         try {
-            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.ENERGY, event.energyNetwork.firstTransmitter().coord(), event.power),
-                  event.energyNetwork.getPacketRange());
+            packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.ENERGY, event.energyNetwork.firstTransmitter().coord(), event.power), event.energyNetwork);
         } catch (Exception ignored) {
         }
     }
@@ -362,7 +361,7 @@ public class Mekanism {
     private void onGasTransferred(GasTransferEvent event) {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.GAS, event.gasNetwork.firstTransmitter().coord(), event.transferType, event.didTransfer),
-                  event.gasNetwork.getPacketRange());
+                  event.gasNetwork);
         } catch (Exception ignored) {
         }
     }
@@ -370,7 +369,7 @@ public class Mekanism {
     private void onLiquidTransferred(FluidTransferEvent event) {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.FLUID, event.fluidNetwork.firstTransmitter().coord(), event.fluidType, event.didTransfer),
-                  event.fluidNetwork.getPacketRange());
+                  event.fluidNetwork);
         } catch (Exception ignored) {
         }
     }
@@ -378,7 +377,7 @@ public class Mekanism {
     private void onTransmittersAddedEvent(TransmittersAddedEvent event) {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.UPDATE, event.network.firstTransmitter().coord(), event.newNetwork, event.newTransmitters),
-                  event.network.getPacketRange());
+                  event.network);
         } catch (Exception ignored) {
         }
     }

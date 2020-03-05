@@ -16,8 +16,6 @@ import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
-import mekanism.api.Range4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
@@ -931,7 +929,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        return new Range4D(Coord4D.get(this)).expandFromCenter(radius).getIntersectingChunkPositions();
+        int chunkXMin = pos.getX() - radius >> 4;
+        int chunkXMax = pos.getX() + radius >> 4;
+        int chunkZMin = pos.getX() - radius >> 4;
+        int chunkZMax = pos.getZ() + radius >> 4;
+        Set<ChunkPos> set = new ObjectOpenHashSet<>();
+        for (int chunkX = chunkXMin; chunkX <= chunkXMax; chunkX++) {
+            for (int chunkZ = chunkZMin; chunkZ <= chunkZMax; chunkZ++) {
+                set.add(new ChunkPos(chunkX, chunkZ));
+            }
+        }
+        return set;
     }
 
     @Override
