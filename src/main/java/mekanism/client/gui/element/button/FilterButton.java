@@ -27,7 +27,7 @@ public class FilterButton extends MekanismButton {
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
           BiConsumer<IFilter<?>, Integer> onPress) {
-        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, "", () -> onPress.accept(filters.get().get(filterIndex.getAsInt() + index), index), null);
+        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, "", () -> onPress.accept(filters.get().get(filterIndex.getAsInt() + index), filterIndex.getAsInt() + index), null);
         this.index = index;
         this.filterIndex = filterIndex;
         this.filters = filters;
