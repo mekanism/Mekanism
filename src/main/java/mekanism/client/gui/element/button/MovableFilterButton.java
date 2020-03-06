@@ -55,13 +55,13 @@ public class MovableFilterButton extends FilterButton {
         int y = this.y - guiObj.getTop();
         IFilter<?> filter = filters.get().get(filterIndex.getAsInt() + index);
         if (filter instanceof IItemStackFilter) {
-            drawString(MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, 0x404040);
+            renderScaledText(MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, 0x404040, 60);
         } else if (filter instanceof ITagFilter) {
-            drawString(MekanismLang.TAG_FILTER.translate(), x + 22, y + 2, 0x404040);
+            renderScaledText(MekanismLang.TAG_FILTER.translate(), x + 22, y + 2, 0x404040, 60);
         } else if (filter instanceof IMaterialFilter) {
-            drawString(MekanismLang.MATERIAL_FILTER.translate(), x + 22, y + 2, 0x404040);
+            renderScaledText(MekanismLang.MATERIAL_FILTER.translate(), x + 22, y + 2, 0x404040, 60);
         } else if (filter instanceof IModIDFilter) {
-            drawString(MekanismLang.MODID_FILTER.translate(), x + 22, y + 2, 0x404040);
+            renderScaledText(MekanismLang.MODID_FILTER.translate(), x + 22, y + 2, 0x404040, 60);
         }
         if (filter instanceof TransporterFilter<?>) {
             TransporterFilter<?> sorterFilter = (TransporterFilter<?>) filter;

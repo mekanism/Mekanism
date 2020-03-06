@@ -248,7 +248,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         drawString(securityComponent, 32, 91, 0x404040);
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (clientFreq != null) {
-            drawString(clientFreq.name, 32 + frequencyOffset, 81, 0x797979);
+            renderScaledText(clientFreq.name, 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
             drawString(getSecurity(clientFreq), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);

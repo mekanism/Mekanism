@@ -210,7 +210,7 @@ public class GuiQuantumEntangloporter extends GuiMekanismTile<TileEntityQuantumE
         Frequency frequency = tile.getFrequency(null);
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (frequency != null) {
-            drawString(frequency.name, 32 + frequencyOffset, 81, 0x797979);
+            renderScaledText(frequency.name, 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
             drawString(getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);

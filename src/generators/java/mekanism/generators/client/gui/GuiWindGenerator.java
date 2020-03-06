@@ -50,11 +50,10 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), 45, 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
-        drawString(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
-        //TODO: Why is this different from how all the other ones do it
-        drawString(GeneratorsLang.POWER.translate(powerFormat.format(MekanismUtils.convertToDisplay(
-              MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier()))), 51, 35, 0x00CD00);
-        drawString(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())), 51, 44, 0x00CD00);
+        renderScaledText(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00, 75);
+        renderScaledText(GeneratorsLang.POWER.translate(powerFormat.format(MekanismUtils.convertToDisplay(
+              MekanismGeneratorsConfig.generators.windGenerationMin.get() * tile.getCurrentMultiplier()))), 51, 35, 0x00CD00, 75);
+        renderScaledText(GeneratorsLang.OUTPUT_RATE_SHORT.translate(EnergyDisplay.of(tile.getMaxOutput())), 51, 44, 0x00CD00, 75);
         int size = 44;
         if (!tile.getActive()) {
             size += 9;

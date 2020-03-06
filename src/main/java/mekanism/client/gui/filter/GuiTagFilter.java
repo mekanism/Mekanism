@@ -15,6 +15,15 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     protected GuiTagFilter(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
     }
+    
+    @Override
+    public void init() {
+        super.init();
+        
+        if (filter.getTagName() != null && !filter.getTagName().isEmpty()) {
+            updateStackList(filter.getTagName());
+        }
+    }
 
     protected abstract void updateStackList(String oreName);
 

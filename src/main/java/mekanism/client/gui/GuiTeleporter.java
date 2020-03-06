@@ -206,7 +206,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         drawString(securityComponent, 32, 91, 0x404040);
         int frequencyOffset = getStringWidth(frequencyComponent) + 1;
         if (tile.frequency != null) {
-            drawString(tile.frequency.name, 32 + frequencyOffset, 81, 0x797979);
+            renderScaledText(tile.frequency.name, 32 + frequencyOffset, 81, 0x797979, xSize - 32 - frequencyOffset - 4);
             drawString(getSecurity(tile.frequency), 32 + getStringWidth(securityComponent), 91, 0x797979);
         } else {
             drawString(MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, 0x797979);

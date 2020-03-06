@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.render.item.ItemLayerWrapper;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.generators.client.gui.GuiBioGenerator;
 import mekanism.generators.client.gui.GuiGasGenerator;
 import mekanism.generators.client.gui.GuiHeatGenerator;
@@ -34,11 +35,15 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
+import mekanism.generators.common.tile.TileEntityAdvancedSolarGenerator;
+import mekanism.generators.common.tile.TileEntitySolarGenerator;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -80,7 +85,9 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.REACTOR_HEAT, GuiReactorHeat::new);
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.REACTOR_LOGIC_ADAPTER, GuiReactorLogicAdapter::new);
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.REACTOR_STATS, GuiReactorStats::new);
-        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.SOLAR_GENERATOR, GuiSolarGenerator::new);
+        // for some reason java is unable to infer the types with this generics structure, so we include constructor signature ourselves
+        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.SOLAR_GENERATOR, (MekanismTileContainer<TileEntitySolarGenerator> container, PlayerInventory inv, ITextComponent title) -> new GuiSolarGenerator<TileEntitySolarGenerator>(container, inv, title));
+        ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.ADVANCED_SOLAR_GENERATOR, (MekanismTileContainer<TileEntityAdvancedSolarGenerator> container, PlayerInventory inv, ITextComponent title) -> new GuiSolarGenerator<TileEntityAdvancedSolarGenerator>(container, inv, title));
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.TURBINE_STATS, GuiTurbineStats::new);
         ClientRegistrationUtil.registerScreen(GeneratorsContainerTypes.WIND_GENERATOR, GuiWindGenerator::new);
     }
