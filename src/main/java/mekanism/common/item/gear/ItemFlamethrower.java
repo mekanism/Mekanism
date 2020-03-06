@@ -6,9 +6,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.render.item.ISTERProvider;
@@ -75,6 +79,13 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem instanceof IMekanismGasHandler) {
+                IChemicalTank<Gas, GasStack> gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                if (gasTank != null) {
+                    //Should always reach here
+                    return gasTank.extract(amount, Action.EXECUTE, AutomationType.INTERNAL);
+                }
+            }
             return gasHandlerItem.extractGas(0, amount, Action.EXECUTE);
         }
         return GasStack.EMPTY;
@@ -117,8 +128,8 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, MekanismConfig.general.maxFlamethrowerGas::get, BasicGasTank.manualOnly,
-              BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getGas()));
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, MekanismConfig.general.maxFlamethrowerGas::get,
+              (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == MekanismGases.HYDROGEN.getGas()));
     }
 
     @Override

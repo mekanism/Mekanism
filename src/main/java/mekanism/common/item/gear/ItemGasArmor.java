@@ -6,9 +6,13 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IGasProvider;
 import mekanism.client.render.armor.CustomArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
@@ -102,6 +106,13 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
         Optional<IGasHandler> capability = MekanismUtils.toOptional(stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY));
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem instanceof IMekanismGasHandler) {
+                IChemicalTank<Gas, GasStack> gasTank = ((IMekanismGasHandler) gasHandlerItem).getGasTank(0, null);
+                if (gasTank != null) {
+                    //Should always reach here
+                    return gasTank.extract(amount, Action.EXECUTE, AutomationType.INTERNAL);
+                }
+            }
             return gasHandlerItem.extractGas(0, amount, Action.EXECUTE);
         }
         return GasStack.EMPTY;
@@ -117,7 +128,7 @@ public abstract class ItemGasArmor extends ArmorItem implements ISpecialGear {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, getMaxGas(), BasicGasTank.manualOnly, BasicGasTank.alwaysTrueBi,
-              gas -> gas == getGasType().getGas()));
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, getMaxGas(),
+              (item, automationType) -> automationType != AutomationType.EXTERNAL, BasicGasTank.alwaysTrueBi, gas -> gas == getGasType().getGas()));
     }
 }
