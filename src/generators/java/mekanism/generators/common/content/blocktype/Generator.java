@@ -86,10 +86,5 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTile<TILE> 
             holder.particleFunctions.add((random) -> new GeneratorParticle(type, posSupplier.apply(random)));
             return getThis();
         }
-
-        @Override
-        public GENERATOR build() {
-            return holder;
-        }
     }
 }

@@ -155,9 +155,9 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tile).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
-            float xRandom = (float) pos.getX() + 0.5F;
-            float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-            float zRandom = (float) pos.getZ() + 0.5F;
+            float xRandom = pos.getX() + 0.5F;
+            float yRandom = pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+            float zRandom = pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
             Direction side = tile.getDirection();

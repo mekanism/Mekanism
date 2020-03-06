@@ -98,7 +98,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
         public static <TILE extends TileEntityMekanism> MachineBuilder<FactoryMachine<TILE>, TILE, ?> createFactoryMachine(TileEntityTypeRegistryObject<TILE> tileEntityRegistrar,
               ContainerTypeRegistryObject<MekanismTileContainer<TILE>> containerRegistrar, MekanismLang description, FactoryType factoryType) {
             MachineBuilder<FactoryMachine<TILE>, TILE, ?> builder = new MachineBuilder<>(new FactoryMachine<>(tileEntityRegistrar, containerRegistrar, description, factoryType));
-            ((FactoryMachine<TILE>) builder.holder).factoryType = factoryType;
+            builder.holder.factoryType = factoryType;
             return builder;
         }
 
@@ -125,10 +125,6 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
                 ((FactoryMachine<TILE>) holder).tierUpgradeMap.put(BaseTier.values()[i], factories[i]);
             }
             return getThis();
-        }
-
-        public MACHINE build() {
-            return holder;
         }
     }
 }
