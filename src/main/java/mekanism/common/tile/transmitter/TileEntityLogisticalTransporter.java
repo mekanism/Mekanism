@@ -308,8 +308,8 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     }
 
     @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
+    public void remove() {
+        super.remove();
         if (!isRemote()) {
             for (TransporterStack stack : getTransmitter().getTransit()) {
                 TransporterUtils.drop(getTransmitter(), stack);
