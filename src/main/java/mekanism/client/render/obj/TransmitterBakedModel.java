@@ -53,10 +53,12 @@ public class TransmitterBakedModel implements IBakedModel {
     private final ResourceLocation modelLocation;
     private final IBakedModel bakedVariant;
 
-    private Int2ObjectMap<List<BakedQuad>> modelCache = new Int2ObjectOpenHashMap<>();
+    private Int2ObjectMap<List<BakedQuad>> modelCache;
 
     public TransmitterBakedModel(OBJModel internal, @Nullable OBJModel glass, IModelConfiguration owner, ModelBakery bakery,
           Function<Material, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation) {
+        //4^6 number of states, if we have a glass texture (support coloring), multiply by 2
+        this.modelCache = new Int2ObjectOpenHashMap<>(glass == null ? 4_096 : 8_192);
         this.internal = internal;
         this.glass = glass;
         this.owner = owner;
@@ -124,7 +126,7 @@ public class TransmitterBakedModel implements IBakedModel {
             }
             return modelCache.get(hash);
         }
-        //TODO: print error about missing data?
+        //Fallback to our "default" model arrangement. The item variant uses this
         return bakedVariant.getQuads(state, side, rand, extraData);
     }
 
