@@ -11,6 +11,7 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 
 //TODO: The below TODOs go off an assumption of there being some form of forge patch first to support position information for fluid states
 public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContainer {
@@ -63,7 +64,7 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
         Fluid fluid = fluidState.getFluid();
         if (canContainFluid(world, pos, state, fluid)) {
             if (!world.isRemote()) {
-                world.setBlockState(pos, state.with(BlockStateHelper.FLUID_LOGGED, true), 3);
+                world.setBlockState(pos, state.with(BlockStateHelper.FLUID_LOGGED, true), BlockFlags.DEFAULT);
                 world.getPendingFluidTicks().scheduleTick(pos, fluid, fluid.getTickRate(world));
                 //TODO: Update the TileEntity if there is one with the proper fluid type
             }
@@ -76,7 +77,7 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
     @Override
     default Fluid pickupFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
         if (state.get(BlockStateHelper.FLUID_LOGGED)) {
-            world.setBlockState(pos, state.with(BlockStateHelper.FLUID_LOGGED, false), 3);
+            world.setBlockState(pos, state.with(BlockStateHelper.FLUID_LOGGED, false), BlockFlags.DEFAULT);
             //TODO: Get proper fluid from block
             return getSupportedFluid();
         }

@@ -41,6 +41,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.WorldEvents;
 
 public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
@@ -168,7 +169,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
             return ActionResultType.PASS;
         }
         if (!world.isRemote) {
-            world.setBlockState(blockpos, resultToSet, 11);
+            world.setBlockState(blockpos, resultToSet, BlockFlags.DEFAULT_AND_RERENDER);
             if (player != null) {
                 context.getItem().damageItem(1, player, onBroken -> onBroken.sendBreakAnimation(context.getHand()));
             }

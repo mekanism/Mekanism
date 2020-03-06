@@ -54,7 +54,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         if (index != position) {
             // Our position has changed, update and generate an update packet for client
             position = index;
-            sendUpdatePacket();
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
 
         // Pass the scan along to next rotor up, along with their new index
@@ -73,7 +73,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
             // Add the blades to this rotor
             blades++;
             // Update client state
-            sendUpdatePacket();
+            Mekanism.packetHandler.sendUpdatePacket(this);
             return true;
         }
 
@@ -96,7 +96,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
             blades--;
 
             // Update client state
-            sendUpdatePacket();
+            Mekanism.packetHandler.sendUpdatePacket(this);
             return true;
         }
 
@@ -120,10 +120,6 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
     private TileEntityTurbineRotor nextRotor(BlockPos pos) {
         return MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), pos);
-    }
-
-    private void sendUpdatePacket() {
-        Mekanism.packetHandler.sendUpdatePacket(this);
     }
 
     @Override
@@ -179,6 +175,6 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         // Override the multiblock setter so that we can be sure to relay the ID down to the client; otherwise,
         // the rendering won't work properly
         super.setMultiblock(id);
-        sendUpdatePacket();
+        Mekanism.packetHandler.sendUpdatePacket(this);
     }
 }

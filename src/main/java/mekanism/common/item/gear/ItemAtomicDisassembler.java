@@ -61,6 +61,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event.Result;
@@ -286,7 +287,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         }
         if (useResult == 0) {
             //Processing did not happen in the hook so we need to process it
-            world.setBlockState(pos, tilledState, 11);
+            world.setBlockState(pos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
             Material aboveMaterial = aboveState.getMaterial();
             if (aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) {
                 world.destroyBlock(abovePos, true);
@@ -322,7 +323,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                     continue;
                 } //else we are allowed to use the item
                 //Replace the block. Note it just directly sets it (in the same way that HoeItem/ShovelItem do)
-                world.setBlockState(newPos, tilledState, 11);
+                world.setBlockState(newPos, tilledState, BlockFlags.DEFAULT_AND_RERENDER);
                 Material aboveMaterial = stateAbove.getMaterial();
                 if (aboveMaterial == Material.PLANTS || aboveMaterial == Material.TALL_PLANTS) {
                     //If the block above the one we tilled is a plant, then we try to remove it
@@ -374,7 +375,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         Axis axis = clickedState.get(RotatedPillarBlock.AXIS);
         BlockState strippedState = strippedBlock.getDefaultState().with(RotatedPillarBlock.AXIS, axis);
         //Process the block we interacted with initially and play the sound
-        world.setBlockState(pos, strippedState, 11);
+        world.setBlockState(pos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
         world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
         Direction side = context.getFace();
         double energyUsed = energyUsage;
@@ -400,7 +401,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 //Add energy cost
                 energyUsed += energyUsage;
                 //Replace the block. Note it just directly sets it (in the same way that AxeItem does).
-                world.setBlockState(newPos, strippedState, 11);
+                world.setBlockState(newPos, strippedState, BlockFlags.DEFAULT_AND_RERENDER);
                 world.playSound(player, pos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
             }
         }

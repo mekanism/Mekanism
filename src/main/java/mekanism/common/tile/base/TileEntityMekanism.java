@@ -1,5 +1,6 @@
 package mekanism.common.tile.base;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -10,7 +11,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
@@ -46,6 +46,7 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
+import mekanism.common.base.NBTConstants;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.IStateActive;
@@ -90,6 +91,7 @@ import mekanism.common.tile.interfaces.ITileUpgradable;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.TextComponentUtil;
 import net.minecraft.block.Block;
@@ -101,7 +103,10 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.PacketDirection;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -112,6 +117,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -499,6 +505,7 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     public void onLoad() {
         super.onLoad();
         if (isRemote()) {
+            //TODO: Remove
             Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
     }
@@ -567,13 +574,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             for (ITileComponent component : components) {
                 component.read(dataStream);
             }
-            if (isElectric()) {
-                setEnergy(dataStream.readDouble());
-                if (supportsUpgrades()) {
-                    setEnergyPerTick(dataStream.readDouble());
-                    setMaxEnergy(dataStream.readDouble());
-                }
-            }
         }
     }
 
@@ -582,14 +582,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         //TODO: Should there be a hasComponents?
         for (ITileComponent component : components) {
             component.write(data);
-        }
-        //TODO: Move this into classes of things that need energy info for rendering, and let the rest be handled by the container sync
-        if (isElectric()) {
-            data.add(getEnergy());
-            if (supportsUpgrades()) {
-                data.add(getEnergyPerTick());
-                data.add(getMaxEnergy());
-            }
         }
         return data;
     }
@@ -811,21 +803,67 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return null;
     }
 
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(getPos(), 0, getUpdateTag());
+    }
+
     @Nonnull
     @Override
     public CompoundNBT getUpdateTag() {
-        // Forge writes only x/y/z/id info to a new NBT Tag Compound. This is fine, we have a custom network system
-        // to send other data so we don't use this one (yet).
-        return super.getUpdateTag();
+        //TODO: Do we want to sync more information the very first time, and less remaining times
+        CompoundNBT updateTag = super.getUpdateTag();
+        /*for (ITileComponent component : components) {
+            component.write(data);
+        }*/
+        //TODO: Move this into classes of things that need energy info for rendering, and let the rest be handled by the container sync
+        // In fact for things like the energy cube, we don't even need to sync the energy to the client, we can just sync the
+        // "percent filled ratio"/"stage", that way we can reduce how much data actually has to be written to the packet,
+        // and make it a bit harder for the client to have potentially invalid data
+        if (isElectric()) {
+            updateTag.putDouble(NBTConstants.ENERGY_STORED, getEnergy());
+            if (supportsUpgrades()) {
+                //TODO: Is there any reason why we would need to sync energy pre tick/max energy to the client
+                // rather than just let them be synced only for containers
+                updateTag.putDouble(NBTConstants.ENERGY_PER_TICK, getEnergyPerTick());
+                updateTag.putDouble(NBTConstants.MAX_ENERGY, getMaxEnergy());
+            }
+        }
+        return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        // The super implementation of handleUpdateTag is to call this readFromNBT. But, the given TagCompound
-        // only has x/y/z/id data, so our readFromNBT will set a bunch of default values which are wrong.
-        // So simply call the super's readFromNBT, to let Forge do whatever it wants, but don't treat this like
-        // a full NBT object, don't pass it to our custom read methods.
+        //We don't want to do a full read from NBT so simply call the super's read method to let Forge do whatever
+        // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
         super.read(tag);
+        /*for (ITileComponent component : components) {
+            component.read(dataStream);
+        }*/
+        //TODO: Move this into classes of things that need energy info for rendering, and let the rest be handled by the container sync
+        if (isElectric()) {
+            NBTUtils.setDoubleIfPresent(tag, NBTConstants.ENERGY_STORED, this::setEnergy);
+            if (supportsUpgrades()) {
+                NBTUtils.setDoubleIfPresent(tag, NBTConstants.ENERGY_PER_TICK, this::setEnergyPerTick);
+                NBTUtils.setDoubleIfPresent(tag, NBTConstants.MAX_ENERGY, this::setMaxEnergy);
+            }
+        }
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        if (isRemote() && net.getDirection() == PacketDirection.CLIENTBOUND) {
+            //Handle the update tag when we are on the client
+            handleUpdateTag(pkt.getNbtCompound());
+        }
+    }
+
+    protected void sendUpdatePacket() {
+        if (world != null) {
+            BlockState state = getBlockState();
+            world.notifyBlockUpdate(getPos(), state, state, BlockFlags.DEFAULT);
+        }
     }
 
     //Methods pertaining to IUpgradeableTile

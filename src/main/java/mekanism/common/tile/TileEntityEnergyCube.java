@@ -6,7 +6,6 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.RelativeSide;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.block.BlockEnergyCube;
@@ -38,7 +37,7 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
      * This Energy Cube's tier.
      */
     public EnergyCubeTier tier;//TODO: Make this private
-    public int prevScale;
+    private int prevScale;
     public TileComponentEjector ejectorComponent;
     public TileComponentConfig configComponent;
 
@@ -104,9 +103,9 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
             }
             int newScale = (int) (getEnergy() * 20 / getMaxEnergy());
             if (newScale != prevScale) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
+                sendUpdatePacket();
+                prevScale = newScale;
             }
-            prevScale = newScale;
         }
     }
 
