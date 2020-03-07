@@ -817,19 +817,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         /*for (ITileComponent component : components) {
             component.write(data);
         }*/
-        //TODO: Move this into classes of things that need energy info for rendering, and let the rest be handled by the container sync
-        // In fact for things like the energy cube, we don't even need to sync the energy to the client, we can just sync the
-        // "percent filled ratio"/"stage", that way we can reduce how much data actually has to be written to the packet,
-        // and make it a bit harder for the client to have potentially invalid data
-        if (isElectric()) {
-            updateTag.putDouble(NBTConstants.ENERGY_STORED, getEnergy());
-            if (supportsUpgrades()) {
-                //TODO: Is there any reason why we would need to sync energy pre tick/max energy to the client
-                // rather than just let them be synced only for containers
-                updateTag.putDouble(NBTConstants.ENERGY_PER_TICK, getEnergyPerTick());
-                updateTag.putDouble(NBTConstants.MAX_ENERGY, getMaxEnergy());
-            }
-        }
         return updateTag;
     }
 
@@ -841,14 +828,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         /*for (ITileComponent component : components) {
             component.read(dataStream);
         }*/
-        //TODO: Move this into classes of things that need energy info for rendering, and let the rest be handled by the container sync
-        if (isElectric()) {
-            NBTUtils.setDoubleIfPresent(tag, NBTConstants.ENERGY_STORED, this::setEnergy);
-            if (supportsUpgrades()) {
-                NBTUtils.setDoubleIfPresent(tag, NBTConstants.ENERGY_PER_TICK, this::setEnergyPerTick);
-                NBTUtils.setDoubleIfPresent(tag, NBTConstants.MAX_ENERGY, this::setMaxEnergy);
-            }
-        }
     }
 
     @Override

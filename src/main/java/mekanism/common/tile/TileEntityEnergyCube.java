@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.transmitters.TransmissionType;
@@ -27,6 +28,8 @@ import mekanism.common.upgrade.EnergyCubeUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -189,5 +192,23 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     public EnergyCubeUpgradeData getUpgradeData() {
         return new EnergyCubeUpgradeData(redstone, getControlType(), getEnergy(), chargeSlot, dischargeSlot, getComponents());
+    }
+
+    public int getEnergyScale() {
+        return prevScale;
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.putInt(NBTConstants.ENERGY_SCALE, prevScale);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.ENERGY_SCALE, scale -> prevScale = scale);
     }
 }

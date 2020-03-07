@@ -24,6 +24,8 @@ public interface IToggleableCapability extends ICapabilityProvider {
      * LazyOptional#empty()}.
      */
     default boolean isCapabilityDisabled(@Nonnull Capability<?> capability, @Nullable Direction side) {
+        //TODO: Modify this to overwrite getCapability and wrap it into a method so that we don't have to check isCapabilityDisabled at each level
+        // or even remember to do so
         return false;
     }
 }

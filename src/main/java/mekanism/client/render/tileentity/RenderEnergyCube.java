@@ -69,15 +69,15 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         }
         matrix.pop();
 
-        double energyPercentage = tile.getEnergy() / tile.getMaxEnergy();
-        if (energyPercentage > 0.1) {
+        int energyScale = tile.getEnergyScale();
+        if (energyScale > 0) {
             matrix.translate(0, -1, 0);
             float ticks = MekanismClient.ticksPassed + partialTick;
             matrix.scale(0.4F, 0.4F, 0.4F);
             matrix.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             matrix.rotate(Vector3f.YP.rotationDegrees(4 * ticks));
             matrix.rotate(coreVec.rotationDegrees(36F + 4 * ticks));
-            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), (float) energyPercentage);
+            core.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, tile.tier.getBaseTier().getColor(), energyScale / 20F);
         }
         matrix.pop();
         MekanismRenderer.machineRenderer().render(tile, partialTick, matrix, renderer, light, overlayLight);

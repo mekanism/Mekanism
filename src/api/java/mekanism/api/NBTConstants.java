@@ -165,6 +165,9 @@ public final class NBTConstants {
 
     public static final String DIMENSION = "dimension";
 
+    //Server to Client specific sync NBT tags
+    public static final String ENERGY_SCALE = "energy_scale";
+
     //Ones that also are used for interacting with forge/vanilla
     public static final String X = "x";
     public static final String Y = "y";
