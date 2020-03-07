@@ -105,7 +105,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
         //Copy of the base impl of markDirty in TileEntity, except as none of our transmitters supports comparators
         // don't bother doing notifying neighbors
         if (world != null) {
-            //TODO: Do we even really need to be updating the cachedBlockState?
             cachedBlockState = world.getBlockState(pos);
             world.markChunkDirty(pos, this);
             //TODO: Test if this majorly breaks things
@@ -116,8 +115,11 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     public void tick() {
         if (isRemote()) {
             if (delayTicks == 5) {
-                delayTicks = 6; /* don't refresh again */
+                delayTicks = 6;
                 refreshConnections();
+                // refresh the model to fix weird model caching issues
+                requestModelDataUpdate();
+                MekanismUtils.updateBlock(getWorld(), pos);
             } else if (delayTicks < 5) {
                 delayTicks++;
             }
@@ -287,8 +289,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
                 connectionTypes[i] = dataStream.readEnumValue(ConnectionType.class);
             }
             requestModelDataUpdate();
-            //TODO: Figure out why we are marking it dirty on the clientside??
-            markDirty();
             MekanismUtils.updateBlock(getWorld(), pos);
         }
     }
