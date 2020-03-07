@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
+import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToGasRecipe;
@@ -27,13 +28,13 @@ public class ItemStackGasToGasRecipeSerializer<T extends ItemStackGasToGasRecipe
     @Nonnull
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement itemInput = JSONUtils.isJsonArray(json, "itemInput") ? JSONUtils.getJsonArray(json, "itemInput") :
-                                JSONUtils.getJsonObject(json, "itemInput");
+        JsonElement itemInput = JSONUtils.isJsonArray(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.ITEM_INPUT) :
+                                JSONUtils.getJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
-        JsonElement gasInput = JSONUtils.isJsonArray(json, "gasInput") ? JSONUtils.getJsonArray(json, "gasInput") :
-                               JSONUtils.getJsonObject(json, "gasInput");
+        JsonElement gasInput = JSONUtils.isJsonArray(json, JsonConstants.GAS_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.GAS_INPUT) :
+                               JSONUtils.getJsonObject(json, JsonConstants.GAS_INPUT);
         GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
-        GasStack output = SerializerHelper.getGasStack(json, "output");
+        GasStack output = SerializerHelper.getGasStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
         }

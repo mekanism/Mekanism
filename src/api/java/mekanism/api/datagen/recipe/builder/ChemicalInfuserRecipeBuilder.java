@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -48,9 +49,9 @@ public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<Chemical
 
         @Override
         public void serialize(@Nonnull JsonObject json) {
-            json.add("leftInput", leftInput.serialize());
-            json.add("rightInput", rightInput.serialize());
-            json.add("output", SerializerHelper.serializeGasStack(output));
+            json.add(JsonConstants.LEFT_INPUT, leftInput.serialize());
+            json.add(JsonConstants.RIGHT_INPUT, rightInput.serialize());
+            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeGasStack(output));
         }
     }
 }

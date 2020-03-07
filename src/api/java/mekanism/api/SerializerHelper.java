@@ -22,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO: We probably also want to move some of the json string keys to constants also
 public class SerializerHelper {
 
     private static Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -68,10 +67,10 @@ public class SerializerHelper {
     }
 
     public static GasStack deserializeGas(@Nonnull JsonObject json) {
-        if (!json.has("amount")) {
+        if (!json.has(JsonConstants.AMOUNT)) {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
-        JsonElement count = json.get("amount");
+        JsonElement count = json.get(JsonConstants.AMOUNT);
         if (!JSONUtils.isNumber(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
@@ -79,7 +78,7 @@ public class SerializerHelper {
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, "gas"));
+        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, JsonConstants.GAS));
         Gas gas = Gas.getFromRegistry(resourceLocation);
         if (gas.isEmptyType()) {
             throw new JsonSyntaxException("Invalid gas type '" + resourceLocation + "'");
@@ -88,10 +87,10 @@ public class SerializerHelper {
     }
 
     public static FluidStack deserializeFluid(@Nonnull JsonObject json) {
-        if (!json.has("amount")) {
+        if (!json.has(JsonConstants.AMOUNT)) {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
-        JsonElement count = json.get("amount");
+        JsonElement count = json.get(JsonConstants.AMOUNT);
         if (!JSONUtils.isNumber(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
@@ -99,19 +98,19 @@ public class SerializerHelper {
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, "fluid"));
+        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, JsonConstants.FLUID));
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourceLocation);
         if (fluid == null || fluid == Fluids.EMPTY) {
             throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
         }
         CompoundNBT nbt = null;
-        if (json.has("nbt")) {
-            JsonElement jsonNBT = json.get("nbt");
+        if (json.has(JsonConstants.NBT)) {
+            JsonElement jsonNBT = json.get(JsonConstants.NBT);
             try {
                 if (jsonNBT.isJsonObject()) {
                     nbt = JsonToNBT.getTagFromJson(GSON.toJson(jsonNBT));
                 } else {
-                    nbt = JsonToNBT.getTagFromJson(JSONUtils.getString(jsonNBT, "nbt"));
+                    nbt = JsonToNBT.getTagFromJson(JSONUtils.getString(jsonNBT, JsonConstants.NBT));
                 }
             } catch (CommandSyntaxException e) {
                 throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");
@@ -121,10 +120,10 @@ public class SerializerHelper {
     }
 
     public static InfusionStack deserializeInfuseType(@Nonnull JsonObject json) {
-        if (!json.has("amount")) {
+        if (!json.has(JsonConstants.AMOUNT)) {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
-        JsonElement count = json.get("amount");
+        JsonElement count = json.get(JsonConstants.AMOUNT);
         if (!JSONUtils.isNumber(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
@@ -132,7 +131,7 @@ public class SerializerHelper {
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, "infuse_type"));
+        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, JsonConstants.INFUSE_TYPE));
         InfuseType infuseType = InfuseType.getFromRegistry(resourceLocation);
         if (infuseType.isEmptyType()) {
             throw new JsonSyntaxException("Invalid infusion type '" + resourceLocation + "'");
@@ -143,37 +142,37 @@ public class SerializerHelper {
 
     public static JsonElement serializeItemStack(@Nonnull ItemStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty("item", stack.getItem().getRegistryName().toString());
+        json.addProperty(JsonConstants.ITEM, stack.getItem().getRegistryName().toString());
         if (stack.getCount() > 1) {
-            json.addProperty("count", stack.getCount());
+            json.addProperty(JsonConstants.COUNT, stack.getCount());
         }
         if (stack.hasTag()) {
-            json.addProperty("nbt", stack.getTag().toString());
+            json.addProperty(JsonConstants.NBT, stack.getTag().toString());
         }
         return json;
     }
 
     public static JsonElement serializeGasStack(@Nonnull GasStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty("gas", stack.getType().getRegistryName().toString());
-        json.addProperty("amount", stack.getAmount());
+        json.addProperty(JsonConstants.GAS, stack.getType().getRegistryName().toString());
+        json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
         return json;
     }
 
     public static JsonElement serializeFluidStack(@Nonnull FluidStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty("fluid", stack.getFluid().getRegistryName().toString());
-        json.addProperty("amount", stack.getAmount());
+        json.addProperty(JsonConstants.FLUID, stack.getFluid().getRegistryName().toString());
+        json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
         if (stack.hasTag()) {
-            json.addProperty("nbt", stack.getTag().toString());
+            json.addProperty(JsonConstants.NBT, stack.getTag().toString());
         }
         return json;
     }
 
     public static JsonElement serializeInfusionStack(@Nonnull InfusionStack stack) {
         JsonObject json = new JsonObject();
-        json.addProperty("infuse_type", stack.getType().getRegistryName().toString());
-        json.addProperty("amount", stack.getAmount());
+        json.addProperty(JsonConstants.INFUSE_TYPE, stack.getType().getRegistryName().toString());
+        json.addProperty(JsonConstants.AMOUNT, stack.getAmount());
         return json;
     }
 }

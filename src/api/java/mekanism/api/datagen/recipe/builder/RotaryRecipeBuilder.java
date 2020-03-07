@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -71,12 +72,12 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         @Override
         public void serialize(@Nonnull JsonObject json) {
             if (direction.hasFluidToGas) {
-                json.add("fluidInput", fluidInput.serialize());
-                json.add("gasOutput", SerializerHelper.serializeGasStack(gasOutput));
+                json.add(JsonConstants.FLUID_INPUT, fluidInput.serialize());
+                json.add(JsonConstants.GAS_OUTPUT, SerializerHelper.serializeGasStack(gasOutput));
             }
             if (direction.hasGasToFluid) {
-                json.add("gasInput", gasInput.serialize());
-                json.add("fluidOutput", SerializerHelper.serializeFluidStack(fluidOutput));
+                json.add(JsonConstants.GAS_INPUT, gasInput.serialize());
+                json.add(JsonConstants.FLUID_OUTPUT, SerializerHelper.serializeFluidStack(fluidOutput));
             }
         }
     }

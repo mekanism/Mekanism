@@ -3,6 +3,7 @@ package mekanism.client.render.obj;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
+import mekanism.api.JsonConstants;
 import net.minecraft.resources.IResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -28,8 +29,8 @@ public class TransmitterLoader implements IModelLoader<TransmitterModel> {
         //Wrap the Obj loader to read our file
         OBJModel model = OBJLoader.INSTANCE.read(deserializationContext, modelContents);
         OBJModel glass = null;
-        if (modelContents.has("glass")) {
-            glass = (OBJModel) ModelLoaderRegistry.deserializeGeometry(deserializationContext, modelContents.get("glass").getAsJsonObject());
+        if (modelContents.has(JsonConstants.GLASS)) {
+            glass = (OBJModel) ModelLoaderRegistry.deserializeGeometry(deserializationContext, modelContents.get(JsonConstants.GLASS).getAsJsonObject());
         }
         return new TransmitterModel(model, glass);
     }

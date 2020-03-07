@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -72,13 +73,13 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
 
         @Override
         public void serialize(@Nonnull JsonObject json) {
-            json.add("input", input.serialize());
+            json.add(JsonConstants.INPUT, input.serialize());
             if (outputType.hasPrimary) {
-                json.add("mainOutput", SerializerHelper.serializeItemStack(mainOutput));
+                json.add(JsonConstants.MAIN_OUTPUT, SerializerHelper.serializeItemStack(mainOutput));
             }
             if (outputType.hasSecondary) {
-                json.add("secondaryOutput", SerializerHelper.serializeItemStack(secondaryOutput));
-                json.addProperty("secondaryChance", secondaryChance);
+                json.add(JsonConstants.SECONDARY_OUTPUT, SerializerHelper.serializeItemStack(secondaryOutput));
+                json.addProperty(JsonConstants.SECONDARY_CHANCE, secondaryChance);
             }
         }
     }

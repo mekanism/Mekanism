@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
 import net.minecraft.fluid.Fluid;
@@ -80,15 +81,15 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             throw new JsonSyntaxException("Expected item to be object or array of objects");
         }
         JsonObject jsonObject = json.getAsJsonObject();
-        if (jsonObject.has("fluid") && jsonObject.has("tag")) {
+        if (jsonObject.has(JsonConstants.FLUID) && jsonObject.has(JsonConstants.TAG)) {
             throw new JsonParseException("An ingredient entry is either a tag or an item, not both");
-        } else if (jsonObject.has("fluid")) {
+        } else if (jsonObject.has(JsonConstants.FLUID)) {
             return from(SerializerHelper.deserializeFluid(jsonObject));
-        } else if (jsonObject.has("tag")) {
-            if (!jsonObject.has("amount")) {
+        } else if (jsonObject.has(JsonConstants.TAG)) {
+            if (!jsonObject.has(JsonConstants.AMOUNT)) {
                 throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
             }
-            JsonElement count = jsonObject.get("amount");
+            JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
             if (!JSONUtils.isNumber(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
@@ -96,7 +97,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
-            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
+            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
             Tag<Fluid> tag = FluidTags.getCollection().get(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown fluid tag '" + resourceLocation + "'");
@@ -166,10 +167,10 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         @Override
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
-            json.addProperty("amount", fluidInstance.getAmount());
-            json.addProperty("fluid", fluidInstance.getFluid().getRegistryName().toString());
+            json.addProperty(JsonConstants.AMOUNT, fluidInstance.getAmount());
+            json.addProperty(JsonConstants.FLUID, fluidInstance.getFluid().getRegistryName().toString());
             if (fluidInstance.hasTag()) {
-                json.addProperty("nbt", fluidInstance.getTag().toString());
+                json.addProperty(JsonConstants.NBT, fluidInstance.getTag().toString());
             }
             return json;
         }
@@ -231,8 +232,8 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         @Override
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
-            json.addProperty("amount", amount);
-            json.addProperty("tag", tag.getId().toString());
+            json.addProperty(JsonConstants.AMOUNT, amount);
+            json.addProperty(JsonConstants.TAG, tag.getId().toString());
             return json;
         }
 

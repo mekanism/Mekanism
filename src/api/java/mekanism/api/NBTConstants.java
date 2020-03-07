@@ -1,7 +1,6 @@
 package mekanism.api;
 
 //TODO: Re-order/organize this class
-//TODO: NBTUtil uuid -> CompoundNBT UUID thing? given some things like balloon we don't really need to go into a compound tag
 public final class NBTConstants {
 
     public static final String MEK_DATA = "mekData";

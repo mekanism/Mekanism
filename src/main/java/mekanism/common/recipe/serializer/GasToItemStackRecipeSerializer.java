@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
+import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.GasToItemStackRecipe;
 import mekanism.api.recipes.inputs.GasStackIngredient;
@@ -26,10 +27,10 @@ public class GasToItemStackRecipeSerializer<T extends GasToItemStackRecipe> exte
     @Nonnull
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement input = JSONUtils.isJsonArray(json, "input") ? JSONUtils.getJsonArray(json, "input") :
-                            JSONUtils.getJsonObject(json, "input");
+        JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
+                            JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         GasStackIngredient inputIngredient = GasStackIngredient.deserialize(input);
-        ItemStack output = SerializerHelper.getItemStack(json, "output");
+        ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
         }

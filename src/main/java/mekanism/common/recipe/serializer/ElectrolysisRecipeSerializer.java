@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
+import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -26,14 +27,14 @@ public class ElectrolysisRecipeSerializer<T extends ElectrolysisRecipe> extends 
     @Nonnull
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement input = JSONUtils.isJsonArray(json, "input") ? JSONUtils.getJsonArray(json, "input") :
-                            JSONUtils.getJsonObject(json, "input");
+        JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
+                            JSONUtils.getJsonObject(json, JsonConstants.INPUT);
         FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
-        GasStack leftGasOutput = SerializerHelper.getGasStack(json, "leftGasOutput");
-        GasStack rightGasOutput = SerializerHelper.getGasStack(json, "rightGasOutput");
+        GasStack leftGasOutput = SerializerHelper.getGasStack(json, JsonConstants.LEFT_GAS_OUTPUT);
+        GasStack rightGasOutput = SerializerHelper.getGasStack(json, JsonConstants.RIGHT_GAS_OUTPUT);
         double energyMultiplier = 1;
-        if (json.has("energyMultiplier")) {
-            JsonElement energy = json.get("energyMultiplier");
+        if (json.has(JsonConstants.ENERGY_MULTIPLIER)) {
+            JsonElement energy = json.get(JsonConstants.ENERGY_MULTIPLIER);
             if (!JSONUtils.isNumber(energy)) {
                 throw new JsonSyntaxException("Expected energyMultiplier to be a number greater than or equal to one.");
             }

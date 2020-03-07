@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -95,8 +96,8 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
         JsonObject jsonObject = json.getAsJsonObject();
         int amount = 1;
-        if (jsonObject.has("amount")) {
-            JsonElement count = jsonObject.get("amount");
+        if (jsonObject.has(JsonConstants.AMOUNT)) {
+            JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
             if (!JSONUtils.isNumber(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number that is one or larger.");
             }
@@ -105,8 +106,8 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
                 throw new JsonSyntaxException("Expected amount to larger than or equal to one");
             }
         }
-        JsonElement jsonelement = JSONUtils.isJsonArray(jsonObject, "ingredient") ? JSONUtils.getJsonArray(jsonObject, "ingredient") :
-                                  JSONUtils.getJsonObject(jsonObject, "ingredient");
+        JsonElement jsonelement = JSONUtils.isJsonArray(jsonObject, JsonConstants.INGREDIENT) ? JSONUtils.getJsonArray(jsonObject, JsonConstants.INGREDIENT) :
+                                  JSONUtils.getJsonObject(jsonObject, JsonConstants.INGREDIENT);
         Ingredient ingredient = Ingredient.deserialize(jsonelement);
         return from(ingredient, amount);
     }
@@ -189,7 +190,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             if (amount > 1) {
-                json.addProperty("amount", amount);
+                json.addProperty(JsonConstants.AMOUNT, amount);
             }
             json.add("ingredient", ingredient.serialize());
             return json;

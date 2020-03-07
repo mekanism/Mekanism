@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -57,13 +58,13 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
 
         @Override
         public void serialize(@Nonnull JsonObject json) {
-            json.add("input", input.serialize());
+            json.add(JsonConstants.INPUT, input.serialize());
             if (energyMultiplier > 1) {
                 //Only add energy usage if it is greater than one, as otherwise it will default to one
-                json.addProperty("energyMultiplier", energyMultiplier);
+                json.addProperty(JsonConstants.ENERGY_MULTIPLIER, energyMultiplier);
             }
-            json.add("leftGasOutput", SerializerHelper.serializeGasStack(leftGasOutput));
-            json.add("rightGasOutput", SerializerHelper.serializeGasStack(rightGasOutput));
+            json.add(JsonConstants.LEFT_GAS_OUTPUT, SerializerHelper.serializeGasStack(leftGasOutput));
+            json.add(JsonConstants.RIGHT_GAS_OUTPUT, SerializerHelper.serializeGasStack(rightGasOutput));
         }
     }
 }

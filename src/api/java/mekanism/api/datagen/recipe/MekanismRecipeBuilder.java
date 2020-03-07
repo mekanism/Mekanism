@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.JsonConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -78,13 +79,13 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         @Override
         public JsonObject getRecipeJson() {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("type", serializerName.toString());
+            jsonObject.addProperty(JsonConstants.TYPE, serializerName.toString());
             if (!conditions.isEmpty()) {
                 JsonArray conditionsArray = new JsonArray();
                 for (ICondition condition : conditions) {
                     conditionsArray.add(CraftingHelper.serialize(condition));
                 }
-                jsonObject.add("conditions", conditionsArray);
+                jsonObject.add(JsonConstants.CONDITIONS, conditionsArray);
             }
             this.serialize(jsonObject);
             return jsonObject;

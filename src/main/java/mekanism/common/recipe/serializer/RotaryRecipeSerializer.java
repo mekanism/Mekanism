@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
+import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
@@ -34,21 +35,21 @@ public class RotaryRecipeSerializer<T extends RotaryRecipe> extends ForgeRegistr
         FluidStack fluidOutput = null;
         boolean hasFluidToGas = false;
         boolean hasGasToFluid = false;
-        if (json.has("fluidInput") || json.has("gasOutput")) {
-            JsonElement fluidInput = JSONUtils.isJsonArray(json, "fluidInput") ? JSONUtils.getJsonArray(json, "fluidInput") :
-                                     JSONUtils.getJsonObject(json, "fluidInput");
+        if (json.has(JsonConstants.FLUID_INPUT) || json.has(JsonConstants.GAS_OUTPUT)) {
+            JsonElement fluidInput = JSONUtils.isJsonArray(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.FLUID_INPUT) :
+                                     JSONUtils.getJsonObject(json, JsonConstants.FLUID_INPUT);
             fluidInputIngredient = FluidStackIngredient.deserialize(fluidInput);
-            gasOutput = SerializerHelper.getGasStack(json, "gasOutput");
+            gasOutput = SerializerHelper.getGasStack(json, JsonConstants.GAS_OUTPUT);
             hasFluidToGas = true;
             if (gasOutput.isEmpty()) {
                 throw new JsonSyntaxException("Rotary recipe gas output cannot be empty if it is defined.");
             }
         }
-        if (json.has("gasInput") || json.has("fluidOutput")) {
-            JsonElement gasInput = JSONUtils.isJsonArray(json, "gasInput") ? JSONUtils.getJsonArray(json, "gasInput") :
-                                   JSONUtils.getJsonObject(json, "gasInput");
+        if (json.has(JsonConstants.GAS_INPUT) || json.has(JsonConstants.FLUID_OUTPUT)) {
+            JsonElement gasInput = JSONUtils.isJsonArray(json, JsonConstants.GAS_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.GAS_INPUT) :
+                                   JSONUtils.getJsonObject(json, JsonConstants.GAS_INPUT);
             gasInputIngredient = GasStackIngredient.deserialize(gasInput);
-            fluidOutput = SerializerHelper.getFluidStack(json, "fluidOutput");
+            fluidOutput = SerializerHelper.getFluidStack(json, JsonConstants.FLUID_OUTPUT);
             hasGasToFluid = true;
             if (fluidOutput.isEmpty()) {
                 throw new JsonSyntaxException("Rotary recipe fluid output cannot be empty if it is defined.");

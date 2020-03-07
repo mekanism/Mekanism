@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -66,8 +67,8 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
 
         @Override
         public void serialize(@Nonnull JsonObject json) {
-            json.add("input", input.serialize());
-            json.add("output", SerializerHelper.serializeItemStack(output));
+            json.add(JsonConstants.INPUT, input.serialize());
+            json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));
         }
     }
 }

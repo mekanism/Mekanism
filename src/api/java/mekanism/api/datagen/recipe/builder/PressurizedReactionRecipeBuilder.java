@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.JsonConstants;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -84,19 +85,19 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
 
         @Override
         public void serialize(@Nonnull JsonObject json) {
-            json.add("itemInput", inputSolid.serialize());
-            json.add("fluidInput", inputFluid.serialize());
-            json.add("gasInput", inputGas.serialize());
+            json.add(JsonConstants.ITEM_INPUT, inputSolid.serialize());
+            json.add(JsonConstants.FLUID_INPUT, inputFluid.serialize());
+            json.add(JsonConstants.GAS_INPUT, inputGas.serialize());
             if (energyRequired > 0) {
                 //Only add energy required if it is not zero, as otherwise it will default to zero
-                json.addProperty("energyRequired", energyRequired);
+                json.addProperty(JsonConstants.ENERGY_REQUIRED, energyRequired);
             }
-            json.addProperty("duration", duration);
+            json.addProperty(JsonConstants.DURATION, duration);
             if (!outputItem.isEmpty()) {
-                json.add("itemOutput", SerializerHelper.serializeItemStack(outputItem));
+                json.add(JsonConstants.ITEM_OUTPUT, SerializerHelper.serializeItemStack(outputItem));
             }
             if (!outputGas.isEmpty()) {
-                json.add("gasOutput", SerializerHelper.serializeGasStack(outputGas));
+                json.add(JsonConstants.GAS_OUTPUT, SerializerHelper.serializeGasStack(outputGas));
             }
         }
     }

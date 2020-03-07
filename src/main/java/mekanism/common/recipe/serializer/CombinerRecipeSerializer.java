@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import javax.annotation.Nonnull;
+import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -26,13 +27,13 @@ public class CombinerRecipeSerializer<T extends CombinerRecipe> extends ForgeReg
     @Nonnull
     @Override
     public T read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement mainInput = JSONUtils.isJsonArray(json, "mainInput") ? JSONUtils.getJsonArray(json, "mainInput") :
-                                JSONUtils.getJsonObject(json, "mainInput");
+        JsonElement mainInput = JSONUtils.isJsonArray(json, JsonConstants.MAIN_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.MAIN_INPUT) :
+                                JSONUtils.getJsonObject(json, JsonConstants.MAIN_INPUT);
         ItemStackIngredient mainIngredient = ItemStackIngredient.deserialize(mainInput);
-        JsonElement extraInput = JSONUtils.isJsonArray(json, "extraInput") ? JSONUtils.getJsonArray(json, "extraInput") :
-                                 JSONUtils.getJsonObject(json, "extraInput");
+        JsonElement extraInput = JSONUtils.isJsonArray(json, JsonConstants.EXTRA_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.EXTRA_INPUT) :
+                                 JSONUtils.getJsonObject(json, JsonConstants.EXTRA_INPUT);
         ItemStackIngredient extraIngredient = ItemStackIngredient.deserialize(extraInput);
-        ItemStack output = SerializerHelper.getItemStack(json, "output");
+        ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Combiner recipe output must not be empty.");
         }
