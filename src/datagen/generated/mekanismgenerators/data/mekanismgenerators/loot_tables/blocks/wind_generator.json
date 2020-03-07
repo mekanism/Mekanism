@@ -22,6 +22,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "controlType",
+                  "target": "mekData.controlType",
+                  "op": "replace"
+                },
+                {
                   "source": "Items",
                   "target": "mekData.Items",
                   "op": "replace"

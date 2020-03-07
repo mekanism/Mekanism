@@ -17,7 +17,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
-import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.GasInventorySlot;
 import mekanism.common.util.MekanismUtils;
@@ -36,7 +35,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private int burnTicks = 0;
     private int maxBurnTicks;
     private double generationRate = 0;
-    private int used;
+    private double gasUsedLastTick;
 
     private GasInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
@@ -92,12 +91,12 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
                     fuelTank.setStack(new GasStack(fuelTank.getStack(), total / maxBurnTicks));
                 }
                 burnTicks = total % maxBurnTicks;
-                used = toUse;
+                gasUsedLastTick = (double) toUse / (double) maxBurnTicks;
             } else {
                 if (!operate) {
                     reset();
                 }
-                used = 0;
+                gasUsedLastTick = 0;
                 setActive(false);
             }
         }
@@ -129,8 +128,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         return generationRate;
     }
 
-    public int getUsed() {
-        return used;
+    public double getUsed() {
+        return Math.round(gasUsedLastTick*100)/100D;
     }
 
     @Override
@@ -143,7 +142,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(this::getGenerationRate, value -> generationRate = value));
         container.track(SyncableDouble.create(() -> output, value -> output = value));
-        container.track(SyncableInt.create(this::getUsed, value -> used = value));
+        container.track(SyncableDouble.create(this::getUsed, value -> gasUsedLastTick = value));
     }
 
     //Implementation of gas tank that on no longer being empty updates the output rate of this generator

@@ -67,7 +67,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
 
     private void addMisc() {
         add(GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING, "Active cooling");
-        add(GeneratorsLang.GAS_BURN_RATE, "Burn Rate: %s");
+        add(GeneratorsLang.GAS_BURN_RATE, "Burn Rate: %s mB/t");
         add(GeneratorsLang.STATS_TAB, "Stats");
         add(GeneratorsLang.FUEL_TAB, "Fuel");
         add(GeneratorsLang.HEAT_TAB, "Heat");

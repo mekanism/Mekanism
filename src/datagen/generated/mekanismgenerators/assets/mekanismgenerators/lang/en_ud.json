@@ -57,7 +57,7 @@
   "gas.mekanismgenerators.fusion_fuel": "\uA781\u01DDn\u2132 \u27D8-\u15E1",
   "gas.mekanismgenerators.tritium": "\u026Fn\u1D09\u0287\u1D09\u0279\u27D8",
   "gui.mekanismgenerators.bio_generator.bio_fuel": "%s :\uA781\u01DDn\u2132o\u1D09\u15FA",
-  "gui.mekanismgenerators.gas_burning_generator.burn_rate": "%s :\u01DD\u0287\u0250\u1D1A u\u0279n\u15FA",
+  "gui.mekanismgenerators.gas_burning_generator.burn_rate": "\u0287/\u15FA\u026F %s :\u01DD\u0287\u0250\u1D1A u\u0279n\u15FA",
   "gui.mekanismgenerators.output_rate.short": "\u0287/%s :\u0287nO",
   "gui.mekanismgenerators.power": "%s :\u0279\u01DD\u028Do\u0500",
   "gui.mekanismgenerators.producing.amount": "\u0287/%s :\u1D77u\u1D09\u0254npo\u0279\u0500",
