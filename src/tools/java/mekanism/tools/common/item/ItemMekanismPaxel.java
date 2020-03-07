@@ -1,12 +1,12 @@
 package mekanism.tools.common.item;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.ToolsLang;
@@ -57,6 +57,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
     private final FloatSupplier paxelEfficiency;
     private final IntSupplier paxelEnchantability;
     private final IntSupplier paxelMaxDurability;
+    private final IntSupplier paxelHarvestLevel;
 
     public ItemMekanismPaxel(BaseMekanismMaterial material) {
         super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), getItemProperties(material.getPaxelHarvestLevel()));
@@ -65,6 +66,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
         paxelEfficiency = material::getPaxelEfficiency;
         paxelEnchantability = material::getPaxelEnchantability;
         paxelMaxDurability = material::getPaxelMaxUses;
+        paxelHarvestLevel = material::getPaxelHarvestLevel;
     }
 
     public ItemMekanismPaxel(ItemTier material) {
@@ -74,6 +76,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
         paxelEfficiency = material::getEfficiency;
         paxelEnchantability = material::getEnchantability;
         paxelMaxDurability = material::getMaxUses;
+        paxelHarvestLevel = material::getHarvestLevel;
     }
 
     @Override
@@ -82,12 +85,12 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType {
         tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
     }
 
-    public float getAttackDamage() {
+    private float getAttackDamage() {
         return paxelDamage.getAsFloat() + getTier().getAttackDamage();
     }
 
-    public int getHarvestLevel() {
-        return getTier().getHarvestLevel();
+    private int getHarvestLevel() {
+        return paxelHarvestLevel.getAsInt();
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
+import net.minecraftforge.common.ToolType;
 
 public class BlockResource extends BlockMekanism implements IHasModel {
 
@@ -34,5 +35,15 @@ public class BlockResource extends BlockMekanism implements IHasModel {
     @Override
     public boolean isPortalFrame(BlockState state, IWorldReader world, BlockPos pos) {
         return resource.isPortalFrame();
+    }
+
+    @Override
+    public ToolType getHarvestTool(BlockState state) {
+        return ToolType.PICKAXE;
+    }
+
+    @Override
+    public int getHarvestLevel(BlockState state) {
+        return 1;
     }
 }
