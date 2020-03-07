@@ -91,7 +91,7 @@ public class ItemBalloon extends Item {
                 world.removeBlock(pos.up(), false);
                 world.removeBlock(pos.up(2), false);
                 if (!world.isRemote) {
-                    world.addEntity(new EntityBalloon(world, new Coord4D(pos, world), color));
+                    world.addEntity(new EntityBalloon(world, pos, color));
                     stack.shrink(1);
                 }
                 return ActionResultType.SUCCESS;

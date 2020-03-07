@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.providers.IGasProvider;
@@ -79,11 +80,11 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider {
     }
 
     public JetpackMode getMode(ItemStack stack) {
-        return JetpackMode.byIndexStatic(ItemDataUtils.getInt(stack, "mode"));
+        return JetpackMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.MODE));
     }
 
     public void setMode(ItemStack stack, JetpackMode mode) {
-        ItemDataUtils.setInt(stack, "mode", mode.ordinal());
+        ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
     }
 
     @Override

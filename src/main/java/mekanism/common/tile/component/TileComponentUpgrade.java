@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
@@ -17,6 +18,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -42,7 +44,7 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
     /**
      * The inventory slot the upgrade slot of this component occupies.
      */
-    private UpgradeInventorySlot upgradeSlot;
+    private final UpgradeInventorySlot upgradeSlot;
 
     public TileComponentUpgrade(TileEntityMekanism tile, @Nonnull UpgradeInventorySlot slot) {
         this.tile = tile;
@@ -157,16 +159,14 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        if (nbtTags.contains("componentUpgrade", NBT.TAG_COMPOUND)) {
-            CompoundNBT upgradeNBT = nbtTags.getCompound("componentUpgrade");
+        if (nbtTags.contains(NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
+            CompoundNBT upgradeNBT = nbtTags.getCompound(NBTConstants.COMPONENT_UPGRADE);
             upgrades = Upgrade.buildMap(upgradeNBT);
             for (Upgrade upgrade : getSupportedTypes()) {
                 tile.recalculateUpgrades(upgrade);
             }
             //Load the inventory
-            if (upgradeNBT.contains("UpgradeSlot", NBT.TAG_COMPOUND)) {
-                upgradeSlot.deserializeNBT(upgradeNBT.getCompound("UpgradeSlot"));
-            }
+            NBTUtils.setCompoundIfPresent(upgradeNBT, NBTConstants.SLOT, upgradeSlot::deserializeNBT);
         }
     }
 
@@ -177,9 +177,9 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
         //Save the inventory
         CompoundNBT compoundNBT = upgradeSlot.serializeNBT();
         if (!compoundNBT.isEmpty()) {
-            upgradeNBT.put("UpgradeSlot", compoundNBT);
+            upgradeNBT.put(NBTConstants.SLOT, compoundNBT);
         }
-        nbtTags.put("componentUpgrade", upgradeNBT);
+        nbtTags.put(NBTConstants.COMPONENT_UPGRADE, upgradeNBT);
     }
 
     @Override

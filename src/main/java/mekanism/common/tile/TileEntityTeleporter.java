@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -40,6 +41,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -357,8 +359,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("frequency")) {
-            frequency = new Frequency(nbtTags.getCompound("frequency"));
+        if (nbtTags.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
+            frequency = new Frequency(nbtTags.getCompound(NBTConstants.FREQUENCY));
             frequency.valid = false;
         }
     }
@@ -370,7 +372,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (frequency != null) {
             CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
-            nbtTags.put("frequency", frequencyTag);
+            nbtTags.put(NBTConstants.FREQUENCY, frequencyTag);
         }
         return nbtTags;
     }

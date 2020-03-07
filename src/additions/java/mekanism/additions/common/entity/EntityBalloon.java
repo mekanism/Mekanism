@@ -4,15 +4,17 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsSounds;
-import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
@@ -34,11 +36,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.createKey(EntityBalloon.class, DataSerializers.VARINT);
     public EnumColor color = EnumColor.DARK_BLUE;
-    public Coord4D latched;
+    private BlockPos latched;
     public LivingEntity latchedEntity;
     /* server-only */
-    public boolean hasCachedEntity;
-    public UUID cachedEntityUUID;
+    private boolean hasCachedEntity;
+    private UUID cachedEntityUUID;
 
     public EntityBalloon(EntityType<EntityBalloon> type, World world) {
         super(type, world);
@@ -84,10 +86,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         dataManager.set(LATCHED_ID, entity.getEntityId());
     }
 
-    public EntityBalloon(World world, Coord4D obj, EnumColor c) {
+    public EntityBalloon(World world, BlockPos pos, EnumColor c) {
         this(AdditionsEntityTypes.BALLOON, world);
-        latched = obj;
-        setPosition(latched.x + 0.5F, latched.y + 1.9F, latched.z + 0.5F);
+        latched = pos;
+        setPosition(latched.getX() + 0.5F, latched.getY() + 1.9F, latched.getZ() + 0.5F);
 
         prevPosX = getPosX();
         prevPosY = getPosY();
@@ -95,9 +97,9 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
         color = c;
         dataManager.set(IS_LATCHED, (byte) 1);
-        dataManager.set(LATCHED_X, latched != null ? latched.x : 0); /* Latched X */
-        dataManager.set(LATCHED_Y, latched != null ? latched.y : 0); /* Latched Y */
-        dataManager.set(LATCHED_Z, latched != null ? latched.z : 0); /* Latched Z */
+        dataManager.set(LATCHED_X, latched == null ? 0 : latched.getX()); /* Latched X */
+        dataManager.set(LATCHED_Y, latched == null ? 0 : latched.getY()); /* Latched Y */
+        dataManager.set(LATCHED_Z, latched == null ? 0 : latched.getZ()); /* Latched Z */
     }
 
     @Override
@@ -113,7 +115,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
         if (world.isRemote) {
             if (dataManager.get(IS_LATCHED) == 1) {
-                latched = new Coord4D(dataManager.get(LATCHED_X), dataManager.get(LATCHED_Y), dataManager.get(LATCHED_Z), world.getDimension().getType());
+                latched = new BlockPos(dataManager.get(LATCHED_X), dataManager.get(LATCHED_Y), dataManager.get(LATCHED_Z));
             } else {
                 latched = null;
             }
@@ -138,20 +140,17 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
                     isLatched = (byte) 0;
                 }
                 dataManager.set(IS_LATCHED, isLatched);
-                dataManager.set(LATCHED_X, latched != null ? latched.x : 0);
-                dataManager.set(LATCHED_Y, latched != null ? latched.y : 0);
-                dataManager.set(LATCHED_Z, latched != null ? latched.z : 0);
-                dataManager.set(LATCHED_ID, latchedEntity != null ? latchedEntity.getEntityId() : -1);
+                dataManager.set(LATCHED_X, latched == null ? 0 : latched.getX());
+                dataManager.set(LATCHED_Y, latched == null ? 0 : latched.getY());
+                dataManager.set(LATCHED_Z, latched == null ? 0 : latched.getZ());
+                dataManager.set(LATCHED_ID, latchedEntity == null ? -1 : latchedEntity.getEntityId());
             }
         }
 
         if (!world.isRemote) {
-            if (latched != null) {
-                BlockPos latchedPos = latched.getPos();
-                if (world.isBlockPresent(latchedPos) && world.isAirBlock(latchedPos)) {
-                    latched = null;
-                    dataManager.set(IS_LATCHED, (byte) 0);
-                }
+            if (latched != null && world.isBlockPresent(latched) && world.isAirBlock(latched)) {
+                latched = null;
+                dataManager.set(IS_LATCHED, (byte) 0);
             }
             //TODO: Get nearby entities
             if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive()/* || !world.loadedEntityList.contains(latchedEntity)*/)) {
@@ -257,25 +256,22 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     protected void readAdditional(@Nonnull CompoundNBT nbtTags) {
-        color = EnumColor.values()[nbtTags.getInt("color")];
-        if (nbtTags.contains("latched")) {
-            latched = Coord4D.read(nbtTags.getCompound("latched"));
-        }
-        if (nbtTags.contains("idMost")) {
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, color -> this.color = color);
+        NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.LATCHED, pos -> latched = pos);
+        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> {
             hasCachedEntity = true;
-            cachedEntityUUID = new UUID(nbtTags.getLong("idMost"), nbtTags.getLong("idLeast"));
-        }
+            cachedEntityUUID = uuid;
+        });
     }
 
     @Override
     protected void writeAdditional(@Nonnull CompoundNBT nbtTags) {
-        nbtTags.putInt("color", color.ordinal());
+        nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
         if (latched != null) {
-            nbtTags.put("latched", latched.write(new CompoundNBT()));
+            nbtTags.put(NBTConstants.LATCHED, NBTUtil.writeBlockPos(latched));
         }
         if (latchedEntity != null) {
-            nbtTags.putLong("idMost", latchedEntity.getUniqueID().getMostSignificantBits());
-            nbtTags.putLong("idLeast", latchedEntity.getUniqueID().getLeastSignificantBits());
+            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, latchedEntity.getUniqueID());
         }
     }
 
@@ -300,7 +296,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         data.writeEnumValue(color);
         if (latched != null) {
             data.writeByte((byte) 1);
-            latched.write(data);
+            data.writeBlockPos(latched);
         } else if (latchedEntity != null) {
             data.writeByte((byte) 2);
             data.writeInt(latchedEntity.getEntityId());
@@ -315,7 +311,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         color = data.readEnumValue(EnumColor.class);
         byte type = data.readByte();
         if (type == 1) {
-            latched = Coord4D.read(data);
+            latched = data.readBlockPos();
         } else if (type == 2) {
             latchedEntity = (LivingEntity) world.getEntityByID(data.readInt());
         } else {

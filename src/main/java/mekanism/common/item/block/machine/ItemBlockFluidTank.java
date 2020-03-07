@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
@@ -286,11 +287,11 @@ public class ItemBlockFluidTank extends ItemBlockAdvancedTooltip<BlockFluidTank>
     }
 
     public void setBucketMode(ItemStack itemStack, boolean bucketMode) {
-        ItemDataUtils.setBoolean(itemStack, "bucketMode", bucketMode);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.BUCKET_MODE, bucketMode);
     }
 
     public boolean getBucketMode(ItemStack itemStack) {
-        return ItemDataUtils.getBoolean(itemStack, "bucketMode");
+        return ItemDataUtils.getBoolean(itemStack, NBTConstants.BUCKET_MODE);
     }
 
     @Override

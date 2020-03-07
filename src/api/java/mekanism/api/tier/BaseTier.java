@@ -16,6 +16,8 @@ public enum BaseTier implements IStringSerializable {
     ULTIMATE("Ultimate", EnumColor.PURPLE),
     CREATIVE("Creative", EnumColor.BLACK);
 
+    private static final BaseTier[] TIERS = values();
+
     private String name;
     private EnumColor color;
 
@@ -44,5 +46,10 @@ public enum BaseTier implements IStringSerializable {
     @Override
     public String getName() {
         return name().toLowerCase(Locale.ROOT);
+    }
+
+    public static BaseTier byIndexStatic(int index) {
+        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+        return TIERS[Math.floorMod(index, TIERS.length)];
     }
 }

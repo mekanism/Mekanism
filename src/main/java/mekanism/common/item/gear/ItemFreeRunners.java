@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
@@ -123,11 +124,11 @@ public class ItemFreeRunners extends ArmorItem implements IItemEnergized, ISpeci
     }
 
     public FreeRunnerMode getMode(ItemStack itemStack) {
-        return FreeRunnerMode.byIndexStatic(ItemDataUtils.getInt(itemStack, "mode"));
+        return FreeRunnerMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.MODE));
     }
 
     public void setMode(ItemStack itemStack, FreeRunnerMode mode) {
-        ItemDataUtils.setInt(itemStack, "mode", mode.ordinal());
+        ItemDataUtils.setInt(itemStack, NBTConstants.MODE, mode.ordinal());
     }
 
     public void incrementMode(ItemStack itemStack) {

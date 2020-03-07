@@ -16,6 +16,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.providers.IGasProvider;
+import mekanism.api.NBTConstants;
 import mekanism.common.base.target.GasHandlerTarget;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
@@ -70,7 +71,7 @@ public final class GasUtils {
         // (at least not on the first call to this, which is made via fillItemGroup)
         BasicGasTank tank = BasicGasTank.create(capacity, null);
         tank.setStack(gasProvider.getGasStack(tank.getCapacity()));
-        ItemDataUtils.setList(toFill, "GasTanks", DataHandlerUtils.writeTanks(Collections.singletonList(tank)));
+        ItemDataUtils.setList(toFill, NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(Collections.singletonList(tank)));
         //The item is now filled return it for convenience
         return toFill;
     }

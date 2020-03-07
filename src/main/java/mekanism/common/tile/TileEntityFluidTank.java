@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.AutomationType;
@@ -32,6 +33,7 @@ import mekanism.common.upgrade.FluidTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -162,14 +164,14 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("editMode", editMode.ordinal());
+        nbtTags.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
         return nbtTags;
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        editMode = ContainerEditMode.byIndexStatic(nbtTags.getInt("editMode"));
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
     }
 
     @Override

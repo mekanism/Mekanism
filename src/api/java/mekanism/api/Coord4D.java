@@ -90,7 +90,8 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      * @return the Coord4D from the tag compound
      */
     public static Coord4D read(CompoundNBT tag) {
-        return new Coord4D(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"), DimensionType.byName(new ResourceLocation(tag.getString("dimension"))));
+        return new Coord4D(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z),
+              DimensionType.byName(new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
     }
 
     /**
@@ -116,10 +117,10 @@ public class Coord4D {//TODO: Replace this with GlobalPos
      * @return the tag compound with this Coord4D's data
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.putInt("x", x);
-        nbtTags.putInt("y", y);
-        nbtTags.putInt("z", z);
-        nbtTags.putString("dimension", dimension.getRegistryName().toString());
+        nbtTags.putInt(NBTConstants.X, x);
+        nbtTags.putInt(NBTConstants.Y, y);
+        nbtTags.putInt(NBTConstants.Z, z);
+        nbtTags.putString(NBTConstants.DIMENSION, dimension.getRegistryName().toString());
         return nbtTags;
     }
 

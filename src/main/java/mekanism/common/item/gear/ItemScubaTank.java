@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.providers.IGasProvider;
@@ -72,11 +73,11 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider {
     }
 
     public boolean getFlowing(ItemStack stack) {
-        return ItemDataUtils.getBoolean(stack, "flowing");
+        return ItemDataUtils.getBoolean(stack, NBTConstants.RUNNING);
     }
 
     public void setFlowing(ItemStack stack, boolean flowing) {
-        ItemDataUtils.setBoolean(stack, "flowing", flowing);
+        ItemDataUtils.setBoolean(stack, NBTConstants.RUNNING, flowing);
     }
 
     @Override

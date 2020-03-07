@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
@@ -12,8 +13,10 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -109,20 +112,18 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        mainPos = new BlockPos(nbtTags.getInt("mainX"), nbtTags.getInt("mainY"), nbtTags.getInt("mainZ"));
-        prevPower = nbtTags.getInt("prevPower");
-        receivedCoords = nbtTags.getBoolean("receivedCoords");
+        NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.MAIN, pos -> mainPos = pos);
+        prevPower = nbtTags.getInt(NBTConstants.PREVIOUS_POWER);
+        receivedCoords = nbtTags.getBoolean(NBTConstants.RECEIVED_COORDS);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("mainX", getMainPos().getX());
-        nbtTags.putInt("mainY", getMainPos().getY());
-        nbtTags.putInt("mainZ", getMainPos().getZ());
-        nbtTags.putInt("prevPower", prevPower);
-        nbtTags.putBoolean("receivedCoords", receivedCoords);
+        nbtTags.put(NBTConstants.MAIN, NBTUtil.writeBlockPos(getMainPos()));
+        nbtTags.putInt(NBTConstants.PREVIOUS_POWER, prevPower);
+        nbtTags.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);
         return nbtTags;
     }
 

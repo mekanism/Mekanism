@@ -12,13 +12,18 @@
               "source": "block_entity",
               "ops": [
                 {
-                  "source": "ownerUUID",
-                  "target": "mekData.ownerUUID",
+                  "source": "componentSecurity.ownerMost",
+                  "target": "mekData.ownerMost",
                   "op": "replace"
                 },
                 {
-                  "source": "securityMode",
-                  "target": "mekData.security",
+                  "source": "componentSecurity.ownerLeast",
+                  "target": "mekData.ownerLeast",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentSecurity.securityMode",
+                  "target": "mekData.securityMode",
                   "op": "replace"
                 },
                 {
@@ -27,8 +32,13 @@
                   "op": "replace"
                 },
                 {
-                  "source": "doEject",
-                  "target": "mekData.doEject",
+                  "source": "pull",
+                  "target": "mekData.pull",
+                  "op": "replace"
+                },
+                {
+                  "source": "max",
+                  "target": "mekData.max",
                   "op": "replace"
                 },
                 {
@@ -42,8 +52,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "minY",
-                  "target": "mekData.minY",
+                  "source": "eject",
+                  "target": "mekData.eject",
                   "op": "replace"
                 },
                 {
@@ -52,13 +62,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "maxY",
-                  "target": "mekData.maxY",
-                  "op": "replace"
-                },
-                {
-                  "source": "doPull",
-                  "target": "mekData.doPull",
+                  "source": "min",
+                  "target": "mekData.min",
                   "op": "replace"
                 },
                 {
@@ -77,8 +82,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "electricityStored",
-                  "target": "mekData.energyStored",
+                  "source": "energy",
+                  "target": "mekData.energy",
                   "op": "replace"
                 }
               ]

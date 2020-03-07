@@ -122,7 +122,7 @@ public class Machine<TILE extends TileEntityMekanism> extends BlockTile<TILE> {
             }
 
             for (int i = 0; i < factories.length; i++) {
-                ((FactoryMachine<TILE>) holder).tierUpgradeMap.put(BaseTier.values()[i], factories[i]);
+                ((FactoryMachine<TILE>) holder).tierUpgradeMap.put(BaseTier.byIndexStatic(i), factories[i]);
             }
             return getThis();
         }

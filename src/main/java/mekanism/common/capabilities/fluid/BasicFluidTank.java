@@ -8,11 +8,13 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -316,15 +318,13 @@ public class BasicFluidTank implements IExtendedFluidTank {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.put("stored", stored.writeToNBT(new CompoundNBT()));
+            nbt.put(NBTConstants.STORED, stored.writeToNBT(new CompoundNBT()));
         }
         return nbt;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        if (nbt.contains("stored")) {
-            setStackUnchecked(FluidStack.loadFluidStackFromNBT(nbt.getCompound("stored")));
-        }
+        NBTUtils.setFluidStackIfPresent(nbt, NBTConstants.STORED, this::setStackUnchecked);
     }
 }

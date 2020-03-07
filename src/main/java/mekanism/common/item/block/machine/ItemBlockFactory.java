@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -35,6 +36,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemBlockFactory extends ItemBlockAdvancedTooltip<BlockFactory> implements IItemEnergized, IItemSustainedInventory, ISecurityItem, ITieredItem<FactoryTier> {
 
@@ -66,7 +68,7 @@ public class ItemBlockFactory extends ItemBlockAdvancedTooltip<BlockFactory> imp
         tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getBlock().getFactoryType()));
         tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
-        if (ItemDataUtils.hasData(stack, "upgrades")) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.UPGRADES, NBT.TAG_LIST)) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(stack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                 tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());

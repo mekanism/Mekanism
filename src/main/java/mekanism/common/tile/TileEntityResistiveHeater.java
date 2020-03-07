@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -82,8 +83,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        energyUsage = nbtTags.getDouble("energyUsage");
-        temperature = nbtTags.getDouble("temperature");
+        energyUsage = nbtTags.getDouble(NBTConstants.ENERGY_PER_TICK);
+        temperature = nbtTags.getDouble(NBTConstants.TEMPERATURE);
         setMaxEnergy(energyUsage * 400);
     }
 
@@ -91,8 +92,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble("energyUsage", energyUsage);
-        nbtTags.putDouble("temperature", temperature);
+        nbtTags.putDouble(NBTConstants.ENERGY_PER_TICK, energyUsage);
+        nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
         return nbtTags;
     }
 

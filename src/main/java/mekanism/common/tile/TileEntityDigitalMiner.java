@@ -16,6 +16,7 @@ import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
@@ -58,6 +59,7 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MinerUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -516,10 +518,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        running = nbtTags.getBoolean("running");
-        delay = nbtTags.getInt("delay");
-        numPowering = nbtTags.getInt("numPowering");
-        searcher.state = State.values()[nbtTags.getInt("state")];
+        running = nbtTags.getBoolean(NBTConstants.RUNNING);
+        delay = nbtTags.getInt(NBTConstants.DELAY);
+        numPowering = nbtTags.getInt(NBTConstants.NUM_POWERING);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.STATE, State::byIndexStatic, state -> searcher.state = state);
         setConfigurationData(nbtTags);
     }
 
@@ -530,10 +532,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         if (searcher.state == State.SEARCHING) {
             reset();
         }
-        nbtTags.putBoolean("running", running);
-        nbtTags.putInt("delay", delay);
-        nbtTags.putInt("numPowering", numPowering);
-        nbtTags.putInt("state", searcher.state.ordinal());
+        nbtTags.putBoolean(NBTConstants.RUNNING, running);
+        nbtTags.putInt(NBTConstants.DELAY, delay);
+        nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);
+        nbtTags.putInt(NBTConstants.STATE, searcher.state.ordinal());
         return getConfigurationData(nbtTags);
     }
 
@@ -708,35 +710,35 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        nbtTags.putInt("radius", radius);
-        nbtTags.putInt("minY", minY);
-        nbtTags.putInt("maxY", maxY);
-        nbtTags.putBoolean("doEject", doEject);
-        nbtTags.putBoolean("doPull", doPull);
-        nbtTags.putBoolean("silkTouch", silkTouch);
-        nbtTags.putBoolean("inverse", inverse);
+        nbtTags.putInt(NBTConstants.RADIUS, radius);
+        nbtTags.putInt(NBTConstants.MIN, minY);
+        nbtTags.putInt(NBTConstants.MAX, maxY);
+        nbtTags.putBoolean(NBTConstants.EJECT, doEject);
+        nbtTags.putBoolean(NBTConstants.PULL, doPull);
+        nbtTags.putBoolean(NBTConstants.SILK_TOUCH, silkTouch);
+        nbtTags.putBoolean(NBTConstants.INVERSE, inverse);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (MinerFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
-            nbtTags.put("filters", filterTags);
+            nbtTags.put(NBTConstants.FILTERS, filterTags);
         }
         return nbtTags;
     }
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        setRadius(Math.min(nbtTags.getInt("radius"), MekanismConfig.general.digitalMinerMaxRadius.get()));
-        minY = nbtTags.getInt("minY");
-        maxY = nbtTags.getInt("maxY");
-        doEject = nbtTags.getBoolean("doEject");
-        doPull = nbtTags.getBoolean("doPull");
-        silkTouch = nbtTags.getBoolean("silkTouch");
-        inverse = nbtTags.getBoolean("inverse");
+        setRadius(Math.min(nbtTags.getInt(NBTConstants.RADIUS), MekanismConfig.general.digitalMinerMaxRadius.get()));
+        minY = nbtTags.getInt(NBTConstants.MIN);
+        maxY = nbtTags.getInt(NBTConstants.MAX);
+        doEject = nbtTags.getBoolean(NBTConstants.EJECT);
+        doPull = nbtTags.getBoolean(NBTConstants.PULL);
+        silkTouch = nbtTags.getBoolean(NBTConstants.SILK_TOUCH);
+        inverse = nbtTags.getBoolean(NBTConstants.INVERSE);
         filters.clear();
-        if (nbtTags.contains("filters")) {
-            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
+        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
             }
@@ -754,47 +756,47 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, "radius", radius);
-        ItemDataUtils.setInt(itemStack, "minY", minY);
-        ItemDataUtils.setInt(itemStack, "maxY", maxY);
-        ItemDataUtils.setBoolean(itemStack, "doEject", doEject);
-        ItemDataUtils.setBoolean(itemStack, "doPull", doPull);
-        ItemDataUtils.setBoolean(itemStack, "silkTouch", silkTouch);
-        ItemDataUtils.setBoolean(itemStack, "inverse", inverse);
+        ItemDataUtils.setInt(itemStack, NBTConstants.RADIUS, radius);
+        ItemDataUtils.setInt(itemStack, NBTConstants.MIN, minY);
+        ItemDataUtils.setInt(itemStack, NBTConstants.MAX, maxY);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.EJECT, doEject);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.PULL, doPull);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.SILK_TOUCH, silkTouch);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.INVERSE, inverse);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (MinerFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
-            ItemDataUtils.setList(itemStack, "filters", filterTags);
+            ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, filterTags);
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, "radius")) {
-            setRadius(Math.min(ItemDataUtils.getInt(itemStack, "radius"), MekanismConfig.general.digitalMinerMaxRadius.get()));
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.RADIUS, NBT.TAG_INT)) {
+            setRadius(Math.min(ItemDataUtils.getInt(itemStack, NBTConstants.RADIUS), MekanismConfig.general.digitalMinerMaxRadius.get()));
         }
-        if (ItemDataUtils.hasData(itemStack, "minY")) {
-            minY = ItemDataUtils.getInt(itemStack, "minY");
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.MIN, NBT.TAG_INT)) {
+            minY = ItemDataUtils.getInt(itemStack, NBTConstants.MIN);
         }
-        if (ItemDataUtils.hasData(itemStack, "maxY")) {
-            maxY = ItemDataUtils.getInt(itemStack, "maxY");
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.MAX, NBT.TAG_INT)) {
+            maxY = ItemDataUtils.getInt(itemStack, NBTConstants.MAX);
         }
-        if (ItemDataUtils.hasData(itemStack, "doEject")) {
-            doEject = ItemDataUtils.getBoolean(itemStack, "doEject");
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.EJECT, NBT.TAG_BYTE)) {
+            doEject = ItemDataUtils.getBoolean(itemStack, NBTConstants.EJECT);
         }
-        if (ItemDataUtils.hasData(itemStack, "doPull")) {
-            doPull = ItemDataUtils.getBoolean(itemStack, "doPull");
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.PULL, NBT.TAG_BYTE)) {
+            doPull = ItemDataUtils.getBoolean(itemStack, NBTConstants.PULL);
         }
-        if (ItemDataUtils.hasData(itemStack, "silkTouch")) {
-            silkTouch = ItemDataUtils.getBoolean(itemStack, "silkTouch");
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.SILK_TOUCH, NBT.TAG_BYTE)) {
+            silkTouch = ItemDataUtils.getBoolean(itemStack, NBTConstants.SILK_TOUCH);
         }
-        if (ItemDataUtils.hasData(itemStack, "inverse")) {
-            inverse = ItemDataUtils.getBoolean(itemStack, "inverse");
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE, NBT.TAG_BYTE)) {
+            inverse = ItemDataUtils.getBoolean(itemStack, NBTConstants.INVERSE);
         }
-        if (ItemDataUtils.hasData(itemStack, "filters")) {
-            ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
                 filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
             }
@@ -804,14 +806,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
     @Override
     public Map<String, String> getTileDataRemap() {
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("radius", "radius");
-        remap.put("minY", "minY");
-        remap.put("maxY", "maxY");
-        remap.put("doEject", "doEject");
-        remap.put("doPull", "doPull");
-        remap.put("silkTouch", "silkTouch");
-        remap.put("inverse", "inverse");
-        remap.put("filters", "filters");
+        remap.put(NBTConstants.RADIUS, NBTConstants.RADIUS);
+        remap.put(NBTConstants.MIN, NBTConstants.MIN);
+        remap.put(NBTConstants.MAX, NBTConstants.MAX);
+        remap.put(NBTConstants.EJECT, NBTConstants.EJECT);
+        remap.put(NBTConstants.PULL, NBTConstants.PULL);
+        remap.put(NBTConstants.SILK_TOUCH, NBTConstants.SILK_TOUCH);
+        remap.put(NBTConstants.INVERSE, NBTConstants.INVERSE);
+        remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
         return remap;
     }
 

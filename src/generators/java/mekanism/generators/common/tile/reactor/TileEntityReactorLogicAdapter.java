@@ -1,11 +1,13 @@
 package mekanism.generators.common.tile.reactor;
 
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.item.ItemStack;
@@ -70,16 +72,16 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock {
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        logicType = ReactorLogic.values()[nbtTags.getInt("logicType")];
-        activeCooled = nbtTags.getBoolean("activeCooled");
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.LOGIC_TYPE, ReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
+        activeCooled = nbtTags.getBoolean(NBTConstants.ACTIVE_COOLED);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("logicType", logicType.ordinal());
-        nbtTags.putBoolean("activeCooled", activeCooled);
+        nbtTags.putInt(NBTConstants.LOGIC_TYPE, logicType.ordinal());
+        nbtTags.putBoolean(NBTConstants.ACTIVE_COOLED, activeCooled);
         return nbtTags;
     }
 

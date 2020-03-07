@@ -17,8 +17,8 @@
                   "op": "replace"
                 },
                 {
-                  "source": "electricityStored",
-                  "target": "mekData.energyStored",
+                  "source": "energy",
+                  "target": "mekData.energy",
                   "op": "replace"
                 }
               ]

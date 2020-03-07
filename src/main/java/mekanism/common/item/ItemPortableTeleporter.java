@@ -5,6 +5,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -31,6 +32,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem {
@@ -95,24 +97,24 @@ public class ItemPortableTeleporter extends ItemEnergized implements IOwnerItem 
         setFrequency(stack, null);
         //TODO: Should setFrequency be pulled out of this method and then it can just use default impl from the interface
         if (owner == null) {
-            ItemDataUtils.removeData(stack, "ownerUUID");
+            ItemDataUtils.removeData(stack, NBTConstants.OWNER_UUID);
         } else {
-            ItemDataUtils.setString(stack, "ownerUUID", owner.toString());
+            ItemDataUtils.setUUID(stack, NBTConstants.OWNER_UUID, owner);
         }
     }
 
     public Frequency.Identity getFrequency(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, "frequency")) {
-            return Frequency.Identity.load(ItemDataUtils.getCompound(stack, "frequency"));
+        if (ItemDataUtils.hasData(stack, NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
+            return Frequency.Identity.load(ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY));
         }
         return null;
     }
 
     public void setFrequency(ItemStack stack, Frequency frequency) {
         if (frequency == null) {
-            ItemDataUtils.removeData(stack, "frequency");
-            return;
+            ItemDataUtils.removeData(stack, NBTConstants.FREQUENCY);
+        } else {
+            ItemDataUtils.setCompound(stack, NBTConstants.FREQUENCY, frequency.getIdentity().serialize());
         }
-        ItemDataUtils.setCompound(stack, "frequency", frequency.getIdentity().serialize());
     }
 }

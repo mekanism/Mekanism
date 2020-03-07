@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
@@ -33,6 +34,7 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -187,21 +189,17 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter<IGasHandler
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("cacheGas")) {
-            buffer.setStack(GasStack.readFromNBT(nbtTags.getCompound("cacheGas")));
-        } else {
-            buffer.setEmpty();
-        }
+        NBTUtils.setGasStackIfPresent(nbtTags, NBTConstants.GAS_STORED, buffer::setStack);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (!lastWrite.isEmpty()) {
-            nbtTags.put("cacheGas", lastWrite.write(new CompoundNBT()));
+        if (lastWrite.isEmpty()) {
+            nbtTags.remove(NBTConstants.GAS_STORED);
         } else {
-            nbtTags.remove("cacheGas");
+            nbtTags.put(NBTConstants.GAS_STORED, lastWrite.write(new CompoundNBT()));
         }
         return nbtTags;
     }

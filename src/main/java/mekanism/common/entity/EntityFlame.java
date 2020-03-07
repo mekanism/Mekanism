@@ -2,12 +2,14 @@ package mekanism.common.entity;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.Pos3D;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFlamethrower.FlamethrowerMode;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -240,12 +242,12 @@ public class EntityFlame extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     protected void readAdditional(@Nonnull CompoundNBT nbtTags) {
-        mode = FlamethrowerMode.byIndexStatic(nbtTags.getInt("mode"));
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.MODE, FlamethrowerMode::byIndexStatic, mode -> this.mode = mode);
     }
 
     @Override
     protected void writeAdditional(@Nonnull CompoundNBT nbtTags) {
-        nbtTags.putInt("mode", mode.ordinal());
+        nbtTags.putInt(NBTConstants.MODE, mode.ordinal());
     }
 
     @Nonnull

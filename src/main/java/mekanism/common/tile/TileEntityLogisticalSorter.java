@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
@@ -33,6 +34,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -146,47 +148,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-
-        if (color != null) {
-            nbtTags.putInt("color", TransporterUtils.colors.indexOf(color));
-        }
-
-        nbtTags.putBoolean("autoEject", autoEject);
-        nbtTags.putBoolean("roundRobin", roundRobin);
-        nbtTags.putBoolean("singleItem", singleItem);
-
-        nbtTags.putInt("rrIndex", rrIndex);
-        if (!filters.isEmpty()) {
-            ListNBT filterTags = new ListNBT();
-            for (TransporterFilter<?> filter : filters) {
-                CompoundNBT tagCompound = new CompoundNBT();
-                filter.write(tagCompound);
-                filterTags.add(tagCompound);
-            }
-            nbtTags.put("filters", filterTags);
-        }
-        return nbtTags;
+        return getConfigurationData(nbtTags);
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("color")) {
-            color = TransporterUtils.colors.get(nbtTags.getInt("color"));
-        }
-
-        autoEject = nbtTags.getBoolean("autoEject");
-        roundRobin = nbtTags.getBoolean("roundRobin");
-        singleItem = nbtTags.getBoolean("singleItem");
-
-        rrIndex = nbtTags.getInt("rrIndex");
-
-        if (nbtTags.contains("filters")) {
-            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                filters.add(TransporterFilter.readFromNBT(tagList.getCompound(i)));
-            }
-        }
+        setConfigurationData(nbtTags);
     }
 
     @Override
@@ -325,12 +293,12 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         if (color != null) {
-            nbtTags.putInt("color", TransporterUtils.colors.indexOf(color));
+            nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.colors.indexOf(color));
         }
-        nbtTags.putBoolean("autoEject", autoEject);
-        nbtTags.putBoolean("roundRobin", roundRobin);
-        nbtTags.putBoolean("singleItem", singleItem);
-        nbtTags.putInt("rrIndex", rrIndex);
+        nbtTags.putBoolean(NBTConstants.EJECT, autoEject);
+        nbtTags.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
+        nbtTags.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
+        nbtTags.putInt(NBTConstants.INDEX, rrIndex);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (TransporterFilter<?> filter : filters) {
@@ -338,23 +306,21 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 filter.write(tagCompound);
                 filterTags.add(tagCompound);
             }
-            nbtTags.put("filters", filterTags);
+            nbtTags.put(NBTConstants.FILTERS, filterTags);
         }
         return nbtTags;
     }
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        if (nbtTags.contains("color")) {
-            color = TransporterUtils.colors.get(nbtTags.getInt("color"));
-        }
-        autoEject = nbtTags.getBoolean("autoEject");
-        roundRobin = nbtTags.getBoolean("roundRobin");
-        singleItem = nbtTags.getBoolean("singleItem");
-        rrIndex = nbtTags.getInt("rrIndex");
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils.colors::get, color -> this.color = color);
+        autoEject = nbtTags.getBoolean(NBTConstants.EJECT);
+        roundRobin = nbtTags.getBoolean(NBTConstants.ROUND_ROBIN);
+        singleItem = nbtTags.getBoolean(NBTConstants.SINGLE_ITEM);
+        rrIndex = nbtTags.getInt(NBTConstants.INDEX);
 
-        if (nbtTags.contains("filters")) {
-            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
+        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 filters.add(TransporterFilter.readFromNBT(tagList.getCompound(i)));
             }
@@ -369,11 +335,11 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (color != null) {
-            ItemDataUtils.setInt(itemStack, "color", TransporterUtils.colors.indexOf(color));
+            ItemDataUtils.setInt(itemStack, NBTConstants.COLOR, TransporterUtils.colors.indexOf(color));
         }
-        ItemDataUtils.setBoolean(itemStack, "autoEject", autoEject);
-        ItemDataUtils.setBoolean(itemStack, "roundRobin", roundRobin);
-        ItemDataUtils.setBoolean(itemStack, "singleItem", singleItem);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.EJECT, autoEject);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.ROUND_ROBIN, roundRobin);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.SINGLE_ITEM, singleItem);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (TransporterFilter<?> filter : filters) {
@@ -381,20 +347,20 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 filter.write(tagCompound);
                 filterTags.add(tagCompound);
             }
-            ItemDataUtils.setList(itemStack, "filters", filterTags);
+            ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, filterTags);
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, "color")) {
-            color = TransporterUtils.colors.get(ItemDataUtils.getInt(itemStack, "color"));
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.COLOR, NBT.TAG_INT)) {
+            color = TransporterUtils.colors.get(ItemDataUtils.getInt(itemStack, NBTConstants.COLOR));
         }
-        autoEject = ItemDataUtils.getBoolean(itemStack, "autoEject");
-        roundRobin = ItemDataUtils.getBoolean(itemStack, "roundRobin");
-        singleItem = ItemDataUtils.getBoolean(itemStack, "singleItem");
-        if (ItemDataUtils.hasData(itemStack, "filters")) {
-            ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
+        autoEject = ItemDataUtils.getBoolean(itemStack, NBTConstants.EJECT);
+        roundRobin = ItemDataUtils.getBoolean(itemStack, NBTConstants.ROUND_ROBIN);
+        singleItem = ItemDataUtils.getBoolean(itemStack, NBTConstants.SINGLE_ITEM);
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
                 filters.add(TransporterFilter.readFromNBT(tagList.getCompound(i)));
             }
@@ -404,11 +370,11 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public Map<String, String> getTileDataRemap() {
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("color", "color");
-        remap.put("autoEject", "autoEject");
-        remap.put("roundRobin", "roundRobin");
-        remap.put("singleItem", "singleItem");
-        remap.put("filters", "filters");
+        remap.put(NBTConstants.COLOR, NBTConstants.COLOR);
+        remap.put(NBTConstants.EJECT, NBTConstants.EJECT);
+        remap.put(NBTConstants.ROUND_ROBIN, NBTConstants.ROUND_ROBIN);
+        remap.put(NBTConstants.SINGLE_ITEM, NBTConstants.SINGLE_ITEM);
+        remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
         return remap;
     }
 

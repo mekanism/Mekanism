@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
@@ -108,7 +109,7 @@ public class BinInsertRecipe extends BinRecipe {
             }
             hasInserted = true;
         }
-        ItemDataUtils.setBoolean(binStack, "fromRecipe", true);
+        ItemDataUtils.setBoolean(binStack, NBTConstants.FROM_RECIPE, true);
         return binStack;
     }
 
@@ -170,7 +171,7 @@ public class BinInsertRecipe extends BinRecipe {
     @SubscribeEvent
     public static void onCrafting(ItemCraftedEvent event) {
         ItemStack result = event.getCrafting();
-        if (!result.isEmpty() && result.getItem() instanceof ItemBlockBin && ItemDataUtils.getBoolean(result, "fromRecipe")) {
+        if (!result.isEmpty() && result.getItem() instanceof ItemBlockBin && ItemDataUtils.getBoolean(result, NBTConstants.FROM_RECIPE)) {
             BinInventorySlot slot = convertToSlot(result);
             ItemStack storedStack = slot.getStack();
             if (!storedStack.isEmpty()) {
@@ -186,7 +187,7 @@ public class BinInsertRecipe extends BinRecipe {
                         craftingMatrix.setInventorySlotContents(i, ItemStack.EMPTY);
                     }
                 }
-                ItemDataUtils.removeData(storedStack, "fromRecipe");
+                ItemDataUtils.removeData(storedStack, NBTConstants.FROM_RECIPE);
             }
         }
     }

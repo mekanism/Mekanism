@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
@@ -25,6 +26,7 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -92,13 +94,14 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
+        NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.TEMPERATURE, temp -> temperature = temp);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble("temperature", temperature);
+        nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
         return nbtTags;
     }
 

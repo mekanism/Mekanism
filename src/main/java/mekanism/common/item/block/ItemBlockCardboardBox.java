@@ -2,6 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonPlayerTracker;
 import mekanism.common.Mekanism;
@@ -31,6 +32,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
@@ -48,7 +50,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
             try {
                 tooltip.add(MekanismLang.BLOCK.translate(data.blockState.getBlock()));
                 if (data.tileTag != null) {
-                    tooltip.add(MekanismLang.TILE.translate(data.tileTag.getString("id")));
+                    tooltip.add(MekanismLang.TILE.translate(data.tileTag.getString(NBTConstants.ID)));
                 }
             } catch (Exception ignored) {
             }
@@ -119,12 +121,12 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     }
 
     public void setBlockData(ItemStack stack, BlockData data) {
-        ItemDataUtils.setCompound(stack, "blockData", data.write(new CompoundNBT()));
+        ItemDataUtils.setCompound(stack, NBTConstants.DATA, data.write(new CompoundNBT()));
     }
 
-    public BlockData getBlockData(ItemStack stack) {
-        if (ItemDataUtils.hasData(stack, "blockData")) {
-            return BlockData.read(ItemDataUtils.getCompound(stack, "blockData"));
+    private BlockData getBlockData(ItemStack stack) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.DATA, NBT.TAG_COMPOUND)) {
+            return BlockData.read(ItemDataUtils.getCompound(stack, NBTConstants.DATA));
         }
         return null;
     }

@@ -12,13 +12,18 @@
               "source": "block_entity",
               "ops": [
                 {
-                  "source": "ownerUUID",
-                  "target": "mekData.ownerUUID",
+                  "source": "componentSecurity.ownerMost",
+                  "target": "mekData.ownerMost",
                   "op": "replace"
                 },
                 {
-                  "source": "securityMode",
-                  "target": "mekData.security",
+                  "source": "componentSecurity.ownerLeast",
+                  "target": "mekData.ownerLeast",
+                  "op": "replace"
+                },
+                {
+                  "source": "componentSecurity.securityMode",
+                  "target": "mekData.securityMode",
                   "op": "replace"
                 },
                 {

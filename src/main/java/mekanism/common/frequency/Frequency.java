@@ -5,9 +5,11 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
@@ -74,15 +76,15 @@ public class Frequency {
     }
 
     public void write(CompoundNBT nbtTags) {
-        nbtTags.putString("name", name);
-        nbtTags.putString("ownerUUID", ownerUUID.toString());
-        nbtTags.putBoolean("publicFreq", publicFreq);
+        nbtTags.putString(NBTConstants.NAME, name);
+        nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+        nbtTags.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
     }
 
     protected void read(CompoundNBT nbtTags) {
-        name = nbtTags.getString("name");
-        ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
-        publicFreq = nbtTags.getBoolean("publicFreq");
+        name = nbtTags.getString(NBTConstants.NAME);
+        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
+        publicFreq = nbtTags.getBoolean(NBTConstants.PUBLIC_FREQUENCY);
     }
 
     public void write(TileNetworkList data) {
@@ -129,16 +131,16 @@ public class Frequency {
 
         @Nullable
         public static Identity load(CompoundNBT data) {
-            if (!data.getString("name").isEmpty()) {
-                return new Identity(data.getString("name"), data.getBoolean("publicFreq"));
+            if (!data.getString(NBTConstants.NAME).isEmpty()) {
+                return new Identity(data.getString(NBTConstants.NAME), data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
             }
             return null;
         }
 
         public CompoundNBT serialize() {
             CompoundNBT tag = new CompoundNBT();
-            tag.putString("name", name);
-            tag.putBoolean("publicFreq", publicFreq);
+            tag.putString(NBTConstants.NAME, name);
+            tag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
             return tag;
         }
     }

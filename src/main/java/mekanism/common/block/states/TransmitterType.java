@@ -11,16 +11,14 @@ public enum TransmitterType {
     DIVERSION_TRANSPORTER(Size.LARGE, TransmissionType.ITEM),
     THERMODYNAMIC_CONDUCTOR(Size.SMALL, TransmissionType.HEAT);
 
+    private static final TransmitterType[] TYPES = values();
+
     private Size size;
     private TransmissionType transmissionType;
 
-    TransmitterType(Size s, TransmissionType type) {
-        size = s;
+    TransmitterType(Size size, TransmissionType type) {
+        this.size = size;
         transmissionType = type;
-    }
-
-    public static TransmitterType get(int meta) {
-        return TransmitterType.values()[meta];
     }
 
     public Size getSize() {
@@ -29,6 +27,11 @@ public enum TransmitterType {
 
     public TransmissionType getTransmission() {
         return transmissionType;
+    }
+
+    public static TransmitterType byIndexStatic(int index) {
+        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+        return TYPES[Math.floorMod(index, TYPES.length)];
     }
 
     public enum Size {

@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.common.base.ITileComponent;
@@ -15,7 +16,9 @@ import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.LongNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -116,12 +119,10 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        //prevCoord = Coord4D.read(nbtTags.getCompound("prevCoord"));
         chunkSet.clear();
-        ListNBT list = nbtTags.getList("chunkSet", NBT.TAG_COMPOUND);
-        for (int i = 0; i < list.size(); i++) {
-            CompoundNBT compound = list.getCompound(i);
-            chunkSet.add(new ChunkPos(compound.getInt("chunkX"), compound.getInt("chunkZ")));
+        ListNBT list = nbtTags.getList(NBTConstants.CHUNK_SET, NBT.TAG_LONG);
+        for (INBT nbt : list) {
+            chunkSet.add(new ChunkPos(((LongNBT) nbt).getLong()));
         }
     }
 
@@ -131,18 +132,11 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
 
     @Override
     public void write(CompoundNBT nbtTags) {
-        /*if (prevCoord != null) {
-            nbtTags.put("prevCoord", prevCoord.write(new CompoundNBT()));
-        }*/
-
         ListNBT list = new ListNBT();
         for (ChunkPos pos : chunkSet) {
-            CompoundNBT compound = new CompoundNBT();
-            compound.putInt("chunkX", pos.x);
-            compound.putInt("chunkZ", pos.z);
-            list.add(compound);
+            list.add(LongNBT.valueOf(pos.asLong()));
         }
-        nbtTags.put("chunkSet", list);
+        nbtTags.put(NBTConstants.CHUNK_SET, list);
     }
 
     @Override

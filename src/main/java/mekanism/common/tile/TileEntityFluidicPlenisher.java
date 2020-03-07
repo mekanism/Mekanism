@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
@@ -178,15 +179,15 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("operatingTicks", operatingTicks);
-        nbtTags.putBoolean("finishedCalc", finishedCalc);
+        nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
+        nbtTags.putBoolean(NBTConstants.FINISHED, finishedCalc);
 
         ListNBT activeList = new ListNBT();
         for (BlockPos wrapper : activeNodes) {
             activeList.add(NBTUtil.writeBlockPos(wrapper));
         }
         if (!activeList.isEmpty()) {
-            nbtTags.put("activeNodes", activeList);
+            nbtTags.put(NBTConstants.ACTIVE_NODES, activeList);
         }
 
         ListNBT usedList = new ListNBT();
@@ -194,7 +195,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             activeList.add(NBTUtil.writeBlockPos(obj));
         }
         if (!activeList.isEmpty()) {
-            nbtTags.put("usedNodes", usedList);
+            nbtTags.put(NBTConstants.USED_NODES, usedList);
         }
         return nbtTags;
     }
@@ -202,18 +203,17 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        operatingTicks = nbtTags.getInt("operatingTicks");
-        finishedCalc = nbtTags.getBoolean("finishedCalc");
+        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
+        finishedCalc = nbtTags.getBoolean(NBTConstants.FINISHED);
 
-        if (nbtTags.contains("activeNodes")) {
-            ListNBT tagList = nbtTags.getList("activeNodes", NBT.TAG_COMPOUND);
+        if (nbtTags.contains(NBTConstants.ACTIVE_NODES, NBT.TAG_LIST)) {
+            ListNBT tagList = nbtTags.getList(NBTConstants.ACTIVE_NODES, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 activeNodes.add(NBTUtil.readBlockPos(tagList.getCompound(i)));
             }
         }
-        if (nbtTags.contains("usedNodes")) {
-            ListNBT tagList = nbtTags.getList("usedNodes", NBT.TAG_COMPOUND);
-
+        if (nbtTags.contains(NBTConstants.USED_NODES, NBT.TAG_LIST)) {
+            ListNBT tagList = nbtTags.getList(NBTConstants.USED_NODES, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 usedNodes.add(NBTUtil.readBlockPos(tagList.getCompound(i)));
             }

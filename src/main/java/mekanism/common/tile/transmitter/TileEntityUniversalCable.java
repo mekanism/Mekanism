@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.energy.EnergyStack;
 import mekanism.api.energy.IStrictEnergyAcceptor;
@@ -29,6 +30,7 @@ import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -133,17 +135,14 @@ public class TileEntityUniversalCable extends TileEntityTransmitter<EnergyAccept
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        buffer.amount = nbtTags.getDouble("cacheEnergy");
-        if (buffer.amount < 0) {
-            buffer.amount = 0;
-        }
+        NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.ENERGY_STORED, energy -> buffer.amount = Math.max(0, energy));
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble("cacheEnergy", lastWrite);
+        nbtTags.putDouble(NBTConstants.ENERGY_STORED, lastWrite);
         return nbtTags;
     }
 

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.NBTConstants;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.multiblock.MultiblockCache;
 import net.minecraft.nbt.CompoundNBT;
@@ -39,14 +40,14 @@ public class BoilerCache extends MultiblockCache<SynchronizedBoilerData> impleme
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags.getList("FluidTanks", NBT.TAG_COMPOUND));
-        temperature = nbtTags.getDouble("temperature");
+        DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags.getList(NBTConstants.FLUID_TANKS, NBT.TAG_COMPOUND));
+        temperature = nbtTags.getDouble(NBTConstants.TEMPERATURE);
     }
 
     @Override
     public void save(CompoundNBT nbtTags) {
-        nbtTags.put("FluidTanks", DataHandlerUtils.writeTanks(getFluidTanks(null)));
-        nbtTags.putDouble("temperature", temperature);
+        nbtTags.put(NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
+        nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
     }
 
     @Nonnull

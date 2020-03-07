@@ -1,10 +1,12 @@
 package mekanism.common.security;
 
 import java.util.UUID;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.HashList;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.security.ISecurityTile.SecurityMode;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -38,15 +40,15 @@ public class SecurityFrequency extends Frequency {
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putBoolean("override", override);
-        nbtTags.putInt("securityMode", securityMode.ordinal());
+        nbtTags.putBoolean(NBTConstants.OVERRIDE, override);
+        nbtTags.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
 
         if (!trusted.isEmpty()) {
             ListNBT trustedList = new ListNBT();
             for (UUID uuid : trusted) {
                 trustedList.add(NBTUtil.writeUniqueId(uuid));
             }
-            nbtTags.put("trusted", trustedList);
+            nbtTags.put(NBTConstants.TRUSTED, trustedList);
         }
     }
 
@@ -57,11 +59,11 @@ public class SecurityFrequency extends Frequency {
         trusted = new HashList<>();
         securityMode = SecurityMode.PUBLIC;
 
-        override = nbtTags.getBoolean("override");
-        securityMode = SecurityMode.byIndexStatic(nbtTags.getInt("securityMode"));
+        override = nbtTags.getBoolean(NBTConstants.OVERRIDE);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
 
-        if (nbtTags.contains("trusted", NBT.TAG_LIST)) {
-            ListNBT trustedList = nbtTags.getList("trusted", NBT.TAG_COMPOUND);
+        if (nbtTags.contains(NBTConstants.TRUSTED, NBT.TAG_LIST)) {
+            ListNBT trustedList = nbtTags.getList(NBTConstants.TRUSTED, NBT.TAG_COMPOUND);
             for (int i = 0; i < trustedList.size(); i++) {
                 trusted.add(NBTUtil.readUniqueId(trustedList.getCompound(i)));
             }

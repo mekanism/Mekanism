@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
@@ -26,6 +27,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extends TileEntityMekanism implements IMultiblock<T> {
 
@@ -225,8 +227,8 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (structure == null) {
-            if (nbtTags.contains("cachedID")) {
-                cachedID = nbtTags.getString("cachedID");
+            if (nbtTags.contains(NBTConstants.ID, NBT.TAG_STRING)) {
+                cachedID = nbtTags.getString(NBTConstants.ID);
                 cachedData.load(nbtTags);
             }
         }
@@ -237,7 +239,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (cachedID != null) {
-            nbtTags.putString("cachedID", cachedID);
+            nbtTags.putString(NBTConstants.ID, cachedID);
             cachedData.save(nbtTags);
         }
         return nbtTags;

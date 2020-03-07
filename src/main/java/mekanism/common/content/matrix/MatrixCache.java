@@ -3,6 +3,7 @@ package mekanism.common.content.matrix;
 import java.util.List;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.NBTConstants;
 import mekanism.common.multiblock.InventoryMultiblockCache;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -27,11 +28,11 @@ public class MatrixCache extends InventoryMultiblockCache<SynchronizedMatrixData
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList("Items", NBT.TAG_COMPOUND));
+        DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
     }
 
     @Override
     public void save(CompoundNBT nbtTags) {
-        nbtTags.put("Items", DataHandlerUtils.writeSlots(getInventorySlots(null)));
+        nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeSlots(getInventorySlots(null)));
     }
 }

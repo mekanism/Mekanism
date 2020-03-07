@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
@@ -14,6 +15,7 @@ import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -36,16 +38,14 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("modes")) {
-            modes = nbtTags.getIntArray("modes");
-        }
+        NBTUtils.setIntArrayIfPresent(nbtTags, NBTConstants.MODES, modes -> this.modes = modes);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putIntArray("modes", modes);
+        nbtTags.putIntArray(NBTConstants.MODES, modes);
         return nbtTags;
     }
 

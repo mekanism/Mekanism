@@ -10,6 +10,7 @@ import java.util.function.IntConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -28,6 +29,7 @@ import mekanism.common.transmitters.grid.InventoryNetwork;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -82,11 +84,9 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
     }
 
     public void readFromNBT(CompoundNBT nbtTags) {
-        if (nbtTags.contains("color")) {
-            setColor(TransporterUtils.colors.get(nbtTags.getInt("color")));
-        }
-        if (nbtTags.contains("stacks")) {
-            ListNBT tagList = nbtTags.getList("stacks", NBT.TAG_COMPOUND);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils.colors::get, this::setColor);
+        if (nbtTags.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
+            ListNBT tagList = nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 TransporterStack stack = TransporterStack.readFromNBT(tagList.getCompound(i));
                 transit.put(nextId++, stack);

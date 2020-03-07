@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
@@ -32,6 +33,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -42,6 +44,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -113,6 +116,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             energySlot.discharge(this);
             inputSlot.drainTank(outputSlot);
             if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
+                //TODO: Why does it not just use energy immediately, why does it wait until the next
+                // check to use it
                 if (suckedLastOperation) {
                     setEnergy(getEnergy() - getEnergyPerTick());
                 }
@@ -267,21 +272,17 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("operatingTicks", operatingTicks);
-        nbtTags.putBoolean("suckedLastOperation", suckedLastOperation);
+        nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
+        nbtTags.putBoolean(NBTConstants.SUCKED_LAST_OPERATION, suckedLastOperation);
         if (!activeType.isEmpty()) {
-            nbtTags.put("activeType", activeType.writeToNBT(new CompoundNBT()));
+            nbtTags.put(NBTConstants.FLUID_STORED, activeType.writeToNBT(new CompoundNBT()));
         }
         ListNBT recurringList = new ListNBT();
         for (BlockPos nodePos : recurringNodes) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            tagCompound.putInt("x", nodePos.getX());
-            tagCompound.putInt("y", nodePos.getY());
-            tagCompound.putInt("z", nodePos.getZ());
-            recurringList.add(tagCompound);
+            recurringList.add(NBTUtil.writeBlockPos(nodePos));
         }
         if (!recurringList.isEmpty()) {
-            nbtTags.put("recurringNodes", recurringList);
+            nbtTags.put(NBTConstants.RECURRING_NODES, recurringList);
         }
         return nbtTags;
     }
@@ -289,16 +290,13 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        operatingTicks = nbtTags.getInt("operatingTicks");
-        suckedLastOperation = nbtTags.getBoolean("suckedLastOperation");
-        if (nbtTags.contains("activeType")) {
-            activeType = FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("activeType"));
-        }
-        if (nbtTags.contains("recurringNodes")) {
-            ListNBT tagList = nbtTags.getList("recurringNodes", NBT.TAG_COMPOUND);
+        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
+        suckedLastOperation = nbtTags.getBoolean(NBTConstants.SUCKED_LAST_OPERATION);
+        NBTUtils.setFluidStackIfPresent(nbtTags, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);
+        if (nbtTags.contains(NBTConstants.RECURRING_NODES, NBT.TAG_LIST)) {
+            ListNBT tagList = nbtTags.getList(NBTConstants.RECURRING_NODES, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
-                CompoundNBT compound = tagList.getCompound(i);
-                recurringNodes.add(new BlockPos(compound.getInt("x"), compound.getInt("y"), compound.getInt("z")));
+                recurringNodes.add(NBTUtil.readBlockPos(tagList.getCompound(i)));
             }
         }
     }

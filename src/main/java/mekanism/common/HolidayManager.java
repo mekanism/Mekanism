@@ -89,6 +89,8 @@ public final class HolidayManager {
         NOVEMBER("November"),
         DECEMBER("December");
 
+        private static final Month[] MONTHS = values();
+
         private final String name;
 
         Month(String n) {
@@ -101,6 +103,11 @@ public final class HolidayManager {
 
         public int month() {
             return ordinal() + 1;
+        }
+
+        public static Month byIndexStatic(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return MONTHS[Math.floorMod(index, MONTHS.length)];
         }
     }
 
@@ -198,7 +205,7 @@ public final class HolidayManager {
         }
 
         public YearlyDate(int m, int d) {
-            this(Month.values()[m - 1], d);
+            this(Month.byIndexStatic(m - 1), d);
         }
 
         @Override

@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyOutputter;
 import mekanism.api.energy.IStrictEnergyStorage;
@@ -26,6 +27,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -231,26 +233,27 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        on = nbtTags.getBoolean("on");
-        minThreshold = nbtTags.getDouble("minThreshold");
-        maxThreshold = nbtTags.getDouble("maxThreshold");
-        time = nbtTags.getInt("time");
-        collectedEnergy = nbtTags.getDouble("collectedEnergy");
-        lastFired = nbtTags.getDouble("lastFired");
-        outputMode = RedstoneOutput.byIndexStatic(nbtTags.getInt("outputMode"));
+        on = nbtTags.getBoolean(NBTConstants.RUNNING);
+        minThreshold = nbtTags.getDouble(NBTConstants.MIN);
+        maxThreshold = nbtTags.getDouble(NBTConstants.MAX);
+        time = nbtTags.getInt(NBTConstants.TIME);
+        //TODO: Replace collected energy with allowing it to be energy stored in TileEntityMekanism
+        collectedEnergy = nbtTags.getDouble(NBTConstants.ENERGY_STORED);
+        lastFired = nbtTags.getDouble(NBTConstants.LAST_FIRED);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.OUTPUT_MODE, RedstoneOutput::byIndexStatic, mode -> outputMode = mode);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putBoolean("on", on);
-        nbtTags.putDouble("minThreshold", minThreshold);
-        nbtTags.putDouble("maxThreshold", maxThreshold);
-        nbtTags.putInt("time", time);
-        nbtTags.putDouble("collectedEnergy", collectedEnergy);
-        nbtTags.putDouble("lastFired", lastFired);
-        nbtTags.putInt("outputMode", outputMode.ordinal());
+        nbtTags.putBoolean(NBTConstants.RUNNING, on);
+        nbtTags.putDouble(NBTConstants.MIN, minThreshold);
+        nbtTags.putDouble(NBTConstants.MAX, maxThreshold);
+        nbtTags.putInt(NBTConstants.TIME, time);
+        nbtTags.putDouble(NBTConstants.ENERGY_STORED, collectedEnergy);
+        nbtTags.putDouble(NBTConstants.LAST_FIRED, lastFired);
+        nbtTags.putInt(NBTConstants.OUTPUT_MODE, outputMode.ordinal());
         return nbtTags;
     }
 

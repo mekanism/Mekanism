@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.basic;
 
+import mekanism.api.NBTConstants;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.DefaultStorage;
 import net.minecraft.nbt.CompoundNBT;
@@ -44,14 +45,14 @@ public class DefaultStrictEnergyStorage implements IStrictEnergyStorage, INBTSer
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT tag = new CompoundNBT();
-        tag.putDouble("maxEnergy", getMaxEnergy());
-        tag.putDouble("energyStored", getEnergy());
+        tag.putDouble(NBTConstants.MAX_ENERGY, getMaxEnergy());
+        tag.putDouble(NBTConstants.ENERGY_STORED, getEnergy());
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        setEnergy(nbt.getDouble("energyStored"));
-        maxEnergy = nbt.getDouble("maxEnergy");
+        maxEnergy = nbt.getDouble(NBTConstants.MAX_ENERGY);
+        setEnergy(nbt.getDouble(NBTConstants.ENERGY_STORED));
     }
 }

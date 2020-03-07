@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
@@ -74,11 +75,11 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory 
     }
 
     public void setName(ItemStack stack, String name) {
-        ItemDataUtils.setString(stack, "name", name);
+        ItemDataUtils.setString(stack, NBTConstants.NAME, name);
     }
 
     public ITextComponent getName(ItemStack stack) {
-        String name = ItemDataUtils.getString(stack, "name");
+        String name = ItemDataUtils.getString(stack, NBTConstants.NAME);
         return name.isEmpty() ? MekanismLang.ROBIT.translate() : TextComponentUtil.getString(name);
     }
 }

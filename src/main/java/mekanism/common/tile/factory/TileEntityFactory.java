@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.block.FactoryType;
@@ -304,10 +305,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        sorting = nbtTags.getBoolean("sorting");
+        sorting = nbtTags.getBoolean(NBTConstants.SORTING);
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
-            progress[i] = nbtTags.getInt("progress" + i);
+            progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
         }
     }
 
@@ -315,10 +316,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putBoolean("sorting", sorting);
+        nbtTags.putBoolean(NBTConstants.SORTING, sorting);
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
         for (int i = 0; i < tier.processes; i++) {
-            nbtTags.putInt("progress" + i, getProgress(i));
+            nbtTags.putInt(NBTConstants.PROGRESS + i, getProgress(i));
         }
         return nbtTags;
     }
@@ -371,13 +372,13 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        nbtTags.putBoolean("sorting", sorting);
+        nbtTags.putBoolean(NBTConstants.SORTING, sorting);
         return nbtTags;
     }
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        sorting = nbtTags.getBoolean("sorting");
+        sorting = nbtTags.getBoolean(NBTConstants.SORTING);
     }
 
     @Override

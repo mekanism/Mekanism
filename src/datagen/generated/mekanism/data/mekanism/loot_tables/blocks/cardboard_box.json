@@ -12,8 +12,8 @@
               "source": "block_entity",
               "ops": [
                 {
-                  "source": "storedData",
-                  "target": "mekData.blockData",
+                  "source": "data",
+                  "target": "mekData.data",
                   "op": "replace"
                 }
               ]

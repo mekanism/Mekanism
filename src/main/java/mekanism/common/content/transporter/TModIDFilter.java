@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
@@ -25,14 +26,14 @@ public class TModIDFilter extends TransporterFilter<TModIDFilter> implements IMo
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("type", 3);
-        nbtTags.putString("modID", modID);
+        nbtTags.putInt(NBTConstants.TYPE, 3);
+        nbtTags.putString(NBTConstants.MODID, modID);
     }
 
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        modID = nbtTags.getString("modID");
+        modID = nbtTags.getString(NBTConstants.MODID);
     }
 
     @Override

@@ -3,6 +3,7 @@ package mekanism.api.fluid;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -225,7 +226,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     default CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.put("stored", getFluid().writeToNBT(new CompoundNBT()));
+            nbt.put(NBTConstants.STORED, getFluid().writeToNBT(new CompoundNBT()));
         }
         return nbt;
     }

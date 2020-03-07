@@ -14,6 +14,7 @@ import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.api.NBTConstants;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.item.IItemEnergized;
@@ -42,6 +43,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 
 /**
  * Special handling for block drops that need TileEntity data
@@ -80,19 +82,16 @@ public abstract class BlockMekanism extends Block {
             ((ISustainedData) tile).writeSustainedData(itemStack);
         }
         if (tile.supportsRedstone()) {
-            ItemDataUtils.setInt(itemStack, "controlType", tile.getControlType().ordinal());
+            ItemDataUtils.setInt(itemStack, NBTConstants.CONTROL_TYPE, tile.getControlType().ordinal());
         }
         if (tile.handlesGas()) {
-            //TODO: Do this better
-            ItemDataUtils.setList(itemStack, "GasTanks", DataHandlerUtils.writeTanks(tile.getGasTanks(null)));
+            ItemDataUtils.setList(itemStack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(tile.getGasTanks(null)));
         }
         if (tile.handlesInfusion()) {
-            //TODO: Do this better
-            ItemDataUtils.setList(itemStack, "InfusionTanks", DataHandlerUtils.writeTanks(tile.getInfusionTanks(null)));
+            ItemDataUtils.setList(itemStack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeTanks(tile.getInfusionTanks(null)));
         }
         if (tile.handlesFluid()) {
-            //TODO: Do this better
-            ItemDataUtils.setList(itemStack, "FluidTanks", DataHandlerUtils.writeTanks(tile.getFluidTanks(null)));
+            ItemDataUtils.setList(itemStack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(tile.getFluidTanks(null)));
         }
         if (item instanceof ISustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
             ((ISustainedInventory) item).setInventory(((ISustainedInventory) tile).getInventory(), itemStack);
@@ -193,21 +192,19 @@ public abstract class BlockMekanism extends Block {
             config.getEjector().read(ItemDataUtils.getDataMap(stack));
         }
         if (tile.handlesGas()) {
-            tile.loadGas(ItemDataUtils.getList(stack, "GasTanks"));
+            tile.loadGas(ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
         }
         if (tile.handlesInfusion()) {
-            tile.loadInfusion(ItemDataUtils.getList(stack, "InfusionTanks"));
+            tile.loadInfusion(ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
         }
         if (tile.handlesFluid()) {
-            tile.loadFluid(ItemDataUtils.getList(stack, "FluidTanks"));
+            tile.loadFluid(ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
         }
         if (tile instanceof ISustainedData && stack.hasTag()) {
             ((ISustainedData) tile).readSustainedData(stack);
         }
-        if (tile.supportsRedstone()) {
-            if (ItemDataUtils.hasData(stack, "controlType")) {
-                tile.setControlType(RedstoneControl.byIndexStatic(ItemDataUtils.getInt(stack, "controlType")));
-            }
+        if (tile.supportsRedstone() && ItemDataUtils.hasData(stack, NBTConstants.CONTROL_TYPE, NBT.TAG_INT)) {
+            tile.setControlType(RedstoneControl.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.CONTROL_TYPE)));
         }
         if (item instanceof ISustainedInventory && tile.persistInventory()) {
             tile.setInventory(((ISustainedInventory) item).getInventory(stack));

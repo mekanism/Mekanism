@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.turbine;
 
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
@@ -149,14 +150,14 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        blades = nbtTags.getInt("blades");
+        blades = nbtTags.getInt(NBTConstants.BLADES);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("blades", getHousedBlades());
+        nbtTags.putInt(NBTConstants.BLADES, getHousedBlades());
         return nbtTags;
     }
 

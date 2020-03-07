@@ -2,8 +2,10 @@ package mekanism.common.content.miner;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IFilter;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,7 +22,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> implements
     public abstract FILTER clone();
 
     public static MinerFilter<?> readFromNBT(CompoundNBT nbtTags) {
-        MinerFilter<?> filter = getType(nbtTags.getInt("type"));
+        MinerFilter<?> filter = getType(nbtTags.getInt(NBTConstants.TYPE));
         filter.read(nbtTags);
         return filter;
     }
@@ -54,18 +56,16 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> implements
     public abstract boolean canFilter(BlockState state);
 
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.putBoolean("requireStack", requireStack);
+        nbtTags.putBoolean(NBTConstants.REQUIRE_STACK, requireStack);
         if (!replaceStack.isEmpty()) {
-            nbtTags.put("replaceStack", replaceStack.write(new CompoundNBT()));
+            nbtTags.put(NBTConstants.REPLACE_STACK, replaceStack.write(new CompoundNBT()));
         }
         return nbtTags;
     }
 
     protected void read(CompoundNBT nbtTags) {
-        requireStack = nbtTags.getBoolean("requireStack");
-        if (nbtTags.contains("replaceStack")) {
-            replaceStack = ItemStack.read(nbtTags.getCompound("replaceStack"));
-        }
+        requireStack = nbtTags.getBoolean(NBTConstants.REQUIRE_STACK);
+        NBTUtils.setItemStackIfPresent(nbtTags, NBTConstants.REPLACE_STACK, stack -> replaceStack = stack);
     }
 
     public void write(TileNetworkList data) {

@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.IChemicalTank;
@@ -54,6 +55,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFrequencyHandler, IHeatTransfer, ISustainedData,
@@ -236,8 +238,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("frequency")) {
-            frequency = new InventoryFrequency(nbtTags.getCompound("frequency"));
+        if (nbtTags.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
+            frequency = new InventoryFrequency(nbtTags.getCompound(NBTConstants.FREQUENCY));
             frequency.valid = false;
         }
     }
@@ -249,7 +251,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (frequency != null) {
             CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
-            nbtTags.put("frequency", frequencyTag);
+            nbtTags.put(NBTConstants.FREQUENCY, frequencyTag);
         }
         return nbtTags;
     }
@@ -514,13 +516,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public void writeSustainedData(ItemStack itemStack) {
         if (frequency != null) {
-            ItemDataUtils.setCompound(itemStack, "frequency", frequency.getIdentity().serialize());
+            ItemDataUtils.setCompound(itemStack, NBTConstants.FREQUENCY, frequency.getIdentity().serialize());
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(itemStack, "frequency"));
+        Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
         if (freq != null) {
             setFrequency(freq.name, freq.publicFreq);
         }
@@ -529,8 +531,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     @Override
     public Map<String, String> getTileDataRemap() {
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("frequency.name", "frequency.name");
-        remap.put("frequency.publicFreq", "frequency.publicFreq");
+        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.NAME, NBTConstants.FREQUENCY + "." + NBTConstants.NAME);
+        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY, NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY);
         return remap;
     }
 

@@ -3,6 +3,7 @@ package mekanism.common.item.block;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -51,12 +52,12 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockInductionCell>
 
     @Override
     public double getEnergy(ItemStack itemStack) {
-        return ItemDataUtils.getDouble(itemStack, "energyStored");
+        return ItemDataUtils.getDouble(itemStack, NBTConstants.ENERGY_STORED);
     }
 
     @Override
     public void setEnergy(ItemStack itemStack, double amount) {
-        ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
+        ItemDataUtils.setDouble(itemStack, NBTConstants.ENERGY_STORED, Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
     }
 
     @Override

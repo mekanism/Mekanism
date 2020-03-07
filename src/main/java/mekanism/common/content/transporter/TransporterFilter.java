@@ -3,9 +3,11 @@ package mekanism.common.content.transporter;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.IFilter;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -26,7 +28,7 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
     public abstract FILTER clone();
 
     public static TransporterFilter<?> readFromNBT(CompoundNBT nbtTags) {
-        TransporterFilter<?> filter = getType(nbtTags.getInt("type"));
+        TransporterFilter<?> filter = getType(nbtTags.getInt(NBTConstants.TYPE));
         filter.read(nbtTags);
         return filter;
     }
@@ -63,17 +65,15 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
     }
 
     public void write(CompoundNBT nbtTags) {
-        nbtTags.putBoolean("allowDefault", allowDefault);
+        nbtTags.putBoolean(NBTConstants.ALLOW_DEFAULT, allowDefault);
         if (color != null) {
-            nbtTags.putInt("color", TransporterUtils.colors.indexOf(color));
+            nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.colors.indexOf(color));
         }
     }
 
     protected void read(CompoundNBT nbtTags) {
-        allowDefault = nbtTags.getBoolean("allowDefault");
-        if (nbtTags.contains("color")) {
-            color = TransporterUtils.colors.get(nbtTags.getInt("color"));
-        }
+        allowDefault = nbtTags.getBoolean(NBTConstants.ALLOW_DEFAULT);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils.colors::get, color -> this.color = color);
     }
 
     public void write(TileNetworkList data) {

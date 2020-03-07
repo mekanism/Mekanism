@@ -2,6 +2,7 @@ package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
@@ -43,11 +44,11 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         energyCube.render(matrix, renderer, light, overlayLight, tier, true);
 
         CompoundNBT configData = ItemDataUtils.getDataMapIfPresent(stack);
-        if (configData != null && configData.getBoolean("sideDataStored")) {
-            CompoundNBT sideConfig = configData.getCompound("config" + TransmissionType.ENERGY.ordinal());
+        if (configData != null && configData.getBoolean(NBTConstants.SIDE_DATA)) {
+            CompoundNBT sideConfig = configData.getCompound(NBTConstants.CONFIG + TransmissionType.ENERGY.ordinal());
             //TODO: Maybe improve on this, but for now this is a decent way of making it not have disabled sides show
             for (RelativeSide side : EnumUtils.SIDES) {
-                DataType dataType = DataType.byIndexStatic(sideConfig.getInt("side" + side.ordinal()));
+                DataType dataType = DataType.byIndexStatic(sideConfig.getInt(NBTConstants.SIDE + side.ordinal()));
                 //TODO: Improve on the check compared to just directly comparing the data type?
                 energyCube.renderSide(matrix, renderer, light, overlayLight, side, dataType.equals(DataType.INPUT), dataType.equals(DataType.OUTPUT));
             }
@@ -58,7 +59,7 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         }
 
         matrix.pop();
-        double energyPercentage = ItemDataUtils.getDouble(stack, "energyStored") / tier.getMaxEnergy();
+        double energyPercentage = ItemDataUtils.getDouble(stack, NBTConstants.ENERGY_STORED) / tier.getMaxEnergy();
         if (energyPercentage > 0.1) {
             matrix.scale(0.4F, 0.4F, 0.4F);
             matrix.translate(0, Math.sin(Math.toRadians(3 * MekanismClient.ticksPassed)) / 7, 0);

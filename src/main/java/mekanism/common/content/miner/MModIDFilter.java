@@ -1,5 +1,6 @@
 package mekanism.common.content.miner;
 
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.IModIDFilter;
@@ -29,15 +30,15 @@ public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFil
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("type", 3);
-        nbtTags.putString("modID", modID);
+        nbtTags.putInt(NBTConstants.TYPE, 3);
+        nbtTags.putString(NBTConstants.MODID, modID);
         return nbtTags;
     }
 
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        modID = nbtTags.getString("modID");
+        modID = nbtTags.getString(NBTConstants.MODID);
     }
 
     @Override

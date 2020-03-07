@@ -7,10 +7,10 @@ import java.util.Locale;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
@@ -33,6 +33,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -49,6 +50,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.common.thread.EffectiveSide;
+import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
 
@@ -304,9 +306,10 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        redstoneReactive = nbtTags.getBoolean("redstoneReactive");
-        for (int i = 0; i < 6; i++) {
-            connectionTypes[i] = ConnectionType.byIndexStatic(nbtTags.getInt("connection" + i));
+        redstoneReactive = nbtTags.getBoolean(NBTConstants.REDSTONE);
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            int index = i;
+            NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.CONNECTION + index, ConnectionType::byIndexStatic, color -> connectionTypes[index] = color);
         }
         //TODO: Do we need to update the model here
     }
@@ -315,9 +318,9 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putBoolean("redstoneReactive", redstoneReactive);
-        for (int i = 0; i < 6; i++) {
-            nbtTags.putInt("connection" + i, connectionTypes[i].ordinal());
+        nbtTags.putBoolean(NBTConstants.REDSTONE, redstoneReactive);
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            nbtTags.putInt(NBTConstants.CONNECTION + i, connectionTypes[i].ordinal());
         }
         return nbtTags;
     }

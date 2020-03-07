@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -61,10 +62,10 @@ public class ItemConfigurationCard extends Item {
                         Optional<ISpecialConfigData> configData = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side));
                         CompoundNBT data = configData.isPresent() ? configData.get().getConfigurationData(getBaseData(tile)) : getBaseData(tile);
                         if (data != null) {
-                            data.putString("dataType", getNameFromTile(tile, side));
+                            data.putString(NBTConstants.DATA_TYPE, getNameFromTile(tile, side));
                             setData(stack, data);
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                                  MekanismLang.CONFIG_CARD_GOT.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Translation.of(data.getString("dataType")))));
+                                  MekanismLang.CONFIG_CARD_GOT.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Translation.of(data.getString(NBTConstants.DATA_TYPE)))));
                         }
                         return ActionResultType.SUCCESS;
                     }
@@ -103,7 +104,7 @@ public class ItemConfigurationCard extends Item {
     private CompoundNBT getBaseData(TileEntity tile) {
         CompoundNBT nbtTags = new CompoundNBT();
         if (tile instanceof IRedstoneControl) {
-            nbtTags.putInt("controlType", ((IRedstoneControl) tile).getControlType().ordinal());
+            nbtTags.putInt(NBTConstants.CONTROL_TYPE, ((IRedstoneControl) tile).getControlType().ordinal());
         }
         if (tile instanceof ISideConfiguration) {
             ((ISideConfiguration) tile).getConfig().write(nbtTags);
@@ -114,7 +115,7 @@ public class ItemConfigurationCard extends Item {
 
     private void setBaseData(CompoundNBT nbtTags, TileEntity tile) {
         if (tile instanceof IRedstoneControl) {
-            ((IRedstoneControl) tile).setControlType(RedstoneControl.byIndexStatic(nbtTags.getInt("controlType")));
+            ((IRedstoneControl) tile).setControlType(RedstoneControl.byIndexStatic(nbtTags.getInt(NBTConstants.CONTROL_TYPE)));
         }
         if (tile instanceof ISideConfiguration) {
             ((ISideConfiguration) tile).getConfig().read(nbtTags);
@@ -134,27 +135,27 @@ public class ItemConfigurationCard extends Item {
         return ret;
     }
 
-    public void setData(ItemStack stack, CompoundNBT data) {
-        if (data != null) {
-            ItemDataUtils.setCompound(stack, "data", data);
+    private void setData(ItemStack stack, CompoundNBT data) {
+        if (data == null) {
+            ItemDataUtils.removeData(stack, NBTConstants.DATA);
         } else {
-            ItemDataUtils.removeData(stack, "data");
+            ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
         }
     }
 
-    public CompoundNBT getData(ItemStack stack) {
-        CompoundNBT data = ItemDataUtils.getCompound(stack, "data");
+    private CompoundNBT getData(ItemStack stack) {
+        CompoundNBT data = ItemDataUtils.getCompound(stack, NBTConstants.DATA);
         if (data.isEmpty()) {
             return null;
         }
-        return ItemDataUtils.getCompound(stack, "data");
+        return ItemDataUtils.getCompound(stack, NBTConstants.DATA);
     }
 
     public String getDataType(ItemStack stack) {
         CompoundNBT data = getData(stack);
-        if (data != null) {
-            return data.getString("dataType");
+        if (data == null) {
+            return MekanismLang.NONE.getTranslationKey();
         }
-        return MekanismLang.NONE.getTranslationKey();
+        return data.getString(NBTConstants.DATA_TYPE);
     }
 }

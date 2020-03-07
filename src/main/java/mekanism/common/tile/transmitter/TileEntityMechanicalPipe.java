@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
@@ -28,6 +29,7 @@ import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.PipeUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -179,21 +181,17 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter<IFluidHandle
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("cacheFluid")) {
-            buffer.setStack(FluidStack.loadFluidStackFromNBT(nbtTags.getCompound("cacheFluid")));
-        } else {
-            buffer.setEmpty();
-        }
+        NBTUtils.setFluidStackIfPresent(nbtTags, NBTConstants.FLUID_STORED, buffer::setStack);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (!lastWrite.isEmpty()) {
-            nbtTags.put("cacheFluid", lastWrite.writeToNBT(new CompoundNBT()));
+        if (lastWrite.isEmpty()) {
+            nbtTags.remove(NBTConstants.FLUID_STORED);
         } else {
-            nbtTags.remove("cacheFluid");
+            nbtTags.put(NBTConstants.FLUID_STORED, lastWrite.writeToNBT(new CompoundNBT()));
         }
         return nbtTags;
     }

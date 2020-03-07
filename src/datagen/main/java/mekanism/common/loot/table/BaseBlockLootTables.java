@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasSecurity;
@@ -19,7 +20,6 @@ import mekanism.common.base.ISideConfiguration;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.Block;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.tileentity.TileEntity;
@@ -76,37 +76,37 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             @Nullable
             TileEntity tile = null;
             if (block instanceof IHasTileEntity<?>) {
-                //TODO: TEST ME, hopefully this does not blow up in our faces, it really shouldn't but if it does
-                // it will be revealing a bug about assumptions we are making in the constructor about a world existing
                 //TODO: Ideally at some point we will end up moving some of the stuff up to TileEntityMekanism anyways
                 // so then we can just remove having to create a tile to check if it implements specific things
                 tile = ((IHasTileEntity<?>) block).getTileType().create();
             }
             if (block instanceof IHasSecurity) {
-                nbtBuilder.replaceOperation("ownerUUID", ItemDataUtils.DATA_ID + ".ownerUUID");
-                nbtBuilder.replaceOperation("securityMode", ItemDataUtils.DATA_ID + ".security");
+                //TODO: Should we just save the entire security component? If not in 1.16 given Mojang is changing UUID saving this will need to be updated
+                nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID + "Most", NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID + "Most");
+                nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.OWNER_UUID + "Least", NBTConstants.MEK_DATA + "." + NBTConstants.OWNER_UUID + "Least");
+                nbtBuilder.replaceOperation(NBTConstants.COMPONENT_SECURITY + "." + NBTConstants.SECURITY_MODE, NBTConstants.MEK_DATA + "." + NBTConstants.SECURITY_MODE);
                 hasData = true;
             }
             if (block instanceof ISupportsUpgrades) {
-                nbtBuilder.replaceOperation("componentUpgrade", ItemDataUtils.DATA_ID + ".componentUpgrade");
+                nbtBuilder.replaceOperation(NBTConstants.COMPONENT_UPGRADE, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_UPGRADE);
                 hasData = true;
             }
             if (tile instanceof ISideConfiguration) {
-                nbtBuilder.replaceOperation("componentConfig", ItemDataUtils.DATA_ID + ".componentConfig");
-                nbtBuilder.replaceOperation("componentEjector", ItemDataUtils.DATA_ID + ".componentEjector");
+                nbtBuilder.replaceOperation(NBTConstants.COMPONENT_CONFIG, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_CONFIG);
+                nbtBuilder.replaceOperation(NBTConstants.COMPONENT_EJECTOR, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_EJECTOR);
                 hasData = true;
             }
             if (tile instanceof ISustainedData) {
                 Set<Entry<String, String>> remapEntries = ((ISustainedData) tile).getTileDataRemap().entrySet();
                 for (Entry<String, String> remapEntry : remapEntries) {
-                    nbtBuilder.replaceOperation(remapEntry.getKey(), ItemDataUtils.DATA_ID + "." + remapEntry.getValue());
+                    nbtBuilder.replaceOperation(remapEntry.getKey(), NBTConstants.MEK_DATA + "." + remapEntry.getValue());
                 }
                 if (!remapEntries.isEmpty()) {
                     hasData = true;
                 }
             }
             if (block instanceof ISupportsRedstone) {
-                nbtBuilder.replaceOperation("controlType", ItemDataUtils.DATA_ID + ".controlType");
+                nbtBuilder.replaceOperation(NBTConstants.CONTROL_TYPE, NBTConstants.MEK_DATA + "." + NBTConstants.CONTROL_TYPE);
                 hasData = true;
             }
             if (tile instanceof TileEntityMekanism) {
@@ -114,15 +114,15 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 //TODO: Evaluate a way of doing this that doesn't force TileEntityMekanism
                 //TODO: Do we care that technically breaking the reactor controller makes it grab the tanks?
                 if (tileEntity.handlesGas() && tileEntity.getGasTanks(null).size() > 0) {
-                    nbtBuilder.replaceOperation("GasTanks", ItemDataUtils.DATA_ID + ".GasTanks");
+                    nbtBuilder.replaceOperation(NBTConstants.GAS_TANKS, NBTConstants.MEK_DATA + "." + NBTConstants.GAS_TANKS);
                     hasData = true;
                 }
                 if (tileEntity.handlesInfusion() && tileEntity.getInfusionTanks(null).size() > 0) {
-                    nbtBuilder.replaceOperation("InfusionTanks", ItemDataUtils.DATA_ID + ".InfusionTanks");
+                    nbtBuilder.replaceOperation(NBTConstants.INFUSION_TANKS, NBTConstants.MEK_DATA + "." + NBTConstants.INFUSION_TANKS);
                     hasData = true;
                 }
                 if (tileEntity.handlesFluid() && tileEntity.getFluidTanks(null).size() > 0) {
-                    nbtBuilder.replaceOperation("FluidTanks", ItemDataUtils.DATA_ID + ".FluidTanks");
+                    nbtBuilder.replaceOperation(NBTConstants.FLUID_TANKS, NBTConstants.MEK_DATA + "." + NBTConstants.FLUID_TANKS);
                     hasData = true;
                 }
             }
@@ -135,7 +135,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 if (!(tile instanceof IItemHandler) || ((IItemHandler) tile).getSlots() > 0) {
                     //If we don't actually handle saving an inventory (such as the quantum entangloporter, don't actually add it as something to copy)
                     if (!(tile instanceof TileEntityMekanism) || ((TileEntityMekanism) tile).persistInventory()) {
-                        nbtBuilder.replaceOperation("Items", ItemDataUtils.DATA_ID + ".Items");
+                        nbtBuilder.replaceOperation(NBTConstants.ITEMS, NBTConstants.MEK_DATA + "." + NBTConstants.ITEMS);
                         hasData = true;
                     }
                 }
@@ -144,14 +144,13 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 //If the block is electric but is not part of a multiblock
                 // we want to copy the energy information
                 if (!(tile instanceof TileEntityMultiblock<?>)) {
-                    //TODO: Eventually make these use the same key of energyStored?
-                    nbtBuilder.replaceOperation("electricityStored", ItemDataUtils.DATA_ID + ".energyStored");
+                    nbtBuilder.replaceOperation(NBTConstants.ENERGY_STORED, NBTConstants.MEK_DATA + "." + NBTConstants.ENERGY_STORED);
                     hasData = true;
                 }
             }
             if (block instanceof BlockCardboardBox) {
                 //TODO: Do this better so that it doesn't have to be as hard coded to being a cardboard box
-                nbtBuilder.replaceOperation("storedData", ItemDataUtils.DATA_ID + ".blockData");
+                nbtBuilder.replaceOperation(NBTConstants.DATA, NBTConstants.MEK_DATA + "." + NBTConstants.DATA);
                 hasData = true;
             }
             if (!hasData) {

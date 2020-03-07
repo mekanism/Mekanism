@@ -10,6 +10,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.IMekWrench;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.IInventorySlot;
@@ -51,8 +52,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItemNetwork, IItemHUDProvider {
 
-    public final int ENERGY_PER_CONFIGURE = 400;
-    public final int ENERGY_PER_ITEM_DUMP = 8;
+    private static final int ENERGY_PER_CONFIGURE = 400;
+    private static final int ENERGY_PER_ITEM_DUMP = 8;
 
     public ItemConfigurator() {
         super(60_000);
@@ -89,22 +90,20 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(), dataType,
                                         dataType.getColor().getColoredName())));
-                        } else {
-                            if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
-                                if (SecurityUtils.canAccess(player, tile)) {
-                                    setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
-                                    dataType = info.incrementDataType(relativeSide);
-                                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                                          MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType,
-                                                dataType.getColor(), dataType, dataType.getColor().getColoredName())));
-                                    if (config instanceof TileEntityMekanism) {
-                                        Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
-                                    }
-                                    tile.markDirty();
-                                    MekanismUtils.notifyNeighborOfChange(world, relativeSide.getDirection(config.getOrientation()), tile.getPos());
-                                } else {
-                                    SecurityUtils.displayNoAccess(player);
+                        } else if (getEnergy(stack) >= ENERGY_PER_CONFIGURE) {
+                            if (SecurityUtils.canAccess(player, tile)) {
+                                setEnergy(stack, getEnergy(stack) - ENERGY_PER_CONFIGURE);
+                                dataType = info.incrementDataType(relativeSide);
+                                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
+                                      MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType,
+                                            dataType.getColor(), dataType, dataType.getColor().getColoredName())));
+                                if (config instanceof TileEntityMekanism) {
+                                    Mekanism.packetHandler.sendUpdatePacket((TileEntityMekanism) config);
                                 }
+                                tile.markDirty();
+                                MekanismUtils.notifyNeighborOfChange(world, relativeSide.getDirection(config.getOrientation()), tile.getPos());
+                            } else {
+                                SecurityUtils.displayNoAccess(player);
                             }
                         }
                     }
@@ -174,11 +173,11 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IItem
     }
 
     public void setState(ItemStack stack, ConfiguratorMode state) {
-        ItemDataUtils.setInt(stack, "state", state.ordinal());
+        ItemDataUtils.setInt(stack, NBTConstants.STATE, state.ordinal());
     }
 
     public ConfiguratorMode getState(ItemStack stack) {
-        return ConfiguratorMode.byIndexStatic(ItemDataUtils.getInt(stack, "state"));
+        return ConfiguratorMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.STATE));
     }
 
     @Override

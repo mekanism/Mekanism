@@ -2,6 +2,7 @@ package mekanism.common.tile.component;
 
 import java.util.UUID;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -13,8 +14,10 @@ import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileComponentSecurity implements ITileComponent {
 
@@ -119,13 +122,14 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        securityMode = SecurityMode.byIndexStatic(nbtTags.getInt("securityMode"));
-        if (nbtTags.contains("ownerUUID")) {
-            ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
-        }
-        if (nbtTags.contains("securityFreq")) {
-            frequency = new SecurityFrequency(nbtTags.getCompound("securityFreq"));
-            frequency.valid = false;
+        if (nbtTags.contains(NBTConstants.COMPONENT_SECURITY, NBT.TAG_COMPOUND)) {
+            CompoundNBT securityNBT = nbtTags.getCompound(NBTConstants.COMPONENT_SECURITY);
+            NBTUtils.setEnumIfPresent(securityNBT, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
+            NBTUtils.setUUIDIfPresent(securityNBT, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
+            if (securityNBT.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
+                frequency = new SecurityFrequency(securityNBT.getCompound(NBTConstants.FREQUENCY));
+                frequency.valid = false;
+            }
         }
     }
 
@@ -150,15 +154,17 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void write(CompoundNBT nbtTags) {
-        nbtTags.putInt("securityMode", securityMode.ordinal());
+        CompoundNBT securityNBT = new CompoundNBT();
+        securityNBT.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
         if (ownerUUID != null) {
-            nbtTags.putString("ownerUUID", ownerUUID.toString());
+            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
         }
         if (frequency != null) {
             CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
-            nbtTags.put("securityFreq", frequencyTag);
+            securityNBT.put(NBTConstants.FREQUENCY, frequencyTag);
         }
+        nbtTags.put(NBTConstants.COMPONENT_SECURITY, securityNBT);
     }
 
     @Override

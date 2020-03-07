@@ -2,6 +2,7 @@ package mekanism.additions.common.item;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.entity.EntityType;
@@ -22,10 +23,10 @@ public class AdditionsSpawnEggItem extends SpawnEggItem {
     @Nonnull
     @Override
     public EntityType<?> getType(@Nullable CompoundNBT nbt) {
-        if (nbt != null && nbt.contains("EntityTag", NBT.TAG_COMPOUND)) {
-            CompoundNBT entityTag = nbt.getCompound("EntityTag");
-            if (entityTag.contains("id", NBT.TAG_STRING)) {
-                return EntityType.byKey(entityTag.getString("id")).orElse(entityTypeRO.getEntityType());
+        if (nbt != null && nbt.contains(NBTConstants.ENTITY_TAG, NBT.TAG_COMPOUND)) {
+            CompoundNBT entityTag = nbt.getCompound(NBTConstants.ENTITY_TAG);
+            if (entityTag.contains(NBTConstants.ID, NBT.TAG_STRING)) {
+                return EntityType.byKey(entityTag.getString(NBTConstants.ID)).orElse(entityTypeRO.getEntityType());
             }
         }
         return entityTypeRO.getEntityType();

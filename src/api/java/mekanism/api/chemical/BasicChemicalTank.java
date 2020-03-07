@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
@@ -254,7 +255,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.put("stored", stored.write(new CompoundNBT()));
+            nbt.put(NBTConstants.STORED, stored.write(new CompoundNBT()));
         }
         return nbt;
     }

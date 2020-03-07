@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
@@ -15,6 +16,7 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -296,9 +298,9 @@ public class BasicInventorySlot implements IInventorySlot {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.put("Item", current.write(new CompoundNBT()));
+            nbt.put(NBTConstants.ITEM, current.write(new CompoundNBT()));
             if (getCount() > current.getMaxStackSize()) {
-                nbt.putInt("SizeOverride", getCount());
+                nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());
             }
         }
         return nbt;
@@ -307,11 +309,9 @@ public class BasicInventorySlot implements IInventorySlot {
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         ItemStack stack = ItemStack.EMPTY;
-        if (nbt.contains("Item", NBT.TAG_COMPOUND)) {
-            stack = ItemStack.read(nbt.getCompound("Item"));
-            if (nbt.contains("SizeOverride", NBT.TAG_INT)) {
-                stack.setCount(nbt.getInt("SizeOverride"));
-            }
+        if (nbt.contains(NBTConstants.ITEM, NBT.TAG_COMPOUND)) {
+            stack = ItemStack.read(nbt.getCompound(NBTConstants.ITEM));
+            NBTUtils.setIntIfPresent(nbt, NBTConstants.SIZE_OVERRIDE, stack::setCount);
         }
         //Directly set the stack in case the item is no longer valid for the stack.
         // We do this instead of using setStackUnchecked to avoid calling markDirty when we are loading

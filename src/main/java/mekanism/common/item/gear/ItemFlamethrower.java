@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
@@ -119,11 +120,11 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider {
     }
 
     public FlamethrowerMode getMode(ItemStack stack) {
-        return FlamethrowerMode.byIndexStatic(ItemDataUtils.getInt(stack, "mode"));
+        return FlamethrowerMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.MODE));
     }
 
     public void setMode(ItemStack stack, FlamethrowerMode mode) {
-        ItemDataUtils.setInt(stack, "mode", mode.ordinal());
+        ItemDataUtils.setInt(stack, NBTConstants.MODE, mode.ordinal());
     }
 
     @Override

@@ -2,6 +2,7 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
@@ -160,14 +161,14 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        mode = nbtTags.getBoolean("mode");
+        mode = nbtTags.getBoolean(NBTConstants.MODE);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putBoolean("mode", mode);
+        nbtTags.putBoolean(NBTConstants.MODE, mode);
         return nbtTags;
     }
 

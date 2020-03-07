@@ -1,8 +1,10 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 
@@ -17,9 +19,7 @@ public class TileEntityCardboardBox extends TileEntity {
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("storedData")) {
-            storedData = BlockData.read(nbtTags.getCompound("storedData"));
-        }
+        NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.DATA, nbt -> storedData = BlockData.read(nbt));
     }
 
     @Nonnull
@@ -27,7 +27,7 @@ public class TileEntityCardboardBox extends TileEntity {
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (storedData != null) {
-            nbtTags.put("storedData", storedData.write(new CompoundNBT()));
+            nbtTags.put(NBTConstants.DATA, storedData.write(new CompoundNBT()));
         }
         return nbtTags;
     }

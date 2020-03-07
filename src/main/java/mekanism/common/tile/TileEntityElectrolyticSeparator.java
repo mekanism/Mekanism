@@ -3,8 +3,8 @@ package mekanism.common.tile;
 import java.util.EnumSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
@@ -41,12 +41,14 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe> {
 
@@ -231,16 +233,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        dumpLeft = GasMode.byIndexStatic(nbtTags.getInt("dumpLeft"));
-        dumpRight = GasMode.byIndexStatic(nbtTags.getInt("dumpRight"));
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("dumpLeft", dumpLeft.ordinal());
-        nbtTags.putInt("dumpRight", dumpRight.ordinal());
+        nbtTags.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
+        nbtTags.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
         return nbtTags;
     }
 

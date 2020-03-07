@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -43,7 +44,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return MekanismAPI.EMPTY_GAS;
         }
-        return getFromRegistry(new ResourceLocation(nbtTags.getString("gasName")));
+        return getFromRegistry(new ResourceLocation(nbtTags.getString(NBTConstants.GAS_NAME)));
     }
 
     public static Gas getFromRegistry(@Nullable ResourceLocation resourceLocation) {
@@ -75,7 +76,7 @@ public class Gas extends Chemical<Gas> implements IGasProvider {
      */
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.putString("gasName", getRegistryName().toString());
+        nbtTags.putString(NBTConstants.GAS_NAME, getRegistryName().toString());
         return nbtTags;
     }
 

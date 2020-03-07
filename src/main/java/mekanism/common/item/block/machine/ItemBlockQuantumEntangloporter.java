@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
@@ -34,6 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<BlockQuantumEntangloporter> implements IItemEnergized, IItemSustainedInventory, ISecurityItem {
 
@@ -44,7 +46,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<Blo
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, "frequency"));
+        Frequency.Identity freq = Frequency.Identity.load(ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY));
         if (freq != null) {
             tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, freq.name));
             tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, !freq.publicFreq ? MekanismLang.PRIVATE : MekanismLang.PUBLIC));
@@ -61,7 +63,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockAdvancedTooltip<Blo
         }
         tooltip.add(MekanismLang.STORED_ENERGY.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.of(getEnergy(stack), getMaxEnergy(stack))));
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
-        if (ItemDataUtils.hasData(stack, "upgrades")) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.UPGRADES, NBT.TAG_LIST)) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(stack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                 tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());

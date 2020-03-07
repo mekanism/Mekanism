@@ -1,6 +1,7 @@
 package mekanism.common.content.miner;
 
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IMaterialFilter;
 import net.minecraft.block.Block;
@@ -26,7 +27,7 @@ public class MMaterialFilter extends MinerFilter<MMaterialFilter> implements IMa
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("type", 2);
+        nbtTags.putInt(NBTConstants.TYPE, 2);
         materialItem.write(nbtTags);
         return nbtTags;
     }

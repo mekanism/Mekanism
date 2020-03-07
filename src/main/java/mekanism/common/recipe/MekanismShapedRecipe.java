@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.block.ISupportsUpgrades;
 import mekanism.api.chemical.gas.GasStack;
@@ -19,6 +20,7 @@ import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.security.ISecurityItem;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -193,14 +195,12 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
             for (int i = 0; i < invLength; i++) {
                 ItemStack stack = inv.getStackInSlot(i);
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockBin) {
-                    ListNBT items = ItemDataUtils.getList(stack, "Items");
+                    ListNBT items = ItemDataUtils.getList(stack, NBTConstants.ITEMS);
                     if (!items.isEmpty()) {
                         CompoundNBT compound = items.getCompound(0);
-                        if (compound.contains("Item", NBT.TAG_COMPOUND)) {
-                            ItemStack stored = ItemStack.read(compound.getCompound("Item"));
-                            if (compound.contains("SizeOverride", NBT.TAG_INT)) {
-                                stored.setCount(compound.getInt("SizeOverride"));
-                            }
+                        if (compound.contains(NBTConstants.ITEM, NBT.TAG_COMPOUND)) {
+                            ItemStack stored = ItemStack.read(compound.getCompound(NBTConstants.ITEM));
+                            NBTUtils.setIntIfPresent(compound, NBTConstants.SIZE_OVERRIDE, stack::setCount);
                             if (foundType.isEmpty()) {
                                 foundType = stored;
                             } else if (ItemHandlerHelper.canItemStacksStack(foundType, stored)) {
@@ -217,13 +217,13 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
                 CompoundNBT nbt = new CompoundNBT();
                 CompoundNBT compound = new CompoundNBT();
                 foundType.write(compound);
-                nbt.put("Item", compound);
+                nbt.put(NBTConstants.ITEM, compound);
                 if (foundType.getCount() > foundType.getMaxStackSize()) {
-                    nbt.putInt("SizeOverride", foundType.getCount());
+                    nbt.putInt(NBTConstants.SIZE_OVERRIDE, foundType.getCount());
                 }
                 ListNBT items = new ListNBT();
                 items.add(nbt);
-                ItemDataUtils.setList(toReturn, "Items", items);
+                ItemDataUtils.setList(toReturn, NBTConstants.ITEMS, items);
             }
         }
         //Transfer stored upgrades
@@ -233,7 +233,7 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
             for (int i = 0; i < invLength; i++) {
                 ItemStack stack = inv.getStackInSlot(i);
                 if (!stack.isEmpty() && stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ISupportsUpgrades) {
-                    CompoundNBT componentUpgrade = ItemDataUtils.getCompound(stack, "componentUpgrade");
+                    CompoundNBT componentUpgrade = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
                     if (!componentUpgrade.isEmpty()) {
                         Map<Upgrade, Integer> stackMap = Upgrade.buildMap(componentUpgrade);
                         for (Entry<Upgrade, Integer> entry : stackMap.entrySet()) {
@@ -249,7 +249,7 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
                 //Only transfer upgrades if we were able to find any
                 CompoundNBT nbt = new CompoundNBT();
                 Upgrade.saveMap(upgrades, nbt);
-                ItemDataUtils.setCompound(toReturn, "componentUpgrade", nbt);
+                ItemDataUtils.setCompound(toReturn, NBTConstants.COMPONENT_UPGRADE, nbt);
             }
         }
         return toReturn;

@@ -38,10 +38,7 @@ public enum EnumColor {//TODO: Maybe rename some of these or their lang keys
     BROWN("\u00a76", APILang.COLOR_BROWN, "Brown", "Brown", "brown", new int[]{150, 75, 0}, TextFormatting.GOLD, DyeColor.BROWN),
     BRIGHT_PINK("\u00a7d", APILang.COLOR_BRIGHT_PINK, "Pink", "Pink", "pink", new int[]{255, 192, 203}, TextFormatting.LIGHT_PURPLE, DyeColor.PINK);
 
-    //TODO: Remove?
-    public static EnumColor[] DYES = new EnumColor[]{BLACK, RED, DARK_GREEN, BROWN, DARK_BLUE, PURPLE, DARK_AQUA, GRAY, DARK_GRAY, BRIGHT_PINK, BRIGHT_GREEN, YELLOW,
-                                                     INDIGO, PINK, ORANGE, WHITE};
-
+    private static final EnumColor[] COLORS = values();
     /**
      * The color code that will be displayed
      */
@@ -74,21 +71,8 @@ public enum EnumColor {//TODO: Maybe rename some of these or their lang keys
         this.dyeTag = dyeTag;
     }
 
-    public static EnumColor getFromDyeName(String s) {
-        for (EnumColor c : values()) {
-            if (c.dyeName.equalsIgnoreCase(s)) {
-                return c;
-            }
-        }
-        return null;
-    }
-
     public String getRegistryPrefix() {
         return registryPrefix;
-    }
-
-    public String getDyeName() {
-        return dyeName;
     }
 
     public String getEnglishName() {
@@ -142,5 +126,10 @@ public enum EnumColor {//TODO: Maybe rename some of these or their lang keys
     @Override
     public String toString() {
         return code;
+    }
+
+    public static EnumColor byIndexStatic(int index) {
+        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+        return COLORS[Math.floorMod(index, COLORS.length)];
     }
 }

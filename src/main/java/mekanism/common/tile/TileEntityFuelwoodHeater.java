@@ -3,6 +3,7 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.NBTConstants;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
@@ -74,18 +75,18 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        temperature = nbtTags.getDouble("temperature");
-        burnTime = nbtTags.getInt("burnTime");
-        maxBurnTime = nbtTags.getInt("maxBurnTime");
+        temperature = nbtTags.getDouble(NBTConstants.TEMPERATURE);
+        burnTime = nbtTags.getInt(NBTConstants.BURN_TIME);
+        maxBurnTime = nbtTags.getInt(NBTConstants.MAX_BURN_TIME);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble("temperature", temperature);
-        nbtTags.putInt("burnTime", burnTime);
-        nbtTags.putInt("maxBurnTime", maxBurnTime);
+        nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
+        nbtTags.putInt(NBTConstants.BURN_TIME, burnTime);
+        nbtTags.putInt(NBTConstants.MAX_BURN_TIME, maxBurnTime);
         return nbtTags;
     }
 

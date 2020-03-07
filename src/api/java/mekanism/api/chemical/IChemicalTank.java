@@ -3,6 +3,7 @@ package mekanism.api.chemical;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -290,7 +291,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
     default CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.put("stored", getStack().write(new CompoundNBT()));
+            nbt.put(NBTConstants.STORED, getStack().write(new CompoundNBT()));
         }
         return nbt;
     }

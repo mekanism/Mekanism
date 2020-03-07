@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.IChemicalTank;
@@ -30,9 +31,11 @@ import mekanism.common.tile.component.config.slot.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.CapabilityUtils;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -204,16 +207,14 @@ public class TileComponentEjector implements ITileComponent {
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        if (nbtTags.contains("componentEjector", NBT.TAG_COMPOUND)) {
-            CompoundNBT ejectorNBT = nbtTags.getCompound("componentEjector");
-            strictInput = ejectorNBT.getBoolean("strictInput");
-            if (ejectorNBT.contains("ejectColor", NBT.TAG_INT)) {
-                outputColor = readColor(ejectorNBT.getInt("ejectColor"));
-            }
-            for (int i = 0; i < 6; i++) {
-                if (ejectorNBT.contains("inputColors" + i, NBT.TAG_INT)) {
-                    inputColors[i] = readColor(ejectorNBT.getInt("inputColors" + i));
-                }
+        if (nbtTags.contains(NBTConstants.COMPONENT_EJECTOR, NBT.TAG_COMPOUND)) {
+            CompoundNBT ejectorNBT = nbtTags.getCompound(NBTConstants.COMPONENT_EJECTOR);
+            strictInput = ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT);
+            NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR, this::readColor, color -> outputColor = color);
+            //Input colors
+            for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+                int index = i;
+                NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR + index, this::readColor, color -> inputColors[index] = color);
             }
         }
     }
@@ -230,14 +231,15 @@ public class TileComponentEjector implements ITileComponent {
     @Override
     public void write(CompoundNBT nbtTags) {
         CompoundNBT ejectorNBT = new CompoundNBT();
-        ejectorNBT.putBoolean("strictInput", strictInput);
+        ejectorNBT.putBoolean(NBTConstants.STRICT_INPUT, strictInput);
         if (outputColor != null) {
-            ejectorNBT.putInt("ejectColor", getColorIndex(outputColor));
+            ejectorNBT.putInt(NBTConstants.COLOR, getColorIndex(outputColor));
         }
-        for (int i = 0; i < 6; i++) {
-            ejectorNBT.putInt("inputColors" + i, getColorIndex(inputColors[i]));
+        //Input colors
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            ejectorNBT.putInt(NBTConstants.COLOR + i, getColorIndex(inputColors[i]));
         }
-        nbtTags.put("componentEjector", ejectorNBT);
+        nbtTags.put(NBTConstants.COMPONENT_EJECTOR, ejectorNBT);
     }
 
     @Override

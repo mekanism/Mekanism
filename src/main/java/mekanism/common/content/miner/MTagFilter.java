@@ -1,6 +1,7 @@
 package mekanism.common.content.miner;
 
 import java.util.Set;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.ITagFilter;
@@ -43,15 +44,15 @@ public class MTagFilter extends MinerFilter<MTagFilter> implements ITagFilter<MT
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("type", 1);
-        nbtTags.putString("tagName", tagName);
+        nbtTags.putInt(NBTConstants.TYPE, 1);
+        nbtTags.putString(NBTConstants.TAG_NAME, tagName);
         return nbtTags;
     }
 
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        tagName = nbtTags.getString("tagName");
+        tagName = nbtTags.getString(NBTConstants.TAG_NAME);
     }
 
     @Override

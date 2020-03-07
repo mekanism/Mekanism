@@ -10,8 +10,10 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -235,11 +237,9 @@ public class FrequencyManager {
         @Override
         public void read(@Nonnull CompoundNBT nbtTags) {
             try {
-                String frequencyClass = nbtTags.getString("frequencyClass");//todo fix this using a classname from nbt!
-                if (nbtTags.contains("ownerUUID")) {
-                    loadedOwner = UUID.fromString(nbtTags.getString("ownerUUID"));
-                }
-                ListNBT list = nbtTags.getList("freqList", NBT.TAG_COMPOUND);
+                String frequencyClass = nbtTags.getString(NBTConstants.FREQUENCY_CLASS);//todo fix this using a classname from nbt!
+                NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
+                ListNBT list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, NBT.TAG_COMPOUND);
                 loadedFrequencies = new ObjectOpenHashSet<>();
                 for (int i = 0; i < list.size(); i++) {
                     CompoundNBT compound = list.getCompound(i);
@@ -255,9 +255,9 @@ public class FrequencyManager {
         @Nonnull
         @Override
         public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-            nbtTags.putString("frequencyClass", manager.frequencyClass.getName());
+            nbtTags.putString(NBTConstants.FREQUENCY_CLASS, manager.frequencyClass.getName());
             if (manager.ownerUUID != null) {
-                nbtTags.putString("ownerUUID", manager.ownerUUID.toString());
+                nbtTags.putUniqueId(NBTConstants.OWNER_UUID, manager.ownerUUID);
             }
             ListNBT list = new ListNBT();
             for (Frequency freq : manager.getFrequencies()) {
@@ -265,7 +265,7 @@ public class FrequencyManager {
                 freq.write(compound);
                 list.add(compound);
             }
-            nbtTags.put("freqList", list);
+            nbtTags.put(NBTConstants.FREQUENCY_LIST, list);
             return nbtTags;
         }
     }

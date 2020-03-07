@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
@@ -22,6 +23,7 @@ import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -29,6 +31,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -188,11 +191,9 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("ownerUUID")) {
-            ownerUUID = UUID.fromString(nbtTags.getString("ownerUUID"));
-        }
-        if (nbtTags.contains("frequency")) {
-            frequency = new SecurityFrequency(nbtTags.getCompound("frequency"));
+        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
+        if (nbtTags.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
+            frequency = new SecurityFrequency(nbtTags.getCompound(NBTConstants.FREQUENCY));
             frequency.valid = false;
         }
     }
@@ -202,12 +203,12 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (ownerUUID != null) {
-            nbtTags.putString("ownerUUID", ownerUUID.toString());
+            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
         }
         if (frequency != null) {
             CompoundNBT frequencyTag = new CompoundNBT();
             frequency.write(frequencyTag);
-            nbtTags.put("frequency", frequencyTag);
+            nbtTags.put(NBTConstants.FREQUENCY, frequencyTag);
         }
         return nbtTags;
     }

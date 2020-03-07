@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -68,6 +69,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     private boolean temperatureSet;
 
     private float biomeTemp;
+    //TODO: Evaluate converting this temperature to a double as all other places temperature is stored it is a double
     private float temperature;
     public double heatToAbsorb;
     private double tempMultiplier;
@@ -491,14 +493,14 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        temperature = nbtTags.getFloat("temperature");
+        temperature = nbtTags.getFloat(NBTConstants.TEMPERATURE);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putFloat("temperature", temperature);
+        nbtTags.putFloat(NBTConstants.TEMPERATURE, temperature);
         return nbtTags;
     }
 

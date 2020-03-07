@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
+import mekanism.api.NBTConstants;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
 import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
@@ -153,7 +154,7 @@ public class Mekanism {
     /**
      * The version of ore generation in this version of Mekanism. Increment this every time the default ore generation changes.
      */
-    public static int baseWorldGenVersion = 0;
+    public static int baseWorldGenVersion = 0;//TODO: Just remove this?
     /**
      * The GameProfile used by the dummy Mekanism player
      */
@@ -403,9 +404,8 @@ public class Mekanism {
     private void chunkSave(ChunkDataEvent.Save event) {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
             CompoundNBT nbtTags = event.getData();
-
-            nbtTags.putInt("MekanismWorldGen", baseWorldGenVersion);
-            nbtTags.putInt("MekanismUserWorldGen", MekanismConfig.world.userGenVersion.get());
+            nbtTags.putInt(NBTConstants.WORLD_GEN, baseWorldGenVersion);
+            nbtTags.putInt(NBTConstants.WORLD_GEN_VERSION, MekanismConfig.world.userGenVersion.get());
         }
     }
 
@@ -413,7 +413,7 @@ public class Mekanism {
         if (event.getWorld() != null && !event.getWorld().isRemote()) {
             if (MekanismConfig.world.enableRegeneration.get()) {
                 CompoundNBT loadData = event.getData();
-                if (loadData.getInt("MekanismWorldGen") != baseWorldGenVersion || loadData.getInt("MekanismUserWorldGen") != MekanismConfig.world.userGenVersion.get()) {
+                if (loadData.getInt(NBTConstants.WORLD_GEN) != baseWorldGenVersion || loadData.getInt(NBTConstants.WORLD_GEN_VERSION) != MekanismConfig.world.userGenVersion.get()) {
                     worldTickHandler.addRegenChunk(event.getWorld().getDimension().getType(), event.getChunk().getPos());
                 }
             }

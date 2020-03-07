@@ -65,7 +65,7 @@ public class Pos3D extends Vec3d {
      * @return the Pos3D from the tag compound
      */
     public static Pos3D read(CompoundNBT tag) {
-        return new Pos3D(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z"));
+        return new Pos3D(tag.getDouble(NBTConstants.X), tag.getDouble(NBTConstants.Y), tag.getDouble(NBTConstants.Z));
     }
 
     /**
@@ -113,9 +113,9 @@ public class Pos3D extends Vec3d {
      * @return the tag compound with this Pos3D's data
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.putDouble("x", x);
-        nbtTags.putDouble("y", y);
-        nbtTags.putDouble("z", z);
+        nbtTags.putDouble(NBTConstants.X, x);
+        nbtTags.putDouble(NBTConstants.Y, y);
+        nbtTags.putDouble(NBTConstants.Z, z);
         return nbtTags;
     }
 

@@ -2,6 +2,7 @@ package mekanism.api.chemical.gas;
 
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IGasProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -65,7 +66,7 @@ public class GasStack extends ChemicalStack<Gas> {
         if (type.isEmptyType()) {
             return EMPTY;
         }
-        int amount = nbtTags.getInt("amount");
+        int amount = nbtTags.getInt(NBTConstants.AMOUNT);
         if (amount <= 0) {
             return EMPTY;
         }

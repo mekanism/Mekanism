@@ -11,6 +11,7 @@ import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IDisableableEnum;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.render.item.ISTERProvider;
@@ -447,11 +448,11 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     public Mode getMode(ItemStack itemStack) {
-        return Mode.getFromInt(ItemDataUtils.getInt(itemStack, "mode"));
+        return Mode.getFromInt(ItemDataUtils.getInt(itemStack, NBTConstants.MODE));
     }
 
     public void toggleMode(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, "mode", getMode(itemStack).getNext().ordinal());
+        ItemDataUtils.setInt(itemStack, NBTConstants.MODE, getMode(itemStack).getNext().ordinal());
     }
 
     @Override

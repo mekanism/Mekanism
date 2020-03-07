@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockElectric;
@@ -46,7 +47,6 @@ import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.base.NBTConstants;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.IStateActive;
@@ -613,27 +613,27 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        redstone = nbtTags.getBoolean("redstone");
+        redstone = nbtTags.getBoolean(NBTConstants.REDSTONE);
         for (ITileComponent component : components) {
             component.read(nbtTags);
         }
-        if (supportsRedstone() && nbtTags.contains("controlType")) {
-            controlType = RedstoneControl.byIndexStatic(nbtTags.getInt("controlType"));
+        if (supportsRedstone()) {
+            NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
         }
         if (hasInventory() && persistInventory()) {
-            DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList("Items", NBT.TAG_COMPOUND));
+            DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
         }
         if (canHandleGas() && persistGas()) {
-            DataHandlerUtils.readTanks(getGasTanks(null), nbtTags.getList("GasTanks", NBT.TAG_COMPOUND));
+            DataHandlerUtils.readTanks(getGasTanks(null), nbtTags.getList(NBTConstants.GAS_TANKS, NBT.TAG_COMPOUND));
         }
         if (canHandleInfusion() && persistInfusion()) {
-            DataHandlerUtils.readTanks(getInfusionTanks(null), nbtTags.getList("InfusionTanks", NBT.TAG_COMPOUND));
+            DataHandlerUtils.readTanks(getInfusionTanks(null), nbtTags.getList(NBTConstants.INFUSION_TANKS, NBT.TAG_COMPOUND));
         }
         if (canHandleFluid() && persistFluid()) {
-            DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags.getList("FluidTanks", NBT.TAG_COMPOUND));
+            DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags.getList(NBTConstants.FLUID_TANKS, NBT.TAG_COMPOUND));
         }
         if (isElectric()) {
-            electricityStored = nbtTags.getDouble("electricityStored");
+            electricityStored = nbtTags.getDouble(NBTConstants.ENERGY_STORED);
         }
     }
 
@@ -641,27 +641,27 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putBoolean("redstone", redstone);
+        nbtTags.putBoolean(NBTConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
             component.write(nbtTags);
         }
         if (supportsRedstone()) {
-            nbtTags.putInt("controlType", controlType.ordinal());
+            nbtTags.putInt(NBTConstants.CONTROL_TYPE, controlType.ordinal());
         }
         if (hasInventory() && persistInventory()) {
-            nbtTags.put("Items", DataHandlerUtils.writeSlots(getInventorySlots(null)));
+            nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeSlots(getInventorySlots(null)));
         }
         if (canHandleGas() && persistGas()) {
-            nbtTags.put("GasTanks", DataHandlerUtils.writeTanks(getGasTanks(null)));
+            nbtTags.put(NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(getGasTanks(null)));
         }
         if (canHandleInfusion() && persistInfusion()) {
-            nbtTags.put("InfusionTanks", DataHandlerUtils.writeTanks(getInfusionTanks(null)));
+            nbtTags.put(NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeTanks(getInfusionTanks(null)));
         }
         if (canHandleFluid() && persistFluid()) {
-            nbtTags.put("FluidTanks", DataHandlerUtils.writeTanks(getFluidTanks(null)));
+            nbtTags.put(NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
         }
         if (isElectric()) {
-            nbtTags.putDouble("electricityStored", getEnergy());
+            nbtTags.putDouble(NBTConstants.ENERGY_STORED, getEnergy());
         }
         return nbtTags;
     }

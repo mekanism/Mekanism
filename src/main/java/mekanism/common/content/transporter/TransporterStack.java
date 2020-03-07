@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.api.transmitters.IBlockableConnection;
@@ -15,6 +16,7 @@ import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -96,37 +98,29 @@ public class TransporterStack {
 
     public void write(CompoundNBT nbtTags) {
         if (color != null) {
-            nbtTags.putInt("color", TransporterUtils.colors.indexOf(color));
+            nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.colors.indexOf(color));
         }
 
-        nbtTags.putInt("progress", progress);
-        nbtTags.put("originalLocation", originalLocation.write(new CompoundNBT()));
+        nbtTags.putInt(NBTConstants.PROGRESS, progress);
+        nbtTags.put(NBTConstants.ORIGINAL_LOCATION, originalLocation.write(new CompoundNBT()));
 
         if (idleDir != null) {
-            nbtTags.putInt("idleDir", idleDir.ordinal());
+            nbtTags.putInt(NBTConstants.IDLE_DIR, idleDir.ordinal());
         }
         if (homeLocation != null) {
-            nbtTags.put("homeLocation", homeLocation.write(new CompoundNBT()));
+            nbtTags.put(NBTConstants.HOME_LOCATION, homeLocation.write(new CompoundNBT()));
         }
-        nbtTags.putInt("pathType", pathType.ordinal());
+        nbtTags.putInt(NBTConstants.PATH_TYPE, pathType.ordinal());
         itemStack.write(nbtTags);
     }
 
     public void read(CompoundNBT nbtTags) {
-        if (nbtTags.contains("color")) {
-            color = TransporterUtils.colors.get(nbtTags.getInt("color"));
-        }
-
-        progress = nbtTags.getInt("progress");
-        originalLocation = Coord4D.read(nbtTags.getCompound("originalLocation"));
-
-        if (nbtTags.contains("idleDir")) {
-            idleDir = Direction.byIndex(nbtTags.getInt("idleDir"));
-        }
-        if (nbtTags.contains("homeLocation")) {
-            homeLocation = Coord4D.read(nbtTags.getCompound("homeLocation"));
-        }
-        pathType = Path.values()[nbtTags.getInt("pathType")];
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils.colors::get, color -> this.color = color);
+        progress = nbtTags.getInt(NBTConstants.PROGRESS);
+        NBTUtils.setCoord4DIfPresent(nbtTags, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.IDLE_DIR, Direction::byIndex, dir -> idleDir = dir);
+        NBTUtils.setCoord4DIfPresent(nbtTags, NBTConstants.HOME_LOCATION, coord -> homeLocation = coord);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.PATH_TYPE, Path::byIndexStatic, type -> pathType = type);
         itemStack = ItemStack.read(nbtTags);
     }
 
@@ -263,6 +257,13 @@ public class TransporterStack {
     public enum Path {
         DEST,
         HOME,
-        NONE
+        NONE;
+
+        private static final Path[] PATHS = values();
+
+        public static Path byIndexStatic(int index) {
+            //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+            return PATHS[Math.floorMod(index, PATHS.length)];
+        }
     }
 }

@@ -9,6 +9,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.infuse.IMekanismInfusionHandler;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.NBTConstants;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
@@ -27,7 +28,7 @@ public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanism
     protected void load() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            DataHandlerUtils.readTanks(getInfusionTanks(null), ItemDataUtils.getList(stack, "InfusionTanks"));
+            DataHandlerUtils.readTanks(getInfusionTanks(null), ItemDataUtils.getList(stack, NBTConstants.INFUSION_TANKS));
         }
     }
 
@@ -40,7 +41,7 @@ public abstract class ItemStackMekanismInfusionHandler extends ItemStackMekanism
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, "InfusionTanks", DataHandlerUtils.writeTanks(getInfusionTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.INFUSION_TANKS, DataHandlerUtils.writeTanks(getInfusionTanks(null)));
         }
     }
 

@@ -2,6 +2,7 @@ package mekanism.common.item.gear;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IItemNetwork;
@@ -158,11 +159,11 @@ public class ItemElectricBow extends ItemEnergized implements IItemNetwork, IIte
     }
 
     public void setFireState(ItemStack stack, boolean state) {
-        ItemDataUtils.setBoolean(stack, "fireState", state);
+        ItemDataUtils.setBoolean(stack, NBTConstants.MODE, state);
     }
 
     public boolean getFireState(ItemStack stack) {
-        return ItemDataUtils.getBoolean(stack, "fireState");
+        return ItemDataUtils.getBoolean(stack, NBTConstants.MODE);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package mekanism.common.security;
 
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.util.ItemDataUtils;
@@ -12,10 +13,10 @@ public interface ISecurityItem extends IOwnerItem {
         if (!MekanismConfig.general.allowProtection.get()) {
             return SecurityMode.PUBLIC;
         }
-        return SecurityMode.byIndexStatic(ItemDataUtils.getInt(stack, "security"));
+        return SecurityMode.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.SECURITY_MODE));
     }
 
     default void setSecurity(@Nonnull ItemStack stack, SecurityMode mode) {
-        ItemDataUtils.setInt(stack, "security", mode.ordinal());
+        ItemDataUtils.setInt(stack, NBTConstants.SECURITY_MODE, mode.ordinal());
     }
 }

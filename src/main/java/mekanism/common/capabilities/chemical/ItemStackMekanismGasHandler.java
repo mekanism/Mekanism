@@ -10,6 +10,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IMekanismGasHandler;
+import mekanism.api.NBTConstants;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
@@ -28,7 +29,7 @@ public abstract class ItemStackMekanismGasHandler extends ItemStackMekanismChemi
     protected void load() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            DataHandlerUtils.readTanks(getGasTanks(null), ItemDataUtils.getList(stack, "GasTanks"));
+            DataHandlerUtils.readTanks(getGasTanks(null), ItemDataUtils.getList(stack, NBTConstants.GAS_TANKS));
         }
     }
 
@@ -42,7 +43,7 @@ public abstract class ItemStackMekanismGasHandler extends ItemStackMekanismChemi
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, "GasTanks", DataHandlerUtils.writeTanks(getGasTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(getGasTanks(null)));
         }
     }
 

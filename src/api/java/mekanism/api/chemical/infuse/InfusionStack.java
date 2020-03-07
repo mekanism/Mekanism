@@ -2,6 +2,7 @@ package mekanism.api.chemical.infuse;
 
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IInfuseTypeProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -64,7 +65,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
         if (type.isEmptyType()) {
             return EMPTY;
         }
-        int amount = nbtTags.getInt("amount");
+        int amount = nbtTags.getInt(NBTConstants.AMOUNT);
         if (amount <= 0) {
             return EMPTY;
         }

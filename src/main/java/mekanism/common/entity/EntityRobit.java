@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.inventory.IInventorySlot;
@@ -48,6 +49,7 @@ import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -341,33 +343,31 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     public void writeAdditional(CompoundNBT nbtTags) {
         super.writeAdditional(nbtTags);
-        nbtTags.putDouble("electricityStored", getEnergy());
+        nbtTags.putDouble(NBTConstants.ENERGY_STORED, getEnergy());
         //TODO: Is this necessary or is it handled by the main entity class
-        //nbtTags.putString("name", getName());
+        //nbtTags.putString(NBTConstants.NAME, getName());
         if (getOwnerUUID() != null) {
-            nbtTags.putString("ownerUUID", getOwnerUUID().toString());
+            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, getOwnerUUID());
         }
-        nbtTags.putBoolean("follow", getFollowing());
-        nbtTags.putBoolean("dropPickup", getDropPickup());
+        nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
+        nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
         if (homeLocation != null) {
             homeLocation.write(nbtTags);
         }
-        nbtTags.put("Items", DataHandlerUtils.writeSlots(getInventorySlots(null)));
+        nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeSlots(getInventorySlots(null)));
     }
 
     @Override
     public void readAdditional(CompoundNBT nbtTags) {
         super.readAdditional(nbtTags);
-        setEnergy(nbtTags.getDouble("electricityStored"));
+        setEnergy(nbtTags.getDouble(NBTConstants.ENERGY_STORED));
         //TODO: Is this necessary or is it handled by the main entity class
-        //setCustomNameTag(nbtTags.getString("name"));
-        if (nbtTags.contains("ownerUUID")) {
-            setOwnerUUID(UUID.fromString(nbtTags.getString("ownerUUID")));
-        }
-        setFollowing(nbtTags.getBoolean("follow"));
-        setDropPickup(nbtTags.getBoolean("dropPickup"));
+        //setCustomNameTag(nbtTags.getString(NBTConstants.NAME));
+        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
+        setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
+        setDropPickup(nbtTags.getBoolean(NBTConstants.PICKUP_DROPS));
         homeLocation = Coord4D.read(nbtTags);
-        DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList("Items", NBT.TAG_COMPOUND));
+        DataHandlerUtils.readSlots(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
     }
 
     @Override

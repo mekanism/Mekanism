@@ -2,6 +2,7 @@ package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
@@ -29,7 +30,7 @@ public class RenderDigitalMinerItem extends MekanismItemStackRenderer {
         matrix.translate(0.35, 0.1, 0);
         //Scale the model to the correct size
         matrix.scale(0.352F, 0.352F, 0.352F);
-        digitalMiner.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, "energyStored") > 0);
+        digitalMiner.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, NBTConstants.ENERGY_STORED) > 0);
         matrix.pop();
     }
 

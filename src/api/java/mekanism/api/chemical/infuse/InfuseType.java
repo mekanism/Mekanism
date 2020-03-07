@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
+import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.providers.IInfuseTypeProvider;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,7 +33,7 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
         if (nbtTags == null || nbtTags.isEmpty()) {
             return MekanismAPI.EMPTY_INFUSE_TYPE;
         }
-        return getFromRegistry(new ResourceLocation(nbtTags.getString("infuseTypeName")));
+        return getFromRegistry(new ResourceLocation(nbtTags.getString(NBTConstants.INFUSE_TYPE_NAME)));
     }
 
     public static InfuseType getFromRegistry(@Nullable ResourceLocation resourceLocation) {
@@ -53,7 +54,7 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
 
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
-        nbtTags.putString("infuseTypeName", getRegistryName().toString());
+        nbtTags.putString(NBTConstants.INFUSE_TYPE_NAME, getRegistryName().toString());
         return nbtTags;
     }
 

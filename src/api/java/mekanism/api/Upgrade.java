@@ -22,6 +22,8 @@ public enum Upgrade implements IHasTranslationKey {
     MUFFLING("muffling", APILang.UPGRADE_MUFFLING, APILang.UPGRADE_MUFFLING_DESCRIPTION, 4, EnumColor.DARK_GRAY),
     ANCHOR("anchor", APILang.UPGRADE_ANCHOR, APILang.UPGRADE_ANCHOR_DESCRIPTION, 1, EnumColor.DARK_GREEN);
 
+    private static final Upgrade[] UPGRADES = values();
+
     private final String name;
     private final APILang langKey;
     private final APILang descLangKey;
@@ -38,12 +40,11 @@ public enum Upgrade implements IHasTranslationKey {
 
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundNBT nbtTags) {
         Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
-        if (nbtTags != null && nbtTags.contains("upgrades", NBT.TAG_LIST)) {
-            ListNBT list = nbtTags.getList("upgrades", NBT.TAG_COMPOUND);
+        if (nbtTags != null && nbtTags.contains(NBTConstants.UPGRADES, NBT.TAG_LIST)) {
+            ListNBT list = nbtTags.getList(NBTConstants.UPGRADES, NBT.TAG_COMPOUND);
             for (int tagCount = 0; tagCount < list.size(); tagCount++) {
                 CompoundNBT compound = list.getCompound(tagCount);
-                Upgrade upgrade = values()[compound.getInt("type")];
-                upgrades.put(upgrade, compound.getInt("amount"));
+                upgrades.put(byIndexStatic(compound.getInt(NBTConstants.TYPE)), compound.getInt(NBTConstants.AMOUNT));
             }
         }
         return upgrades;
@@ -54,13 +55,13 @@ public enum Upgrade implements IHasTranslationKey {
         for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
             list.add(getTagFor(entry.getKey(), entry.getValue()));
         }
-        nbtTags.put("upgrades", list);
+        nbtTags.put(NBTConstants.UPGRADES, list);
     }
 
     public static CompoundNBT getTagFor(Upgrade upgrade, int amount) {
         CompoundNBT compound = new CompoundNBT();
-        compound.putInt("type", upgrade.ordinal());
-        compound.putInt("amount", amount);
+        compound.putInt(NBTConstants.TYPE, upgrade.ordinal());
+        compound.putInt(NBTConstants.AMOUNT, amount);
         return compound;
     }
 
@@ -87,6 +88,11 @@ public enum Upgrade implements IHasTranslationKey {
 
     public boolean canMultiply() {
         return getMax() > 1;
+    }
+
+    public static Upgrade byIndexStatic(int index) {
+        //TODO: Is it more efficient to check if index is negative and then just do the normal mod way?
+        return UPGRADES[Math.floorMod(index, UPGRADES.length)];
     }
 
     public interface IUpgradeInfoHandler {

@@ -8,6 +8,7 @@ import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.NBTConstants;
 import mekanism.common.capabilities.ItemCapabilityWrapper.ItemCapability;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.item.ItemStack;
@@ -36,7 +37,7 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
     protected void load() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            DataHandlerUtils.readTanks(getFluidTanks(null), ItemDataUtils.getList(stack, "FluidTanks"));
+            DataHandlerUtils.readTanks(getFluidTanks(null), ItemDataUtils.getList(stack, NBTConstants.FLUID_TANKS));
         }
     }
 
@@ -50,7 +51,7 @@ public abstract class ItemStackMekanismFluidHandler extends ItemCapability imple
     public void onContentsChanged() {
         ItemStack stack = getStack();
         if (!stack.isEmpty()) {
-            ItemDataUtils.setList(stack, "FluidTanks", DataHandlerUtils.writeTanks(getFluidTanks(null)));
+            ItemDataUtils.setList(stack, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
         }
     }
 

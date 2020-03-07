@@ -3,6 +3,7 @@ package mekanism.common.item.block;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;
@@ -78,7 +79,7 @@ public class ItemBlockEnergyCube extends ItemBlockAdvancedTooltip<BlockEnergyCub
         if (getTier(itemStack) == EnergyCubeTier.CREATIVE && amount != Double.MAX_VALUE) {
             return;
         }
-        ItemDataUtils.setDouble(itemStack, "energyStored", Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
+        ItemDataUtils.setDouble(itemStack, NBTConstants.ENERGY_STORED, Math.max(Math.min(amount, getMaxEnergy(itemStack)), 0));
     }
 
     @Override

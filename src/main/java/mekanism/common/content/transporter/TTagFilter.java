@@ -1,5 +1,6 @@
 package mekanism.common.content.transporter;
 
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
 import mekanism.common.content.filter.ITagFilter;
@@ -25,14 +26,14 @@ public class TTagFilter extends TransporterFilter<TTagFilter> implements ITagFil
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("type", 1);
-        nbtTags.putString("tagName", tagName);
+        nbtTags.putInt(NBTConstants.TYPE, 1);
+        nbtTags.putString(NBTConstants.TAG_NAME, tagName);
     }
 
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        tagName = nbtTags.getString("tagName");
+        tagName = nbtTags.getString(NBTConstants.TAG_NAME);
     }
 
     @Override

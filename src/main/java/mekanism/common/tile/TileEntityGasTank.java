@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -41,6 +42,7 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -178,14 +180,14 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        dumping = GasMode.byIndexStatic(nbtTags.getInt("dumping"));
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_MODE, GasMode::byIndexStatic, mode -> dumping = mode);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("dumping", dumping.ordinal());
+        nbtTags.putInt(NBTConstants.DUMP_MODE, dumping.ordinal());
         return nbtTags;
     }
 
@@ -235,18 +237,18 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        ItemDataUtils.setInt(itemStack, "dumping", dumping.ordinal());
+        ItemDataUtils.setInt(itemStack, NBTConstants.DUMP_MODE, dumping.ordinal());
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        dumping = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, "dumping"));
+        dumping = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.DUMP_MODE));
     }
 
     @Override
     public Map<String, String> getTileDataRemap() {
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("dumping", "dumping");
+        remap.put(NBTConstants.DUMP_MODE, NBTConstants.DUMP_MODE);
         return remap;
     }
 

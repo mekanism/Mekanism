@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
@@ -63,22 +64,22 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putDouble("storedEnergy", storedEnergy);
-        nbtTags.put("storedFluid", storedFluid.serializeNBT());
-        nbtTags.put("storedGas", storedGas.serializeNBT());
-        nbtTags.put("storedItem", storedItem.serializeNBT());
-        nbtTags.putDouble("temperature", temperature);
+        nbtTags.putDouble(NBTConstants.ENERGY_STORED, storedEnergy);
+        nbtTags.put(NBTConstants.FLUID_STORED, storedFluid.serializeNBT());
+        nbtTags.put(NBTConstants.GAS_STORED, storedGas.serializeNBT());
+        nbtTags.put(NBTConstants.ITEM, storedItem.serializeNBT());
+        nbtTags.putDouble(NBTConstants.TEMPERATURE, temperature);
     }
 
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         presetVariables();
-        storedEnergy = nbtTags.getDouble("storedEnergy");
-        storedFluid.deserializeNBT(nbtTags.getCompound("storedFluid"));
-        storedGas.deserializeNBT(nbtTags.getCompound("storedGas"));
-        storedItem.deserializeNBT(nbtTags.getCompound("storedItem"));
-        temperature = nbtTags.getDouble("temperature");
+        storedEnergy = nbtTags.getDouble(NBTConstants.ENERGY_STORED);
+        storedFluid.deserializeNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
+        storedGas.deserializeNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));
+        storedItem.deserializeNBT(nbtTags.getCompound(NBTConstants.ITEM));
+        temperature = nbtTags.getDouble(NBTConstants.TEMPERATURE);
     }
 
     @Override

@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.block.states.IStateStorage;
@@ -10,6 +11,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityCardboardBox;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -89,25 +91,23 @@ public class BlockCardboardBox extends BlockMekanism implements IHasModel, IStat
         }
 
         public static BlockData read(CompoundNBT nbtTags) {
-            BlockData data = new BlockData(NBTUtil.readBlockState(nbtTags.getCompound("blockState")));
-            if (nbtTags.contains("tileTag")) {
-                data.tileTag = nbtTags.getCompound("tileTag");
-            }
+            BlockData data = new BlockData(NBTUtil.readBlockState(nbtTags.getCompound(NBTConstants.BLOCK_STATE)));
+            NBTUtils.setCompoundIfPresent(nbtTags, NBTConstants.TILE_TAG, nbt -> data.tileTag = nbt);
             return data;
         }
 
         public void updateLocation(BlockPos pos) {
             if (tileTag != null) {
-                tileTag.putInt("x", pos.getX());
-                tileTag.putInt("y", pos.getY());
-                tileTag.putInt("z", pos.getZ());
+                tileTag.putInt(NBTConstants.X, pos.getX());
+                tileTag.putInt(NBTConstants.Y, pos.getY());
+                tileTag.putInt(NBTConstants.Z, pos.getZ());
             }
         }
 
         public CompoundNBT write(CompoundNBT nbtTags) {
-            nbtTags.put("blockState", NBTUtil.writeBlockState(blockState));
+            nbtTags.put(NBTConstants.BLOCK_STATE, NBTUtil.writeBlockState(blockState));
             if (tileTag != null) {
-                nbtTags.put("tileTag", tileTag);
+                nbtTags.put(NBTConstants.TILE_TAG, tileTag);
             }
             return nbtTags;
         }

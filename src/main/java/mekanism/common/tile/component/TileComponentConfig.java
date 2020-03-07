@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
@@ -124,16 +125,16 @@ public class TileComponentConfig implements ITileComponent {
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        if (nbtTags.contains("componentConfig", NBT.TAG_COMPOUND)) {
-            CompoundNBT configNBT = nbtTags.getCompound("componentConfig");
-            if (configNBT.getBoolean("sideDataStored")) {
+        if (nbtTags.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
+            CompoundNBT configNBT = nbtTags.getCompound(NBTConstants.COMPONENT_CONFIG);
+            if (configNBT.getBoolean(NBTConstants.SIDE_DATA)) {
                 for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
                     TransmissionType type = entry.getKey();
                     ConfigInfo info = entry.getValue();
-                    info.setEjecting(configNBT.getBoolean("ejecting" + type.ordinal()));
-                    CompoundNBT sideConfig = configNBT.getCompound("config" + type.ordinal());
+                    info.setEjecting(configNBT.getBoolean(NBTConstants.EJECTING + type.ordinal()));
+                    CompoundNBT sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                     for (RelativeSide side : EnumUtils.SIDES) {
-                        info.setDataType(side, DataType.byIndexStatic(sideConfig.getInt("side" + side.ordinal())));
+                        info.setDataType(side, DataType.byIndexStatic(sideConfig.getInt(NBTConstants.SIDE + side.ordinal())));
                     }
                 }
             }
@@ -166,15 +167,15 @@ public class TileComponentConfig implements ITileComponent {
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            configNBT.putBoolean("ejecting" + type.ordinal(), info.isEjecting());
+            configNBT.putBoolean(NBTConstants.EJECTING + type.ordinal(), info.isEjecting());
             CompoundNBT sideConfig = new CompoundNBT();
             for (RelativeSide side : EnumUtils.SIDES) {
-                sideConfig.putInt("side" + side.ordinal(), info.getDataType(side).ordinal());
+                sideConfig.putInt(NBTConstants.SIDE + side.ordinal(), info.getDataType(side).ordinal());
             }
-            configNBT.put("config" + type.ordinal(), sideConfig);
+            configNBT.put(NBTConstants.CONFIG + type.ordinal(), sideConfig);
         }
-        configNBT.putBoolean("sideDataStored", true);
-        nbtTags.put("componentConfig", configNBT);
+        configNBT.putBoolean(NBTConstants.SIDE_DATA, true);
+        nbtTags.put(NBTConstants.COMPONENT_CONFIG, configNBT);
     }
 
     @Override

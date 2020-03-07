@@ -1,6 +1,7 @@
 package mekanism.common.content.transporter;
 
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
@@ -41,21 +42,21 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
     @Override
     public void write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("type", 0);
-        nbtTags.putBoolean("sizeMode", sizeMode);
-        nbtTags.putBoolean("fuzzyMode", fuzzyMode);
-        nbtTags.putInt("min", min);
-        nbtTags.putInt("max", max);
+        nbtTags.putInt(NBTConstants.TYPE, 0);
+        nbtTags.putBoolean(NBTConstants.SIZE_MODE, sizeMode);
+        nbtTags.putBoolean(NBTConstants.FUZZY_MODE, fuzzyMode);
+        nbtTags.putInt(NBTConstants.MIN, min);
+        nbtTags.putInt(NBTConstants.MAX, max);
         itemType.write(nbtTags);
     }
 
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        sizeMode = nbtTags.getBoolean("sizeMode");
-        fuzzyMode = nbtTags.getBoolean("fuzzyMode");
-        min = nbtTags.getInt("min");
-        max = nbtTags.getInt("max");
+        sizeMode = nbtTags.getBoolean(NBTConstants.SIZE_MODE);
+        fuzzyMode = nbtTags.getBoolean(NBTConstants.FUZZY_MODE);
+        min = nbtTags.getInt(NBTConstants.MIN);
+        max = nbtTags.getInt(NBTConstants.MAX);
         itemType = ItemStack.read(nbtTags);
     }
 

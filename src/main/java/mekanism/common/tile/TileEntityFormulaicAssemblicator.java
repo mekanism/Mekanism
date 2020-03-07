@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
@@ -523,20 +524,20 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        autoMode = nbtTags.getBoolean("autoMode");
-        operatingTicks = nbtTags.getInt("operatingTicks");
-        pulseOperations = nbtTags.getInt("pulseOperations");
-        stockControl = nbtTags.getBoolean("stockControl");
+        autoMode = nbtTags.getBoolean(NBTConstants.AUTO);
+        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
+        pulseOperations = nbtTags.getInt(NBTConstants.PULSE);
+        stockControl = nbtTags.getBoolean(NBTConstants.STOCK_CONTROL);
     }
 
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putBoolean("autoMode", autoMode);
-        nbtTags.putInt("operatingTicks", operatingTicks);
-        nbtTags.putInt("pulseOperations", pulseOperations);
-        nbtTags.putBoolean("stockControl", stockControl);
+        nbtTags.putBoolean(NBTConstants.AUTO, autoMode);
+        nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
+        nbtTags.putInt(NBTConstants.PULSE, pulseOperations);
+        nbtTags.putBoolean(NBTConstants.STOCK_CONTROL, stockControl);
         return nbtTags;
     }
 

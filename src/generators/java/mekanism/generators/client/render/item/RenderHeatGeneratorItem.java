@@ -2,6 +2,7 @@ package mekanism.generators.client.render.item;
 
 import javax.annotation.Nonnull;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import mekanism.api.NBTConstants;
 import mekanism.client.render.item.ItemLayerWrapper;
 import mekanism.client.render.item.MekanismItemStackRenderer;
 import mekanism.common.util.ItemDataUtils;
@@ -22,7 +23,7 @@ public class RenderHeatGeneratorItem extends MekanismItemStackRenderer {
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         matrix.rotate(Vector3f.YP.rotationDegrees(180));
         matrix.translate(0, -1, 0);
-        heatGenerator.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, "energyStored") > 0);
+        heatGenerator.render(matrix, renderer, light, overlayLight, ItemDataUtils.getDouble(stack, NBTConstants.ENERGY_STORED) > 0);
     }
 
     @Override

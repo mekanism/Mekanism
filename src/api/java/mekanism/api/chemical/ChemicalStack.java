@@ -1,6 +1,7 @@
 package mekanism.api.chemical;
 
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
@@ -136,7 +137,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
         getType().write(nbtTags);
-        nbtTags.putInt("amount", getAmount());
+        nbtTags.putInt(NBTConstants.AMOUNT, getAmount());
         return nbtTags;
     }
 

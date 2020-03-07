@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -23,6 +24,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemBlockLogisticalSorter extends ItemBlockAdvancedTooltip<BlockLogisticalSorter> implements IItemSustainedInventory, ISecurityItem {
 
@@ -38,7 +40,7 @@ public class ItemBlockLogisticalSorter extends ItemBlockAdvancedTooltip<BlockLog
         if (SecurityUtils.isOverridden(stack, Dist.CLIENT)) {
             tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         }
-        if (ItemDataUtils.hasData(stack, "upgrades")) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.UPGRADES, NBT.TAG_LIST)) {
             Map<Upgrade, Integer> upgrades = Upgrade.buildMap(ItemDataUtils.getDataMap(stack));
             for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
                 tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());

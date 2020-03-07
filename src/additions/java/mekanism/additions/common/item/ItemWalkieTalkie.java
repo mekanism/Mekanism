@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.base.IItemNetwork;
 import mekanism.common.util.ItemDataUtils;
@@ -57,19 +58,19 @@ public class ItemWalkieTalkie extends Item implements IItemNetwork {
     }
 
     public void setOn(ItemStack itemStack, boolean on) {
-        ItemDataUtils.setBoolean(itemStack, "on", on);
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.RUNNING, on);
     }
 
     public boolean getOn(ItemStack itemStack) {
-        return ItemDataUtils.getBoolean(itemStack, "on");
+        return ItemDataUtils.getBoolean(itemStack, NBTConstants.RUNNING);
     }
 
     public void setChannel(ItemStack itemStack, int channel) {
-        ItemDataUtils.setInt(itemStack, "channel", channel);
+        ItemDataUtils.setInt(itemStack, NBTConstants.CHANNEL, channel);
     }
 
     public int getChannel(ItemStack itemStack) {
-        int channel = ItemDataUtils.getInt(itemStack, "channel");
+        int channel = ItemDataUtils.getInt(itemStack, NBTConstants.CHANNEL);
         if (channel == 0) {
             setChannel(itemStack, 1);
             channel = 1;

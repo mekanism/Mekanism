@@ -1,6 +1,7 @@
 package mekanism.common.content.miner;
 
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.content.filter.IItemStackFilter;
 import net.minecraft.block.BlockState;
@@ -31,7 +32,7 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt("type", 0);
+        nbtTags.putInt(NBTConstants.TYPE, 0);
         itemType.write(nbtTags);
         return nbtTags;
     }

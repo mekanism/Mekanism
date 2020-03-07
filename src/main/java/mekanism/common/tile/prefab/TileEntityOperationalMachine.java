@@ -2,6 +2,7 @@ package mekanism.common.tile.prefab;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
@@ -54,7 +55,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
-        operatingTicks = nbtTags.getInt("operatingTicks");
+        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
     }
 
     @Nonnull
@@ -62,7 +63,7 @@ public abstract class TileEntityOperationalMachine<RECIPE extends MekanismRecipe
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         //TODO: Save/Load operating ticks properly given the variable is stored in the CachedRecipe
-        nbtTags.putInt("operatingTicks", getOperatingTicks());
+        nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
         return nbtTags;
     }
 

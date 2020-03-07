@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -24,6 +25,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemCraftingFormula extends Item {
 
@@ -93,22 +95,22 @@ public class ItemCraftingFormula extends Item {
     }
 
     public boolean isInvalid(ItemStack stack) {
-        return ItemDataUtils.getBoolean(stack, "invalid");
+        return ItemDataUtils.getBoolean(stack, NBTConstants.INVALID);
     }
 
     public void setInvalid(ItemStack stack, boolean invalid) {
-        ItemDataUtils.setBoolean(stack, "invalid", invalid);
+        ItemDataUtils.setBoolean(stack, NBTConstants.INVALID, invalid);
     }
 
     public NonNullList<ItemStack> getInventory(ItemStack stack) {
-        if (!ItemDataUtils.hasData(stack, "Items")) {
+        if (!ItemDataUtils.hasData(stack, NBTConstants.ITEMS, NBT.TAG_LIST)) {
             return null;
         }
-        ListNBT tagList = ItemDataUtils.getList(stack, "Items");
+        ListNBT tagList = ItemDataUtils.getList(stack, NBTConstants.ITEMS);
         NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
         for (int tagCount = 0; tagCount < tagList.size(); tagCount++) {
             CompoundNBT tagCompound = tagList.getCompound(tagCount);
-            byte slotID = tagCompound.getByte("Slot");
+            byte slotID = tagCompound.getByte(NBTConstants.SLOT);
             if (slotID >= 0 && slotID < 9) {
                 inventory.set(slotID, ItemStack.read(tagCompound));
             }
@@ -118,18 +120,18 @@ public class ItemCraftingFormula extends Item {
 
     public void setInventory(ItemStack stack, NonNullList<ItemStack> inv) {
         if (inv == null) {
-            ItemDataUtils.removeData(stack, "Items");
+            ItemDataUtils.removeData(stack, NBTConstants.ITEMS);
             return;
         }
         ListNBT tagList = new ListNBT();
         for (int slotCount = 0; slotCount < 9; slotCount++) {
             if (!inv.get(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
-                tagCompound.putByte("Slot", (byte) slotCount);
+                tagCompound.putByte(NBTConstants.SLOT, (byte) slotCount);
                 inv.get(slotCount).write(tagCompound);
                 tagList.add(tagCompound);
             }
         }
-        ItemDataUtils.setList(stack, "Items", tagList);
+        ItemDataUtils.setList(stack, NBTConstants.ITEMS, tagList);
     }
 }

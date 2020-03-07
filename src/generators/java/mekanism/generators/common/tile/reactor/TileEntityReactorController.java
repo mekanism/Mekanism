@@ -1,6 +1,7 @@
 package mekanism.generators.common.tile.reactor;
 
 import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
@@ -213,17 +214,12 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         super.write(tag);
-        tag.putBoolean("formed", isFormed());
+        tag.putBoolean(NBTConstants.FORMED, isFormed());
         if (isFormed()) {
-            tag.putDouble("plasmaTemp", getReactor().getPlasmaTemp());
-            tag.putDouble("caseTemp", getReactor().getCaseTemp());
-            tag.putInt("injectionRate", getReactor().getInjectionRate());
-            tag.putBoolean("burning", getReactor().isBurning());
-        } else {
-            tag.putDouble("plasmaTemp", 0);
-            tag.putDouble("caseTemp", 0);
-            tag.putInt("injectionRate", 0);
-            tag.putBoolean("burning", false);
+            tag.putDouble(NBTConstants.PLASMA_TEMP, getReactor().getPlasmaTemp());
+            tag.putDouble(NBTConstants.CASE_TEMP, getReactor().getCaseTemp());
+            tag.putInt(NBTConstants.INJECTION_RATE, getReactor().getInjectionRate());
+            tag.putBoolean(NBTConstants.BURNING, getReactor().isBurning());
         }
         return tag;
     }
@@ -231,13 +227,13 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     public void read(CompoundNBT tag) {
         super.read(tag);
-        boolean formed = tag.getBoolean("formed");
+        boolean formed = tag.getBoolean(NBTConstants.FORMED);
         if (formed) {
             setReactor(new FusionReactor(this));
-            getReactor().setPlasmaTemp(tag.getDouble("plasmaTemp"));
-            getReactor().setCaseTemp(tag.getDouble("caseTemp"));
-            getReactor().setInjectionRate(tag.getInt("injectionRate"));
-            getReactor().setBurning(tag.getBoolean("burning"));
+            getReactor().setPlasmaTemp(tag.getDouble(NBTConstants.PLASMA_TEMP));
+            getReactor().setCaseTemp(tag.getDouble(NBTConstants.CASE_TEMP));
+            getReactor().setInjectionRate(tag.getInt(NBTConstants.INJECTION_RATE));
+            getReactor().setBurning(tag.getBoolean(NBTConstants.BURNING));
             getReactor().updateTemperatures();
         }
     }

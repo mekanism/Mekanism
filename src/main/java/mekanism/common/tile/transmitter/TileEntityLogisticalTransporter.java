@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
@@ -268,7 +269,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (getTransmitter().getColor() != null) {
-            nbtTags.putInt("color", TransporterUtils.colors.indexOf(getTransmitter().getColor()));
+            nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.colors.indexOf(getTransmitter().getColor()));
         }
         ListNBT stacks = new ListNBT();
         for (TransporterStack stack : getTransmitter().getTransit()) {
@@ -277,7 +278,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
             stacks.add(tagCompound);
         }
         if (!stacks.isEmpty()) {
-            nbtTags.put("stacks", stacks);
+            nbtTags.put(NBTConstants.ITEMS, stacks);
         }
         return nbtTags;
     }

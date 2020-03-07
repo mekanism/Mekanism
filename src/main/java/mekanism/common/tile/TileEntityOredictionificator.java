@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
@@ -142,7 +143,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
                 filter.write(tagCompound);
                 filterTags.add(tagCompound);
             }
-            nbtTags.put("filters", filterTags);
+            nbtTags.put(NBTConstants.FILTERS, filterTags);
         }
         return nbtTags;
     }
@@ -150,8 +151,8 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains("filters")) {
-            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
+        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
             }
@@ -194,15 +195,15 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
                 filter.write(tagCompound);
                 filterTags.add(tagCompound);
             }
-            nbtTags.put("filters", filterTags);
+            nbtTags.put(NBTConstants.FILTERS, filterTags);
         }
         return nbtTags;
     }
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        if (nbtTags.contains("filters")) {
-            ListNBT tagList = nbtTags.getList("filters", NBT.TAG_COMPOUND);
+        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
             }
@@ -223,14 +224,14 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
                 filter.write(tagCompound);
                 filterTags.add(tagCompound);
             }
-            ItemDataUtils.setList(itemStack, "filters", filterTags);
+            ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, filterTags);
         }
     }
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, "filters")) {
-            ListNBT tagList = ItemDataUtils.getList(itemStack, "filters");
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
                 filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
             }
@@ -240,7 +241,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public Map<String, String> getTileDataRemap() {
         Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put("filters", "filters");
+        remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
         return remap;
     }
 
@@ -313,13 +314,13 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         }
 
         public void write(CompoundNBT nbtTags) {
-            nbtTags.putString("filter", getFilterText());
-            nbtTags.putInt("index", index);
+            nbtTags.putString(NBTConstants.FILTER, getFilterText());
+            nbtTags.putInt(NBTConstants.INDEX, index);
         }
 
         protected void read(CompoundNBT nbtTags) {
-            filterLocation = new ResourceLocation(nbtTags.getString("filter"));
-            index = nbtTags.getInt("index");
+            filterLocation = new ResourceLocation(nbtTags.getString(NBTConstants.FILTER));
+            index = nbtTags.getInt(NBTConstants.INDEX);
         }
 
         public void write(TileNetworkList data) {
