@@ -18,7 +18,8 @@ public class BlockResource extends BlockMekanism implements IHasModel {
 
     //TODO: Isn't as "generic"? So make it be from one BlockType thing?
     public BlockResource(@Nonnull BlockResourceInfo resource) {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(resource.getHardness(), resource.getResistance()).lightValue(resource.getLightValue()));
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(resource.getHardness(), resource.getResistance()).lightValue(resource.getLightValue())
+            .harvestTool(ToolType.PICKAXE).harvestLevel(resource.getHarvestLevel()));
         this.resource = resource;
     }
 
@@ -35,15 +36,5 @@ public class BlockResource extends BlockMekanism implements IHasModel {
     @Override
     public boolean isPortalFrame(BlockState state, IWorldReader world, BlockPos pos) {
         return resource.isPortalFrame();
-    }
-
-    @Override
-    public ToolType getHarvestTool(BlockState state) {
-        return ToolType.PICKAXE;
-    }
-
-    @Override
-    public int getHarvestLevel(BlockState state) {
-        return 1;
     }
 }
