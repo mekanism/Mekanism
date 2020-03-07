@@ -17,6 +17,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
+//TODO: Comparator handling?
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock implements IStrictEnergyAcceptor, ISpecialConfigData, IUpgradeTile {
 
     public TileEntityAdvancedBoundingBlock() {

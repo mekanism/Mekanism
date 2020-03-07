@@ -6,6 +6,7 @@ import mekanism.api.Coord4D;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,8 +16,8 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 
-//TODO: Why does this not extend TileEntityMekanism
-public class TileEntityStructuralGlass extends TileEntity implements IStructuralMultiblock {
+//TODO: Should this be extending TileEntityMekanism instead
+public class TileEntityStructuralGlass extends TileEntityUpdateable implements IStructuralMultiblock {
 
     public Coord4D master;
 

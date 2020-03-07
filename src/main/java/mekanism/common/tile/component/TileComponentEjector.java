@@ -23,6 +23,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -267,5 +268,9 @@ public class TileComponentEjector implements ITileComponent {
 
     @Override
     public void invalidate() {
+    }
+
+    @Override
+    public void trackForMainContainer(MekanismContainer container) {
     }
 }

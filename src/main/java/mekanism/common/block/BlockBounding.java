@@ -145,7 +145,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean isMoving) {
         TileEntityBoundingBlock tile = MekanismUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
         if (tile != null) {
-            tile.onNeighborChange(state.getBlock());
+            tile.onNeighborChange(state);
         }
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {

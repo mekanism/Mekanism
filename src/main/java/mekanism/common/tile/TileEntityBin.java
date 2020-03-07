@@ -5,9 +5,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
-import mekanism.api.TileNetworkList;
+import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.basic.BlockBin;
@@ -24,9 +23,10 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -40,12 +40,9 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
 
     public int addTicks = 0;
 
-    public int delayTicks;
+    private int delayTicks;
 
     private BinTier tier;
-
-    //TODO: Remove this, and just sync the slot??
-    public ItemStack clientStack = ItemStack.EMPTY;
 
     private BinInventorySlot binSlot;
 
@@ -83,7 +80,6 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
         if (!isRemote()) {
             addTicks = Math.max(0, addTicks - 1);
             delayTicks = Math.max(0, delayTicks - 1);
-
             if (delayTicks == 0) {
                 if (getActive()) {
                     TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
@@ -106,46 +102,6 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
             } else {
                 delayTicks--;
             }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        ItemStack stack = binSlot.getStack();
-        if (stack.isEmpty()) {
-            data.add(false);
-        } else {
-            data.add(true);
-            //TODO: Just write our own item stack method for over the network/slot sending method
-            data.add(stack);
-            //Add size so that we can fix it
-            data.add(stack.getCount());
-        }
-        return data;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            boolean hasStack = dataStream.readBoolean();
-            if (hasStack) {
-                clientStack = dataStream.readItemStack();
-                //Fix the size as it was packed
-                clientStack.setCount(dataStream.readInt());
-            } else {
-                clientStack = ItemStack.EMPTY;
-            }
-            MekanismUtils.updateBlock(getWorld(), getPos());
-        }
-    }
-
-    @Override
-    public void markDirty() {
-        super.markDirty();
-        if (world != null && !isRemote()) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 
@@ -198,5 +154,27 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     @Override
     public BinUpgradeData getUpgradeData() {
         return new BinUpgradeData(redstone, getBinSlot());
+    }
+
+    @Override
+    public void onContentsChanged() {
+        super.onContentsChanged();
+        if (world != null && !isRemote()) {
+            sendUpdatePacket();
+        }
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.put(NBTConstants.ITEM, binSlot.serializeNBT());
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
     }
 }

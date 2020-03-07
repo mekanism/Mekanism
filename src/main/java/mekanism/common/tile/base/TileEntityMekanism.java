@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
@@ -76,7 +75,6 @@ import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -103,10 +101,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.PacketDirection;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -117,7 +112,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -132,7 +126,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
-public abstract class TileEntityMekanism extends TileEntity implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
+public abstract class TileEntityMekanism extends TileEntityUpdateable implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
       ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable,
       IComparatorSupport, ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler {
     //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
@@ -298,16 +292,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
     }
 
-    /**
-     * Like getWorld(), but for when you _know_ world won't be null
-     *
-     * @return The world!
-     */
-    @Nonnull
-    protected World getWorldNN() {
-        return Objects.requireNonNull(getWorld(), "getWorldNN called before world set");
-    }
-
     private void setSupportedTypes(Block block) {
         //Used to get any data we may need
         isElectric = block instanceof IBlockElectric;
@@ -331,10 +315,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
      * constructor.
      */
     protected void presetVariables() {
-    }
-
-    public boolean isRemote() {
-        return getWorldNN().isRemote();
     }
 
     public Block getBlockType() {
@@ -427,20 +407,13 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
     }
 
     @Override
-    public void markDirty() {
-        //Copy of the base impl of markDirty in TileEntity, except only updates comparator state when something changed
-        // and if our block supports having a comparator signal, instead of always doing it
-        if (world != null) {
-            //TODO: Do we even really need to be updating the cachedBlockState?
-            cachedBlockState = world.getBlockState(pos);
-            world.markChunkDirty(pos, this);
-            //Only update the comparator state if we are on the server and support comparators
-            if (!isRemote() && supportsComparator() && !cachedBlockState.isAir(world, pos)) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    world.updateComparatorOutputLevel(pos, getBlockType());
-                    currentRedstoneLevel = newRedstoneLevel;
-                }
+    protected void markDirtyComparator() {
+        //Only update the comparator state if we support comparators
+        if (supportsComparator() && !cachedBlockState.isAir(world, pos)) {
+            int newRedstoneLevel = getRedstoneLevel();
+            if (newRedstoneLevel != currentRedstoneLevel) {
+                world.updateComparatorOutputLevel(pos, getBlockType());
+                currentRedstoneLevel = newRedstoneLevel;
             }
         }
     }
@@ -499,15 +472,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (isRemote()) {
-            //TODO: Remove
-            Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
-        }
     }
 
     @Override
@@ -570,19 +534,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (isRemote()) {
-            for (ITileComponent component : components) {
-                component.read(dataStream);
-            }
-        }
     }
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        //TODO: Should there be a hasComponents?
-        for (ITileComponent component : components) {
-            component.write(data);
-        }
         return data;
     }
 
@@ -594,14 +549,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         }
         if (isRemote() && hasSound()) {
             updateSound();
-        }
-    }
-
-    @Override
-    public void validate() {
-        super.validate();
-        if (isRemote()) {
-            Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
         }
     }
 
@@ -666,14 +613,10 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return nbtTags;
     }
 
-
     @Override
     public void addContainerTrackers(MekanismContainer container) {
-        //TODO: Allow components to define what things they need to sync for when viewing the main gui of a tile
-        // Currently we just manually do the security mode, though if security override changes then I am not sure we are catching it
-        // maybe make a method addMainContainerTrackers or something for the ITileComponents so they can add data they care about
-        if (hasSecurity()) {
-            container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, () -> getSecurity().getMode(), value -> getSecurity().setMode(value)));
+        for (ITileComponent component : components) {
+            component.trackForMainContainer(container);
         }
         if (supportsRedstone()) {
             container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
@@ -803,48 +746,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         return null;
     }
 
-    @Nullable
-    @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getPos(), 0, getUpdateTag());
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT getUpdateTag() {
-        //TODO: Do we want to sync more information the very first time, and less remaining times
-        CompoundNBT updateTag = super.getUpdateTag();
-        /*for (ITileComponent component : components) {
-            component.write(data);
-        }*/
-        return updateTag;
-    }
-
-    @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
-        //We don't want to do a full read from NBT so simply call the super's read method to let Forge do whatever
-        // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
-        super.read(tag);
-        /*for (ITileComponent component : components) {
-            component.read(dataStream);
-        }*/
-    }
-
-    @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        if (isRemote() && net.getDirection() == PacketDirection.CLIENTBOUND) {
-            //Handle the update tag when we are on the client
-            handleUpdateTag(pkt.getNbtCompound());
-        }
-    }
-
-    protected void sendUpdatePacket() {
-        if (world != null) {
-            BlockState state = getBlockState();
-            world.notifyBlockUpdate(getPos(), state, state, BlockFlags.DEFAULT);
-        }
-    }
-
     //Methods pertaining to IUpgradeableTile
     public void parseUpgradeData(@Nonnull IUpgradeData data) {
         Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
@@ -911,7 +812,6 @@ public abstract class TileEntityMekanism extends TileEntity implements ITileNetw
         boolean power = world.isBlockPowered(getPos());
         if (redstone != power) {
             redstone = power;
-            Mekanism.packetHandler.sendUpdatePacket(this);
             onPowerChange();
         }
     }

@@ -2,8 +2,8 @@ package mekanism.generators.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -12,12 +12,13 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
 
@@ -26,6 +27,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     public BasicFluidTank bioFuelTank;
     private FluidFuelInventorySlot fuelSlot;
     private EnergyInventorySlot energySlot;
+    private float lastFluidScale;
 
     public TileEntityBioGenerator() {
         super(GeneratorsBlocks.BIO_GENERATOR, MekanismGeneratorsConfig.generators.bioGeneration.get() * 2);
@@ -54,18 +56,25 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        energySlot.charge(this);
-        fuelSlot.fillOrBurn();
-        if (canOperate()) {
-            if (!isRemote()) {
-                setActive(true);
+        if (!isRemote()) {
+            energySlot.charge(this);
+            fuelSlot.fillOrBurn();
+            if (canOperate()) {
+                if (!isRemote()) {
+                    setActive(true);
+                }
+                if (bioFuelTank.shrinkStack(1, Action.EXECUTE) != 1) {
+                    //TODO: Print error that something went wrong
+                }
+                setEnergy(getEnergy() + MekanismGeneratorsConfig.generators.bioGeneration.get());
+                float fluidScale = bioFuelTank.getFluidAmount() / (float) bioFuelTank.getCapacity();
+                if (fluidScale != lastFluidScale) {
+                    lastFluidScale = fluidScale;
+                    sendUpdatePacket();
+                }
+            } else if (!isRemote()) {
+                setActive(false);
             }
-            if (bioFuelTank.shrinkStack(1, Action.EXECUTE) != 1) {
-                //TODO: Print error that something went wrong
-            }
-            setEnergy(getEnergy() + MekanismGeneratorsConfig.generators.bioGeneration.get());
-        } else if (!isRemote()) {
-            setActive(false);
         }
     }
 
@@ -74,19 +83,17 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         return getEnergy() < getBaseStorage() && !bioFuelTank.isEmpty() && MekanismUtils.canFunction(this);
     }
 
+    @Nonnull
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            bioFuelTank.setStack(dataStream.readFluidStack());
-        }
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.put(NBTConstants.FLUID_STORED, bioFuelTank.serializeNBT());
+        return updateTag;
     }
 
     @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        //Note: We still have to sync bio fuel as it is used in rendering the tile
-        data.add(bioFuelTank.getFluid());
-        return data;
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> bioFuelTank.deserializeNBT(nbt));
     }
 }

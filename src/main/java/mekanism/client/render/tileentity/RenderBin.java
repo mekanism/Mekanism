@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import net.minecraft.client.Minecraft;
@@ -28,9 +29,9 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
         //position of the block covering the front side
         BlockPos coverPos = tile.getPos().offset(facing);
         //if the bin has an item stack and the face isn't covered by a solid side
-        if (!tile.clientStack.isEmpty() && !tile.getWorld().getBlockState(coverPos).isSolidSide(tile.getWorld(), coverPos, facing.getOpposite())) {
-            String amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate().getFormattedText()
-                                                               : Integer.toString(tile.clientStack.getCount());
+        BinInventorySlot binSlot = tile.getBinSlot();
+        if (!binSlot.isEmpty() && !tile.getWorld().getBlockState(coverPos).isSolidSide(tile.getWorld(), coverPos, facing.getOpposite())) {
+            String amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate().getFormattedText() : Integer.toString(binSlot.getCount());
             matrix.push();
             switch (facing) {
                 case NORTH:
@@ -59,7 +60,7 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             matrix.translate(8, 8, 3);
             matrix.scale(16, -16, 16);
             //TODO: The lighting seems a bit off but it is close enough for now
-            Minecraft.getInstance().getItemRenderer().renderItem(tile.clientStack, TransformType.GUI, MekanismRenderer.FULL_LIGHT, overlayLight, matrix, renderer);
+            Minecraft.getInstance().getItemRenderer().renderItem(binSlot.getStack(), TransformType.GUI, MekanismRenderer.FULL_LIGHT, overlayLight, matrix, renderer);
             matrix.pop();
             renderText(matrix, renderer, overlayLight, amount, facing, 0.02F);
         }

@@ -14,6 +14,7 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.chunkloading.ChunkManager;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -148,6 +149,10 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         if (!tile.isRemote() && prevWorld != null) {
             releaseChunkTickets(prevWorld);
         }
+    }
+
+    @Override
+    public void trackForMainContainer(MekanismContainer container) {
     }
 
     /**

@@ -187,6 +187,10 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
     }
 
     @Override
+    public void trackForMainContainer(MekanismContainer container) {
+    }
+
+    @Override
     public void addContainerTrackers(MekanismContainer container) {
         container.track(SyncableInt.create(() -> upgradeTicks, value -> upgradeTicks = value));
         //We want to make sure the client and server have the upgrades in the same order

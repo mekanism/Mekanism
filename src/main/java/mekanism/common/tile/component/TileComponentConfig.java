@@ -13,6 +13,7 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -194,6 +195,10 @@ public class TileComponentConfig implements ITileComponent {
 
     @Override
     public void invalidate() {
+    }
+
+    @Override
+    public void trackForMainContainer(MekanismContainer container) {
     }
 
     //TODO: Should we inline this?

@@ -14,6 +14,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
+//TODO: Can the need for this be removed all together?
 public class PacketDataRequest {
 
     private Coord4D coord4D;

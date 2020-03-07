@@ -4,11 +4,11 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.block.BlockCardboardBox.BlockData;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
 
-public class TileEntityCardboardBox extends TileEntity {
+public class TileEntityCardboardBox extends TileEntityUpdateable {
 
     public BlockData storedData;
 

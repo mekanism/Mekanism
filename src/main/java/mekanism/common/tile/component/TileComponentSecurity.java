@@ -10,6 +10,8 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -197,5 +199,10 @@ public class TileComponentSecurity implements ITileComponent {
                 }
             }
         }
+    }
+
+    @Override
+    public void trackForMainContainer(MekanismContainer container) {
+        container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, this::getMode, this::setMode));
     }
 }

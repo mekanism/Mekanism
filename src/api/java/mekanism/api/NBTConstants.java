@@ -35,7 +35,6 @@ public final class NBTConstants {
 
     public static final String MAIN = "main";
 
-    public static final String PREVIOUS_POWER = "prevPower";
     public static final String TEMPERATURE = "temperature";
 
     public static final String INJECTION_RATE = "injectionRate";

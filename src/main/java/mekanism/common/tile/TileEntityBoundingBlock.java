@@ -2,19 +2,18 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.PacketBuffer;
@@ -24,18 +23,17 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 /**
  * Multi-block used by wind turbines, solar panels, and other machines
  */
-public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork {
+public class TileEntityBoundingBlock extends TileEntityUpdateable implements ITileNetwork {
 
     private BlockPos mainPos = BlockPos.ZERO;
 
     public boolean receivedCoords;
 
-    public int prevPower;
+    private int currentRedstoneLevel;
 
     public TileEntityBoundingBlock() {
         this(MekanismTileEntityTypes.BOUNDING_BLOCK.getTileEntityType());
@@ -43,11 +41,6 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
 
     public TileEntityBoundingBlock(TileEntityType<TileEntityBoundingBlock> type) {
         super(type);
-    }
-
-    public boolean isRemote() {
-        //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
-        return getWorld() == null ? EffectiveSide.get().isClient() : getWorld().isRemote();
     }
 
     public void setMainLocation(BlockPos pos) {
@@ -65,30 +58,22 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         return mainPos;
     }
 
-    @Override
-    public void validate() {
-        super.validate();
-        if (isRemote()) {
-            Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
-        }
-    }
-
     @Nullable
     public TileEntity getMainTile() {
         return receivedCoords ? MekanismUtils.getTileEntity(world, getMainPos()) : null;
     }
 
-    public void onNeighborChange(Block block) {
+    public void onNeighborChange(BlockState state) {
         final TileEntity tile = getMainTile();
         if (tile instanceof TileEntityMekanism) {
             int power = world.getRedstonePowerFromNeighbors(getPos());
-            if (prevPower != power) {
+            if (currentRedstoneLevel != power) {
                 if (power > 0) {
                     onPower();
                 } else {
                     onNoPower();
                 }
-                prevPower = power;
+                currentRedstoneLevel = power;
                 Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity((TileEntityMekanism) tile), this);
             }
         }
@@ -104,7 +89,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     public void handlePacketData(PacketBuffer dataStream) {
         if (isRemote()) {
             mainPos = new BlockPos(dataStream.readInt(), dataStream.readInt(), dataStream.readInt());
-            prevPower = dataStream.readInt();
+            currentRedstoneLevel = dataStream.readInt();
             receivedCoords = dataStream.readBoolean();
         }
     }
@@ -113,7 +98,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.MAIN, pos -> mainPos = pos);
-        prevPower = nbtTags.getInt(NBTConstants.PREVIOUS_POWER);
+        currentRedstoneLevel = nbtTags.getInt(NBTConstants.REDSTONE);
         receivedCoords = nbtTags.getBoolean(NBTConstants.RECEIVED_COORDS);
     }
 
@@ -122,7 +107,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         nbtTags.put(NBTConstants.MAIN, NBTUtil.writeBlockPos(getMainPos()));
-        nbtTags.putInt(NBTConstants.PREVIOUS_POWER, prevPower);
+        nbtTags.putInt(NBTConstants.REDSTONE, currentRedstoneLevel);
         nbtTags.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);
         return nbtTags;
     }
@@ -132,7 +117,7 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
         data.add(getMainPos().getX());
         data.add(getMainPos().getY());
         data.add(getMainPos().getZ());
-        data.add(prevPower);
+        data.add(currentRedstoneLevel);
         data.add(receivedCoords);
         return data;
     }
@@ -146,5 +131,23 @@ public class TileEntityBoundingBlock extends TileEntity implements ITileNetwork 
             return Capabilities.TILE_NETWORK_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.put(NBTConstants.MAIN, NBTUtil.writeBlockPos(getMainPos()));
+        updateTag.putInt(NBTConstants.REDSTONE, currentRedstoneLevel);
+        updateTag.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setBlockPosIfPresent(tag, NBTConstants.MAIN, pos -> mainPos = pos);
+        currentRedstoneLevel = tag.getInt(NBTConstants.REDSTONE);
+        receivedCoords = tag.getBoolean(NBTConstants.RECEIVED_COORDS);
     }
 }

@@ -28,6 +28,7 @@ import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -49,10 +50,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class TileEntitySidedPipe extends TileEntity implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
+public abstract class TileEntitySidedPipe extends TileEntityUpdateable implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
 
     public int delayTicks;
 
@@ -95,22 +95,6 @@ public abstract class TileEntitySidedPipe extends TileEntity implements ITileNet
             return ConnectionType.NORMAL;
         }
         return types[side.ordinal()];
-    }
-
-    public boolean isRemote() {
-        //TODO: See if there is anyway to improve this so we don't have to call EffectiveSide.get
-        return getWorld() == null ? EffectiveSide.get().isClient() : getWorld().isRemote();
-    }
-
-    @Override
-    public void markDirty() {
-        //Copy of the base impl of markDirty in TileEntity, except as none of our transmitters supports comparators
-        // don't bother doing notifying neighbors
-        if (world != null) {
-            cachedBlockState = world.getBlockState(pos);
-            world.markChunkDirty(pos, this);
-            //TODO: Test if this majorly breaks things
-        }
     }
 
     @Override
