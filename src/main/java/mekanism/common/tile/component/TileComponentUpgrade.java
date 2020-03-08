@@ -7,9 +7,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.base.IUpgradeItem;
 import mekanism.common.inventory.container.ITrackableContainer;
@@ -21,7 +19,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
@@ -70,7 +67,8 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
                             //TODO: Print warning about failing to shrink size of stack
                         }
                         if (type == Upgrade.MUFFLING) {
-                            Mekanism.packetHandler.sendUpdatePacket(tile);
+                            //Send an update packet to the client to update the number of muffling upgrades installed
+                            tile.sendUpdatePacket();
                         }
                         tile.markDirty();
                     }
@@ -136,27 +134,6 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
         return supported;
     }
 
-    //TODO: Evaluate if there is a better way to do this, as the only type that the client actually cares about
-    // is the muffling level (and only really cares about it if it changes)
-    @Override
-    public void read(PacketBuffer dataStream) {
-        if (supports(Upgrade.MUFFLING)) {
-            int amount = dataStream.readInt();
-            if (amount == 0) {
-                upgrades.remove(Upgrade.MUFFLING);
-            } else {
-                upgrades.put(Upgrade.MUFFLING, amount);
-            }
-        }
-    }
-
-    @Override
-    public void write(TileNetworkList data) {
-        if (supports(Upgrade.MUFFLING)) {
-            data.add(upgrades.getOrDefault(Upgrade.MUFFLING, 0));
-        }
-    }
-
     @Override
     public void read(CompoundNBT nbtTags) {
         if (nbtTags.contains(NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
@@ -188,6 +165,27 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
 
     @Override
     public void trackForMainContainer(MekanismContainer container) {
+    }
+
+    @Override
+    public void addToUpdateTag(CompoundNBT updateTag) {
+        //Note: We only bother to sync how many muffling upgrades we have installed as that is the only thing the client cares about
+        if (supports(Upgrade.MUFFLING)) {
+            updateTag.putInt(NBTConstants.MUFFLING_COUNT, upgrades.getOrDefault(Upgrade.MUFFLING, 0));
+        }
+    }
+
+    @Override
+    public void readFromUpdateTag(CompoundNBT updateTag) {
+        if (supports(Upgrade.MUFFLING)) {
+            NBTUtils.setIntIfPresent(updateTag, NBTConstants.MUFFLING_COUNT, amount -> {
+                if (amount == 0) {
+                    upgrades.remove(Upgrade.MUFFLING);
+                } else {
+                    upgrades.put(Upgrade.MUFFLING, amount);
+                }
+            });
+        }
     }
 
     @Override

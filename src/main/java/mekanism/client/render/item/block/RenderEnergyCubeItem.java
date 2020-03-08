@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
 
@@ -44,8 +45,8 @@ public class RenderEnergyCubeItem extends MekanismItemStackRenderer {
         energyCube.render(matrix, renderer, light, overlayLight, tier, true);
 
         CompoundNBT configData = ItemDataUtils.getDataMapIfPresent(stack);
-        if (configData != null && configData.getBoolean(NBTConstants.SIDE_DATA)) {
-            CompoundNBT sideConfig = configData.getCompound(NBTConstants.CONFIG + TransmissionType.ENERGY.ordinal());
+        if (configData != null && configData.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
+            CompoundNBT sideConfig = configData.getCompound(NBTConstants.COMPONENT_CONFIG).getCompound(NBTConstants.CONFIG + TransmissionType.ENERGY.ordinal());
             //TODO: Maybe improve on this, but for now this is a decent way of making it not have disabled sides show
             for (RelativeSide side : EnumUtils.SIDES) {
                 DataType dataType = DataType.byIndexStatic(sideConfig.getInt(NBTConstants.SIDE + side.ordinal()));

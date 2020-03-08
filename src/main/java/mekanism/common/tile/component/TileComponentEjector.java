@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -23,7 +22,10 @@ import mekanism.common.base.ITileComponent;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.transporter.TransitRequest;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
+import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -40,13 +42,12 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileComponentEjector implements ITileComponent {
+public class TileComponentEjector implements ITileComponent, ITrackableContainer {
 
     //TODO: Figure out why these limits for output rates are here/if there should be an upgrade that modifies the output rates
     private static final int GAS_OUTPUT = 256;
@@ -68,14 +69,6 @@ public class TileComponentEjector implements ITileComponent {
             configInfo.put(type, info);
         }
         return this;
-    }
-
-    public void readFrom(TileComponentEjector ejector) {
-        strictInput = ejector.strictInput;
-        outputColor = ejector.outputColor;
-        inputColors = ejector.inputColors;
-        tickDelay = ejector.tickDelay;
-        configInfo = ejector.configInfo;
     }
 
     @Override
@@ -221,15 +214,6 @@ public class TileComponentEjector implements ITileComponent {
     }
 
     @Override
-    public void read(PacketBuffer dataStream) {
-        strictInput = dataStream.readBoolean();
-        outputColor = readColor(dataStream.readInt());
-        for (int i = 0; i < 6; i++) {
-            inputColors[i] = readColor(dataStream.readInt());
-        }
-    }
-
-    @Override
     public void write(CompoundNBT nbtTags) {
         CompoundNBT ejectorNBT = new CompoundNBT();
         ejectorNBT.putBoolean(NBTConstants.STRICT_INPUT, strictInput);
@@ -241,15 +225,6 @@ public class TileComponentEjector implements ITileComponent {
             ejectorNBT.putInt(NBTConstants.COLOR + i, getColorIndex(inputColors[i]));
         }
         nbtTags.put(NBTConstants.COMPONENT_EJECTOR, ejectorNBT);
-    }
-
-    @Override
-    public void write(TileNetworkList data) {
-        data.add(strictInput);
-        data.add(getColorIndex(outputColor));
-        for (int i = 0; i < 6; i++) {
-            data.add(getColorIndex(inputColors[i]));
-        }
     }
 
     private EnumColor readColor(int inputColor) {
@@ -272,5 +247,23 @@ public class TileComponentEjector implements ITileComponent {
 
     @Override
     public void trackForMainContainer(MekanismContainer container) {
+    }
+
+    @Override
+    public void addToUpdateTag(CompoundNBT updateTag) {
+    }
+
+    @Override
+    public void readFromUpdateTag(CompoundNBT updateTag) {
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        container.track(SyncableBoolean.create(this::hasStrictInput, input -> strictInput = input));
+        container.track(SyncableInt.create(() -> getColorIndex(outputColor), index -> outputColor = readColor(index)));
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            int idx = i;
+            container.track(SyncableInt.create(() -> getColorIndex(inputColors[idx]), index -> inputColors[idx] = readColor(index)));
+        }
     }
 }

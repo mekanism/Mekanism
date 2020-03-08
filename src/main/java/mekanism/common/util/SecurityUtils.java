@@ -93,12 +93,12 @@ public final class SecurityUtils {
         if (!security.hasSecurity()) {
             return SecurityMode.PUBLIC;
         }
-        if (side == Dist.DEDICATED_SERVER) {
+        if (side.isDedicatedServer()) {
             SecurityFrequency freq = security.getSecurity().getFrequency();
             if (freq != null && freq.override) {
                 return freq.securityMode;
             }
-        } else if (side == Dist.CLIENT) {
+        } else if (side.isClient()) {
             SecurityData data = MekanismClient.clientSecurityMap.get(security.getSecurity().getOwnerUUID());
             if (data != null && data.override) {
                 return data.mode;
@@ -111,12 +111,12 @@ public final class SecurityUtils {
         ISecurityItem security = (ISecurityItem) stack.getItem();
         SecurityMode mode = security.getSecurity(stack);
         if (security.getOwnerUUID(stack) != null) {
-            if (side == Dist.DEDICATED_SERVER) {
+            if (side.isDedicatedServer()) {
                 SecurityFrequency freq = getFrequency(security.getOwnerUUID(stack));
                 if (freq != null && freq.override) {
                     mode = freq.securityMode;
                 }
-            } else if (side == Dist.CLIENT) {
+            } else if (side.isClient()) {
                 SecurityData data = MekanismClient.clientSecurityMap.get(security.getOwnerUUID(stack));
                 if (data != null && data.override) {
                     mode = data.mode;
@@ -131,7 +131,7 @@ public final class SecurityUtils {
         if (security.getOwnerUUID(stack) == null) {
             return false;
         }
-        if (side == Dist.DEDICATED_SERVER) {
+        if (side.isDedicatedServer()) {
             SecurityFrequency freq = getFrequency(security.getOwnerUUID(stack));
             return freq != null && freq.override;
         }
@@ -144,7 +144,7 @@ public final class SecurityUtils {
         if (!security.hasSecurity() || security.getSecurity().getOwnerUUID() == null) {
             return false;
         }
-        if (side == Dist.DEDICATED_SERVER) {
+        if (side.isDedicatedServer()) {
             SecurityFrequency freq = getFrequency(security.getSecurity().getOwnerUUID());
             return freq != null && freq.override;
         }

@@ -651,6 +651,24 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Nonnull
     @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        for (ITileComponent component : components) {
+            component.addToUpdateTag(updateTag);
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        for (ITileComponent component : components) {
+            component.readFromUpdateTag(tag);
+        }
+    }
+
+    @Nonnull
+    @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         //TODO: Cache the LazyOptional where possible as recommended in ICapabilityProvider
         if (isCapabilityDisabled(capability, side)) {

@@ -10,7 +10,7 @@ import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -89,6 +89,9 @@ public class PacketConfigurationUpdate {
                     );
                     //Notify the neighbor on that side our state changed
                     MekanismUtils.notifyNeighborOfChange(tile.getWorld(), relativeSide.getDirection(config.getOrientation()), tile.getPos());
+                    if (tile instanceof TileEntityUpdateable) {
+                        ((TileEntityUpdateable) tile).sendUpdatePacket();
+                    }
                 } else if (message.packetType == ConfigurationPacket.EJECT_COLOR) {
                     TileComponentEjector ejector = config.getEjector();
                     if (message.clickType == 0) {
@@ -112,7 +115,6 @@ public class PacketConfigurationUpdate {
                 } else if (message.packetType == ConfigurationPacket.STRICT_INPUT) {
                     config.getEjector().setStrictInput(!config.getEjector().hasStrictInput());
                 }
-                capability.ifPresent(network -> ((TileEntityMekanism) config).sendToAllUsing(() -> new PacketTileEntity(message.coord4D, network.getNetworkedData())));
             }
         });
         context.get().setPacketHandled(true);

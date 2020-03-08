@@ -130,7 +130,6 @@ public final class NBTConstants {
 
     public static final String REDSTONE = "redstone";
 
-    public static final String SIDE_DATA = "sideData";
     public static final String EJECTING = "ejecting";
 
     public static final String SORTING = "sorting";
@@ -166,6 +165,8 @@ public final class NBTConstants {
 
     //Server to Client specific sync NBT tags
     public static final String ENERGY_SCALE = "energy_scale";
+    public static final String OWNER_NAME = "ownerName";
+    public static final String MUFFLING_COUNT = "muffling";
 
     //Ones that also are used for interacting with forge/vanilla
     public static final String X = "x";

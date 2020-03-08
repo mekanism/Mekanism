@@ -3,9 +3,7 @@ package mekanism.common.tile.component;
 import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
@@ -18,7 +16,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileComponentSecurity implements ITileComponent {
@@ -38,11 +35,6 @@ public class TileComponentSecurity implements ITileComponent {
     public TileComponentSecurity(TileEntityMekanism tile) {
         this.tile = tile;
         tile.addComponent(this);
-    }
-
-    public void readFrom(TileComponentSecurity security) {
-        ownerUUID = security.ownerUUID;
-        securityMode = security.securityMode;
     }
 
     public SecurityFrequency getFrequency() {
@@ -108,16 +100,15 @@ public class TileComponentSecurity implements ITileComponent {
                 setFrequency(ownerUUID);
             }
             FrequencyManager manager = getManager(frequency);
-
-            if (manager != null) {
+            if (manager == null) {
+                frequency = null;
+            } else {
                 if (frequency != null && !frequency.valid) {
                     frequency = (SecurityFrequency) manager.validateFrequency(ownerUUID, Coord4D.get(tile), frequency);
                 }
                 if (frequency != null) {
                     frequency = (SecurityFrequency) manager.update(Coord4D.get(tile), frequency);
                 }
-            } else {
-                frequency = null;
             }
         }
     }
@@ -136,30 +127,11 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void read(PacketBuffer dataStream) {
-        securityMode = dataStream.readEnumValue(SecurityMode.class);
-
-        if (dataStream.readBoolean()) {
-            ownerUUID = dataStream.readUniqueId();
-            clientOwner = PacketHandler.readString(dataStream);
-        } else {
-            ownerUUID = null;
-            clientOwner = null;
-        }
-
-        if (dataStream.readBoolean()) {
-            frequency = new SecurityFrequency(dataStream);
-        } else {
-            frequency = null;
-        }
-    }
-
-    @Override
     public void write(CompoundNBT nbtTags) {
         CompoundNBT securityNBT = new CompoundNBT();
         securityNBT.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
         if (ownerUUID != null) {
-            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            securityNBT.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
         }
         if (frequency != null) {
             CompoundNBT frequencyTag = new CompoundNBT();
@@ -170,33 +142,11 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void write(TileNetworkList data) {
-        data.add(securityMode);
-
-        if (ownerUUID != null) {
-            data.add(true);
-            data.add(ownerUUID);
-            data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
-        } else {
-            data.add(false);
-        }
-
-        if (frequency != null) {
-            data.add(true);
-            frequency.write(data);
-        } else {
-            data.add(false);
-        }
-    }
-
-    @Override
     public void invalidate() {
-        if (!tile.isRemote()) {
-            if (frequency != null) {
-                FrequencyManager manager = getManager(frequency);
-                if (manager != null) {
-                    manager.deactivate(Coord4D.get(tile));
-                }
+        if (!tile.isRemote() && frequency != null) {
+            FrequencyManager manager = getManager(frequency);
+            if (manager != null) {
+                manager.deactivate(Coord4D.get(tile));
             }
         }
     }
@@ -204,5 +154,19 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void trackForMainContainer(MekanismContainer container) {
         container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, this::getMode, this::setMode));
+    }
+
+    @Override
+    public void addToUpdateTag(CompoundNBT updateTag) {
+        if (ownerUUID != null) {
+            updateTag.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            updateTag.putString(NBTConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
+        }
+    }
+
+    @Override
+    public void readFromUpdateTag(CompoundNBT updateTag) {
+        NBTUtils.setUUIDIfPresent(updateTag, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
+        NBTUtils.setStringIfPresent(updateTag, NBTConstants.OWNER_NAME, uuid -> clientOwner = uuid);
     }
 }

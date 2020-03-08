@@ -8,7 +8,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.common.base.ITileComponent;
 import mekanism.common.chunkloading.ChunkManager;
@@ -20,7 +19,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.LongNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -128,20 +126,12 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void read(PacketBuffer dataStream) {
-    }
-
-    @Override
     public void write(CompoundNBT nbtTags) {
         ListNBT list = new ListNBT();
         for (ChunkPos pos : chunkSet) {
             list.add(LongNBT.valueOf(pos.asLong()));
         }
         nbtTags.put(NBTConstants.CHUNK_SET, list);
-    }
-
-    @Override
-    public void write(TileNetworkList data) {
     }
 
     @Override
@@ -153,6 +143,14 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
 
     @Override
     public void trackForMainContainer(MekanismContainer container) {
+    }
+
+    @Override
+    public void addToUpdateTag(CompoundNBT updateTag) {
+    }
+
+    @Override
+    public void readFromUpdateTag(CompoundNBT updateTag) {
     }
 
     /**

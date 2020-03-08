@@ -79,7 +79,7 @@ public abstract class TileEntityUpdateable extends TileEntity {
         }
     }
 
-    protected void sendUpdatePacket() {
+    public void sendUpdatePacket() {
         if (world != null) {
             BlockState state = getBlockState();
             world.notifyBlockUpdate(getPos(), state, state, BlockFlags.DEFAULT);
