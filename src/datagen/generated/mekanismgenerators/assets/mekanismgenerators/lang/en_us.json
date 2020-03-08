@@ -57,7 +57,7 @@
   "gas.mekanismgenerators.fusion_fuel": "D-T Fuel",
   "gas.mekanismgenerators.tritium": "Tritium",
   "gui.mekanismgenerators.bio_generator.bio_fuel": "BioFuel: %s",
-  "gui.mekanismgenerators.gas_burning_generator.burn_rate": "Burn Rate: %s",
+  "gui.mekanismgenerators.gas_burning_generator.burn_rate": "Burn Rate: %s mB/t",
   "gui.mekanismgenerators.output_rate.short": "Out: %s/t",
   "gui.mekanismgenerators.power": "Power: %s",
   "gui.mekanismgenerators.producing.amount": "Producing: %s/t",

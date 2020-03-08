@@ -50,9 +50,9 @@ public class GeneratorsGeneratorTypes {
     // Gas Burning Generator
     public static final Generator<TileEntityGasGenerator> GAS_BURNING_GENERATOR = GeneratorBuilder
           .createGenerator(GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, GeneratorsContainerTypes.GAS_BURNING_GENERATOR, GeneratorsLang.DESCRIPTION_GAS_BURNING_GENERATOR)
-          .withConfig(() -> 100 * MekanismConfig.general.FROM_H2.get())
+          .withConfig(() -> 1000 * MekanismConfig.general.FROM_H2.get())
           .withCustomShape(BlockShapes.GAS_BURNING_GENERATOR)
-          .withSound(GeneratorsSounds.SOLAR_GENERATOR)
+          .withSound(GeneratorsSounds.GAS_BURNING_GENERATOR)
           .build();
     // Advanced Solar Generator
     public static final Generator<TileEntityAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = GeneratorBuilder
