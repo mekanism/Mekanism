@@ -55,7 +55,7 @@ public class GuiPRC extends GuiMekanismTile<TileEntityPressurizedReactionChamber
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
+        renderScaledText(tile.getName(), getXSize() / 3 - 7, 6, 0x404040, 2 * getXSize() / 3);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
