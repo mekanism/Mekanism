@@ -368,12 +368,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         TransitRequest request = new TransitRequest();
         for (int i = mainSlots.size() - 1; i >= 0; i--) {
             IInventorySlot slot = mainSlots.get(i);
-            if (!slot.isEmpty()) {
-                ItemStack stack = slot.getStack();
-                if (!isReplaceStack(stack)) {
-                    //TODO: Check if we need to place a copy in terms of mutability
-                    request.addItem(stack, i);
-                }
+            //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
+            ItemStack simulatedExtraction = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.EXTERNAL);
+            if (!simulatedExtraction.isEmpty()) {
+                request.addItem(simulatedExtraction, i);
             }
         }
         return request;

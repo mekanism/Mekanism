@@ -1,16 +1,6 @@
 package mekanism.common.integration.multipart;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import java.util.List;
-import mekanism.api.TileNetworkList;
-import mekanism.common.base.ITileNetwork;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-
-/**
+/*
  * Used to route {@link ITileNetwork} packets sent to multipart containers with more than one possible recipient.<br>
  * <br>
  * When MCMP is enabled single byte Direction ordinal headers are added to packets sent by glow panels and transmitters that are then used by this class to route packets
@@ -18,7 +8,7 @@ import net.minecraft.util.Direction;
  * <br>
  * In this case, since transmitters do not attach to a side and therefore have no matching Direction the special value 6 is used to represent the center slot.
  */
-public class MultipartTileNetworkJoiner implements ITileNetwork {
+/*public class MultipartTileNetworkJoiner implements ITileNetwork {
 
     //TODO nullable-ish enum map
     private final Int2ObjectMap<ITileNetwork> tileSideMap;
@@ -29,10 +19,10 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
      * Builds an internal map of part slots to {@link ITileNetwork} implementations in order to route packets.
      *
      * @param tileList A list of the tile entities that implement {@link ITileNetwork} in the container.
-     */
+     *
     public MultipartTileNetworkJoiner(List<ITileNetwork> tileList) {
         tileSideMap = new Int2ObjectArrayMap<>(7);
-        /*IMultipartContainer container = null;
+        IMultipartContainer container = null;
 
         TileEntity first = (TileEntity) tileList.get(0);
         IBlockReader world = first.getWorld();
@@ -55,7 +45,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
                     }
                 }
             }
-        }*/
+        }
     }
 
     /**
@@ -64,9 +54,9 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
      * @param entity The entity for which <code>getNetworkedData</code> is being called
      * @param data   The network data list
      * @param facing The side this part is attached to or <code>null</code> for the center slot
-     */
+     *
     public static void addMultipartHeader(TileEntity entity, TileNetworkList data, Direction facing) {
-        /*int tileNetworkParts = 0;
+        int tileNetworkParts = 0;
         IMultipartContainer container = MultipartMekanism.getContainer(entity.getWorld(), entity.getPos());
         if (container != null) {
             for (IPartSlot slot : container.getParts().keySet()) {
@@ -81,7 +71,7 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
         }
         if (tileNetworkParts > 1) {
             data.add(0, (byte) (facing == null ? 6 : facing.ordinal()));
-        }*/
+        }
     }
 
     @Override
@@ -107,4 +97,4 @@ public class MultipartTileNetworkJoiner implements ITileNetwork {
         }
         return data;
     }
-}
+}*/

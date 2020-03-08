@@ -60,9 +60,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
             energySlot.charge(this);
             fuelSlot.fillOrBurn();
             if (canOperate()) {
-                if (!isRemote()) {
-                    setActive(true);
-                }
+                setActive(true);
                 if (bioFuelTank.shrinkStack(1, Action.EXECUTE) != 1) {
                     //TODO: Print error that something went wrong
                 }
@@ -72,7 +70,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
                     lastFluidScale = fluidScale;
                     sendUpdatePacket();
                 }
-            } else if (!isRemote()) {
+            } else {
                 setActive(false);
             }
         }

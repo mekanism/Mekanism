@@ -41,6 +41,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.PipeUtils;
 import mekanism.common.util.TransporterUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -121,24 +122,24 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
         }
         //TODO: Do we want to check ejecting for EACH data type that is there, if the slot allows outputting, or do we just want to then check DataType.OUTPUT
         // For now just doing the specific output type because it makes more sense
-        Set<Direction> outputs = info.getSidesForData(DataType.OUTPUT);
         ISlotInfo slotInfo = info.getSlotInfo(DataType.OUTPUT);
         if (!(slotInfo instanceof InventorySlotInfo)) {
             //We need it to be inventory slot info
             return;
         }
         TransitRequest ejectMap = null;
+        Set<Direction> outputs = info.getSidesForData(DataType.OUTPUT);
         for (Direction side : outputs) {
+            TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
+            if (tile == null) {
+                //If the spot is not loaded just skip trying to eject to it
+                continue;
+            }
             if (ejectMap == null) {
                 ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo);
                 if (ejectMap.isEmpty()) {
                     break;
                 }
-            }
-            TileEntity tile = MekanismUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
-            if (tile == null) {
-                //If the spot is not loaded just skip trying to eject to it
-                continue;
             }
             TransitRequest finalEjectMap = ejectMap;
             TransitResponse response;
@@ -164,9 +165,10 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
         List<IInventorySlot> slots = slotInfo.getSlots();
         for (int index = 0; index < slots.size(); index++) {
             IInventorySlot slot = slots.get(index);
-            if (!slot.isEmpty()) {
-                //TODO: verify the stack can't be modified or give it a copy
-                request.addItem(slot.getStack(), index);
+            //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
+            ItemStack simulatedExtraction = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.EXTERNAL);
+            if (!simulatedExtraction.isEmpty()) {
+                request.addItem(simulatedExtraction, index);
             }
         }
         return request;

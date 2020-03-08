@@ -1,11 +1,13 @@
 package mekanism.common.content.transporter;
 
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class StackSearcher {
 
@@ -16,16 +18,14 @@ public class StackSearcher {
     public StackSearcher(TileEntity tile, Direction direction) {
         this.tile = tile;
         side = direction;
-        if (InventoryUtils.isItemHandler(tile, direction.getOpposite())) {
-            slotCount = InventoryUtils.getItemHandler(tile, direction.getOpposite()).getSlots();
-        }
+        CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction.getOpposite()).ifPresent(itemHandler -> slotCount = itemHandler.getSlots());
     }
 
     public InvStack takeTopStack(Finder id, int amount) {
-        if (!InventoryUtils.assertItemHandler("StackSearcher", tile, side.getOpposite())) {
+        IItemHandler inventory = InventoryUtils.assertItemHandler("StackSearcher", tile, side.getOpposite());
+        if (inventory == null) {
             return null;
         }
-        IItemHandler inventory = InventoryUtils.getItemHandler(tile, side.getOpposite());
         for (slotCount = slotCount - 1; slotCount >= 0; slotCount--) {
             ItemStack stack = inventory.extractItem(slotCount, amount, true);
             if (!stack.isEmpty() && id.modifies(stack)) {
@@ -36,14 +36,14 @@ public class StackSearcher {
     }
 
     public InvStack takeDefinedItem(ItemStack type, int min, int max) {
-        InvStack ret = new InvStack(tile, side.getOpposite());
-        if (!InventoryUtils.assertItemHandler("StackSearcher", tile, side.getOpposite())) {
+        IItemHandler inventory = InventoryUtils.assertItemHandler("StackSearcher", tile, side.getOpposite());
+        if (inventory == null) {
             return null;
         }
-        IItemHandler inventory = InventoryUtils.getItemHandler(tile, side.getOpposite());
+        InvStack ret = new InvStack(tile, side.getOpposite());
         for (slotCount = slotCount - 1; slotCount >= 0; slotCount--) {
             ItemStack stack = inventory.extractItem(slotCount, max, true);
-            if (!stack.isEmpty() && StackUtils.equalsWildcardWithNBT(stack, type)) {
+            if (!stack.isEmpty() && ItemHandlerHelper.canItemStacksStack(stack, type)) {
                 int current = ret.getStack().getCount();
                 if (current + stack.getCount() <= max) {
                     ret.appendStack(slotCount, stack.copy());

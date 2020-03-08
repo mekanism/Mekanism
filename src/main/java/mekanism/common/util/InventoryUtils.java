@@ -2,6 +2,8 @@ package mekanism.common.util;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import java.util.Map.Entry;
+import java.util.Optional;
+import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -22,41 +24,33 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public final class InventoryUtils {
 
-    public static final int[] EMPTY = new int[]{};
-
-    public static int[] getIntRange(int start, int end) {
-        int[] ret = new int[1 + end - start];
-        for (int i = start; i <= end; i++) {
-            ret[i - start] = i;
-        }
-        return ret;
-    }
-
     public static TransitResponse putStackInInventory(TileEntity tile, TransitRequest request, Direction side, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).sendHome(request.getSingleStack());
         }
-        for (Entry<HashedItem, Pair<Integer, Int2IntMap>> requestEntry : request.getItemMap().entrySet()) {
-            ItemStack origInsert = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
-            ItemStack toInsert = origInsert.copy();
-            if (!isItemHandler(tile, side.getOpposite())) {
-                return TransitResponse.EMPTY;
-            }
-            IItemHandler inventory = getItemHandler(tile, side.getOpposite());
-            for (int i = 0; i < inventory.getSlots(); i++) {
-                // Check validation
-                if (inventory.isItemValid(i, toInsert)) {
-                    // Do insert
-                    toInsert = inventory.insertItem(i, toInsert, false);
-
-                    // If empty, end
-                    if (toInsert.isEmpty()) {
-                        return new TransitResponse(origInsert, requestEntry.getValue().getRight());
+        if (request.getItemMap().isEmpty()) {
+            return TransitResponse.EMPTY;
+        }
+        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
+        if (capability.isPresent()) {
+            IItemHandler inventory = capability.get();
+            for (Entry<HashedItem, Pair<Integer, Int2IntMap>> requestEntry : request.getItemMap().entrySet()) {
+                ItemStack origInsert = StackUtils.size(requestEntry.getKey().getStack(), requestEntry.getValue().getLeft());
+                ItemStack toInsert = origInsert.copy();
+                for (int i = 0; i < inventory.getSlots(); i++) {
+                    // Check validation
+                    if (inventory.isItemValid(i, toInsert)) {
+                        // Do insert
+                        toInsert = inventory.insertItem(i, toInsert, false);
+                        // If empty, end
+                        if (toInsert.isEmpty()) {
+                            return new TransitResponse(origInsert, requestEntry.getValue().getRight());
+                        }
                     }
                 }
-            }
-            if (TransporterManager.didEmit(origInsert, toInsert)) {
-                return new TransitResponse(TransporterManager.getToUse(origInsert, toInsert), requestEntry.getValue().getRight());
+                if (TransporterManager.didEmit(origInsert, toInsert)) {
+                    return new TransitResponse(TransporterManager.getToUse(origInsert, toInsert), requestEntry.getValue().getRight());
+                }
             }
         }
         return TransitResponse.EMPTY;
@@ -78,30 +72,29 @@ public final class InventoryUtils {
     }
 
     public static InvStack takeDefinedItem(TileEntity tile, Direction side, ItemStack type, int min, int max) {
-        InvStack ret = new InvStack(tile, side.getOpposite());
-        if (!isItemHandler(tile, side.getOpposite())) {
-            return null;
-        }
-
-        IItemHandler inventory = getItemHandler(tile, side.getOpposite());
-        for (int i = inventory.getSlots() - 1; i >= 0; i--) {
-            ItemStack stack = inventory.extractItem(i, max, true);
-            if (!stack.isEmpty() && StackUtils.equalsWildcardWithNBT(stack, type)) {
-                int current = ret.getStack().getCount();
-                if (current + stack.getCount() <= max) {
-                    ret.appendStack(i, stack.copy());
-                } else {
-                    ItemStack copy = stack.copy();
-                    copy.setCount(max - current);
-                    ret.appendStack(i, copy);
-                }
-                if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
-                    return ret;
+        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
+        if (capability.isPresent()) {
+            InvStack ret = new InvStack(tile, side.getOpposite());
+            IItemHandler inventory = capability.get();
+            for (int i = inventory.getSlots() - 1; i >= 0; i--) {
+                ItemStack stack = inventory.extractItem(i, max, true);
+                if (!stack.isEmpty() && ItemHandlerHelper.canItemStacksStack(stack, type)) {
+                    int current = ret.getStack().getCount();
+                    if (current + stack.getCount() <= max) {
+                        ret.appendStack(i, stack.copy());
+                    } else {
+                        ItemStack copy = stack.copy();
+                        copy.setCount(max - current);
+                        ret.appendStack(i, copy);
+                    }
+                    if (!ret.getStack().isEmpty() && ret.getStack().getCount() == max) {
+                        return ret;
+                    }
                 }
             }
-        }
-        if (!ret.getStack().isEmpty() && ret.getStack().getCount() >= min) {
-            return ret;
+            if (!ret.getStack().isEmpty() && ret.getStack().getCount() >= min) {
+                return ret;
+            }
         }
         return null;
     }
@@ -120,44 +113,39 @@ public final class InventoryUtils {
                 }
             }
         }
-        if (!isItemHandler(tile, side.getOpposite())) {
-            return false;
-        }
-
-        IItemHandler inventory = getItemHandler(tile, side.getOpposite());
-        for (int i = 0; i < inventory.getSlots(); i++) {
-            // Check validation
-            if (inventory.isItemValid(i, itemStack)) {
-                // Simulate insert
-                ItemStack rejects = inventory.insertItem(i, itemStack, true);
-                if (TransporterManager.didEmit(itemStack, rejects)) {
-                    return true;
+        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
+        if (capability.isPresent()) {
+            IItemHandler inventory = capability.get();
+            for (int i = 0; i < inventory.getSlots(); i++) {
+                // Check validation
+                if (inventory.isItemValid(i, itemStack)) {
+                    // Simulate insert
+                    ItemStack rejects = inventory.insertItem(i, itemStack, true);
+                    if (TransporterManager.didEmit(itemStack, rejects)) {
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
 
-    public static boolean assertItemHandler(String desc, TileEntity tile, Direction side) {
-        if (!isItemHandler(tile, side)) {
-            Mekanism.logger.warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!", new Exception());
-            if (tile == null) {
-                Mekanism.logger.warn(" - null tile");
-            } else {
-                Mekanism.logger.warn(" - details: " + tile + " " + tile.getPos());
-            }
-            return false;
+    @Nullable
+    public static IItemHandler assertItemHandler(String desc, TileEntity tile, Direction side) {
+        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side));
+        if (capability.isPresent()) {
+            return capability.get();
         }
-        return true;
+        Mekanism.logger.warn("'" + desc + "' was wrapped around a non-IItemHandler inventory. This should not happen!", new Exception());
+        if (tile == null) {
+            Mekanism.logger.warn(" - null tile");
+        } else {
+            Mekanism.logger.warn(" - details: " + tile + " " + tile.getPos());
+        }
+        return null;
     }
 
     public static boolean isItemHandler(TileEntity tile, Direction side) {
-        //TODO: Remove this?? given sometimes it may make more sense to just get and keep value
         return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent();
-    }
-
-    public static IItemHandler getItemHandler(TileEntity tile, Direction side) {
-        //TODO: Do this better, so that we check things are not null before using this? So that checks can be done a bit better
-        return MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side)).orElse(null);
     }
 }

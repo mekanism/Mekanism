@@ -45,7 +45,6 @@ public class HashedItem {
         if (itemStack.hasTag()) {
             code = 31 * code + itemStack.getTag().hashCode();
         }
-        code = 31 * code + itemStack.getDamage();
         return code;
     }
 }

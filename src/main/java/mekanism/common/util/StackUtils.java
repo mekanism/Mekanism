@@ -20,27 +20,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class StackUtils {
 
-    //ignores count
-    //TODO: Remove this method/replace it as there is no longer a wildcard
-    // The core difference between this and other things is that this cares about item damage still
-    public static boolean equalsWildcard(ItemStack wild, ItemStack check) {
-        if (wild.isEmpty() && check.isEmpty()) {
-            return true;
-        }
-        return wild.getItem() == check.getItem() && wild.getDamage() == check.getDamage();
-    }
-
-    //ignores count
-    //TODO: Remove this method/replace it as there is no longer a wildcard
-    // The core difference between this and other things is that this cares about item damage still
-    public static boolean equalsWildcardWithNBT(ItemStack wild, ItemStack check) {
-        boolean wildcard = equalsWildcard(wild, check);
-        if (wild.isEmpty() || check.isEmpty()) {
-            return wildcard;
-        }
-        return wildcard && (!wild.hasTag() ? !check.hasTag() : (wild.getTag() == check.getTag() || wild.getTag().equals(check.getTag())));
-    }
-
     public static ItemStack size(ItemStack stack, int size) {
         //TODO: We probably can replace this with: ItemHandlerHelper.copyStackWithSize(container, 1)
         if (size <= 0 || stack.isEmpty()) {

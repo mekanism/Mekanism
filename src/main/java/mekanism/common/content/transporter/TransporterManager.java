@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
@@ -15,12 +16,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.content.transporter.TransitRequest.TransitResponse;
 import mekanism.common.content.transporter.TransporterStack.Path;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -146,11 +150,12 @@ public class TransporterManager {
 
         // Get the item handler for the TE; fail if it's not an item handler (and log for good measure --
         // there shouldn't be anything that's not an IItemHandler anymore)
-        IItemHandler handler = InventoryUtils.getItemHandler(tile, side.getOpposite());
-        if (handler == null) {
+        Optional<IItemHandler> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()));
+        if (!capability.isPresent()) {
             Mekanism.logger.error("Failed to predict insert; not an IItemHandler: {}", tile);
             return TransitResponse.EMPTY;
         }
+        IItemHandler handler = capability.get();
 
         // Before we see if this item can fit in the destination, we must first check the stacks that are
         // en-route. Note that we also have to simulate the current inventory after each stack; we'll keep

@@ -86,23 +86,21 @@ public final class InvStack {
      * @param amount - the amount of items to remove
      */
     public void use(int amount) {
-        if (!InventoryUtils.assertItemHandler("InvStack", tile, side)) {
-            return;
-        }
-        IItemHandler handler = InventoryUtils.getItemHandler(tile, side);
-        for (Int2IntMap.Entry entry : itemMap.int2IntEntrySet()) {
-            int toUse = Math.min(amount, entry.getIntValue());
-            ItemStack ret = handler.extractItem(entry.getIntKey(), toUse, false);
-            boolean stackable = InventoryUtils.areItemsStackable(itemType.getStack(), ret);
-            if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
-                Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count") + " does not line up with InvStack's prediction.");
-                Mekanism.logger.warn("InvStack item: " + itemType.getStack() + ", ret: " + ret);
-                Mekanism.logger.warn("Tile: " + tile + " " + tile.getPos());
-            }
-
-            amount -= toUse;
-            if (amount == 0) {
-                return;
+        IItemHandler handler = InventoryUtils.assertItemHandler("InvStack", tile, side);
+        if (handler != null) {
+            for (Int2IntMap.Entry entry : itemMap.int2IntEntrySet()) {
+                int toUse = Math.min(amount, entry.getIntValue());
+                ItemStack ret = handler.extractItem(entry.getIntKey(), toUse, false);
+                boolean stackable = InventoryUtils.areItemsStackable(itemType.getStack(), ret);
+                if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
+                    Mekanism.logger.warn("An inventory's returned content " + (!stackable ? "type" : "count") + " does not line up with InvStack's prediction.");
+                    Mekanism.logger.warn("InvStack item: " + itemType.getStack() + ", ret: " + ret);
+                    Mekanism.logger.warn("Tile: " + tile + " " + tile.getPos());
+                }
+                amount -= toUse;
+                if (amount == 0) {
+                    return;
+                }
             }
         }
     }

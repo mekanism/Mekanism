@@ -21,7 +21,7 @@ public enum RelativeSide {
     /**
      * Gets the {@link Direction} from the block based on what side it is facing.
      *
-     * @param facing The direction the block si facing.
+     * @param facing The direction the block is facing.
      *
      * @return The direction representing which side of the block this RelativeSide is actually representing based on the direction it is facing.
      */

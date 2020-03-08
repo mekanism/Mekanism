@@ -46,12 +46,10 @@ public class TransitRequest {
         TransitRequest ret = new TransitRequest();
         // so we can keep track of how many of each item type we have in this inventory mapping
         Object2IntMap<HashedItem> itemCountMap = new Object2IntOpenHashMap<>();
-
-        if (!InventoryUtils.assertItemHandler("TransitRequest", tile, side.getOpposite())) {
+        IItemHandler inventory = InventoryUtils.assertItemHandler("TransitRequest", tile, side.getOpposite());
+        if (inventory == null) {
             return ret;
         }
-
-        IItemHandler inventory = InventoryUtils.getItemHandler(tile, side.getOpposite());
 
         // count backwards- we start from the bottom of the inventory and go back for consistency
         for (int i = inventory.getSlots() - 1; i >= 0; i--) {
@@ -87,16 +85,16 @@ public class TransitRequest {
 
     public void addItem(ItemStack stack, int slot) {
         HashedItem hashed = new HashedItem(stack);
-        if (!itemMap.containsKey(hashed)) {
-            Int2IntMap slotMap = new Int2IntOpenHashMap();
-            slotMap.put(slot, stack.getCount());
-            itemMap.put(hashed, Pair.of(stack.getCount(), slotMap));
-        } else {
+        if (itemMap.containsKey(hashed)) {
             Pair<Integer, Int2IntMap> itemInfo = itemMap.get(hashed);
             int count = itemInfo.getLeft() + stack.getCount();
             Int2IntMap slotMap = itemInfo.getRight();
             slotMap.put(slot, stack.getCount());
             itemMap.put(hashed, Pair.of(count, slotMap));
+        } else {
+            Int2IntMap slotMap = new Int2IntOpenHashMap();
+            slotMap.put(slot, stack.getCount());
+            itemMap.put(hashed, Pair.of(stack.getCount(), slotMap));
         }
     }
 
@@ -149,7 +147,7 @@ public class TransitRequest {
         }
 
         public boolean isEmpty() {
-            return this == EMPTY || idMap.isEmpty() || (toSend != null && toSend.isEmpty());
+            return this == EMPTY || idMap.isEmpty() || toSend.isEmpty();
         }
 
         public ItemStack getRejected(ItemStack orig) {

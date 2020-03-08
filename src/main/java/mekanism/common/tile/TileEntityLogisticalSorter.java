@@ -86,7 +86,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                     boolean sentItems = false;
                     int min = 0;
 
-                    outer:
                     for (TransporterFilter<?> filter : filters) {
                         for (StackSearcher search = new StackSearcher(back, getOppositeDirection()); search.getSlotCount() >= 0; ) {
                             InvStack invStack = filter.getStackFromInventory(search, singleItem);
@@ -109,7 +108,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                                     back.markDirty();
                                     setActive(true);
                                     sentItems = true;
-                                    break outer;
+                                    break;
                                 }
                             }
                         }
