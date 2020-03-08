@@ -65,6 +65,15 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return new BasicFluidTank(capacity, canExtract, canInsert, validator, fluidHandler);
     }
 
+    public static BasicFluidTank create(int capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
+          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
+        //TODO: Validate capacity is positive
+        Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
+        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
+        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
+        return new BasicFluidTank(capacity, canExtract, canInsert, validator, fluidHandler);
+    }
+
     /**
      * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(FluidStack)} should be used
      * instead.
@@ -83,8 +92,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
               validator, fluidHandler);
     }
 
-    protected BasicFluidTank(int capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert,
-          Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
+    protected BasicFluidTank(int capacity, BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canExtract,
+          BiPredicate<@NonNull FluidStack, @NonNull AutomationType> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
         this.capacity = capacity;
         this.canExtract = canExtract;
         this.canInsert = canInsert;

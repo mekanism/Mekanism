@@ -9,6 +9,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.RotaryCachedRecipe;
@@ -85,7 +86,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     @Override
     protected IChemicalTankHolder<Gas, GasStack> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack> builder = ChemicalTankHelper.forSideGas(this::getDirection);
-        builder.addTank(gasTank = BasicGasTank.create(CAPACITY, gas -> mode, gas -> !mode, this::isValidGas, this), RelativeSide.LEFT);
+        //Only allow extraction
+        builder.addTank(gasTank = BasicGasTank.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
+              (gas, automationType) -> automationType == AutomationType.INTERNAL || !mode, this::isValidGas, this), RelativeSide.LEFT);
         return builder.build();
     }
 
@@ -97,7 +100,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(fluidTank = BasicFluidTank.create(CAPACITY, fluid -> !mode, fluid -> mode, this::isValidFluid, this), RelativeSide.RIGHT);
+        builder.addTank(fluidTank = BasicFluidTank.create(CAPACITY, (fluid, automationType) -> automationType == AutomationType.MANUAL || !mode,
+              (fluid, automationType) -> automationType == AutomationType.INTERNAL || mode, this::isValidFluid, this), RelativeSide.RIGHT);
         return builder.build();
     }
 
