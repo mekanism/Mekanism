@@ -163,6 +163,9 @@ public final class NBTConstants {
 
     public static final String DIMENSION = "dimension";
 
+    public static final String ACTIVE_STATE = "activeState";
+    public static final String UPDATE_DELAY = "updateDelay";
+
     //Server to Client specific sync NBT tags
     public static final String ENERGY_SCALE = "energy_scale";
     public static final String OWNER_NAME = "ownerName";

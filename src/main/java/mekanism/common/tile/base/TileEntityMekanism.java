@@ -489,10 +489,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                         setActive(currentActive);
                     }
                 }
-
-                if (ticker == 0) {
-                    currentActive = getClientActive();
-                }
             }
             onUpdateServer();
             if (doAutoSync) {
@@ -587,6 +583,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (isElectric()) {
             electricityStored = nbtTags.getDouble(NBTConstants.ENERGY_STORED);
         }
+        if (isActivatable()) {
+            currentActive = nbtTags.getBoolean(NBTConstants.ACTIVE_STATE);
+            updateDelay = nbtTags.getInt(NBTConstants.UPDATE_DELAY);
+        }
     }
 
     @Nonnull
@@ -614,6 +614,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
         if (isElectric()) {
             nbtTags.putDouble(NBTConstants.ENERGY_STORED, getEnergy());
+        }
+        if (isActivatable()) {
+            nbtTags.putBoolean(NBTConstants.ACTIVE_STATE, currentActive);
+            nbtTags.putInt(NBTConstants.UPDATE_DELAY, updateDelay);
         }
         return nbtTags;
     }
