@@ -82,7 +82,7 @@ public class BlockFluidTank extends BlockMekanism implements IHasModel, IHasGui<
         int ambientLight = 0;
         TileEntityFluidTank tile = MekanismUtils.getTileEntity(TileEntityFluidTank.class, world, pos);
         if (tile != null) {
-            if (MekanismConfig.client.enableAmbientLighting.get() && tile.lightUpdate() && tile.wasActiveRecently()) {
+            if (MekanismConfig.client.enableAmbientLighting.get() && tile.lightUpdate() && tile.getActive()) {
                 ambientLight = MekanismConfig.client.ambientLightingLevel.get();
             }
             FluidStack fluid = tile.fluidTank.getFluid();

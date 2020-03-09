@@ -132,7 +132,7 @@ public class BlockMachine<TILE extends TileEntityMekanism, MACHINE extends Machi
     public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         if (MekanismConfig.client.enableAmbientLighting.get()) {
             TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-            if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).wasActiveRecently()) {
+            if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).getActive()) {
                 return MekanismConfig.client.ambientLightingLevel.get();
             }
         }

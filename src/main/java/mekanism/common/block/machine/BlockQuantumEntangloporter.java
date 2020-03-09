@@ -18,7 +18,6 @@ import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.block.states.IStateActive;
 import mekanism.common.block.states.IStateFacing;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.config.MekanismConfig;
@@ -44,7 +43,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.state.DirectionProperty;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -60,7 +58,7 @@ import net.minecraft.world.World;
 
 //TODO: Evaluate IStateActive here, is used for animateTick. There might be a better way to do this without requiring it to have a state
 public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockElectric, IHasGui<TileEntityQuantumEntangloporter>, ISupportsUpgrades, IStateFacing,
-      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateActive, IStateFluidLoggable, IHasDescription {
+      IHasInventory, IHasSecurity, IHasTileEntity<TileEntityQuantumEntangloporter>, IStateFluidLoggable, IHasDescription {
 
     //Note: Does not include the "core"
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
@@ -122,9 +120,9 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
     public void animateTick(BlockState state, World world, BlockPos pos, Random random) {
         TileEntityMekanism tile = MekanismUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile != null && MekanismUtils.isActive(world, pos) && ((IActiveState) tile).renderUpdate() && MekanismConfig.client.machineEffects.get()) {
-            float xRandom = (float) pos.getX() + 0.5F;
-            float yRandom = (float) pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
-            float zRandom = (float) pos.getZ() + 0.5F;
+            float xRandom = pos.getX() + 0.5F;
+            float yRandom = pos.getY() + 0.0F + random.nextFloat() * 6.0F / 16.0F;
+            float zRandom = pos.getZ() + 0.5F;
             float iRandom = 0.52F;
             float jRandom = random.nextFloat() * 0.6F - 0.3F;
             Direction side = tile.getDirection();
@@ -150,17 +148,6 @@ public class BlockQuantumEntangloporter extends BlockMekanism implements IBlockE
                     break;
             }
         }
-    }
-
-    @Override
-    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-        if (MekanismConfig.client.enableAmbientLighting.get()) {
-            TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-            if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).wasActiveRecently()) {
-                return MekanismConfig.client.ambientLightingLevel.get();
-            }
-        }
-        return 0;
     }
 
     @Nonnull

@@ -1,6 +1,5 @@
 package mekanism.common.tile.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -8,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
@@ -235,11 +236,9 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //End variables ITileSecurity
 
     //Variables for handling ITileActive
-    private long lastActive = -1;
-
-    // Number of ticks that the block can be inactive before it's considered not recently active
-    //TODO: MekanismConfig.current().general.UPDATE_DELAY.val() except the default has to be changed to 100
-    private final int RECENT_THRESHOLD = 100;
+    private boolean currentActive;
+    private int updateDelay;
+    protected IntSupplier delaySupplier = MekanismConfig.general.UPDATE_DELAY;
     //End variables ITileActive
 
     //Variables for handling ITileSound
@@ -251,7 +250,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
      */
     private ISound activeSound;
     private int playSoundCooldown = 0;
-    protected int rapidChangeThreshold = 10;
     //End variables ITileSound
 
     public TileEntityMekanism(IBlockProvider blockProvider) {
@@ -314,8 +312,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
      * @implNote This method should be used for setting any variables that would normally be set directly, except that gets run to late to set things up properly in our
      * constructor.
      */
-    protected void presetVariables() {
-    }
+    protected void presetVariables() {}
 
     public Block getBlockType() {
         //TODO: Should this be getBlockState().getBlock()
@@ -483,14 +480,16 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (isRemote() && hasSound()) {
             updateSound();
         }
-        if (isActivatable()) {
-            //Update the block if the specified amount of time has passed
-            if (!getActive() && lastActive > 0) {
-                long updateDiff = getWorldNN().getDayTime() - lastActive;
-                if (updateDiff > RECENT_THRESHOLD) {
-                    MekanismUtils.updateBlock(world, getPos());
-                    lastActive = -1;
+        if (!isRemote() && isActivatable()) {
+            if (updateDelay > 0) {
+                updateDelay--;
+                if (updateDelay == 0 && getClientActive() != currentActive) {
+                    setActive(currentActive);
                 }
+            }
+
+            if (ticker == 0) {
+                currentActive = getClientActive();
             }
         }
 
@@ -1241,12 +1240,14 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //Methods for implementing ITileActive
     @Override
     public boolean getActive() {
-        if (isActivatable()) {
-            BlockState state = getBlockState();
-            Block block = state.getBlock();
-            if (block instanceof IStateActive) {
-                return ((IStateActive) block).isActive(state);
-            }
+        return isRemote() ? getClientActive() : currentActive;
+    }
+
+    private boolean getClientActive() {
+        BlockState state = getBlockState();
+        Block block = state.getBlock();
+        if (block instanceof IStateActive) {
+            return ((IStateActive) block).isActive(state);
         }
         return false;
     }
@@ -1254,40 +1255,20 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Override
     public void setActive(boolean active) {
         if (isActivatable()) {
-            boolean stateChange = getActive() != active;
-            if (stateChange) {
-                BlockState state = getBlockState();
-                Block block = state.getBlock();
-                if (block instanceof IStateActive) {
+            BlockState state = getBlockState();
+            Block block = state.getBlock();
+            if (block instanceof IStateActive) {
+                currentActive = active;
+
+                if (updateDelay == 0 && getClientActive() != active) {
                     int flags = 3;
-                    //TODO: Check if this is done correctly
-                    if (!active) {
-                        //Switched off; note the time
-                        lastActive = world.getDayTime();
-                        //TODO: Is there any case we don't want a rendering update here?
-                    } else {
-                        //Switching on; if lastActive is not currently set, trigger a lighting update
-                        // and make sure lastActive is clear
-                        if (lastActive != -1 || !lightUpdate() || !MekanismConfig.client.machineEffects.get()) {
-                            //Mark that we don't want a rendering update
-                            flags |= 4;
-                        }
-                        lastActive = -1;
-                    }
-                    //TODO: Should we also check renderUpdate() for building flags
-                    //Set the state
+
                     state = ((IStateActive) block).setActive(state, active);
                     world.setBlockState(pos, state, flags);
+                    updateDelay = delaySupplier.getAsInt();
                 }
             }
         }
-    }
-
-    @Override
-    public boolean wasActiveRecently() {
-        // If the machine is currently active or it flipped off within our threshold,
-        // we'll consider it recently active.
-        return isActivatable() && (getActive() || (lastActive > 0 && (world.getDayTime() - lastActive) < RECENT_THRESHOLD));
     }
     //End methods ITileActive
 
@@ -1318,18 +1299,10 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way
             // we don't want to try again
             playSoundCooldown = 20;
-        } else {
-            // Determine how long the machine has been stopped (ala lighting changes). Don't try and stop the sound
-            // unless machine has been stopped at least half-a-second, so that machines which are rapidly flipping on/off
-            // just sound like they are continuously on.
-            // Some machines call the constructor where they can change rapidChangeThreshold,
-            // because their sound is intended to be turned on/off rapidly, eg. the clicking of LogisticalSorter.
-            long downtime = world.getDayTime() - lastActive;
-            if (activeSound != null && downtime > rapidChangeThreshold) {
-                SoundHandler.stopTileSound(getPos());
-                activeSound = null;
-                playSoundCooldown = 0;
-            }
+        } else if (activeSound != null) {
+            SoundHandler.stopTileSound(getPos());
+            activeSound = null;
+            playSoundCooldown = 0;
         }
     }
 

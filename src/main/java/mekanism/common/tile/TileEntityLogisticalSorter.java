@@ -58,7 +58,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     public TileEntityLogisticalSorter() {
         super(MekanismBlocks.LOGISTICAL_SORTER);
-        rapidChangeThreshold = 3;
+        delaySupplier = () -> 3;
     }
 
     @Nonnull
