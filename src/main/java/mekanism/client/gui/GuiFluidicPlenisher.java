@@ -40,13 +40,13 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
-        drawString(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00);
-        drawString(MekanismLang.FINISHED.translate(YesNo.of(tile.finishedCalc)), 51, 35, 0x00CD00);
+        renderScaledText(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), 51, 26, 0x00CD00, 74);
+        renderScaledText(MekanismLang.FINISHED.translate(YesNo.of(tile.finishedCalc)), 51, 35, 0x00CD00, 74);
         FluidStack fluid = tile.fluidTank.getFluid();
         if (fluid.isEmpty()) {
-            drawString(MekanismLang.NO_FLUID.translate(), 51, 44, 0x00CD00);
+            renderScaledText(MekanismLang.NO_FLUID.translate(), 51, 44, 0x00CD00, 74);
         } else {
-            drawString(MekanismLang.GENERIC_STORED_MB.translate(fluid, fluid.getAmount()), 51, 44, 0x00CD00);
+            renderScaledText(MekanismLang.GENERIC_STORED_MB.translate(fluid, fluid.getAmount()), 51, 44, 0x00CD00, 74);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
