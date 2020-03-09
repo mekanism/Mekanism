@@ -6,12 +6,9 @@ import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
-import mekanism.client.gui.element.slot.GuiSlot;
-import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityFluidicPlenisher;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
@@ -24,14 +21,12 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
 
     public GuiFluidicPlenisher(MekanismTileContainer<TileEntityFluidicPlenisher> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+        dynamicSlots = true;
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSlot(SlotType.NORMAL, this, 27, 19));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 27, 50));
-        addButton(new GuiSlot(SlotType.POWER, this, 142, 34).with(SlotOverlay.POWER));
         addButton(new GuiVerticalPowerBar(this, tile, 164, 15));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiEnergyInfo(() -> Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(tile.getEnergyPerTick())),

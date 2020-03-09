@@ -96,7 +96,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(fluidTank = BasicFluidTank.create(10_000, this), RelativeSide.TOP);
+        builder.addTank(fluidTank = BasicFluidTank.output(10_000, this), RelativeSide.TOP);
         return builder.build();
     }
 
