@@ -53,14 +53,11 @@ public abstract class TileEntityBasicMachine<RECIPE extends MekanismRecipe> exte
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

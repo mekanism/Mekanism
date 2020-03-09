@@ -672,13 +672,24 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Do not override this method if you are implementing {@link IToggleableCapability}, instead override {@link #getCapabilityIfEnabled(Capability,
+     * Direction)}, calling this method is fine.
+     */
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        //Due to TileEntity implementing ICapabilityProvider we have to manually copy the logic from IToggleableCapability
+        // that reroutes getCapability to check if it is disabled and otherwise use getCapabilityIfEnabled
+        return isCapabilityDisabled(capability, side) ? LazyOptional.empty() : getCapabilityIfEnabled(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         //TODO: Cache the LazyOptional where possible as recommended in ICapabilityProvider
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
         if (hasInventory()) {
             if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
                 List<IInventorySlot> inventorySlots = getInventorySlots(side);
@@ -732,6 +743,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
             }
         }
+        //Call to the TileEntity's Implementation of getCapability if we could not find a capability ourselves
         return super.getCapability(capability, side);
     }
 

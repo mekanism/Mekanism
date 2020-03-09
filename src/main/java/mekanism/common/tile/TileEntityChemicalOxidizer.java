@@ -29,9 +29,6 @@ import mekanism.common.tile.prefab.TileEntityOperationalMachine;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<ItemStackToGasRecipe> implements ITankManager {
 
@@ -115,14 +112,6 @@ public class TileEntityChemicalOxidizer extends TileEntityOperationalMachine<Ite
               .setRequiredTicks(() -> ticksRequired)
               .setOnFinish(this::markDirty)
               .setOperatingTicksChanged(this::setOperatingTicks);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side == getDirection() || side == getOppositeDirection();
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

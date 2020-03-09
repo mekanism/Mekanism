@@ -150,10 +150,10 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
             return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 }

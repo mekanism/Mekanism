@@ -165,11 +165,11 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

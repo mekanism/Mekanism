@@ -339,25 +339,18 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
+        } else if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (configComponent.isCapabilityDisabled(capability, side)) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
+        return configComponent.isCapabilityDisabled(capability, side) || super.isCapabilityDisabled(capability, side);
     }
 
     @Override

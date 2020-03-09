@@ -358,10 +358,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return !isFormed();
-        }
-        if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && !isFormed()) {
+            return true;
+        } else if (capability == Capabilities.GAS_HANDLER_CAPABILITY || capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
             //Never allow the gas or fluid handler cap to be enabled here even though internally we can handle both of them
             return true;
         }

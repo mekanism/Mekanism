@@ -47,7 +47,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidContainerManager, ITankManager {
 
@@ -253,21 +252,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        } else if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side != null && side != Direction.DOWN && side != Direction.UP;
-        }
-        return super.isCapabilityDisabled(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

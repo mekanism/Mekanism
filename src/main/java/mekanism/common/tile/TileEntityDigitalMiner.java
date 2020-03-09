@@ -850,37 +850,30 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
+        } else if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getOffsetCapability(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
-        if (isOffsetCapabilityDisabled(capability, side, offset)) {
-            return LazyOptional.empty();
-        }
+    public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> getItemHandler(side)));
-        }
-        if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
+        } else if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
             return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
+        } else if (capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
             return Capabilities.ENERGY_ACCEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
+        } else if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
             return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == CapabilityEnergy.ENERGY) {
+        } else if (capability == CapabilityEnergy.ENERGY) {
             return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
         }
+        //Fallback to checking the normal capabilities
         return getCapability(capability, side);
     }
 
@@ -899,8 +892,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                 return side != back;
             }
             return true;
-        }
-        if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY) {
+        } else if (isStrictEnergy(capability) || capability == CapabilityEnergy.ENERGY) {
             if (offset.equals(Vec3i.NULL_VECTOR)) {
                 //Disable if it is the bottom port but wrong side of it
                 return side != Direction.DOWN;

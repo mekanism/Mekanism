@@ -37,7 +37,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILaserReceptor, IStrictEnergyOutputter, IStrictEnergyStorage {
 
@@ -277,25 +276,15 @@ public class TileEntityLaserAmplifier extends TileEntityMekanism implements ILas
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
             return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
+        } else if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
             return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
+        } else if (capability == Capabilities.LASER_RECEPTOR_CAPABILITY) {
             return Capabilities.LASER_RECEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return true;
-        }
-        return super.isCapabilityDisabled(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

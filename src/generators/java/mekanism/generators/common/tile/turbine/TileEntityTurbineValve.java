@@ -89,7 +89,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if ((!isRemote() && structure != null) || (isRemote() && clientHasStructure)) {
             if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
                 return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
@@ -101,7 +101,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
                 return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, getDirection())));
             }
         }
-        return super.getCapability(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

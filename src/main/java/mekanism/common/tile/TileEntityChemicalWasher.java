@@ -37,10 +37,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.GasUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityChemicalWasher extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<FluidGasToGasRecipe> {
 
@@ -160,14 +157,6 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side == getDirection() || side == getOppositeDirection();
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

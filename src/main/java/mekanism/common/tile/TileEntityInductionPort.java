@@ -95,26 +95,19 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
+        } else if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {
             return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
+        } else if (capability == Capabilities.ENERGY_ACCEPTOR_CAPABILITY) {
             return Capabilities.ENERGY_ACCEPTOR_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
+        } else if (capability == Capabilities.ENERGY_OUTPUTTER_CAPABILITY) {
             return Capabilities.ENERGY_OUTPUTTER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == CapabilityEnergy.ENERGY) {
+        } else if (capability == CapabilityEnergy.ENERGY) {
             return CapabilityEnergy.ENERGY.orEmpty(capability, LazyOptional.of(() -> forgeEnergyManager.getWrapper(this, side)));
         }
-        return super.getCapability(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Nonnull

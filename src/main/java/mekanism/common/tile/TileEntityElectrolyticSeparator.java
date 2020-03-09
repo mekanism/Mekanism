@@ -45,9 +45,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.items.CapabilityItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityElectrolyticSeparator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<ElectrolysisRecipe> {
@@ -243,15 +241,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
         nbtTags.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
         nbtTags.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
         return nbtTags;
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //TODO: Make this just check the specific sides I think it is a shorter list?
-            return side != null && side != getDirection() && side != getOppositeDirection() && side != getRightSide();
-        }
-        return super.isCapabilityDisabled(capability, side);
     }
 
     @Override

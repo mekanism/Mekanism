@@ -41,7 +41,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityOredictionificator extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
@@ -251,25 +250,13 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        }
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.CONFIG_CARD_CAPABILITY) {
             return Capabilities.CONFIG_CARD_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
+        } else if (capability == Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY) {
             return Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, side);
-    }
-
-    @Override
-    public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return side == getDirection();
-        }
-        return super.isCapabilityDisabled(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override

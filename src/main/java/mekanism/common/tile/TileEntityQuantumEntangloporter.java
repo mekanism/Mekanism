@@ -470,21 +470,19 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (isCapabilityDisabled(capability, side)) {
-            return LazyOptional.empty();
-        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
+    public <T> LazyOptional<T> getCapabilityIfEnabled(@Nonnull Capability<T> capability, @Nullable Direction side) {
+        if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
             return Capabilities.HEAT_TRANSFER_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return super.getCapability(capability, side);
+        return super.getCapabilityIfEnabled(capability, side);
     }
 
     @Override
     public boolean isCapabilityDisabled(@Nonnull Capability<?> capability, Direction side) {
         if (configComponent.isCapabilityDisabled(capability, side)) {
             return true;
-        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY) {
-            return side != null && !hasFrequency();
+        } else if (capability == Capabilities.HEAT_TRANSFER_CAPABILITY && side != null && !hasFrequency()) {
+            return true;
         }
         return super.isCapabilityDisabled(capability, side);
     }
