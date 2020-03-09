@@ -56,24 +56,26 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.charge(this);
+        // If we're in a blacklisted dimension, there's nothing more to do
+        if (isBlacklistDimension) {
+            return;
+        }
+        if (ticker % 20 == 0) {
+            // Recalculate the current multiplier once a second
+            currentMultiplier = getMultiplier();
+            setActive(MekanismUtils.canFunction(this) && currentMultiplier > 0);
+        }
+        if (getActive()) {
+            setEnergy(getEnergy() + (MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier));
+        }
+    }
 
-        if (!isRemote()) {
-            energySlot.charge(this);
-            // If we're in a blacklisted dimension, there's nothing more to do
-            if (isBlacklistDimension) {
-                return;
-            }
-            if (ticker % 20 == 0) {
-                // Recalculate the current multiplier once a second
-                currentMultiplier = getMultiplier();
-                setActive(MekanismUtils.canFunction(this) && currentMultiplier > 0);
-            }
-            if (getActive()) {
-                setEnergy(getEnergy() + (MekanismGeneratorsConfig.generators.windGenerationMin.get() * currentMultiplier));
-            }
-        } else if (getActive()) {
+    @Override
+    protected void onUpdateClient() {
+        if (getActive()) {
             angle = (angle + (getPos().getY() + 4F) / SPEED_SCALED) % 360;
         }
     }

@@ -118,17 +118,15 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityBasicM
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            energySlot.discharge(this);
-            secondarySlot.fillTankOrConvert();
-            //TODO: Is there some better way to do this rather than storing it and then doing it like this?
-            // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
-            gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(gasUsage) : (int) Math.ceil(gasUsage);
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
+    protected void onUpdateServer() {
+        energySlot.discharge(this);
+        secondarySlot.fillTankOrConvert();
+        //TODO: Is there some better way to do this rather than storing it and then doing it like this?
+        // TODO: Also evaluate if there is a better way of doing the secondary calculation when not using statistical mechanics
+        gasUsageThisTick = useStatisticalMechanics() ? StatUtils.inversePoisson(gasUsage) : (int) Math.ceil(gasUsage);
+        cachedRecipe = getUpdatedCache(0);
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
         }
     }
 

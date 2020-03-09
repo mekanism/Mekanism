@@ -24,11 +24,9 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            if (MekanismUtils.canFunction(this)) {
-                CableUtils.emit(this);
-            }
+    protected void onUpdateServer() {
+        if (MekanismUtils.canFunction(this)) {
+            CableUtils.emit(this);
         }
     }
 

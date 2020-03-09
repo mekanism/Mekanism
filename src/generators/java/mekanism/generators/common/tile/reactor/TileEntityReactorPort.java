@@ -90,29 +90,31 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
     }
 
     @Override
-    public void onUpdate() {
+    protected void resetChanged() {
         if (changed) {
             World world = getWorld();
             if (world != null) {
                 world.notifyNeighborsOfStateChange(getPos(), getBlockType());
             }
         }
+        super.resetChanged();
+    }
 
-        super.onUpdate();
-        if (!isRemote()) {
-            CableUtils.emit(this);
-            if (getActive() && getReactor() != null && !getReactor().getSteamTank().isEmpty()) {
-                IExtendedFluidTank tank = getReactor().getSteamTank();
-                EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
-                    if (!(tile instanceof TileEntityReactorPort)) {
-                        CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
-                            if (PipeUtils.canFill(handler, tank.getFluid())) {
-                                tank.extract(handler.fill(tank.getFluid(), FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
-                            }
-                        });
-                    }
-                });
-            }
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        CableUtils.emit(this);
+        if (getActive() && getReactor() != null && !getReactor().getSteamTank().isEmpty()) {
+            IExtendedFluidTank tank = getReactor().getSteamTank();
+            EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
+                if (!(tile instanceof TileEntityReactorPort)) {
+                    CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                        if (PipeUtils.canFill(handler, tank.getFluid())) {
+                            tank.extract(handler.fill(tank.getFluid(), FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
+                        }
+                    });
+                }
+            });
         }
     }
 

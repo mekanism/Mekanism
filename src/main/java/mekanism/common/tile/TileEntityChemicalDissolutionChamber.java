@@ -88,18 +88,17 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityOperationalM
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            energySlot.discharge(this);
-            gasInputSlot.fillTankOrConvert();
-            outputSlot.drainTank();
-            injectUsageThisTick = StatUtils.inversePoisson(injectUsage);
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
-            GasUtils.emitGas(this, outputTank, gasOutput, getRightSide());
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.discharge(this);
+        gasInputSlot.fillTankOrConvert();
+        outputSlot.drainTank();
+        injectUsageThisTick = StatUtils.inversePoisson(injectUsage);
+        cachedRecipe = getUpdatedCache(0);
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
         }
+        GasUtils.emitGas(this, outputTank, gasOutput, getRightSide());
     }
 
     @Nonnull

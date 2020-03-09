@@ -95,26 +95,25 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            if (!settingsChecked) {
-                recheckSettings();
-            }
-            inputSlot.fillTank();
-            outputSlot.drainTank();
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (!settingsChecked) {
+            recheckSettings();
+        }
+        inputSlot.fillTank();
+        outputSlot.drainTank();
+        cachedRecipe = getUpdatedCache(0);
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
+        }
 
-            GasUtils.emitGas(this, outputTank, gasOutput, getDirection());
-            // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
-            // traffic from previous implementation that send the update every 10 ticks.
-            if (world.getDayTime() % 20 == 0) {
-                //TODO: Why do we have to be sending updates to the client anyways?
-                // I believe we send when state changes, and otherwise we only should have to be sending if recipe actually processes
-                Mekanism.packetHandler.sendUpdatePacket(this);
-            }
+        GasUtils.emitGas(this, outputTank, gasOutput, getDirection());
+        // Every 20 ticks (once a second), send update to client. Note that this is a 50% reduction in network
+        // traffic from previous implementation that send the update every 10 ticks.
+        if (world.getDayTime() % 20 == 0) {
+            //TODO: Why do we have to be sending updates to the client anyways?
+            // I believe we send when state changes, and otherwise we only should have to be sending if recipe actually processes
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 

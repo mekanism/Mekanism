@@ -38,16 +38,15 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
     }
 
     @Override
-    public void onUpdate() {
-        if (isRemote()) {
-            boolean newHot = false;
-            if (multiblockUUID != null && SynchronizedBoilerData.clientHotMap.containsKey(multiblockUUID)) {
-                newHot = SynchronizedBoilerData.clientHotMap.getBoolean(multiblockUUID);
-            }
-            if (prevHot != newHot) {
-                MekanismUtils.updateBlock(getWorld(), getPos());
-                prevHot = newHot;
-            }
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        boolean newHot = false;
+        if (multiblockUUID != null && SynchronizedBoilerData.clientHotMap.containsKey(multiblockUUID)) {
+            newHot = SynchronizedBoilerData.clientHotMap.getBoolean(multiblockUUID);
+        }
+        if (prevHot != newHot) {
+            MekanismUtils.updateBlock(getWorld(), getPos());
+            prevHot = newHot;
         }
     }
 }

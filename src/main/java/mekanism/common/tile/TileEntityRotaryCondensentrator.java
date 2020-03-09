@@ -128,26 +128,25 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            energySlot.discharge(this);
-            if (mode) {//Fluid to Gas
-                fluidInputSlot.fillTank(fluidOutputSlot);
-                gasInputSlot.drainTank();
-                GasUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
-            } else {//Gas to Fluid
-                gasOutputSlot.fillTank();
-                fluidInputSlot.drainTank(fluidOutputSlot);
-                //TODO: Auto eject fluid?
-            }
-            double prev = getEnergy();
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
-            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-            clientEnergyUsed = prev - getEnergy();
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.discharge(this);
+        if (mode) {//Fluid to Gas
+            fluidInputSlot.fillTank(fluidOutputSlot);
+            gasInputSlot.drainTank();
+            GasUtils.emitGas(this, gasTank, gasOutput, getLeftSide());
+        } else {//Gas to Fluid
+            gasOutputSlot.fillTank();
+            fluidInputSlot.drainTank(fluidOutputSlot);
+            //TODO: Auto eject fluid?
         }
+        double prev = getEnergy();
+        cachedRecipe = getUpdatedCache(0);
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
+        }
+        //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
+        clientEnergyUsed = prev - getEnergy();
     }
 
     @Override

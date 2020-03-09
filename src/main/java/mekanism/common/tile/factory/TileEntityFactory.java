@@ -154,40 +154,38 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            if (ticker == 1) {
-                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
-            }
-            energySlot.discharge(this);
-
-            handleSecondaryFuel();
-            sortInventory();
-
-            double prev = getEnergy();
-            for (int i = 0; i < cachedRecipes.length; i++) {
-                CachedRecipe<RECIPE> cachedRecipe = cachedRecipes[i] = getUpdatedCache(i);
-                if (cachedRecipe != null) {
-                    cachedRecipe.process();
-                } else {
-                    //If we don't have a recipe in that slot make sure that our active state for that position is false
-                    //TODO: Check if this is needed, it probably is already the case that if the cached recipe is null then
-                    // we should already have activeState as false
-                    activeStates[i] = false;
-                }
-            }
-
-            //Update the active state based on the current active state of each recipe
-            boolean isActive = false;
-            for (boolean state : activeStates) {
-                if (state) {
-                    isActive = true;
-                    break;
-                }
-            }
-            setActive(isActive);
-            lastUsage = prev - getEnergy();
+    protected void onUpdateServer() {
+        if (ticker == 1) {
+            world.notifyNeighborsOfStateChange(getPos(), getBlockType());
         }
+        energySlot.discharge(this);
+
+        handleSecondaryFuel();
+        sortInventory();
+
+        double prev = getEnergy();
+        for (int i = 0; i < cachedRecipes.length; i++) {
+            CachedRecipe<RECIPE> cachedRecipe = cachedRecipes[i] = getUpdatedCache(i);
+            if (cachedRecipe != null) {
+                cachedRecipe.process();
+            } else {
+                //If we don't have a recipe in that slot make sure that our active state for that position is false
+                //TODO: Check if this is needed, it probably is already the case that if the cached recipe is null then
+                // we should already have activeState as false
+                activeStates[i] = false;
+            }
+        }
+
+        //Update the active state based on the current active state of each recipe
+        boolean isActive = false;
+        for (boolean state : activeStates) {
+            if (state) {
+                isActive = true;
+                break;
+            }
+        }
+        setActive(isActive);
+        lastUsage = prev - getEnergy();
     }
 
     @Override

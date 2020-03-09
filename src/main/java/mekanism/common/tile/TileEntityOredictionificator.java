@@ -73,26 +73,25 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            didProcess = false;
-            if (MekanismUtils.canFunction(this) && !inputSlot.isEmpty()) {
-                ItemStack inputStack = inputSlot.getStack();
-                if (getValidName(inputStack) != null) {
-                    ItemStack result = getResult(inputStack);
-                    if (!result.isEmpty()) {
-                        ItemStack outputStack = outputSlot.getStack();
-                        if (outputStack.isEmpty()) {
-                            inputSlot.shrinkStack(1, Action.EXECUTE);
-                            outputSlot.setStack(result);
-                            didProcess = true;
-                        } else if (ItemHandlerHelper.canItemStacksStack(outputStack, result) && outputStack.getCount() < outputSlot.getLimit(outputStack)) {
-                            inputSlot.shrinkStack(1, Action.EXECUTE);
-                            outputSlot.growStack(1, Action.EXECUTE);
-                            didProcess = true;
-                        }
-                        markDirty();
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        didProcess = false;
+        if (MekanismUtils.canFunction(this) && !inputSlot.isEmpty()) {
+            ItemStack inputStack = inputSlot.getStack();
+            if (getValidName(inputStack) != null) {
+                ItemStack result = getResult(inputStack);
+                if (!result.isEmpty()) {
+                    ItemStack outputStack = outputSlot.getStack();
+                    if (outputStack.isEmpty()) {
+                        inputSlot.shrinkStack(1, Action.EXECUTE);
+                        outputSlot.setStack(result);
+                        didProcess = true;
+                    } else if (ItemHandlerHelper.canItemStacksStack(outputStack, result) && outputStack.getCount() < outputSlot.getLimit(outputStack)) {
+                        inputSlot.shrinkStack(1, Action.EXECUTE);
+                        outputSlot.growStack(1, Action.EXECUTE);
+                        didProcess = true;
                     }
+                    markDirty();
                 }
             }
         }

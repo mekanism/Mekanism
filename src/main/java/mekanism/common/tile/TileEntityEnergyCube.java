@@ -97,18 +97,17 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            chargeSlot.charge(this);
-            dischargeSlot.discharge(this);
-            if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
-                CableUtils.emit(this);
-            }
-            int newScale = (int) (getEnergy() * 20 / getMaxEnergy());
-            if (newScale != prevScale) {
-                sendUpdatePacket();
-                prevScale = newScale;
-            }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        chargeSlot.charge(this);
+        dischargeSlot.discharge(this);
+        if (MekanismUtils.canFunction(this) && configComponent.isEjecting(TransmissionType.ENERGY)) {
+            CableUtils.emit(this);
+        }
+        int newScale = (int) (getEnergy() * 20 / getMaxEnergy());
+        if (newScale != prevScale) {
+            sendUpdatePacket();
+            prevScale = newScale;
         }
     }
 

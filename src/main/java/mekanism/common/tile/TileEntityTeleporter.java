@@ -47,7 +47,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader, IFrequencyHandler {
 
-    public AxisAlignedBB teleportBounds = null;
+    private AxisAlignedBB teleportBounds = null;
 
     public Set<UUID> didTeleport = new ObjectOpenHashSet<>();
 
@@ -118,41 +118,39 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    public void onUpdate() {
+    protected void onUpdateServer() {
+        super.onUpdateServer();
         if (teleportBounds == null) {
             resetBounds();
         }
-
-        if (!isRemote()) {
-            FrequencyManager manager = getManager(frequency);
-            if (manager != null) {
-                if (frequency != null && !frequency.valid) {
-                    frequency = manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
-                }
-                if (frequency != null) {
-                    frequency = manager.update(Coord4D.get(this), frequency);
-                }
-            } else {
-                frequency = null;
+        FrequencyManager manager = getManager(frequency);
+        if (manager != null) {
+            if (frequency != null && !frequency.valid) {
+                frequency = manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
             }
-
-            status = canTeleport();
-            if (MekanismUtils.canFunction(this) && status == 1 && teleDelay == 0) {
-                teleport();
+            if (frequency != null) {
+                frequency = manager.update(Coord4D.get(this), frequency);
             }
-            if (teleDelay == 0 && !didTeleport.isEmpty()) {
-                cleanTeleportCache();
-            }
-
-            shouldRender = status == 1 || status > 4;
-            if (shouldRender != prevShouldRender) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
-                //This also means the comparator output changed so notify the neighbors we have a change
-                MekanismUtils.notifyLoadedNeighborsOfTileChange(world, Coord4D.get(this));
-            }
-            prevShouldRender = shouldRender;
-            teleDelay = Math.max(0, teleDelay - 1);
+        } else {
+            frequency = null;
         }
+
+        status = canTeleport();
+        if (MekanismUtils.canFunction(this) && status == 1 && teleDelay == 0) {
+            teleport();
+        }
+        if (teleDelay == 0 && !didTeleport.isEmpty()) {
+            cleanTeleportCache();
+        }
+
+        shouldRender = status == 1 || status > 4;
+        if (shouldRender != prevShouldRender) {
+            Mekanism.packetHandler.sendUpdatePacket(this);
+            //This also means the comparator output changed so notify the neighbors we have a change
+            MekanismUtils.notifyLoadedNeighborsOfTileChange(world, Coord4D.get(this));
+        }
+        prevShouldRender = shouldRender;
+        teleDelay = Math.max(0, teleDelay - 1);
         energySlot.discharge(this);
     }
 
@@ -164,7 +162,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return frequency;
     }
 
-    public Coord4D getClosest() {
+    private Coord4D getClosest() {
         if (frequency != null) {
             return frequency.getClosestCoords(Coord4D.get(this));
         }
@@ -230,7 +228,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
     }
 
-    public void cleanTeleportCache() {
+    private void cleanTeleportCache() {
         List<UUID> list = new ArrayList<>();
         for (Entity e : world.getEntitiesWithinAABB(Entity.class, teleportBounds)) {
             list.add(e.getUniqueID());
@@ -243,18 +241,17 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
     }
 
-    public void resetBounds() {
+    private void resetBounds() {
         teleportBounds = new AxisAlignedBB(getPos(), getPos().add(1, 3, 1));
     }
 
     /**
      * @return 1: yes, 2: no frame, 3: no link found, 4: not enough electricity
      */
-    public byte canTeleport() {
+    private byte canTeleport() {
         if (!hasFrame()) {
             return 2;
-        }
-        if (getClosest() == null) {
+        } else if (getClosest() == null) {
             return 3;
         }
         List<Entity> entitiesInPortal = getToTeleport();
@@ -269,10 +266,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return 1;
     }
 
-    public void teleport() {
-        if (isRemote()) {
-            return;
-        }
+    /**
+     * @apiNote Only call this from the server
+     */
+    private void teleport() {
         List<Entity> entitiesInPortal = getToTeleport();
         Coord4D closestCoords = getClosest();
         if (closestCoords == null) {
@@ -314,7 +311,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
     }
 
-    public List<Entity> getToTeleport() {
+    private List<Entity> getToTeleport() {
         List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, teleportBounds);
         List<Entity> ret = new ArrayList<>();
         for (Entity entity : entities) {
@@ -325,7 +322,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return ret;
     }
 
-    public int calculateEnergyCost(Entity entity, Coord4D coords) {
+    private int calculateEnergyCost(Entity entity, Coord4D coords) {
         int energyCost = MekanismConfig.usage.teleporterBase.get();
         if (entity.world.getDimension().getType().equals(coords.dimension)) {
             int distance = (int) Math.sqrt(entity.getDistanceSq(coords.x, coords.y, coords.z));
@@ -336,7 +333,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return energyCost;
     }
 
-    public boolean hasFrame() {
+    private boolean hasFrame() {
         if (isFrame(getPos().getX() - 1, getPos().getY(), getPos().getZ()) && isFrame(getPos().getX() + 1, getPos().getY(), getPos().getZ())
             && isFrame(getPos().getX() - 1, getPos().getY() + 1, getPos().getZ()) && isFrame(getPos().getX() + 1, getPos().getY() + 1, getPos().getZ())
             && isFrame(getPos().getX() - 1, getPos().getY() + 2, getPos().getZ()) && isFrame(getPos().getX() + 1, getPos().getY() + 2, getPos().getZ())

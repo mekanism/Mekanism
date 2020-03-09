@@ -21,69 +21,72 @@ import net.minecraft.util.math.RayTraceResult.Type;
 
 public class TileEntityLaser extends TileEntityMekanism {
 
-    public Coord4D digging;
-    public double diggingProgress;
+    private Coord4D digging;
+    private double diggingProgress;
 
     public TileEntityLaser() {
         super(MekanismBlocks.LASER);
     }
 
     @Override
-    public void onUpdate() {
-        if (isRemote()) {
-            if (getActive()) {
-                BlockRayTraceResult mop = ClientLaserManager.fireLaserClient(this, getDirection(), world);
-                Coord4D hitCoord = new Coord4D(mop, world);
-                if (!hitCoord.equals(digging)) {
-                    digging = mop.getType() == Type.MISS ? null : hitCoord;
-                    digging = hitCoord;
-                    diggingProgress = 0;
-                }
-                if (mop.getType() != Type.MISS) {
-                    BlockState blockHit = world.getBlockState(hitCoord.getPos());
-                    TileEntity tileHit = MekanismUtils.getTileEntity(world, hitCoord.getPos());
-                    float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-                    if (hardness >= 0) {
-                        Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()));
-                        if (!capability.isPresent() || capability.get().canLasersDig()) {
-                            diggingProgress += MekanismConfig.usage.laser.get();
-                            if (diggingProgress < hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
-                                Mekanism.proxy.addHitEffects(hitCoord, mop);
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            if (getEnergy() >= MekanismConfig.usage.laser.get()) {
-                setActive(true);
-                LaserInfo info = LaserManager.fireLaser(this, getDirection(), MekanismConfig.usage.laser.get(), world);
-                Coord4D hitCoord = new Coord4D(info.movingPos, world);
-                if (!hitCoord.equals(digging)) {
-                    digging = info.movingPos.getType() == Type.MISS ? null : hitCoord;
-                    diggingProgress = 0;
-                }
-                if (info.movingPos.getType() != Type.MISS) {
-                    BlockState blockHit = world.getBlockState(hitCoord.getPos());
-                    TileEntity tileHit = MekanismUtils.getTileEntity(world, hitCoord.getPos());
-                    float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
-                    if (hardness >= 0) {
-                        Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace()));
-                        if (!capability.isPresent() || capability.get().canLasersDig()) {
-                            diggingProgress += MekanismConfig.usage.laser.get();
-                            if (diggingProgress >= hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
-                                LaserManager.breakBlock(hitCoord, true, world, pos);
-                                diggingProgress = 0;
-                            }
-                            //TODO: Else tell client to spawn hit effect, instead of having there be client side onUpdate code for TileEntityLaser
-                        }
-                    }
-                }
-                setEnergy(getEnergy() - MekanismConfig.usage.laser.get());
-            } else {
-                setActive(false);
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        if (getActive()) {
+            BlockRayTraceResult mop = ClientLaserManager.fireLaserClient(this, getDirection(), world);
+            Coord4D hitCoord = new Coord4D(mop, world);
+            if (!hitCoord.equals(digging)) {
+                digging = mop.getType() == Type.MISS ? null : hitCoord;
+                digging = hitCoord;
                 diggingProgress = 0;
             }
+            if (mop.getType() != Type.MISS) {
+                BlockState blockHit = world.getBlockState(hitCoord.getPos());
+                TileEntity tileHit = MekanismUtils.getTileEntity(world, hitCoord.getPos());
+                float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
+                if (hardness >= 0) {
+                    Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()));
+                    if (!capability.isPresent() || capability.get().canLasersDig()) {
+                        diggingProgress += MekanismConfig.usage.laser.get();
+                        if (diggingProgress < hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
+                            Mekanism.proxy.addHitEffects(hitCoord, mop);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (getEnergy() >= MekanismConfig.usage.laser.get()) {
+            setActive(true);
+            LaserInfo info = LaserManager.fireLaser(this, getDirection(), MekanismConfig.usage.laser.get(), world);
+            Coord4D hitCoord = new Coord4D(info.movingPos, world);
+            if (!hitCoord.equals(digging)) {
+                digging = info.movingPos.getType() == Type.MISS ? null : hitCoord;
+                diggingProgress = 0;
+            }
+            if (info.movingPos.getType() != Type.MISS) {
+                BlockState blockHit = world.getBlockState(hitCoord.getPos());
+                TileEntity tileHit = MekanismUtils.getTileEntity(world, hitCoord.getPos());
+                float hardness = blockHit.getBlockHardness(world, hitCoord.getPos());
+                if (hardness >= 0) {
+                    Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, info.movingPos.getFace()));
+                    if (!capability.isPresent() || capability.get().canLasersDig()) {
+                        diggingProgress += MekanismConfig.usage.laser.get();
+                        if (diggingProgress >= hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
+                            LaserManager.breakBlock(hitCoord, true, world, pos);
+                            diggingProgress = 0;
+                        }
+                        //TODO: Else tell client to spawn hit effect, instead of having there be client side onUpdate code for TileEntityLaser
+                    }
+                }
+            }
+            setEnergy(getEnergy() - MekanismConfig.usage.laser.get());
+        } else {
+            setActive(false);
+            diggingProgress = 0;
         }
     }
 

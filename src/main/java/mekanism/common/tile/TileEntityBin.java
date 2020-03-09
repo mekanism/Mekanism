@@ -76,32 +76,31 @@ public class TileEntityBin extends TileEntityMekanism implements IActiveState, I
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            addTicks = Math.max(0, addTicks - 1);
-            delayTicks = Math.max(0, delayTicks - 1);
-            if (delayTicks == 0) {
-                if (getActive()) {
-                    TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
-                    ItemStack bottomStack = binSlot.getBottomStack();
-                    TransitResponse response;
-                    Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP));
-                    if (capability.isPresent()) {
-                        response = capability.get().insert(this, TransitRequest.getFromStack(bottomStack), null, true, 0);
-                    } else {
-                        response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false);
-                    }
-                    if (!response.isEmpty() && tier != BinTier.CREATIVE) {
-                        int sendingAmount = response.getSendingAmount();
-                        if (binSlot.shrinkStack(sendingAmount, Action.EXECUTE) != sendingAmount) {
-                            //TODO: Print error something went wrong
-                        }
-                    }
-                    delayTicks = 10;
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        addTicks = Math.max(0, addTicks - 1);
+        delayTicks = Math.max(0, delayTicks - 1);
+        if (delayTicks == 0) {
+            if (getActive()) {
+                TileEntity tile = MekanismUtils.getTileEntity(getWorld(), getPos().down());
+                ItemStack bottomStack = binSlot.getBottomStack();
+                TransitResponse response;
+                Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tile, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, Direction.UP));
+                if (capability.isPresent()) {
+                    response = capability.get().insert(this, TransitRequest.getFromStack(bottomStack), null, true, 0);
+                } else {
+                    response = InventoryUtils.putStackInInventory(tile, TransitRequest.getFromStack(bottomStack), Direction.DOWN, false);
                 }
-            } else {
-                delayTicks--;
+                if (!response.isEmpty() && tier != BinTier.CREATIVE) {
+                    int sendingAmount = response.getSendingAmount();
+                    if (binSlot.shrinkStack(sendingAmount, Action.EXECUTE) != sendingAmount) {
+                        //TODO: Print error something went wrong
+                    }
+                }
+                delayTicks = 10;
             }
+        } else {
+            delayTicks--;
         }
     }
 

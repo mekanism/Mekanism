@@ -187,47 +187,46 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            if (formula != null && stockControl && needsOrganize) {
-                needsOrganize = false;
-                organizeStock();
-            }
-            energySlot.discharge(this);
-            if (getControlType() != RedstoneControl.PULSE) {
-                pulseOperations = 0;
-            } else if (MekanismUtils.canFunction(this)) {
-                pulseOperations++;
-            }
-            checkFormula();
-            if (autoMode && formula == null) {
-                toggleAutoMode();
-            }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (formula != null && stockControl && needsOrganize) {
+            needsOrganize = false;
+            organizeStock();
+        }
+        energySlot.discharge(this);
+        if (getControlType() != RedstoneControl.PULSE) {
+            pulseOperations = 0;
+        } else if (MekanismUtils.canFunction(this)) {
+            pulseOperations++;
+        }
+        checkFormula();
+        if (autoMode && formula == null) {
+            toggleAutoMode();
+        }
 
-            if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this))) {
-                boolean canOperate = true;
-                if (!isRecipe) {
-                    canOperate = moveItemsToGrid();
-                }
-                if (canOperate) {
-                    isRecipe = true;
-                    if (operatingTicks >= ticksRequired) {
-                        if (doSingleCraft()) {
-                            operatingTicks = 0;
-                            if (pulseOperations > 0) {
-                                pulseOperations--;
-                            }
+        if (autoMode && formula != null && ((getControlType() == RedstoneControl.PULSE && pulseOperations > 0) || MekanismUtils.canFunction(this))) {
+            boolean canOperate = true;
+            if (!isRecipe) {
+                canOperate = moveItemsToGrid();
+            }
+            if (canOperate) {
+                isRecipe = true;
+                if (operatingTicks >= ticksRequired) {
+                    if (doSingleCraft()) {
+                        operatingTicks = 0;
+                        if (pulseOperations > 0) {
+                            pulseOperations--;
                         }
-                    } else if (getEnergy() >= getEnergyPerTick()) {
-                        operatingTicks++;
-                        setEnergy(getEnergy() - getEnergyPerTick());
                     }
-                } else {
-                    operatingTicks = 0;
+                } else if (getEnergy() >= getEnergyPerTick()) {
+                    operatingTicks++;
+                    setEnergy(getEnergy() - getEnergyPerTick());
                 }
             } else {
                 operatingTicks = 0;
             }
+        } else {
+            operatingTicks = 0;
         }
     }
 

@@ -130,38 +130,36 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            updatedThisTick = false;
-            if (ticker == 5) {
-                refresh();
-            }
-            boolean active = getActive();
-            if (active && height == 0) {
-                //If we are active but we can't possibly be valid and our data will get corrupted
-                // due to not actually having a valid height, then force a refresh
-                //TODO: Find a better way to do this, maybe once the evap tower has multiblock data
-                // in general, if that is how we end up rewriting the
-                refresh();
-                active = getActive();
-            }
-            if (active) {
-                updateTemperature();
-                inputOutputSlot.drainTank(outputOutputSlot);
-                inputInputSlot.fillTank(outputInputSlot);
-            }
-            //Note: This is not in a structured check as we want to make sure it stops if we do not have a structure
-            //TODO: Think through the logic, given we are calling the process so technically if it is not structured, then we
-            // don't actually have it processing so we don't need this outside of the structured? Verify
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
-            if (active && Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
-                prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
-            }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        updatedThisTick = false;
+        if (ticker == 5) {
+            refresh();
+        }
+        boolean active = getActive();
+        if (active && height == 0) {
+            //If we are active but we can't possibly be valid and our data will get corrupted
+            // due to not actually having a valid height, then force a refresh
+            //TODO: Find a better way to do this, maybe once the evap tower has multiblock data
+            // in general, if that is how we end up rewriting the
+            refresh();
+            active = getActive();
+        }
+        if (active) {
+            updateTemperature();
+            inputOutputSlot.drainTank(outputOutputSlot);
+            inputInputSlot.fillTank(outputInputSlot);
+        }
+        //Note: This is not in a structured check as we want to make sure it stops if we do not have a structure
+        //TODO: Think through the logic, given we are calling the process so technically if it is not structured, then we
+        // don't actually have it processing so we don't need this outside of the structured? Verify
+        cachedRecipe = getUpdatedCache(0);
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
+        }
+        if (active && Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
+            Mekanism.packetHandler.sendUpdatePacket(this);
+            prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
         }
     }
 

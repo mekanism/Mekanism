@@ -129,25 +129,24 @@ public class TileEntityElectrolyticSeparator extends TileEntityMekanism implemen
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            energySlot.discharge(this);
-            fluidSlot.fillTank();
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.discharge(this);
+        fluidSlot.fillTank();
 
-            leftOutputSlot.drainTank();
-            rightOutputSlot.drainTank();
-            double prev = getEnergy();
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
-            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-            clientEnergyUsed = prev - getEnergy();
-
-            int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-            handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
-            handleTank(rightTank, dumpRight, getRightSide(), dumpAmount);
+        leftOutputSlot.drainTank();
+        rightOutputSlot.drainTank();
+        double prev = getEnergy();
+        cachedRecipe = getUpdatedCache(0);
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
         }
+        //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
+        clientEnergyUsed = prev - getEnergy();
+
+        int dumpAmount = 8 * (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+        handleTank(leftTank, dumpLeft, getLeftSide(), dumpAmount);
+        handleTank(rightTank, dumpRight, getRightSide(), dumpAmount);
     }
 
     private void handleTank(IChemicalTank<Gas, GasStack> tank, GasMode mode, Direction side, int dumpAmount) {

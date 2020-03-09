@@ -134,40 +134,39 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            if (configComponent.isEjecting(TransmissionType.ENERGY)) {
-                CableUtils.emit(this);
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (configComponent.isEjecting(TransmissionType.ENERGY)) {
+            CableUtils.emit(this);
+        }
+        double[] loss = simulateHeat();
+        applyTemperatureChange();
+
+        lastTransferLoss = loss[0];
+        lastEnvironmentLoss = loss[1];
+
+        FrequencyManager manager = getManager(frequency);
+        Frequency lastFreq = frequency;
+
+        if (manager != null) {
+            if (frequency != null && !frequency.valid) {
+                frequency = (InventoryFrequency) manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
+                MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
+                markDirty();
             }
-            double[] loss = simulateHeat();
-            applyTemperatureChange();
 
-            lastTransferLoss = loss[0];
-            lastEnvironmentLoss = loss[1];
-
-            FrequencyManager manager = getManager(frequency);
-            Frequency lastFreq = frequency;
-
-            if (manager != null) {
-                if (frequency != null && !frequency.valid) {
-                    frequency = (InventoryFrequency) manager.validateFrequency(getSecurity().getOwnerUUID(), Coord4D.get(this), frequency);
+            if (frequency != null) {
+                frequency = (InventoryFrequency) manager.update(Coord4D.get(this), frequency);
+                if (frequency == null) {
                     MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
                     markDirty();
                 }
-
-                if (frequency != null) {
-                    frequency = (InventoryFrequency) manager.update(Coord4D.get(this), frequency);
-                    if (frequency == null) {
-                        MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
-                        markDirty();
-                    }
-                }
-            } else {
-                frequency = null;
-                if (lastFreq != null) {
-                    MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
-                    markDirty();
-                }
+            }
+        } else {
+            frequency = null;
+            if (lastFreq != null) {
+                MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
+                markDirty();
             }
         }
     }

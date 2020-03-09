@@ -34,20 +34,28 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IAc
     }
 
     @Override
-    public void onUpdate() {
-        if (isRemote()) {
-            if (getActive()) {
-                clientPiston++;
-            }
-        } else {
-            energySlot.discharge(this);
-            if (MekanismUtils.canFunction(this) && getEnergy() >= getBaseUsage()) {
-                setActive(true);
-                pullEnergy(null, getBaseUsage(), false);
-            } else {
-                setActive(false);
-            }
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        if (getActive()) {
+            clientPiston++;
         }
+        updateActiveVibrators();
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.discharge(this);
+        if (MekanismUtils.canFunction(this) && getEnergy() >= getBaseUsage()) {
+            setActive(true);
+            pullEnergy(null, getBaseUsage(), false);
+        } else {
+            setActive(false);
+        }
+        updateActiveVibrators();
+    }
+
+    private void updateActiveVibrators() {
         if (getActive()) {
             Mekanism.activeVibrators.add(Coord4D.get(this));
         } else {

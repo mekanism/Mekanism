@@ -168,10 +168,6 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     @Override
-    public void onUpdate() {
-    }
-
-    @Override
     public void setMultiblock(String id) {
         // Override the multiblock setter so that we can be sure to relay the ID down to the client; otherwise,
         // the rendering won't work properly

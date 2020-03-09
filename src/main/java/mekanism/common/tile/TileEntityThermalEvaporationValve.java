@@ -24,19 +24,17 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            if ((master == null) == prevMaster) {
-                for (Direction side : EnumUtils.DIRECTIONS) {
-                    BlockPos offset = pos.offset(side);
-                    if (!world.isAirBlock(offset) && MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, offset) == null) {
-                        MekanismUtils.notifyNeighborofChange(world, offset, pos);
-                    }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if ((master == null) == prevMaster) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
+                BlockPos offset = pos.offset(side);
+                if (!world.isAirBlock(offset) && MekanismUtils.getTileEntity(TileEntityThermalEvaporationBlock.class, world, offset) == null) {
+                    MekanismUtils.notifyNeighborofChange(world, offset, pos);
                 }
             }
-            prevMaster = master != null;
         }
+        prevMaster = master != null;
     }
 
     @Override

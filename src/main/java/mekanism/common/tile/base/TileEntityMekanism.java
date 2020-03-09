@@ -476,34 +476,33 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         for (ITileComponent component : components) {
             component.tick();
         }
+        if (isRemote()) {
+            if (hasSound()) {
+                updateSound();
+            }
+            onUpdateClient();
+        } else {
+            if (isActivatable()) {
+                if (updateDelay > 0) {
+                    updateDelay--;
+                    if (updateDelay == 0 && getClientActive() != currentActive) {
+                        setActive(currentActive);
+                    }
+                }
 
-        if (isRemote() && hasSound()) {
-            updateSound();
-        }
-        if (!isRemote() && isActivatable()) {
-            if (updateDelay > 0) {
-                updateDelay--;
-                if (updateDelay == 0 && getClientActive() != currentActive) {
-                    setActive(currentActive);
+                if (ticker == 0) {
+                    currentActive = getClientActive();
                 }
             }
-
-            if (ticker == 0) {
-                currentActive = getClientActive();
+            onUpdateServer();
+            if (doAutoSync) {
+                sendToAllUsing(() -> new PacketTileEntity(this));
             }
-        }
-
-        onUpdate();
-        if (!isRemote() && doAutoSync) {
-            sendToAllUsing(() -> new PacketTileEntity(this));
+            lastEnergyReceived = 0;
         }
         ticker++;
         if (supportsRedstone()) {
             redstoneLastTick = redstone;
-        }
-
-        if (!isRemote()) {
-            lastEnergyReceived = 0;
         }
     }
 
@@ -552,9 +551,16 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     }
 
     /**
-     * Update call for machines. Use instead of updateEntity -- it's called every tick.
+     * Update call for machines. Use instead of updateEntity -- it's called every tick on the client side.
      */
-    public abstract void onUpdate();
+    protected void onUpdateClient() {
+    }
+
+    /**
+     * Update call for machines. Use instead of updateEntity -- it's called every tick on the server side.
+     */
+    protected void onUpdateServer() {
+    }
 
     @Override
     public void read(CompoundNBT nbtTags) {

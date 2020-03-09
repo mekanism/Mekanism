@@ -101,53 +101,56 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     @Override
-    public void onUpdate() {
-        if (isRemote()) {
-            //TODO: Unify scale code into its own object/helper class so that we can use the same calculations everywhere
-            // and also make sure we include the override for rendering contents even when there is less than 0.01 for the
-            // scale they would be
-            float targetScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
-            if (Math.abs(prevScale - targetScale) > 0.01) {
-                prevScale = (9 * prevScale + targetScale) / 10;
-            } else if (!fluidTank.isEmpty() && prevScale == 0) {
-                //If we have any fluid in the tank make sure we end up rendering it
-                prevScale = targetScale;
-            }
-            if (updateClientLight) {
-                MekanismUtils.recheckLighting(world, pos);
-                updateClientLight = false;
-            }
-        } else {
-            if (valve > 0) {
-                valve--;
-                if (valve == 0) {
-                    valveFluid = FluidStack.EMPTY;
-                    needsPacket = true;
-                }
-            }
-
-            if (fluidTank.getFluidAmount() != prevAmount) {
-                markDirty();
-                needsPacket = true;
-                if (prevAmount == 0 || fluidTank.getFluidAmount() == 0) {
-                    //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
-                    // as the fluid may have changed and have a light value
-                    //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
-                    //TODO: Do we even need this on the sever side of things
-                    MekanismUtils.recheckLighting(world, pos);
-                }
-            }
-
-            prevAmount = fluidTank.getFluidAmount();
-            inputSlot.handleTank(outputSlot, editMode);
-            if (getActive()) {
-                activeEmit();
-            }
-            if (needsPacket) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
-            }
-            needsPacket = false;
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        //TODO: Unify scale code into its own object/helper class so that we can use the same calculations everywhere
+        // and also make sure we include the override for rendering contents even when there is less than 0.01 for the
+        // scale they would be
+        float targetScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
+        if (Math.abs(prevScale - targetScale) > 0.01) {
+            prevScale = (9 * prevScale + targetScale) / 10;
+        } else if (!fluidTank.isEmpty() && prevScale == 0) {
+            //If we have any fluid in the tank make sure we end up rendering it
+            prevScale = targetScale;
         }
+        if (updateClientLight) {
+            MekanismUtils.recheckLighting(world, pos);
+            updateClientLight = false;
+        }
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (valve > 0) {
+            valve--;
+            if (valve == 0) {
+                valveFluid = FluidStack.EMPTY;
+                needsPacket = true;
+            }
+        }
+
+        if (fluidTank.getFluidAmount() != prevAmount) {
+            markDirty();
+            needsPacket = true;
+            if (prevAmount == 0 || fluidTank.getFluidAmount() == 0) {
+                //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
+                // as the fluid may have changed and have a light value
+                //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
+                //TODO: Do we even need this on the sever side of things
+                MekanismUtils.recheckLighting(world, pos);
+            }
+        }
+
+        prevAmount = fluidTank.getFluidAmount();
+        inputSlot.handleTank(outputSlot, editMode);
+        if (getActive()) {
+            activeEmit();
+        }
+        if (needsPacket) {
+            Mekanism.packetHandler.sendUpdatePacket(this);
+        }
+        needsPacket = false;
     }
 
     private void activeEmit() {

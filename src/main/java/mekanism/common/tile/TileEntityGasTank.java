@@ -51,6 +51,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityGasTank extends TileEntityMekanism implements ISideConfiguration, ISustainedData {
+
     /**
      * The type of gas stored in this tank.
      */
@@ -126,38 +127,37 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            drainSlot.drainTank();
-            fillSlot.fillTank();
-            if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
-                ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
-                if (config != null && config.isEjecting()) {
-                    Set<Direction> sidesForData = config.getSidesForData(DataType.OUTPUT);
-                    if (!sidesForData.isEmpty()) {
-                        GasStack toSend = new GasStack(gasTank.getStack(), Math.min(gasTank.getStored(), tier.getOutput()));
-                        gasTank.shrinkStack(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE));
-                    }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        drainSlot.drainTank();
+        fillSlot.fillTank();
+        if (!gasTank.isEmpty() && MekanismUtils.canFunction(this) && (tier == GasTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
+            ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
+            if (config != null && config.isEjecting()) {
+                Set<Direction> sidesForData = config.getSidesForData(DataType.OUTPUT);
+                if (!sidesForData.isEmpty()) {
+                    GasStack toSend = new GasStack(gasTank.getStack(), Math.min(gasTank.getStored(), tier.getOutput()));
+                    gasTank.shrinkStack(GasUtils.emit(toSend, this, sidesForData), Action.get(tier != GasTankTier.CREATIVE));
                 }
             }
-
-            if (tier != GasTankTier.CREATIVE) {
-                if (dumping == GasMode.DUMPING) {
-                    gasTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
-                } else if (dumping == GasMode.DUMPING_EXCESS) {
-                    int needed = gasTank.getNeeded();
-                    if (needed < tier.getOutput()) {
-                        gasTank.shrinkStack(tier.getOutput() - needed, Action.EXECUTE);
-                    }
-                }
-            }
-
-            int newGasAmount = gasTank.getStored();
-            if (newGasAmount != currentGasAmount) {
-                markDirty();
-            }
-            currentGasAmount = newGasAmount;
         }
+
+        if (tier != GasTankTier.CREATIVE) {
+            if (dumping == GasMode.DUMPING) {
+                gasTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
+            } else if (dumping == GasMode.DUMPING_EXCESS) {
+                int needed = gasTank.getNeeded();
+                if (needed < tier.getOutput()) {
+                    gasTank.shrinkStack(tier.getOutput() - needed, Action.EXECUTE);
+                }
+            }
+        }
+
+        int newGasAmount = gasTank.getStored();
+        if (newGasAmount != currentGasAmount) {
+            markDirty();
+        }
+        currentGasAmount = newGasAmount;
     }
 
     @Override

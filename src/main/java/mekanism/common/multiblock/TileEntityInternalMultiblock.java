@@ -16,10 +16,6 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism {
     }
 
     @Override
-    public void onUpdate() {
-    }
-
-    @Override
     public void handlePacketData(PacketBuffer dataStream) {
         super.handlePacketData(dataStream);
         if (isRemote()) {

@@ -47,79 +47,79 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (isRemote()) {
-            if (structure != null && clientHasStructure && isRendering) {
-                float targetScale = (float) structure.waterTank.getFluidAmount() / (structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK);
-                if (Math.abs(prevWaterScale - targetScale) > 0.01) {
-                    prevWaterScale = (9 * prevWaterScale + targetScale) / 10;
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        if (structure != null && clientHasStructure && isRendering) {
+            float targetScale = (float) structure.waterTank.getFluidAmount() / (structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK);
+            if (Math.abs(prevWaterScale - targetScale) > 0.01) {
+                prevWaterScale = (9 * prevWaterScale + targetScale) / 10;
+            }
+        }
+        if (!clientHasStructure || !isRendering) {
+            for (ValveData data : valveViewing) {
+                TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
+                if (tile != null) {
+                    tile.clientHasStructure = false;
                 }
             }
-            if (!clientHasStructure || !isRendering) {
-                for (ValveData data : valveViewing) {
-                    TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
-                    if (tile != null) {
-                        tile.clientHasStructure = false;
-                    }
+            valveViewing.clear();
+        }
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (structure != null && isRendering) {
+            boolean needsValveUpdate = false;
+            for (ValveData data : structure.valves) {
+                if (data.activeTicks > 0) {
+                    data.activeTicks--;
                 }
-                valveViewing.clear();
-            }
-        } else {
-            if (structure != null) {
-                if (isRendering) {
-                    boolean needsValveUpdate = false;
-                    for (ValveData data : structure.valves) {
-                        if (data.activeTicks > 0) {
-                            data.activeTicks--;
-                        }
-                        if (data.activeTicks > 0 != data.prevActive) {
-                            needsValveUpdate = true;
-                        }
-                        data.prevActive = data.activeTicks > 0;
-                    }
-
-                    boolean needsHotUpdate = false;
-                    boolean newHot = structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP - 0.01F;
-                    if (newHot != structure.clientHot) {
-                        needsHotUpdate = true;
-                        structure.clientHot = newHot;
-                    }
-
-                    double[] d = structure.simulateHeat();
-                    structure.applyTemperatureChange();
-                    structure.lastEnvironmentLoss = d[1];
-                    if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
-                        int steamAmount = structure.steamTank.getFluidAmount();
-                        double heatAvailable = structure.getHeatAvailable();
-
-                        structure.lastMaxBoil = (int) Math.floor(heatAvailable / SynchronizedBoilerData.getHeatEnthalpy());
-
-                        int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
-                        amountToBoil = Math.min(amountToBoil, (structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK) - steamAmount);
-                        if (!structure.waterTank.isEmpty()) {
-                            structure.waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
-                        }
-                        if (structure.steamTank.isEmpty()) {
-                            structure.steamTank.setStack(MekanismFluids.STEAM.getFluidStack(amountToBoil));
-                        } else {
-                            structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
-                        }
-
-                        structure.temperature -= (amountToBoil * SynchronizedBoilerData.getHeatEnthalpy()) / structure.locations.size();
-                        structure.lastBoilRate = amountToBoil;
-                    } else {
-                        structure.lastBoilRate = 0;
-                        structure.lastMaxBoil = 0;
-                    }
-                    if (needsValveUpdate || structure.needsRenderUpdate() || needsHotUpdate) {
-                        sendPacketToRenderer();
-                    }
-                    structure.prevWater = structure.waterTank.isEmpty() ? FluidStack.EMPTY : structure.waterTank.getFluid().copy();
-                    structure.prevSteam = structure.steamTank.isEmpty() ? FluidStack.EMPTY : structure.steamTank.getFluid().copy();
-                    MekanismUtils.saveChunk(this);
+                if (data.activeTicks > 0 != data.prevActive) {
+                    needsValveUpdate = true;
                 }
+                data.prevActive = data.activeTicks > 0;
             }
+
+            boolean needsHotUpdate = false;
+            boolean newHot = structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP - 0.01F;
+            if (newHot != structure.clientHot) {
+                needsHotUpdate = true;
+                structure.clientHot = newHot;
+            }
+
+            double[] d = structure.simulateHeat();
+            structure.applyTemperatureChange();
+            structure.lastEnvironmentLoss = d[1];
+            if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
+                int steamAmount = structure.steamTank.getFluidAmount();
+                double heatAvailable = structure.getHeatAvailable();
+
+                structure.lastMaxBoil = (int) Math.floor(heatAvailable / SynchronizedBoilerData.getHeatEnthalpy());
+
+                int amountToBoil = Math.min(structure.lastMaxBoil, structure.waterTank.getFluidAmount());
+                amountToBoil = Math.min(amountToBoil, (structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK) - steamAmount);
+                if (!structure.waterTank.isEmpty()) {
+                    structure.waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
+                }
+                if (structure.steamTank.isEmpty()) {
+                    structure.steamTank.setStack(MekanismFluids.STEAM.getFluidStack(amountToBoil));
+                } else {
+                    structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
+                }
+
+                structure.temperature -= (amountToBoil * SynchronizedBoilerData.getHeatEnthalpy()) / structure.locations.size();
+                structure.lastBoilRate = amountToBoil;
+            } else {
+                structure.lastBoilRate = 0;
+                structure.lastMaxBoil = 0;
+            }
+            if (needsValveUpdate || structure.needsRenderUpdate() || needsHotUpdate) {
+                sendPacketToRenderer();
+            }
+            structure.prevWater = structure.waterTank.isEmpty() ? FluidStack.EMPTY : structure.waterTank.getFluid().copy();
+            structure.prevSteam = structure.steamTank.isEmpty() ? FluidStack.EMPTY : structure.steamTank.getFluid().copy();
+            MekanismUtils.saveChunk(this);
         }
     }
 

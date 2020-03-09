@@ -53,26 +53,30 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (isRemote()) {
-            if (clientHasStructure && isRendering) {
-                if (structure != null) {
-                    float targetScale = (float) structure.fluidTank.getFluidAmount() / (structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
-                    if (Math.abs(prevScale - targetScale) > 0.01) {
-                        prevScale = (9 * prevScale + targetScale) / 10;
-                    }
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        if (clientHasStructure && isRendering) {
+            if (structure != null) {
+                float targetScale = (float) structure.fluidTank.getFluidAmount() / (structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
+                if (Math.abs(prevScale - targetScale) > 0.01) {
+                    prevScale = (9 * prevScale + targetScale) / 10;
                 }
-            } else {
-                for (ValveData data : valveViewing) {
-                    TileEntityDynamicTank tile = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
-                    if (tile != null) {
-                        tile.clientHasStructure = false;
-                    }
-                }
-                valveViewing.clear();
             }
-        } else if (structure != null) {
+        } else {
+            for (ValveData data : valveViewing) {
+                TileEntityDynamicTank tile = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
+                if (tile != null) {
+                    tile.clientHasStructure = false;
+                }
+            }
+            valveViewing.clear();
+        }
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (structure != null) {
             if (isRendering) {
                 boolean needsValveUpdate = false;
                 for (ValveData data : structure.valves) {

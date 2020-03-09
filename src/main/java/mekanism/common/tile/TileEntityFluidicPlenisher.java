@@ -88,33 +88,32 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            energySlot.discharge(this);
-            inputSlot.fillTank(outputSlot);
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.discharge(this);
+        inputSlot.fillTank(outputSlot);
 
-            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.isEmpty()) {
+        if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick() && !fluidTank.isEmpty()) {
+            if (!finishedCalc) {
+                setEnergy(getEnergy() - getEnergyPerTick());
+            }
+            if ((operatingTicks + 1) < ticksRequired) {
+                operatingTicks++;
+            } else {
                 if (!finishedCalc) {
-                    setEnergy(getEnergy() - getEnergyPerTick());
-                }
-                if ((operatingTicks + 1) < ticksRequired) {
-                    operatingTicks++;
+                    doPlenish();
                 } else {
-                    if (!finishedCalc) {
-                        doPlenish();
-                    } else {
-                        BlockPos below = getPos().offset(Direction.DOWN);
-                        if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= FluidAttributes.BUCKET_VOLUME) {
-                            if (fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, below, fluidTank.getFluid())) {
-                                //TODO: Set fluid state??
-                                world.setBlockState(below, MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
-                                setEnergy(getEnergy() - getEnergyPerTick());
-                                fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
-                            }
+                    BlockPos below = getPos().offset(Direction.DOWN);
+                    if (canReplace(below, false, false) && fluidTank.getFluidAmount() >= FluidAttributes.BUCKET_VOLUME) {
+                        if (fluidTank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, below, fluidTank.getFluid())) {
+                            //TODO: Set fluid state??
+                            world.setBlockState(below, MekanismUtils.getFlowingBlockState(fluidTank.getFluid()));
+                            setEnergy(getEnergy() - getEnergyPerTick());
+                            fluidTank.extract(FluidAttributes.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
                         }
                     }
-                    operatingTicks = 0;
                 }
+                operatingTicks = 0;
             }
         }
     }

@@ -8,8 +8,4 @@ public class TileEntityElectromagneticCoil extends TileEntityMekanism {
     public TileEntityElectromagneticCoil() {
         super(GeneratorsBlocks.ELECTROMAGNETIC_COIL);
     }
-
-    @Override
-    public void onUpdate() {
-    }
 }

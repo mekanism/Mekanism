@@ -71,64 +71,62 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            delayTicks = Math.max(0, delayTicks - 1);
-            if (delayTicks == 6) {
-                setActive(false);
-            }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        delayTicks = Math.max(0, delayTicks - 1);
+        if (delayTicks == 6) {
+            setActive(false);
+        }
 
-            if (MekanismUtils.canFunction(this) && delayTicks == 0) {
-                TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-                TileEntity front = MekanismUtils.getTileEntity(getWorld(), pos.offset(getDirection()));
-                //If there is no tile to pull from or the push to, skip doing any checks
-                if (InventoryUtils.isItemHandler(back, getDirection()) && front != null) {
-                    boolean sentItems = false;
-                    int min = 0;
+        if (MekanismUtils.canFunction(this) && delayTicks == 0) {
+            TileEntity back = MekanismUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+            TileEntity front = MekanismUtils.getTileEntity(getWorld(), pos.offset(getDirection()));
+            //If there is no tile to pull from or the push to, skip doing any checks
+            if (InventoryUtils.isItemHandler(back, getDirection()) && front != null) {
+                boolean sentItems = false;
+                int min = 0;
 
-                    for (TransporterFilter<?> filter : filters) {
-                        for (StackSearcher search = new StackSearcher(back, getOppositeDirection()); search.getSlotCount() >= 0; ) {
-                            InvStack invStack = filter.getStackFromInventory(search, singleItem);
-                            if (invStack == null) {
+                for (TransporterFilter<?> filter : filters) {
+                    for (StackSearcher search = new StackSearcher(back, getOppositeDirection()); search.getSlotCount() >= 0; ) {
+                        InvStack invStack = filter.getStackFromInventory(search, singleItem);
+                        if (invStack == null) {
+                            break;
+                        }
+                        ItemStack itemStack = invStack.getStack();
+                        if (filter.canFilter(itemStack, !singleItem)) {
+                            if (!singleItem && filter instanceof TItemStackFilter) {
+                                TItemStackFilter itemFilter = (TItemStackFilter) filter;
+                                if (itemFilter.sizeMode) {
+                                    min = itemFilter.min;
+                                }
+                            }
+
+                            TransitRequest request = TransitRequest.getFromStack(itemStack);
+                            TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
+                            if (!response.isEmpty()) {
+                                invStack.use(response.getSendingAmount());
+                                back.markDirty();
+                                setActive(true);
+                                sentItems = true;
                                 break;
                             }
-                            ItemStack itemStack = invStack.getStack();
-                            if (filter.canFilter(itemStack, !singleItem)) {
-                                if (!singleItem && filter instanceof TItemStackFilter) {
-                                    TItemStackFilter itemFilter = (TItemStackFilter) filter;
-                                    if (itemFilter.sizeMode) {
-                                        min = itemFilter.min;
-                                    }
-                                }
-
-                                TransitRequest request = TransitRequest.getFromStack(itemStack);
-                                TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
-                                if (!response.isEmpty()) {
-                                    invStack.use(response.getSendingAmount());
-                                    back.markDirty();
-                                    setActive(true);
-                                    sentItems = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (!sentItems && autoEject) {
-                        TransitRequest request = TransitRequest.buildInventoryMap(back, getOppositeDirection(), singleItem ? 1 : 64, new StrictFilterFinder());
-                        TransitResponse response = emitItemToTransporter(front, request, color, 0);
-                        if (!response.isEmpty()) {
-                            response.getInvStack(back, getDirection()).use(response.getSendingAmount());
-                            back.markDirty();
-                            setActive(true);
                         }
                     }
                 }
 
-                delayTicks = 10;
+                if (!sentItems && autoEject) {
+                    TransitRequest request = TransitRequest.buildInventoryMap(back, getOppositeDirection(), singleItem ? 1 : 64, new StrictFilterFinder());
+                    TransitResponse response = emitItemToTransporter(front, request, color, 0);
+                    if (!response.isEmpty()) {
+                        response.getInvStack(back, getDirection()).use(response.getSendingAmount());
+                        back.markDirty();
+                        setActive(true);
+                    }
+                }
             }
-            sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
+            delayTicks = 10;
         }
+        sendToAllUsing(() -> new PacketTileEntity(this, getGenericPacket(new TileNetworkList())));
     }
 
     public TransitResponse emitItemToTransporter(TileEntity front, TransitRequest request, EnumColor filterColor, int min) {

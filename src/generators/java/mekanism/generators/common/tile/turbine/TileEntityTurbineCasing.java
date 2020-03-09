@@ -38,10 +38,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-
-        if (!isRemote() && structure != null && isRendering) {
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (structure != null && isRendering) {
             structure.lastSteamInput = structure.newSteamInput;
             structure.newSteamInput = 0;
 

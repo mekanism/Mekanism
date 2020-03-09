@@ -156,120 +156,128 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         return builder.build();
     }
 
-    @Override
-    public void onUpdate() {
-        if (getActive()) {
+    private void closeInvalidScreens() {
+        if (getActive() && !playersUsing.isEmpty()) {
             for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
                 if (player.openContainer instanceof IEmptyContainer || player.openContainer instanceof FilterContainer) {
                     player.closeScreen();
                 }
             }
         }
+    }
 
-        if (world != null && !isRemote()) {
-            if (!initCalc) {
-                if (searcher.state == State.FINISHED) {
-                    boolean prevRunning = running;
-                    reset();
-                    start();
-                    running = prevRunning;
-                }
-                initCalc = true;
+    @Override
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        closeInvalidScreens();
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        closeInvalidScreens();
+        if (!initCalc) {
+            if (searcher.state == State.FINISHED) {
+                boolean prevRunning = running;
+                reset();
+                start();
+                running = prevRunning;
             }
+            initCalc = true;
+        }
 
-            energySlot.discharge(this);
+        energySlot.discharge(this);
 
-            if (MekanismUtils.canFunction(this) && running && getEnergy() >= getEnergyPerTick() && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
-                setActive(true);
-                if (delay > 0) {
-                    delay--;
-                }
-                setEnergy(getEnergy() - getEnergyPerTick());
-                if (delay == 0) {
-                    boolean did = false;
-                    for (Iterator<ChunkPos> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
-                        ChunkPos chunk = it.next();
-                        BitSet set = oresToMine.get(chunk);
-                        int next = 0;
-                        while (!did) {
-                            int index = set.nextSetBit(next);
-                            BlockPos pos = getPosFromIndex(index);
-                            if (index == -1) {
+        if (MekanismUtils.canFunction(this) && running && getEnergy() >= getEnergyPerTick() && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
+            setActive(true);
+            if (delay > 0) {
+                delay--;
+            }
+            setEnergy(getEnergy() - getEnergyPerTick());
+            if (delay == 0) {
+                boolean did = false;
+                for (Iterator<ChunkPos> it = oresToMine.keySet().iterator(); it.hasNext(); ) {
+                    ChunkPos chunk = it.next();
+                    BitSet set = oresToMine.get(chunk);
+                    int next = 0;
+                    while (!did) {
+                        int index = set.nextSetBit(next);
+                        BlockPos pos = getPosFromIndex(index);
+                        if (index == -1) {
+                            it.remove();
+                            break;
+                        }
+                        if (!world.isBlockPresent(pos) || world.isAirBlock(pos)) {
+                            set.clear(index);
+                            if (set.cardinality() == 0) {
                                 it.remove();
                                 break;
                             }
-                            if (!world.isBlockPresent(pos) || world.isAirBlock(pos)) {
-                                set.clear(index);
-                                if (set.cardinality() == 0) {
-                                    it.remove();
-                                    break;
-                                }
-                                next = index + 1;
-                                continue;
-                            }
-                            boolean hasFilter = false;
-                            BlockState state = world.getBlockState(pos);
-                            for (MinerFilter<?> filter : filters) {
-                                if (filter.canFilter(state)) {
-                                    hasFilter = true;
-                                    break;
-                                }
-                            }
-
-                            if (inverse == hasFilter || !canMine(pos)) {
-                                set.clear(index);
-                                if (set.cardinality() == 0) {
-                                    it.remove();
-                                    break;
-                                }
-                                next = index + 1;
-                                continue;
-                            }
-
-                            List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, pos, silkTouch, this.pos);
-                            if (canInsert(drops) && setReplace(pos, index)) {
-                                did = true;
-                                add(drops);
-                                set.clear(index);
-                                if (set.cardinality() == 0) {
-                                    it.remove();
-                                }
-                                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
-                                missingStack = ItemStack.EMPTY;
-                            }
-                            break;
+                            next = index + 1;
+                            continue;
                         }
-                    }
-                    delay = getDelay();
-                    //Update the cached to mine value now that we have actually performed a mine
-                    updateCachedToMine();
-                }
-            } else if (prevEnergy >= getEnergy()) {
-                setActive(false);
-            }
+                        boolean hasFilter = false;
+                        BlockState state = world.getBlockState(pos);
+                        for (MinerFilter<?> filter : filters) {
+                            if (filter.canFilter(state)) {
+                                hasFilter = true;
+                                break;
+                            }
+                        }
 
-            TransitRequest ejectMap = getEjectItemMap();
-            if (doEject && delayTicks == 0 && !ejectMap.isEmpty()) {
-                TileEntity ejectInv = getEjectInv();
-                TileEntity ejectTile = getEjectTile();
-                if (ejectInv != null && ejectTile != null) {
-                    TransitResponse response;
-                    Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()));
-                    if (capability.isPresent()) {
-                        response = capability.get().insert(ejectTile, ejectMap, null, true, 0);
-                    } else {
-                        response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false);
+                        if (inverse == hasFilter || !canMine(pos)) {
+                            set.clear(index);
+                            if (set.cardinality() == 0) {
+                                it.remove();
+                                break;
+                            }
+                            next = index + 1;
+                            continue;
+                        }
+
+                        List<ItemStack> drops = MinerUtils.getDrops((ServerWorld) world, pos, silkTouch, this.pos);
+                        if (canInsert(drops) && setReplace(pos, index)) {
+                            did = true;
+                            add(drops);
+                            set.clear(index);
+                            if (set.cardinality() == 0) {
+                                it.remove();
+                            }
+                            world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
+                            missingStack = ItemStack.EMPTY;
+                        }
+                        break;
                     }
-                    if (!response.isEmpty()) {
-                        response.getInvStack(ejectTile, getOppositeDirection()).use();
-                    }
-                    delayTicks = 10;
                 }
-            } else if (delayTicks > 0) {
-                delayTicks--;
+                delay = getDelay();
+                //Update the cached to mine value now that we have actually performed a mine
+                updateCachedToMine();
             }
-            prevEnergy = getEnergy();
+        } else if (prevEnergy >= getEnergy()) {
+            setActive(false);
         }
+
+        TransitRequest ejectMap = getEjectItemMap();
+        if (doEject && delayTicks == 0 && !ejectMap.isEmpty()) {
+            TileEntity ejectInv = getEjectInv();
+            TileEntity ejectTile = getEjectTile();
+            if (ejectInv != null && ejectTile != null) {
+                TransitResponse response;
+                Optional<ILogisticalTransporter> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(ejectInv, Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY, getOppositeDirection()));
+                if (capability.isPresent()) {
+                    response = capability.get().insert(ejectTile, ejectMap, null, true, 0);
+                } else {
+                    response = InventoryUtils.putStackInInventory(ejectInv, ejectMap, getOppositeDirection(), false);
+                }
+                if (!response.isEmpty()) {
+                    response.getInvStack(ejectTile, getOppositeDirection()).use();
+                }
+                delayTicks = 10;
+            }
+        } else if (delayTicks > 0) {
+            delayTicks--;
+        }
+        prevEnergy = getEnergy();
     }
 
     @Override

@@ -8,8 +8,4 @@ public class TileEntitySaturatingCondenser extends TileEntityMekanism {
     public TileEntitySaturatingCondenser() {
         super(GeneratorsBlocks.SATURATING_CONDENSER);
     }
-
-    @Override
-    public void onUpdate() {
-    }
 }

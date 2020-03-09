@@ -109,21 +109,20 @@ public class TileEntityChemicalInfuser extends TileEntityMekanism implements ITa
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            energySlot.discharge(this);
-            leftInputSlot.fillTank();
-            rightInputSlot.fillTank();
-            outputSlot.drainTank();
-            double prev = getEnergy();
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
-            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-            clientEnergyUsed = prev - getEnergy();
-            GasUtils.emitGas(this, centerTank, gasOutput, getDirection());
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.discharge(this);
+        leftInputSlot.fillTank();
+        rightInputSlot.fillTank();
+        outputSlot.drainTank();
+        double prev = getEnergy();
+        cachedRecipe = getUpdatedCache(0);
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
         }
+        //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
+        clientEnergyUsed = prev - getEnergy();
+        GasUtils.emitGas(this, centerTank, gasOutput, getDirection());
     }
 
     @Nonnull

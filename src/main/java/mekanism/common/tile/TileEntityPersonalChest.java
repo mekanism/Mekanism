@@ -46,7 +46,18 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
     }
 
     @Override
-    public void onUpdate() {
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        updateLidAngle();
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        updateLidAngle();
+    }
+
+    private void updateLidAngle() {
         prevLidAngle = lidAngle;
         float increment = 0.1F;
         if (!playersUsing.isEmpty() && lidAngle == 0.0F) {

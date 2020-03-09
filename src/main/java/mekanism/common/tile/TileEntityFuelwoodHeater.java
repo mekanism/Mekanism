@@ -50,26 +50,25 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHea
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            boolean burning = false;
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        boolean burning = false;
+        if (burnTime > 0) {
+            burnTime--;
+            burning = true;
+        } else {
+            maxBurnTime = burnTime = fuelSlot.burn();
             if (burnTime > 0) {
-                burnTime--;
                 burning = true;
-            } else {
-                maxBurnTime = burnTime = fuelSlot.burn();
-                if (burnTime > 0) {
-                    burning = true;
-                }
             }
-            if (burning) {
-                heatToAbsorb += MekanismConfig.general.heatPerFuelTick.get();
-            }
-            double[] loss = simulateHeat();
-            applyTemperatureChange();
-            lastEnvironmentLoss = loss[1];
-            setActive(burning);
         }
+        if (burning) {
+            heatToAbsorb += MekanismConfig.general.heatPerFuelTick.get();
+        }
+        double[] loss = simulateHeat();
+        applyTemperatureChange();
+        lastEnvironmentLoss = loss[1];
+        setActive(burning);
     }
 
     @Override

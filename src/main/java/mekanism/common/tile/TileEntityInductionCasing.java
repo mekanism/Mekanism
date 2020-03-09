@@ -37,15 +37,13 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            if (structure != null && isRendering) {
-                structure.tick(getWorld());
-                List<IInventorySlot> inventorySlots = getInventorySlots(null);
-                ((EnergyInventorySlot) inventorySlots.get(0)).charge(this);
-                ((EnergyInventorySlot) inventorySlots.get(1)).discharge(this);
-            }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (structure != null && isRendering) {
+            structure.tick(getWorld());
+            List<IInventorySlot> inventorySlots = getInventorySlots(null);
+            ((EnergyInventorySlot) inventorySlots.get(0)).charge(this);
+            ((EnergyInventorySlot) inventorySlots.get(1)).discharge(this);
         }
     }
 

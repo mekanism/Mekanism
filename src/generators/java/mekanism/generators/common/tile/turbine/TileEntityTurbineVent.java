@@ -23,9 +23,9 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote() && structure != null && !structure.ventTank.isEmpty()) {
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (structure != null && !structure.ventTank.isEmpty()) {
             FluidStack fluidStack = structure.ventTank.getFluid().copy();
             EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class),
                   (tile, side) -> CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {

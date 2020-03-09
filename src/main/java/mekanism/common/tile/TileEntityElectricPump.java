@@ -111,42 +111,41 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            energySlot.discharge(this);
-            inputSlot.drainTank(outputSlot);
-            if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
-                //TODO: Why does it not just use energy immediately, why does it wait until the next
-                // check to use it
-                if (suckedLastOperation) {
-                    setEnergy(getEnergy() - getEnergyPerTick());
-                }
-                if ((operatingTicks + 1) < ticksRequired) {
-                    operatingTicks++;
-                } else {
-                    if (fluidTank.isEmpty() || FluidAttributes.BUCKET_VOLUME <= fluidTank.getNeeded()) {
-                        if (!suck()) {
-                            suckedLastOperation = false;
-                            reset();
-                        } else {
-                            suckedLastOperation = true;
-                        }
-                    } else {
-                        suckedLastOperation = false;
-                    }
-                    operatingTicks = 0;
-                }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.discharge(this);
+        inputSlot.drainTank(outputSlot);
+        if (MekanismUtils.canFunction(this) && getEnergy() >= getEnergyPerTick()) {
+            //TODO: Why does it not just use energy immediately, why does it wait until the next
+            // check to use it
+            if (suckedLastOperation) {
+                setEnergy(getEnergy() - getEnergyPerTick());
+            }
+            if ((operatingTicks + 1) < ticksRequired) {
+                operatingTicks++;
             } else {
-                suckedLastOperation = false;
+                if (fluidTank.isEmpty() || FluidAttributes.BUCKET_VOLUME <= fluidTank.getNeeded()) {
+                    if (!suck()) {
+                        suckedLastOperation = false;
+                        reset();
+                    } else {
+                        suckedLastOperation = true;
+                    }
+                } else {
+                    suckedLastOperation = false;
+                }
+                operatingTicks = 0;
             }
+        } else {
+            suckedLastOperation = false;
+        }
 
-            if (!fluidTank.isEmpty()) {
-                TileEntity tile = MekanismUtils.getTileEntity(world, pos.up());
-                CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
-                    FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
-                    fluidTank.extract(handler.fill(toDrain, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
-                });
-            }
+        if (!fluidTank.isEmpty()) {
+            TileEntity tile = MekanismUtils.getTileEntity(world, pos.up());
+            CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, Direction.DOWN).ifPresent(handler -> {
+                FluidStack toDrain = new FluidStack(fluidTank.getFluid(), Math.min(256 * (upgradeComponent.getUpgrades(Upgrade.SPEED) + 1), fluidTank.getFluidAmount()));
+                fluidTank.extract(handler.fill(toDrain, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
+            });
         }
     }
 

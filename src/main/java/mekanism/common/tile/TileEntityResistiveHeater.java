@@ -48,30 +48,29 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            boolean packet = false;
-            energySlot.discharge(this);
-            double toUse = 0;
-            if (MekanismUtils.canFunction(this)) {
-                toUse = Math.min(getEnergy(), energyUsage);
-                heatToAbsorb += toUse / MekanismConfig.general.energyPerHeat.get();
-                setEnergy(getEnergy() - toUse);
-            }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        boolean packet = false;
+        energySlot.discharge(this);
+        double toUse = 0;
+        if (MekanismUtils.canFunction(this)) {
+            toUse = Math.min(getEnergy(), energyUsage);
+            heatToAbsorb += toUse / MekanismConfig.general.energyPerHeat.get();
+            setEnergy(getEnergy() - toUse);
+        }
 
-            setActive(toUse > 0);
-            double[] loss = simulateHeat();
-            applyTemperatureChange();
-            lastEnvironmentLoss = loss[1];
-            float newSoundScale = (float) Math.max(0, toUse / 1E5);
-            if (Math.abs(newSoundScale - soundScale) > 0.01) {
-                packet = true;
-            }
+        setActive(toUse > 0);
+        double[] loss = simulateHeat();
+        applyTemperatureChange();
+        lastEnvironmentLoss = loss[1];
+        float newSoundScale = (float) Math.max(0, toUse / 1E5);
+        if (Math.abs(newSoundScale - soundScale) > 0.01) {
+            packet = true;
+        }
 
-            soundScale = newSoundScale;
-            if (packet) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
-            }
+        soundScale = newSoundScale;
+        if (packet) {
+            Mekanism.packetHandler.sendUpdatePacket(this);
         }
     }
 
@@ -114,7 +113,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
 
     @Override
     public float getVolume() {
-        return (float)Math.sqrt(soundScale);
+        return (float) Math.sqrt(soundScale);
     }
 
     @Override

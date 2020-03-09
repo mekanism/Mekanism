@@ -60,57 +60,56 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            if (ownerUUID != null && frequency != null) {
-                //TODO: Move the locking unlocking logic into the SecurityInventorySlot
-                if (!unlockSlot.isEmpty()) {
-                    ItemStack itemStack = unlockSlot.getStack();
-                    if (itemStack.getItem() instanceof IOwnerItem) {
-                        IOwnerItem item = (IOwnerItem) itemStack.getItem();
-                        if (item.getOwnerUUID(itemStack) != null) {
-                            if (item.getOwnerUUID(itemStack).equals(ownerUUID)) {
-                                item.setOwnerUUID(itemStack, null);
-                                if (item instanceof ISecurityItem) {
-                                    ((ISecurityItem) item).setSecurity(itemStack, SecurityMode.PUBLIC);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (!lockSlot.isEmpty()) {
-                    ItemStack stack = lockSlot.getStack();
-                    if (stack.getItem() instanceof IOwnerItem) {
-                        IOwnerItem item = (IOwnerItem) stack.getItem();
-                        UUID stackOwner = item.getOwnerUUID(stack);
-                        if (stackOwner == null) {
-                            item.setOwnerUUID(stack, stackOwner = this.ownerUUID);
-                        }
-                        if (stackOwner.equals(this.ownerUUID)) {
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (ownerUUID != null && frequency != null) {
+            //TODO: Move the locking unlocking logic into the SecurityInventorySlot
+            if (!unlockSlot.isEmpty()) {
+                ItemStack itemStack = unlockSlot.getStack();
+                if (itemStack.getItem() instanceof IOwnerItem) {
+                    IOwnerItem item = (IOwnerItem) itemStack.getItem();
+                    if (item.getOwnerUUID(itemStack) != null) {
+                        if (item.getOwnerUUID(itemStack).equals(ownerUUID)) {
+                            item.setOwnerUUID(itemStack, null);
                             if (item instanceof ISecurityItem) {
-                                ((ISecurityItem) item).setSecurity(stack, frequency.securityMode);
+                                ((ISecurityItem) item).setSecurity(itemStack, SecurityMode.PUBLIC);
                             }
                         }
                     }
                 }
             }
 
-            if (frequency == null && ownerUUID != null) {
-                setFrequency(ownerUUID);
+            if (!lockSlot.isEmpty()) {
+                ItemStack stack = lockSlot.getStack();
+                if (stack.getItem() instanceof IOwnerItem) {
+                    IOwnerItem item = (IOwnerItem) stack.getItem();
+                    UUID stackOwner = item.getOwnerUUID(stack);
+                    if (stackOwner == null) {
+                        item.setOwnerUUID(stack, stackOwner = this.ownerUUID);
+                    }
+                    if (stackOwner.equals(this.ownerUUID)) {
+                        if (item instanceof ISecurityItem) {
+                            ((ISecurityItem) item).setSecurity(stack, frequency.securityMode);
+                        }
+                    }
+                }
             }
+        }
 
-            FrequencyManager manager = getManager(frequency);
-            if (manager != null) {
-                if (frequency != null && !frequency.valid) {
-                    frequency = (SecurityFrequency) manager.validateFrequency(ownerUUID, Coord4D.get(this), frequency);
-                }
-                if (frequency != null) {
-                    frequency = (SecurityFrequency) manager.update(Coord4D.get(this), frequency);
-                }
-            } else {
-                frequency = null;
+        if (frequency == null && ownerUUID != null) {
+            setFrequency(ownerUUID);
+        }
+
+        FrequencyManager manager = getManager(frequency);
+        if (manager != null) {
+            if (frequency != null && !frequency.valid) {
+                frequency = (SecurityFrequency) manager.validateFrequency(ownerUUID, Coord4D.get(this), frequency);
             }
+            if (frequency != null) {
+                frequency = (SecurityFrequency) manager.update(Coord4D.get(this), frequency);
+            }
+        } else {
+            frequency = null;
         }
     }
 

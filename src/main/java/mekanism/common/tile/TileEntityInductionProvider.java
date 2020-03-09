@@ -17,8 +17,4 @@ public class TileEntityInductionProvider extends TileEntityMekanism {
     protected void presetVariables() {
         tier = ((BlockInductionProvider) getBlockType()).getTier();
     }
-
-    @Override
-    public void onUpdate() {
-    }
 }

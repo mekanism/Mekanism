@@ -149,14 +149,20 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (isRemote()) {
-            updateSound();
-        }
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        updateSound();
         if (isFormed()) {
-            getReactor().simulate();
-            if (!isRemote() && (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1_000_000)) {
+            getReactor().simulateClient();
+        }
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (isFormed()) {
+            getReactor().simulateServer();
+            if (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1_000_000) {
                 Mekanism.packetHandler.sendUpdatePacket(this);
                 clientBurning = getReactor().isBurning();
                 clientTemp = getReactor().getPlasmaTemp();

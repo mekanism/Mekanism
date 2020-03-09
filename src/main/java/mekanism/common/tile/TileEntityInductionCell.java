@@ -21,10 +21,6 @@ public class TileEntityInductionCell extends TileEntityMekanism implements IStri
     }
 
     @Override
-    public void onUpdate() {
-    }
-
-    @Override
     public boolean canReceiveEnergy(Direction side) {
         return false;
     }

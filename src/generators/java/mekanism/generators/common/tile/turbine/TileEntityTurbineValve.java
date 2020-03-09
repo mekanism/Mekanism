@@ -27,12 +27,10 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing implements I
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            if (structure != null) {
-                CableUtils.emit(this);
-            }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (structure != null) {
+            CableUtils.emit(this);
         }
     }
 

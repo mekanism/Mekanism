@@ -79,27 +79,25 @@ public class TileEntityHeatGenerator extends TileEntityGenerator implements IHea
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            energySlot.charge(this);
-            fuelSlot.fillOrBurn();
-            double prev = getEnergy();
-            transferHeatTo(getBoost());
-            if (canOperate()) {
-                setActive(true);
-                lavaTank.extract(10, Action.EXECUTE, AutomationType.INTERNAL);
-                transferHeatTo(MekanismGeneratorsConfig.generators.heatGeneration.get());
-            } else {
-                setActive(false);
-            }
-
-            double[] loss = simulateHeat();
-            applyTemperatureChange();
-            lastTransferLoss = loss[0];
-            lastEnvironmentLoss = loss[1];
-            producingEnergy = getEnergy() - prev;
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.charge(this);
+        fuelSlot.fillOrBurn();
+        double prev = getEnergy();
+        transferHeatTo(getBoost());
+        if (canOperate()) {
+            setActive(true);
+            lavaTank.extract(10, Action.EXECUTE, AutomationType.INTERNAL);
+            transferHeatTo(MekanismGeneratorsConfig.generators.heatGeneration.get());
+        } else {
+            setActive(false);
         }
+
+        double[] loss = simulateHeat();
+        applyTemperatureChange();
+        lastTransferLoss = loss[0];
+        lastEnvironmentLoss = loss[1];
+        producingEnergy = getEnergy() - prev;
     }
 
     @Override

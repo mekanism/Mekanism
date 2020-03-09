@@ -15,9 +15,9 @@ import net.minecraft.world.World;
 
 public abstract class TileEntityReactorBlock extends TileEntityMekanism {
 
-    public FusionReactor fusionReactor;
+    private FusionReactor fusionReactor;
 
-    public boolean attempted;
+    private boolean attempted;
 
     public boolean changed;
 
@@ -52,11 +52,22 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     }
 
     @Override
-    public void onUpdate() {
+    protected void onUpdateClient() {
+        super.onUpdateClient();
+        resetChanged();
+    }
+
+    protected void resetChanged() {
         if (changed) {
             changed = false;
         }
-        if (!isRemote() && ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed())) {
+    }
+
+    @Override
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        resetChanged();
+        if (ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed())) {
             updateController();
         }
         attempted = false;
@@ -84,16 +95,16 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     public void onAdded() {
         super.onAdded();
         if (!isRemote()) {
-            if (getReactor() != null) {
-                getReactor().formMultiblock(false);
-            } else {
+            if (getReactor() == null) {
                 updateController();
+            } else {
+                getReactor().formMultiblock(false);
             }
         }
     }
 
     //TODO: Fix if controller is last block placed the reactor doesn't form
-    public void updateController() {
+    private void updateController() {
         if (!(this instanceof TileEntityReactorController)) {
             TileEntityReactorController found = new ControllerFinder().find();
             if (found != null && (found.getReactor() == null || !found.getReactor().isFormed())) {

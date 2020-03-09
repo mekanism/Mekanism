@@ -96,13 +96,12 @@ public class FusionReactor {
         return false;
     }
 
-    public void simulate() {
-        if (controller.getWorld().isRemote) {
-            lastPlasmaTemperature = plasmaTemperature;
-            lastCaseTemperature = caseTemperature;
-            return;
-        }
+    public void simulateClient() {
+        lastPlasmaTemperature = plasmaTemperature;
+        lastCaseTemperature = caseTemperature;
+    }
 
+    public void simulateServer() {
         updatedThisTick = false;
 
         //Only thermal transfer happens unless we're hot enough to burn.
@@ -260,7 +259,7 @@ public class FusionReactor {
         }
     }
 
-    public void unformMultiblock(boolean keepBurning) {
+    private void unformMultiblock(boolean keepBurning) {
         for (TileEntityReactorBlock block : reactorBlocks) {
             block.setReactor(null);
         }

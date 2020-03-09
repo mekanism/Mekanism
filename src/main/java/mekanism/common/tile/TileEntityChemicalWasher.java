@@ -103,21 +103,20 @@ public class TileEntityChemicalWasher extends TileEntityMekanism implements ITan
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote()) {
-            energySlot.discharge(this);
-            //TODO: Fix this not moving the item to the output slot
-            fluidSlot.fillTank();
-            gasOutputSlot.drainTank();
-            double prev = getEnergy();
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
-            //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-            clientEnergyUsed = prev - getEnergy();
-            GasUtils.emitGas(this, outputTank, gasOutput, getRightSide());
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.discharge(this);
+        //TODO: Fix this not moving the item to the output slot
+        fluidSlot.fillTank();
+        gasOutputSlot.drainTank();
+        double prev = getEnergy();
+        cachedRecipe = getUpdatedCache(0);
+        if (cachedRecipe != null) {
+            cachedRecipe.process();
         }
+        //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
+        clientEnergyUsed = prev - getEnergy();
+        GasUtils.emitGas(this, outputTank, gasOutput, getRightSide());
     }
 
     @Nonnull

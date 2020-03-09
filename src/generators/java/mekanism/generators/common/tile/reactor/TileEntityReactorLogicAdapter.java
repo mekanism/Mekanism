@@ -28,18 +28,16 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            boolean outputting = checkMode();
-            if (outputting != prevOutputting) {
-                World world = getWorld();
-                if (world != null) {
-                    world.notifyNeighborsOfStateChange(getPos(), getBlockType());
-                }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        boolean outputting = checkMode();
+        if (outputting != prevOutputting) {
+            World world = getWorld();
+            if (world != null) {
+                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
             }
-            prevOutputting = outputting;
         }
+        prevOutputting = outputting;
     }
 
     @Override

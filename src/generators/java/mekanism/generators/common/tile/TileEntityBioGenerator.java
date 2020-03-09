@@ -54,25 +54,23 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            energySlot.charge(this);
-            fuelSlot.fillOrBurn();
-            if (canOperate()) {
-                setActive(true);
-                if (bioFuelTank.shrinkStack(1, Action.EXECUTE) != 1) {
-                    //TODO: Print error that something went wrong
-                }
-                setEnergy(getEnergy() + MekanismGeneratorsConfig.generators.bioGeneration.get());
-                float fluidScale = bioFuelTank.getFluidAmount() / (float) bioFuelTank.getCapacity();
-                if (fluidScale != lastFluidScale) {
-                    lastFluidScale = fluidScale;
-                    sendUpdatePacket();
-                }
-            } else {
-                setActive(false);
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.charge(this);
+        fuelSlot.fillOrBurn();
+        if (canOperate()) {
+            setActive(true);
+            if (bioFuelTank.shrinkStack(1, Action.EXECUTE) != 1) {
+                //TODO: Print error that something went wrong
             }
+            setEnergy(getEnergy() + MekanismGeneratorsConfig.generators.bioGeneration.get());
+            float fluidScale = bioFuelTank.getFluidAmount() / (float) bioFuelTank.getCapacity();
+            if (fluidScale != lastFluidScale) {
+                lastFluidScale = fluidScale;
+                sendUpdatePacket();
+            }
+        } else {
+            setActive(false);
         }
     }
 

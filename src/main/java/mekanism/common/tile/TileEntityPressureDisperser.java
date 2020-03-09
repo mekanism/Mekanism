@@ -8,8 +8,4 @@ public class TileEntityPressureDisperser extends TileEntityMekanism {
     public TileEntityPressureDisperser() {
         super(MekanismBlocks.PRESSURE_DISPERSER);
     }
-
-    @Override
-    public void onUpdate() {
-    }
 }

@@ -25,21 +25,19 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            if (structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1 && !structure.steamTank.isEmpty()) {
-                EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
-                    if (!(tile instanceof TileEntityBoilerValve)) {
-                        CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
-                            FluidStack fluid = structure.steamTank.getFluid();
-                            if (PipeUtils.canFill(handler, fluid)) {
-                                structure.steamTank.extract(handler.fill(fluid, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
-                            }
-                        });
-                    }
-                });
-            }
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (structure != null && structure.upperRenderLocation != null && getPos().getY() >= structure.upperRenderLocation.y - 1 && !structure.steamTank.isEmpty()) {
+            EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
+                if (!(tile instanceof TileEntityBoilerValve)) {
+                    CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
+                        FluidStack fluid = structure.steamTank.getFluid();
+                        if (PipeUtils.canFill(handler, fluid)) {
+                            structure.steamTank.extract(handler.fill(fluid, FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
+                        }
+                    });
+                }
+            });
         }
     }
 

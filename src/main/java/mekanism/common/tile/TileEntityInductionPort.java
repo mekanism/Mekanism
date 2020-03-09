@@ -35,9 +35,9 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote() && structure != null && getActive()) {
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (structure != null && getActive()) {
             CableUtils.emit(this);
         }
     }

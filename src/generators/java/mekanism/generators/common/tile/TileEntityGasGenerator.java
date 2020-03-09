@@ -64,41 +64,39 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!isRemote()) {
-            energySlot.charge(this);
-            fuelSlot.fillTank();
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        energySlot.charge(this);
+        fuelSlot.fillTank();
 
-            boolean operate = canOperate();
-            if (operate && getEnergy() + generationRate < getMaxEnergy()) {
-                setActive(true);
-                if (fuelTank.getStored() != 0) {
-                    FuelGas fuel = FuelHandler.getFuel(fuelTank.getType());
-                    maxBurnTicks = fuel.burnTicks;
-                    generationRate = fuel.energyPerTick;
-                }
-
-                int toUse = getToUse();
-                output = Math.max(MekanismConfig.general.FROM_H2.get() * 2, generationRate * toUse * 2);
-
-                int total = burnTicks + fuelTank.getStored() * maxBurnTicks;
-                total -= toUse;
-                setEnergy(getEnergy() + generationRate * toUse);
-
-                if (!fuelTank.isEmpty()) {
-                    //TODO: Improve this as it is sort of hacky
-                    fuelTank.setStack(new GasStack(fuelTank.getStack(), total / maxBurnTicks));
-                }
-                burnTicks = total % maxBurnTicks;
-                gasUsedLastTick = (double) toUse / (double) maxBurnTicks;
-            } else {
-                if (!operate) {
-                    reset();
-                }
-                gasUsedLastTick = 0;
-                setActive(false);
+        boolean operate = canOperate();
+        if (operate && getEnergy() + generationRate < getMaxEnergy()) {
+            setActive(true);
+            if (fuelTank.getStored() != 0) {
+                FuelGas fuel = FuelHandler.getFuel(fuelTank.getType());
+                maxBurnTicks = fuel.burnTicks;
+                generationRate = fuel.energyPerTick;
             }
+
+            int toUse = getToUse();
+            output = Math.max(MekanismConfig.general.FROM_H2.get() * 2, generationRate * toUse * 2);
+
+            int total = burnTicks + fuelTank.getStored() * maxBurnTicks;
+            total -= toUse;
+            setEnergy(getEnergy() + generationRate * toUse);
+
+            if (!fuelTank.isEmpty()) {
+                //TODO: Improve this as it is sort of hacky
+                fuelTank.setStack(new GasStack(fuelTank.getStack(), total / maxBurnTicks));
+            }
+            burnTicks = total % maxBurnTicks;
+            gasUsedLastTick = (double) toUse / (double) maxBurnTicks;
+        } else {
+            if (!operate) {
+                reset();
+            }
+            gasUsedLastTick = 0;
+            setActive(false);
         }
     }
 
@@ -129,7 +127,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     }
 
     public double getUsed() {
-        return Math.round(gasUsedLastTick*100)/100D;
+        return Math.round(gasUsedLastTick * 100) / 100D;
     }
 
     @Override

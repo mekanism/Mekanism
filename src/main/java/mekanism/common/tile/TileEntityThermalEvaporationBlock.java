@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 public class TileEntityThermalEvaporationBlock extends TileEntityMekanism {
 
     public Coord4D master;
-    public boolean attempted;
+    private boolean attempted;
 
     public TileEntityThermalEvaporationBlock() {
         this(MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
@@ -30,8 +30,9 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism {
     }
 
     @Override
-    public void onUpdate() {
-        if (!isRemote() && ticker == 5 && !attempted && master == null) {
+    protected void onUpdateServer() {
+        super.onUpdateServer();
+        if (ticker == 5 && !attempted && master == null) {
             updateController();
         }
         attempted = false;
@@ -61,15 +62,15 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMekanism {
         super.onNeighborChange(block);
         if (!isRemote()) {
             TileEntityThermalEvaporationController tile = getController();
-            if (tile != null) {
-                tile.refresh();
-            } else {
+            if (tile == null) {
                 updateController();
+            } else {
+                tile.refresh();
             }
         }
     }
 
-    public void updateController() {
+    private void updateController() {
         if (!(this instanceof TileEntityThermalEvaporationController)) {
             for (Direction side : EnumUtils.DIRECTIONS) {
                 BlockPos checkPos = pos.offset(side);
