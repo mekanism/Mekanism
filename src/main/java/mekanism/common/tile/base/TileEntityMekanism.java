@@ -480,6 +480,11 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
             if (hasSound()) {
                 updateSound();
             }
+            if (isActivatable()) {
+                if (ticker == 0) {
+                    MekanismUtils.updateBlock(getWorld(), getPos());
+                }
+            }
             onUpdateClient();
         } else {
             if (isActivatable()) {
@@ -1283,10 +1288,8 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 currentActive = active;
 
                 if (updateDelay == 0 && getClientActive() != active) {
-                    int flags = 3;
-
                     state = ((IStateActive) block).setActive(state, active);
-                    world.setBlockState(pos, state, flags);
+                    world.setBlockState(pos, state, 3);
                     updateDelay = delaySupplier.getAsInt();
                 }
             }
