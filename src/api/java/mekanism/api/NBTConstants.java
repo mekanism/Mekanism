@@ -170,6 +170,10 @@ public final class NBTConstants {
     public static final String ENERGY_SCALE = "energy_scale";
     public static final String OWNER_NAME = "ownerName";
     public static final String MUFFLING_COUNT = "muffling";
+    public static final String CURRENT_CONNECTIONS = "connections";
+    public static final String CURRENT_ACCEPTORS = "acceptors";
+    public static final String CLIENT_NEXT = "clientNext";
+    public static final String CLIENT_PREVIOUS = "clientPrevious";
 
     //Ones that also are used for interacting with forge/vanilla
     public static final String X = "x";

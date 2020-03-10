@@ -49,6 +49,12 @@ public class TransporterStack {
         return stack;
     }
 
+    public static TransporterStack readFromUpdate(CompoundNBT nbtTags) {
+        TransporterStack stack = new TransporterStack();
+        stack.readFromUpdateTag(nbtTags);
+        return stack;
+    }
+
     public static TransporterStack readFromPacket(PacketBuffer dataStream) {
         TransporterStack stack = new TransporterStack();
         stack.read(dataStream);
@@ -56,11 +62,7 @@ public class TransporterStack {
     }
 
     public void write(ILogisticalTransporter transporter, TileNetworkList data) {
-        if (color != null) {
-            data.add(TransporterUtils.colors.indexOf(color));
-        } else {
-            data.add(-1);
-        }
+        data.add(TransporterUtils.getColorIndex(color));
 
         data.add(progress);
         originalLocation.write(data);
@@ -78,13 +80,7 @@ public class TransporterStack {
     }
 
     public void read(PacketBuffer dataStream) {
-        int c = dataStream.readInt();
-        if (c != -1) {
-            color = TransporterUtils.colors.get(c);
-        } else {
-            color = null;
-        }
-
+        color = TransporterUtils.readColor(dataStream.readInt());
         progress = dataStream.readInt();
         originalLocation = Coord4D.read(dataStream);
         pathType = dataStream.readEnumValue(Path.class);
@@ -96,10 +92,30 @@ public class TransporterStack {
         itemStack = dataStream.readItemStack();
     }
 
-    public void write(CompoundNBT nbtTags) {
-        if (color != null) {
-            nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.colors.indexOf(color));
+    public void writeToUpdateTag(ILogisticalTransporter transporter, CompoundNBT updateTag) {
+        updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
+        updateTag.putInt(NBTConstants.PROGRESS, progress);
+        updateTag.put(NBTConstants.ORIGINAL_LOCATION, originalLocation.write(new CompoundNBT()));
+        updateTag.putInt(NBTConstants.PATH_TYPE, pathType.ordinal());
+        if (pathToTarget.indexOf(transporter.coord()) > 0) {
+            updateTag.put(NBTConstants.CLIENT_NEXT, getNext(transporter).write(new CompoundNBT()));
         }
+        updateTag.put(NBTConstants.CLIENT_PREVIOUS, getPrev(transporter).write(new CompoundNBT()));
+        itemStack.write(updateTag);
+    }
+
+    public void readFromUpdateTag(CompoundNBT updateTag) {
+        NBTUtils.setEnumIfPresent(updateTag, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
+        progress = updateTag.getInt(NBTConstants.PROGRESS);
+        NBTUtils.setCoord4DIfPresent(updateTag, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        NBTUtils.setEnumIfPresent(updateTag, NBTConstants.PATH_TYPE, Path::byIndexStatic, type -> pathType = type);
+        NBTUtils.setCoord4DIfPresent(updateTag, NBTConstants.CLIENT_NEXT, coord -> clientNext = coord);
+        NBTUtils.setCoord4DIfPresent(updateTag, NBTConstants.CLIENT_PREVIOUS, coord -> clientPrev = coord);
+        itemStack = ItemStack.read(updateTag);
+    }
+
+    public void write(CompoundNBT nbtTags) {
+        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
 
         nbtTags.putInt(NBTConstants.PROGRESS, progress);
         nbtTags.put(NBTConstants.ORIGINAL_LOCATION, originalLocation.write(new CompoundNBT()));
@@ -115,7 +131,7 @@ public class TransporterStack {
     }
 
     public void read(CompoundNBT nbtTags) {
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils.colors::get, color -> this.color = color);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
         NBTUtils.setCoord4DIfPresent(nbtTags, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.IDLE_DIR, Direction::byIndex, dir -> idleDir = dir);

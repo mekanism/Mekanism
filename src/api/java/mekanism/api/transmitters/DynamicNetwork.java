@@ -15,7 +15,6 @@ import mekanism.api.IClientTicker;
 import mekanism.api.Range3D;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -388,15 +387,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         public ClientTickUpdate(DynamicNetwork<?, ?, ?> net, byte b) {
             network = net;
             operation = b;
-        }
-    }
-
-    public static class NetworkClientRequest extends Event {
-
-        public TileEntity tile;
-
-        public NetworkClientRequest(TileEntity tile) {
-            this.tile = tile;
         }
     }
 

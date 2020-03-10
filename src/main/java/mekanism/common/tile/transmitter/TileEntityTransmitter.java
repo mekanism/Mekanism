@@ -5,15 +5,16 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Coord4D;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.network.PacketDataRequest;
 import mekanism.common.transmitters.TransmitterImpl;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
@@ -26,7 +27,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -36,7 +36,7 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
     public TransmitterImpl<A, N, BUFFER> transmitterDelegate;
 
     public boolean unloaded = true;
-    public boolean dataRequest = false;
+    private boolean dataRequest = false;
     public boolean delayedRefresh = false;
 
     private N lastClientNetwork = null;
@@ -74,11 +74,10 @@ public abstract class TileEntityTransmitter<A, N extends DynamicNetwork<A, N, BU
             delayedRefresh = false;
             refreshConnections();
         }
-
         if (isRemote()) {
             if (!dataRequest) {
                 dataRequest = true;
-                MinecraftForge.EVENT_BUS.post(new NetworkClientRequest(this));
+                Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
             }
         }
     }

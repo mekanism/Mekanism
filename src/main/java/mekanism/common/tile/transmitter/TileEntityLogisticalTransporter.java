@@ -1,13 +1,12 @@
 package mekanism.common.tile.transmitter;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import mekanism.api.Coord4D;
-import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
@@ -16,9 +15,9 @@ import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.model.data.TransmitterModelData;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockLogisticalTransporter;
@@ -40,19 +39,17 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
-public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> {
+public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileEntity, InventoryNetwork, Void> implements ITileNetwork {
 
-    private final int SYNC_PACKET = 1;
-    private final int BATCH_PACKET = 2;
+    private final byte SYNC_PACKET = 0;
+    private final byte BATCH_PACKET = 1;
 
     public final TransporterTier tier;
 
@@ -65,7 +62,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         if (block instanceof BlockLogisticalTransporter) {
             this.tier = ((BlockLogisticalTransporter) block).getTier();
         } else {
-            //Diversion and restrictive transportesr
+            //Diversion and restrictive transporters
             this.tier = TransporterTier.BASIC;
         }
         transmitterDelegate = new TransporterImpl(this);
@@ -175,28 +172,27 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return new InventoryNetwork(networks);
     }
 
+    @Nonnull
     @Override
-    public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        if (FMLEnvironment.dist.isClient()) {
-            int type = dataStream.readInt();
-            if (type == 0) {
-                super.handlePacketData(dataStream);
-                int c = dataStream.readInt();
-                EnumColor prev = getTransmitter().getColor();
-                if (c == -1) {
-                    getTransmitter().setColor(null);
-                } else {
-                    getTransmitter().setColor(TransporterUtils.colors.get(c));
-                }
-                if (prev != getTransmitter().getColor()) {
-                    //TODO: Only make it so it needs to request an update once instead of potentially doing it in the super as well
-                    //We update the model data regardless of if it changed from one color to the next
-                    // because even though it is a boolean, we also may have side/connection data that changed
-                    requestModelDataUpdate();
-                    MekanismUtils.updateBlock(getWorld(), pos);
-                }
-                getTransmitter().readFromPacket(dataStream);
-            } else if (type == SYNC_PACKET) {
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        getTransmitter().writeToUpdateTag(updateTag);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        getTransmitter().readFromUpdateTag(tag);
+    }
+
+    //TODO: Remove/Make a proper way for the client to retrieve sync and batch packets
+    @Deprecated
+    @Override
+    public void handlePacketData(PacketBuffer dataStream) {
+        if (isRemote()) {
+            byte type = dataStream.readByte();
+            if (type == SYNC_PACKET) {
                 readStack(dataStream);
             } else if (type == BATCH_PACKET) {
                 int updates = dataStream.readInt();
@@ -213,16 +209,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(0);
-        super.getNetworkedData(data);
-        if (getTransmitter().getColor() == null) {
-            data.add(-1);
-        } else {
-            data.add(TransporterUtils.colors.indexOf(getTransmitter().getColor()));
-        }
-
-        // Serialize all the in-flight stacks (this includes their ID)
-        getTransmitter().writeToPacket(data);
         return data;
     }
 
@@ -247,7 +233,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         return data;
     }
 
-
     private void readStack(PacketBuffer dataStream) {
         int id = dataStream.readInt();
         TransporterStack stack = TransporterStack.readFromPacket(dataStream);
@@ -256,7 +241,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         }
         getTransmitter().addStack(id, stack);
     }
-
 
     @Override
     public void read(CompoundNBT nbtTags) {
@@ -268,18 +252,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (getTransmitter().getColor() != null) {
-            nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.colors.indexOf(getTransmitter().getColor()));
-        }
-        ListNBT stacks = new ListNBT();
-        for (TransporterStack stack : getTransmitter().getTransit()) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            stack.write(tagCompound);
-            stacks.add(tagCompound);
-        }
-        if (!stacks.isEmpty()) {
-            nbtTags.put(NBTConstants.ITEMS, stacks);
-        }
+        getTransmitter().writeToNBT(nbtTags);
         return nbtTags;
     }
 
@@ -287,7 +260,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     protected ActionResultType onConfigure(PlayerEntity player, int part, Direction side) {
         TransporterUtils.incrementColor(getTransmitter());
         PathfinderCache.onChanged(new Coord4D(getPos(), getWorld()));
-        Mekanism.packetHandler.sendUpdatePacket(this);
+        sendUpdatePacket();
         EnumColor color = getTransmitter().getColor();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
               MekanismLang.TOGGLE_COLOR.translateColored(EnumColor.GRAY, color != null ? color.getColoredName() : MekanismLang.NONE)));
@@ -388,7 +361,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
+        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
+            return Capabilities.TILE_NETWORK_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
+        } else if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
             return Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getTransmitter));
         }
         return super.getCapability(capability, side);

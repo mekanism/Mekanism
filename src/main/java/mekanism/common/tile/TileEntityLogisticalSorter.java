@@ -215,8 +215,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     private void readState(PacketBuffer dataStream) {
-        int c = dataStream.readInt();
-        color = c == -1 ? null : TransporterUtils.colors.get(c);
+        color = TransporterUtils.readColor(dataStream.readInt());
     }
 
     private void readFilters(PacketBuffer dataStream) {
@@ -231,7 +230,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TileNetworkList getNetworkedData(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(0);
-        data.add(color == null ? -1 : TransporterUtils.colors.indexOf(color));
+        data.add(TransporterUtils.getColorIndex(color));
         data.add(filters.size());
         for (TransporterFilter<?> filter : filters) {
             filter.write(data);
@@ -242,7 +241,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TileNetworkList getGenericPacket(TileNetworkList data) {
         super.getNetworkedData(data);
         data.add(1);
-        data.add(color == null ? -1 : TransporterUtils.colors.indexOf(color));
+        data.add(TransporterUtils.getColorIndex(color));
         return data;
     }
 
@@ -289,9 +288,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        if (color != null) {
-            nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.colors.indexOf(color));
-        }
+        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
         nbtTags.putBoolean(NBTConstants.EJECT, autoEject);
         nbtTags.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
         nbtTags.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
@@ -310,7 +307,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils.colors::get, color -> this.color = color);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         autoEject = nbtTags.getBoolean(NBTConstants.EJECT);
         roundRobin = nbtTags.getBoolean(NBTConstants.ROUND_ROBIN);
         singleItem = nbtTags.getBoolean(NBTConstants.SINGLE_ITEM);
@@ -331,9 +328,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        if (color != null) {
-            ItemDataUtils.setInt(itemStack, NBTConstants.COLOR, TransporterUtils.colors.indexOf(color));
-        }
+        ItemDataUtils.setInt(itemStack, NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
         ItemDataUtils.setBoolean(itemStack, NBTConstants.EJECT, autoEject);
         ItemDataUtils.setBoolean(itemStack, NBTConstants.ROUND_ROBIN, roundRobin);
         ItemDataUtils.setBoolean(itemStack, NBTConstants.SINGLE_ITEM, singleItem);
@@ -351,7 +346,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public void readSustainedData(ItemStack itemStack) {
         if (ItemDataUtils.hasData(itemStack, NBTConstants.COLOR, NBT.TAG_INT)) {
-            color = TransporterUtils.colors.get(ItemDataUtils.getInt(itemStack, NBTConstants.COLOR));
+            color = TransporterUtils.readColor(ItemDataUtils.getInt(itemStack, NBTConstants.COLOR));
         }
         autoEject = ItemDataUtils.getBoolean(itemStack, NBTConstants.EJECT);
         roundRobin = ItemDataUtils.getBoolean(itemStack, NBTConstants.ROUND_ROBIN);

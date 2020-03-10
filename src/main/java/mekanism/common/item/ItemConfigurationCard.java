@@ -92,6 +92,7 @@ public class ItemConfigurationCard extends Item {
     }
 
     private <TILE extends TileEntity & ITileNetwork> void updateTile(TileEntity tile) {
+        //TODO: Replace this with checking TileEntityUpdateable and calling sendUpdatePacket
         //Check the capability in case for some reason the tile doesn't want to expose the fact it has it
         CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
             if (network instanceof TileEntity) {

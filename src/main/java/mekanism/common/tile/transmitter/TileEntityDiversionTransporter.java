@@ -8,12 +8,12 @@ import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.AlloyTier;
 import mekanism.client.model.data.TransmitterModelData;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,22 +49,35 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         return nbtTags;
     }
 
+    @Nonnull
     @Override
-    public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            modes[0] = dataStream.readInt();
-            modes[1] = dataStream.readInt();
-            modes[2] = dataStream.readInt();
-            modes[3] = dataStream.readInt();
-            modes[4] = dataStream.readInt();
-            modes[5] = dataStream.readInt();
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            updateTag.putInt(NBTConstants.MODE + i, modes[i]);
         }
+        return updateTag;
     }
 
     @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        return addModes(super.getNetworkedData(data));
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            int index = i;
+            NBTUtils.setIntIfPresent(tag, NBTConstants.MODE + index, mode -> modes[index] = mode);
+        }
+    }
+
+    //TODO: Remove
+    @Override
+    @Deprecated
+    public void handlePacketData(PacketBuffer dataStream) {
+        super.handlePacketData(dataStream);
+        if (isRemote()) {
+            for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+                modes[i] = dataStream.readInt();
+            }
+        }
     }
 
     @Override
@@ -78,12 +91,9 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     private TileNetworkList addModes(TileNetworkList data) {
-        data.add(modes[0]);
-        data.add(modes[1]);
-        data.add(modes[2]);
-        data.add(modes[3]);
-        data.add(modes[4]);
-        data.add(modes[5]);
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            data.add(modes[i]);
+        }
         return data;
     }
 
@@ -110,7 +120,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
         notifyTileChange();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
               MekanismLang.TOGGLE_DIVERTER.translateColored(EnumColor.GRAY, EnumColor.RED, langEntry)));
-        Mekanism.packetHandler.sendUpdatePacket(this);
+        sendUpdatePacket();
         return ActionResultType.SUCCESS;
     }
 

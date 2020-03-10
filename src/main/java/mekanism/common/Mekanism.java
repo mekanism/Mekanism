@@ -13,7 +13,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.transmitters.DynamicNetwork.ClientTickUpdate;
-import mekanism.api.transmitters.DynamicNetwork.NetworkClientRequest;
 import mekanism.api.transmitters.DynamicNetwork.TransmittersAddedEvent;
 import mekanism.api.transmitters.TransmitterNetworkRegistry;
 import mekanism.client.ClientProxy;
@@ -33,7 +32,6 @@ import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.multiblock.MultiblockManager;
-import mekanism.common.network.PacketDataRequest;
 import mekanism.common.network.PacketTransmitterUpdate;
 import mekanism.common.network.PacketTransmitterUpdate.PacketType;
 import mekanism.common.recipe.RecipeCacheManager;
@@ -175,7 +173,6 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.addListener(this::onGasTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onLiquidTransferred);
         MinecraftForge.EVENT_BUS.addListener(this::onTransmittersAddedEvent);
-        MinecraftForge.EVENT_BUS.addListener(this::onNetworkClientRequest);
         MinecraftForge.EVENT_BUS.addListener(this::onClientTickUpdate);
         MinecraftForge.EVENT_BUS.addListener(this::chunkSave);
         MinecraftForge.EVENT_BUS.addListener(this::onChunkDataLoad);
@@ -379,13 +376,6 @@ public class Mekanism {
         try {
             packetHandler.sendToReceivers(new PacketTransmitterUpdate(PacketType.UPDATE, event.network.firstTransmitter().coord(), event.newNetwork, event.newTransmitters),
                   event.network);
-        } catch (Exception ignored) {
-        }
-    }
-
-    private void onNetworkClientRequest(NetworkClientRequest event) {
-        try {
-            packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(event.tile)));
         } catch (Exception ignored) {
         }
     }

@@ -1,7 +1,6 @@
 package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.transmitters.IBlockableConnection;
@@ -19,10 +17,8 @@ import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.api.transmitters.ITransmitter;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.model.data.TransmitterModelData;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
@@ -38,7 +34,9 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.PacketDirection;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -52,14 +50,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class TileEntitySidedPipe extends TileEntityUpdateable implements ITileNetwork, IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
+public abstract class TileEntitySidedPipe extends TileEntityUpdateable implements IBlockableConnection, IConfigurable, ITransmitter, ITickableTileEntity {
 
     public int delayTicks;
 
     public byte currentAcceptorConnections = 0x00;
     public byte currentTransmitterConnections = 0x00;
 
-    public boolean sendDesc = false;
     private boolean redstonePowered = false;
 
     protected boolean redstoneReactive = false;
@@ -109,16 +106,11 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             } else if (delayTicks < 5) {
                 delayTicks++;
             }
-        } else {
-            if (forceUpdate) {
-                refreshConnections();
-                forceUpdate = false;
-            }
-            if (sendDesc) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
-                sendDesc = false;
-            }
+        } else if (forceUpdate) {
+            refreshConnections();
+            forceUpdate = false;
         }
+
     }
 
     public boolean handlesRedstone() {
@@ -266,25 +258,37 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
         return true;
     }
 
+    @Nonnull
     @Override
-    public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        if (isRemote()) {
-            currentTransmitterConnections = dataStream.readByte();
-            currentAcceptorConnections = dataStream.readByte();
-            for (int i = 0; i < 6; i++) {
-                connectionTypes[i] = dataStream.readEnumValue(ConnectionType.class);
-            }
-            requestModelDataUpdate();
-            MekanismUtils.updateBlock(getWorld(), pos);
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.putByte(NBTConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
+        updateTag.putByte(NBTConstants.CURRENT_ACCEPTORS, currentAcceptorConnections);
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            updateTag.putInt(NBTConstants.SIDE + i, connectionTypes[i].ordinal());
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
+        NBTUtils.setByteIfPresent(tag, NBTConstants.CURRENT_ACCEPTORS, acceptors -> currentAcceptorConnections = acceptors);
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            int index = i;
+            NBTUtils.setEnumIfPresent(tag, NBTConstants.SIDE + index, ConnectionType::byIndexStatic, type -> connectionTypes[index] = type);
         }
     }
 
     @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        data.add(currentTransmitterConnections);
-        data.add(currentAcceptorConnections);
-        data.addAll(Arrays.asList(connectionTypes).subList(0, 6));
-        return data;
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
+        super.onDataPacket(net, pkt);
+        if (isRemote() && net.getDirection() == PacketDirection.CLIENTBOUND) {
+            //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
+            requestModelDataUpdate();
+            MekanismUtils.updateBlock(getWorld(), pos);
+        }
     }
 
     @Override
@@ -334,7 +338,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             byte possibleTransmitters = getPossibleTransmitterConnections();
             byte possibleAcceptors = getPossibleAcceptorConnections();
             byte newlyEnabledTransmitters = 0;
-
+            boolean sendDesc = false;
             if ((possibleTransmitters | possibleAcceptors) != getAllCurrentConnections()) {
                 sendDesc = true;
                 if (possibleTransmitters != currentTransmitterConnections) {
@@ -353,6 +357,9 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
                 //If any sides are now valid transmitters that were not before recheck the connection
                 recheckConnections(newlyEnabledTransmitters);
             }
+            if (sendDesc) {
+                sendUpdatePacket();
+            }
         }
     }
 
@@ -361,7 +368,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             boolean possibleTransmitter = getPossibleTransmitterConnection(side);
             boolean possibleAcceptor = getPossibleAcceptorConnection(side);
             boolean transmitterChanged = false;
-
+            boolean sendDesc = false;
             if ((possibleTransmitter || possibleAcceptor) != connectionMapContainsSide(getAllCurrentConnections(), side)) {
                 sendDesc = true;
                 if (possibleTransmitter != connectionMapContainsSide(currentTransmitterConnections, side)) {
@@ -375,6 +382,9 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             if (transmitterChanged) {
                 //If this side is now a valid transmitter and it wasn't before recheck the connection
                 recheckConnection(side);
+            }
+            if (sendDesc) {
+                sendUpdatePacket();
             }
         }
     }
@@ -489,26 +499,24 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
             AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(getPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
             if (result == null) {
                 return ActionResultType.PASS;
-            } else {
-                Direction hitSide = sideHit(result.hit.subHit + 1);
-                if (hitSide == null) {
-                    if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == ActionResultType.SUCCESS) {
-                        //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
-                        refreshConnections();
-                        notifyTileChange();
-                        return ActionResultType.SUCCESS;
-                    }
-                    hitSide = side;
-                }
-                connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].getNext();
-                sendDesc = true;
-                onModeChange(Direction.byIndex(hitSide.ordinal()));
-
-                refreshConnections();
-                notifyTileChange();
-                player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(connectionTypes[hitSide.ordinal()]));
-                return ActionResultType.SUCCESS;
             }
+            Direction hitSide = sideHit(result.hit.subHit + 1);
+            if (hitSide == null) {
+                if (connectionTypes[side.ordinal()] != ConnectionType.NONE && onConfigure(player, 6, side) == ActionResultType.SUCCESS) {
+                    //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
+                    refreshConnections();
+                    notifyTileChange();
+                    return ActionResultType.SUCCESS;
+                }
+                hitSide = side;
+            }
+            connectionTypes[hitSide.ordinal()] = connectionTypes[hitSide.ordinal()].getNext();
+            onModeChange(Direction.byIndex(hitSide.ordinal()));
+
+            refreshConnections();
+            notifyTileChange();
+            player.sendMessage(MekanismLang.CONNECTION_TYPE.translate(connectionTypes[hitSide.ordinal()]));
+            sendUpdatePacket();
         }
         return ActionResultType.SUCCESS;
     }
@@ -589,11 +597,7 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         if (capability == Capabilities.CONFIGURABLE_CAPABILITY) {
             return Capabilities.CONFIGURABLE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return Capabilities.TILE_NETWORK_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        }
-        if (capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY) {
+        } else if (capability == Capabilities.BLOCKABLE_CONNECTION_CAPABILITY) {
             return Capabilities.BLOCKABLE_CONNECTION_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, side);

@@ -83,8 +83,48 @@ public class TransporterImpl extends TransmitterImpl<TileEntity, InventoryNetwor
         }
     }
 
+    public void writeToUpdateTag(CompoundNBT updateTag) {
+        updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
+        ListNBT stacks = new ListNBT();
+        for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
+            CompoundNBT tagCompound = new CompoundNBT();
+            tagCompound.putInt(NBTConstants.INDEX, entry.getIntKey());
+            entry.getValue().writeToUpdateTag(this, tagCompound);
+            stacks.add(tagCompound);
+        }
+        if (!stacks.isEmpty()) {
+            updateTag.put(NBTConstants.ITEMS, stacks);
+        }
+    }
+
+    public void readFromUpdateTag(CompoundNBT updateTag) {
+        NBTUtils.setEnumIfPresent(updateTag, NBTConstants.COLOR, TransporterUtils::readColor, this::setColor);
+        transit.clear();
+        if (updateTag.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
+            ListNBT tagList = updateTag.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                CompoundNBT compound = tagList.getCompound(i);
+                TransporterStack stack = TransporterStack.readFromUpdate(compound);
+                transit.put(compound.getInt(NBTConstants.INDEX), stack);
+            }
+        }
+    }
+
+    public void writeToNBT(CompoundNBT nbtTags) {
+        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(getColor()));
+        ListNBT stacks = new ListNBT();
+        for (TransporterStack stack : getTransit()) {
+            CompoundNBT tagCompound = new CompoundNBT();
+            stack.write(tagCompound);
+            stacks.add(tagCompound);
+        }
+        if (!stacks.isEmpty()) {
+            nbtTags.put(NBTConstants.ITEMS, stacks);
+        }
+    }
+
     public void readFromNBT(CompoundNBT nbtTags) {
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils.colors::get, this::setColor);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, this::setColor);
         if (nbtTags.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
             ListNBT tagList = nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {

@@ -6,14 +6,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.ColorRGBA;
-import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.block.transmitter.BlockThermodynamicConductor;
@@ -29,7 +27,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -105,26 +102,23 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         return nbtTags;
     }
 
-    public void sendTemp() {
-        Mekanism.packetHandler.sendUpdatePacket(this);
-    }
-
     @Override
     public IHeatTransfer getCachedAcceptor(Direction side) {
         return MekanismUtils.toOptional(CapabilityUtils.getCapability(getCachedTile(side), Capabilities.HEAT_TRANSFER_CAPABILITY, side.getOpposite())).orElse(null);
     }
 
+    @Nonnull
     @Override
-    public void handlePacketData(PacketBuffer dataStream) throws Exception {
-        super.handlePacketData(dataStream);
-        temperature = dataStream.readDouble();
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.putDouble(NBTConstants.TEMPERATURE, temperature);
+        return updateTag;
     }
 
     @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(temperature);
-        return data;
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setDoubleIfPresent(tag, NBTConstants.TEMPERATURE, temperature -> this.temperature = temperature);
     }
 
     public ColorRGBA getBaseColor() {
@@ -162,7 +156,7 @@ public class TileEntityThermodynamicConductor extends TileEntityTransmitter<IHea
         heatToAbsorb = 0;
         if (Math.abs(temperature - clientTemperature) > (temperature / 20)) {
             clientTemperature = temperature;
-            sendTemp();
+            sendUpdatePacket();
         }
         return temperature;
     }

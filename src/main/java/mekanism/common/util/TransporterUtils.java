@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.capabilities.Capabilities;
@@ -16,6 +17,15 @@ public final class TransporterUtils {
 
     public static final List<EnumColor> colors = Arrays.asList(EnumColor.DARK_BLUE, EnumColor.DARK_GREEN, EnumColor.DARK_AQUA, EnumColor.DARK_RED, EnumColor.PURPLE,
           EnumColor.INDIGO, EnumColor.BRIGHT_GREEN, EnumColor.AQUA, EnumColor.RED, EnumColor.PINK, EnumColor.YELLOW, EnumColor.BLACK);
+
+    @Nullable
+    public static EnumColor readColor(int inputColor) {
+        return inputColor == -1 ? null : TransporterUtils.colors.get(inputColor);
+    }
+
+    public static int getColorIndex(@Nullable EnumColor color) {
+        return color == null ? -1 : TransporterUtils.colors.indexOf(color);
+    }
 
     public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
         if (CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, side.getOpposite()).isPresent()) {

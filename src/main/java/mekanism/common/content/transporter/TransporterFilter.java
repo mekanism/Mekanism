@@ -66,33 +66,22 @@ public abstract class TransporterFilter<FILTER extends TransporterFilter<FILTER>
 
     public void write(CompoundNBT nbtTags) {
         nbtTags.putBoolean(NBTConstants.ALLOW_DEFAULT, allowDefault);
-        if (color != null) {
-            nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.colors.indexOf(color));
-        }
+        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
     }
 
     protected void read(CompoundNBT nbtTags) {
         allowDefault = nbtTags.getBoolean(NBTConstants.ALLOW_DEFAULT);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils.colors::get, color -> this.color = color);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
     }
 
     public void write(TileNetworkList data) {
         data.add(allowDefault);
-        if (color != null) {
-            data.add(TransporterUtils.colors.indexOf(color));
-        } else {
-            data.add(-1);
-        }
+        data.add(TransporterUtils.getColorIndex(color));
     }
 
     protected void read(PacketBuffer dataStream) {
         allowDefault = dataStream.readBoolean();
-        int c = dataStream.readInt();
-        if (c != -1) {
-            color = TransporterUtils.colors.get(c);
-        } else {
-            color = null;
-        }
+        color = TransporterUtils.readColor(dataStream.readInt());
     }
 
     @Override

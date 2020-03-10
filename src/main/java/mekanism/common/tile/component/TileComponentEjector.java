@@ -206,11 +206,11 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
         if (nbtTags.contains(NBTConstants.COMPONENT_EJECTOR, NBT.TAG_COMPOUND)) {
             CompoundNBT ejectorNBT = nbtTags.getCompound(NBTConstants.COMPONENT_EJECTOR);
             strictInput = ejectorNBT.getBoolean(NBTConstants.STRICT_INPUT);
-            NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR, this::readColor, color -> outputColor = color);
+            NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR, TransporterUtils::readColor, color -> outputColor = color);
             //Input colors
             for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
                 int index = i;
-                NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR + index, this::readColor, color -> inputColors[index] = color);
+                NBTUtils.setEnumIfPresent(ejectorNBT, NBTConstants.COLOR + index, TransporterUtils::readColor, color -> inputColors[index] = color);
             }
         }
     }
@@ -220,27 +220,13 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
         CompoundNBT ejectorNBT = new CompoundNBT();
         ejectorNBT.putBoolean(NBTConstants.STRICT_INPUT, strictInput);
         if (outputColor != null) {
-            ejectorNBT.putInt(NBTConstants.COLOR, getColorIndex(outputColor));
+            ejectorNBT.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(outputColor));
         }
         //Input colors
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
-            ejectorNBT.putInt(NBTConstants.COLOR + i, getColorIndex(inputColors[i]));
+            ejectorNBT.putInt(NBTConstants.COLOR + i, TransporterUtils.getColorIndex(inputColors[i]));
         }
         nbtTags.put(NBTConstants.COMPONENT_EJECTOR, ejectorNBT);
-    }
-
-    private EnumColor readColor(int inputColor) {
-        if (inputColor == -1) {
-            return null;
-        }
-        return TransporterUtils.colors.get(inputColor);
-    }
-
-    private int getColorIndex(EnumColor color) {
-        if (color == null) {
-            return -1;
-        }
-        return TransporterUtils.colors.indexOf(color);
     }
 
     @Override
@@ -262,10 +248,10 @@ public class TileComponentEjector implements ITileComponent, ITrackableContainer
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         container.track(SyncableBoolean.create(this::hasStrictInput, input -> strictInput = input));
-        container.track(SyncableInt.create(() -> getColorIndex(outputColor), index -> outputColor = readColor(index)));
+        container.track(SyncableInt.create(() -> TransporterUtils.getColorIndex(outputColor), index -> outputColor = TransporterUtils.readColor(index)));
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             int idx = i;
-            container.track(SyncableInt.create(() -> getColorIndex(inputColors[idx]), index -> inputColors[idx] = readColor(index)));
+            container.track(SyncableInt.create(() -> TransporterUtils.getColorIndex(inputColors[idx]), index -> inputColors[idx] = TransporterUtils.readColor(index)));
         }
     }
 }

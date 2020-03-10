@@ -133,7 +133,7 @@ public class TransmitterImpl<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEPTOR, 
 
     @Override
     public void setRequestsUpdate() {
-        containingTile.sendDesc = true;
+        containingTile.sendUpdatePacket();
     }
 
     public TileEntityTransmitter<ACCEPTOR, NETWORK, BUFFER> getTileEntity() {
