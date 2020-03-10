@@ -5,7 +5,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IBoundingBlock;
@@ -13,13 +12,13 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
-import mekanism.common.network.PacketSecurityUpdate;
-import mekanism.common.network.PacketSecurityUpdate.SecurityPacket;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.security.ISecurityItem;
-import mekanism.common.security.SecurityData;
 import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
@@ -127,6 +126,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             if (freq.ownerUUID.equals(owner)) {
                 frequency = (SecurityFrequency) freq;
                 frequency.activeCoords.add(Coord4D.get(this));
+                sendUpdatePacket();
                 return;
             }
         }
@@ -135,55 +135,27 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         freq.activeCoords.add(Coord4D.get(this));
         manager.addFrequency(freq);
         frequency = (SecurityFrequency) freq;
-        MekanismUtils.saveChunk(this);
         markDirty();
+        sendUpdatePacket();
     }
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-        if (!isRemote()) {
+        if (!isRemote() && frequency != null) {
             int type = dataStream.readInt();
             if (type == 0) {
-                if (frequency != null) {
-                    GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(PacketHandler.readString(dataStream));
-                    if (profile != null) {
-                        frequency.trusted.add(profile.getId());
-                    }
+                GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(PacketHandler.readString(dataStream));
+                if (profile != null) {
+                    frequency.trusted.add(profile.getId());
                 }
             } else if (type == 1) {
-                if (frequency != null) {
-                    frequency.trusted.remove(dataStream.readUniqueId());
-                }
+                frequency.trusted.remove(dataStream.readUniqueId());
             } else if (type == 2) {
-                if (frequency != null) {
-                    frequency.override = !frequency.override;
-                    Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, ownerUUID, new SecurityData(frequency)));
-                }
+                frequency.override = !frequency.override;
             } else if (type == 3) {
-                if (frequency != null) {
-                    frequency.securityMode = dataStream.readEnumValue(SecurityMode.class);
-                    Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(SecurityPacket.UPDATE, ownerUUID, new SecurityData(frequency)));
-                }
+                frequency.securityMode = dataStream.readEnumValue(SecurityMode.class);
             }
-            MekanismUtils.saveChunk(this);
-            return;
-        }
-
-        super.handlePacketData(dataStream);
-
-        if (isRemote()) {
-            if (dataStream.readBoolean()) {
-                clientOwner = PacketHandler.readString(dataStream);
-                ownerUUID = dataStream.readUniqueId();
-            } else {
-                clientOwner = null;
-                ownerUUID = null;
-            }
-            if (dataStream.readBoolean()) {
-                frequency = new SecurityFrequency(dataStream);
-            } else {
-                frequency = null;
-            }
+            markDirty();
         }
     }
 
@@ -192,7 +164,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         super.read(nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
         if (nbtTags.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
-            frequency = new SecurityFrequency(nbtTags.getCompound(NBTConstants.FREQUENCY));
+            frequency = new SecurityFrequency(nbtTags.getCompound(NBTConstants.FREQUENCY), false);
             frequency.valid = false;
         }
     }
@@ -210,26 +182,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             nbtTags.put(NBTConstants.FREQUENCY, frequencyTag);
         }
         return nbtTags;
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        if (ownerUUID == null) {
-            data.add(false);
-        } else {
-            data.add(true);
-            data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
-            data.add(ownerUUID);
-        }
-        //TODO: Make it so we can sync the frequency via the container sync stuff
-        if (frequency == null) {
-            data.add(false);
-        } else {
-            data.add(true);
-            frequency.write(data);
-        }
-        return data;
     }
 
     @Override
@@ -281,5 +233,46 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        if (ownerUUID != null) {
+            updateTag.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            updateTag.putString(NBTConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
+        }
+        if (frequency != null) {
+            CompoundNBT frequencyTag = new CompoundNBT();
+            frequency.writeToUpdateTag(frequencyTag);
+            updateTag.put(NBTConstants.FREQUENCY, frequencyTag);
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setUUIDIfPresent(tag, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
+        NBTUtils.setStringIfPresent(tag, NBTConstants.OWNER_NAME, uuid -> clientOwner = uuid);
+        NBTUtils.setCompoundIfPresent(tag, NBTConstants.FREQUENCY, nbt -> frequency = new SecurityFrequency(nbt, true));
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableBoolean.create(() -> frequency != null && frequency.override, value -> {
+            if (frequency != null) {
+                frequency.override = value;
+            }
+        }));
+        container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, () -> frequency == null ? SecurityMode.PUBLIC : frequency.securityMode,
+              value -> {
+                  if (frequency != null) {
+                      frequency.securityMode = value;
+                  }
+              }));
+        //TODO: Sync the trusted list on changes
     }
 }

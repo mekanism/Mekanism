@@ -17,7 +17,7 @@ public abstract class SyncableBoolean implements ISyncableData {
 
     @Override
     public DirtyType isDirty() {
-        boolean oldValue = this.get();
+        boolean oldValue = get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
         return DirtyType.get(dirty);

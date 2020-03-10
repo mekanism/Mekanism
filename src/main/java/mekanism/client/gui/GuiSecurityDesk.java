@@ -113,7 +113,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         updateButtons();
     }
 
-    public void addTrusted(String trusted) {
+    private void addTrusted(String trusted) {
         if (trusted.isEmpty()) {
             return;
         }
@@ -121,7 +121,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
     }
 
-    public void updateButtons() {
+    private void updateButtons() {
         if (tile.ownerUUID != null) {
             List<String> text = new ArrayList<>();
             if (tile.frequency != null) {

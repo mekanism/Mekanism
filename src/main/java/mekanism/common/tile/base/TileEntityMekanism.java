@@ -1,5 +1,6 @@
 package mekanism.common.tile.base;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -11,7 +12,6 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
@@ -1289,7 +1289,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
                 if (updateDelay == 0 && getClientActive() != active) {
                     state = ((IStateActive) block).setActive(state, active);
-                    world.setBlockState(pos, state, 3);
+                    world.setBlockState(pos, state);
                     updateDelay = delaySupplier.getAsInt();
                 }
             }

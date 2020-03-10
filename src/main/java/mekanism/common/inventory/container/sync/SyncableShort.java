@@ -17,7 +17,7 @@ public abstract class SyncableShort implements ISyncableData {
 
     @Override
     public DirtyType isDirty() {
-        short oldValue = this.get();
+        short oldValue = get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
         return DirtyType.get(dirty);

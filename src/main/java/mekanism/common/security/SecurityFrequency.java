@@ -24,25 +24,18 @@ public class SecurityFrequency extends Frequency {
     public SecurityMode securityMode;
 
     public SecurityFrequency(UUID uuid) {
-        super("Security", uuid);
+        super(SECURITY, uuid);
         trusted = new HashList<>();
         securityMode = SecurityMode.PUBLIC;
     }
 
-    public SecurityFrequency(CompoundNBT nbtTags) {
-        super(nbtTags);
-    }
-
-    public SecurityFrequency(PacketBuffer dataStream) {
-        super(dataStream);
+    public SecurityFrequency(CompoundNBT nbtTags, boolean fromUpdate) {
+        super(nbtTags, fromUpdate);
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
-        super.write(nbtTags);
-        nbtTags.putBoolean(NBTConstants.OVERRIDE, override);
-        nbtTags.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
-
+    public void writeToUpdateTag(CompoundNBT nbtTags) {
+        super.writeToUpdateTag(nbtTags);
         if (!trusted.isEmpty()) {
             ListNBT trustedList = new ListNBT();
             for (UUID uuid : trusted) {
@@ -53,17 +46,12 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
-        super.read(nbtTags);
-
-        trusted = new HashList<>();
+    protected void readFromUpdateTag(CompoundNBT updateTag) {
+        super.readFromUpdateTag(updateTag);
         securityMode = SecurityMode.PUBLIC;
-
-        override = nbtTags.getBoolean(NBTConstants.OVERRIDE);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
-
-        if (nbtTags.contains(NBTConstants.TRUSTED, NBT.TAG_LIST)) {
-            ListNBT trustedList = nbtTags.getList(NBTConstants.TRUSTED, NBT.TAG_COMPOUND);
+        trusted = new HashList<>();
+        if (updateTag.contains(NBTConstants.TRUSTED, NBT.TAG_LIST)) {
+            ListNBT trustedList = updateTag.getList(NBTConstants.TRUSTED, NBT.TAG_COMPOUND);
             for (int i = 0; i < trustedList.size(); i++) {
                 trusted.add(NBTUtil.readUniqueId(trustedList.getCompound(i)));
             }
@@ -71,12 +59,23 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
+    public void write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putBoolean(NBTConstants.OVERRIDE, override);
+        nbtTags.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
+    }
+
+    @Override
+    protected void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        override = nbtTags.getBoolean(NBTConstants.OVERRIDE);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
+    }
+
+    @Override
+    @Deprecated
     public void write(TileNetworkList data) {
         super.write(data);
-
-        data.add(override);
-        data.add(securityMode);
-
         data.add(trusted.size());
         for (UUID uuid : trusted) {
             data.add(uuid);
@@ -84,15 +83,10 @@ public class SecurityFrequency extends Frequency {
     }
 
     @Override
+    @Deprecated
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
-
         trusted = new HashList<>();
-        securityMode = SecurityMode.PUBLIC;
-
-        override = dataStream.readBoolean();
-        securityMode = dataStream.readEnumValue(SecurityMode.class);
-
         int size = dataStream.readInt();
         for (int i = 0; i < size; i++) {
             trusted.add(dataStream.readUniqueId());

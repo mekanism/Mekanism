@@ -43,7 +43,7 @@ public class SyncableFluidStack implements ISyncableData {
 
     @Override
     public DirtyType isDirty() {
-        FluidStack value = this.get();
+        FluidStack value = get();
         boolean sameFluid = value.isFluidEqual(this.lastKnownValue);
         if (!sameFluid || value.getAmount() != this.lastKnownValue.getAmount()) {
             //Make sure to copy it in case our fluid stack object is the same object so would be getting modified

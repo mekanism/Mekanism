@@ -17,7 +17,7 @@ public abstract class SyncableFloat implements ISyncableData {
 
     @Override
     public DirtyType isDirty() {
-        float oldValue = this.get();
+        float oldValue = get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
         return DirtyType.get(dirty);

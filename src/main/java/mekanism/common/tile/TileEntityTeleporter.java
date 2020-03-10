@@ -357,7 +357,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
-            frequency = new Frequency(nbtTags.getCompound(NBTConstants.FREQUENCY));
+            frequency = new Frequency(nbtTags.getCompound(NBTConstants.FREQUENCY), false);
             frequency.valid = false;
         }
     }

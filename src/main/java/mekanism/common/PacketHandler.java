@@ -191,17 +191,17 @@ public class PacketHandler {
         registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::encode, PacketClearRecipeCache::decode, PacketClearRecipeCache::handle);
 
         //Register the different sync packets for containers
-        registerServerToClient(PacketUpdateContainerBoolean.class, PacketUpdateContainer::encode, PacketUpdateContainerBoolean::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerByte.class, PacketUpdateContainer::encode, PacketUpdateContainerByte::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerDouble.class, PacketUpdateContainer::encode, PacketUpdateContainerDouble::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerFloat.class, PacketUpdateContainer::encode, PacketUpdateContainerFloat::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerInt.class, PacketUpdateContainer::encode, PacketUpdateContainerInt::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerLong.class, PacketUpdateContainer::encode, PacketUpdateContainerLong::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerShort.class, PacketUpdateContainer::encode, PacketUpdateContainerShort::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerItemStack.class, PacketUpdateContainer::encode, PacketUpdateContainerItemStack::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerFluidStack.class, PacketUpdateContainer::encode, PacketUpdateContainerFluidStack::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerGasStack.class, PacketUpdateContainer::encode, PacketUpdateContainerGasStack::decode, PacketUpdateContainer::handle);
-        registerServerToClient(PacketUpdateContainerInfusionStack.class, PacketUpdateContainer::encode, PacketUpdateContainerInfusionStack::decode, PacketUpdateContainer::handle);
+        registerUpdateContainer(PacketUpdateContainerBoolean.class, PacketUpdateContainerBoolean::decode);
+        registerUpdateContainer(PacketUpdateContainerByte.class, PacketUpdateContainerByte::decode);
+        registerUpdateContainer(PacketUpdateContainerDouble.class, PacketUpdateContainerDouble::decode);
+        registerUpdateContainer(PacketUpdateContainerFloat.class, PacketUpdateContainerFloat::decode);
+        registerUpdateContainer(PacketUpdateContainerInt.class, PacketUpdateContainerInt::decode);
+        registerUpdateContainer(PacketUpdateContainerLong.class, PacketUpdateContainerLong::decode);
+        registerUpdateContainer(PacketUpdateContainerShort.class, PacketUpdateContainerShort::decode);
+        registerUpdateContainer(PacketUpdateContainerItemStack.class, PacketUpdateContainerItemStack::decode);
+        registerUpdateContainer(PacketUpdateContainerFluidStack.class, PacketUpdateContainerFluidStack::decode);
+        registerUpdateContainer(PacketUpdateContainerGasStack.class, PacketUpdateContainerGasStack::decode);
+        registerUpdateContainer(PacketUpdateContainerInfusionStack.class, PacketUpdateContainerInfusionStack::decode);
         //Container sync packet that batches multiple changes into one packet
         registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
     }
@@ -214,6 +214,10 @@ public class PacketHandler {
     private <MSG> void registerClientToServer(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
           BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
         registerMessage(type, encoder, decoder, consumer, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+    }
+
+    private <MSG extends PacketUpdateContainer<MSG>> void registerUpdateContainer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+        registerServerToClient(type, PacketUpdateContainer::encode, decoder, PacketUpdateContainer::handle);
     }
 
     private <MSG> void registerServerToClient(Class<MSG> type, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder,
@@ -307,7 +311,7 @@ public class PacketHandler {
                     int playerZ = playerPosition.getZ();
                     //playerX/Z + radius is the max, so to stay in line with how it was before, it has an extra + 1 added to it
                     if (playerX + radius + 1.99999 > range.xMin && range.xMax + 0.99999 > playerX - radius &&
-                           playerZ + radius + 1.99999 > range.zMin && range.zMax + 0.99999 > playerZ - radius) {
+                        playerZ + radius + 1.99999 > range.zMin && range.zMax + 0.99999 > playerZ - radius) {
                         sendTo(message, player);
                     }
                 }

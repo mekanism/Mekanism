@@ -32,8 +32,12 @@ public class Frequency {
         ownerUUID = uuid;
     }
 
-    public Frequency(CompoundNBT nbtTags) {
-        read(nbtTags);
+    public Frequency(CompoundNBT nbtTags, boolean fromUpdate) {
+        if (fromUpdate) {
+            readFromUpdateTag(nbtTags);
+        } else {
+            read(nbtTags);
+        }
     }
 
     public Frequency(PacketBuffer dataStream) {
@@ -75,16 +79,24 @@ public class Frequency {
         return closest;
     }
 
+    public void writeToUpdateTag(CompoundNBT updateTag) {
+        updateTag.putString(NBTConstants.NAME, name);
+        updateTag.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+        updateTag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
+    }
+
     public void write(CompoundNBT nbtTags) {
-        nbtTags.putString(NBTConstants.NAME, name);
-        nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
-        nbtTags.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
+        writeToUpdateTag(nbtTags);
+    }
+
+    protected void readFromUpdateTag(CompoundNBT updateTag) {
+        name = updateTag.getString(NBTConstants.NAME);
+        NBTUtils.setUUIDIfPresent(updateTag, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
+        publicFreq = updateTag.getBoolean(NBTConstants.PUBLIC_FREQUENCY);
     }
 
     protected void read(CompoundNBT nbtTags) {
-        name = nbtTags.getString(NBTConstants.NAME);
-        NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
-        publicFreq = nbtTags.getBoolean(NBTConstants.PUBLIC_FREQUENCY);
+        readFromUpdateTag(nbtTags);
     }
 
     public void write(TileNetworkList data) {

@@ -120,7 +120,7 @@ public class TileComponentSecurity implements ITileComponent {
             NBTUtils.setEnumIfPresent(securityNBT, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
             NBTUtils.setUUIDIfPresent(securityNBT, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
             if (securityNBT.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
-                frequency = new SecurityFrequency(securityNBT.getCompound(NBTConstants.FREQUENCY));
+                frequency = new SecurityFrequency(securityNBT.getCompound(NBTConstants.FREQUENCY), false);
                 frequency.valid = false;
             }
         }

@@ -45,7 +45,7 @@ public class SyncableEnum<ENUM extends Enum<ENUM>> implements ISyncableData {
 
     @Override
     public DirtyType isDirty() {
-        ENUM oldValue = this.get();
+        ENUM oldValue = get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
         return DirtyType.get(dirty);

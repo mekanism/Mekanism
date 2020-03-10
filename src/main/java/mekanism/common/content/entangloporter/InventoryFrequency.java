@@ -45,7 +45,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     public InventoryFrequency(CompoundNBT nbtTags) {
-        super(nbtTags);
+        super(nbtTags, false);
     }
 
     public InventoryFrequency(PacketBuffer dataStream) {

@@ -17,7 +17,7 @@ public abstract class SyncableDouble implements ISyncableData {
 
     @Override
     public DirtyType isDirty() {
-        double oldValue = this.get();
+        double oldValue = get();
         boolean dirty = oldValue != this.lastKnownValue;
         this.lastKnownValue = oldValue;
         return DirtyType.get(dirty);

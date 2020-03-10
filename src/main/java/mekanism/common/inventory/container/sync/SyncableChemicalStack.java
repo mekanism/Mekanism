@@ -45,7 +45,7 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
 
     @Override
     public DirtyType isDirty() {
-        STACK value = this.get();
+        STACK value = get();
         boolean sameType = value.isTypeEqual(this.lastKnownValue);
         if (!sameType || value.getAmount() != this.lastKnownValue.getAmount()) {
             //Make sure to copy it in case our infusion stack object is the same object so would be getting modified
