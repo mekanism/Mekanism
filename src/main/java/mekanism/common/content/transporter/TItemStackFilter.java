@@ -2,7 +2,7 @@ package mekanism.common.content.transporter;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
+import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.transporter.Finder.ItemStackFinder;
 import net.minecraft.item.ItemStack;
@@ -40,18 +40,18 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt(NBTConstants.TYPE, 0);
         nbtTags.putBoolean(NBTConstants.SIZE_MODE, sizeMode);
         nbtTags.putBoolean(NBTConstants.FUZZY_MODE, fuzzyMode);
         nbtTags.putInt(NBTConstants.MIN, min);
         nbtTags.putInt(NBTConstants.MAX, max);
         itemType.write(nbtTags);
+        return nbtTags;
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         sizeMode = nbtTags.getBoolean(NBTConstants.SIZE_MODE);
         fuzzyMode = nbtTags.getBoolean(NBTConstants.FUZZY_MODE);
@@ -61,21 +61,17 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
     }
 
     @Override
-    public void write(TileNetworkList data) {
-        data.add(0);
-
-        super.write(data);
-
-        data.add(sizeMode);
-        data.add(fuzzyMode);
-        data.add(min);
-        data.add(max);
-
-        data.add(itemType);
+    public void write(PacketBuffer buffer) {
+        super.write(buffer);
+        buffer.writeBoolean(sizeMode);
+        buffer.writeBoolean(fuzzyMode);
+        buffer.writeInt(min);
+        buffer.writeInt(max);
+        buffer.writeItemStack(itemType);
     }
 
     @Override
-    protected void read(PacketBuffer dataStream) {
+    public void read(PacketBuffer dataStream) {
         super.read(dataStream);
         sizeMode = dataStream.readBoolean();
         fuzzyMode = dataStream.readBoolean();
@@ -114,6 +110,11 @@ public class TItemStackFilter extends TransporterFilter<TItemStackFilter> implem
         filter.min = min;
         filter.max = max;
         return filter;
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return FilterType.SORTER_ITEMSTACK_FILTER;
     }
 
     @Nonnull

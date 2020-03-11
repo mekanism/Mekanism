@@ -53,7 +53,7 @@ public class MovableFilterButton extends FilterButton {
         }
         int x = this.x - guiObj.getLeft();
         int y = this.y - guiObj.getTop();
-        IFilter<?> filter = filters.get().get(filterIndex.getAsInt() + index);
+        IFilter<?> filter = filters.get().getOrNull(filterIndex.getAsInt() + index);
         if (filter instanceof IItemStackFilter) {
             renderScaledText(MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, 0x404040, 60);
         } else if (filter instanceof ITagFilter) {
@@ -84,7 +84,7 @@ public class MovableFilterButton extends FilterButton {
     private void updateButtonVisibility() {
         int index = filterIndex.getAsInt() + this.index;
         HashList<? extends IFilter<?>> filterList = filters.get();
-        IFilter<?> filter = filterList.get(index);
+        IFilter<?> filter = filterList.getOrNull(index);
         upButton.visible = filter != null && index > 0;
         downButton.visible = filter != null && index < filterList.size() - 1;
     }
@@ -103,7 +103,7 @@ public class MovableFilterButton extends FilterButton {
 
     @Override
     protected void colorButton() {
-        IFilter<?> filter = filters.get().get(filterIndex.getAsInt() + index);
+        IFilter<?> filter = filters.get().getOrNull(filterIndex.getAsInt() + index);
         if (filter instanceof IItemStackFilter) {
             MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
         } else if (filter instanceof ITagFilter) {

@@ -106,7 +106,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         HashList<FILTER> filters = getFilters();
 
         for (int i = 0; i < FILTER_COUNT; i++) {
-            FILTER filter = filters.get(scrollBar.getCurrentSelection() + i);
+            FILTER filter = filters.getOrNull(scrollBar.getCurrentSelection() + i);
             if (filter instanceof ITagFilter) {
                 oreDictFilters.add((ITagFilter<?>) filter);
             } else if (filter instanceof IModIDFilter) {
@@ -128,7 +128,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         //TODO: Eventually we may want to move the item drawing into FilterButton, but for now it does not matter
         HashList<? extends IFilter<?>> filters = getFilters();
         for (int i = 0; i < FILTER_COUNT; i++) {
-            IFilter<?> filter = filters.get(scrollBar.getCurrentSelection() + i);
+            IFilter<?> filter = filters.getOrNull(scrollBar.getCurrentSelection() + i);
             if (filter != null) {
                 int yStart = i * 29 + 18;
                 if (filter instanceof IItemStackFilter) {

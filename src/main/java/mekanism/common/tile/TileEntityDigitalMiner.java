@@ -18,7 +18,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
@@ -34,6 +33,8 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
@@ -46,10 +47,10 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -483,7 +484,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
             searcher.start();
         }
         running = true;
-        MekanismUtils.saveChunk(this);
+        markDirty();
     }
 
     private void stop() {
@@ -494,7 +495,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         } else if (searcher.state == State.FINISHED) {
             running = false;
         }
-        MekanismUtils.saveChunk(this);
+        markDirty();
     }
 
     private void reset() {
@@ -505,7 +506,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         replaceMap.clear();
         missingStack = ItemStack.EMPTY;
         setActive(false);
-        MekanismUtils.saveChunk(this);
+        markDirty();
     }
 
     public boolean isReplaceStack(ItemStack stack) {
@@ -567,12 +568,21 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                     break;
                 case 6:
                     setRadius(Math.min(dataStream.readInt(), MekanismConfig.general.digitalMinerMaxRadius.get()));
+                    //Send a packet to update the visual renderer
+                    //TODO: Only do this if the renderer is actually active
+                    sendUpdatePacket();
                     break;
                 case 7:
                     minY = dataStream.readInt();
+                    //Send a packet to update the visual renderer
+                    //TODO: Only do this if the renderer is actually active
+                    sendUpdatePacket();
                     break;
                 case 8:
                     maxY = dataStream.readInt();
+                    //Send a packet to update the visual renderer
+                    //TODO: Only do this if the renderer is actually active
+                    sendUpdatePacket();
                     break;
                 case 9:
                     silkTouch = !silkTouch;
@@ -584,60 +594,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
                     // Move filter up
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex - 1);
-                    sendToAllUsing(() -> new PacketTileEntity(this, getFilterPacket()));
                     break;
                 }
                 case 12: {
                     // Move filter down
                     int filterIndex = dataStream.readInt();
                     filters.swap(filterIndex, filterIndex + 1);
-                    sendToAllUsing(() -> new PacketTileEntity(this, getFilterPacket()));
                     break;
                 }
             }
-
-            MekanismUtils.saveChunk(this);
-            return;
+            markDirty();
         }
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            if (dataStream.readBoolean()) {
-                setRadius(dataStream.readInt());//client allowed to use whatever server sends
-                minY = dataStream.readInt();
-                maxY = dataStream.readInt();
-            }
-            filters.clear();
-            int amount = dataStream.readInt();
-            for (int i = 0; i < amount; i++) {
-                filters.add(MinerFilter.readFromPacket(dataStream));
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(true);
-        //These three are used for the miner renderer
-        data.add(radius);
-        data.add(minY);
-        data.add(maxY);
-        data.add(filters.size());
-        for (MinerFilter<?> filter : filters) {
-            filter.write(data);
-        }
-        return data;
-    }
-
-    @Override
-    public TileNetworkList getFilterPacket(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(false);
-        data.add(filters.size());
-        for (MinerFilter<?> filter : filters) {
-            filter.write(data);
-        }
-        return data;
     }
 
     public int getTotalSize() {
@@ -746,12 +713,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
-                filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
+                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
+                if (filter instanceof MinerFilter) {
+                    filters.add((MinerFilter<?>) filter);
+                }
             }
-        }
-        if (getWorld() != null) {
-            //send filter update packet, as this isn't tracked by container
-            Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(this, getFilterPacket()), this);
         }
     }
 
@@ -804,7 +770,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
-                filters.add(MinerFilter.readFromNBT(tagList.getCompound(i)));
+                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
+                if (filter instanceof MinerFilter) {
+                    filters.add((MinerFilter<?>) filter);
+                }
             }
         }
     }
@@ -965,6 +934,31 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IActiv
         container.track(SyncableInt.create(() -> minY, value -> minY = value));
         container.track(SyncableInt.create(() -> maxY, value -> maxY = value));
         container.track(SyncableBoolean.create(() -> inverse, value -> inverse = value));
+        container.track(SyncableFilterList.create(this::getFilters, value -> {
+            if (value instanceof HashList) {
+                filters = (HashList<MinerFilter<?>>) value;
+            } else {
+                filters = new HashList<>(value);
+            }
+        }));
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.putInt(NBTConstants.RADIUS, radius);
+        updateTag.putInt(NBTConstants.MIN, minY);
+        updateTag.putInt(NBTConstants.MAX, maxY);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//client allowed to use whatever server sends
+        NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, value -> minY = value);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, value -> maxY = value);
     }
 
     private static class ItemCount {

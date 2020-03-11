@@ -27,6 +27,8 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
         switch (listType) {
             case STRING:
                 return (ListPropertyData<TYPE>) StringListPropertyData.read(property, elements, buffer);
+            case FILTER:
+                return (ListPropertyData<TYPE>) FilterListPropertyData.read(property, elements, buffer);
             default:
                 Mekanism.logger.error("Unrecognized list type received: {}", listType);
                 return null;

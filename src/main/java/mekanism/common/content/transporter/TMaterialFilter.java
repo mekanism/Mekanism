@@ -1,8 +1,7 @@
 package mekanism.common.content.transporter;
 
 import javax.annotation.Nonnull;
-import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
+import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.transporter.Finder.MaterialFinder;
 import net.minecraft.block.Block;
@@ -31,28 +30,26 @@ public class TMaterialFilter extends TransporterFilter<TMaterialFilter> implemen
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt(NBTConstants.TYPE, 2);
         materialItem.write(nbtTags);
+        return nbtTags;
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         materialItem = ItemStack.read(nbtTags);
     }
 
     @Override
-    public void write(TileNetworkList data) {
-        data.add(2);
-
-        super.write(data);
-        data.add(materialItem);
+    public void write(PacketBuffer buffer) {
+        super.write(buffer);
+        buffer.writeItemStack(materialItem);
     }
 
     @Override
-    protected void read(PacketBuffer dataStream) {
+    public void read(PacketBuffer dataStream) {
         super.read(dataStream);
         materialItem = dataStream.readItemStack();
     }
@@ -77,6 +74,11 @@ public class TMaterialFilter extends TransporterFilter<TMaterialFilter> implemen
         filter.color = color;
         filter.materialItem = materialItem;
         return filter;
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return FilterType.SORTER_MATERIAL_FILTER;
     }
 
     @Nonnull

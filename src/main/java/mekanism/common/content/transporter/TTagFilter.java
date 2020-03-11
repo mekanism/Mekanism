@@ -1,8 +1,8 @@
 package mekanism.common.content.transporter;
 
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
+import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.transporter.Finder.TagFinder;
 import net.minecraft.item.ItemStack;
@@ -24,27 +24,26 @@ public class TTagFilter extends TransporterFilter<TTagFilter> implements ITagFil
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
+    public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt(NBTConstants.TYPE, 1);
         nbtTags.putString(NBTConstants.TAG_NAME, tagName);
+        return nbtTags;
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         tagName = nbtTags.getString(NBTConstants.TAG_NAME);
     }
 
     @Override
-    public void write(TileNetworkList data) {
-        data.add(1);
-        super.write(data);
-        data.add(tagName);
+    public void write(PacketBuffer buffer) {
+        super.write(buffer);
+        buffer.writeString(tagName);
     }
 
     @Override
-    protected void read(PacketBuffer dataStream) {
+    public void read(PacketBuffer dataStream) {
         super.read(dataStream);
         tagName = PacketHandler.readString(dataStream);
     }
@@ -69,6 +68,11 @@ public class TTagFilter extends TransporterFilter<TTagFilter> implements ITagFil
         filter.color = color;
         filter.tagName = tagName;
         return filter;
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return FilterType.SORTER_TAG_FILTER;
     }
 
     @Override

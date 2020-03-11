@@ -6,7 +6,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
-import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.TagCache;
@@ -96,10 +95,9 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        HashList<MinerFilter<?>> filters = getFilters();
         drawString(MekanismLang.MINER_CONFIG.translate(), 43, 6, 0x404040);
         drawString(MekanismLang.FILTERS.translate(), 11, 19, 0x00CD00);
-        drawString(MekanismLang.FILTER_COUNT.translate(filters.size()), 11, 28, 0x00CD00);
+        drawString(MekanismLang.FILTER_COUNT.translate(getFilters().size()), 11, 28, 0x00CD00);
         drawString(MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.inverse)), 11, 131, 0x00CD00);
         drawString(MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 11, 58, 0x00CD00);
         drawString(MekanismLang.MIN.translate(tile.minY), 11, 83, 0x00CD00);

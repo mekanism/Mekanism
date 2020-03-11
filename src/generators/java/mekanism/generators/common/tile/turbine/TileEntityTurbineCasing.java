@@ -12,7 +12,6 @@ import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
@@ -106,7 +105,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     public void setEnergy(double energy) {
         if (structure != null) {
             structure.electricityStored = Math.max(Math.min(energy, getMaxEnergy()), 0);
-            MekanismUtils.saveChunk(this);
+            markDirty();
         }
     }
 

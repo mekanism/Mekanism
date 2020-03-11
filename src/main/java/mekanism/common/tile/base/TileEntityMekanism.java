@@ -838,7 +838,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     public void setControlType(@Nonnull RedstoneControl type) {
         if (supportsRedstone()) {
             controlType = Objects.requireNonNull(type);
-            MekanismUtils.saveChunk(this);
+            markDirty();
         }
     }
 

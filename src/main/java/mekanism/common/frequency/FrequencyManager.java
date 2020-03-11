@@ -243,8 +243,8 @@ public class FrequencyManager {
                 loadedFrequencies = new ObjectOpenHashSet<>();
                 for (int i = 0; i < list.size(); i++) {
                     CompoundNBT compound = list.getCompound(i);
-                    Constructor<?> c = Class.forName(frequencyClass).getConstructor(CompoundNBT.class);
-                    Frequency freq = (Frequency) c.newInstance(compound);
+                    Constructor<?> c = Class.forName(frequencyClass).getConstructor(CompoundNBT.class, boolean.class);
+                    Frequency freq = (Frequency) c.newInstance(compound, false);
                     loadedFrequencies.add(freq);
                 }
             } catch (ReflectiveOperationException e) {

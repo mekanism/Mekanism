@@ -1,42 +1,48 @@
 package mekanism.common;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nonnull;
 
-public class HashList<T> implements Iterable<T> {
+public class HashList<T> extends AbstractList<T> {
 
     private List<T> list = new ArrayList<>(256);
 
-    private HashList(ArrayList<T> newList) {
+    public HashList(List<T> newList) {
         list = newList;
     }
 
     public HashList() {
     }
 
-    public boolean contains(T obj) {
+    @Override
+    public boolean contains(Object obj) {
         return list.contains(obj);
     }
 
+    @Override
     public void clear() {
         list.clear();
     }
 
+    @Override
     public T get(int index) {
-        if (index > size() - 1) {
-            return null;
-        }
         return list.get(index);
     }
 
-    public void add(T obj) {
-        if (!list.contains(obj)) {
-            list.add(obj);
-        }
+    //TODO: Evaluate usages of this, and maybe switch some to using the normal get method
+    public T getOrNull(int index) {
+        return index >= 0 && index < size() ? get(index) : null;
     }
 
+    @Override
+    public boolean add(T obj) {
+        return !list.contains(obj) && list.add(obj);
+    }
+
+    @Override
     public void add(int index, T obj) {
         if (!list.contains(obj)) {
             if (index > size()) {
@@ -48,32 +54,34 @@ public class HashList<T> implements Iterable<T> {
         }
     }
 
+    @Override
     public boolean isEmpty() {
         return list.isEmpty();
     }
 
-    public void remove(int index) {
-        if (isEmpty() || index > size() - 1) {
-            return;
-        }
-        list.remove(index);
+    @Override
+    public T remove(int index) {
+        return list.remove(index);
     }
 
     public void replace(int index, T obj) {
-        if (get(index) != null) {
+        if (getOrNull(index) != null) {
             remove(index);
         }
         add(index, obj);
     }
 
-    public void remove(T obj) {
-        list.remove(obj);
+    @Override
+    public boolean remove(Object obj) {
+        return list.remove(obj);
     }
 
-    public int indexOf(T obj) {
+    @Override
+    public int indexOf(Object obj) {
         return list.indexOf(obj);
     }
 
+    @Override
     public int size() {
         return list.size();
     }
@@ -85,13 +93,11 @@ public class HashList<T> implements Iterable<T> {
 
     public void swap(int source, int target) {
         // Make sure both source and target are legal values
-        if (source == target) {
+        if (source == target || source < 0 || target < 0) {
             return;
         }
-        if (source < 0 || target < 0) {
-            return;
-        }
-        if (source >= list.size() || target >= list.size()) {
+        int size = size();
+        if (source >= size || target >= size) {
             return;
         }
         // Perform swap
@@ -107,7 +113,7 @@ public class HashList<T> implements Iterable<T> {
 
     @Override
     public boolean equals(Object obj) {
-        return list.equals(obj);
+        return obj == this || obj instanceof List && list.equals(obj);
     }
 
     @Nonnull

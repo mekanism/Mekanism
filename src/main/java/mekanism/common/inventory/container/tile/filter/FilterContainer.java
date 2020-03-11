@@ -18,7 +18,7 @@ public abstract class FilterContainer<FILTER extends IFilter<FILTER>, TILE exten
         super(type, id, inv, tile);
         if (index >= 0) {
             //TODO: Should this somehow be checked to verify it is the correct type
-            origFilter = (FILTER) tile.getFilters().get(index);
+            origFilter = (FILTER) tile.getFilters().getOrNull(index);
         }
         if (origFilter == null) {
             filter = createNewFilter();

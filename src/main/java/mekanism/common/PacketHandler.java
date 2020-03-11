@@ -50,6 +50,7 @@ import mekanism.common.network.container.PacketUpdateContainerInt;
 import mekanism.common.network.container.PacketUpdateContainerItemStack;
 import mekanism.common.network.container.PacketUpdateContainerLong;
 import mekanism.common.network.container.PacketUpdateContainerShort;
+import mekanism.common.network.container.list.PacketUpdateContainerFilterList;
 import mekanism.common.network.container.list.PacketUpdateContainerList;
 import mekanism.common.network.container.list.PacketUpdateContainerStringList;
 import net.minecraft.entity.player.PlayerEntity;
@@ -176,8 +177,8 @@ public class PacketHandler {
         registerMessage(PacketPortableTeleporter.class, PacketPortableTeleporter::encode, PacketPortableTeleporter::decode, PacketPortableTeleporter::handle);
         registerMessage(PacketRemoveUpgrade.class, PacketRemoveUpgrade::encode, PacketRemoveUpgrade::decode, PacketRemoveUpgrade::handle);
         registerMessage(PacketRedstoneControl.class, PacketRedstoneControl::encode, PacketRedstoneControl::decode, PacketRedstoneControl::handle);
-        registerMessage(PacketNewFilter.class, PacketNewFilter::encode, PacketNewFilter::decode, PacketNewFilter::handle);
-        registerMessage(PacketEditFilter.class, PacketEditFilter::encode, PacketEditFilter::decode, PacketEditFilter::handle);
+        registerClientToServer(PacketNewFilter.class, PacketNewFilter::encode, PacketNewFilter::decode, PacketNewFilter::handle);
+        registerClientToServer(PacketEditFilter.class, PacketEditFilter::encode, PacketEditFilter::decode, PacketEditFilter::handle);
         registerMessage(PacketConfigurationUpdate.class, PacketConfigurationUpdate::encode, PacketConfigurationUpdate::decode, PacketConfigurationUpdate::handle);
         registerMessage(PacketJetpackData.class, PacketJetpackData::encode, PacketJetpackData::decode, PacketJetpackData::handle);
         registerMessage(PacketKey.class, PacketKey::encode, PacketKey::decode, PacketKey::handle);
@@ -206,6 +207,7 @@ public class PacketHandler {
         registerUpdateContainer(PacketUpdateContainerInfusionStack.class, PacketUpdateContainerInfusionStack::decode);
         //List sync packets
         registerUpdateContainerList(PacketUpdateContainerStringList.class, PacketUpdateContainerStringList::decode);
+        registerUpdateContainerList(PacketUpdateContainerFilterList.class, PacketUpdateContainerFilterList::decode);
         //Container sync packet that batches multiple changes into one packet
         registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
     }

@@ -20,7 +20,7 @@ public class SecurityFrequency extends Frequency {
 
     public boolean override;
 
-    public HashList<UUID> trusted;
+    public List<UUID> trusted;
     public List<String> trustedCache;
 
     public SecurityMode securityMode;

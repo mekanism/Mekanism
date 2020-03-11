@@ -229,7 +229,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         freq.activeCoords.add(Coord4D.get(this));
         manager.addFrequency(freq);
         frequency = (InventoryFrequency) freq;
-        MekanismUtils.saveChunk(this);
         MekanismUtils.notifyLoadedNeighborsOfTileChange(getWorld(), Coord4D.get(this));
         markDirty();
     }
@@ -238,7 +237,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (nbtTags.contains(NBTConstants.FREQUENCY, NBT.TAG_COMPOUND)) {
-            frequency = new InventoryFrequency(nbtTags.getCompound(NBTConstants.FREQUENCY));
+            frequency = new InventoryFrequency(nbtTags.getCompound(NBTConstants.FREQUENCY), false);
             frequency.valid = false;
         }
     }

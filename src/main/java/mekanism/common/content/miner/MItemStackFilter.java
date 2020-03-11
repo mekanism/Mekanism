@@ -1,8 +1,7 @@
 package mekanism.common.content.miner;
 
 import javax.annotation.Nonnull;
-import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
+import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -32,26 +31,24 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt(NBTConstants.TYPE, 0);
         itemType.write(nbtTags);
         return nbtTags;
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         itemType = ItemStack.read(nbtTags);
     }
 
     @Override
-    public void write(TileNetworkList data) {
-        data.add(0);
-        super.write(data);
-        data.add(itemType);
+    public void write(PacketBuffer buffer) {
+        super.write(buffer);
+        buffer.writeItemStack(itemType);
     }
 
     @Override
-    protected void read(PacketBuffer dataStream) {
+    public void read(PacketBuffer dataStream) {
         super.read(dataStream);
         itemType = dataStream.readItemStack();
     }
@@ -75,6 +72,11 @@ public class MItemStackFilter extends MinerFilter<MItemStackFilter> implements I
         filter.requireStack = requireStack;
         filter.itemType = itemType.copy();
         return filter;
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return FilterType.MINER_ITEMSTACK_FILTER;
     }
 
     @Nonnull

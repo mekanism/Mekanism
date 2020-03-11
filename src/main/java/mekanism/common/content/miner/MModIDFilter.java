@@ -1,8 +1,8 @@
 package mekanism.common.content.miner;
 
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
+import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,26 +30,24 @@ public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFil
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putInt(NBTConstants.TYPE, 3);
         nbtTags.putString(NBTConstants.MODID, modID);
         return nbtTags;
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
+    public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         modID = nbtTags.getString(NBTConstants.MODID);
     }
 
     @Override
-    public void write(TileNetworkList data) {
-        data.add(3);
-        super.write(data);
-        data.add(modID);
+    public void write(PacketBuffer buffer) {
+        super.write(buffer);
+        buffer.writeString(modID);
     }
 
     @Override
-    protected void read(PacketBuffer dataStream) {
+    public void read(PacketBuffer dataStream) {
         super.read(dataStream);
         modID = PacketHandler.readString(dataStream);
     }
@@ -73,6 +71,11 @@ public class MModIDFilter extends MinerFilter<MModIDFilter> implements IModIDFil
         filter.requireStack = requireStack;
         filter.modID = modID;
         return filter;
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return FilterType.MINER_MODID_FILTER;
     }
 
     @Override

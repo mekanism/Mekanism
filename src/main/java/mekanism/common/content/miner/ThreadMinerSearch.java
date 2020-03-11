@@ -4,9 +4,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.BitSet;
+import java.util.List;
 import java.util.Map;
 import mekanism.api.text.IHasTextComponent;
-import mekanism.common.HashList;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.tile.TileEntityBoundingBlock;
@@ -46,7 +46,7 @@ public class ThreadMinerSearch extends Thread {
     @Override
     public void run() {
         state = State.SEARCHING;
-        HashList<MinerFilter<?>> filters = tile.getFilters();
+        List<MinerFilter<?>> filters = tile.getFilters();
         if (!tile.inverse && filters.isEmpty()) {
             state = State.FINISHED;
             return;

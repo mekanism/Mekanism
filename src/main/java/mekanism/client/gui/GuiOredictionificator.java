@@ -76,9 +76,8 @@ public class GuiOredictionificator extends GuiMekanismTile<TileEntityOredictioni
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 96) + 2, 0x404040);
         HashList<OredictionificatorFilter> filters = getFilters();
         for (int i = 0; i < FILTER_COUNT; i++) {
-            int index = scrollBar.getCurrentSelection() + i;
-            if (filters.get(index) != null) {
-                OredictionificatorFilter filter = filters.get(index);
+            OredictionificatorFilter filter = filters.getOrNull(scrollBar.getCurrentSelection() + i);
+            if (filter != null) {
                 if (!renderStacks.containsKey(filter)) {
                     updateRenderStacks();
                 }

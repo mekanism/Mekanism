@@ -13,15 +13,17 @@ import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.common.HashList;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.content.filter.BaseFilter;
+import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
+import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
@@ -134,54 +136,14 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        if (!filters.isEmpty()) {
-            ListNBT filterTags = new ListNBT();
-            for (OredictionificatorFilter filter : filters) {
-                CompoundNBT tagCompound = new CompoundNBT();
-                filter.write(tagCompound);
-                filterTags.add(tagCompound);
-            }
-            nbtTags.put(NBTConstants.FILTERS, filterTags);
-        }
+        getConfigurationData(nbtTags);
         return nbtTags;
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
-            }
-        }
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            filters.clear();
-            int amount = dataStream.readInt();
-            for (int i = 0; i < amount; i++) {
-                filters.add(OredictionificatorFilter.readFromPacket(dataStream));
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(filters.size());
-        for (OredictionificatorFilter filter : filters) {
-            filter.write(data);
-        }
-        return data;
-    }
-
-    @Override
-    public TileNetworkList getFilterPacket(TileNetworkList data) {
-        return getNetworkedData(data);
+        setConfigurationData(nbtTags);
     }
 
     @Override
@@ -189,9 +151,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (OredictionificatorFilter filter : filters) {
-                CompoundNBT tagCompound = new CompoundNBT();
-                filter.write(tagCompound);
-                filterTags.add(tagCompound);
+                filterTags.add(filter.write(new CompoundNBT()));
             }
             nbtTags.put(NBTConstants.FILTERS, filterTags);
         }
@@ -203,7 +163,10 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
-                filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
+                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
+                if (filter instanceof OredictionificatorFilter) {
+                    filters.add((OredictionificatorFilter) filter);
+                }
             }
         }
     }
@@ -218,9 +181,7 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (OredictionificatorFilter filter : filters) {
-                CompoundNBT tagCompound = new CompoundNBT();
-                filter.write(tagCompound);
-                filterTags.add(tagCompound);
+                filterTags.add(filter.write(new CompoundNBT()));
             }
             ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, filterTags);
         }
@@ -231,7 +192,10 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
         if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
-                filters.add(OredictionificatorFilter.readFromNBT(tagList.getCompound(i)));
+                IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
+                if (filter instanceof OredictionificatorFilter) {
+                    filters.add((OredictionificatorFilter) filter);
+                }
             }
         }
     }
@@ -268,24 +232,19 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(() -> didProcess, value -> didProcess = value));
+        container.track(SyncableFilterList.create(this::getFilters, value -> {
+            if (value instanceof HashList) {
+                filters = (HashList<OredictionificatorFilter>) value;
+            } else {
+                filters = new HashList<>(value);
+            }
+        }));
     }
 
-    public static class OredictionificatorFilter implements IFilter<OredictionificatorFilter> {
+    public static class OredictionificatorFilter extends BaseFilter<OredictionificatorFilter> {
 
         private ResourceLocation filterLocation;
         public int index;
-
-        public static OredictionificatorFilter readFromNBT(CompoundNBT nbtTags) {
-            OredictionificatorFilter filter = new OredictionificatorFilter();
-            filter.read(nbtTags);
-            return filter;
-        }
-
-        public static OredictionificatorFilter readFromPacket(PacketBuffer dataStream) {
-            OredictionificatorFilter filter = new OredictionificatorFilter();
-            filter.read(dataStream);
-            return filter;
-        }
 
         public String getFilterText() {
             return filterLocation.toString();
@@ -299,32 +258,39 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             return filterLocation.equals(location);
         }
 
-        public void write(CompoundNBT nbtTags) {
+        @Override
+        public CompoundNBT write(CompoundNBT nbtTags) {
+            super.write(nbtTags);
             nbtTags.putString(NBTConstants.FILTER, getFilterText());
             nbtTags.putInt(NBTConstants.INDEX, index);
+            return nbtTags;
         }
 
-        protected void read(CompoundNBT nbtTags) {
+        @Override
+        public void read(CompoundNBT nbtTags) {
             filterLocation = new ResourceLocation(nbtTags.getString(NBTConstants.FILTER));
             index = nbtTags.getInt(NBTConstants.INDEX);
         }
 
-        public void write(TileNetworkList data) {
-            data.add(filterLocation);
-            data.add(index);
+        @Override
+        public void write(PacketBuffer buffer) {
+            super.write(buffer);
+            buffer.writeResourceLocation(filterLocation);
+            buffer.writeInt(index);
         }
 
-        protected void read(PacketBuffer dataStream) {
+        @Override
+        public void read(PacketBuffer dataStream) {
             filterLocation = dataStream.readResourceLocation();
             index = dataStream.readInt();
         }
 
         public List<Item> getMatchingItems() {
-            if (!hasFilter()) {
-                return Collections.emptyList();
+            if (hasFilter()) {
+                //TODO: Cache the wrapper and maybe elements also
+                return new ArrayList<>(new ItemTags.Wrapper(filterLocation).getAllElements());
             }
-            //TODO: Cache the wrapper and maybe elements also
-            return new ArrayList<>(new ItemTags.Wrapper(filterLocation).getAllElements());
+            return Collections.emptyList();
         }
 
         @Override
@@ -333,6 +299,11 @@ public class TileEntityOredictionificator extends TileEntityMekanism implements 
             newFilter.filterLocation = filterLocation;
             newFilter.index = index;
             return newFilter;
+        }
+
+        @Override
+        public FilterType getFilterType() {
+            return FilterType.OREDICTIONIFICATOR;
         }
 
         @Override
