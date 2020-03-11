@@ -7,23 +7,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.PacketHandler;
 import mekanism.common.multiblock.IMultiblock;
 import mekanism.common.multiblock.IStructuralMultiblock;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
+import mekanism.common.network.PacketDataRequest;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -71,7 +70,17 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
+        //TODO: Remove this once the rest of the multiblocks are transferred over
         doAutoSync = true;
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
+        //TODO: Remove this, mainly used right now to request the structure gets sent
+        if (isRemote()) {
+            Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
+        }
     }
 
     @Override
@@ -129,8 +138,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                     MekanismUtils.notifyNeighborofChange(world, pos, getPos());
                 }
             }
-
-            Mekanism.packetHandler.sendUpdatePacket(this);
         }
 
         prevStructure = structure != null;
@@ -142,6 +149,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 cachedID = structure.inventoryID;
                 getManager().updateCache(this);
             }
+        }
+        if (sendStructure) {
+            sendUpdatePacket();
         }
     }
 
@@ -160,7 +170,10 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             for (Coord4D obj : structure.locations) {
                 TileEntityMultiblock<T> tile = (TileEntityMultiblock<T>) MekanismUtils.getTileEntity(TileEntityMultiblock.class, getWorld(), obj.getPos());
                 if (tile != null && tile.isRendering) {
-                    Mekanism.packetHandler.sendUpdatePacket(tile);
+                    sendUpdatePacket();
+                    //We only have one tile that renders per structure
+                    // so once we find it just break
+                    break;
                 }
             }
         }
@@ -175,56 +188,44 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     public abstract MultiblockManager<T> getManager();
 
+    @Nonnull
     @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(isRendering);
-        data.add(structure != null);
-
-        if (structure != null && isRendering) {
-            if (sendStructure) {
-                sendStructure = false;
-
-                data.add(true);
-
-                data.add(structure.volHeight);
-                data.add(structure.volWidth);
-                data.add(structure.volLength);
-
-                structure.renderLocation.write(data);
-                data.add(structure.inventoryID != null);//boolean for if has inv id
-                if (structure.inventoryID != null) {
-                    data.add(structure.inventoryID);
-                }
-            } else {
-                data.add(false);
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.putBoolean(NBTConstants.RENDERING, isRendering);
+        updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, structure != null);
+        if (structure != null && isRendering && sendStructure) {
+            sendStructure = false;
+            updateTag.putInt(NBTConstants.HEIGHT, structure.volHeight);
+            updateTag.putInt(NBTConstants.WIDTH, structure.volWidth);
+            updateTag.putInt(NBTConstants.LENGTH, structure.volLength);
+            if (structure.renderLocation != null) {
+                updateTag.put(NBTConstants.CLIENT_PREVIOUS, structure.renderLocation.write(new CompoundNBT()));
+            }
+            if (structure.inventoryID != null) {
+                updateTag.putString(NBTConstants.INVENTORY_ID, structure.inventoryID);
             }
         }
-        return data;
+        return updateTag;
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            if (structure == null) {
-                structure = getNewStructure();
-            }
-
-            isRendering = dataStream.readBoolean();
-            clientHasStructure = dataStream.readBoolean();
-            if (clientHasStructure && isRendering) {
-                if (dataStream.readBoolean()) {
-                    structure.volHeight = dataStream.readInt();
-                    structure.volWidth = dataStream.readInt();
-                    structure.volLength = dataStream.readInt();
-                    structure.renderLocation = Coord4D.read(dataStream);
-                    if (dataStream.readBoolean()) {
-                        structure.inventoryID = PacketHandler.readString(dataStream);
-                    } else {
-                        structure.inventoryID = null;
-                    }
-                }
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        if (structure == null) {
+            structure = getNewStructure();
+        }
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isRendering = value);
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> clientHasStructure = value);
+        if (clientHasStructure && isRendering) {
+            NBTUtils.setIntIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> structure.volHeight = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> structure.volWidth = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> structure.volLength = value);
+            NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> structure.renderLocation = value);
+            if (tag.contains(NBTConstants.INVENTORY_ID, NBT.TAG_STRING)) {
+                structure.inventoryID = tag.getString(NBTConstants.INVENTORY_ID);
+            } else {
+                structure.inventoryID = null;
             }
         }
     }

@@ -186,10 +186,9 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         getTransmitter().readFromUpdateTag(tag);
     }
 
-    //TODO: Remove/Make a proper way for the client to retrieve sync and batch packets
-    @Deprecated
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
+        //TODO: Make a proper way for the client to retrieve sync and batch packets
         if (isRemote()) {
             byte type = dataStream.readByte();
             if (type == SYNC_PACKET) {

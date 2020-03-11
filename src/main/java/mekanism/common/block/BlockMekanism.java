@@ -4,17 +4,16 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.NBTConstants;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.api.block.ISupportsComparator;
 import mekanism.api.energy.IEnergizedItem;
 import mekanism.api.sustained.ISustainedData;
 import mekanism.api.sustained.ISustainedInventory;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.api.NBTConstants;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.item.IItemEnergized;
@@ -215,7 +214,7 @@ public abstract class BlockMekanism extends Block {
         }
         //TODO: Figure out if this is actually needed
         if (!world.isRemote) {
-            Mekanism.packetHandler.sendUpdatePacket(tile);
+            tile.sendUpdatePacket();
         }
     }
 

@@ -175,11 +175,17 @@ public final class NBTConstants {
     public static final String CLIENT_NEXT = "clientNext";
     public static final String CLIENT_PREVIOUS = "clientPrevious";
     public static final String HEIGHT = "height";
+    public static final String WIDTH = "width";
+    public static final String LENGTH = "length";
     public static final String LEFT_ON_FACE = "isLeftOnFace";
     public static final String RENDER_Y = "renderY";
     public static final String ACTIVE = "active";
     public static final String SOUND_SCALE = "soundScale";
     public static final String VALVE = "valve";
+    public static final String RENDERING = "rendering";
+    public static final String HAS_STRUCTURE = "hasStructure";
+    public static final String INVENTORY_ID = "inventoryID";
+    public static final String RENDER_LOCATION = "renderLocation";
 
     //Ones that also are used for interacting with forge/vanilla
     public static final String X = "x";

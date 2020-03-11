@@ -14,7 +14,6 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
@@ -218,8 +217,6 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                   GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(!oldMode, true))));
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            markDirty();
         }
         return ActionResultType.SUCCESS;
     }

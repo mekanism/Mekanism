@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.TileNetworkList;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
@@ -12,13 +11,15 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.matrix.MatrixCache;
 import mekanism.common.content.matrix.MatrixUpdateProtocol;
 import mekanism.common.content.matrix.SynchronizedMatrixData;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -62,23 +63,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
             return ActionResultType.PASS;
         }
         return openGui(player);
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        if (structure != null) {
-            structure.addStructureData(data);
-        }
-        return data;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote() && clientHasStructure) {
-            structure.readStructureData(dataStream);
-        }
     }
 
     @Nonnull
@@ -155,5 +139,60 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
             return Capabilities.ENERGY_STORAGE_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapabilityIfEnabled(capability, side);
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getEnergy(), value -> {
+            if (structure != null) {
+                structure.setCachedTotal(value);
+            }
+        }));
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getStorageCap(), value -> {
+            if (structure != null) {
+                structure.setStorageCap(value);
+            }
+        }));
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getTransferCap(), value -> {
+            if (structure != null) {
+                structure.setTransferCap(value);
+            }
+        }));
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getLastInput(), value -> {
+            if (structure != null) {
+                structure.setLastInput(value);
+            }
+        }));
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getLastOutput(), value -> {
+            if (structure != null) {
+                structure.setLastOutput(value);
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volWidth, value -> {
+            if (structure != null) {
+                structure.volWidth = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volWidth, value -> {
+            if (structure != null) {
+                structure.volWidth = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volHeight, value -> {
+            if (structure != null) {
+                structure.volHeight = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getCellCount(), value -> {
+            if (structure != null) {
+                structure.setClientCells(value);
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getProviderCount(), value -> {
+            if (structure != null) {
+                structure.setClientProviders(value);
+            }
+        }));
     }
 }

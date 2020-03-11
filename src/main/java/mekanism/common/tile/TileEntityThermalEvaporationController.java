@@ -157,8 +157,8 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
             cachedRecipe.process();
         }
         if (active && Math.abs((float) inputTank.getFluidAmount() / inputTank.getCapacity() - prevScale) > 0.01) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
             prevScale = (float) inputTank.getFluidAmount() / inputTank.getCapacity();
+            sendUpdatePacket();
         }
     }
 

@@ -86,7 +86,7 @@ public class ItemTierInstaller extends Item {
                                 upgradedTile.setFacing(((ITileDirectional) tile).getDirection());
                             }
                             upgradedTile.parseUpgradeData(upgradeData);
-                            Mekanism.packetHandler.sendUpdatePacket(upgradedTile);
+                            upgradedTile.sendUpdatePacket();
                             upgradedTile.markDirty();
                             if (!player.isCreative()) {
                                 ItemStack stack = player.getHeldItem(context.getHand());

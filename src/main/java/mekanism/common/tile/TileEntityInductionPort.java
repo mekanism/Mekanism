@@ -8,7 +8,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IConfigurable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IEnergyWrapper;
@@ -77,8 +76,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                   MekanismLang.INDUCTION_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))));
-            Mekanism.packetHandler.sendUpdatePacket(this);
-            markDirty();
         }
         return ActionResultType.SUCCESS;
     }

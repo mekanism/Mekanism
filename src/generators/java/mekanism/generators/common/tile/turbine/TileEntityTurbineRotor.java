@@ -55,7 +55,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         if (index != position) {
             // Our position has changed, update and generate an update packet for client
             position = index;
-            Mekanism.packetHandler.sendUpdatePacket(this);
+            sendUpdatePacket();
         }
 
         // Pass the scan along to next rotor up, along with their new index
@@ -74,7 +74,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
             // Add the blades to this rotor
             blades++;
             // Update client state
-            Mekanism.packetHandler.sendUpdatePacket(this);
+            sendUpdatePacket();
             return true;
         }
 

@@ -15,7 +15,6 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ITankManager;
@@ -113,7 +112,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         if (world.getDayTime() % 20 == 0) {
             //TODO: Why do we have to be sending updates to the client anyways?
             // I believe we send when state changes, and otherwise we only should have to be sending if recipe actually processes
-            Mekanism.packetHandler.sendUpdatePacket(this);
+            sendUpdatePacket();
         }
     }
 
