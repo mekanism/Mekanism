@@ -45,7 +45,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     /**
      * This multiblock's previous "has structure" state.
      */
-    public boolean prevStructure;
+    private boolean prevStructure;
 
     /**
      * Whether or not this multiblock has it's structure, for the client side mechanics.
@@ -86,14 +86,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();
-        if (structure == null) {
-            structure = getNewStructure();
-        }
-        if (structure.renderLocation != null && clientHasStructure && isRendering && !prevStructure) {
-            Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength, structure.volWidth, structure.volHeight,
-                  tile -> MultiblockManager.areEqual(this, tile));
-        }
-        prevStructure = clientHasStructure;
         if (!clientHasStructure && !playersUsing.isEmpty()) {
             for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
                 player.closeScreen();
@@ -152,6 +144,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         }
         if (sendStructure) {
             sendUpdatePacket();
+            sendStructure = false;
         }
     }
 
@@ -216,16 +209,23 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         }
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isRendering = value);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> clientHasStructure = value);
-        if (clientHasStructure && isRendering) {
-            NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> structure.volHeight = value);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> structure.volWidth = value);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> structure.volLength = value);
-            NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> structure.renderLocation = value);
-            if (tag.contains(NBTConstants.INVENTORY_ID, NBT.TAG_STRING)) {
-                structure.inventoryID = tag.getString(NBTConstants.INVENTORY_ID);
-            } else {
-                structure.inventoryID = null;
+        if (isRendering) {
+            if (clientHasStructure) {
+                NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> structure.volHeight = value);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> structure.volWidth = value);
+                NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> structure.volLength = value);
+                NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> structure.renderLocation = value);
+                if (tag.contains(NBTConstants.INVENTORY_ID, NBT.TAG_STRING)) {
+                    structure.inventoryID = tag.getString(NBTConstants.INVENTORY_ID);
+                } else {
+                    structure.inventoryID = null;
+                }
+                if (structure.renderLocation != null && !prevStructure) {
+                    Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength, structure.volWidth, structure.volHeight,
+                          tile -> MultiblockManager.areEqual(this, tile));
+                }
             }
+            prevStructure = clientHasStructure;
         }
     }
 
