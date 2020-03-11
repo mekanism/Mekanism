@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import it.unimi.dsi.fastutil.bytes.ByteConsumer;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
@@ -27,6 +28,12 @@ public class NBTUtils {
     public static void setByteIfPresent(CompoundNBT nbt, String key, ByteConsumer setter) {
         if (nbt.contains(key, NBT.TAG_BYTE)) {
             setter.accept(nbt.getByte(key));
+        }
+    }
+
+    public static void setBooleanIfPresent(CompoundNBT nbt, String key, BooleanConsumer setter) {
+        if (nbt.contains(key, NBT.TAG_BYTE)) {
+            setter.accept(nbt.getBoolean(key));
         }
     }
 

@@ -4,8 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
-import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -18,6 +16,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -50,7 +49,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        boolean packet = false;
         energySlot.discharge(this);
         double toUse = 0;
         if (MekanismUtils.canFunction(this)) {
@@ -63,14 +61,10 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         double[] loss = simulateHeat();
         applyTemperatureChange();
         lastEnvironmentLoss = loss[1];
-        float newSoundScale = (float) Math.max(0, toUse / 1E5);
+        float newSoundScale = (float) Math.max(0, toUse / 100_000);
         if (Math.abs(newSoundScale - soundScale) > 0.01) {
-            packet = true;
-        }
-
-        soundScale = newSoundScale;
-        if (packet) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
+            soundScale = newSoundScale;
+            sendUpdatePacket();
         }
     }
 
@@ -101,27 +95,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         if (!isRemote()) {
             energyUsage = MekanismUtils.convertToJoules(dataStream.readInt());
             setMaxEnergy(energyUsage * 400);
-            return;
-        }
-
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            temperature = dataStream.readDouble();
-            soundScale = dataStream.readFloat();
         }
     }
 
     @Override
     public float getVolume() {
         return (float) Math.sqrt(soundScale);
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(temperature);
-        data.add(soundScale);
-        return data;
     }
 
     @Override
@@ -183,5 +162,19 @@ public class TileEntityResistiveHeater extends TileEntityMekanism implements IHe
         container.track(SyncableDouble.create(() -> energyUsage, value -> energyUsage = value));
         container.track(SyncableDouble.create(this::getTemp, value -> temperature = value));
         container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.putFloat(NBTConstants.SOUND_SCALE, soundScale);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SOUND_SCALE, value -> soundScale = value);
     }
 }

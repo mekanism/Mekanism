@@ -9,7 +9,6 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -42,9 +41,9 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -452,43 +451,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            inputTank.setStack(dataStream.readFluidStack());
-            height = dataStream.readInt();
-            updateMaxFluid();
-            isLeftOnFace = dataStream.readBoolean();
-            renderY = dataStream.readInt();
-            //Note: we send the active state over the network as when we are force syncing it we may not have the accurate block state
-            // on the client yet
-            boolean active = dataStream.readBoolean();
-            if (clientStructured != active) {
-                clientStructured = active;
-                if (active) {
-                    // Calculate the two corners of the evap tower using the render location as basis (which is the
-                    // lowest rightmost corner inside the tower, relative to the controller).
-                    BlockPos corner1 = getRenderLocation().getPos().west().north().down();
-                    BlockPos corner2 = corner1.east(3).south(3).up(height - 1);
-                    // Use the corners to spin up the sparkle
-                    Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2, tile -> tile instanceof TileEntityThermalEvaporationBlock);
-                }
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(inputTank.getFluid());
-        data.add(height);
-        data.add(isLeftOnFace);
-        data.add(renderY);
-        data.add(getActive());
-        return data;
-    }
-
-    @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         temperature = nbtTags.getFloat(NBTConstants.TEMPERATURE);
@@ -529,7 +491,7 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super.setActive(active);
         if (active != clientStructured) {
             clientStructured = active;
-            Mekanism.packetHandler.sendUpdatePacket(this);
+            sendUpdatePacket();
         }
     }
 
@@ -565,5 +527,44 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         container.track(SyncableFloat.create(this::getTemperature, value -> temperature = value));
         container.track(SyncableFloat.create(() -> lastGain, value -> lastGain = value));
         container.track(SyncableFloat.create(() -> totalLoss, value -> totalLoss = value));
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.put(NBTConstants.FLUID_STORED, inputTank.getFluid().writeToNBT(new CompoundNBT()));
+        updateTag.putInt(NBTConstants.HEIGHT, height);
+        updateTag.putBoolean(NBTConstants.LEFT_ON_FACE, isLeftOnFace);
+        updateTag.putInt(NBTConstants.RENDER_Y, renderY);
+        updateTag.putBoolean(NBTConstants.ACTIVE, getActive());
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> inputTank.setStack(fluid));
+        NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> {
+            height = value;
+            updateMaxFluid();
+        });
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LEFT_ON_FACE, value -> isLeftOnFace = value);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.RENDER_Y, value -> renderY = value);
+        //Note: we send the active state over the network as when we are force syncing it we may not have the accurate block state
+        // on the client yet
+        NBTUtils.setBooleanIfPresent(tag, NBTConstants.LEFT_ON_FACE, active -> {
+            if (clientStructured != active) {
+                clientStructured = active;
+                if (active) {
+                    // Calculate the two corners of the evap tower using the render location as basis (which is the
+                    // lowest rightmost corner inside the tower, relative to the controller).
+                    BlockPos corner1 = getRenderLocation().getPos().west().north().down();
+                    BlockPos corner2 = corner1.east(3).south(3).up(height - 1);
+                    // Use the corners to spin up the sparkle
+                    Mekanism.proxy.doMultiblockSparkle(this, corner1, corner2, tile -> tile instanceof TileEntityThermalEvaporationBlock);
+                }
+            }
+        });
     }
 }
