@@ -50,6 +50,8 @@ import mekanism.common.network.container.PacketUpdateContainerInt;
 import mekanism.common.network.container.PacketUpdateContainerItemStack;
 import mekanism.common.network.container.PacketUpdateContainerLong;
 import mekanism.common.network.container.PacketUpdateContainerShort;
+import mekanism.common.network.container.list.PacketUpdateContainerList;
+import mekanism.common.network.container.list.PacketUpdateContainerStringList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -202,6 +204,8 @@ public class PacketHandler {
         registerUpdateContainer(PacketUpdateContainerFluidStack.class, PacketUpdateContainerFluidStack::decode);
         registerUpdateContainer(PacketUpdateContainerGasStack.class, PacketUpdateContainerGasStack::decode);
         registerUpdateContainer(PacketUpdateContainerInfusionStack.class, PacketUpdateContainerInfusionStack::decode);
+        //List sync packets
+        registerUpdateContainerList(PacketUpdateContainerStringList.class, PacketUpdateContainerStringList::decode);
         //Container sync packet that batches multiple changes into one packet
         registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
     }
@@ -217,6 +221,10 @@ public class PacketHandler {
     }
 
     private <MSG extends PacketUpdateContainer<MSG>> void registerUpdateContainer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+        registerServerToClient(type, PacketUpdateContainer::encode, decoder, PacketUpdateContainer::handle);
+    }
+
+    private <TYPE, MSG extends PacketUpdateContainerList<TYPE>> void registerUpdateContainerList(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
         registerServerToClient(type, PacketUpdateContainer::encode, decoder, PacketUpdateContainer::handle);
     }
 

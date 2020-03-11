@@ -11,5 +11,6 @@ public enum PropertyType {
     ITEM_STACK,
     FLUID_STACK,
     GAS_STACK,
-    INFUSION_STACK;
+    INFUSION_STACK,
+    LIST
 }

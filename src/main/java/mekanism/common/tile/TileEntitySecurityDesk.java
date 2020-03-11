@@ -1,6 +1,7 @@
 package mekanism.common.tile;
 
 import com.mojang.authlib.GameProfile;
+import java.util.Collections;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
@@ -15,6 +16,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.list.SyncableStringList;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.security.IOwnerItem;
@@ -46,7 +48,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     public TileEntitySecurityDesk() {
         super(MekanismBlocks.SECURITY_DESK);
-        doAutoSync = true;
     }
 
     @Nonnull
@@ -146,10 +147,10 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             if (type == 0) {
                 GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(PacketHandler.readString(dataStream));
                 if (profile != null) {
-                    frequency.trusted.add(profile.getId());
+                    frequency.addTrusted(profile.getId(), profile.getName());
                 }
             } else if (type == 1) {
-                frequency.trusted.remove(dataStream.readUniqueId());
+                frequency.removeTrusted(dataStream.readInt());
             } else if (type == 2) {
                 frequency.override = !frequency.override;
             } else if (type == 3) {
@@ -273,6 +274,10 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                       frequency.securityMode = value;
                   }
               }));
-        //TODO: Sync the trusted list on changes
+        container.track(SyncableStringList.create(() -> frequency == null ? Collections.emptyList() : frequency.trustedCache, value -> {
+            if (frequency != null) {
+                frequency.trustedCache = value;
+            }
+        }));
     }
 }

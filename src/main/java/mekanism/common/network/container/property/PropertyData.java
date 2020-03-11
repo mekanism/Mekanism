@@ -4,6 +4,7 @@ import mekanism.api.chemical.ChemicalUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.container.PacketUpdateContainer;
+import mekanism.common.network.container.property.list.ListPropertyData;
 import net.minecraft.network.PacketBuffer;
 
 public abstract class PropertyData {
@@ -61,6 +62,8 @@ public abstract class PropertyData {
                 return new GasStackPropertyData(property, ChemicalUtils.readGasStack(buffer));
             case INFUSION_STACK:
                 return new InfusionStackPropertyData(property, ChemicalUtils.readInfusionStack(buffer));
+            case LIST:
+                return ListPropertyData.readList(property, buffer);
             default:
                 Mekanism.logger.error("Unrecognized property type received: {}", type);
                 return null;

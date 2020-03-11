@@ -1,9 +1,8 @@
 package mekanism.client.gui;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerHolder;
@@ -71,11 +70,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         addButton(removeButton = new TranslationButton(this, getGuiLeft() + 13, getGuiTop() + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();
             if (tile.frequency != null && selection != -1) {
-                TileNetworkList data = TileNetworkList.withContents(1, tile.frequency.trusted.get(selection));
+                TileNetworkList data = TileNetworkList.withContents(1, selection);
                 Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, data));
                 scrollList.clearSelection();
+                updateButtons();
             }
-            updateButtons();
         }));
         addButton(trustedField = new TextFieldWidget(font, getGuiLeft() + 35, getGuiTop() + 69, 86, 11, ""));
         trustedField.setMaxStringLength(MAX_LENGTH);
@@ -123,13 +122,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private void updateButtons() {
         if (tile.ownerUUID != null) {
-            List<String> text = new ArrayList<>();
-            if (tile.frequency != null) {
-                for (UUID uuid : tile.frequency.trusted) {
-                    text.add(MekanismUtils.getLastKnownUsername(uuid));
-                }
-            }
-            scrollList.setText(text);
+            scrollList.setText(tile.frequency == null ? Collections.emptyList() : tile.frequency.trustedCache);
             removeButton.active = scrollList.hasSelection();
         }
 

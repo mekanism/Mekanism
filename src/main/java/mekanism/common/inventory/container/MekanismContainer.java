@@ -27,6 +27,7 @@ import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.SyncableShort;
+import mekanism.common.inventory.container.sync.list.SyncableList;
 import mekanism.common.network.container.PacketUpdateContainerBatch;
 import mekanism.common.network.container.property.PropertyData;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -339,6 +340,13 @@ public abstract class MekanismContainer extends Container {
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableInfusionStack) {
             ((SyncableInfusionStack) data).set(value);
+        }
+    }
+
+    public <TYPE> void handleWindowProperty(short property, @Nonnull List<TYPE> value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableList<?>) {
+            ((SyncableList<TYPE>) data).set(value);
         }
     }
 
