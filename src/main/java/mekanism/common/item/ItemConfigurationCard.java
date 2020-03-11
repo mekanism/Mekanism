@@ -6,14 +6,13 @@ import javax.annotation.Nonnull;
 import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IRedstoneControl;
 import mekanism.common.base.IRedstoneControl.RedstoneControl;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -74,7 +73,9 @@ public class ItemConfigurationCard extends Item {
                         if (getNameFromTile(tile, side).equals(getDataType(stack))) {
                             setBaseData(data, tile);
                             CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(special -> special.setConfigurationData(data));
-                            updateTile(tile);
+                            if (tile instanceof TileEntityUpdateable) {
+                                ((TileEntityUpdateable) tile).sendUpdatePacket();
+                            }
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
                                   MekanismLang.CONFIG_CARD_SET.translateColored(EnumColor.DARK_GREEN, EnumColor.INDIGO, Translation.of(getDataType(stack)))));
                         } else {
@@ -89,17 +90,6 @@ public class ItemConfigurationCard extends Item {
             }
         }
         return ActionResultType.PASS;
-    }
-
-    private <TILE extends TileEntity & ITileNetwork> void updateTile(TileEntity tile) {
-        //TODO: Replace this with checking TileEntityUpdateable and calling sendUpdatePacket
-        //Check the capability in case for some reason the tile doesn't want to expose the fact it has it
-        CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
-            if (network instanceof TileEntity) {
-                //Ensure the implementation is still a tile entity
-                Mekanism.packetHandler.sendUpdatePacket((TILE) network);
-            }
-        });
     }
 
     private CompoundNBT getBaseData(TileEntity tile) {

@@ -166,6 +166,9 @@ public class Mekanism {
     public Mekanism() {
         instance = this;
         MekanismConfig.registerConfigs(ModLoadingContext.get());
+        //This line just force loads the MekanismAPI from here, to make sure empty chemicals are initialized
+        // via mekanism instead of say mekanism generators or some random addon
+        logger.debug("Mekanism Debug mode: {}", MekanismAPI.debug ? "enabled" : "disabled");
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         //TODO: Figure out the proper event bus to register things on

@@ -1,9 +1,11 @@
 package mekanism.common.inventory.container.sync;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalTank;
 
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling chemical stacks
@@ -12,12 +14,13 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
 
     @Nonnull
     private ChemicalStack<CHEMICAL> lastKnownValue;
-    private final IChemicalTank<CHEMICAL, STACK> handler;
+    private final Supplier<@NonNull STACK> getter;
+    private final Consumer<@NonNull STACK> setter;
 
-    protected SyncableChemicalStack(IChemicalTank<CHEMICAL, STACK> handler) {
-        this.handler = handler;
+    protected SyncableChemicalStack(Supplier<@NonNull STACK> getter, Consumer<@NonNull STACK> setter) {
+        this.getter = getter;
+        this.setter = setter;
         lastKnownValue = getEmptyStack();
-        //TODO: Set to empty
     }
 
     //TODO: Is there a better way to make this super class know about the empty stack?
@@ -29,17 +32,18 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
 
     @Nonnull
     public STACK get() {
-        return handler.getStack();
+        return getter.get();
     }
 
     public void set(@Nonnull STACK value) {
-        handler.setStack(value);
+        setter.accept(value);
     }
 
     public void set(int amount) {
-        if (!handler.isEmpty()) {
+        STACK stack = get();
+        if (!stack.isEmpty()) {
             //Double check it is not empty
-            handler.setStack(createStack(handler.getStack(), amount));
+            set(createStack(stack, amount));
         }
     }
 

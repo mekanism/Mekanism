@@ -1,6 +1,9 @@
 package mekanism.common.inventory.container.sync;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -14,11 +17,15 @@ import mekanism.common.network.container.property.PropertyData;
 public class SyncableInfusionStack extends SyncableChemicalStack<InfuseType, InfusionStack> {
 
     public static SyncableInfusionStack create(IChemicalTank<InfuseType, InfusionStack> handler) {
-        return new SyncableInfusionStack(handler);
+        return new SyncableInfusionStack(handler::getStack, handler::setStack);
     }
 
-    private SyncableInfusionStack(IChemicalTank<InfuseType, InfusionStack> handler) {
-        super(handler);
+    public static SyncableInfusionStack create(Supplier<@NonNull InfusionStack> getter, Consumer<@NonNull InfusionStack> setter) {
+        return new SyncableInfusionStack(getter, setter);
+    }
+
+    private SyncableInfusionStack(Supplier<@NonNull InfusionStack> getter, Consumer<@NonNull InfusionStack> setter) {
+        super(getter, setter);
     }
 
     @Nonnull

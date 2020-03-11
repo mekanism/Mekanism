@@ -1,6 +1,9 @@
 package mekanism.common.inventory.container.sync;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.network.container.property.FluidStackPropertyData;
 import mekanism.common.network.container.property.IntPropertyData;
@@ -13,31 +16,37 @@ import net.minecraftforge.fluids.FluidStack;
 public class SyncableFluidStack implements ISyncableData {
 
     public static SyncableFluidStack create(@Nonnull IExtendedFluidTank handler) {
-        return new SyncableFluidStack(handler);
+        return new SyncableFluidStack(handler::getFluid, handler::setStack);
+    }
+
+    public static SyncableFluidStack create(Supplier<@NonNull FluidStack> getter, Consumer<@NonNull FluidStack> setter) {
+        return new SyncableFluidStack(getter, setter);
     }
 
     @Nonnull
-    private final IExtendedFluidTank handler;
-    @Nonnull
     private FluidStack lastKnownValue = FluidStack.EMPTY;
+    private final Supplier<@NonNull FluidStack> getter;
+    private final Consumer<@NonNull FluidStack> setter;
 
-    private SyncableFluidStack(@Nonnull IExtendedFluidTank handler) {
-        this.handler = handler;
+    private SyncableFluidStack(Supplier<@NonNull FluidStack> getter, Consumer<@NonNull FluidStack> setter) {
+        this.getter = getter;
+        this.setter = setter;
     }
 
     @Nonnull
     public FluidStack get() {
-        return handler.getFluid();
+        return getter.get();
     }
 
     public void set(@Nonnull FluidStack value) {
-        handler.setStack(value);
+        setter.accept(value);
     }
 
     public void set(int amount) {
-        if (!handler.isEmpty()) {
+        FluidStack fluid = get();
+        if (!fluid.isEmpty()) {
             //Double check it is not empty
-            handler.setStack(new FluidStack(handler.getFluid(), amount));
+            set(new FluidStack(fluid.getFluid(), amount));
         }
     }
 

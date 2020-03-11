@@ -97,9 +97,6 @@ public final class NBTConstants {
     public static final String FREQUENCY = "frequency";
     public static final String LATCHED = "latched";
 
-    public static final String ID = "id";
-    public static final String ENTITY_TAG = "EntityTag";
-
     public static final String FLUID_STORED = "fluidStored";
     public static final String GAS_STORED = "gasStored";
 
@@ -186,9 +183,13 @@ public final class NBTConstants {
     public static final String HAS_STRUCTURE = "hasStructure";
     public static final String INVENTORY_ID = "inventoryID";
     public static final String RENDER_LOCATION = "renderLocation";
+    public static final String POSITION = "position";
+    public static final String VOLUME = "volume";
 
     //Ones that also are used for interacting with forge/vanilla
     public static final String X = "x";
     public static final String Y = "y";
     public static final String Z = "z";
+    public static final String ID = "id";
+    public static final String ENTITY_TAG = "EntityTag";
 }

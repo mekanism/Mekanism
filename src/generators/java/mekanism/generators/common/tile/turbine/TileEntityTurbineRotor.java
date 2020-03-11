@@ -2,14 +2,12 @@ package mekanism.generators.common.tile.turbine;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
-import mekanism.common.Mekanism;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
@@ -97,7 +95,7 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
             blades--;
 
             // Update client state
-            Mekanism.packetHandler.sendUpdatePacket(this);
+            sendUpdatePacket();
             return true;
         }
 
@@ -121,30 +119,6 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
     private TileEntityTurbineRotor nextRotor(BlockPos pos) {
         return MekanismUtils.getTileEntity(TileEntityTurbineRotor.class, getWorld(), pos);
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            int prevBlades = blades;
-            int prevPosition = position;
-            blades = dataStream.readInt();
-            position = dataStream.readInt();
-
-            if (prevBlades != blades || prevPosition != prevBlades) {
-                rotationLower = 0;
-                rotationUpper = 0;
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(blades);
-        data.add(position);
-        return data;
     }
 
     @Override
@@ -172,6 +146,28 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         // Override the multiblock setter so that we can be sure to relay the ID down to the client; otherwise,
         // the rendering won't work properly
         super.setMultiblock(id);
-        Mekanism.packetHandler.sendUpdatePacket(this);
+        sendUpdatePacket();
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.putInt(NBTConstants.BLADES, blades);
+        updateTag.putInt(NBTConstants.POSITION, position);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        int prevBlades = blades;
+        int prevPosition = position;
+        NBTUtils.setIntIfPresent(tag, NBTConstants.BLADES, value -> blades = value);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.POSITION, value -> position = value);
+        if (prevBlades != blades || prevPosition != prevBlades) {
+            rotationLower = 0;
+            rotationUpper = 0;
+        }
     }
 }

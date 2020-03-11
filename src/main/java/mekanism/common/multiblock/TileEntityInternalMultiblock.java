@@ -1,42 +1,19 @@
 package mekanism.common.multiblock;
 
-import mekanism.api.TileNetworkList;
+import javax.annotation.Nonnull;
+import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.PacketHandler;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class TileEntityInternalMultiblock extends TileEntityMekanism {
 
     //TODO: Make this actually be a UUID?
-    public String multiblockUUID;
+    protected String multiblockUUID;
 
     public TileEntityInternalMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            if (dataStream.readBoolean()) {
-                multiblockUUID = PacketHandler.readString(dataStream);
-            } else {
-                multiblockUUID = null;
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        if (multiblockUUID != null) {
-            data.add(true);
-            data.add(multiblockUUID);
-        } else {
-            data.add(false);
-        }
-        return data;
     }
 
     public void setMultiblock(String id) {
@@ -45,5 +22,25 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism {
 
     public String getMultiblock() {
         return multiblockUUID;
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        if (multiblockUUID != null) {
+            updateTag.putString(NBTConstants.INVENTORY_ID, multiblockUUID);
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        if (tag.contains(NBTConstants.INVENTORY_ID, NBT.TAG_STRING)) {
+            multiblockUUID = tag.getString(NBTConstants.INVENTORY_ID);
+        } else {
+            multiblockUUID = null;
+        }
     }
 }

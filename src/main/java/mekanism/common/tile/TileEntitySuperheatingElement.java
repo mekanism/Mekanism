@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import mekanism.common.Mekanism;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.multiblock.TileEntityInternalMultiblock;
 import mekanism.common.registries.MekanismBlocks;
@@ -29,11 +28,9 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
         } else if (id != null && multiblockUUID == null) {
             packet = true;
         }
-
         super.setMultiblock(id);
-
         if (packet && !isRemote()) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
+            sendUpdatePacket();
         }
     }
 

@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
+import mekanism.api.NBTConstants;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
@@ -17,19 +17,26 @@ import mekanism.common.content.tank.SynchronizedTankData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankCache;
 import mekanism.common.content.tank.TankUpdateProtocol;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -135,59 +142,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     }
 
     @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        if (structure != null) {
-            data.add(structure.volume);
-            data.add(structure.editMode);
-            data.add(structure.fluidTank.getFluid());
-
-            if (isRendering) {
-                Set<ValveData> toSend = new ObjectOpenHashSet<>();
-
-                for (ValveData valveData : structure.valves) {
-                    if (valveData.activeTicks > 0) {
-                        toSend.add(valveData);
-                    }
-                }
-                data.add(toSend.size());
-                for (ValveData valveData : toSend) {
-                    valveData.location.write(data);
-                    data.add(valveData.side);
-                }
-            }
-        }
-        return data;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            if (clientHasStructure) {
-                structure.volume = dataStream.readInt();
-                structure.editMode = dataStream.readEnumValue(ContainerEditMode.class);
-                structure.fluidTank.setStack(dataStream.readFluidStack());
-
-                if (isRendering) {
-                    int size = dataStream.readInt();
-                    valveViewing.clear();
-                    for (int i = 0; i < size; i++) {
-                        ValveData data = new ValveData();
-                        data.location = Coord4D.read(dataStream);
-                        data.side = Direction.byIndex(dataStream.readInt());
-                        valveViewing.add(data);
-                        TileEntityDynamicTank tile = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
-                        if (tile != null) {
-                            tile.clientHasStructure = true;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
     public ContainerEditMode getContainerEditMode() {
         if (structure == null) {
             return ContainerEditMode.BOTH;
@@ -202,7 +156,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         }
     }
 
-    public boolean manageInventory(PlayerEntity player, Hand hand, ItemStack itemStack) {
+    private boolean manageInventory(PlayerEntity player, Hand hand, ItemStack itemStack) {
         if (structure == null) {
             return false;
         }
@@ -286,5 +240,65 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        if (structure != null && isRendering) {
+            updateTag.putInt(NBTConstants.VOLUME, structure.volume);
+            updateTag.put(NBTConstants.FLUID_STORED, structure.fluidTank.getFluid().writeToNBT(new CompoundNBT()));
+            ListNBT valves = new ListNBT();
+            for (ValveData valveData : structure.valves) {
+                if (valveData.activeTicks > 0) {
+                    CompoundNBT valveNBT = new CompoundNBT();
+                    valveData.location.write(valveNBT);
+                    valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
+                }
+            }
+            updateTag.put(NBTConstants.VALVE, valves);
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        if (clientHasStructure && isRendering) {
+            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.volume = value);
+            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.fluidTank.setStack(value));
+            valveViewing.clear();
+            if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
+                ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
+                for (int i = 0; i < valves.size(); i++) {
+                    CompoundNBT valveNBT = valves.getCompound(i);
+                    ValveData data = new ValveData();
+                    data.location = Coord4D.read(valveNBT);
+                    data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
+                    valveViewing.add(data);
+                    TileEntityDynamicTank tile = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
+                    if (tile != null) {
+                        tile.clientHasStructure = true;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableEnum.create(ContainerEditMode::byIndexStatic, ContainerEditMode.BOTH, this::getContainerEditMode, this::setContainerEditMode));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volume, value -> {
+            if (structure != null) {
+                structure.volume = value;
+            }
+        }));
+        container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.fluidTank.getFluid(), value -> {
+            if (structure != null) {
+                structure.fluidTank.setStack(value);
+            }
+        }));
     }
 }

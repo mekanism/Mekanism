@@ -29,8 +29,7 @@ public class MekanismAPI {
 
     public static Logger logger = LogManager.getLogger(MEKANISM_MODID + "_api");
 
-    //Static init both of our registries so that we don't have to deal with any race conditions while trying to use these
-    // via deferred registers
+    //Static init both of our registries so that we don't have to deal with any race conditions while trying to use these via deferred registers
     public static IForgeRegistry<Gas> GAS_REGISTRY = new RegistryBuilder<Gas>().setName(new ResourceLocation(MEKANISM_MODID, "gas")).setType(Gas.class).create();
     public static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY = new RegistryBuilder<InfuseType>().setName(new ResourceLocation(MEKANISM_MODID, "infuse_type")).setType(InfuseType.class).create();
 

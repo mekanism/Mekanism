@@ -168,11 +168,10 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public void sendPacketToRenderer() {
         if (structure != null) {
             for (Coord4D obj : structure.locations) {
-                TileEntityMultiblock<T> tile = (TileEntityMultiblock<T>) MekanismUtils.getTileEntity(TileEntityMultiblock.class, getWorld(), obj.getPos());
+                TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, getWorld(), obj.getPos());
                 if (tile != null && tile.isRendering) {
-                    sendUpdatePacket();
-                    //We only have one tile that renders per structure
-                    // so once we find it just break
+                    tile.sendUpdatePacket();
+                    //We only have one tile that renders per structure so once we find it just break
                     break;
                 }
             }
@@ -200,7 +199,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             updateTag.putInt(NBTConstants.WIDTH, structure.volWidth);
             updateTag.putInt(NBTConstants.LENGTH, structure.volLength);
             if (structure.renderLocation != null) {
-                updateTag.put(NBTConstants.CLIENT_PREVIOUS, structure.renderLocation.write(new CompoundNBT()));
+                updateTag.put(NBTConstants.RENDER_LOCATION, structure.renderLocation.write(new CompoundNBT()));
             }
             if (structure.inventoryID != null) {
                 updateTag.putString(NBTConstants.INVENTORY_ID, structure.inventoryID);
@@ -218,9 +217,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isRendering = value);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> clientHasStructure = value);
         if (clientHasStructure && isRendering) {
-            NBTUtils.setIntIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> structure.volHeight = value);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> structure.volWidth = value);
-            NBTUtils.setIntIfPresent(tag, NBTConstants.HAS_STRUCTURE, value -> structure.volLength = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.HEIGHT, value -> structure.volHeight = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.WIDTH, value -> structure.volWidth = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.LENGTH, value -> structure.volLength = value);
             NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_LOCATION, value -> structure.renderLocation = value);
             if (tag.contains(NBTConstants.INVENTORY_ID, NBT.TAG_STRING)) {
                 structure.inventoryID = tag.getString(NBTConstants.INVENTORY_ID);
@@ -234,8 +233,8 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
         if (structure == null) {
-            if (nbtTags.contains(NBTConstants.ID, NBT.TAG_STRING)) {
-                cachedID = nbtTags.getString(NBTConstants.ID);
+            if (nbtTags.contains(NBTConstants.INVENTORY_ID, NBT.TAG_STRING)) {
+                cachedID = nbtTags.getString(NBTConstants.INVENTORY_ID);
                 cachedData.load(nbtTags);
             }
         }
@@ -246,7 +245,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
         if (cachedID != null) {
-            nbtTags.putString(NBTConstants.ID, cachedID);
+            nbtTags.putString(NBTConstants.INVENTORY_ID, cachedID);
             cachedData.save(nbtTags);
         }
         return nbtTags;
