@@ -30,6 +30,11 @@
                   "source": "Items",
                   "target": "mekData.Items",
                   "op": "replace"
+                },
+                {
+                  "source": "energy",
+                  "target": "mekData.energy",
+                  "op": "replace"
                 }
               ]
             }

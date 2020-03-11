@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.tile.TileEntityLaserTractorBeam;
+import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 

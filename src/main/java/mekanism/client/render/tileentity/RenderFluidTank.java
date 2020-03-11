@@ -41,7 +41,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
     public void render(@Nonnull TileEntityFluidTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
         FluidStack fluid = tile.fluidTank.getFluid();
         float fluidScale = tile.prevScale;
-        FluidStack valveFluid = tile.valve > 0 ? tile.valveFluid : FluidStack.EMPTY;
+        FluidStack valveFluid = tile.valveFluid;
         if (!fluid.isEmpty() && fluidScale > 0) {
             if (tile.tier == FluidTankTier.CREATIVE) {
                 fluidScale = 1;

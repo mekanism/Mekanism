@@ -4,19 +4,16 @@ import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiNumberGauge;
-import mekanism.client.gui.element.gauge.GuiNumberGauge.INumberInfoHandler;
+import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiAmplifierTab;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
-import mekanism.common.tile.TileEntityLaserAmplifier;
+import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
@@ -35,27 +32,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     @Override
     public void init() {
         super.init();
-        addButton(new GuiNumberGauge(new INumberInfoHandler() {
-            @Override
-            public TextureAtlasSprite getIcon() {
-                return MekanismRenderer.energyIcon;
-            }
-
-            @Override
-            public double getLevel() {
-                return tile.collectedEnergy;
-            }
-
-            @Override
-            public double getMaxLevel() {
-                return TileEntityLaserAmplifier.MAX_ENERGY;
-            }
-
-            @Override
-            public ITextComponent getText(double level) {
-                return MekanismLang.STORING.translate(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()));
-            }
-        }, GaugeType.STANDARD, this, 6, 10));
+        addButton(new GuiEnergyGauge(() -> tile, GaugeType.STANDARD, this, 6, 10));
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiAmplifierTab(this, tile));

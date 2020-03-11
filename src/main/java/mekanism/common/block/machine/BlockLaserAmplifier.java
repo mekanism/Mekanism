@@ -2,6 +2,7 @@ package mekanism.common.block.machine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IHasModel;
 import mekanism.api.block.IHasSecurity;
 import mekanism.api.block.IHasTileEntity;
@@ -22,7 +23,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
-import mekanism.common.tile.TileEntityLaserAmplifier;
+import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
@@ -49,7 +50,7 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHasGui<TileEntityLaserAmplifier>, IStateFacing, IStateActive, IHasSecurity, ISupportsRedstone,
-      IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator, IStateFluidLoggable, IHasDescription {
+      IHasTileEntity<TileEntityLaserAmplifier>, ISupportsComparator, IStateFluidLoggable, IHasDescription, IBlockElectric {
 
     //TODO: Mess with both the model and this so that it is technically hollow?
     private static final VoxelShape bounds = VoxelShapeUtils.combine(
@@ -158,5 +159,11 @@ public class BlockLaserAmplifier extends BlockMekanism implements IHasModel, IHa
     @Override
     public ILangEntry getDescription() {
         return MekanismLang.DESCRIPTION_LASER_AMPLIFIER;
+    }
+
+    @Override
+    public double getStorage() {
+        //TODO: Adjust this based on max storage of the laser?
+        return 5E9;
     }
 }

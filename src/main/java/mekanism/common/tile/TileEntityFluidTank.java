@@ -6,10 +6,8 @@ import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ContainerEditMode;
 import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidContainerManager;
@@ -36,7 +34,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -129,10 +126,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             }
         }
 
-        if (fluidTank.getFluidAmount() != prevAmount) {
-            markDirty();
+        int amount = fluidTank.getFluidAmount();
+        if (amount != prevAmount) {
+            //TODO: Only mark that we need a packet if the target scale changes
             needsPacket = true;
-            if (prevAmount == 0 || fluidTank.getFluidAmount() == 0) {
+            if (prevAmount == 0 || amount == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                 // as the fluid may have changed and have a light value
                 //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
@@ -140,16 +138,15 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
                 MekanismUtils.recheckLighting(world, pos);
             }
         }
-
-        prevAmount = fluidTank.getFluidAmount();
+        prevAmount = amount;
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
             activeEmit();
         }
         if (needsPacket) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
+            sendUpdatePacket();
+            needsPacket = false;
         }
-        needsPacket = false;
     }
 
     private void activeEmit() {
@@ -177,23 +174,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            valve = dataStream.readInt();
-            if (valve > 0) {
-                valveFluid = dataStream.readFluidStack();
-            } else {
-                valveFluid = FluidStack.EMPTY;
-            }
-            fluidTank.setStack(dataStream.readFluidStack());
-            //Set the client's light to update just in case the value changed
-            //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
-            updateClientLight = true;
-        }
-    }
-
-    @Override
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
     }
@@ -202,7 +182,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     public FluidStack insertFluid(int tank, @Nonnull FluidStack stack, @Nullable Direction side, @Nonnull Action action) {
         FluidStack remainder = super.insertFluid(tank, stack, side, action);
-        if (side == Direction.UP && action.execute() && remainder.getAmount() < stack.getAmount() && !world.isRemote()) {
+        if (side == Direction.UP && action.execute() && remainder.getAmount() < stack.getAmount() && !isRemote()) {
             if (valve == 0) {
                 needsPacket = true;
             }
@@ -210,17 +190,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             valveFluid = new FluidStack(stack, 1);
         }
         return remainder;
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(valve);
-        if (valve > 0) {
-            data.add(valveFluid);
-        }
-        data.add(fluidTank.getFluid());
-        return data;
     }
 
     @Override
@@ -301,5 +270,24 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableEnum.create(ContainerEditMode::byIndexStatic, ContainerEditMode.BOTH, () -> editMode, value -> editMode = value));
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.put(NBTConstants.FLUID_STORED, fluidTank.getFluid().writeToNBT(new CompoundNBT()));
+        updateTag.put(NBTConstants.VALVE, valveFluid.writeToNBT(new CompoundNBT()));
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
+        NBTUtils.setFluidStackIfPresent(tag, NBTConstants.VALVE, fluid -> valveFluid = fluid);
+        //Set the client's light to update just in case the value changed
+        //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
+        updateClientLight = true;
     }
 }

@@ -179,6 +179,7 @@ public final class NBTConstants {
     public static final String RENDER_Y = "renderY";
     public static final String ACTIVE = "active";
     public static final String SOUND_SCALE = "soundScale";
+    public static final String VALVE = "valve";
 
     //Ones that also are used for interacting with forge/vanilla
     public static final String X = "x";

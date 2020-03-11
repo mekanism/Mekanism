@@ -30,6 +30,11 @@
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"
+                },
+                {
+                  "source": "energy",
+                  "target": "mekData.energy",
+                  "op": "replace"
                 }
               ]
             }
