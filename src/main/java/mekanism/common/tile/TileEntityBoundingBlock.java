@@ -47,7 +47,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements ITi
         receivedCoords = pos != null;
         if (!isRemote()) {
             mainPos = pos;
-            Mekanism.packetHandler.sendUpdatePacket(this);
+            sendUpdatePacket();
         }
     }
 

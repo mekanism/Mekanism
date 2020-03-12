@@ -26,10 +26,13 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         }
         theNetwork = network;
         orphaned = theNetwork == null;
-        if (world().isRemote && theNetwork != null) {
-            theNetwork.addTransmitter(this);
+        if (world().isRemote) {
+            if (theNetwork != null) {
+                theNetwork.addTransmitter(this);
+            }
+        } else {
+            setRequestsUpdate();
         }
-        setRequestsUpdate();
     }
 
     @Override

@@ -2,16 +2,21 @@ package mekanism.generators.common.tile.turbine;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
+import mekanism.api.NBTConstants;
 import mekanism.api.energy.IStrictEnergyStorage;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableEnum;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
@@ -21,6 +26,7 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -81,8 +87,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 needsRotationUpdate = true;
             }
 
-            if (structure.needsRenderUpdate() || needsRotationUpdate) {
-                sendPacketToRenderer();
+            if (needsRotationUpdate || structure.needsRenderUpdate()) {
+                //TODO: Only send an update packet when the scale changes. And maybe handle the rotation client side/as a separate packet
+                sendUpdatePacket();
             }
             structure.prevFluid = structure.fluidTank.isEmpty() ? FluidStack.EMPTY : structure.fluidTank.getFluid().copy();
         }
@@ -90,15 +97,12 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (structure == null) {
-            return ActionResultType.PASS;
-        }
-        return openGui(player);
+        return structure == null ? ActionResultType.PASS : openGui(player);
     }
 
     @Override
     public double getEnergy() {
-        return structure != null ? structure.electricityStored : 0;
+        return structure == null ? 0 : structure.electricityStored;
     }
 
     @Override
@@ -111,31 +115,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
 
     @Override
     public double getMaxEnergy() {
-        return structure != null ? structure.getEnergyCapacity() : 0;
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        if (structure != null) {
-            data.add(structure.volume);
-            data.add(structure.lowerVolume);
-            data.add(structure.vents);
-            data.add(structure.blades);
-            data.add(structure.coils);
-            data.add(structure.condensers);
-            data.add(structure.getDispersers());
-            data.add(structure.electricityStored);
-            data.add(structure.clientFlow);
-            data.add(structure.lastSteamInput);
-            data.add(structure.dumpMode);
-            data.add(structure.fluidTank.getFluid());
-            if (isRendering) {
-                structure.complex.write(data);
-                data.add(structure.clientRotation);
-            }
-        }
-        return data;
+        return structure == null ? 0 : structure.getEnergyCapacity();
     }
 
     @Override
@@ -145,33 +125,6 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 byte type = dataStream.readByte();
                 if (type == 0) {
                     structure.dumpMode = structure.dumpMode.getNext();
-                }
-            }
-            return;
-        }
-
-        super.handlePacketData(dataStream);
-
-        if (isRemote()) {
-            if (clientHasStructure) {
-                structure.volume = dataStream.readInt();
-                structure.lowerVolume = dataStream.readInt();
-                structure.vents = dataStream.readInt();
-                structure.blades = dataStream.readInt();
-                structure.coils = dataStream.readInt();
-                structure.condensers = dataStream.readInt();
-                structure.clientDispersers = dataStream.readInt();
-                structure.electricityStored = dataStream.readDouble();
-                structure.clientFlow = dataStream.readInt();
-                structure.lastSteamInput = dataStream.readInt();
-                structure.dumpMode = dataStream.readEnumValue(GasMode.class);
-
-                structure.fluidTank.setStack(dataStream.readFluidStack());
-
-                if (isRendering) {
-                    structure.complex = Coord4D.read(dataStream);
-                    structure.clientRotation = dataStream.readFloat();
-                    SynchronizedTurbineData.clientRotationMap.put(structure.inventoryID, structure.clientRotation);
                 }
             }
         }
@@ -196,5 +149,97 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     @Override
     public MultiblockManager<SynchronizedTurbineData> getManager() {
         return MekanismGenerators.turbineManager;
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        if (structure != null && isRendering) {
+            updateTag.putInt(NBTConstants.VOLUME, structure.volume);
+            updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.lowerVolume);
+            updateTag.put(NBTConstants.FLUID_STORED, structure.fluidTank.getFluid().writeToNBT(new CompoundNBT()));
+            updateTag.put(NBTConstants.COMPLEX, structure.complex.write(new CompoundNBT()));
+            updateTag.putFloat(NBTConstants.ROTATION, structure.clientRotation);
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        if (clientHasStructure && isRendering) {
+            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.volume = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.lowerVolume = value);
+            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.fluidTank.setStack(value));
+            NBTUtils.setCoord4DIfPresent(tag, NBTConstants.COMPLEX, value -> structure.complex = value);
+            NBTUtils.setFloatIfPresent(tag, NBTConstants.ROTATION, value -> structure.clientRotation = value);
+            SynchronizedTurbineData.clientRotationMap.put(structure.inventoryID, structure.clientRotation);
+        }
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volume, value -> {
+            if (structure != null) {
+                structure.volume = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.lowerVolume, value -> {
+            if (structure != null) {
+                structure.lowerVolume = value;
+            }
+        }));
+        container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.fluidTank.getFluid(), value -> {
+            if (structure != null) {
+                structure.fluidTank.setStack(value);
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.vents, value -> {
+            if (structure != null) {
+                structure.vents = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.blades, value -> {
+            if (structure != null) {
+                structure.blades = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.coils, value -> {
+            if (structure != null) {
+                structure.coils = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.condensers, value -> {
+            if (structure != null) {
+                structure.condensers = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getDispersers(), value -> {
+            if (structure != null) {
+                structure.clientDispersers = value;
+            }
+        }));
+        container.track(SyncableDouble.create(this::getEnergy, value -> {
+            if (structure != null) {
+                structure.electricityStored = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.clientFlow, value -> {
+            if (structure != null) {
+                structure.clientFlow = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.lastSteamInput, value -> {
+            if (structure != null) {
+                structure.lastSteamInput = value;
+            }
+        }));
+        container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> structure == null ? GasMode.IDLE : structure.dumpMode, value -> {
+            if (structure != null) {
+                structure.dumpMode = value;
+            }
+        }));
     }
 }

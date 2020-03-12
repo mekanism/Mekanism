@@ -76,7 +76,6 @@ import mekanism.common.inventory.container.sync.SyncableInfusionStack;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.component.TileComponentSecurity;
 import mekanism.common.tile.component.TileComponentUpgrade;
@@ -144,11 +143,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
      */
     //TODO: Evaluate this
     public int ticker;
-
-    //TODO: Remove the need for this boolean to exist. It currently is used for some things that
-    // would have a hard time using the new container sync system such as multiblocks where the client doesn't
-    // have a place to store the values after transferring
-    protected boolean doAutoSync;
 
     private List<ITileComponent> components = new ArrayList<>();
 
@@ -496,9 +490,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 }
             }
             onUpdateServer();
-            if (doAutoSync) {
-                sendToAllUsing(() -> new PacketTileEntity(this));
-            }
             lastEnergyReceived = 0;
         }
         ticker++;

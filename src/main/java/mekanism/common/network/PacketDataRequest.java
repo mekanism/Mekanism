@@ -31,6 +31,7 @@ public class PacketDataRequest {
             if (tile instanceof TileEntityMultiblock) {
                 //TODO: FIXME, replace this call with something else
                 ((TileEntityMultiblock<?>) tile).sendStructure = true;
+                ((TileEntityMultiblock<?>) tile).sendUpdatePacket();
             }
             CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(transmitter -> {
                 //TODO: FIXME, replace this call with something else

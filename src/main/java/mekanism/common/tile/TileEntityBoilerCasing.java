@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
-import mekanism.api.TileNetworkList;
+import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -15,17 +15,24 @@ import mekanism.common.content.boiler.BoilerCache;
 import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -114,8 +121,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.lastBoilRate = 0;
                 structure.lastMaxBoil = 0;
             }
-            if (needsValveUpdate || structure.needsRenderUpdate() || needsHotUpdate) {
-                sendPacketToRenderer();
+            if (needsValveUpdate || needsHotUpdate || structure.needsRenderUpdate()) {
+                sendUpdatePacket();
             }
             structure.prevWater = structure.waterTank.isEmpty() ? FluidStack.EMPTY : structure.waterTank.getFluid().copy();
             structure.prevSteam = structure.steamTank.isEmpty() ? FluidStack.EMPTY : structure.steamTank.getFluid().copy();
@@ -125,10 +132,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (structure == null) {
-            return ActionResultType.PASS;
-        }
-        return openGui(player);
+        return structure == null ? ActionResultType.PASS : openGui(player);
     }
 
     @Nonnull
@@ -152,101 +156,24 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         return Mekanism.boilerManager;
     }
 
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-
-        if (structure != null) {
-            data.add(structure.waterVolume);
-            data.add(structure.steamVolume);
-            data.add(structure.lastEnvironmentLoss);
-            data.add(structure.lastBoilRate);
-            data.add(structure.superheatingElements);
-            data.add(structure.temperature);
-            data.add(structure.lastMaxBoil);
-
-            data.add(structure.waterTank.getFluid());
-            data.add(structure.steamTank.getFluid());
-
-            structure.upperRenderLocation.write(data);
-
-            if (isRendering) {
-                data.add(structure.clientHot);
-                Set<ValveData> toSend = new ObjectOpenHashSet<>();
-                for (ValveData valveData : structure.valves) {
-                    if (valveData.activeTicks > 0) {
-                        toSend.add(valveData);
-                    }
-                }
-                data.add(toSend.size());
-                for (ValveData valveData : toSend) {
-                    valveData.location.write(data);
-                    data.add(valveData.side.ordinal());
-                }
-            }
-        }
-        return data;
-    }
-
     public double getLastEnvironmentLoss() {
-        return structure != null ? structure.lastEnvironmentLoss : 0;
+        return structure == null ? 0 : structure.lastEnvironmentLoss;
     }
 
     public double getTemperature() {
-        return structure != null ? structure.temperature : 0;
+        return structure == null ? 0 : structure.temperature;
     }
 
     public int getLastBoilRate() {
-        return structure != null ? structure.lastBoilRate : 0;
+        return structure == null ? 0 : structure.lastBoilRate;
     }
 
     public int getLastMaxBoil() {
-        return structure != null ? structure.lastMaxBoil : 0;
+        return structure == null ? 0 : structure.lastMaxBoil;
     }
 
     public int getSuperheatingElements() {
-        return structure != null ? structure.superheatingElements : 0;
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
-        super.handlePacketData(dataStream);
-
-        if (isRemote()) {
-            if (clientHasStructure) {
-                structure.waterVolume = dataStream.readInt();
-                structure.steamVolume = dataStream.readInt();
-                structure.lastEnvironmentLoss = dataStream.readDouble();
-                structure.lastBoilRate = dataStream.readInt();
-                structure.superheatingElements = dataStream.readInt();
-                structure.temperature = dataStream.readDouble();
-                structure.lastMaxBoil = dataStream.readInt();
-
-                structure.waterTank.setStack(dataStream.readFluidStack());
-                structure.steamTank.setStack(dataStream.readFluidStack());
-
-                structure.upperRenderLocation = Coord4D.read(dataStream);
-
-                if (isRendering) {
-                    structure.clientHot = dataStream.readBoolean();
-                    SynchronizedBoilerData.clientHotMap.put(structure.inventoryID, structure.clientHot);
-                    int size = dataStream.readInt();
-                    valveViewing.clear();
-                    for (int i = 0; i < size; i++) {
-                        ValveData data = new ValveData();
-                        data.location = Coord4D.read(dataStream);
-                        data.side = Direction.byIndex(dataStream.readInt());
-
-                        valveViewing.add(data);
-
-                        TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
-                        if (tile != null) {
-                            tile.clientHasStructure = true;
-                        }
-                    }
-                }
-            }
-        }
+        return structure == null ? 0 : structure.superheatingElements;
     }
 
     @Override
@@ -297,5 +224,108 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        if (structure != null && isRendering) {
+            updateTag.putInt(NBTConstants.VOLUME, structure.waterVolume);
+            updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.steamVolume);
+            updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED, structure.steamTank.getFluid().writeToNBT(new CompoundNBT()));
+            updateTag.put(NBTConstants.RENDER_Y, structure.upperRenderLocation.write(new CompoundNBT()));
+            updateTag.putBoolean(NBTConstants.HOT, structure.clientHot);
+            ListNBT valves = new ListNBT();
+            for (ValveData valveData : structure.valves) {
+                if (valveData.activeTicks > 0) {
+                    CompoundNBT valveNBT = new CompoundNBT();
+                    valveData.location.write(valveNBT);
+                    valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
+                }
+            }
+            updateTag.put(NBTConstants.VALVE, valves);
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        if (clientHasStructure && isRendering) {
+            NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.waterVolume = value);
+            NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.steamVolume = value);
+            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.waterTank.setStack(value));
+            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.steamTank.setStack(value));
+            NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> structure.upperRenderLocation = value);
+            NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> structure.clientHot = value);
+            SynchronizedBoilerData.clientHotMap.put(structure.inventoryID, structure.clientHot);
+            valveViewing.clear();
+            if (tag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
+                ListNBT valves = tag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
+                for (int i = 0; i < valves.size(); i++) {
+                    CompoundNBT valveNBT = valves.getCompound(i);
+                    ValveData data = new ValveData();
+                    data.location = Coord4D.read(valveNBT);
+                    data.side = Direction.byIndex(valveNBT.getInt(NBTConstants.SIDE));
+                    valveViewing.add(data);
+                    TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
+                    if (tile != null) {
+                        tile.clientHasStructure = true;
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.waterVolume, value -> {
+            if (structure != null) {
+                structure.waterVolume = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.steamVolume, value -> {
+            if (structure != null) {
+                structure.steamVolume = value;
+            }
+        }));
+        container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.waterTank.getFluid(), value -> {
+            if (structure != null) {
+                structure.waterTank.setStack(value);
+            }
+        }));
+        container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.steamTank.getFluid(), value -> {
+            if (structure != null) {
+                structure.steamTank.setStack(value);
+            }
+        }));
+        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> {
+            if (structure != null) {
+                structure.lastEnvironmentLoss = value;
+            }
+        }));
+        container.track(SyncableInt.create(this::getLastBoilRate, value -> {
+            if (structure != null) {
+                structure.lastBoilRate = value;
+            }
+        }));
+        container.track(SyncableInt.create(this::getSuperheatingElements, value -> {
+            if (structure != null) {
+                structure.superheatingElements = value;
+            }
+        }));
+        container.track(SyncableDouble.create(this::getTemperature, value -> {
+            if (structure != null) {
+                structure.temperature = value;
+            }
+        }));
+        container.track(SyncableInt.create(this::getLastMaxBoil, value -> {
+            if (structure != null) {
+                structure.lastMaxBoil = value;
+            }
+        }));
     }
 }

@@ -185,6 +185,10 @@ public final class NBTConstants {
     public static final String RENDER_LOCATION = "renderLocation";
     public static final String POSITION = "position";
     public static final String VOLUME = "volume";
+    public static final String LOWER_VOLUME = "lowerVolume";
+    public static final String ROTATION = "rotation";
+    public static final String COMPLEX = "complex";
+    public static final String HOT = "hot";
 
     //Ones that also are used for interacting with forge/vanilla
     public static final String X = "x";

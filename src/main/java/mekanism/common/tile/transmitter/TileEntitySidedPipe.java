@@ -34,9 +34,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.PacketDirection;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -282,13 +279,11 @@ public abstract class TileEntitySidedPipe extends TileEntityUpdateable implement
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        super.onDataPacket(net, pkt);
-        if (isRemote() && net.getDirection() == PacketDirection.CLIENTBOUND) {
-            //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
-            requestModelDataUpdate();
-            MekanismUtils.updateBlock(getWorld(), pos);
-        }
+    public void handleUpdatePacket(@Nonnull CompoundNBT tag) {
+        super.handleUpdatePacket(tag);
+        //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
+        requestModelDataUpdate();
+        MekanismUtils.updateBlock(getWorld(), pos);
     }
 
     @Override

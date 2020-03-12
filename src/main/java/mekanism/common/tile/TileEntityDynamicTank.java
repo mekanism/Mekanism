@@ -83,27 +83,25 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (structure != null) {
-            if (isRendering) {
-                boolean needsValveUpdate = false;
-                for (ValveData data : structure.valves) {
-                    if (data.activeTicks > 0) {
-                        data.activeTicks--;
-                    }
-                    if (data.activeTicks > 0 != data.prevActive) {
-                        needsValveUpdate = true;
-                    }
-                    data.prevActive = data.activeTicks > 0;
+        if (structure != null && isRendering) {
+            boolean needsValveUpdate = false;
+            for (ValveData data : structure.valves) {
+                if (data.activeTicks > 0) {
+                    data.activeTicks--;
                 }
-                if (needsValveUpdate || structure.needsRenderUpdate()) {
-                    sendPacketToRenderer();
+                if (data.activeTicks > 0 != data.prevActive) {
+                    needsValveUpdate = true;
                 }
-                structure.prevFluid = structure.fluidTank.isEmpty() ? FluidStack.EMPTY : structure.fluidTank.getFluid().copy();
-                List<IInventorySlot> inventorySlots = structure.getInventorySlots(null);
-                //TODO: No magic numbers??
-                FluidInventorySlot inputSlot = (FluidInventorySlot) inventorySlots.get(0);
-                inputSlot.handleTank(inventorySlots.get(1), structure.editMode);
+                data.prevActive = data.activeTicks > 0;
             }
+            if (needsValveUpdate || structure.needsRenderUpdate()) {
+                sendUpdatePacket();
+            }
+            structure.prevFluid = structure.fluidTank.isEmpty() ? FluidStack.EMPTY : structure.fluidTank.getFluid().copy();
+            List<IInventorySlot> inventorySlots = structure.getInventorySlots(null);
+            //TODO: No magic numbers??
+            FluidInventorySlot inputSlot = (FluidInventorySlot) inventorySlots.get(0);
+            inputSlot.handleTank(inventorySlots.get(1), structure.editMode);
         }
     }
 
@@ -112,7 +110,6 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
         if (!player.isShiftKeyDown() && structure != null) {
             if (manageInventory(player, hand, stack)) {
                 player.inventory.markDirty();
-                sendPacketToRenderer();
                 return ActionResultType.SUCCESS;
             }
             return openGui(player);

@@ -3,6 +3,7 @@ package mekanism.common.tile.base;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.Mekanism;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -75,14 +76,20 @@ public abstract class TileEntityUpdateable extends TileEntity {
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         if (isRemote() && net.getDirection() == PacketDirection.CLIENTBOUND) {
             //Handle the update tag when we are on the client
-            handleUpdateTag(pkt.getNbtCompound());
+            handleUpdatePacket(pkt.getNbtCompound());
         }
     }
 
+    public void handleUpdatePacket(@Nonnull CompoundNBT tag) {
+        handleUpdateTag(tag);
+    }
+
     public void sendUpdatePacket() {
-        if (world != null) {
+        if (isRemote()) {
+            Mekanism.logger.warn("Update packet call requested from client side", new Exception());
+        } else {
             BlockState state = getBlockState();
-            world.notifyBlockUpdate(getPos(), state, state, BlockFlags.DEFAULT);
+            world.notifyBlockUpdate(getPos(), state, state, BlockFlags.BLOCK_UPDATE);
         }
     }
 }

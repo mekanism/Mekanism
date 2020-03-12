@@ -30,10 +30,11 @@ public class MultiblockFluidTank<MULTIBLOCK extends TileEntityMultiblock<?>> ext
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (multiblock.hasWorld() && !multiblock.getWorld().isRemote()) {
+        if (multiblock.hasWorld() && !multiblock.getWorld().isRemote() && multiblock.isRendering) {
             MekanismUtils.saveChunk(multiblock);
             updateValveData();
-            multiblock.sendPacketToRenderer();
+            //TODO: Only send update packet when the "scale" would have changed
+            multiblock.sendUpdatePacket();
         }
     }
 }

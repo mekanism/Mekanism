@@ -73,7 +73,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     public TileEntityTeleporter() {
         super(MekanismBlocks.TELEPORTER);
-        doAutoSync = true;
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
     }
 
@@ -145,9 +144,9 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
         shouldRender = status == 1 || status > 4;
         if (shouldRender != prevShouldRender) {
-            Mekanism.packetHandler.sendUpdatePacket(this);
             //This also means the comparator output changed so notify the neighbors we have a change
             MekanismUtils.notifyLoadedNeighborsOfTileChange(world, Coord4D.get(this));
+            sendUpdatePacket();
         }
         prevShouldRender = shouldRender;
         teleDelay = Math.max(0, teleDelay - 1);

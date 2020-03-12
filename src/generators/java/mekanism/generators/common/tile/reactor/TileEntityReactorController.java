@@ -73,7 +73,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
 
     public TileEntityReactorController() {
         super(GeneratorsBlocks.REACTOR_CONTROLLER);
-        doAutoSync = true;
     }
 
     @Nonnull
@@ -163,9 +162,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         if (isFormed()) {
             getReactor().simulateServer();
             if (getReactor().isBurning() != clientBurning || Math.abs(getReactor().getPlasmaTemp() - clientTemp) > 1_000_000) {
-                Mekanism.packetHandler.sendUpdatePacket(this);
                 clientBurning = getReactor().isBurning();
                 clientTemp = getReactor().getPlasmaTemp();
+                sendUpdatePacket();
             }
         }
     }

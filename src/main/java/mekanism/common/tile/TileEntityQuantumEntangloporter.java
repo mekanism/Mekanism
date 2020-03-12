@@ -74,7 +74,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     public TileEntityQuantumEntangloporter() {
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
-        doAutoSync = true;
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.ENERGY, TransmissionType.HEAT);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);

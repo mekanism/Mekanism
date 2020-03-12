@@ -11,7 +11,6 @@ import mekanism.api.Range3D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.transmitters.DynamicNetwork;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.PacketClearRecipeCache;
 import mekanism.common.network.PacketConfigurationUpdate;
@@ -284,10 +283,6 @@ public class PacketHandler {
      */
     public <MSG> void sendToServer(MSG message) {
         netHandler.sendToServer(message);
-    }
-
-    public <TILE extends TileEntity & ITileNetwork> void sendUpdatePacket(TILE tile) {
-        sendToAllTracking(new PacketTileEntity(tile), tile);
     }
 
     public <MSG> void sendToAllTracking(MSG message, TileEntity tile) {

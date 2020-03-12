@@ -70,8 +70,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
-        //TODO: Remove this once the rest of the multiblocks are transferred over
-        doAutoSync = true;
     }
 
     @Override
@@ -110,26 +108,24 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 doUpdate();
             }
         }
-
         if (prevStructure == (structure == null)) {
             if (structure != null && !structure.hasRenderer) {
                 structure.hasRenderer = true;
                 isRendering = true;
                 sendStructure = true;
             }
-
             Coord4D thisCoord = Coord4D.get(this);
             for (Direction side : EnumUtils.DIRECTIONS) {
                 Coord4D obj = thisCoord.offset(side);
-                if (structure != null && (structure.locations.contains(obj) || structure.internalLocations.contains(obj))) {
-                    continue;
-                }
-                BlockPos pos = obj.getPos();
-                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-                if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
-                    MekanismUtils.notifyNeighborofChange(world, pos, getPos());
+                if (structure == null || (!structure.locations.contains(obj) && !structure.internalLocations.contains(obj))) {
+                    BlockPos pos = obj.getPos();
+                    TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                    if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
+                        MekanismUtils.notifyNeighborofChange(world, pos, getPos());
+                    }
                 }
             }
+            sendUpdatePacket();
         }
 
         prevStructure = structure != null;
@@ -142,10 +138,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 getManager().updateCache(this);
             }
         }
-        if (sendStructure) {
-            sendUpdatePacket();
-            sendStructure = false;
-        }
     }
 
     @Override
@@ -154,19 +146,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             getProtocol().doUpdate();
             if (structure != null) {
                 structure.didTick = true;
-            }
-        }
-    }
-
-    public void sendPacketToRenderer() {
-        if (structure != null) {
-            for (Coord4D obj : structure.locations) {
-                TileEntityMultiblock<?> tile = MekanismUtils.getTileEntity(TileEntityMultiblock.class, getWorld(), obj.getPos());
-                if (tile != null && tile.isRendering) {
-                    tile.sendUpdatePacket();
-                    //We only have one tile that renders per structure so once we find it just break
-                    break;
-                }
             }
         }
     }
@@ -187,7 +166,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         updateTag.putBoolean(NBTConstants.RENDERING, isRendering);
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, structure != null);
         if (structure != null && isRendering && sendStructure) {
-            sendStructure = false;
             updateTag.putInt(NBTConstants.HEIGHT, structure.volHeight);
             updateTag.putInt(NBTConstants.WIDTH, structure.volWidth);
             updateTag.putInt(NBTConstants.LENGTH, structure.volLength);
@@ -197,6 +175,9 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             if (structure.inventoryID != null) {
                 updateTag.putString(NBTConstants.INVENTORY_ID, structure.inventoryID);
             }
+        }
+        if (sendStructure) {
+            sendStructure = false;
         }
         return updateTag;
     }
@@ -220,6 +201,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 } else {
                     structure.inventoryID = null;
                 }
+                //TODO: Test sparkle
                 if (structure.renderLocation != null && !prevStructure) {
                     Mekanism.proxy.doMultiblockSparkle(this, structure.renderLocation.getPos(), structure.volLength, structure.volWidth, structure.volHeight,
                           tile -> MultiblockManager.areEqual(this, tile));
