@@ -71,21 +71,20 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null && isRendering) {
-            boolean needsValveUpdate = false;
+            boolean needsPacket = false;
             for (ValveData data : structure.valves) {
                 if (data.activeTicks > 0) {
                     data.activeTicks--;
                 }
                 if (data.activeTicks > 0 != data.prevActive) {
-                    needsValveUpdate = true;
+                    needsPacket = true;
                 }
                 data.prevActive = data.activeTicks > 0;
             }
 
-            boolean needsHotUpdate = false;
             boolean newHot = structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP - 0.01F;
             if (newHot != structure.clientHot) {
-                needsHotUpdate = true;
+                needsPacket = true;
                 structure.clientHot = newHot;
             }
 
@@ -115,13 +114,12 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.lastBoilRate = 0;
                 structure.lastMaxBoil = 0;
             }
-            boolean needsPacket = false;
             float scale = MekanismUtils.getScale(prevWaterScale, structure.waterTank);
             if (scale != prevWaterScale) {
                 needsPacket = true;
                 prevWaterScale = scale;
             }
-            if (needsPacket || needsValveUpdate || needsHotUpdate) {
+            if (needsPacket) {
                 sendUpdatePacket();
             }
             markDirty();

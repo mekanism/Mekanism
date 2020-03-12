@@ -77,23 +77,22 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (structure != null && isRendering) {
-            boolean needsValveUpdate = false;
+            boolean needsPacket = false;
             for (ValveData data : structure.valves) {
                 if (data.activeTicks > 0) {
                     data.activeTicks--;
                 }
                 if (data.activeTicks > 0 != data.prevActive) {
-                    needsValveUpdate = true;
+                    needsPacket = true;
                 }
                 data.prevActive = data.activeTicks > 0;
             }
-            boolean needsPacket = false;
             float scale = MekanismUtils.getScale(prevScale, structure.fluidTank);
             if (scale != prevScale) {
                 needsPacket = true;
                 prevScale = scale;
             }
-            if (needsPacket || needsValveUpdate) {
+            if (needsPacket) {
                 sendUpdatePacket();
             }
             List<IInventorySlot> inventorySlots = structure.getInventorySlots(null);
