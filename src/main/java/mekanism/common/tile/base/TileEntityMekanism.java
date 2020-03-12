@@ -959,10 +959,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Nonnull
     @Override
     public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
-        if (!canHandleGas() || gasTankHolder == null) {
-            return Collections.emptyList();
-        }
-        return gasTankHolder.getTanks(side);
+        return canHandleGas() && gasTankHolder != null ? gasTankHolder.getTanks(side) : Collections.emptyList();
     }
 
     /**
@@ -1015,10 +1012,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Nonnull
     @Override
     public List<? extends IChemicalTank<InfuseType, InfusionStack>> getInfusionTanks(@Nullable Direction side) {
-        if (!canHandleInfusion() || infusionTankHolder == null) {
-            return Collections.emptyList();
-        }
-        return infusionTankHolder.getTanks(side);
+        return canHandleInfusion() && infusionTankHolder != null ? infusionTankHolder.getTanks(side) : Collections.emptyList();
     }
 
     /**
@@ -1071,10 +1065,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     @Nonnull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        if (!canHandleFluid() || fluidTankHolder == null) {
-            return Collections.emptyList();
-        }
-        return fluidTankHolder.getTanks(side);
+        return canHandleFluid() && fluidTankHolder != null ? fluidTankHolder.getTanks(side) : Collections.emptyList();
     }
 
     /**

@@ -104,7 +104,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
             return stack;
         }
         boolean sameType = false;
-        if (isEmpty() || (sameType = stored.isTypeEqual(stack))) {
+        if (isEmpty() || (sameType = isTypeEqual(stack))) {
             int toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item
@@ -238,6 +238,28 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
     @Override
     public CHEMICAL getType() {
         return stored.getType();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
+     * instead of having to make a copy.
+     */
+    @Override
+    public boolean isTypeEqual(STACK other) {
+        return stored.isTypeEqual(other);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @implNote Overwritten as we return a cached/copy of our stack in {@link #getStack()}, and we can optimize out the copying, and can also directly modify our stack
+     * instead of having to make a copy.
+     */
+    @Override
+    public boolean isTypeEqual(CHEMICAL other) {
+        return stored.isTypeEqual(other);
     }
 
     @Override

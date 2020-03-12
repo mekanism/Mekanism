@@ -2,14 +2,15 @@ package mekanism.generators.common.tile.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -23,7 +24,7 @@ import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.tags.MekanismTags;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.GeneratorTags;
@@ -41,18 +42,17 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityReactorController extends TileEntityReactorBlock implements IActiveState {
+public class TileEntityReactorController extends TileEntityReactorBlock {
 
     public static final int MAX_WATER = 100 * FluidAttributes.BUCKET_VOLUME;
     public static final int MAX_STEAM = MAX_WATER * 100;
     public static final int MAX_FUEL = FluidAttributes.BUCKET_VOLUME;
 
     public IExtendedFluidTank waterTank;
-    public IExtendedFluidTank steamTank;
-
-    public BasicGasTank deuteriumTank;
-    public BasicGasTank tritiumTank;
-    public BasicGasTank fuelTank;
+    public IChemicalTank<Gas, GasStack> steamTank;
+    public IChemicalTank<Gas, GasStack> deuteriumTank;
+    public IChemicalTank<Gas, GasStack> tritiumTank;
+    public IChemicalTank<Gas, GasStack> fuelTank;
 
     private AxisAlignedBB box;
     private double clientTemp = 0;
@@ -74,6 +74,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         builder.addTank(deuteriumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM), this));
         builder.addTank(tritiumTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM), this));
         builder.addTank(fuelTank = BasicGasTank.input(MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL), this));
+        builder.addTank(steamTank = VariableCapacityGasTank.output(() -> localMaxSteam, gas -> gas == MekanismGases.STEAM.getGas(), this));
         return builder.build();
     }
 
@@ -81,8 +82,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(waterTank = VariableCapacityFluidTank.input(this::getMaxWater, fluid -> fluid.getFluid().isIn(FluidTags.WATER), this));
-        builder.addTank(steamTank = VariableCapacityFluidTank.output(this::getMaxSteam, fluid -> fluid.getFluid().isIn(MekanismTags.Fluids.STEAM), this));
+        builder.addTank(waterTank = VariableCapacityFluidTank.input(() -> localMaxWater, fluid -> fluid.getFluid().isIn(FluidTags.WATER), this));
         return builder.build();
     }
 
@@ -196,14 +196,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         localMaxSteam = MAX_STEAM * capRate;
     }
 
-    public int getMaxWater() {
-        return localMaxWater;
-    }
-
-    public int getMaxSteam() {
-        return localMaxSteam;
-    }
-
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
         if (!isRemote()) {
@@ -221,12 +213,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     }
 
     public boolean isBurning() {
-        return getActive() && getReactor().isBurning();
-    }
-
-    @Override
-    public boolean getActive() {
-        return isFormed();
+        return isFormed() && getReactor().isBurning();
     }
 
     @Override
@@ -283,7 +270,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         boolean formed = tag.getBoolean(NBTConstants.HAS_STRUCTURE);
         FusionReactor reactor = getReactor();
         if (formed) {
-            if (reactor == null || !reactor.formed) {
+            if (reactor == null || !reactor.isFormed()) {
                 BlockPos corner = getPos().subtract(new Vec3i(2, 4, 2));
                 Mekanism.proxy.doMultiblockSparkle(this, corner, 5, 5, 6, tile -> tile instanceof TileEntityReactorBlock);
             }
@@ -291,7 +278,7 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 setReactor(reactor = new FusionReactor(this));
             }
             reactor.formed = true;
-            NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, reactor::setPlasmaTemp);
+            NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, reactor::setLastPlasmaTemp);
             NBTUtils.setBooleanIfPresent(tag, NBTConstants.BURNING, reactor::setBurning);
         } else if (reactor != null) {
             setReactor(null);
@@ -304,11 +291,13 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         //TODO: Split some of these trackers into their individual tabs (same goes for other multiblocks)
         container.track(SyncableDouble.create(this::getPlasmaTemp, value -> {
             if (getReactor() != null) {
+                getReactor().setPlasmaTemp(value);
                 getReactor().setLastPlasmaTemp(value);
             }
         }));
         container.track(SyncableDouble.create(this::getCaseTemp, value -> {
             if (getReactor() != null) {
+                getReactor().setCaseTemp(value);
                 getReactor().setLastCaseTemp(value);
             }
         }));
@@ -321,6 +310,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         container.track(SyncableGasStack.create(deuteriumTank));
         container.track(SyncableGasStack.create(tritiumTank));
         container.track(SyncableFluidStack.create(waterTank));
-        container.track(SyncableFluidStack.create(steamTank));
+        container.track(SyncableGasStack.create(steamTank));
     }
 }

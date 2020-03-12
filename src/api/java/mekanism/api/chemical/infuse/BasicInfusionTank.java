@@ -19,10 +19,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionStack> implements IInfusionHandler {
 
     public static final Predicate<@NonNull InfuseType> alwaysTrue = stack -> true;
-    public static final Predicate<@NonNull InfuseType> alwaysFalse = stack -> false;
     public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
-    public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
-    public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
+    public static final BiPredicate<@NonNull InfuseType, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
 
     @Nullable
     private final IMekanismInfusionHandler infusionHandler;
@@ -45,7 +43,7 @@ public class BasicInfusionTank extends BasicChemicalTank<InfuseType, InfusionSta
     public static BasicInfusionTank input(int capacity, Predicate<@NonNull InfuseType> validator, @Nullable IMekanismInfusionHandler infusionHandler) {
         //TODO: Validate capacity is positive
         Objects.requireNonNull(validator, "Infuse type validity check cannot be null");
-        return new BasicInfusionTank(capacity, manualOnly, alwaysTrueBi, validator, infusionHandler);
+        return new BasicInfusionTank(capacity, notExternal, alwaysTrueBi, validator, infusionHandler);
     }
 
     public static BasicInfusionTank create(int capacity, Predicate<@NonNull InfuseType> canExtract, Predicate<@NonNull InfuseType> canInsert,

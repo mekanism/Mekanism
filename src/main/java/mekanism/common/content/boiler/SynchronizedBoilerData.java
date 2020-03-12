@@ -3,25 +3,30 @@ package mekanism.common.content.boiler;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.common.capabilities.chemical.MultiblockGasTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.multiblock.SynchronizedData;
-import mekanism.common.tags.MekanismTags;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
 
-public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer, IMekanismFluidHandler {
+public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer, IMekanismFluidHandler, IMekanismGasHandler {
 
     public static Object2BooleanMap<String> clientHotMap = new Object2BooleanOpenHashMap<>();
 
@@ -30,8 +35,7 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public static double BASE_BOIL_TEMP = 100 - (TemperatureUnit.AMBIENT.zeroOffset - TemperatureUnit.CELSIUS.zeroOffset);
 
     public BoilerTank waterTank;
-    //TODO: Do we want to make the boiler have steam be a gas instead of a fluid?
-    public BoilerTank steamTank;
+    public MultiblockGasTank<TileEntityBoilerCasing> steamTank;
 
     public double lastEnvironmentLoss;
     public int lastBoilRate;
@@ -55,20 +59,31 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
 
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
     private List<IExtendedFluidTank> fluidTanks;
+    private List<IChemicalTank<Gas, GasStack>> gasTanks;
 
     public SynchronizedBoilerData(TileEntityBoilerCasing tile) {
         waterTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK,
               fluid -> fluid.getFluid().isIn(FluidTags.WATER));
-        steamTank = BoilerTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK,
-              fluid -> fluid.getFluid().isIn(MekanismTags.Fluids.STEAM));
-        fluidTanks = Arrays.asList(waterTank, steamTank);
+        fluidTanks = Collections.singletonList(waterTank);
+        steamTank = MultiblockGasTank.create(tile, () -> tile.structure == null ? 0 : tile.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK,
+              gas -> gas == MekanismGases.STEAM.getGas());
+        gasTanks = Collections.singletonList(steamTank);
     }
 
-    public void setTankData(@Nonnull List<IExtendedFluidTank> toCopy) {
+    public void setFluidTankData(@Nonnull List<IExtendedFluidTank> toCopy) {
         for (int i = 0; i < toCopy.size(); i++) {
             if (i < fluidTanks.size()) {
                 //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
                 fluidTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
+            }
+        }
+    }
+
+    public void setGasTankData(@Nonnull List<IChemicalTank<Gas, GasStack>> toCopy) {
+        for (int i = 0; i < toCopy.size(); i++) {
+            if (i < gasTanks.size()) {
+                //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
+                gasTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
             }
         }
     }
@@ -124,5 +139,11 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
+    }
+
+    @Nonnull
+    @Override
+    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+        return gasTanks;
     }
 }

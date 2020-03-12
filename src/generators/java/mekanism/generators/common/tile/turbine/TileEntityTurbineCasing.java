@@ -3,19 +3,20 @@ package mekanism.generators.common.tile.turbine;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.energy.IStrictEnergyStorage;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.UpdateProtocol;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.tile.TileEntityMultiblock;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -32,7 +33,9 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements IStrictEnergyStorage {
+public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> {
+
+    public float prevSteamScale;
 
     public TileEntityTurbineCasing() {
         this(GeneratorsBlocks.TURBINE_CASING);
@@ -49,8 +52,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
             structure.lastSteamInput = structure.newSteamInput;
             structure.newSteamInput = 0;
 
-            int stored = structure.fluidTank.getFluidAmount();
-            double proportion = (double) stored / (double) structure.getFluidCapacity();
+            int stored = structure.gasTank.getStored();
+            double proportion = (double) stored / (double) structure.getSteamCapacity();
             double flowRate = 0;
 
             if (stored > 0 && getEnergy() < structure.getEnergyCapacity()) {
@@ -65,8 +68,8 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 flowRate = rate / origRate;
                 setEnergy(getEnergy() + (int) rate * energyMultiplier);
 
-                if (!structure.fluidTank.isEmpty()) {
-                    structure.fluidTank.shrinkStack((int) rate, Action.EXECUTE);
+                if (!structure.gasTank.isEmpty()) {
+                    structure.gasTank.shrinkStack((int) rate, Action.EXECUTE);
                 }
                 structure.clientFlow = (int) rate;
                 structure.ventTank.setStack(new FluidStack(Fluids.WATER, Math.min((int) rate, structure.condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
@@ -74,24 +77,26 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.clientFlow = 0;
             }
 
-            if (structure.dumpMode == GasMode.DUMPING && !structure.fluidTank.isEmpty()) {
-                int amount = structure.fluidTank.getFluidAmount();
-                structure.fluidTank.shrinkStack(Math.min(amount, Math.max(amount / 50, structure.lastSteamInput * 2)), Action.EXECUTE);
+            if (structure.dumpMode == GasMode.DUMPING && !structure.gasTank.isEmpty()) {
+                int amount = structure.gasTank.getStored();
+                structure.gasTank.shrinkStack(Math.min(amount, Math.max(amount / 50, structure.lastSteamInput * 2)), Action.EXECUTE);
             }
 
             float newRotation = (float) flowRate;
-            boolean needsRotationUpdate = false;
+            boolean needsPacket = false;
 
             if (Math.abs(newRotation - structure.clientRotation) > SynchronizedTurbineData.ROTATION_THRESHOLD) {
                 structure.clientRotation = newRotation;
-                needsRotationUpdate = true;
+                needsPacket = true;
             }
-
-            if (needsRotationUpdate || structure.needsRenderUpdate()) {
-                //TODO: Only send an update packet when the scale changes. And maybe handle the rotation client side/as a separate packet
+            float scale = MekanismUtils.getScale(prevSteamScale, structure.gasTank);
+            if (scale != prevSteamScale) {
+                needsPacket = true;
+                prevSteamScale = scale;
+            }
+            if (needsPacket) {
                 sendUpdatePacket();
             }
-            structure.prevFluid = structure.fluidTank.isEmpty() ? FluidStack.EMPTY : structure.fluidTank.getFluid().copy();
         }
     }
 
@@ -156,9 +161,10 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = super.getUpdateTag();
         if (structure != null && isRendering) {
+            updateTag.putFloat(NBTConstants.SCALE, prevSteamScale);
             updateTag.putInt(NBTConstants.VOLUME, structure.volume);
             updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.lowerVolume);
-            updateTag.put(NBTConstants.FLUID_STORED, structure.fluidTank.getFluid().writeToNBT(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED, structure.gasTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.COMPLEX, structure.complex.write(new CompoundNBT()));
             updateTag.putFloat(NBTConstants.ROTATION, structure.clientRotation);
         }
@@ -169,9 +175,10 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         if (clientHasStructure && isRendering) {
+            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevSteamScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.volume = value);
             NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.lowerVolume = value);
-            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.fluidTank.setStack(value));
+            NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.gasTank.setStack(value));
             NBTUtils.setCoord4DIfPresent(tag, NBTConstants.COMPLEX, value -> structure.complex = value);
             NBTUtils.setFloatIfPresent(tag, NBTConstants.ROTATION, value -> structure.clientRotation = value);
             SynchronizedTurbineData.clientRotationMap.put(structure.inventoryID, structure.clientRotation);
@@ -191,9 +198,9 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTu
                 structure.lowerVolume = value;
             }
         }));
-        container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.fluidTank.getFluid(), value -> {
+        container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.gasTank.getStack(), value -> {
             if (structure != null) {
-                structure.fluidTank.setStack(value);
+                structure.gasTank.setStack(value);
             }
         }));
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.vents, value -> {

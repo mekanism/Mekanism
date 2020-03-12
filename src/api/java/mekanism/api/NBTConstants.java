@@ -165,6 +165,7 @@ public final class NBTConstants {
 
     //Server to Client specific sync NBT tags
     public static final String SCALE = "scale";
+    public static final String SCALE_ALT = "scaleAlt";
     public static final String OWNER_NAME = "ownerName";
     public static final String MUFFLING_COUNT = "muffling";
     public static final String CURRENT_CONNECTIONS = "connections";

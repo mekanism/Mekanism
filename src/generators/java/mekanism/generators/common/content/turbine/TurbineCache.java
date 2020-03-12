@@ -2,13 +2,14 @@ package mekanism.generators.common.content.turbine;
 
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.common.capabilities.fluid.BasicFluidTank;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.chemical.gas.BasicGasTank;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IMekanismGasHandler;
 import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.tile.TileEntityGasTank.GasMode;
 import mekanism.common.util.NBTUtils;
@@ -16,27 +17,27 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> implements IMekanismFluidHandler {
+public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> implements IMekanismGasHandler {
 
     //Note: We don't care about any restrictions here as it is just for making it be persistent
-    private final List<IExtendedFluidTank> fluidTanks = Collections.singletonList(BasicFluidTank.create(Integer.MAX_VALUE, this));
+    private final List<IChemicalTank<Gas, GasStack>> gasTanks = Collections.singletonList(BasicGasTank.create(Integer.MAX_VALUE, this));
     public double electricity;
     public GasMode dumpMode = GasMode.IDLE;
 
     @Override
     public void apply(SynchronizedTurbineData data) {
-        data.setTankData(fluidTanks);
+        data.setTankData(gasTanks);
         data.electricityStored = electricity;
         data.dumpMode = dumpMode;
     }
 
     @Override
     public void sync(SynchronizedTurbineData data) {
-        List<IExtendedFluidTank> tanksToCopy = data.getFluidTanks(null);
+        List<? extends IChemicalTank<Gas, GasStack>> tanksToCopy = data.getGasTanks(null);
         for (int i = 0; i < tanksToCopy.size(); i++) {
-            if (i < fluidTanks.size()) {
+            if (i < gasTanks.size()) {
                 //Just directly set it as we don't have any restrictions on our tanks here
-                fluidTanks.get(i).setStack(tanksToCopy.get(i).getFluid());
+                gasTanks.get(i).setStack(tanksToCopy.get(i).getStack());
             }
         }
         electricity = data.electricityStored;
@@ -45,22 +46,21 @@ public class TurbineCache extends MultiblockCache<SynchronizedTurbineData> imple
 
     @Override
     public void load(CompoundNBT nbtTags) {
-        DataHandlerUtils.readTanks(getFluidTanks(null), nbtTags.getList(NBTConstants.FLUID_TANKS, NBT.TAG_COMPOUND));
+        DataHandlerUtils.readTanks(getGasTanks(null), nbtTags.getList(NBTConstants.GAS_TANKS, NBT.TAG_COMPOUND));
         electricity = nbtTags.getDouble(NBTConstants.ENERGY_STORED);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_MODE, GasMode::byIndexStatic, mode -> dumpMode = mode);
     }
 
     @Override
     public void save(CompoundNBT nbtTags) {
-        nbtTags.put(NBTConstants.FLUID_TANKS, DataHandlerUtils.writeTanks(getFluidTanks(null)));
+        nbtTags.put(NBTConstants.GAS_TANKS, DataHandlerUtils.writeTanks(getGasTanks(null)));
         nbtTags.putDouble(NBTConstants.ENERGY_STORED, electricity);
         nbtTags.putInt(NBTConstants.DUMP_MODE, dumpMode.ordinal());
     }
 
-    @Nonnull
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        return fluidTanks;
+    public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
+        return gasTanks;
     }
 
     @Override

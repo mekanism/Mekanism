@@ -87,7 +87,7 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
             return stack;
         }
         boolean sameType = false;
-        if (isEmpty() || (sameType = stack.isTypeEqual(getType()))) {
+        if (isEmpty() || (sameType = isTypeEqual(stack))) {
             int toAdd = Math.min(stack.getAmount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item
@@ -285,6 +285,32 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      */
     default CHEMICAL getType() {
         return getStack().getType();
+    }
+
+    /**
+     * Convenience method for checking if this tank's contents are of an equal type to a given chemical stack's.
+     *
+     * @param other The stack to compare to.
+     *
+     * @return True if the tank's contents are equal, false otherwise.
+     *
+     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
+     */
+    default boolean isTypeEqual(STACK other) {
+        return getStack().isTypeEqual(other);
+    }
+
+    /**
+     * Convenience method for checking if this tank's contents are of an equal type to a given chemical's.
+     *
+     * @param other The chemical to compare to.
+     *
+     * @return True if the tank's contents are equal, false otherwise.
+     *
+     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
+     */
+    default boolean isTypeEqual(CHEMICAL other) {
+        return getStack().isTypeEqual(other);
     }
 
     @Override

@@ -51,9 +51,6 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     @Nonnull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        if (!canHandleFluid() || structure == null) {
-            return Collections.emptyList();
-        }
-        return structure.ventTanks;
+        return canHandleFluid() && structure != null ? structure.ventTanks : Collections.emptyList();
     }
 }

@@ -6,6 +6,7 @@ import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiNumberGauge;
 import mekanism.client.gui.element.gauge.GuiNumberGauge.INumberInfoHandler;
 import mekanism.client.gui.element.progress.GuiProgress;
@@ -82,10 +83,10 @@ public class GuiReactorHeat extends GuiReactorInfo {
             }
         }, GaugeType.STANDARD, this, 61, 50));
         addButton(new GuiProgress(() -> tile.getCaseTemp() > 0 ? 1 : 0, ProgressType.SMALL_RIGHT, this, 83, 61));
-        addButton(new GuiProgress(() -> (tile.getCaseTemp() > 0 && !tile.waterTank.isEmpty() && tile.steamTank.getFluidAmount() < tile.steamTank.getCapacity()) ? 1 : 0,
+        addButton(new GuiProgress(() -> (tile.getCaseTemp() > 0 && !tile.waterTank.isEmpty() && tile.steamTank.getStored() < tile.steamTank.getCapacity()) ? 1 : 0,
               ProgressType.SMALL_RIGHT, this, 83, 91));
         addButton(new GuiFluidGauge(() -> tile.waterTank, GaugeType.SMALL, this, 115, 84));
-        addButton(new GuiFluidGauge(() -> tile.steamTank, GaugeType.SMALL, this, 151, 84));
+        addButton(new GuiGasGauge(() -> tile.steamTank, GaugeType.SMALL, this, 151, 84));
         addButton(new GuiEnergyGauge(() -> tile, GaugeType.SMALL, this, 115, 46));
         addButton(new GuiReactorTab(this, tile, ReactorTab.FUEL));
         addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));

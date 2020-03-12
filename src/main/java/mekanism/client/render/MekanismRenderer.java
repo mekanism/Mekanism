@@ -222,6 +222,14 @@ public class MekanismRenderer {
         return color;
     }
 
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> int getColorARGB(@Nonnull STACK stack, float scale) {
+        if (stack.isEmpty()) {
+            return -1;
+        }
+        int color = stack.getType().getTint();
+        return getColorARGB(getRed(color), getGreen(color), getBlue(color), Math.min(1, scale + 0.2F));
+    }
+
     public static int getColorARGB(float red, float green, float blue, float alpha) {
         return getColorARGB((int) (255 * red), (int) (255 * green), (int) (255 * blue), alpha);
     }

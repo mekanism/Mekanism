@@ -30,10 +30,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     @Nonnull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        if (!canHandleFluid() || structure == null) {
-            return Collections.emptyList();
-        }
-        return structure.getFluidTanks(side);
+        return canHandleFluid() && structure != null ? structure.getFluidTanks(side) : Collections.emptyList();
     }
 
     @Override

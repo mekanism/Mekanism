@@ -7,7 +7,6 @@ import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.registries.MekanismFluids;
@@ -53,7 +52,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
 
             RenderTurbineRotor.internalRender = false;
 
-            if (!tile.structure.fluidTank.isEmpty() && tile.structure.volLength > 0) {
+            if (!tile.structure.gasTank.isEmpty() && tile.structure.volLength > 0) {
                 if (STEAM.isEmpty()) {
                     STEAM = MekanismFluids.STEAM.getFluidStack(1);
                 }
@@ -65,14 +64,13 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
                 data.width = tile.structure.volWidth;
                 data.fluidType = STEAM;
 
-                if (data.location != null && data.height >= 1 && !tile.structure.fluidTank.isEmpty()) {
+                if (data.location != null && data.height >= 1 && !tile.structure.gasTank.isEmpty()) {
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
-                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.fluidTank.getFluid());
-                    Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
-                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                          MekanismRenderer.getColorARGB(tile.structure.fluidTank.getFluid(), (float) tile.structure.fluidTank.getFluidAmount() / (float) tile.structure.getFluidCapacity()));
-                    MekanismRenderer.disableGlow(glowInfo);
+                    //TODO: Maybe make a gas model rather than just using the fluid texture as the textures can technically be different
+                    Model3D gasModel = FluidRenderer.getFluidModel(data, 1);
+                    MekanismRenderer.renderObject(gasModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
+                          MekanismRenderer.getColorARGB(tile.structure.gasTank.getStack(), tile.prevSteamScale));
                     matrix.pop();
                 }
             }

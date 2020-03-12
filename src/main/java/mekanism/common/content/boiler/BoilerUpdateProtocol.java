@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.Mekanism;
 import mekanism.common.block.basic.BlockBoilerCasing;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
@@ -168,10 +167,8 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedBoilerData> cache, MultiblockCache<SynchronizedBoilerData> merge) {
         BoilerCache boilerCache = (BoilerCache) cache;
         BoilerCache mergeCache = (BoilerCache) merge;
-        List<IExtendedFluidTank> boilerCacheTanks = boilerCache.getFluidTanks(null);
-        List<IExtendedFluidTank> mergeCacheTanks = mergeCache.getFluidTanks(null);
-        StorageUtils.mergeTanks(boilerCacheTanks.get(0), mergeCacheTanks.get(0));
-        StorageUtils.mergeTanks(boilerCacheTanks.get(1), mergeCacheTanks.get(1));
+        StorageUtils.mergeTanks(boilerCache.getFluidTanks(null).get(0), mergeCache.getFluidTanks(null).get(0));
+        StorageUtils.mergeTanks(boilerCache.getGasTanks(null).get(0), mergeCache.getGasTanks(null).get(0));
         boilerCache.temperature = Math.max(boilerCache.temperature, mergeCache.temperature);
     }
 
@@ -182,7 +179,7 @@ public class BoilerUpdateProtocol extends UpdateProtocol<SynchronizedBoilerData>
             structureFound.waterTank.setStackSize(Math.min(structureFound.waterTank.getFluidAmount(), structureFound.waterVolume * WATER_PER_TANK), Action.EXECUTE);
         }
         if (!structureFound.steamTank.isEmpty()) {
-            structureFound.steamTank.setStackSize(Math.min(structureFound.steamTank.getFluidAmount(), structureFound.steamVolume * STEAM_PER_TANK), Action.EXECUTE);
+            structureFound.steamTank.setStackSize(Math.min(structureFound.steamTank.getStored(), structureFound.steamVolume * STEAM_PER_TANK), Action.EXECUTE);
         }
     }
 

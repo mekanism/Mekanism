@@ -68,7 +68,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
         super.onUpdateServer();
         resetChanged();
         if (ticker == 5 && !attempted && (getReactor() == null || !getReactor().isFormed())) {
-            updateController();
+            updateController(false);
         }
         attempted = false;
     }
@@ -96,19 +96,24 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
         super.onAdded();
         if (!isRemote()) {
             if (getReactor() == null) {
-                updateController();
+                updateController(true);
             } else {
                 getReactor().formMultiblock(false);
             }
         }
     }
 
-    //TODO: Fix if controller is last block placed the reactor doesn't form
-    private void updateController() {
-        if (!(this instanceof TileEntityReactorController)) {
+    private void updateController(boolean fromAdding) {
+        if (this instanceof TileEntityReactorController) {
+            if (!fromAdding && !((TileEntityReactorController) this).isFormed()) {
+                ((TileEntityReactorController) this).formMultiblock(false);
+                setActive(true);
+            }
+        } else {
             TileEntityReactorController found = new ControllerFinder().find();
             if (found != null && !found.isFormed()) {
                 found.formMultiblock(false);
+                found.setActive(true);
             }
         }
     }

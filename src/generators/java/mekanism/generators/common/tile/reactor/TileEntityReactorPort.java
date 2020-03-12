@@ -1,7 +1,6 @@
 package mekanism.generators.common.tile.reactor;
 
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,16 +11,14 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.EmitUtils;
+import mekanism.common.util.GasUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.PipeUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -32,7 +29,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 //TODO: Allow reactor controller inventory slot to be interacted with via the port again
 public class TileEntityReactorPort extends TileEntityReactorBlock implements IHeatTransfer, IConfigurable {
@@ -56,10 +52,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
     @Nonnull
     @Override
     public List<? extends IChemicalTank<Gas, GasStack>> getGasTanks(@Nullable Direction side) {
-        if (!canHandleGas() || getReactor() == null) {
-            return Collections.emptyList();
-        }
-        return getReactor().controller.getGasTanks(side);
+        return canHandleGas() && getReactor() != null ? getReactor().controller.getGasTanks(side) : Collections.emptyList();
     }
 
     @Override
@@ -104,16 +97,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
         super.onUpdateServer();
         CableUtils.emit(this);
         if (getActive() && getReactor() != null && !getReactor().getSteamTank().isEmpty()) {
-            IExtendedFluidTank tank = getReactor().getSteamTank();
-            EmitUtils.forEachSide(getWorld(), getPos(), EnumSet.allOf(Direction.class), (tile, side) -> {
-                if (!(tile instanceof TileEntityReactorPort)) {
-                    CapabilityUtils.getCapability(tile, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
-                        if (PipeUtils.canFill(handler, tank.getFluid())) {
-                            tank.extract(handler.fill(tank.getFluid(), FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);
-                        }
-                    });
-                }
-            });
+            GasUtils.emitGas(this, getReactor().getSteamTank());
         }
     }
 
@@ -216,7 +200,7 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM,
-                  GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(!oldMode, true))));
+                  GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true))));
         }
         return ActionResultType.SUCCESS;
     }
@@ -224,5 +208,27 @@ public class TileEntityReactorPort extends TileEntityReactorBlock implements IHe
     @Override
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
+    }
+
+    @Nonnull
+    @Override
+    public GasStack insertGas(int tank, @Nonnull GasStack stack, @Nullable Direction side, @Nonnull Action action) {
+        //TODO: Do this better so there is no magic numbers
+        if (tank < 3 && getActive()) {
+            //Don't allow inserting into the fuel tanks, if we are on output mode
+            return stack;
+        }
+        return super.insertGas(tank, stack, side, action);
+    }
+
+    @Nonnull
+    @Override
+    public GasStack extractGas(int tank, int amount, @Nullable Direction side, @Nonnull Action action) {
+        //TODO: Do this better so there is no magic numbers
+        if (tank == 3 && !getActive()) {
+            //Don't allow extracting from the steam tank, if we are on input mode
+            return GasStack.EMPTY;
+        }
+        return super.extractGas(tank, amount, side, action);
     }
 }

@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
@@ -17,7 +16,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.LaserManager;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -126,8 +125,8 @@ public class FusionReactor {
     }
 
     public void updateTemperatures() {
-        lastPlasmaTemperature = plasmaTemperature < 1E-1 ? 0 : plasmaTemperature;
-        lastCaseTemperature = caseTemperature < 1E-1 ? 0 : caseTemperature;
+        lastPlasmaTemperature = plasmaTemperature < 0.1 ? 0 : plasmaTemperature;
+        lastCaseTemperature = caseTemperature < 0.1 ? 0 : caseTemperature;
     }
 
     private void vaporiseHohlraum() {
@@ -150,14 +149,21 @@ public class FusionReactor {
         int amountAvailable = 2 * Math.min(getDeuteriumTank().getStored(), getTritiumTank().getStored());
         int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
-        getDeuteriumTank().extract(amountToInject / 2, Action.EXECUTE, AutomationType.INTERNAL);
-        getTritiumTank().extract(amountToInject / 2, Action.EXECUTE, AutomationType.INTERNAL);
+        int injectingAmount = amountToInject / 2;
+        if (getDeuteriumTank().shrinkStack(injectingAmount, Action.EXECUTE) != injectingAmount) {
+            //TODO: Print warning/error
+        }
+        if (getTritiumTank().shrinkStack(injectingAmount, Action.EXECUTE) != injectingAmount) {
+            //TODO: Print warning/error
+        }
         getFuelTank().insert(GeneratorsGases.FUSION_FUEL.getGasStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private int burnFuel() {
         int fuelBurned = (int) Math.min(getFuelTank().getStored(), Math.max(0, lastPlasmaTemperature - burnTemperature) * burnRatio);
-        getFuelTank().extract(fuelBurned, Action.EXECUTE, AutomationType.INTERNAL);
+        if (getFuelTank().shrinkStack(fuelBurned, Action.EXECUTE) != fuelBurned) {
+            //TODO: Print warning/error
+        }
         plasmaTemperature += MekanismGeneratorsConfig.generators.energyPerFusionFuel.get() * fuelBurned / plasmaHeatCapacity;
         return fuelBurned;
     }
@@ -174,8 +180,10 @@ public class FusionReactor {
             int waterToVaporize = (int) (steamTransferEfficiency * caseWaterHeat / enthalpyOfVaporization);
             waterToVaporize = Math.min(waterToVaporize, Math.min(getWaterTank().getFluidAmount(), getSteamTank().getNeeded()));
             if (waterToVaporize > 0) {
-                getWaterTank().extract(waterToVaporize, Action.EXECUTE, AutomationType.INTERNAL);
-                getSteamTank().insert(MekanismFluids.STEAM.getFluidStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
+                if (getWaterTank().shrinkStack(waterToVaporize, Action.EXECUTE) != waterToVaporize) {
+                    //TODO: Print warning/error
+                }
+                getSteamTank().insert(MekanismGases.STEAM.getGasStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
             }
 
             caseWaterHeat = waterToVaporize * enthalpyOfVaporization / steamTransferEfficiency;
@@ -192,14 +200,12 @@ public class FusionReactor {
         setBufferedEnergy(getBufferedEnergy() + caseAirHeat * thermocoupleEfficiency);
     }
 
-    @Nullable
     public IExtendedFluidTank getWaterTank() {
-        return controller == null ? null : controller.waterTank;
+        return controller.waterTank;
     }
 
-    @Nullable
-    public IExtendedFluidTank getSteamTank() {
-        return controller == null ? null : controller.steamTank;
+    public IChemicalTank<Gas, GasStack> getSteamTank() {
+        return controller.steamTank;
     }
 
     public IChemicalTank<Gas, GasStack> getDeuteriumTank() {
@@ -372,13 +378,12 @@ public class FusionReactor {
         int capRate = Math.min(Math.max(1, rate), MAX_INJECTION);
         capRate -= capRate % 2;
         controller.updateMaxCapacities(capRate);
-        //TODO: Evaluate
         if (controller.getWorld() != null && !controller.isRemote()) {
             if (!controller.waterTank.isEmpty()) {
                 controller.waterTank.setStackSize(Math.min(controller.waterTank.getFluidAmount(), controller.waterTank.getCapacity()), Action.EXECUTE);
             }
             if (!controller.steamTank.isEmpty()) {
-                controller.steamTank.setStackSize(Math.min(controller.steamTank.getFluidAmount(), controller.steamTank.getCapacity()), Action.EXECUTE);
+                controller.steamTank.setStackSize(Math.min(controller.steamTank.getStored(), controller.steamTank.getCapacity()), Action.EXECUTE);
             }
         }
     }

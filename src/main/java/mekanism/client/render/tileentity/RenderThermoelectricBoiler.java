@@ -85,11 +85,10 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
                 if (data.height >= 1 && !tile.structure.steamTank.isEmpty()) {
                     matrix.push();
                     matrix.translate(data.location.x - pos.getX(), data.location.y - pos.getY(), data.location.z - pos.getZ());
-                    GlowInfo glowInfo = MekanismRenderer.enableGlow(tile.structure.steamTank.getFluid());
-                    Model3D fluidModel = FluidRenderer.getFluidModel(data, 1);
-                    MekanismRenderer.renderObject(fluidModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
-                          MekanismRenderer.getColorARGB(tile.structure.steamTank.getFluid(), (float) tile.structure.steamTank.getFluidAmount() / (float) (tile.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK)));
-                    MekanismRenderer.disableGlow(glowInfo);
+                    //TODO: Maybe make a gas model rather than just using the fluid texture as the textures can technically be different
+                    Model3D gasModel = FluidRenderer.getFluidModel(data, 1);
+                    MekanismRenderer.renderObject(gasModel, matrix, renderer, MekanismRenderType.renderFluidState(AtlasTexture.LOCATION_BLOCKS_TEXTURE),
+                          MekanismRenderer.getColorARGB(tile.structure.steamTank.getStack(), tile.prevSteamScale));
                     matrix.pop();
                 }
             }

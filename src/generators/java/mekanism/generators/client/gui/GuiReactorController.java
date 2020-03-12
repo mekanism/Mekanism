@@ -37,7 +37,7 @@ public class GuiReactorController extends GuiMekanismTile<TileEntityReactorContr
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), 46, 6, 0x404040);
-        drawString(tile.getActive() ? MekanismLang.MULTIBLOCK_FORMED.translate() : MekanismLang.MULTIBLOCK_INCOMPLETE.translate(), 8, 16, 0x404040);
+        drawString(tile.isFormed() ? MekanismLang.MULTIBLOCK_FORMED.translate() : MekanismLang.MULTIBLOCK_INCOMPLETE.translate(), 8, 16, 0x404040);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

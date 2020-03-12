@@ -23,7 +23,7 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
     public static VariableCapacityFluidTank input(IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
         //TODO: Validate capacity is positive
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new VariableCapacityFluidTank(capacity, manualOnly, alwaysTrueBi, validator, fluidHandler);
+        return new VariableCapacityFluidTank(capacity, notExternal, alwaysTrueBi, validator, fluidHandler);
     }
 
     public static VariableCapacityFluidTank output(IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {

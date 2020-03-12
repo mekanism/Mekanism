@@ -4,8 +4,11 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
@@ -28,6 +31,15 @@ public class StorageUtils {
             tank.setStack(mergeTank.getFluid());
         } else if (!mergeTank.isEmpty() && tank.isFluidEqual(mergeTank.getFluid())) {
             mergeTank.growStack(tank.getFluidAmount(), Action.EXECUTE);
+        }
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void mergeTanks(IChemicalTank<CHEMICAL, STACK> tank,
+          IChemicalTank<CHEMICAL, STACK> mergeTank) {
+        if (tank.isEmpty()) {
+            tank.setStack(mergeTank.getStack());
+        } else if (!mergeTank.isEmpty() && tank.isTypeEqual(mergeTank.getStack())) {
+            mergeTank.growStack(tank.getStored(), Action.EXECUTE);
         }
     }
 }

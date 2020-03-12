@@ -33,6 +33,7 @@ public class BasicInventorySlot implements IInventorySlot {
     public static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
     public static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
     public static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
+    public static final BiPredicate<@NonNull ItemStack, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
     private static final int DEFAULT_LIMIT = 64;
 
     public static BasicInventorySlot at(@Nullable IMekanismInventory inventory, int x, int y) {

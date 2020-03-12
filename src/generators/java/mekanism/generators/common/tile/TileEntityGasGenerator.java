@@ -147,7 +147,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     private class FuelTank extends BasicGasTank {
 
         protected FuelTank(@Nullable IMekanismGasHandler gasHandler) {
-            super(MAX_GAS, manualOnly, alwaysTrueBi, gas -> !FuelHandler.getFuel(gas).isEmpty(), gasHandler);
+            super(MAX_GAS, notExternal, alwaysTrueBi, gas -> !FuelHandler.getFuel(gas).isEmpty(), gasHandler);
         }
 
         @Override

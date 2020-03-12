@@ -26,8 +26,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
     public static final Predicate<@NonNull FluidStack> alwaysTrue = stack -> true;
     public static final Predicate<@NonNull FluidStack> alwaysFalse = stack -> false;
     public static final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
-    public static final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
     public static final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
+    public static final BiPredicate<@NonNull FluidStack, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
 
     public static BasicFluidTank create(int capacity, @Nullable IMekanismFluidHandler fluidHandler) {
         //TODO: Validate capacity is positive
@@ -48,7 +48,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     public static BasicFluidTank input(int capacity, Predicate<@NonNull FluidStack> validator, @Nullable IMekanismFluidHandler fluidHandler) {
         //TODO: Validate capacity is positive
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
-        return new BasicFluidTank(capacity, manualOnly, alwaysTrueBi, validator, fluidHandler);
+        return new BasicFluidTank(capacity, notExternal, alwaysTrueBi, validator, fluidHandler);
     }
 
     public static BasicFluidTank output(int capacity, @Nullable IMekanismFluidHandler fluidHandler) {

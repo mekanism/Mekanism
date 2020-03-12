@@ -8,6 +8,7 @@ import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -18,10 +19,11 @@ import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismFluids;
+import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,6 +46,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public Set<ValveData> valveViewing = new ObjectOpenHashSet<>();
 
     public float prevWaterScale;
+    public float prevSteamScale;
 
     public TileEntityBoilerCasing() {
         this(MekanismBlocks.BOILER_CASING);
@@ -92,7 +95,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
             structure.applyTemperatureChange();
             structure.lastEnvironmentLoss = d[1];
             if (structure.temperature >= SynchronizedBoilerData.BASE_BOIL_TEMP && !structure.waterTank.isEmpty()) {
-                int steamAmount = structure.steamTank.getFluidAmount();
+                int steamAmount = structure.steamTank.getStored();
                 double heatAvailable = structure.getHeatAvailable();
 
                 structure.lastMaxBoil = (int) Math.floor(heatAvailable / SynchronizedBoilerData.getHeatEnthalpy());
@@ -103,7 +106,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                     structure.waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
                 }
                 if (structure.steamTank.isEmpty()) {
-                    structure.steamTank.setStack(MekanismFluids.STEAM.getFluidStack(amountToBoil));
+                    structure.steamTank.setStack(MekanismGases.STEAM.getGasStack(amountToBoil));
                 } else {
                     structure.steamTank.growStack(amountToBoil, Action.EXECUTE);
                 }
@@ -114,10 +117,15 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.lastBoilRate = 0;
                 structure.lastMaxBoil = 0;
             }
-            float scale = MekanismUtils.getScale(prevWaterScale, structure.waterTank);
-            if (scale != prevWaterScale) {
+            float waterScale = MekanismUtils.getScale(prevWaterScale, structure.waterTank);
+            if (waterScale != prevWaterScale) {
                 needsPacket = true;
-                prevWaterScale = scale;
+                prevWaterScale = waterScale;
+            }
+            float steamScale = MekanismUtils.getScale(prevSteamScale, structure.steamTank);
+            if (steamScale != prevSteamScale) {
+                needsPacket = true;
+                prevSteamScale = steamScale;
             }
             if (needsPacket) {
                 sendUpdatePacket();
@@ -228,10 +236,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         CompoundNBT updateTag = super.getUpdateTag();
         if (structure != null && isRendering) {
             updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
+            updateTag.putFloat(NBTConstants.SCALE_ALT, prevSteamScale);
             updateTag.putInt(NBTConstants.VOLUME, structure.waterVolume);
             updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.steamVolume);
             updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
-            updateTag.put(NBTConstants.GAS_STORED, structure.steamTank.getFluid().writeToNBT(new CompoundNBT()));
+            updateTag.put(NBTConstants.GAS_STORED, structure.steamTank.getStack().write(new CompoundNBT()));
             updateTag.put(NBTConstants.RENDER_Y, structure.upperRenderLocation.write(new CompoundNBT()));
             updateTag.putBoolean(NBTConstants.HOT, structure.clientHot);
             ListNBT valves = new ListNBT();
@@ -252,10 +261,11 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
         super.handleUpdateTag(tag);
         if (clientHasStructure && isRendering) {
             NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
+            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevSteamScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.waterVolume = value);
             NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.steamVolume = value);
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.waterTank.setStack(value));
-            NBTUtils.setFluidStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.steamTank.setStack(value));
+            NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED, value -> structure.steamTank.setStack(value));
             NBTUtils.setCoord4DIfPresent(tag, NBTConstants.RENDER_Y, value -> structure.upperRenderLocation = value);
             NBTUtils.setBooleanIfPresent(tag, NBTConstants.HOT, value -> structure.clientHot = value);
             SynchronizedBoilerData.clientHotMap.put(structure.inventoryID, structure.clientHot);
@@ -295,7 +305,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.waterTank.setStack(value);
             }
         }));
-        container.track(SyncableFluidStack.create(() -> structure == null ? FluidStack.EMPTY : structure.steamTank.getFluid(), value -> {
+        container.track(SyncableGasStack.create(() -> structure == null ? GasStack.EMPTY : structure.steamTank.getStack(), value -> {
             if (structure != null) {
                 structure.steamTank.setStack(value);
             }

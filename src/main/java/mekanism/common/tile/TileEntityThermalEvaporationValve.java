@@ -52,10 +52,7 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @Nonnull
     @Override
     public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
-        if (!canHandleFluid() || getController() == null) {
-            return Collections.emptyList();
-        }
-        return getController().getFluidTanks(side);
+        return canHandleFluid() && getController() != null ? getController().getFluidTanks(side) : Collections.emptyList();
     }
 
     @Override

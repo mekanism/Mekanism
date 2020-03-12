@@ -21,8 +21,8 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     public static final Predicate<@NonNull Gas> alwaysTrue = stack -> true;
     public static final Predicate<@NonNull Gas> alwaysFalse = stack -> false;
     public static final BiPredicate<@NonNull Gas, @NonNull AutomationType> alwaysTrueBi = (stack, automationType) -> true;
-    public static final BiPredicate<@NonNull Gas, @NonNull AutomationType> manualOnly = (stack, automationType) -> automationType == AutomationType.MANUAL;
     public static final BiPredicate<@NonNull Gas, @NonNull AutomationType> internalOnly = (stack, automationType) -> automationType == AutomationType.INTERNAL;
+    public static final BiPredicate<@NonNull Gas, @NonNull AutomationType> notExternal = (stack, automationType) -> automationType != AutomationType.EXTERNAL;
 
     @Nullable
     private final IMekanismGasHandler gasHandler;
@@ -39,14 +39,14 @@ public class BasicGasTank extends BasicChemicalTank<Gas, GasStack> implements IG
     public static BasicGasTank input(int capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
         //TODO: Validate capacity is positive
         Objects.requireNonNull(validator, "Gas validity check cannot be null");
-        return new BasicGasTank(capacity, manualOnly, alwaysTrueBi, validator, gasHandler);
+        return new BasicGasTank(capacity, notExternal, alwaysTrueBi, validator, gasHandler);
     }
 
     public static BasicGasTank input(int capacity, Predicate<@NonNull Gas> canInsert, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
         //TODO: Validate capacity is positive
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Gas validity check cannot be null");
-        return new BasicGasTank(capacity, alwaysTrue, canInsert, validator, gasHandler);
+        return new BasicGasTank(capacity, notExternal, (stack, automationType) -> canInsert.test(stack), validator, gasHandler);
     }
 
     public static BasicGasTank output(int capacity, @Nullable IMekanismGasHandler gasHandler) {

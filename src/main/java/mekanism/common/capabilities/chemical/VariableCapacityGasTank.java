@@ -30,6 +30,12 @@ public class VariableCapacityGasTank extends BasicGasTank {
         return new VariableCapacityGasTank(capacity, canExtract, canInsert, validator, gasHandler);
     }
 
+    public static VariableCapacityGasTank output(IntSupplier capacity, Predicate<@NonNull Gas> validator, @Nullable IMekanismGasHandler gasHandler) {
+        //TODO: Validate capacity is positive
+        Objects.requireNonNull(validator, "Gas validity check cannot be null");
+        return new VariableCapacityGasTank(capacity, alwaysTrueBi, internalOnly, validator, gasHandler);
+    }
+
     private final IntSupplier capacity;
 
     protected VariableCapacityGasTank(IntSupplier capacity, BiPredicate<@NonNull Gas, @NonNull AutomationType> canExtract,

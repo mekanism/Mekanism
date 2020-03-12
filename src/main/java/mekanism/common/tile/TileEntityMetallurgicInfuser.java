@@ -87,7 +87,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
     @Override
     protected IChemicalTankHolder<InfuseType, InfusionStack> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack> builder = ChemicalTankHelper.forSideInfusion(this::getDirection);
-        builder.addTank(infusionTank = BasicInfusionTank.create(MAX_INFUSE, BasicInfusionTank.manualOnly, (type, automationType) -> {
+        builder.addTank(infusionTank = BasicInfusionTank.create(MAX_INFUSE, BasicInfusionTank.notExternal, (type, automationType) -> {
             if (!inputSlot.isEmpty()) {
                 ItemStack stack = inputSlot.getStack();
                 return containsRecipe(recipe -> recipe.getItemInput().testType(stack) && recipe.getInfusionInput().testType(type));

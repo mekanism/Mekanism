@@ -7,6 +7,7 @@ import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.MekanismLang;
@@ -57,7 +58,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
             }
         }, 144, 13));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank, GaugeType.STANDARD, this, 6, 13));
-        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.steamTank, GaugeType.STANDARD, this, 152, 13));
+        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.steamTank, GaugeType.STANDARD, this, 152, 13));
         addButton(new GuiHeatInfo(() -> {
             TemperatureUnit unit = EnumUtils.TEMPERATURE_UNITS[MekanismConfig.general.tempUnit.get().ordinal()];
             ITextComponent environment = UnitDisplayUtils.getDisplayShort(tile.getLastEnvironmentLoss() * unit.intervalSize, unit, false);

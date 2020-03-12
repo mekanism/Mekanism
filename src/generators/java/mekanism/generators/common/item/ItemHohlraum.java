@@ -91,7 +91,7 @@ public class ItemHohlraum extends Item {
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> MAX_GAS, BasicGasTank.manualOnly, BasicGasTank.alwaysTrueBi,
+        return new ItemCapabilityWrapper(stack, RateLimitGasHandler.create(() -> TRANSFER_RATE, () -> MAX_GAS, BasicGasTank.notExternal, BasicGasTank.alwaysTrueBi,
               gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
     }
 }

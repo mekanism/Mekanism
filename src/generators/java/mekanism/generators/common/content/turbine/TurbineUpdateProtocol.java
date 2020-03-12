@@ -27,7 +27,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineData> {
 
-    public static final int FLUID_PER_TANK = TankUpdateProtocol.FLUID_PER_TANK;
+    public static final int GAS_PER_TANK = TankUpdateProtocol.FLUID_PER_TANK;
     public static final int MAX_BLADES = 28;
 
     public TurbineUpdateProtocol(TileEntityTurbineCasing tile) {
@@ -192,7 +192,7 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     protected void mergeCaches(List<ItemStack> rejectedItems, MultiblockCache<SynchronizedTurbineData> cache, MultiblockCache<SynchronizedTurbineData> merge) {
         TurbineCache turbineCache = (TurbineCache) cache;
         TurbineCache mergeCache = (TurbineCache) merge;
-        StorageUtils.mergeTanks(turbineCache.getFluidTanks(null).get(0), mergeCache.getFluidTanks(null).get(0));
+        StorageUtils.mergeTanks(turbineCache.getGasTanks(null).get(0), mergeCache.getGasTanks(null).get(0));
         turbineCache.electricity += mergeCache.electricity;
         turbineCache.dumpMode = mergeCache.dumpMode;
     }
@@ -200,8 +200,8 @@ public class TurbineUpdateProtocol extends UpdateProtocol<SynchronizedTurbineDat
     @Override
     protected void onFormed() {
         super.onFormed();
-        if (!structureFound.fluidTank.isEmpty()) {
-            structureFound.fluidTank.setStackSize(Math.min(structureFound.fluidTank.getFluidAmount(), structureFound.getFluidCapacity()), Action.EXECUTE);
+        if (!structureFound.gasTank.isEmpty()) {
+            structureFound.gasTank.setStackSize(Math.min(structureFound.gasTank.getStored(), structureFound.getSteamCapacity()), Action.EXECUTE);
         }
         structureFound.electricityStored = Math.min(structureFound.electricityStored, structureFound.getEnergyCapacity());
     }

@@ -14,6 +14,9 @@ import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.Upgrade;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.Mekanism;
@@ -181,12 +184,20 @@ public final class MekanismUtils {
     }
 
     //TODO: Use this method in various places
-    public static float getScale(float prevScale, IExtendedFluidTank fluidTank) {
-        float targetScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
+    public static float getScale(float prevScale, IExtendedFluidTank tank) {
+        return getScale(prevScale, tank.getFluidAmount(), tank.getCapacity(), tank.isEmpty());
+    }
+
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> float getScale(float prevScale, IChemicalTank<CHEMICAL, STACK> tank) {
+        return getScale(prevScale, tank.getStored(), tank.getCapacity(), tank.isEmpty());
+    }
+
+    private static float getScale(float prevScale, int stored, int capacity, boolean empty) {
+        float targetScale = (float) stored / capacity;
         if (Math.abs(prevScale - targetScale) > 0.01) {
             return (9 * prevScale + targetScale) / 10;
-        } else if (!fluidTank.isEmpty() && prevScale == 0) {
-            //If we have any fluid in the tank make sure we end up rendering it
+        } else if (!empty && prevScale == 0) {
+            //If we have any contents in the tank make sure we end up rendering it
             return targetScale;
         }
         return prevScale;

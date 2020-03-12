@@ -10,7 +10,7 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.bar.GuiVerticalRateBar;
 import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiFluidGauge;
+import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -59,7 +59,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 return (double) tile.structure.lastSteamInput / rate;
             }
         }, 40, 13));
-        addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.fluidTank, GaugeType.MEDIUM, this, 6, 13));
+        addButton(new GuiGasGauge(() -> tile.structure == null ? null : tile.structure.gasTank, GaugeType.MEDIUM, this, 6, 13));
         addButton(new GuiEnergyInfo(() -> {
             double producing = tile.structure == null ? 0 : tile.structure.clientFlow * (MekanismConfig.general.maxEnergyPerSteam.get() / TurbineUpdateProtocol.MAX_BLADES) *
                                                             Math.min(tile.structure.blades, tile.structure.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
@@ -82,7 +82,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             renderScaledText(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(tile.structure.clientFlow * energyMultiplier)),
                   53, 26, 0x00CD00, 106);
             renderScaledText(GeneratorsLang.TURBINE_FLOW_RATE.translate(tile.structure.clientFlow), 53, 35, 0x00CD00, 106);
-            renderScaledText(GeneratorsLang.TURBINE_CAPACITY.translate(tile.structure.getFluidCapacity()), 53, 44, 0x00CD00, 106);
+            renderScaledText(GeneratorsLang.TURBINE_CAPACITY.translate(tile.structure.getSteamCapacity()), 53, 44, 0x00CD00, 106);
             renderScaledText(GeneratorsLang.TURBINE_MAX_FLOW.translate(rate), 53, 53, 0x00CD00, 106);
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);

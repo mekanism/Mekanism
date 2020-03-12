@@ -39,8 +39,8 @@ public class GuiReactorFuel extends GuiReactorInfo {
         addButton(new GuiGasGauge(() -> tile.deuteriumTank, GaugeType.SMALL, this, 25, 64));
         addButton(new GuiGasGauge(() -> tile.fuelTank, GaugeType.STANDARD, this, 79, 50));
         addButton(new GuiGasGauge(() -> tile.tritiumTank, GaugeType.SMALL, this, 133, 64));
-        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 47, 76));
-        addButton(new GuiProgress(() -> tile.getActive() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
+        addButton(new GuiProgress(() -> tile.isBurning() ? 1 : 0, ProgressType.SMALL_RIGHT, this, 47, 76));
+        addButton(new GuiProgress(() -> tile.isBurning() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
         addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT));
         addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));
 

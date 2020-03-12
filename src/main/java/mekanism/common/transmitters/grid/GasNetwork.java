@@ -86,7 +86,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
         } else if (!net.gasTank.isEmpty()) {
             if (gasTank.isEmpty()) {
                 gasTank.setStack(net.getBuffer());
-            } else if (gasTank.getStack().isTypeEqual(net.gasTank.getType())) {
+            } else if (gasTank.isTypeEqual(net.gasTank.getType())) {
                 int amount = net.gasTank.getStored();
                 if (gasTank.growStack(amount, Action.EXECUTE) != amount) {
                     //TODO: Print warning/error
@@ -175,7 +175,7 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
      */
     @Nonnull
     public GasStack emit(@Nonnull GasStack stack, Action action) {
-        if (stack.isEmpty() || (!gasTank.isEmpty() && !stack.isTypeEqual(gasTank.getType()))) {
+        if (stack.isEmpty() || (!gasTank.isEmpty() && !gasTank.isTypeEqual(stack))) {
             return stack;
         }
         int toAdd = Math.min(gasTank.getNeeded(), stack.getAmount());
@@ -271,12 +271,12 @@ public class GasNetwork extends DynamicNetwork<IGasHandler, GasNetwork, GasStack
 
     @Override
     public boolean isCompatibleWith(GasNetwork other) {
-        return super.isCompatibleWith(other) && (gasTank.isEmpty() || other.gasTank.isEmpty() || gasTank.getStack().isTypeEqual(other.gasTank.getType()));
+        return super.isCompatibleWith(other) && (gasTank.isEmpty() || other.gasTank.isEmpty() || gasTank.isTypeEqual(other.gasTank.getType()));
     }
 
     @Override
     public boolean compatibleWithBuffer(@Nonnull GasStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (gasTank.isEmpty() || buffer.isEmpty() || buffer.isTypeEqual(gasTank.getType()));
+        return super.compatibleWithBuffer(buffer) && (gasTank.isEmpty() || buffer.isEmpty() || gasTank.isTypeEqual(buffer));
     }
 
     @Override
