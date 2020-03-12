@@ -288,7 +288,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        //TODO: Split some of these trackers into their individual tabs (same goes for other multiblocks)
         container.track(SyncableDouble.create(this::getPlasmaTemp, value -> {
             if (getReactor() != null) {
                 getReactor().setPlasmaTemp(value);
@@ -301,6 +300,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
                 getReactor().setLastCaseTemp(value);
             }
         }));
+    }
+
+    public void addFuelTabContainerTrackers(MekanismContainer container) {
         container.track(SyncableInt.create(() -> getReactor() == null ? 0 : getReactor().getInjectionRate(), value -> {
             if (getReactor() != null) {
                 getReactor().setInjectionRate(value);
@@ -309,6 +311,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock {
         container.track(SyncableGasStack.create(fuelTank));
         container.track(SyncableGasStack.create(deuteriumTank));
         container.track(SyncableGasStack.create(tritiumTank));
+    }
+
+    public void addHeatTabContainerTrackers(MekanismContainer container) {
         container.track(SyncableFluidStack.create(waterTank));
         container.track(SyncableGasStack.create(steamTank));
     }

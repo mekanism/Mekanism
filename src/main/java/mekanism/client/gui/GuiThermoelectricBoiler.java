@@ -42,7 +42,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
 
             @Override
             public double getLevel() {
-                return tile.structure == null ? 0 : (double) tile.getLastBoilRate() / (double) tile.structure.lastMaxBoil;
+                return tile.structure == null ? 0 : (double) tile.getLastBoilRate() / (double) tile.getLastMaxBoil();
             }
         }, 24, 13));
         addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
@@ -54,7 +54,7 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
             @Override
             public double getLevel() {
                 return tile.structure == null ? 0 : tile.getLastMaxBoil() * SynchronizedBoilerData.getHeatEnthalpy() /
-                                                    (tile.structure.superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get());
+                                                    (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get());
             }
         }, 144, 13));
         addButton(new GuiFluidGauge(() -> tile.structure == null ? null : tile.structure.waterTank, GaugeType.STANDARD, this, 6, 13));

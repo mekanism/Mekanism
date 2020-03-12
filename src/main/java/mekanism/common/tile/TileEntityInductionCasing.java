@@ -154,11 +154,6 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
                 structure.setStorageCap(value);
             }
         }));
-        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getTransferCap(), value -> {
-            if (structure != null) {
-                structure.setTransferCap(value);
-            }
-        }));
         container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getLastInput(), value -> {
             if (structure != null) {
                 structure.setLastInput(value);
@@ -169,19 +164,27 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<Synchronized
                 structure.setLastOutput(value);
             }
         }));
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volWidth, value -> {
+    }
+
+    public void addStatsTabContainerTrackers(MekanismContainer container) {
+        container.track(SyncableDouble.create(() -> structure == null ? 0 : structure.getTransferCap(), value -> {
             if (structure != null) {
-                structure.volWidth = value;
-            }
-        }));
-        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volWidth, value -> {
-            if (structure != null) {
-                structure.volWidth = value;
+                structure.setTransferCap(value);
             }
         }));
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volHeight, value -> {
             if (structure != null) {
                 structure.volHeight = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volWidth, value -> {
+            if (structure != null) {
+                structure.volWidth = value;
+            }
+        }));
+        container.track(SyncableInt.create(() -> structure == null ? 0 : structure.volLength, value -> {
+            if (structure != null) {
+                structure.volLength = value;
             }
         }));
         container.track(SyncableInt.create(() -> structure == null ? 0 : structure.getCellCount(), value -> {

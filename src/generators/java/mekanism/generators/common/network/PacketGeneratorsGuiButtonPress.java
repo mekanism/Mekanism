@@ -9,6 +9,8 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
+import mekanism.generators.common.container.ReactorFuelTabContainer;
+import mekanism.generators.common.container.ReactorHeatTabContainer;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
@@ -82,13 +84,13 @@ public class PacketGeneratorsGuiButtonPress {
         }),
         TAB_HEAT((tile, extra) -> {
             if (tile instanceof TileEntityReactorController) {
-                return new ContainerProvider(GeneratorsLang.HEAT_TAB, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.REACTOR_HEAT, i, inv, (TileEntityReactorController) tile));
+                return new ContainerProvider(GeneratorsLang.HEAT_TAB, (i, inv, player) -> new ReactorHeatTabContainer(i, inv, (TileEntityReactorController) tile));
             }
             return null;
         }),
         TAB_FUEL((tile, extra) -> {
             if (tile instanceof TileEntityReactorController) {
-                return new ContainerProvider(GeneratorsLang.FUEL_TAB, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.REACTOR_FUEL, i, inv, (TileEntityReactorController) tile));
+                return new ContainerProvider(GeneratorsLang.FUEL_TAB, (i, inv, player) -> new ReactorFuelTabContainer(i, inv, (TileEntityReactorController) tile));
             }
             return null;
         }),

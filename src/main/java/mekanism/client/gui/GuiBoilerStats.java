@@ -7,7 +7,6 @@ import mekanism.client.gui.element.tab.GuiBoilerTab;
 import mekanism.client.gui.element.tab.GuiBoilerTab.BoilerTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.boiler.BoilerUpdateProtocol;
 import mekanism.common.content.boiler.SynchronizedBoilerData;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.tile.TileEntityBoilerCasing;
@@ -43,8 +42,8 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawCenteredText(MekanismLang.BOILER_STATS.translate(), 0, getXSize(), 6, 0x404040);
-        drawString(MekanismLang.BOILER_MAX_WATER.translate(tile.structure == null ? 0 : tile.structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK), 8, 26, 0x404040);
-        drawString(MekanismLang.BOILER_MAX_STEAM.translate(tile.structure == null ? 0 : tile.structure.steamVolume * BoilerUpdateProtocol.STEAM_PER_TANK), 8, 35, 0x404040);
+        drawString(MekanismLang.BOILER_MAX_WATER.translate(tile.structure == null ? 0 : tile.structure.waterTank.getCapacity()), 8, 26, 0x404040);
+        drawString(MekanismLang.BOILER_MAX_STEAM.translate(tile.structure == null ? 0 : tile.structure.steamTank.getCapacity()), 8, 35, 0x404040);
         drawString(MekanismLang.BOILER_HEAT_TRANSFER.translate(), 8, 49, 0x797979);
         drawString(MekanismLang.BOILER_HEATERS.translate(tile.getSuperheatingElements()), 14, 58, 0x404040);
         int boilCapacity = (int) (tile.getSuperheatingElements() * MekanismConfig.general.superheatingHeatTransfer.get() / SynchronizedBoilerData.getHeatEnthalpy());
