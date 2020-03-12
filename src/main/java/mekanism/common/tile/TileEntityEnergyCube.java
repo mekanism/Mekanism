@@ -200,13 +200,13 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     @Override
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = super.getUpdateTag();
-        updateTag.putInt(NBTConstants.ENERGY_SCALE, prevScale);
+        updateTag.putInt(NBTConstants.SCALE, prevScale);
         return updateTag;
     }
 
     @Override
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.ENERGY_SCALE, scale -> prevScale = scale);
+        NBTUtils.setIntIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
     }
 }

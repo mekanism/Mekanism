@@ -62,14 +62,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();
-        if (clientHasStructure && isRendering) {
-            if (structure != null) {
-                float targetScale = (float) structure.fluidTank.getFluidAmount() / (structure.volume * TankUpdateProtocol.FLUID_PER_TANK);
-                if (Math.abs(prevScale - targetScale) > 0.01) {
-                    prevScale = (9 * prevScale + targetScale) / 10;
-                }
-            }
-        } else {
+        if (!clientHasStructure || !isRendering) {
             for (ValveData data : valveViewing) {
                 TileEntityDynamicTank tile = MekanismUtils.getTileEntity(TileEntityDynamicTank.class, getWorld(), data.location.getPos());
                 if (tile != null) {
@@ -94,10 +87,15 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
                 }
                 data.prevActive = data.activeTicks > 0;
             }
-            if (needsValveUpdate || structure.needsRenderUpdate()) {
+            boolean needsPacket = false;
+            float scale = MekanismUtils.getScale(prevScale, structure.fluidTank);
+            if (scale != prevScale) {
+                needsPacket = true;
+                prevScale = scale;
+            }
+            if (needsPacket || needsValveUpdate) {
                 sendUpdatePacket();
             }
-            structure.prevFluid = structure.fluidTank.isEmpty() ? FluidStack.EMPTY : structure.fluidTank.getFluid().copy();
             List<IInventorySlot> inventorySlots = structure.getInventorySlots(null);
             //TODO: No magic numbers??
             FluidInventorySlot inputSlot = (FluidInventorySlot) inventorySlots.get(0);
@@ -244,6 +242,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = super.getUpdateTag();
         if (structure != null && isRendering) {
+            updateTag.putFloat(NBTConstants.SCALE, prevScale);
             updateTag.putInt(NBTConstants.VOLUME, structure.volume);
             updateTag.put(NBTConstants.FLUID_STORED, structure.fluidTank.getFluid().writeToNBT(new CompoundNBT()));
             ListNBT valves = new ListNBT();
@@ -263,6 +262,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<SynchronizedTank
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         if (clientHasStructure && isRendering) {
+            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.volume = value);
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.fluidTank.setStack(value));
             valveViewing.clear();

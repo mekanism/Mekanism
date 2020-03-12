@@ -15,6 +15,7 @@ import mekanism.api.Coord4D;
 import mekanism.api.IMekWrench;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.gas.Gas;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.IActiveState;
@@ -177,6 +178,18 @@ public final class MekanismUtils {
             return (float) mgmt.getComponent().getUpgrades(type) / (float) type.getMax();
         }
         return 0;
+    }
+
+    //TODO: Use this method in various places
+    public static float getScale(float prevScale, IExtendedFluidTank fluidTank) {
+        float targetScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
+        if (Math.abs(prevScale - targetScale) > 0.01) {
+            return (9 * prevScale + targetScale) / 10;
+        } else if (!fluidTank.isEmpty() && prevScale == 0) {
+            //If we have any fluid in the tank make sure we end up rendering it
+            return targetScale;
+        }
+        return prevScale;
     }
 
     /**

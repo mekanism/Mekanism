@@ -53,8 +53,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
 
     public FluidTankTier tier;
 
-    private int prevAmount;
-
     public int valve;
     @Nonnull
     public FluidStack valveFluid = FluidStack.EMPTY;
@@ -99,16 +97,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();
-        //TODO: Unify scale code into its own object/helper class so that we can use the same calculations everywhere
-        // and also make sure we include the override for rendering contents even when there is less than 0.01 for the
-        // scale they would be
-        float targetScale = (float) fluidTank.getFluidAmount() / fluidTank.getCapacity();
-        if (Math.abs(prevScale - targetScale) > 0.01) {
-            prevScale = (9 * prevScale + targetScale) / 10;
-        } else if (!fluidTank.isEmpty() && prevScale == 0) {
-            //If we have any fluid in the tank make sure we end up rendering it
-            prevScale = targetScale;
-        }
         if (updateClientLight) {
             MekanismUtils.recheckLighting(world, pos);
             updateClientLight = false;
@@ -126,19 +114,18 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
             }
         }
 
-        int amount = fluidTank.getFluidAmount();
-        if (amount != prevAmount) {
-            //TODO: Only mark that we need a packet if the target scale changes
+        float scale = MekanismUtils.getScale(prevScale, fluidTank);
+        if (scale != prevScale) {
             needsPacket = true;
-            if (prevAmount == 0 || amount == 0) {
+            if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                 // as the fluid may have changed and have a light value
                 //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
                 //TODO: Do we even need this on the sever side of things
                 MekanismUtils.recheckLighting(world, pos);
             }
+            prevScale = scale;
         }
-        prevAmount = amount;
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
             activeEmit();
@@ -278,6 +265,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         CompoundNBT updateTag = super.getUpdateTag();
         updateTag.put(NBTConstants.FLUID_STORED, fluidTank.getFluid().writeToNBT(new CompoundNBT()));
         updateTag.put(NBTConstants.VALVE, valveFluid.writeToNBT(new CompoundNBT()));
+        updateTag.putFloat(NBTConstants.SCALE, prevScale);
         return updateTag;
     }
 
@@ -286,6 +274,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IActiveSt
         super.handleUpdateTag(tag);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.VALVE, fluid -> valveFluid = fluid);
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
         //Set the client's light to update just in case the value changed
         //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
         updateClientLight = true;

@@ -107,30 +107,15 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             if (ticker == 5) {
                 doUpdate();
             }
-        }
-        if (prevStructure == (structure == null)) {
-            if (structure != null && !structure.hasRenderer) {
-                structure.hasRenderer = true;
-                isRendering = true;
-                sendStructure = true;
+            if (prevStructure) {
+                structureChanged();
+                prevStructure = false;
             }
-            Coord4D thisCoord = Coord4D.get(this);
-            for (Direction side : EnumUtils.DIRECTIONS) {
-                Coord4D obj = thisCoord.offset(side);
-                if (structure == null || (!structure.locations.contains(obj) && !structure.internalLocations.contains(obj))) {
-                    BlockPos pos = obj.getPos();
-                    TileEntity tile = MekanismUtils.getTileEntity(world, pos);
-                    if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
-                        MekanismUtils.notifyNeighborofChange(world, pos, getPos());
-                    }
-                }
+        } else {
+            if (!prevStructure) {
+                structureChanged();
+                prevStructure = true;
             }
-            sendUpdatePacket();
-        }
-
-        prevStructure = structure != null;
-
-        if (structure != null) {
             structure.didTick = false;
             if (structure.inventoryID != null) {
                 cachedData.sync(structure);
@@ -138,6 +123,26 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
                 getManager().updateCache(this);
             }
         }
+    }
+
+    private void structureChanged() {
+        if (structure != null && !structure.hasRenderer) {
+            structure.hasRenderer = true;
+            isRendering = true;
+            sendStructure = true;
+        }
+        Coord4D thisCoord = Coord4D.get(this);
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            Coord4D obj = thisCoord.offset(side);
+            if (structure == null || (!structure.locations.contains(obj) && !structure.internalLocations.contains(obj))) {
+                BlockPos pos = obj.getPos();
+                TileEntity tile = MekanismUtils.getTileEntity(world, pos);
+                if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
+                    MekanismUtils.notifyNeighborofChange(world, pos, getPos());
+                }
+            }
+        }
+        sendUpdatePacket();
     }
 
     @Override

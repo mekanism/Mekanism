@@ -18,18 +18,10 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData> implements IMekanismFluidHandler {
 
     public DynamicFluidTank fluidTank;
-
-    /**
-     * For use by rendering segment
-     */
-    @Nonnull
-    public FluidStack prevFluid = FluidStack.EMPTY;
-    public int prevFluidStage = 0;
 
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
     public Set<ValveData> valves = new ObjectOpenHashSet<>();
@@ -75,20 +67,6 @@ public class SynchronizedTankData extends SynchronizedData<SynchronizedTankData>
                 fluidTanks.get(i).deserializeNBT(toCopy.get(i).serializeNBT());
             }
         }
-    }
-
-    public boolean needsRenderUpdate() {
-        if ((fluidTank.isEmpty() && !prevFluid.isEmpty()) || (!fluidTank.isEmpty() && prevFluid.isEmpty())) {
-            return true;
-        }
-        if (fluidTank.isEmpty()) {
-            return false;
-        }
-        int totalStage = (volHeight - 2) * (TankUpdateProtocol.FLUID_PER_TANK / 100);
-        int currentStage = (int) ((fluidTank.getFluidAmount() / (float) (volume * TankUpdateProtocol.FLUID_PER_TANK)) * totalStage);
-        boolean stageChanged = currentStage != prevFluidStage;
-        prevFluidStage = currentStage;
-        return !fluidTank.getFluid().isFluidEqual(prevFluid) || stageChanged;
     }
 
     @Nonnull

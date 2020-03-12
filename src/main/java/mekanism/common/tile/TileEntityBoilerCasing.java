@@ -56,12 +56,6 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();
-        if (structure != null && clientHasStructure && isRendering) {
-            float targetScale = (float) structure.waterTank.getFluidAmount() / (structure.waterVolume * BoilerUpdateProtocol.WATER_PER_TANK);
-            if (Math.abs(prevWaterScale - targetScale) > 0.01) {
-                prevWaterScale = (9 * prevWaterScale + targetScale) / 10;
-            }
-        }
         if (!clientHasStructure || !isRendering) {
             for (ValveData data : valveViewing) {
                 TileEntityBoilerCasing tile = MekanismUtils.getTileEntity(TileEntityBoilerCasing.class, getWorld(), data.location.getPos());
@@ -121,11 +115,15 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
                 structure.lastBoilRate = 0;
                 structure.lastMaxBoil = 0;
             }
-            if (needsValveUpdate || needsHotUpdate || structure.needsRenderUpdate()) {
+            boolean needsPacket = false;
+            float scale = MekanismUtils.getScale(prevWaterScale, structure.waterTank);
+            if (scale != prevWaterScale) {
+                needsPacket = true;
+                prevWaterScale = scale;
+            }
+            if (needsPacket || needsValveUpdate || needsHotUpdate) {
                 sendUpdatePacket();
             }
-            structure.prevWater = structure.waterTank.isEmpty() ? FluidStack.EMPTY : structure.waterTank.getFluid().copy();
-            structure.prevSteam = structure.steamTank.isEmpty() ? FluidStack.EMPTY : structure.steamTank.getFluid().copy();
             markDirty();
         }
     }
@@ -231,6 +229,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public CompoundNBT getUpdateTag() {
         CompoundNBT updateTag = super.getUpdateTag();
         if (structure != null && isRendering) {
+            updateTag.putFloat(NBTConstants.SCALE, prevWaterScale);
             updateTag.putInt(NBTConstants.VOLUME, structure.waterVolume);
             updateTag.putInt(NBTConstants.LOWER_VOLUME, structure.steamVolume);
             updateTag.put(NBTConstants.FLUID_STORED, structure.waterTank.getFluid().writeToNBT(new CompoundNBT()));
@@ -254,6 +253,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<SynchronizedBoi
     public void handleUpdateTag(@Nonnull CompoundNBT tag) {
         super.handleUpdateTag(tag);
         if (clientHasStructure && isRendering) {
+            NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevWaterScale = scale);
             NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, value -> structure.waterVolume = value);
             NBTUtils.setIntIfPresent(tag, NBTConstants.LOWER_VOLUME, value -> structure.steamVolume = value);
             NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, value -> structure.waterTank.setStack(value));

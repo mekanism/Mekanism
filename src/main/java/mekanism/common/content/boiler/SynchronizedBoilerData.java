@@ -20,7 +20,6 @@ import mekanism.common.tile.TileEntityBoilerCasing;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Direction;
-import net.minecraftforge.fluids.FluidStack;
 
 public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerData> implements IHeatTransfer, IMekanismFluidHandler {
 
@@ -31,12 +30,8 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public static double BASE_BOIL_TEMP = 100 - (TemperatureUnit.AMBIENT.zeroOffset - TemperatureUnit.CELSIUS.zeroOffset);
 
     public BoilerTank waterTank;
-    @Nonnull
-    public FluidStack prevWater = FluidStack.EMPTY;
     //TODO: Do we want to make the boiler have steam be a gas instead of a fluid?
     public BoilerTank steamTank;
-    @Nonnull
-    public FluidStack prevSteam = FluidStack.EMPTY;
 
     public double lastEnvironmentLoss;
     public int lastBoilRate;
@@ -88,24 +83,6 @@ public class SynchronizedBoilerData extends SynchronizedData<SynchronizedBoilerD
     public double getHeatAvailable() {
         double heatAvailable = (temperature - BASE_BOIL_TEMP) * locations.size();
         return Math.min(heatAvailable, superheatingElements * MekanismConfig.general.superheatingHeatTransfer.get());
-    }
-
-    public boolean needsRenderUpdate() {
-        if ((waterTank.isEmpty() && !prevWater.isEmpty()) || (!waterTank.isEmpty() && prevWater.isEmpty())) {
-            return true;
-        }
-        if (!waterTank.isEmpty()) {
-            if (!waterTank.isFluidEqual(prevWater) || (waterTank.getFluidAmount() != prevWater.getAmount())) {
-                return true;
-            }
-        }
-        if ((steamTank.isEmpty() && !prevSteam.isEmpty()) || (!steamTank.isEmpty() && prevSteam.isEmpty())) {
-            return true;
-        }
-        if (!steamTank.isEmpty()) {
-            return !steamTank.isFluidEqual(prevSteam) || steamTank.getFluidAmount() != prevSteam.getAmount();
-        }
-        return false;
     }
 
     @Override
