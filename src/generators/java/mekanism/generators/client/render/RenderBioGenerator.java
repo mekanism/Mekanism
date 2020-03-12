@@ -5,24 +5,27 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.EnumMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelBioGenerator;
+import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerator> {
+@ParametersAreNonnullByDefault
+public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBioGenerator> {
 
     private static final Map<Direction, Int2ObjectMap<Model3D>> energyDisplays = new EnumMap<>(Direction.class);
     private static final int stages = 40;
@@ -37,7 +40,7 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
     }
 
     @Override
-    public void render(@Nonnull TileEntityBioGenerator tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    protected void render(TileEntityBioGenerator tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (!tile.bioFuelTank.isEmpty()) {
             matrix.push();
             FluidStack fluid = tile.bioFuelTank.getFluid();
@@ -56,6 +59,11 @@ public class RenderBioGenerator extends TileEntityRenderer<TileEntityBioGenerato
         matrix.rotate(Vector3f.ZP.rotationDegrees(180));
         model.render(matrix, renderer, light, overlayLight);
         matrix.pop();
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return GeneratorsProfilerConstants.BIO_GENERATOR;
     }
 
     @SuppressWarnings("incomplete-switch")

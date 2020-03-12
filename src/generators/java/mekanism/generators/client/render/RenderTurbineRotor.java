@@ -1,17 +1,20 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.Mekanism;
 import mekanism.generators.client.model.ModelTurbine;
+import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.SynchronizedTurbineData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 
-public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRotor> {
+@ParametersAreNonnullByDefault
+public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTurbineRotor> {
 
     private static final float BASE_SPEED = 512F;
     public static boolean internalRender = false;
@@ -22,7 +25,7 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
     }
 
     @Override
-    public void render(@Nonnull TileEntityTurbineRotor tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    protected void render(TileEntityTurbineRotor tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.getMultiblock() != null && !internalRender) {
             return;
         }
@@ -57,6 +60,11 @@ public class RenderTurbineRotor extends TileEntityRenderer<TileEntityTurbineRoto
             matrix.pop();
         }
         matrix.pop();
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return GeneratorsProfilerConstants.TURBINE_ROTOR;
     }
 
     @Override

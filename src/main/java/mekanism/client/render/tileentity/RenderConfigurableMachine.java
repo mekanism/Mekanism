@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.render.MekanismRenderType;
@@ -12,6 +12,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
@@ -19,17 +20,18 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 
-public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends TileEntityRenderer<S> {
+@ParametersAreNonnullByDefault
+public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration> extends MekanismTileEntityRenderer<S> {
 
     private static Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
 
@@ -42,7 +44,7 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
     }
 
     @Override
-    public void render(@Nonnull S configurable, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    protected void render(S configurable, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
         Item item = itemStack.getItem();
         if (!itemStack.isEmpty() && item instanceof ItemConfigurator && ((ItemConfigurator) item).getState(itemStack).isConfigurating()) {
@@ -66,6 +68,11 @@ public class RenderConfigurableMachine<S extends TileEntity & ISideConfiguration
                 }
             }
         }
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.CONFIGURABLE_MACHINE;
     }
 
     private Model3D getOverlayModel(Direction side, TransmissionType type) {

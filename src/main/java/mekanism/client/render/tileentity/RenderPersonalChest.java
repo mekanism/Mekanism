@@ -2,7 +2,8 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -10,11 +11,12 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalChest> {
+@ParametersAreNonnullByDefault
+public class RenderPersonalChest extends MekanismTileEntityRenderer<TileEntityPersonalChest> {
 
     private static final ResourceLocation texture = MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "models/personal_chest.png");
 
@@ -36,10 +38,9 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
     }
 
     @Override
-    public void render(@Nonnull TileEntityPersonalChest tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
+    protected void render(TileEntityPersonalChest tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         matrix.push();
-        if (tile.getWorld() != null && !tile.isRemoved()) {
+        if (!tile.isRemoved()) {
             matrix.translate(0.5D, 0.5D, 0.5D);
             matrix.rotate(Vector3f.YP.rotationDegrees(-tile.getDirection().getHorizontalAngle()));
             matrix.translate(-0.5D, -0.5D, -0.5D);
@@ -54,5 +55,10 @@ public class RenderPersonalChest extends TileEntityRenderer<TileEntityPersonalCh
         latch.render(matrix, builder, light, overlayLight);
         base.render(matrix, builder, light, overlayLight);
         matrix.pop();
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.PERSONAL_CHEST;
     }
 }

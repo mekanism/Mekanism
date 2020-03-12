@@ -9,15 +9,15 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.transporter.HashedItem;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.item.ItemConfigurator;
@@ -35,12 +35,14 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 
+@ParametersAreNonnullByDefault
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporter> {
 
     private static Map<Direction, Int2ObjectMap<Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
@@ -64,11 +66,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     @Override
-    public void render(@Nonnull TileEntityLogisticalTransporter transporter, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
-          int light, int overlayLight) {
-        if (MekanismConfig.client.opaqueTransmitters.get()) {
-            return;
-        }
+    protected void render(TileEntityLogisticalTransporter transporter, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+          IProfiler profiler) {
         Collection<TransporterStack> inTransit = transporter.getTransmitter().getTransit();
         BlockPos pos = transporter.getPos();
         if (!inTransit.isEmpty()) {
@@ -111,6 +110,11 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 }
             }
         }
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.LOGISTICAL_TRANSPORTER;
     }
 
     /**

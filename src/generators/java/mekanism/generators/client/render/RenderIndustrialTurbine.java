@@ -2,24 +2,28 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.MekanismUtils;
+import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbineCasing> {
+@ParametersAreNonnullByDefault
+public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEntityTurbineCasing> {
 
     @Nonnull
     private static FluidStack STEAM = FluidStack.EMPTY;
@@ -29,8 +33,7 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
     }
 
     @Override
-    public void render(@Nonnull TileEntityTurbineCasing tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
+    protected void render(TileEntityTurbineCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && tile.structure.complex != null) {
             RenderTurbineRotor.internalRender = true;
             BlockPos pos = tile.getPos();
@@ -74,6 +77,11 @@ public class RenderIndustrialTurbine extends TileEntityRenderer<TileEntityTurbin
                 }
             }
         }
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return GeneratorsProfilerConstants.INDUSTRIAL_TURBINE;
     }
 
     @Override

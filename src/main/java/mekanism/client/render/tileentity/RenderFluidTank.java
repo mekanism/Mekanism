@@ -4,12 +4,14 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
@@ -17,11 +19,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 import net.minecraftforge.fluids.FluidStack;
 
-public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
+@ParametersAreNonnullByDefault
+public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank> {
 
     private static final FluidRenderMap<Int2ObjectMap<Model3D>> cachedCenterFluids = new FluidRenderMap<>();
     private static final FluidRenderMap<Int2ObjectMap<Model3D>> cachedValveFluids = new FluidRenderMap<>();
@@ -38,7 +41,7 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
     }
 
     @Override
-    public void render(@Nonnull TileEntityFluidTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    protected void render(TileEntityFluidTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         FluidStack fluid = tile.fluidTank.getFluid();
         float fluidScale = tile.prevScale;
         FluidStack valveFluid = tile.valveFluid;
@@ -69,6 +72,11 @@ public class RenderFluidTank extends TileEntityRenderer<TileEntityFluidTank> {
             MekanismRenderer.disableGlow(glowInfo);
             matrix.pop();
         }
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.FLUID_TANK;
     }
 
     private Model3D getValveModel(@Nonnull FluidStack fluid, int stage) {

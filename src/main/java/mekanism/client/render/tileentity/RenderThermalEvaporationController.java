@@ -1,29 +1,31 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
 
-public class RenderThermalEvaporationController extends TileEntityRenderer<TileEntityThermalEvaporationController> {
+@ParametersAreNonnullByDefault
+public class RenderThermalEvaporationController extends MekanismTileEntityRenderer<TileEntityThermalEvaporationController> {
 
     public RenderThermalEvaporationController(TileEntityRendererDispatcher renderer) {
         super(renderer);
     }
 
     @Override
-    public void render(@Nonnull TileEntityThermalEvaporationController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
-          int light, int overlayLight) {
+    protected void render(TileEntityThermalEvaporationController tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+          IProfiler profiler) {
         if (tile.getActive() && tile.height - 2 >= 1 && !tile.inputTank.isEmpty()) {
             RenderData data = new RenderData();
             data.location = tile.getRenderLocation();
@@ -45,6 +47,11 @@ public class RenderThermalEvaporationController extends TileEntityRenderer<TileE
             MekanismRenderer.disableGlow(glowInfo);
             matrix.pop();
         }
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.THERMAL_EVAPORATION_CONTROLLER;
     }
 
     @Override

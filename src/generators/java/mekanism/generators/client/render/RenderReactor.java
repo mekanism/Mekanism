@@ -1,19 +1,22 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.client.render.tileentity.RenderEnergyCube;
+import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 
-public class RenderReactor extends TileEntityRenderer<TileEntityReactorController> {
+@ParametersAreNonnullByDefault
+public class RenderReactor extends MekanismTileEntityRenderer<TileEntityReactorController> {
 
     private ModelEnergyCore core = new ModelEnergyCore();
 
@@ -22,8 +25,8 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
     }
 
     @Override
-    public void render(@Nonnull TileEntityReactorController tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
+    protected void render(TileEntityReactorController tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+          IProfiler profiler) {
         if (tile.isBurning()) {
             matrix.push();
             matrix.translate(0.5, -1.5, 0.5);
@@ -43,8 +46,13 @@ public class RenderReactor extends TileEntityRenderer<TileEntityReactorControlle
         }
     }
 
-    private void renderPart(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int overlayLight, EnumColor color, double scale, float ticks,
-          long scaledTemp, int mult1, int mult2, int shift1, int shift2) {
+    @Override
+    protected String getProfilerSection() {
+        return GeneratorsProfilerConstants.REACTOR;
+    }
+
+    private void renderPart(MatrixStack matrix, IRenderTypeBuffer renderer, int overlayLight, EnumColor color, double scale, float ticks, long scaledTemp, int mult1,
+          int mult2, int shift1, int shift2) {
         float ticksScaledTemp = ticks * scaledTemp;
         matrix.push();
         matrix.scale((float) scale, (float) scale, (float) scale);

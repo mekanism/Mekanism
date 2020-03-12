@@ -1,22 +1,24 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 
-public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
+@ParametersAreNonnullByDefault
+public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter> {
 
     private static Model3D EAST_WEST;
     private static Model3D NORTH_SOUTH;
@@ -31,7 +33,7 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
     }
 
     @Override
-    public void render(@Nonnull TileEntityTeleporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    protected void render(TileEntityTeleporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.shouldRender && tile.getWorld() != null) {
             matrix.push();
             GlowInfo glowInfo = MekanismRenderer.enableGlow();
@@ -42,6 +44,11 @@ public class RenderTeleporter extends TileEntityRenderer<TileEntityTeleporter> {
             MekanismRenderer.disableGlow(glowInfo);
             matrix.pop();
         }
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.TELEPORTER;
     }
 
     private Model3D getOverlayModel(boolean eastWest) {

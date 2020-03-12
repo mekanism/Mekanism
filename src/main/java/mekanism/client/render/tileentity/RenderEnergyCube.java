@@ -1,13 +1,14 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
 import mekanism.client.model.ModelEnergyCube.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
@@ -15,10 +16,11 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 
-public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
+@ParametersAreNonnullByDefault
+public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube> {
 
     public static final Vector3f coreVec = new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO);
     private ModelEnergyCube model = new ModelEnergyCube();
@@ -29,8 +31,7 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
     }
 
     @Override
-    public void render(@Nonnull TileEntityEnergyCube tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
+    protected void render(TileEntityEnergyCube tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         matrix.push();
         matrix.translate(0.5, 1.5, 0.5);
 
@@ -81,5 +82,10 @@ public class RenderEnergyCube extends TileEntityRenderer<TileEntityEnergyCube> {
         }
         matrix.pop();
         MekanismRenderer.machineRenderer().render(tile, partialTick, matrix, renderer, light, overlayLight);
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.ENERGY_CUBE;
     }
 }

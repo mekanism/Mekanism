@@ -1,17 +1,19 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelDigitalMiner;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MinerVisualRenderer;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 
-public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMiner> {
+@ParametersAreNonnullByDefault
+public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDigitalMiner> {
 
     private ModelDigitalMiner model = new ModelDigitalMiner();
 
@@ -20,7 +22,7 @@ public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMine
     }
 
     @Override
-    public void render(@Nonnull TileEntityDigitalMiner tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    protected void render(TileEntityDigitalMiner tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         matrix.push();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
@@ -29,8 +31,15 @@ public class RenderDigitalMiner extends TileEntityRenderer<TileEntityDigitalMine
         model.render(matrix, renderer, light, overlayLight, tile.getActive());
         matrix.pop();
         if (tile.clientRendering) {
+            profiler.startSection(ProfilerConstants.DIGITAL_MINER_VISUALS);
             MinerVisualRenderer.render(tile, matrix, renderer);
+            profiler.endSection();
         }
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.DIGITAL_MINER;
     }
 
     @Override

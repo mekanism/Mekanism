@@ -1,16 +1,18 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelQuantumEntangloporter;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 
-public class RenderQuantumEntangloporter extends TileEntityRenderer<TileEntityQuantumEntangloporter> {
+@ParametersAreNonnullByDefault
+public class RenderQuantumEntangloporter extends MekanismTileEntityRenderer<TileEntityQuantumEntangloporter> {
 
     private ModelQuantumEntangloporter model = new ModelQuantumEntangloporter();
 
@@ -19,8 +21,8 @@ public class RenderQuantumEntangloporter extends TileEntityRenderer<TileEntityQu
     }
 
     @Override
-    public void render(@Nonnull TileEntityQuantumEntangloporter tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer,
-          int light, int overlayLight) {
+    protected void render(TileEntityQuantumEntangloporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+          IProfiler profiler) {
         matrix.push();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
@@ -28,5 +30,10 @@ public class RenderQuantumEntangloporter extends TileEntityRenderer<TileEntityQu
         model.render(matrix, renderer, light, overlayLight, false);
         matrix.pop();
         MekanismRenderer.machineRenderer().render(tile, partialTick, matrix, renderer, light, overlayLight);
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.QUANTUM_ENTANGLOPORTER;
     }
 }

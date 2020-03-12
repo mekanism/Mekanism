@@ -1,7 +1,7 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderer;
 import mekanism.client.render.FluidRenderer.RenderData;
 import mekanism.client.render.FluidRenderer.ValveRenderData;
@@ -9,23 +9,25 @@ import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.tank.SynchronizedTankData.ValveData;
 import mekanism.common.content.tank.TankUpdateProtocol;
 import mekanism.common.tile.TileEntityDynamicTank;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
 
-public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank> {
+@ParametersAreNonnullByDefault
+public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDynamicTank> {
 
     public RenderDynamicTank(TileEntityRendererDispatcher renderer) {
         super(renderer);
     }
 
     @Override
-    public void render(@Nonnull TileEntityDynamicTank tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    protected void render(TileEntityDynamicTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (tile.clientHasStructure && tile.isRendering && tile.structure != null && !tile.structure.fluidTank.isEmpty()) {
             RenderData data = new RenderData();
             data.location = tile.structure.renderLocation;
@@ -57,6 +59,11 @@ public class RenderDynamicTank extends TileEntityRenderer<TileEntityDynamicTank>
                 }
             }
         }
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.DYNAMIC_TANK;
     }
 
     @Override

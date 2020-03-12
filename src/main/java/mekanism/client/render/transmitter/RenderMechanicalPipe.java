@@ -5,15 +5,15 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Collections;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.GlowInfo;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntitySidedPipe.ConnectionType;
 import mekanism.common.transmitters.grid.FluidNetwork;
@@ -24,9 +24,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
+@ParametersAreNonnullByDefault
 public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe> {
 
     private static final int stages = 100;
@@ -44,11 +46,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     }
 
     @Override
-    public void render(@Nonnull TileEntityMechanicalPipe pipe, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light,
-          int overlayLight) {
-        if (MekanismConfig.client.opaqueTransmitters.get()) {
-            return;
-        }
+    protected void render(TileEntityMechanicalPipe pipe, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+          IProfiler profiler) {
         float targetScale;
         FluidStack fluidStack;
         if (pipe.getTransmitter().hasTransmitterNetwork()) {
@@ -99,16 +98,21 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
     }
 
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.MECHANICAL_PIPE;
+    }
+
     private int getStage(float scale, boolean gas) {
         return gas ? stages - 1 : Math.max(3, (int) (scale * (stages - 1)));
     }
 
     @Nullable
-    private Model3D getModel(Direction side, @Nonnull FluidStack fluid, int stage) {
+    private Model3D getModel(@Nullable Direction side, FluidStack fluid, int stage) {
         if (fluid.isEmpty()) {
             return null;
         }
-        int sideOrdinal = side != null ? side.ordinal() : 6;
+        int sideOrdinal = side == null ? 6 : side.ordinal();
         FluidRenderMap<Int2ObjectMap<Model3D>> cachedFluids;
         if (cachedLiquids.containsKey(sideOrdinal)) {
             cachedFluids = cachedLiquids.get(sideOrdinal);

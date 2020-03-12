@@ -2,8 +2,10 @@ package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.base.ProfilerConstants;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
@@ -12,19 +14,20 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
-public class RenderBin extends TileEntityRenderer<TileEntityBin> {
+@ParametersAreNonnullByDefault
+public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
 
     public RenderBin(TileEntityRendererDispatcher renderer) {
         super(renderer);
     }
 
     @Override
-    public void render(@Nonnull TileEntityBin tile, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight) {
+    protected void render(TileEntityBin tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         Direction facing = tile.getDirection();
         //position of the block covering the front side
         BlockPos coverPos = tile.getPos().offset(facing);
@@ -64,6 +67,11 @@ public class RenderBin extends TileEntityRenderer<TileEntityBin> {
             matrix.pop();
             renderText(matrix, renderer, overlayLight, amount, facing, 0.02F);
         }
+    }
+
+    @Override
+    protected String getProfilerSection() {
+        return ProfilerConstants.BIN;
     }
 
     @SuppressWarnings("incomplete-switch")
