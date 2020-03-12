@@ -1,7 +1,9 @@
 package mekanism.common.tile.laser;
 
 import java.util.Optional;
+import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
+import mekanism.api.NBTConstants;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.ClientLaserManager;
@@ -13,7 +15,9 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -21,8 +25,9 @@ import net.minecraft.util.math.RayTraceResult.Type;
 
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
-    protected Coord4D digging;
-    protected double diggingProgress;
+    private Coord4D digging;
+    private double diggingProgress;
+    private double lastFired;
 
     public TileEntityBasicLaser(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -45,7 +50,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 if (hardness >= 0) {
                     Optional<ILaserReceptor> capability = MekanismUtils.toOptional(CapabilityUtils.getCapability(tileHit, Capabilities.LASER_RECEPTOR_CAPABILITY, mop.getFace()));
                     if (!capability.isPresent() || capability.get().canLasersDig()) {
-                        diggingProgress += getLastFired();
+                        diggingProgress += lastFired;
                         if (diggingProgress < hardness * MekanismConfig.general.laserEnergyNeededPerHardness.get()) {
                             Mekanism.proxy.addHitEffects(hitCoord, mop);
                         }
@@ -60,7 +65,11 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         super.onUpdateServer();
         double firing = toFire();
         if (firing > 0) {
-            checkLastFired(firing);
+            if (firing != lastFired || !getActive()) {
+                setActive(true);
+                lastFired = firing;
+                sendUpdatePacket();
+            }
             LaserInfo info = LaserManager.fireLaser(this, getDirection(), firing, world);
             Coord4D hitCoord = new Coord4D(info.movingPos, world);
             if (!hitCoord.equals(digging)) {
@@ -88,13 +97,14 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         } else if (getActive()) {
             setActive(false);
             diggingProgress = 0;
+            if (lastFired > 0) {
+                lastFired = 0;
+                sendUpdatePacket();
+            }
         }
     }
 
     protected void setEmittingRedstone(boolean foundEntity) {
-    }
-
-    protected void checkLastFired(double firing) {
     }
 
     protected void handleBreakBlock(Coord4D coord) {
@@ -105,10 +115,36 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return getEnergy();
     }
 
-    protected abstract double getLastFired();
-
     @Override
     public boolean canReceiveEnergy(Direction side) {
         return false;
+    }
+
+    @Override
+    public void read(CompoundNBT nbtTags) {
+        super.read(nbtTags);
+        lastFired = nbtTags.getDouble(NBTConstants.LAST_FIRED);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT write(CompoundNBT nbtTags) {
+        super.write(nbtTags);
+        nbtTags.putDouble(NBTConstants.LAST_FIRED, lastFired);
+        return nbtTags;
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        updateTag.putDouble(NBTConstants.LAST_FIRED, lastFired);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        NBTUtils.setDoubleIfPresent(tag, NBTConstants.LAST_FIRED, fired -> lastFired = fired);
     }
 }

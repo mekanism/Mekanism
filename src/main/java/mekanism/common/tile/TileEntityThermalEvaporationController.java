@@ -521,7 +521,6 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        //TODO: Look to see if we have to sync the max fluid via here. Probably not due to it being synced manually
         container.track(SyncableInt.create(() -> height, value -> height = value));
         container.track(SyncableBoolean.create(() -> controllerConflict, value -> controllerConflict = value));
         container.track(SyncableFloat.create(this::getTemperature, value -> temperature = value));

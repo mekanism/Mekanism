@@ -4,10 +4,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
-import mekanism.common.Mekanism;
 import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
@@ -74,7 +72,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements ITi
                     onNoPower();
                 }
                 currentRedstoneLevel = power;
-                Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity((TileEntityMekanism) tile), this);
+                ((TileEntityMekanism) tile).sendUpdatePacket(this);
             }
         }
     }

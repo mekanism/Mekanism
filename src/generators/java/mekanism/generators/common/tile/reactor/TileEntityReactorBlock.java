@@ -107,7 +107,7 @@ public abstract class TileEntityReactorBlock extends TileEntityMekanism {
     private void updateController() {
         if (!(this instanceof TileEntityReactorController)) {
             TileEntityReactorController found = new ControllerFinder().find();
-            if (found != null && (found.getReactor() == null || !found.getReactor().isFormed())) {
+            if (found != null && !found.isFormed()) {
                 found.formMultiblock(false);
             }
         }

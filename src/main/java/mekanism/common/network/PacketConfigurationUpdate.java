@@ -5,22 +5,17 @@ import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.transmitters.TransmissionType;
-import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
-import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 public class PacketConfigurationUpdate {
@@ -60,9 +55,7 @@ public class PacketConfigurationUpdate {
         context.get().enqueueWork(() -> {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
             if (tile instanceof ISideConfiguration) {
-                LazyOptional<ITileNetwork> capability = CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null);
                 ISideConfiguration config = (ISideConfiguration) tile;
-
                 if (message.packetType == ConfigurationPacket.EJECT) {
                     ConfigInfo info = config.getConfig().getConfig(message.transmission);
                     if (info != null) {
@@ -81,12 +74,7 @@ public class PacketConfigurationUpdate {
                             info.setDataType(relativeSide, DataType.NONE);
                         }
                     }
-
                     tile.markDirty();
-                    capability.ifPresent(
-                          network -> Mekanism.packetHandler.sendToAllTracking(new PacketTileEntity(message.coord4D, network.getNetworkedData()), tile.getWorld(),
-                                message.coord4D.getPos())
-                    );
                     //Notify the neighbor on that side our state changed
                     MekanismUtils.notifyNeighborOfChange(tile.getWorld(), relativeSide.getDirection(config.getOrientation()), tile.getPos());
                     if (tile instanceof TileEntityUpdateable) {

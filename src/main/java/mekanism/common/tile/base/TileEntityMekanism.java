@@ -1289,6 +1289,12 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
     //End methods ITileActive
 
     //Methods for implementing ITileSound
+    /**
+     * Used to check if this tile should attempt to play its sound
+     */
+    protected boolean canPlaySound() {
+        return getActive();
+    }
 
     /**
      * Only call this from the client
@@ -1298,8 +1304,7 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         if (!hasSound() || !MekanismConfig.client.enableMachineSounds.get() || soundEvent == null) {
             return;
         }
-
-        if (getActive() && !isRemoved()) {
+        if (canPlaySound() && !isRemoved()) {
             // If sounds are being muted, we can attempt to start them on every tick, only to have them
             // denied by the event bus, so use a cooldown period that ensures we're only trying once every
             // second or so to start a sound.

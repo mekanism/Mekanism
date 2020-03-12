@@ -2,13 +2,11 @@ package mekanism.generators.common.tile.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.gas.BasicGasTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
@@ -19,18 +17,18 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.config.MekanismConfig;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableGasStack;
+import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.tags.MekanismTags;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.FusionReactor;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import mekanism.generators.common.registries.GeneratorsGases;
-import mekanism.generators.common.registries.GeneratorsSounds;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
@@ -38,7 +36,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -57,14 +54,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     public BasicGasTank tritiumTank;
     public BasicGasTank fuelTank;
 
-    public AxisAlignedBB box;
-    public double clientTemp = 0;
-    public boolean clientBurning = false;
-    /**
-     * Only used by the client
-     */
-    private ISound activeSound;
-    private int playSoundCooldown = 0;
+    private AxisAlignedBB box;
+    private double clientTemp = 0;
+    private boolean clientBurning = false;
 
     private IInventorySlot reactorSlot;
 
@@ -134,23 +126,16 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     }
 
     public double getPlasmaTemp() {
-        if (getReactor() == null || !getReactor().isFormed()) {
-            return 0;
-        }
-        return getReactor().getPlasmaTemp();
+        return isFormed() ? getReactor().getPlasmaTemp() : 0;
     }
 
     public double getCaseTemp() {
-        if (getReactor() == null || !getReactor().isFormed()) {
-            return 0;
-        }
-        return getReactor().getCaseTemp();
+        return isFormed() ? getReactor().getCaseTemp() : 0;
     }
 
     @Override
     protected void onUpdateClient() {
         super.onUpdateClient();
-        updateSound();
         if (isFormed()) {
             getReactor().simulateClient();
         }
@@ -169,38 +154,9 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         }
     }
 
-    /**
-     * Only used by the client
-     */
-    private void updateSound() {
-        // If machine sounds are disabled, noop
-        if (!MekanismConfig.client.enableMachineSounds.get()) {
-            return;
-        }
-        if (isBurning() && !isRemoved()) {
-            // If sounds are being muted, we can attempt to start them on every tick, only to have them
-            // denied by the event bus, so use a cooldown period that ensures we're only trying once every
-            // second or so to start a sound.
-            if (--playSoundCooldown > 0) {
-                return;
-            }
-            if (activeSound == null || !Minecraft.getInstance().getSoundHandler().isPlaying(activeSound)) {
-                activeSound = SoundHandler.startTileSound(GeneratorsSounds.FUSION_REACTOR.getSoundEvent(), getSoundCategory(), 1.0F, getPos());
-                playSoundCooldown = 20;
-            }
-        } else if (activeSound != null) {
-            SoundHandler.stopTileSound(getPos());
-            activeSound = null;
-            playSoundCooldown = 0;
-        }
-    }
-
     @Override
-    public void remove() {
-        super.remove();
-        if (isRemote()) {
-            updateSound();
-        }
+    protected boolean canPlaySound() {
+        return isBurning();
     }
 
     @Override
@@ -243,24 +199,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         }
     }
 
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        data.add(getReactor() != null && getReactor().isFormed());
-        if (getReactor() != null) {
-            data.add(getReactor().getPlasmaTemp());
-            data.add(getReactor().getCaseTemp());
-            data.add(getReactor().getInjectionRate());
-            data.add(getReactor().isBurning());
-            data.add(fuelTank.getStored());
-            data.add(deuteriumTank.getStored());
-            data.add(tritiumTank.getStored());
-            data.add(waterTank.getFluid());
-            data.add(steamTank.getFluid());
-        }
-        return data;
-    }
-
     public void updateMaxCapacities(int capRate) {
         localMaxWater = MAX_WATER * capRate;
         localMaxSteam = MAX_STEAM * capRate;
@@ -282,38 +220,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
                 if (getReactor() != null) {
                     getReactor().setInjectionRate(dataStream.readInt());
                 }
-            }
-            return;
-        }
-
-        super.handlePacketData(dataStream);
-
-        if (isRemote()) {
-            boolean formed = dataStream.readBoolean();
-            World world = getWorld();
-            if (formed) {
-                if (getReactor() == null || !getReactor().formed) {
-                    BlockPos corner = getPos().subtract(new Vec3i(2, 4, 2));
-                    Mekanism.proxy.doMultiblockSparkle(this, corner, 5, 5, 6, tile -> tile instanceof TileEntityReactorBlock);
-                }
-                if (getReactor() == null && world != null) {
-                    setReactor(new FusionReactor(this));
-                    MekanismUtils.updateBlock(world, getPos());
-                }
-
-                getReactor().formed = true;
-                getReactor().setPlasmaTemp(dataStream.readDouble());
-                getReactor().setCaseTemp(dataStream.readDouble());
-                getReactor().setInjectionRate(dataStream.readInt());
-                getReactor().setBurning(dataStream.readBoolean());
-                fuelTank.setStack(GeneratorsGases.FUSION_FUEL.getGasStack(dataStream.readInt()));
-                deuteriumTank.setStack(GeneratorsGases.DEUTERIUM.getGasStack(dataStream.readInt()));
-                tritiumTank.setStack(GeneratorsGases.TRITIUM.getGasStack(dataStream.readInt()));
-                waterTank.setStack(dataStream.readFluidStack());
-                steamTank.setStack(dataStream.readFluidStack());
-            } else if (getReactor() != null && world != null) {
-                setReactor(null);
-                MekanismUtils.updateBlock(world, getPos());
             }
         }
     }
@@ -364,5 +270,65 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
             return true;
         }
         return super.isCapabilityDisabled(capability, side);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT updateTag = super.getUpdateTag();
+        boolean formed = isFormed();
+        updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, formed);
+        if (formed) {
+            updateTag.putDouble(NBTConstants.PLASMA_TEMP, getPlasmaTemp());
+            updateTag.putBoolean(NBTConstants.BURNING, isBurning());
+        }
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(tag);
+        boolean formed = tag.getBoolean(NBTConstants.HAS_STRUCTURE);
+        FusionReactor reactor = getReactor();
+        if (formed) {
+            if (reactor == null || !reactor.formed) {
+                BlockPos corner = getPos().subtract(new Vec3i(2, 4, 2));
+                Mekanism.proxy.doMultiblockSparkle(this, corner, 5, 5, 6, tile -> tile instanceof TileEntityReactorBlock);
+            }
+            if (reactor == null) {
+                setReactor(reactor = new FusionReactor(this));
+            }
+            reactor.formed = true;
+            NBTUtils.setDoubleIfPresent(tag, NBTConstants.PLASMA_TEMP, reactor::setPlasmaTemp);
+            NBTUtils.setBooleanIfPresent(tag, NBTConstants.BURNING, reactor::setBurning);
+        } else if (reactor != null) {
+            setReactor(null);
+        }
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        //TODO: Split some of these trackers into their individual tabs (same goes for other multiblocks)
+        container.track(SyncableDouble.create(this::getPlasmaTemp, value -> {
+            if (getReactor() != null) {
+                getReactor().setPlasmaTemp(value);
+            }
+        }));
+        container.track(SyncableDouble.create(this::getCaseTemp, value -> {
+            if (getReactor() != null) {
+                getReactor().setCaseTemp(value);
+            }
+        }));
+        container.track(SyncableInt.create(() -> getReactor() == null ? 0 : getReactor().getInjectionRate(), value -> {
+            if (getReactor() != null) {
+                getReactor().setInjectionRate(value);
+            }
+        }));
+        container.track(SyncableGasStack.create(fuelTank));
+        container.track(SyncableGasStack.create(deuteriumTank));
+        container.track(SyncableGasStack.create(tritiumTank));
+        container.track(SyncableFluidStack.create(waterTank));
+        container.track(SyncableFluidStack.create(steamTank));
     }
 }

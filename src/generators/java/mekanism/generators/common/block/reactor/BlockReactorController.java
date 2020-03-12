@@ -2,6 +2,7 @@ package mekanism.generators.common.block.reactor;
 
 import javax.annotation.Nonnull;
 import mekanism.api.block.IBlockElectric;
+import mekanism.api.block.IBlockSound;
 import mekanism.api.block.IHasInventory;
 import mekanism.api.block.IHasTileEntity;
 import mekanism.common.base.ILangEntry;
@@ -16,6 +17,7 @@ import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
+import mekanism.generators.common.registries.GeneratorsSounds;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
 import net.minecraft.block.Block;
@@ -25,12 +27,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 
 public class BlockReactorController extends BlockMekanism implements IHasGui<TileEntityReactorController>, IStateActive, IBlockElectric, IHasInventory, IHasDescription,
-      IHasTileEntity<TileEntityReactorController> {
+      IBlockSound, IHasTileEntity<TileEntityReactorController> {
 
     public BlockReactorController() {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 8F));
@@ -82,5 +85,11 @@ public class BlockReactorController extends BlockMekanism implements IHasGui<Til
     @Override
     public ILangEntry getDescription() {
         return GeneratorsLang.DESCRIPTION_REACTOR_CONTROLLER;
+    }
+
+    @Nonnull
+    @Override
+    public SoundEvent getSoundEvent() {
+        return GeneratorsSounds.FUSION_REACTOR.getSoundEvent();
     }
 }

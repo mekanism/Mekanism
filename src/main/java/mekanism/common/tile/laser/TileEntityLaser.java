@@ -12,23 +12,11 @@ public class TileEntityLaser extends TileEntityBasicLaser {
 
     @Override
     protected double toFire() {
-        return MekanismConfig.usage.laser.get();
-    }
-
-    @Override
-    protected double getLastFired() {
-        return MekanismConfig.usage.laser.get();
+        return Math.min(getEnergy(), MekanismConfig.usage.laser.get());
     }
 
     @Override
     public boolean canReceiveEnergy(Direction side) {
         return side == getOppositeDirection();
-    }
-
-    @Override
-    protected void checkLastFired(double firing) {
-        if (!getActive()) {
-            setActive(true);
-        }
     }
 }
