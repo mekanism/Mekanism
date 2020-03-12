@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -15,7 +14,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
-public class TileEntitySeismicVibrator extends TileEntityMekanism implements IActiveState, IBoundingBlock {
+public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBoundingBlock {
 
     public int clientPiston;
 

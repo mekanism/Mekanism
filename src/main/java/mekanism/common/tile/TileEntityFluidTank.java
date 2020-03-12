@@ -9,7 +9,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.base.ContainerEditMode;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.IFluidContainerManager;
 import mekanism.common.base.ITankManager;
 import mekanism.common.base.ITileComponent;
@@ -45,7 +44,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class TileEntityFluidTank extends TileEntityMekanism implements IActiveState, IConfigurable, IFluidContainerManager, ITankManager {
+public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager, ITankManager {
 
     public FluidTankFluidTank fluidTank;
 

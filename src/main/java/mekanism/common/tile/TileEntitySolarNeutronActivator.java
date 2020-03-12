@@ -15,7 +15,6 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.IBoundingBlock;
 import mekanism.common.base.ITankManager;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -37,8 +36,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 
-public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, IActiveState, ITankManager,
-      ITileCachedRecipeHolder<GasToGasRecipe> {
+public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, ITankManager, ITileCachedRecipeHolder<GasToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
 

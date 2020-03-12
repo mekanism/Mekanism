@@ -7,7 +7,6 @@ import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
-import mekanism.common.base.IActiveState;
 import mekanism.common.base.ILogisticalTransporter;
 import mekanism.common.block.basic.BlockBin;
 import mekanism.common.capabilities.Capabilities;
@@ -36,7 +35,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityBin extends TileEntityMekanism implements IActiveState, IConfigurable {
+public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public int addTicks = 0;
 

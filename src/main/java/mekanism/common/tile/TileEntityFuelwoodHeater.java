@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
-import mekanism.common.base.IActiveState;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -25,7 +24,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHeatTransfer, IActiveState {
+public class TileEntityFuelwoodHeater extends TileEntityMekanism implements IHeatTransfer {
 
     private double temperature;
     public double heatToAbsorb = 0;
