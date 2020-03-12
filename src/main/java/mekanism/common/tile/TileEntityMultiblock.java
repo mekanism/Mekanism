@@ -16,7 +16,6 @@ import mekanism.common.multiblock.MultiblockCache;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.multiblock.SynchronizedData;
 import mekanism.common.multiblock.UpdateProtocol;
-import mekanism.common.network.PacketDataRequest;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -36,11 +35,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
      */
     @Nullable
     public T structure;
-
-    /**
-     * Whether or not to send this multiblock's structure in the next update packet.
-     */
-    public boolean sendStructure;
 
     /**
      * This multiblock's previous "has structure" state.
@@ -70,15 +64,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
 
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
-    }
-
-    @Override
-    public void validate() {
-        super.validate();
-        //TODO: Remove this, mainly used right now to request the structure gets sent
-        if (isRemote()) {
-            Mekanism.packetHandler.sendToServer(new PacketDataRequest(Coord4D.get(this)));
-        }
     }
 
     @Override
@@ -129,7 +114,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         if (structure != null && !structure.hasRenderer) {
             structure.hasRenderer = true;
             isRendering = true;
-            sendStructure = true;
         }
         Coord4D thisCoord = Coord4D.get(this);
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -170,7 +154,7 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
         CompoundNBT updateTag = super.getUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, isRendering);
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, structure != null);
-        if (structure != null && isRendering && sendStructure) {
+        if (structure != null && isRendering) {
             updateTag.putInt(NBTConstants.HEIGHT, structure.volHeight);
             updateTag.putInt(NBTConstants.WIDTH, structure.volWidth);
             updateTag.putInt(NBTConstants.LENGTH, structure.volLength);
@@ -180,9 +164,6 @@ public abstract class TileEntityMultiblock<T extends SynchronizedData<T>> extend
             if (structure.inventoryID != null) {
                 updateTag.putString(NBTConstants.INVENTORY_ID, structure.inventoryID);
             }
-        }
-        if (sendStructure) {
-            sendStructure = false;
         }
         return updateTag;
     }

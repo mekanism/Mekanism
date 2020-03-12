@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import mekanism.api.Coord4D;
 import mekanism.common.PacketHandler;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.TileEntityMultiblock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,11 +27,6 @@ public class PacketDataRequest {
         }
         context.get().enqueueWork(() -> {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
-            if (tile instanceof TileEntityMultiblock) {
-                //TODO: FIXME, replace this call with something else
-                ((TileEntityMultiblock<?>) tile).sendStructure = true;
-                ((TileEntityMultiblock<?>) tile).sendUpdatePacket();
-            }
             CapabilityUtils.getCapability(tile, Capabilities.GRID_TRANSMITTER_CAPABILITY, null).ifPresent(transmitter -> {
                 //TODO: FIXME, replace this call with something else
                 if (transmitter.hasTransmitterNetwork()) {
