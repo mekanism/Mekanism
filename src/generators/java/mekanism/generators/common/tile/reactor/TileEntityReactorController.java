@@ -134,14 +134,6 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
     }
 
     @Override
-    protected void onUpdateClient() {
-        super.onUpdateClient();
-        if (isFormed()) {
-            getReactor().simulateClient();
-        }
-    }
-
-    @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (isFormed()) {
@@ -312,12 +304,12 @@ public class TileEntityReactorController extends TileEntityReactorBlock implemen
         //TODO: Split some of these trackers into their individual tabs (same goes for other multiblocks)
         container.track(SyncableDouble.create(this::getPlasmaTemp, value -> {
             if (getReactor() != null) {
-                getReactor().setPlasmaTemp(value);
+                getReactor().setLastPlasmaTemp(value);
             }
         }));
         container.track(SyncableDouble.create(this::getCaseTemp, value -> {
             if (getReactor() != null) {
-                getReactor().setCaseTemp(value);
+                getReactor().setLastCaseTemp(value);
             }
         }));
         container.track(SyncableInt.create(() -> getReactor() == null ? 0 : getReactor().getInjectionRate(), value -> {

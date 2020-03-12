@@ -9,13 +9,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.block.IBlockElectric;
 import mekanism.api.block.IBlockSound;
@@ -498,16 +496,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
         }
     }
 
-    public <MSG> void sendToAllUsing(Supplier<MSG> packetSupplier) {
-        //TODO: Can we get the container sync system to handle all use cases of this
-        if (!playersUsing.isEmpty()) {
-            MSG packet = packetSupplier.get();
-            for (PlayerEntity player : playersUsing) {
-                Mekanism.packetHandler.sendTo(packet, (ServerPlayerEntity) player);
-            }
-        }
-    }
-
     @Override
     public void updateContainingBlockInfo() {
         super.updateContainingBlockInfo();
@@ -524,11 +512,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     @Override
     public void handlePacketData(PacketBuffer dataStream) {
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        return data;
     }
 
     @Override
@@ -725,9 +708,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
                 LazyOptional<IFluidHandler> lazyFluidHandler = fluidTanks.isEmpty() ? LazyOptional.empty() : LazyOptional.of(() -> getFluidHandler(side));
                 return CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY.orEmpty(capability, lazyFluidHandler);
             }
-        }
-        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return Capabilities.TILE_NETWORK_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
         }
         if (isElectric()) {
             if (capability == Capabilities.ENERGY_STORAGE_CAPABILITY) {

@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import mekanism.api.TileNetworkList;
-import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiRedstoneControl;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
@@ -88,11 +87,11 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
 
     private void updateEnabledButtons() {
         encodeFormulaButton.active = !tile.autoMode && tile.isRecipe && canEncode();
-        stockControlButton.active = tile.formula != null;
+        stockControlButton.active = tile.formula != null && tile.formula.isValidFormula();
         fillEmptyButton.active = !tile.autoMode;
         craftSingleButton.active = !tile.autoMode && tile.isRecipe;
         craftAvailableButton.active = !tile.autoMode && tile.isRecipe;
-        autoModeButton.active = tile.formula != null;
+        autoModeButton.active = tile.formula != null && tile.formula.isValidFormula();
     }
 
     @Override
@@ -103,32 +102,32 @@ public class GuiFormulaicAssemblicator extends GuiMekanismTile<TileEntityFormula
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
+    protected ItemStack checkValidity(int slotIndex) {
+        int i = slotIndex - 19;
+        if (i >= 0 && tile.formula != null && tile.formula.isValidFormula()) {
+            ItemStack stack = tile.formula.input.get(i);
+            if (!stack.isEmpty()) {
+                Slot slot = container.inventorySlots.get(slotIndex);
+                //Only render the "correct" item in the gui slot if we don't already have that item there
+                if (slot.getStack().isEmpty() || !tile.formula.isIngredientInPos(tile.getWorld(), slot.getStack(), i)) {
+                    return stack;
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayer(partialTick, mouseX, mouseY);
         //TODO: Gui element
         SlotOverlay overlay = tile.isRecipe ? SlotOverlay.CHECK : SlotOverlay.X;
         minecraft.textureManager.bindTexture(overlay.getTexture());
         blit(getGuiLeft() + 88, getGuiTop() + 22, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
-
-        if (tile.formula != null) {
-            for (int i = 0; i < 9; i++) {
-                ItemStack stack = tile.formula.input.get(i);
-                if (!stack.isEmpty()) {
-                    Slot slot = container.inventorySlots.get(i + 20);
-                    int guiX = getGuiLeft() + slot.xPos;
-                    int guiY = getGuiTop() + slot.yPos;
-                    if (slot.getStack().isEmpty() || !tile.formula.isIngredientInPos(tile.getWorld(), slot.getStack(), i)) {
-                        drawColorIcon(guiX, guiY, EnumColor.DARK_RED, 0.8F);
-                        //Only render the "correct" item in the gui slot if we don't already have that item there
-                        renderItem(stack, guiX, guiY);
-                    }
-                }
-            }
-        }
     }
 
     private boolean canEncode() {
-        if (tile.formula != null || tile.getFormulaSlot().isEmpty()) {
+        if (tile.formula != null && tile.formula.isValidFormula() || tile.getFormulaSlot().isEmpty()) {
             return false;
         }
         ItemStack formulaStack = tile.getFormulaSlot().getStack();

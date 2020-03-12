@@ -15,7 +15,6 @@ import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.transmitters.IBlockableConnection;
 import mekanism.api.transmitters.IGridTransmitter;
 import mekanism.common.base.ILogisticalTransporter;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.basic.DefaultAlloyInteraction;
 import mekanism.common.capabilities.basic.DefaultBlockableConnection;
 import mekanism.common.capabilities.basic.DefaultCableOutputter;
@@ -31,7 +30,6 @@ import mekanism.common.capabilities.basic.DefaultLogisticalTransporter;
 import mekanism.common.capabilities.basic.DefaultSpecialConfigData;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyAcceptor;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyStorage;
-import mekanism.common.capabilities.basic.DefaultTileNetwork;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
@@ -83,9 +81,6 @@ public class Capabilities {
     @CapabilityInject(ILaserReceptor.class)
     public static Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY = null;
 
-    @CapabilityInject(ITileNetwork.class)
-    public static Capability<ITileNetwork> TILE_NETWORK_CAPABILITY = null;
-
     @CapabilityInject(ILogisticalTransporter.class)
     public static Capability<ILogisticalTransporter> LOGISTICAL_TRANSPORTER_CAPABILITY = null;
 
@@ -102,7 +97,6 @@ public class Capabilities {
         DefaultInfusionHandler.register();
 
         DefaultConfigurable.register();
-        DefaultTileNetwork.register();
         DefaultAlloyInteraction.register();
         DefaultHeatTransfer.register();
         DefaultConfigCardAccess.register();

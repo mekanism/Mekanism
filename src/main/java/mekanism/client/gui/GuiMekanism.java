@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IHoverable;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -134,11 +133,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
     }
 
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-    }
-
     private void addSlots() {
-        for (Slot slot : container.inventorySlots) {
+        int size = container.inventorySlots.size();
+        for (int i = 0; i < size; i++) {
+            Slot slot = container.inventorySlots.get(i);
             if (slot instanceof InventoryContainerSlot) {
                 InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
                 ContainerSlotType slotType = containerSlot.getSlotType();
@@ -152,7 +150,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                     type = SlotType.POWER;
                 } else if (slotType == ContainerSlotType.EXTRA) {
                     type = SlotType.EXTRA;
-                } else if (slotType == ContainerSlotType.NORMAL) {
+                } else if (slotType == ContainerSlotType.NORMAL || slotType == ContainerSlotType.VALIDITY) {
                     type = SlotType.NORMAL;
                 } else {//slotType == ContainerSlotType.IGNORED: don't do anything
                     continue;
@@ -162,11 +160,19 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
                 if (slotOverlay != null) {
                     guiSlot.with(slotOverlay);
                 }
+                if (slotType == ContainerSlotType.VALIDITY) {
+                    int index = i;
+                    guiSlot.validity(() -> checkValidity(index));
+                }
                 addButton(guiSlot);
             } else {
                 addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
             }
         }
+    }
+
+    protected ItemStack checkValidity(int slotIndex) {
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -179,9 +185,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
             return;
         }
         GuiUtils.renderExtendedTexture(BASE_BACKGROUND, 4, 4, getGuiLeft(), getGuiTop(), getXSize(), getYSize());
-        int xAxis = mouseX - getGuiLeft();
-        int yAxis = mouseY - getGuiTop();
-        drawGuiContainerBackgroundLayer(xAxis, yAxis);
     }
 
     @Override
@@ -194,13 +197,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends Container
         this.renderBackground();
         super.render(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
-    }
-
-    protected void drawColorIcon(int x, int y, EnumColor color, float alpha) {
-        if (color != null) {
-            fill(x, y, x + 16, y + 16, MekanismRenderer.getColorARGB(color, alpha));
-            MekanismRenderer.resetColor();
-        }
     }
 
     @Override

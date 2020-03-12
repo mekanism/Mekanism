@@ -94,11 +94,6 @@ public class FusionReactor {
         return false;
     }
 
-    public void simulateClient() {
-        lastPlasmaTemperature = plasmaTemperature;
-        lastCaseTemperature = caseTemperature;
-    }
-
     public void simulateServer() {
         updatedThisTick = false;
 
@@ -231,12 +226,20 @@ public class FusionReactor {
         return lastPlasmaTemperature;
     }
 
+    public void setLastPlasmaTemp(double temp) {
+        lastPlasmaTemperature = temp;
+    }
+
     public void setPlasmaTemp(double temp) {
         plasmaTemperature = temp;
     }
 
     public double getCaseTemp() {
         return lastCaseTemperature;
+    }
+
+    public void setLastCaseTemp(double temp) {
+        lastCaseTemperature = temp;
     }
 
     public void setCaseTemp(double temp) {

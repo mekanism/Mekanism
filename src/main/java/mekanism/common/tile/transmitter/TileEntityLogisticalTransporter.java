@@ -206,11 +206,6 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
         }
     }
 
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        return data;
-    }
-
     public TileNetworkList makeSyncPacket(int stackId, TransporterStack stack) {
         TileNetworkList data = new TileNetworkList();
         data.add(SYNC_PACKET);
@@ -360,9 +355,7 @@ public class TileEntityLogisticalTransporter extends TileEntityTransmitter<TileE
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return Capabilities.TILE_NETWORK_CAPABILITY.orEmpty(capability, LazyOptional.of(() -> this));
-        } else if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
+        if (capability == Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY) {
             return Capabilities.LOGISTICAL_TRANSPORTER_CAPABILITY.orEmpty(capability, LazyOptional.of(this::getTransmitter));
         }
         return super.getCapability(capability, side);

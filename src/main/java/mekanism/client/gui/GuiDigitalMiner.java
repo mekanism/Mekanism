@@ -10,6 +10,8 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
+import mekanism.client.gui.element.slot.GuiSlot;
+import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.gui.element.tab.GuiVisualsTab;
@@ -50,6 +52,9 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile, 163, 25, 50));
         addButton(new GuiVisualsTab(this, tile));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 143, 26).validity(() -> tile.missingStack)
+              .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
+              .hover(getOnHover(() -> tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL.translate() : MekanismLang.MINER_MISSING_BLOCK.translate())));
         addButton(new GuiEnergyInfo(() -> {
             double perTick = tile.getEnergyPerTick();
             ArrayList<ITextComponent> ret = new ArrayList<>(4);
@@ -110,27 +115,6 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         drawString(MekanismLang.MINER_SILK_ENABLED.translate(OnOff.of(tile.silkTouch)), 9, 48, 0x00CD00);
         drawString(MekanismLang.MINER_TO_MINE.translate(), 9, 59, 0x00CD00);
         drawString(TextComponentUtil.build(tile.cachedToMine), 9, 68, 0x00CD00);
-
-        if (tile.missingStack.isEmpty()) {
-            //TODO: Gui element
-            minecraft.getTextureManager().bindTexture(SlotOverlay.CHECK.getTexture());
-            blit(143, 26, 0, 0, SlotOverlay.CHECK.getWidth(), SlotOverlay.CHECK.getHeight(), SlotOverlay.CHECK.getWidth(), SlotOverlay.CHECK.getHeight());
-        } else {
-            drawColorIcon(144, 27, EnumColor.DARK_RED, 0.8F);
-            renderItem(tile.missingStack, 144, 27);
-        }
-
-        int xAxis = mouseX - getGuiLeft();
-        int yAxis = mouseY - getGuiTop();
-        if (xAxis >= 164 && xAxis <= 168 && yAxis >= 25 && yAxis <= 77) {
-            displayTooltip(EnergyDisplay.of(tile.getEnergy(), tile.getMaxEnergy()).getTextComponent(), xAxis, yAxis);
-        } else if (xAxis >= 144 && xAxis <= 160 && yAxis >= 27 && yAxis <= 43) {
-            if (!tile.missingStack.isEmpty()) {
-                displayTooltip(MekanismLang.MINER_MISSING_BLOCK.translate(), xAxis, yAxis);
-            } else {
-                displayTooltip(MekanismLang.MINER_WELL.translate(), xAxis, yAxis);
-            }
-        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 }

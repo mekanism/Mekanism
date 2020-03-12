@@ -24,14 +24,8 @@ public interface ITileNetwork {
      *
      * @return ArrayList of network data
      */
-    TileNetworkList getNetworkedData(TileNetworkList data);
-
-    /**
-     * Gets an ArrayList of data this tile entity keeps synchronized with the client.
-     *
-     * @return ArrayList of network data
-     */
-    default TileNetworkList getNetworkedData() {
-        return getNetworkedData(new TileNetworkList());
+    @Deprecated
+    default TileNetworkList getNetworkedData(TileNetworkList data) {
+        return data;
     }
 }

@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 
 public class FormulaicCraftingSlot extends BasicInventorySlot {
 
@@ -15,5 +16,6 @@ public class FormulaicCraftingSlot extends BasicInventorySlot {
 
     private FormulaicCraftingSlot(BooleanSupplier autoModeSupplier, @Nullable IMekanismInventory inventory, int x, int y) {
         super(alwaysTrueBi, (stack, automationType) -> automationType == AutomationType.INTERNAL || !autoModeSupplier.getAsBoolean(), alwaysTrue, inventory, x, y);
+        setSlotType(ContainerSlotType.VALIDITY);
     }
 }

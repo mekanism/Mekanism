@@ -3,7 +3,6 @@ package mekanism.client.gui;
 import mekanism.client.gui.element.scroll.GuiTextScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.TagCache;
@@ -40,17 +39,6 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
         drawString(MekanismLang.INVENTORY.translate(), 8, getYSize() - 96 + 2, 0x404040);
         renderItem(itemType, 6, 6);
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (xAxis >= 6 && xAxis <= 22 && yAxis >= 6 && yAxis <= 22) {
-            int x = getGuiLeft() + 6;
-            int y = getGuiTop() + 6;
-            fill(x, y, x + 16, y + 16, 0x80FFFFFF);
-            MekanismRenderer.resetColor();
-        }
     }
 
     @Override

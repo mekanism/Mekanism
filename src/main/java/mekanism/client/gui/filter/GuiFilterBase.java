@@ -68,12 +68,9 @@ public abstract class GuiFilterBase<FILTER extends IFilter<FILTER>, TILE extends
         }
     }
 
-    protected boolean overReplaceOutput(double xAxis, double yAxis) {
-        return xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35;
-    }
-
     protected void minerFilterClickCommon(double xAxis, double yAxis, MinerFilter<?> filter) {
-        if (overReplaceOutput(xAxis, yAxis)) {
+        //Over replace output
+        if (xAxis >= 149 && xAxis <= 165 && yAxis >= 19 && yAxis <= 35) {
             boolean doNull = false;
             ItemStack stack = minecraft.player.inventory.getItemStack();
             ItemStack toUse = ItemStack.EMPTY;

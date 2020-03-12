@@ -33,7 +33,7 @@ public class GuiMTagFilter extends GuiTagFilter<MTagFilter, TileEntityDigitalMin
         addButton(new GuiInnerScreen(this, 33, 18, 111, 43));
         addButton(new GuiInnerScreen(this, 130, 46, 14, 14));
         addButton(new GuiSlot(SlotType.NORMAL, this, 11, 18));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 148, 18));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 148, 18).setRenderHover(true));
         addButton(saveButton = new TranslationButton(this, getGuiLeft() + 27, getGuiTop() + 62, 60, 20, MekanismLang.BUTTON_SAVE, () -> {
             if (!text.getText().isEmpty()) {
                 setText();

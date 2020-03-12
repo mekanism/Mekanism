@@ -8,7 +8,6 @@ import mekanism.api.energy.IStrictEnergyAcceptor;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.IUpgradeTile;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import net.minecraft.nbt.CompoundNBT;
@@ -107,9 +106,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == Capabilities.TILE_NETWORK_CAPABILITY) {
-            return super.getCapability(capability, side);
-        }
         IAdvancedBoundingBlock inv = getInv();
         if (inv == null) {
             return super.getCapability(capability, side);

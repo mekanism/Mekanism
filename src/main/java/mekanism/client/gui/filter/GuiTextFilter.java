@@ -3,7 +3,6 @@ package mekanism.client.gui.filter;
 import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.button.MekanismButton;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
@@ -62,16 +61,6 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         } else if (iterStacks != null && iterStacks.isEmpty()) {
             renderStack = ItemStack.EMPTY;
         }
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(int xAxis, int yAxis) {
-        super.drawGuiContainerBackgroundLayer(xAxis, yAxis);
-        if (tile instanceof TileEntityDigitalMiner && overReplaceOutput(xAxis, yAxis)) {
-            fill(getGuiLeft() + 149, getGuiTop() + 19, getGuiLeft() + 165, getGuiTop() + 35, 0x80FFFFFF);
-        }
-        //This is needed here and not just inside the if statements due to the text box drawing
-        MekanismRenderer.resetColor();
     }
 
     @Override

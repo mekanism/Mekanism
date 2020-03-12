@@ -10,7 +10,6 @@ import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
@@ -23,13 +22,13 @@ import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
+import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FormulaInventorySlot;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.item.ItemCraftingFormula;
-import mekanism.common.network.PacketTileEntity;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -231,7 +230,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     private void checkFormula() {
-        RecipeFormula prev = formula;
         ItemStack formulaStack = formulaSlot.getStack();
         if (!formulaStack.isEmpty() && formulaStack.getItem() instanceof ItemCraftingFormula) {
             if (formula == null || lastFormulaStack != formulaStack) {
@@ -239,10 +237,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             }
         } else {
             formula = null;
-        }
-        if (prev != formula) {
-            //TODO: Make the container handle updating this when needed
-            sendToAllUsing(() -> new PacketTileEntity(this));
         }
         lastFormulaStack = formulaStack;
     }
@@ -259,10 +253,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             formula = null;
         } else {
             RecipeFormula recipe = new RecipeFormula(world, formulaInventory);
-            if (recipe.isValidFormula(world)) {
+            if (recipe.isValidFormula()) {
                 if (formula == null) {
                     formula = recipe;
-                } else if (!formula.isFormulaEqual(world, recipe)) {
+                } else if (!formula.isFormulaEqual(recipe)) {
                     formula = recipe;
                     operatingTicks = 0;
                 }
@@ -281,7 +275,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private void recalculateRecipe() {
         if (world != null && !isRemote()) {
-            if (formula == null) {
+            if (formula == null || !formula.isValidFormula()) {
                 //Should always be 9 for the size
                 for (int i = 0; i < craftingGridSlots.size(); i++) {
                     dummyInv.setInventorySlotContents(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
@@ -511,7 +505,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
                 ItemCraftingFormula item = (ItemCraftingFormula) formulaStack.getItem();
                 if (item.getInventory(formulaStack) == null) {
                     RecipeFormula formula = new RecipeFormula(world, craftingGridSlots);
-                    if (formula.isValidFormula(world)) {
+                    if (formula.isValidFormula()) {
                         item.setInventory(formulaStack, formula.input);
                         markDirty();
                     }
@@ -561,36 +555,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             } else if (type == 5) {
                 toggleStockControl();
             }
-            return;
         }
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
-            if (dataStream.readBoolean()) {
-                NonNullList<ItemStack> inv = NonNullList.withSize(9, ItemStack.EMPTY);
-                for (int i = 0; i < 9; i++) {
-                    inv.set(i, dataStream.readItemStack());
-                }
-                formula = new RecipeFormula(getWorld(), inv);
-            } else {
-                formula = null;
-            }
-        }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
-        //TODO: Make it so that the formula can be synced via the container sync system
-        // The easiest way to do this would be to make it so that the "formula" is mutable and never null
-        if (formula == null) {
-            data.add(false);
-        } else {
-            data.add(true);
-            for (int i = 0; i < 9; i++) {
-                data.add(formula.input.get(i));
-            }
-        }
-        return data;
     }
 
     @Override
@@ -642,5 +607,29 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         container.track(SyncableInt.create(() -> operatingTicks, value -> operatingTicks = value));
         container.track(SyncableBoolean.create(() -> isRecipe, value -> isRecipe = value));
         container.track(SyncableBoolean.create(() -> stockControl, value -> stockControl = value));
+        container.track(SyncableBoolean.create(() -> formula != null, hasFormula -> {
+            if (hasFormula) {
+                if (formula == null && isRemote()) {
+                    //If we are on the client (which we should be when setting anyways) and we don't have a formula yet
+                    // but should, then create an empty formula
+                    formula = new RecipeFormula(getWorld(), NonNullList.withSize(9, ItemStack.EMPTY));
+                }
+            } else {
+                formula = null;
+            }
+        }));
+        for (int i = 0; i < 9; i++) {
+            int index = i;
+            container.track(SyncableItemStack.create(() -> formula == null ? ItemStack.EMPTY : formula.input.get(index), stack -> {
+                if (!stack.isEmpty() && formula == null && isRemote()) {
+                    //If we are on the client (which we should be when setting anyways) and we don't have a formula yet
+                    // but should, then create an empty formula. Also make sure it isn't just us trying to clear the formula slot
+                    formula = new RecipeFormula(getWorld(), NonNullList.withSize(9, ItemStack.EMPTY));
+                }
+                if (formula != null) {
+                    formula.setStack(getWorld(), index, stack);
+                }
+            }));
+        }
     }
 }

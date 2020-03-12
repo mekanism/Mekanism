@@ -6,8 +6,6 @@ import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ITileNetwork;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -22,10 +20,6 @@ public class PacketTileEntity {
     private TileNetworkList parameters;
     private PacketBuffer storedBuffer;
     private Coord4D coord4D;
-
-    public <TILE extends TileEntity & ITileNetwork> PacketTileEntity(TILE tile) {
-        this(Coord4D.get(tile), tile.getNetworkedData());
-    }
 
     public PacketTileEntity(TileEntity tile, TileNetworkList params) {
         this(Coord4D.get(tile), params);
@@ -47,13 +41,13 @@ public class PacketTileEntity {
         }
         context.get().enqueueWork(() -> {
             TileEntity tile = MekanismUtils.getTileEntity(player.world, message.coord4D.getPos());
-            CapabilityUtils.getCapability(tile, Capabilities.TILE_NETWORK_CAPABILITY, null).ifPresent(network -> {
+            if (tile instanceof ITileNetwork) {
                 try {
-                    network.handlePacketData(message.storedBuffer);
+                    ((ITileNetwork) tile).handlePacketData(message.storedBuffer);
                 } catch (Exception e) {
                     Mekanism.logger.error("FIXME: Packet handling error", e);
                 }
-            });
+            };
             message.storedBuffer.release();
         });
         context.get().setPacketHandled(true);

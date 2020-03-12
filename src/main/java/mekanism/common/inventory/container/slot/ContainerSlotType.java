@@ -7,5 +7,6 @@ public enum ContainerSlotType {
     POWER,
     INPUT,
     EXTRA,
-    OUTPUT;
+    OUTPUT,
+    VALIDITY;
 }
