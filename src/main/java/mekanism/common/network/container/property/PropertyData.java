@@ -62,6 +62,8 @@ public abstract class PropertyData {
                 return new GasStackPropertyData(property, ChemicalUtils.readGasStack(buffer));
             case INFUSION_STACK:
                 return new InfusionStackPropertyData(property, ChemicalUtils.readInfusionStack(buffer));
+            case FREQUENCY:
+                return FrequencyPropertyData.readFrequency(property, buffer);
             case LIST:
                 return ListPropertyData.readList(property, buffer);
             default:

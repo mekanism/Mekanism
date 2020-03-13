@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -14,7 +15,6 @@ import mekanism.api.Coord4D;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -33,7 +33,12 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.frequency.IFrequencyHandler;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.sync.SyncableDouble;
+import mekanism.common.inventory.container.sync.SyncableFrequency;
+import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -203,7 +208,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
         if (freq.isPublic()) {
             return Mekanism.publicEntangloporters;
         } else if (!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwnerUUID())) {
-            FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwnerUUID());
+            FrequencyManager manager = new FrequencyManager(FrequencyType.INVENTORY, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwnerUUID());
             Mekanism.privateEntangloporters.put(getSecurity().getOwnerUUID(), manager);
             if (!isRemote()) {
                 manager.createOrLoad();
@@ -270,59 +275,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
                     manager.remove(freq, getSecurity().getOwnerUUID());
                 }
             }
-        } else {
-            //TODO: Move to new system
-            if (dataStream.readBoolean()) {
-                frequency = new InventoryFrequency(dataStream);
-            } else {
-                frequency = null;
-            }
-
-            lastTransferLoss = dataStream.readDouble();
-            lastEnvironmentLoss = dataStream.readDouble();
-
-            publicCache.clear();
-            privateCache.clear();
-
-            int amount = dataStream.readInt();
-            for (int i = 0; i < amount; i++) {
-                publicCache.add(new InventoryFrequency(dataStream));
-            }
-            amount = dataStream.readInt();
-            for (int i = 0; i < amount; i++) {
-                privateCache.add(new InventoryFrequency(dataStream));
-            }
         }
-    }
-
-    @Override
-    public TileNetworkList getNetworkedData(TileNetworkList data) {
-        if (frequency != null) {
-            data.add(true);
-            frequency.write(data);
-        } else {
-            data.add(false);
-        }
-
-        data.add(lastTransferLoss);
-        data.add(lastEnvironmentLoss);
-
-        //TODO: We may want to eventually make a syncable list type thing for containers
-        data.add(Mekanism.publicEntangloporters.getFrequencies().size());
-        for (Frequency freq : Mekanism.publicEntangloporters.getFrequencies()) {
-            freq.write(data);
-        }
-
-        FrequencyManager manager = getManager(new InventoryFrequency(null, null).setPublic(false));
-        if (manager == null) {
-            data.add(0);
-        } else {
-            data.add(manager.getFrequencies().size());
-            for (Frequency freq : manager.getFrequencies()) {
-                freq.write(data);
-            }
-        }
-        return data;
     }
 
     @Override
@@ -345,12 +298,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public double getMaxOutput() {
-        return !hasFrequency() ? 0 : MekanismConfig.general.quantumEntangloporterEnergyTransfer.get();
+        return hasFrequency() ? MekanismConfig.general.quantumEntangloporterEnergyTransfer.get() : 0;
     }
 
     @Override
     public double getEnergy() {
-        return !hasFrequency() ? 0 : frequency.storedEnergy;
+        return hasFrequency() ? frequency.storedEnergy : 0;
     }
 
     @Override
@@ -362,7 +315,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public double getMaxEnergy() {
-        return !hasFrequency() ? 0 : MekanismConfig.general.quantumEntangloporterEnergyTransfer.get();
+        return hasFrequency() ? MekanismConfig.general.quantumEntangloporterEnergyTransfer.get() : 0;
     }
 
     @Override
@@ -538,5 +491,41 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     public double getLastEnvironmentLoss() {
         return lastEnvironmentLoss;
+    }
+
+    private List<Frequency> getPublicFrequencies() {
+        return isRemote() ? publicCache : Mekanism.publicEntangloporters.getFrequencies();
+    }
+
+    private List<Frequency> getPrivateFrequencies() {
+        if (isRemote()) {
+            return privateCache;
+        }
+        //Note: This is a cleaned up version of getting the manager via getManager, given we only want
+        // to get private frequencies here, and there is no reason to be creating a dummy frequency just to get
+        // past the checks for public frequencies
+        UUID ownerUUID = getSecurity().getOwnerUUID();
+        if (ownerUUID == null) {
+            return Collections.emptyList();
+        }
+        if (Mekanism.privateEntangloporters.containsKey(ownerUUID)) {
+            return Mekanism.privateEntangloporters.get(ownerUUID).getFrequencies();
+        }
+        FrequencyManager manager = new FrequencyManager(FrequencyType.INVENTORY, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwnerUUID());
+        Mekanism.privateEntangloporters.put(getSecurity().getOwnerUUID(), manager);
+        if (!isRemote()) {
+            manager.createOrLoad();
+        }
+        return manager.getFrequencies();
+    }
+
+    @Override
+    public void addContainerTrackers(MekanismContainer container) {
+        super.addContainerTrackers(container);
+        container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
+        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableFrequency.create(() -> frequency, value -> frequency = value));
+        container.track(SyncableFrequencyList.create(this::getPublicFrequencies, value -> publicCache = value));
+        container.track(SyncableFrequencyList.create(this::getPrivateFrequencies, value -> privateCache = value));
     }
 }

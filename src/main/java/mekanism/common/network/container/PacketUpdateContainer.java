@@ -32,7 +32,7 @@ public abstract class PacketUpdateContainer<PACKET extends PacketUpdateContainer
 
     protected abstract void handle(MekanismContainer container, PACKET packet);
 
-    public static <PACKET extends PacketUpdateContainer<PACKET>> void handle(PACKET message, Supplier<Context> context) {
+    public static void handle(PacketUpdateContainer message, Supplier<Context> context) {
         Context ctx = context.get();
         ctx.enqueueWork(() -> {
             PlayerEntity player = Mekanism.proxy.getPlayer(context);
@@ -45,7 +45,7 @@ public abstract class PacketUpdateContainer<PACKET extends PacketUpdateContainer
         ctx.setPacketHandled(true);
     }
 
-    public static <PACKET extends PacketUpdateContainer<PACKET>> void encode(PACKET pkt, PacketBuffer buffer) {
+    public static void encode(PacketUpdateContainer<?> pkt, PacketBuffer buffer) {
         pkt.encode(buffer);
     }
 }

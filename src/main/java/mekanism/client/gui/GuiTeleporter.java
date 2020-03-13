@@ -118,13 +118,13 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     public ITextComponent getSecurity(Frequency freq) {
-        if (!freq.publicFreq) {
-            return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
+        if (freq.publicFreq) {
+            return MekanismLang.PUBLIC.translate();
         }
-        return MekanismLang.PUBLIC.translate();
+        return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
     }
 
-    public void updateButtons() {
+    private void updateButtons() {
         if (getOwner() == null) {
             return;
         }

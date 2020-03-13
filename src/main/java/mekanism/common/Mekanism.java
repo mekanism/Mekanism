@@ -30,6 +30,7 @@ import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.multiblock.MultiblockManager;
 import mekanism.common.network.PacketTransmitterUpdate;
@@ -132,11 +133,11 @@ public class Mekanism {
     /**
      * FrequencyManagers for various networks
      */
-    public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, Frequency.TELEPORTER);
+    public static FrequencyManager publicTeleporters = new FrequencyManager(FrequencyType.BASE, Frequency.TELEPORTER);
     public static Map<UUID, FrequencyManager> privateTeleporters = new Object2ObjectOpenHashMap<>();
-    public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER);
+    public static FrequencyManager publicEntangloporters = new FrequencyManager(FrequencyType.INVENTORY, InventoryFrequency.ENTANGLOPORTER);
     public static Map<UUID, FrequencyManager> privateEntangloporters = new Object2ObjectOpenHashMap<>();
-    public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, SecurityFrequency.SECURITY);
+    public static FrequencyManager securityFrequencies = new FrequencyManager(FrequencyType.SECURITY, SecurityFrequency.SECURITY);
     /**
      * Mekanism creative tab
      */

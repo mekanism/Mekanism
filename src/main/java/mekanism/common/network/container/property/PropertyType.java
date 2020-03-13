@@ -12,5 +12,6 @@ public enum PropertyType {
     FLUID_STACK,
     GAS_STACK,
     INFUSION_STACK,
+    FREQUENCY,
     LIST
 }

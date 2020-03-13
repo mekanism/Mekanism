@@ -23,6 +23,6 @@ public class SyncableFilterList<FILTER extends IFilter<?>> extends SyncableList<
 
     @Override
     public ListPropertyData<FILTER> getPropertyData(short property, DirtyType dirtyType) {
-        return new FilterListPropertyData(property, get());
+        return new FilterListPropertyData<>(property, get());
     }
 }

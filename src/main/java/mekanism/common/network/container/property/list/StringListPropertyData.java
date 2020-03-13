@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.PacketHandler;
-import mekanism.common.network.container.PacketUpdateContainer;
 import mekanism.common.network.container.list.ListType;
 import mekanism.common.network.container.list.PacketUpdateContainerStringList;
 import net.minecraft.network.PacketBuffer;
@@ -32,7 +31,7 @@ public class StringListPropertyData extends ListPropertyData<String> {
     }
 
     @Override
-    public PacketUpdateContainer<?> getSinglePacket(short windowId) {
+    public PacketUpdateContainerStringList getSinglePacket(short windowId) {
         return new PacketUpdateContainerStringList(windowId, getProperty(), values);
     }
 }

@@ -6,7 +6,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.BasicGasTank;
@@ -20,6 +19,7 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.inventory.slot.EntangloporterInventorySlot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -40,16 +40,16 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     public List<IExtendedFluidTank> fluidTanks;
 
     public InventoryFrequency(String n, UUID uuid) {
-        super(n, uuid);
+        super(FrequencyType.INVENTORY, n, uuid);
         presetVariables();
     }
 
     public InventoryFrequency(CompoundNBT nbtTags, boolean fromUpdate) {
-        super(nbtTags, fromUpdate);
+        super(FrequencyType.INVENTORY, nbtTags, fromUpdate);
     }
 
     public InventoryFrequency(PacketBuffer dataStream) {
-        super(dataStream);
+        super(FrequencyType.INVENTORY, dataStream);
     }
 
     private void presetVariables() {
@@ -83,13 +83,13 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    public void write(TileNetworkList data) {
-        super.write(data);
-        data.add(storedEnergy);
-        data.add(storedFluid.getFluid());
-        data.add(storedGas.getStack());
-        data.add(storedItem.serializeNBT());
-        data.add(temperature);
+    public void write(PacketBuffer buffer) {
+        super.write(buffer);
+        buffer.writeDouble(storedEnergy);
+        buffer.writeFluidStack(storedFluid.getFluid());
+        ChemicalUtils.writeChemicalStack(buffer, storedGas.getStack());
+        buffer.writeCompoundTag(storedItem.serializeNBT());
+        buffer.writeDouble(temperature);
     }
 
     @Override

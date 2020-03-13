@@ -8,13 +8,18 @@ import javax.annotation.Nonnull;
 
 public class HashList<T> extends AbstractList<T> {
 
-    private List<T> list = new ArrayList<>(256);
+    private List<T> list;
 
     public HashList(List<T> newList) {
         list = newList;
     }
 
     public HashList() {
+        this(256);
+    }
+
+    public HashList(int initialCapacity) {
+        list = new ArrayList<>(initialCapacity);
     }
 
     @Override

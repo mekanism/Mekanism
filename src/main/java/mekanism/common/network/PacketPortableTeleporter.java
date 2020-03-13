@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Coord4D;
-import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.frequency.Frequency;
 import mekanism.common.frequency.FrequencyManager;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.MekanismUtils;
@@ -173,17 +173,14 @@ public class PacketPortableTeleporter {
                 buf.writeBoolean(false);
             }
             buf.writeByte(pkt.status);
-
-            TileNetworkList data = new TileNetworkList();
-            data.add(pkt.publicCache.size());
+            buf.writeInt(pkt.publicCache.size());
             for (Frequency freq : pkt.publicCache) {
-                freq.write(data);
+                freq.write(buf);
             }
-            data.add(pkt.privateCache.size());
+            buf.writeInt(pkt.privateCache.size());
             for (Frequency freq : pkt.privateCache) {
-                freq.write(data);
+                freq.write(buf);
             }
-            PacketHandler.encode(data.toArray(), buf);
         }
     }
 
@@ -206,45 +203,37 @@ public class PacketPortableTeleporter {
             status = buf.readByte();
             int amount = buf.readInt();
             for (int i = 0; i < amount; i++) {
-                publicCache.add(new Frequency(buf));
+                publicCache.add(Frequency.readFromPacket(buf));
             }
             amount = buf.readInt();
             for (int i = 0; i < amount; i++) {
-                privateCache.add(new Frequency(buf));
+                privateCache.add(Frequency.readFromPacket(buf));
             }
         }
         return new PacketPortableTeleporter(packetType, currentHand, frequency, status, publicCache, privateCache);
     }
 
-    public static void sendDataResponse(Frequency given, World world, PlayerEntity player, ItemPortableTeleporter item, ItemStack stack, Hand hand) {
-        List<Frequency> publicFreqs = new ArrayList<>(getManager(null, world).getFrequencies());
-        List<Frequency> privateFreqs = new ArrayList<>(getManager(player.getUniqueID(), world).getFrequencies());
+    private static void sendDataResponse(Frequency given, World world, PlayerEntity player, ItemPortableTeleporter item, ItemStack stack, Hand hand) {
+        List<Frequency> publicFreqs = getManager(null, world).getFrequencies();
+        List<Frequency> privateFreqs = getManager(player.getUniqueID(), world).getFrequencies();
         byte status = 3;
         if (given != null) {
-            FrequencyManager manager = given.isPublic() ? getManager(null, world) : getManager(player.getUniqueID(), world);
-            boolean found = false;
-            for (Frequency iterFreq : manager.getFrequencies()) {
+            List<Frequency> frequencies = given.isPublic() ? publicFreqs : privateFreqs;
+            for (Frequency iterFreq : frequencies) {
                 if (given.equals(iterFreq)) {
                     given = iterFreq;
-                    found = true;
+                    if (!given.activeCoords.isEmpty()) {
+                        Coord4D coords = given.getClosestCoords(new Coord4D(player));
+                        double energyNeeded = ItemPortableTeleporter.calculateEnergyCost(player, coords);
+                        if (energyNeeded > item.getEnergy(stack)) {
+                            status = 4;
+                        } else {
+                            status = 1;
+                        }
+                    }
                     break;
                 }
             }
-            if (!found) {
-                given = null;
-            }
-        }
-
-        if (given != null) {
-            if (!given.activeCoords.isEmpty()) {
-                Coord4D coords = given.getClosestCoords(new Coord4D(player));
-                double energyNeeded = ItemPortableTeleporter.calculateEnergyCost(player, coords);
-                if (energyNeeded > item.getEnergy(stack)) {
-                    status = 4;
-                } else {
-                    status = 1;
-                }
-            }//else status = 3 (already assigned to this value)
         }
         Mekanism.packetHandler.sendTo(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_RESPONSE, hand, given, status, publicFreqs, privateFreqs),
               (ServerPlayerEntity) player);
@@ -254,7 +243,7 @@ public class PacketPortableTeleporter {
         if (owner == null) {
             return Mekanism.publicTeleporters;
         } else if (!Mekanism.privateTeleporters.containsKey(owner)) {
-            FrequencyManager manager = new FrequencyManager(Frequency.class, Frequency.TELEPORTER, owner);
+            FrequencyManager manager = new FrequencyManager(FrequencyType.BASE, Frequency.TELEPORTER, owner);
             Mekanism.privateTeleporters.put(owner, manager);
             if (!world.isRemote()) {
                 manager.createOrLoad();

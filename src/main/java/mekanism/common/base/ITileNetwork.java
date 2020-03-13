@@ -1,6 +1,5 @@
 package mekanism.common.base;
 
-import mekanism.api.TileNetworkList;
 import net.minecraft.network.PacketBuffer;
 
 /**
@@ -16,16 +15,4 @@ public interface ITileNetwork {
      * @param dataStream Datastream to parse
      */
     void handlePacketData(PacketBuffer dataStream) throws Exception;
-
-    /**
-     * Gets an ArrayList of data this tile entity keeps synchronized with the client.
-     *
-     * @param data - list of data
-     *
-     * @return ArrayList of network data
-     */
-    @Deprecated
-    default TileNetworkList getNetworkedData(TileNetworkList data) {
-        return data;
-    }
 }

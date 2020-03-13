@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.container.list.ListType;
+import mekanism.common.network.container.list.PacketUpdateContainerList;
 import mekanism.common.network.container.property.PropertyData;
 import mekanism.common.network.container.property.PropertyType;
 import net.minecraft.network.PacketBuffer;
@@ -29,6 +30,8 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
                 return (ListPropertyData<TYPE>) StringListPropertyData.read(property, elements, buffer);
             case FILTER:
                 return (ListPropertyData<TYPE>) FilterListPropertyData.read(property, elements, buffer);
+            case FREQUENCY:
+                return (ListPropertyData<TYPE>) FrequencyListPropertyData.read(property, elements, buffer);
             default:
                 Mekanism.logger.error("Unrecognized list type received: {}", listType);
                 return null;
@@ -47,6 +50,9 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
         buffer.writeVarInt(values.size());
         writeListElements(buffer);
     }
+
+    @Override
+    public abstract PacketUpdateContainerList<?> getSinglePacket(short windowId);
 
     protected abstract void writeListElements(PacketBuffer buffer);
 }

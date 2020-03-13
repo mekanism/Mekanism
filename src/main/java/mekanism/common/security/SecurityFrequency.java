@@ -6,12 +6,14 @@ import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.HashList;
 import mekanism.common.frequency.Frequency;
+import mekanism.common.frequency.FrequencyType;
 import mekanism.common.security.ISecurityTile.SecurityMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public class SecurityFrequency extends Frequency {
@@ -26,14 +28,18 @@ public class SecurityFrequency extends Frequency {
     public SecurityMode securityMode;
 
     public SecurityFrequency(UUID uuid) {
-        super(SECURITY, uuid);
+        super(FrequencyType.SECURITY, SECURITY, uuid);
         trusted = new HashList<>();
         trustedCache = new ArrayList<>();
         securityMode = SecurityMode.PUBLIC;
     }
 
     public SecurityFrequency(CompoundNBT nbtTags, boolean fromUpdate) {
-        super(nbtTags, fromUpdate);
+        super(FrequencyType.SECURITY, nbtTags, fromUpdate);
+    }
+
+    public SecurityFrequency(PacketBuffer dataStream) {
+        super(FrequencyType.SECURITY, dataStream);
     }
 
     @Override

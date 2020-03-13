@@ -90,7 +90,6 @@ public final class NBTConstants {
 
     public static final String TRUSTED = "trusted";
     public static final String PUBLIC_FREQUENCY = "publicFreq";
-    public static final String FREQUENCY_CLASS = "frequencyClass";
     public static final String FREQUENCY_LIST = "freqList";
 
     public static final String STORED = "stored";

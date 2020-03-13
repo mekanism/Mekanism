@@ -44,6 +44,7 @@ import mekanism.common.network.container.PacketUpdateContainerByte;
 import mekanism.common.network.container.PacketUpdateContainerDouble;
 import mekanism.common.network.container.PacketUpdateContainerFloat;
 import mekanism.common.network.container.PacketUpdateContainerFluidStack;
+import mekanism.common.network.container.PacketUpdateContainerFrequency;
 import mekanism.common.network.container.PacketUpdateContainerGasStack;
 import mekanism.common.network.container.PacketUpdateContainerInfusionStack;
 import mekanism.common.network.container.PacketUpdateContainerInt;
@@ -51,7 +52,7 @@ import mekanism.common.network.container.PacketUpdateContainerItemStack;
 import mekanism.common.network.container.PacketUpdateContainerLong;
 import mekanism.common.network.container.PacketUpdateContainerShort;
 import mekanism.common.network.container.list.PacketUpdateContainerFilterList;
-import mekanism.common.network.container.list.PacketUpdateContainerList;
+import mekanism.common.network.container.list.PacketUpdateContainerFrequencyList;
 import mekanism.common.network.container.list.PacketUpdateContainerStringList;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -206,9 +207,11 @@ public class PacketHandler {
         registerUpdateContainer(PacketUpdateContainerFluidStack.class, PacketUpdateContainerFluidStack::decode);
         registerUpdateContainer(PacketUpdateContainerGasStack.class, PacketUpdateContainerGasStack::decode);
         registerUpdateContainer(PacketUpdateContainerInfusionStack.class, PacketUpdateContainerInfusionStack::decode);
+        registerUpdateContainer(PacketUpdateContainerFrequency.class, PacketUpdateContainerFrequency::decode);
         //List sync packets
-        registerUpdateContainerList(PacketUpdateContainerStringList.class, PacketUpdateContainerStringList::decode);
-        registerUpdateContainerList(PacketUpdateContainerFilterList.class, PacketUpdateContainerFilterList::decode);
+        registerUpdateContainer(PacketUpdateContainerStringList.class, PacketUpdateContainerStringList::decode);
+        registerUpdateContainer(PacketUpdateContainerFilterList.class, PacketUpdateContainerFilterList::decode);
+        registerUpdateContainer(PacketUpdateContainerFrequencyList.class, PacketUpdateContainerFrequencyList::decode);
         //Container sync packet that batches multiple changes into one packet
         registerServerToClient(PacketUpdateContainerBatch.class, PacketUpdateContainerBatch::encode, PacketUpdateContainerBatch::decode, PacketUpdateContainerBatch::handle);
     }
@@ -223,11 +226,7 @@ public class PacketHandler {
         registerMessage(type, encoder, decoder, consumer, Optional.of(NetworkDirection.PLAY_TO_SERVER));
     }
 
-    private <MSG extends PacketUpdateContainer<MSG>> void registerUpdateContainer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
-        registerServerToClient(type, PacketUpdateContainer::encode, decoder, PacketUpdateContainer::handle);
-    }
-
-    private <TYPE, MSG extends PacketUpdateContainerList<TYPE>> void registerUpdateContainerList(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+    private <MSG extends PacketUpdateContainer<?>> void registerUpdateContainer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
         registerServerToClient(type, PacketUpdateContainer::encode, decoder, PacketUpdateContainer::handle);
     }
 

@@ -6,8 +6,9 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
-import mekanism.api.TileNetworkList;
 import mekanism.common.PacketHandler;
+import mekanism.common.content.entangloporter.InventoryFrequency;
+import mekanism.common.security.SecurityFrequency;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -27,12 +28,25 @@ public class Frequency {
 
     public Set<Coord4D> activeCoords = new ObjectOpenHashSet<>();
 
-    public Frequency(String n, UUID uuid) {
-        name = n;
+    //TODO: Decide if we want to use the type in the hashcode and equals implementation
+    private final FrequencyType frequencyType;
+
+    public Frequency(String name, UUID uuid) {
+        this(FrequencyType.BASE, name, uuid);
+    }
+
+    public Frequency(FrequencyType frequencyType, String name, UUID uuid) {
+        this.frequencyType = frequencyType;
+        this.name = name;
         ownerUUID = uuid;
     }
 
     public Frequency(CompoundNBT nbtTags, boolean fromUpdate) {
+        this(FrequencyType.BASE, nbtTags, fromUpdate);
+    }
+
+    public Frequency(FrequencyType frequencyType, CompoundNBT nbtTags, boolean fromUpdate) {
+        this.frequencyType = frequencyType;
         if (fromUpdate) {
             readFromUpdateTag(nbtTags);
         } else {
@@ -40,8 +54,13 @@ public class Frequency {
         }
     }
 
-    public Frequency(PacketBuffer dataStream) {
+    protected Frequency(FrequencyType frequencyType, PacketBuffer dataStream) {
+        this.frequencyType = frequencyType;
         read(dataStream);
+    }
+
+    public FrequencyType getFrequencyType() {
+        return frequencyType;
     }
 
     public boolean isPublic() {
@@ -99,11 +118,12 @@ public class Frequency {
         readFromUpdateTag(nbtTags);
     }
 
-    public void write(TileNetworkList data) {
-        data.add(name);
-        data.add(ownerUUID);
-        data.add(MekanismUtils.getLastKnownUsername(ownerUUID));
-        data.add(publicFreq);
+    public void write(PacketBuffer buffer) {
+        buffer.writeEnumValue(getFrequencyType());
+        buffer.writeString(name);
+        buffer.writeUniqueId(ownerUUID);
+        buffer.writeString(MekanismUtils.getLastKnownUsername(ownerUUID));
+        buffer.writeBoolean(publicFreq);
     }
 
     protected void read(PacketBuffer dataStream) {
@@ -129,6 +149,22 @@ public class Frequency {
 
     public Identity getIdentity() {
         return new Identity(name, publicFreq);
+    }
+
+    /**
+     * If type is unrecognized falls back to default frequency type
+     */
+    public static Frequency readFromPacket(PacketBuffer dataStream) {
+        FrequencyType type = dataStream.readEnumValue(FrequencyType.class);
+        switch (type) {
+            case INVENTORY:
+                return new InventoryFrequency(dataStream);
+            case SECURITY:
+                return new SecurityFrequency(dataStream);
+            case BASE:
+            default:
+                return new Frequency(type, dataStream);
+        }
     }
 
     public static class Identity {
