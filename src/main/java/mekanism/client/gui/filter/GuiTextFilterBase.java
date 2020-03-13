@@ -1,10 +1,12 @@
 package mekanism.client.gui.filter;
 
+import javax.annotation.Nonnull;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.TransporterFilter;
 import mekanism.common.inventory.container.tile.filter.FilterContainer;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -34,7 +36,14 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter<FILTER>, TILE ext
         super.init();
         addButton(text = createTextField());
         text.setMaxStringLength(TransporterFilter.MAX_LENGTH);
-        text.setFocused2(true);
+        text.changeFocus(true);
+    }
+
+    @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String s = text.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        text.setText(s);
     }
 
     @Override
@@ -45,13 +54,12 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter<FILTER>, TILE ext
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (text.isFocused()) {
+        if (text.canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape making the field lose focus
                 text.setFocused2(false);
                 return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
                 setText();
                 return true;
             }
@@ -62,7 +70,7 @@ public abstract class GuiTextFilterBase<FILTER extends IFilter<FILTER>, TILE ext
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        if (text.isFocused()) {
+        if (text.canWrite()) {
             if (wasTextboxKey(c, keyCode)) {
                 //Only allow a subset of characters to be entered into the frequency text box
                 return text.charTyped(c, keyCode);

@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.ClientTickHandler;
 import mekanism.client.MekanismClient;
@@ -25,6 +26,7 @@ import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacket
 import mekanism.common.security.IOwnerItem;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -115,9 +117,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }));
         addButton(teleportButton = new TranslationButton(this, getGuiLeft() + 42, getGuiTop() + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             if (clientFreq != null && clientStatus == 1) {
-                //TODO: Set focus
-                //minecraft.getMainWindow().setIngameFocus();
                 ClientTickHandler.portableTeleport(player, currentHand, clientFreq);
+                minecraft.player.closeScreen();
             }
             updateButtons();
         }));
@@ -135,6 +136,13 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         } else {
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporter(PortableTeleporterPacketType.DATA_REQUEST, currentHand, clientFreq));
         }
+    }
+
+    @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String s = frequencyField.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        frequencyField.setText(s);
     }
 
     public void setFrequency(Frequency newFrequency) {
@@ -210,13 +218,12 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (frequencyField.isFocused()) {
+        if (frequencyField.canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape making the field lose focus
                 frequencyField.setFocused2(false);
                 return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
                 setFrequency(frequencyField.getText());
                 frequencyField.setText("");
                 return true;
@@ -228,7 +235,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        if (frequencyField.isFocused()) {
+        if (frequencyField.canWrite()) {
             if (Character.isDigit(c) || Character.isLetter(c) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
                 //Only allow a subset of characters to be entered into the frequency text box
                 return frequencyField.charTyped(c, keyCode);

@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.Arrays;
 import java.util.Collections;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.GuiHeatInfo;
@@ -21,6 +22,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.EnergyDisplay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -60,6 +62,13 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     }
 
     @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String s = energyUsageField.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        energyUsageField.setText(s);
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         drawString(tile.getName(), (getXSize() / 2) - (getStringWidth(tile.getName()) / 2), 6, 0x404040);
         drawString(MekanismLang.INVENTORY.translate(), 8, (getYSize() - 94) + 2, 0x404040);
@@ -84,13 +93,12 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (energyUsageField.isFocused()) {
+        if (energyUsageField.canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape making the field lose focus
                 energyUsageField.setFocused2(false);
                 return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
                 setEnergyUsage();
                 return true;
             }
@@ -101,7 +109,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        if (energyUsageField.isFocused()) {
+        if (energyUsageField.canWrite()) {
             if (Character.isDigit(c)) {
                 //Only allow a subset of characters to be entered into the frequency text box
                 return energyUsageField.charTyped(c, keyCode);

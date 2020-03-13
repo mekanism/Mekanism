@@ -2,6 +2,7 @@ package mekanism.generators.client.gui;
 
 import java.util.Arrays;
 import java.util.Collections;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiEnergyInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -17,6 +18,7 @@ import mekanism.generators.client.gui.element.GuiReactorTab;
 import mekanism.generators.client.gui.element.GuiReactorTab.ReactorTab;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.tile.reactor.TileEntityReactorController;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -43,11 +45,16 @@ public class GuiReactorFuel extends GuiReactorInfo {
         addButton(new GuiProgress(() -> tile.isBurning() ? 1 : 0, ProgressType.SMALL_LEFT, this, 101, 76));
         addButton(new GuiReactorTab(this, tile, ReactorTab.HEAT));
         addButton(new GuiReactorTab(this, tile, ReactorTab.STAT));
-
-        String prevRad = injectionRateField != null ? injectionRateField.getText() : "";
         addButton(injectionRateField = new TextFieldWidget(font, getGuiLeft() + 98, getGuiTop() + 115, 26, 11, ""));
+        injectionRateField.changeFocus(true);
         injectionRateField.setMaxStringLength(2);
-        injectionRateField.setText(prevRad);
+    }
+
+    @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String s = injectionRateField.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        injectionRateField.setText(s);
     }
 
     @Override
@@ -67,13 +74,12 @@ public class GuiReactorFuel extends GuiReactorInfo {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (injectionRateField.isFocused()) {
+        if (injectionRateField.canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape making the field lose focus
                 injectionRateField.setFocused2(false);
                 return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
                 setInjection();
                 return true;
             }
@@ -84,7 +90,7 @@ public class GuiReactorFuel extends GuiReactorInfo {
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        if (injectionRateField.isFocused()) {
+        if (injectionRateField.canWrite()) {
             if (Character.isDigit(c)) {
                 //Only allow a subset of characters to be entered into the frequency text box
                 return injectionRateField.charTyped(c, keyCode);

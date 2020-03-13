@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -25,6 +26,7 @@ import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -108,6 +110,13 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
         updateButtons();
     }
 
+    @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String s = frequencyField.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        frequencyField.setText(s);
+    }
+
     public ITextComponent getSecurity(Frequency freq) {
         if (!freq.publicFreq) {
             return MekanismLang.PRIVATE.translateColored(EnumColor.DARK_RED);
@@ -164,13 +173,12 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (frequencyField.isFocused()) {
+        if (frequencyField.canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape making the field lose focus
                 frequencyField.setFocused2(false);
                 return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
                 setFrequency(frequencyField.getText());
                 frequencyField.setText("");
                 return true;
@@ -182,7 +190,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        if (frequencyField.isFocused()) {
+        if (frequencyField.canWrite()) {
             if (Character.isDigit(c) || Character.isLetter(c) || FrequencyManager.SPECIAL_CHARS.contains(c)) {
                 //Only allow a subset of characters to be entered into the frequency text box
                 return frequencyField.charTyped(c, keyCode);

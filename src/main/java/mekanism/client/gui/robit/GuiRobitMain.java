@@ -1,5 +1,6 @@
 package mekanism.client.gui.robit;
 
+import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiRobitScreen;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -18,6 +19,7 @@ import mekanism.common.network.PacketRobit;
 import mekanism.common.network.PacketRobit.RobitPacketType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextComponentUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -104,8 +106,15 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     }
 
     @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String s = nameChangeField.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        nameChangeField.setText(s);
+    }
+
+    @Override
     public boolean charTyped(char c, int keyCode) {
-        if (nameChangeField.visible && nameChangeField.isFocused()) {
+        if (nameChangeField.canWrite()) {
             return nameChangeField.charTyped(c, keyCode);
         }
         return super.charTyped(c, keyCode);
@@ -113,13 +122,12 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (nameChangeField.visible && nameChangeField.isFocused()) {
+        if (nameChangeField.canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape making the field lose focus
                 nameChangeField.setFocused2(false);
                 return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
                 changeName();
                 return true;
             }

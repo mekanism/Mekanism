@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiRedstoneControl;
@@ -13,6 +14,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.util.text.EnergyDisplay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
@@ -36,18 +38,23 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         addButton(new GuiSecurityTab<>(this, tile));
         addButton(new GuiRedstoneControl(this, tile));
         addButton(new GuiAmplifierTab(this, tile));
-
-        String prevTime = timerField != null ? timerField.getText() : "";
-        addButton(timerField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 28, 36, 11, prevTime));
+        addButton(timerField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 28, 36, 11, ""));
         timerField.setMaxStringLength(4);
-
-        String prevMin = minField != null ? minField.getText() : "";
-        addButton(minField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 43, 72, 11, prevMin));
+        addButton(minField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 43, 72, 11, ""));
         minField.setMaxStringLength(10);
-
-        String prevMax = maxField != null ? maxField.getText() : "";
-        addButton(maxField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 58, 72, 11, prevMax));
+        addButton(maxField = new TextFieldWidget(font, getGuiLeft() + 96, getGuiTop() + 58, 72, 11, ""));
         maxField.setMaxStringLength(10);
+    }
+
+    @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String prevTime = timerField.getText();
+        String prevMin = minField.getText();
+        String prevMax = maxField.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        timerField.setText(prevTime);
+        minField.setText(prevMin);
+        maxField.setText(prevMax);
     }
 
     @Override
@@ -80,13 +87,12 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
                 //Manually handle hitting escape making the field lose focus
                 focusedField.setFocused2(false);
                 return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                if (minField.isFocused()) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                if (minField.canWrite()) {
                     setMinThreshold();
-                } else if (maxField.isFocused()) {
+                } else if (maxField.canWrite()) {
                     setMaxThreshold();
-                } else if (timerField.isFocused()) {
+                } else if (timerField.canWrite()) {
                     setTime();
                 }
                 return true;
@@ -111,11 +117,11 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     @Nullable
     private TextFieldWidget getFocusedField() {
-        if (minField.isFocused()) {
+        if (minField.canWrite()) {
             return minField;
-        } else if (maxField.isFocused()) {
+        } else if (maxField.canWrite()) {
             return maxField;
-        } else if (timerField.isFocused()) {
+        } else if (timerField.canWrite()) {
             return timerField;
         }
         return null;

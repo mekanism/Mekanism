@@ -1,6 +1,7 @@
 package mekanism.client.gui;
 
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.TileNetworkList;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -22,6 +23,7 @@ import mekanism.common.network.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.network.PacketTileEntity;
 import mekanism.common.tile.TileEntityDigitalMiner;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -75,21 +77,22 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         addButton(new MekanismImageButton(this, getGuiLeft() + 39, getGuiTop() + 117, 11, 12, getButtonLocation("checkmark"), this::setMaxY));
         addButton(new MekanismImageButton(this, getGuiLeft() + 11, getGuiTop() + 141, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketTileEntity(tile, TileNetworkList.withContents(10))), getOnHover(MekanismLang.MINER_INVERSE)));
-
-        String prevRad = radiusField != null ? radiusField.getText() : "";
-        String prevMin = minField != null ? minField.getText() : "";
-        String prevMax = maxField != null ? maxField.getText() : "";
-
         addButton(radiusField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 67, 26, 11, ""));
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.digitalMinerMaxRadius.get()).length());
-        radiusField.setText(prevRad);
-
         addButton(minField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 92, 26, 11, ""));
         minField.setMaxStringLength(3);
-        minField.setText(prevMin);
-
         addButton(maxField = new TextFieldWidget(font, getGuiLeft() + 12, getGuiTop() + 117, 26, 11, ""));
         maxField.setMaxStringLength(3);
+    }
+
+    @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String prevRad = radiusField.getText();
+        String prevMin = minField.getText();
+        String prevMax = maxField.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        radiusField.setText(prevRad);
+        minField.setText(prevMin);
         maxField.setText(prevMax);
     }
 
@@ -126,13 +129,12 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                 //Manually handle hitting escape making the field lose focus
                 focusedField.setFocused2(false);
                 return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
-                if (radiusField.isFocused()) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
+                if (radiusField.canWrite()) {
                     setRadius();
-                } else if (minField.isFocused()) {
+                } else if (minField.canWrite()) {
                     setMinY();
-                } else if (maxField.isFocused()) {
+                } else if (maxField.canWrite()) {
                     setMaxY();
                 }
                 return true;
@@ -156,11 +158,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Nullable
     private TextFieldWidget getFocusedField() {
-        if (radiusField.isFocused()) {
+        if (radiusField.canWrite()) {
             return radiusField;
-        } else if (minField.isFocused()) {
+        } else if (minField.canWrite()) {
             return minField;
-        } else if (maxField.isFocused()) {
+        } else if (maxField.canWrite()) {
             return maxField;
         }
         return null;

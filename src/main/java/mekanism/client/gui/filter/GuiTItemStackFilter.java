@@ -21,6 +21,7 @@ import mekanism.common.network.PacketNewFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -108,6 +109,15 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
     }
 
     @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String min = minField.getText();
+        String max = maxField.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        minField.setText(min);
+        maxField.setText(max);
+    }
+
+    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         TextFieldWidget focusedField = getFocusedField();
         if (focusedField != null) {
@@ -135,9 +145,9 @@ public class GuiTItemStackFilter extends GuiItemStackFilter<TItemStackFilter, Ti
 
     @Nullable
     private TextFieldWidget getFocusedField() {
-        if (minField.isFocused()) {
+        if (minField.canWrite()) {
             return minField;
-        } else if (maxField.isFocused()) {
+        } else if (maxField.canWrite()) {
             return maxField;
         }
         return null;

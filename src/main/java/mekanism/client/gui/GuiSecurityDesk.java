@@ -3,6 +3,7 @@ package mekanism.client.gui;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.TileNetworkList;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerHolder;
@@ -23,6 +24,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
@@ -112,6 +114,13 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         updateButtons();
     }
 
+    @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        String s = trustedField.getText();
+        super.resize(minecraft, scaledWidth, scaledHeight);
+        trustedField.setText(s);
+    }
+
     private void addTrusted(String trusted) {
         if (trusted.isEmpty()) {
             return;
@@ -156,13 +165,12 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (trustedField.isFocused()) {
+        if (trustedField.canWrite()) {
             if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
                 //Manually handle hitting escape making the field lose focus
                 trustedField.setFocused2(false);
                 return true;
-            }
-            if (keyCode == GLFW.GLFW_KEY_ENTER) {
+            } else if (keyCode == GLFW.GLFW_KEY_ENTER) {
                 addTrusted(trustedField.getText());
                 trustedField.setText("");
                 return true;
@@ -174,7 +182,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        if (trustedField.isFocused()) {
+        if (trustedField.canWrite()) {
             if (SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c)) {
                 //Only allow a subset of characters to be entered into the trustedField text box
                 return trustedField.charTyped(c, keyCode);

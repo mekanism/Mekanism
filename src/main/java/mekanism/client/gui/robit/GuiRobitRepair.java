@@ -46,9 +46,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
 
     @Override
     public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        //TODO: Do this for the majority of our other GUIs, so that they don't get "reset" when the window size changes
         String s = itemNameField.getText();
-        init(minecraft, scaledWidth, scaledHeight);
+        super.resize(minecraft, scaledWidth, scaledHeight);
         itemNameField.setText(s);
     }
 
