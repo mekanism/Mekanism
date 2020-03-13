@@ -145,6 +145,8 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     @Override
     public void tick() {
         super.tick();
-        nameChangeField.tick();
+        if (nameChangeField.visible) {
+            nameChangeField.tick();
+        }
     }
 }

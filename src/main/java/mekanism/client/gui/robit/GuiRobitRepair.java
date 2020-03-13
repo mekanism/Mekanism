@@ -2,8 +2,10 @@ package mekanism.client.gui.robit;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import javax.annotation.Nonnull;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -14,6 +16,7 @@ import net.minecraft.network.play.client.CRenameItemPacket;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import org.lwjgl.glfw.GLFW;
 
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IContainerListener {
 
@@ -30,12 +33,34 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
         super.init();
         minecraft.keyboardListener.enableRepeatEvents(true);
         addButton(itemNameField = new TextFieldWidget(font, getGuiLeft() + 62, getGuiTop() + 24, 103, 12, ""));
+        itemNameField.setCanLoseFocus(false);
+        itemNameField.changeFocus(true);
         itemNameField.setTextColor(-1);
         itemNameField.setDisabledTextColour(-1);
         itemNameField.setEnableBackgroundDrawing(false);
-        itemNameField.setMaxStringLength(30);
+        itemNameField.setMaxStringLength(35);
+        itemNameField.setResponder(this::onTextUpdate);
         container.removeListener(this);
         container.addListener(this);
+    }
+
+    @Override
+    public void resize(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
+        //TODO: Do this for the majority of our other GUIs, so that they don't get "reset" when the window size changes
+        String s = itemNameField.getText();
+        init(minecraft, scaledWidth, scaledHeight);
+        itemNameField.setText(s);
+    }
+
+    private void onTextUpdate(String newText) {
+        if (!newText.isEmpty()) {
+            Slot slot = container.getSlot(0);
+            if (slot.getHasStack() && !slot.getStack().hasDisplayName() && newText.equals(slot.getStack().getDisplayName().getString())) {
+                newText = "";
+            }
+            container.updateItemName(newText);
+            minecraft.player.connection.sendPacket(new CRenameItemPacket(newText));
+        }
     }
 
     @Override
@@ -70,19 +95,26 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
                 int width = getXSize() - 8 - getStringWidth(component) - 2;
                 fill(width - 2, 67, getXSize() - 8, 79, 0x4F000000);
                 font.drawStringWithShadow(component.getFormattedText(), (float) width, 69.0F, k);
+                MekanismRenderer.resetColor();
             }
         }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        if (itemNameField.charTyped(c, i)) {
-            container.updateItemName(itemNameField.getText());
-            minecraft.player.connection.sendPacket(new CRenameItemPacket(itemNameField.getText()));
-            return true;
+    public boolean charTyped(char c, int keyCode) {
+        if (itemNameField.canWrite()) {
+            return itemNameField.charTyped(c, keyCode);
         }
-        return super.charTyped(c, i);
+        return super.charTyped(c, keyCode);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode != GLFW.GLFW_KEY_ESCAPE && itemNameField.canWrite()) {
+            return itemNameField.keyPressed(keyCode, scanCode, modifiers);
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -108,12 +140,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     @Override
     public void sendSlotContents(@Nonnull Container container, int slotID, @Nonnull ItemStack stack) {
         if (slotID == 0) {
-            itemNameField.setText(stack.isEmpty() ? "" : stack.getDisplayName().getFormattedText());
+            itemNameField.setText(stack.isEmpty() ? "" : stack.getDisplayName().getString());
             itemNameField.setEnabled(!stack.isEmpty());
-            if (!stack.isEmpty()) {
-                this.container.updateItemName(itemNameField.getText());
-                minecraft.player.connection.sendPacket(new CRenameItemPacket(itemNameField.getText()));
-            }
         }
     }
 
