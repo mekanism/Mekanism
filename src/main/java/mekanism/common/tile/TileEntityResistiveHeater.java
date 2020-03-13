@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IHeatTransfer;
 import mekanism.api.NBTConstants;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -24,7 +25,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer {
+public class TileEntityResistiveHeater extends TileEntityMekanism implements IHeatTransfer, ITileNetwork {
 
     public double energyUsage = 100;
     private double temperature;

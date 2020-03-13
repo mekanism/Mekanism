@@ -27,6 +27,7 @@ import mekanism.common.HashList;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IAdvancedBoundingBlock;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -86,7 +87,8 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>> {
+public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
+      ITileNetwork {
 
     public Map<ChunkPos, BitSet> oresToMine = new Object2ObjectOpenHashMap<>();
     public Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();

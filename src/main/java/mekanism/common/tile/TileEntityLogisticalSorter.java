@@ -12,6 +12,7 @@ import mekanism.api.sustained.ISustainedData;
 import mekanism.api.text.EnumColor;
 import mekanism.common.HashList;
 import mekanism.common.base.ILogisticalTransporter;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -48,7 +49,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>> {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<TransporterFilter<?>>, ITileNetwork {
 
     private HashList<TransporterFilter<?>> filters = new HashList<>();
     public EnumColor color;

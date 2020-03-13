@@ -9,10 +9,10 @@ import mekanism.common.util.ChargeUtils;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -39,7 +39,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
             if (getActive()) {
                 if (entity instanceof EntityRobit) {
                     EntityRobit robit = (EntityRobit) entity;
-                    double canGive = Math.min(getEnergy(), 1000);
+                    double canGive = Math.min(getEnergy(), 1_000);
                     double toGive = Math.min(robit.MAX_ELECTRICITY - robit.getEnergy(), canGive);
                     robit.setEnergy(robit.getEnergy() + toGive);
                     setEnergy(getEnergy() - toGive);
@@ -81,20 +81,21 @@ public class TileEntityChargepad extends TileEntityMekanism {
     }
 
     @Override
-    public void handlePacketData(PacketBuffer dataStream) {
+    public void setActive(boolean active) {
         boolean wasActive = getActive();
-        super.handlePacketData(dataStream);
-        if (isRemote()) {
+        super.setActive(active);
+        if (wasActive != active) {
             //If the state changed play pressure plate sound
-            if (wasActive != getActive()) {
-                if (getActive()) {
-                    world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
-                          SoundEvents.BLOCK_STONE_PRESSURE_PLATE_CLICK_ON, SoundCategory.BLOCKS, 0.3F, 0.8F);
-                } else {
-                    world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5,
-                          SoundEvents.BLOCK_STONE_PRESSURE_PLATE_CLICK_OFF, SoundCategory.BLOCKS, 0.3F, 0.7F);
-                }
+            SoundEvent sound;
+            float pitch;
+            if (active) {
+                sound = SoundEvents.BLOCK_STONE_PRESSURE_PLATE_CLICK_ON;
+                pitch = 0.8F;
+            } else {
+                sound = SoundEvents.BLOCK_STONE_PRESSURE_PLATE_CLICK_OFF;
+                pitch = 0.7F;
             }
+            world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, sound, SoundCategory.BLOCKS, 0.3F, pitch);
         }
     }
 

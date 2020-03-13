@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.VariableCapacityGasTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -42,7 +43,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityReactorController extends TileEntityReactorBlock {
+public class TileEntityReactorController extends TileEntityReactorBlock implements ITileNetwork {
 
     public static final int MAX_WATER = 100 * FluidAttributes.BUCKET_VOLUME;
     public static final int MAX_STEAM = MAX_WATER * 100;

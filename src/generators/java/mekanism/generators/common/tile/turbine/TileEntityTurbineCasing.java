@@ -5,6 +5,7 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -33,7 +34,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> {
+public class TileEntityTurbineCasing extends TileEntityMultiblock<SynchronizedTurbineData> implements ITileNetwork {
 
     public float prevSteamScale;
 

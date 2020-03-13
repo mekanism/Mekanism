@@ -18,6 +18,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITileComponent;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.BlockGasTank;
 import mekanism.common.capabilities.chemical.GasTankGasTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -50,7 +51,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileEntityGasTank extends TileEntityMekanism implements ISideConfiguration, ISustainedData {
+public class TileEntityGasTank extends TileEntityMekanism implements ISideConfiguration, ISustainedData, ITileNetwork {
 
     /**
      * The type of gas stored in this tank.
@@ -172,8 +173,6 @@ public class TileEntityGasTank extends TileEntityMekanism implements ISideConfig
             if (type == 0) {
                 dumping = dumping.getNext();
             }
-        } else {
-            super.handlePacketData(dataStream);
         }
     }
 

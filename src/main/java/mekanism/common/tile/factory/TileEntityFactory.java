@@ -15,6 +15,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.machine.BlockFactory;
 import mekanism.common.capabilities.Capabilities;
@@ -45,7 +46,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ISideConfiguration, ISpecialConfigData,
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ISideConfiguration, ISpecialConfigData, ITileNetwork,
       ITileCachedRecipeHolder<RECIPE> {
 
     private final CachedRecipe<RECIPE>[] cachedRecipes;
@@ -292,9 +293,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             } else if (type == 1) {
                 clearSecondaryTank();
             }
-            return;
         }
-        super.handlePacketData(dataStream);
     }
 
     protected void clearSecondaryTank() {

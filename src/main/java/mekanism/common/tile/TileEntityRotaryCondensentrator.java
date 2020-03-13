@@ -18,6 +18,7 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -44,7 +45,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<RotaryRecipe> {
+public class TileEntityRotaryCondensentrator extends TileEntityMekanism implements ITankManager, ITileCachedRecipeHolder<RotaryRecipe>, ITileNetwork {
 
     private static final int CAPACITY = 10_000;
 
@@ -156,8 +157,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityMekanism implemen
             if (type == 0) {
                 mode = !mode;
             }
-        } else {
-            super.handlePacketData(dataStream);
         }
     }
 

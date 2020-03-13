@@ -26,6 +26,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.ISideConfiguration;
 import mekanism.common.base.ITankManager;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.chunkloading.IChunkLoader;
 import mekanism.common.config.MekanismConfig;
@@ -59,7 +60,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
 public class TileEntityQuantumEntangloporter extends TileEntityMekanism implements ISideConfiguration, ITankManager, IFrequencyHandler, IHeatTransfer, ISustainedData,
-      IChunkLoader {
+      IChunkLoader, ITileNetwork {
 
     public InventoryFrequency frequency;
     public double heatToAbsorb = 0;
@@ -269,12 +270,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
                     manager.remove(freq, getSecurity().getOwnerUUID());
                 }
             }
-            return;
-        }
-
-        super.handlePacketData(dataStream);
-
-        if (isRemote()) {
+        } else {
+            //TODO: Move to new system
             if (dataStream.readBoolean()) {
                 frequency = new InventoryFrequency(dataStream);
             } else {
@@ -300,7 +297,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityMekanism implemen
 
     @Override
     public TileNetworkList getNetworkedData(TileNetworkList data) {
-        super.getNetworkedData(data);
         if (frequency != null) {
             data.add(true);
             frequency.write(data);

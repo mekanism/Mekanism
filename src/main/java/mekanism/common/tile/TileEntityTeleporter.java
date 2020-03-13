@@ -13,6 +13,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.TileNetworkList;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -45,7 +46,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader, IFrequencyHandler {
+public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader, IFrequencyHandler, ITileNetwork {
 
     private AxisAlignedBB teleportBounds = null;
 

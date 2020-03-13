@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -17,7 +18,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock {
+public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock implements ITileNetwork {
 
     public ReactorLogic logicType = ReactorLogic.DISABLED;
     public boolean activeCooled;
@@ -92,9 +93,7 @@ public class TileEntityReactorLogicAdapter extends TileEntityReactorBlock {
             } else if (type == 1) {
                 logicType = dataStream.readEnumValue(ReactorLogic.class);
             }
-            return;
         }
-        super.handlePacketData(dataStream);
     }
 
     @Override

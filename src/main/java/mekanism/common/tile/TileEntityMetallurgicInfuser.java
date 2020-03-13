@@ -17,6 +17,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -42,7 +43,7 @@ import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<MetallurgicInfuserRecipe> implements ISideConfiguration, IConfigCardAccess {
+public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<MetallurgicInfuserRecipe> implements ISideConfiguration, IConfigCardAccess, ITileNetwork {
 
     public static final int MAX_INFUSE = 1_000;
     public BasicInfusionTank infusionTank;
@@ -173,8 +174,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityOperationalMachine<M
             if (amount == 0) {
                 infusionTank.setEmpty();
             }
-        } else {
-            super.handlePacketData(dataStream);
         }
     }
 

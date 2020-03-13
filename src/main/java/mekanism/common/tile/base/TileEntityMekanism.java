@@ -44,7 +44,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IComparatorSupport;
 import mekanism.common.base.IEnergyWrapper;
 import mekanism.common.base.ITileComponent;
-import mekanism.common.base.ITileNetwork;
 import mekanism.common.block.interfaces.IHasGui;
 import mekanism.common.block.interfaces.IUpgradeableBlock;
 import mekanism.common.block.states.IStateActive;
@@ -99,7 +98,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -124,7 +122,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 // does not support them throw an UnsupportedMethodException to make it easier to track down potential bugs
 // rather than silently "fail" and just do nothing
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
-public abstract class TileEntityMekanism extends TileEntityUpdateable implements ITileNetwork, IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
+public abstract class TileEntityMekanism extends TileEntityUpdateable implements IFrequencyHandler, ITickableTileEntity, IToggleableCapability, ITileDirectional,
       ITileElectric, ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable,
       IComparatorSupport, ITrackableContainer, IMekanismGasHandler, IMekanismInfusionHandler, IMekanismFluidHandler {
     //TODO: Make sure we have a way of saving the inventory to disk and a way to load it, basically what ISustainedInventory was before
@@ -508,10 +506,6 @@ public abstract class TileEntityMekanism extends TileEntityUpdateable implements
 
     public void close(PlayerEntity player) {
         playersUsing.remove(player);
-    }
-
-    @Override
-    public void handlePacketData(PacketBuffer dataStream) {
     }
 
     @Override

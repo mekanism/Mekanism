@@ -6,6 +6,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.ILangEntry;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -17,7 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 
-public class TileEntityLaserAmplifier extends TileEntityLaserReceptor {
+public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements ITileNetwork {
 
     public double minThreshold;
     public double maxThreshold = 5E9;

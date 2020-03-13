@@ -9,6 +9,7 @@ import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.PacketHandler;
 import mekanism.common.base.IBoundingBlock;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.frequency.Frequency;
@@ -36,7 +37,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock {
+public class TileEntitySecurityDesk extends TileEntityMekanism implements IBoundingBlock, ITileNetwork {
 
     public UUID ownerUUID;
     public String clientOwner;

@@ -15,6 +15,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.transmitters.TransmissionType;
 import mekanism.common.base.ISideConfiguration;
+import mekanism.common.base.ITileNetwork;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
@@ -51,7 +52,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
+public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess, ITileNetwork {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
